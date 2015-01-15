@@ -1,0 +1,429 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D82B8CC11A67820A000E47CA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC01A67820A000E47CA /* main.m */; };
+		D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC31A67820A000E47CA /* AppDelegate.m */; };
+		D82B8CC71A67820A000E47CA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC61A67820A000E47CA /* ViewController.m */; };
+		D82B8CCA1A67820A000E47CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D82B8CC81A67820A000E47CA /* Main.storyboard */; };
+		D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D82B8CCB1A67820A000E47CA /* Images.xcassets */; };
+		D82B8CCF1A67820A000E47CA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D82B8CCD1A67820A000E47CA /* LaunchScreen.xib */; };
+		D82B8CDB1A67820A000E47CA /* piwigoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CDA1A67820A000E47CA /* piwigoTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D82B8CD51A67820A000E47CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
+			remoteInfo = piwigo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D82B8CBF1A67820A000E47CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D82B8CC01A67820A000E47CA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D82B8CC21A67820A000E47CA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D82B8CC31A67820A000E47CA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D82B8CC51A67820A000E47CA /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		D82B8CC61A67820A000E47CA /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		D82B8CC91A67820A000E47CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D82B8CCB1A67820A000E47CA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		D82B8CCE1A67820A000E47CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		D82B8CD41A67820A000E47CA /* piwigoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D82B8CD91A67820A000E47CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D82B8CDA1A67820A000E47CA /* piwigoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = piwigoTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D82B8CB81A67820A000E47CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82B8CD11A67820A000E47CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D82B8CB21A67820A000E47CA = {
+			isa = PBXGroup;
+			children = (
+				D82B8CBD1A67820A000E47CA /* piwigo */,
+				D82B8CD71A67820A000E47CA /* piwigoTests */,
+				D82B8CBC1A67820A000E47CA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D82B8CBC1A67820A000E47CA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CBB1A67820A000E47CA /* piwigo.app */,
+				D82B8CD41A67820A000E47CA /* piwigoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D82B8CBD1A67820A000E47CA /* piwigo */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CC21A67820A000E47CA /* AppDelegate.h */,
+				D82B8CC31A67820A000E47CA /* AppDelegate.m */,
+				D82B8CC51A67820A000E47CA /* ViewController.h */,
+				D82B8CC61A67820A000E47CA /* ViewController.m */,
+				D82B8CC81A67820A000E47CA /* Main.storyboard */,
+				D82B8CCB1A67820A000E47CA /* Images.xcassets */,
+				D82B8CCD1A67820A000E47CA /* LaunchScreen.xib */,
+				D82B8CBE1A67820A000E47CA /* Supporting Files */,
+			);
+			path = piwigo;
+			sourceTree = "<group>";
+		};
+		D82B8CBE1A67820A000E47CA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CBF1A67820A000E47CA /* Info.plist */,
+				D82B8CC01A67820A000E47CA /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D82B8CD71A67820A000E47CA /* piwigoTests */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CDA1A67820A000E47CA /* piwigoTests.m */,
+				D82B8CD81A67820A000E47CA /* Supporting Files */,
+			);
+			path = piwigoTests;
+			sourceTree = "<group>";
+		};
+		D82B8CD81A67820A000E47CA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CD91A67820A000E47CA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D82B8CBA1A67820A000E47CA /* piwigo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D82B8CDE1A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigo" */;
+			buildPhases = (
+				D82B8CB71A67820A000E47CA /* Sources */,
+				D82B8CB81A67820A000E47CA /* Frameworks */,
+				D82B8CB91A67820A000E47CA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = piwigo;
+			productName = piwigo;
+			productReference = D82B8CBB1A67820A000E47CA /* piwigo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D82B8CD31A67820A000E47CA /* piwigoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D82B8CE11A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigoTests" */;
+			buildPhases = (
+				D82B8CD01A67820A000E47CA /* Sources */,
+				D82B8CD11A67820A000E47CA /* Frameworks */,
+				D82B8CD21A67820A000E47CA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D82B8CD61A67820A000E47CA /* PBXTargetDependency */,
+			);
+			name = piwigoTests;
+			productName = piwigoTests;
+			productReference = D82B8CD41A67820A000E47CA /* piwigoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D82B8CB31A67820A000E47CA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = bakercrew;
+				TargetAttributes = {
+					D82B8CBA1A67820A000E47CA = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					D82B8CD31A67820A000E47CA = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = D82B8CBA1A67820A000E47CA;
+					};
+				};
+			};
+			buildConfigurationList = D82B8CB61A67820A000E47CA /* Build configuration list for PBXProject "piwigo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D82B8CB21A67820A000E47CA;
+			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D82B8CBA1A67820A000E47CA /* piwigo */,
+				D82B8CD31A67820A000E47CA /* piwigoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D82B8CB91A67820A000E47CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D82B8CCA1A67820A000E47CA /* Main.storyboard in Resources */,
+				D82B8CCF1A67820A000E47CA /* LaunchScreen.xib in Resources */,
+				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82B8CD21A67820A000E47CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D82B8CB71A67820A000E47CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D82B8CC71A67820A000E47CA /* ViewController.m in Sources */,
+				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
+				D82B8CC11A67820A000E47CA /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82B8CD01A67820A000E47CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D82B8CDB1A67820A000E47CA /* piwigoTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D82B8CD61A67820A000E47CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D82B8CBA1A67820A000E47CA /* piwigo */;
+			targetProxy = D82B8CD51A67820A000E47CA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D82B8CC81A67820A000E47CA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D82B8CC91A67820A000E47CA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D82B8CCD1A67820A000E47CA /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D82B8CCE1A67820A000E47CA /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D82B8CDC1A67820A000E47CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D82B8CDD1A67820A000E47CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D82B8CDF1A67820A000E47CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = piwigo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D82B8CE01A67820A000E47CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = piwigo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D82B8CE21A67820A000E47CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = piwigoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/piwigo.app/piwigo";
+			};
+			name = Debug;
+		};
+		D82B8CE31A67820A000E47CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = piwigoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/piwigo.app/piwigo";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D82B8CB61A67820A000E47CA /* Build configuration list for PBXProject "piwigo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D82B8CDC1A67820A000E47CA /* Debug */,
+				D82B8CDD1A67820A000E47CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D82B8CDE1A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D82B8CDF1A67820A000E47CA /* Debug */,
+				D82B8CE01A67820A000E47CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		D82B8CE11A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D82B8CE21A67820A000E47CA /* Debug */,
+				D82B8CE31A67820A000E47CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D82B8CB31A67820A000E47CA /* Project object */;
+}
