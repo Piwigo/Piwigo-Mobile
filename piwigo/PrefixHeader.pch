@@ -1,0 +1,22 @@
+//
+//  PrefixHeader.pch
+//  piwigo
+//
+//  Created by Spencer Baker on 1/14/15.
+//  Copyright (c) 2015 bakercrew. All rights reserved.
+//
+
+#ifndef piwigo_PrefixHeader_pch
+#define piwigo_PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#ifdef __OBJC__
+	#import "NSLayoutConstraint+CommonConstraints.h"
+	#import "UIColor+AppSpecificColors.h"
+	#import "AFNetworking.h"
+	#import "UIImageView+AFNetworking.h"
+#endif
+
+#endif
