@@ -18,7 +18,6 @@ FOUNDATION_EXPORT NSString * const kBaseUrlPath;
 
 @interface NetworkHandler : NSObject
 
-+(void)getPost:(NSString*)path success:(SuccessBlock)success;
-+(AFHTTPRequestOperation*)afPost:(SuccessBlock)success;
++(AFHTTPRequestOperation*)getPost:(NSString*)path success:(SuccessBlock)success;
 
 @end

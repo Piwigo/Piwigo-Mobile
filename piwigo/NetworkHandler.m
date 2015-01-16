@@ -23,31 +23,31 @@ NSString * const kBaseUrlPath = @"http://pwg.bakercrew.com/piwigo/ws.php?";
 
 @implementation NetworkHandler
 
-+(void)getPost:(NSString*)path success:(SuccessBlock)success
-{
-	NSString *string = [NSString stringWithFormat:@"%@format=json&method=pwg.categories.getImages", kBaseUrlPath];
-	NSURL *url = [NSURL URLWithString:string];
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
-	
-	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-	
-	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-	[jsonAcceptableContentTypes addObject:@"text/plain"];
-	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-	operation.responseSerializer = jsonResponseSerializer;
-	
-	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-		
-		success(responseObject);
-	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		
-	}];
-	
-	[operation start];
-}
+//+(void)getPost:(NSString*)path success:(SuccessBlock)success
+//{
+//	NSString *string = [NSString stringWithFormat:@"%@format=json&method=pwg.categories.getImages", kBaseUrlPath];
+//	NSURL *url = [NSURL URLWithString:string];
+//	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//	
+//	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+//	
+//	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
+//	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
+//	[jsonAcceptableContentTypes addObject:@"text/plain"];
+//	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
+//	operation.responseSerializer = jsonResponseSerializer;
+//	
+//	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+//		
+//		success(responseObject);
+//	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//		
+//	}];
+//	
+//	[operation start];
+//}
 
-+(AFHTTPRequestOperation*)afPost:(SuccessBlock)success
++(AFHTTPRequestOperation*)getPost:(NSString*)path success:(SuccessBlock)success
 {
 	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 	

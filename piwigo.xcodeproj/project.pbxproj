@@ -34,8 +34,8 @@
 		D82B8D241A68783B000E47CA /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D1A1A68783B000E47CA /* AFURLResponseSerialization.m */; };
 		D82B8D251A68783B000E47CA /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D1C1A68783B000E47CA /* AFURLSessionManager.m */; };
 		D82B8D2B1A68832C000E47CA /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2A1A68832C000E47CA /* Model.m */; };
-		D82B8D2D1A6884DD000E47CA /* img.png in Resources */ = {isa = PBXBuildFile; fileRef = D82B8D2C1A6884DD000E47CA /* img.png */; };
 		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
+		D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,9 +106,10 @@
 		D82B8D1C1A68783B000E47CA /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
 		D82B8D291A68832C000E47CA /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		D82B8D2A1A68832C000E47CA /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
-		D82B8D2C1A6884DD000E47CA /* img.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img.png; sourceTree = "<group>"; };
 		D82B8D2E1A688512000E47CA /* PiwigoImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoImageData.h; sourceTree = "<group>"; };
 		D82B8D2F1A688512000E47CA /* PiwigoImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoImageData.m; sourceTree = "<group>"; };
+		D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailViewController.h; sourceTree = "<group>"; };
+		D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,9 +151,10 @@
 		D82B8CBD1A67820A000E47CA /* piwigo */ = {
 			isa = PBXGroup;
 			children = (
-				D82B8D2C1A6884DD000E47CA /* img.png */,
 				D82B8CC51A67820A000E47CA /* ViewController.h */,
 				D82B8CC61A67820A000E47CA /* ViewController.m */,
+				D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */,
+				D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */,
 				D82B8D2E1A688512000E47CA /* PiwigoImageData.h */,
 				D82B8D2F1A688512000E47CA /* PiwigoImageData.m */,
 				D82B8CE41A678ED2000E47CA /* NetworkHandler.h */,
@@ -340,7 +342,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D82B8D2D1A6884DD000E47CA /* img.png in Resources */,
 				D82B8CCF1A67820A000E47CA /* LaunchScreen.xib in Resources */,
 				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
 			);
@@ -381,6 +382,7 @@
 				D82B8D081A687831000E47CA /* UIWebView+AFNetworking.m in Sources */,
 				D82B8D021A687831000E47CA /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				D82B8D1D1A68783B000E47CA /* AFHTTPRequestOperation.m in Sources */,
+				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D82B8D051A687831000E47CA /* UIImageView+AFNetworking.m in Sources */,
 				D82B8D1F1A68783B000E47CA /* AFHTTPSessionManager.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
@@ -503,6 +505,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PREFIX_HEADER = piwigo/PrefixHeader.pch;
 				INFOPLIST_FILE = piwigo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -515,6 +518,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PREFIX_HEADER = piwigo/PrefixHeader.pch;
 				INFOPLIST_FILE = piwigo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -573,6 +577,7 @@
 				D82B8CE01A67820A000E47CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D82B8CE11A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigoTests" */ = {
 			isa = XCConfigurationList;
@@ -581,6 +586,7 @@
 				D82B8CE31A67820A000E47CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

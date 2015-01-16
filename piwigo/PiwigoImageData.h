@@ -12,6 +12,8 @@
 
 @property (nonatomic, strong) NSString *file;
 @property (nonatomic, strong) NSString *squarePath;
-@property (nonatomic, assign) NSInteger categoryId;
+@property (nonatomic, strong) NSArray *categoryIds;
+@property (nonatomic, strong) NSString *mediumPath;
+@property (nonatomic, strong) NSString *fullResPath;
 
 @end

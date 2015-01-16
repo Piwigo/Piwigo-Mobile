@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "PiwigoImageData.h"
 #import "NetworkHandler.h"
+#import "ImageDetailViewController.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -29,19 +30,26 @@
 		
 		self.tableView = [UITableView new];
 		self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-//		[self.tableView registerClass:[PhotoTableViewCell class] forCellReuseIdentifier:@"cell"];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
 		[self.view addSubview:self.tableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
 		
-		AFHTTPRequestOperation *op = [NetworkHandler afPost:^(id responseObject) {
-			[self parseJSON:responseObject];
+		[NetworkHandler getPost:nil success:^(id responseObject) {
+			if([responseObject isKindOfClass:[NSDictionary class]]) {
+				[self parseJSON:responseObject];
+			}
 		}];
-		
 		
 	}
 	return self;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+	self.navigationController.navigationBarHidden = NO;
 }
 
 -(void)parseJSON:(NSDictionary*)json
@@ -53,10 +61,20 @@
 	{
 		PiwigoImageData *imgData = [PiwigoImageData new];
 		imgData.file = [image objectForKey:@"file"];
-		imgData.squarePath = [[[image objectForKey:@"derivatives"] objectForKey:@"square"] objectForKey:@"url"];
+		imgData.fullResPath = [image objectForKey:@"element_url"];
 		
-//		NSArray *categories =[image objectForKey:@"categories"];
-//		imgData.categoryId = [[image objectForKey:@"categories"] objectForKey:@"id"];
+		NSDictionary *imageSizes = [image objectForKey:@"derivatives"];
+		imgData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
+		imgData.mediumPath = [[imageSizes objectForKey:@"medium"] objectForKey:@"url"];
+		
+		NSArray *categories = [image objectForKey:@"categories"];
+		NSMutableArray *categoryIds = [NSMutableArray new];
+		for(NSDictionary *category in categories)
+		{
+			[categoryIds addObject:[category objectForKey:@"id"]];
+		}
+		
+		imgData.categoryIds = categoryIds;
 		
 		[namesList addObject:imgData];
 	}
@@ -85,7 +103,7 @@
 	}
 	
 	PiwigoImageData *imageData = self.namesArray[indexPath.row];
-	cell.textLabel.text = imageData.file;
+	cell.textLabel.text = [NSString stringWithFormat:@"%@\t(%@)", imageData.file, [imageData.categoryIds firstObject]];
 	
 	NSURL *url = [NSURL URLWithString:imageData.squarePath];
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -106,6 +124,16 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	ImageDetailViewController *img = [ImageDetailViewController new];
+	img.imageData = self.namesArray[indexPath.row];
+	[self.navigationController pushViewController:img animated:YES];
+	
+}
+
+-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[cell.imageView cancelImageRequestOperation];
 }
 
 @end
