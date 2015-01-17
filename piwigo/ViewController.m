@@ -10,6 +10,7 @@
 #import "PiwigoImageData.h"
 #import "NetworkHandler.h"
 #import "ImageDetailViewController.h"
+#import "LoginViewController.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -49,7 +50,10 @@
 {
 	[super viewWillAppear:animated];
 	
-	self.navigationController.navigationBarHidden = NO;
+//	self.navigationController.navigationBarHidden = NO;
+	
+	LoginViewController *login = [LoginViewController new];
+	[self.navigationController pushViewController:login animated:YES];
 }
 
 -(void)parseJSON:(NSDictionary*)json

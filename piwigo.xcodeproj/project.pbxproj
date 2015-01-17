@@ -11,7 +11,6 @@
 		D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC31A67820A000E47CA /* AppDelegate.m */; };
 		D82B8CC71A67820A000E47CA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC61A67820A000E47CA /* ViewController.m */; };
 		D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D82B8CCB1A67820A000E47CA /* Images.xcassets */; };
-		D82B8CCF1A67820A000E47CA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D82B8CCD1A67820A000E47CA /* LaunchScreen.xib */; };
 		D82B8CDB1A67820A000E47CA /* piwigoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CDA1A67820A000E47CA /* piwigoTests.m */; };
 		D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE51A678ED2000E47CA /* NetworkHandler.m */; };
 		D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */; };
@@ -36,6 +35,11 @@
 		D82B8D2B1A68832C000E47CA /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2A1A68832C000E47CA /* Model.m */; };
 		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
 		D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */; };
+		D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */; };
+		D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */; };
+		D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */; };
+		D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */; };
+		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,6 +114,15 @@
 		D82B8D2F1A688512000E47CA /* PiwigoImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoImageData.m; sourceTree = "<group>"; };
 		D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailViewController.h; sourceTree = "<group>"; };
 		D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController.m; sourceTree = "<group>"; };
+		D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoButton.h; sourceTree = "<group>"; };
+		D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoButton.m; sourceTree = "<group>"; };
+		D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+AppFonts.h"; sourceTree = "<group>"; };
+		D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+AppFonts.m"; sourceTree = "<group>"; };
+		D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = LacunaRegular.TTF; sourceTree = "<group>"; };
+		D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTextField.h; sourceTree = "<group>"; };
+		D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoTextField.m; sourceTree = "<group>"; };
+		D863EECB1A6A495700C0A6E9 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		D863EECC1A6A495700C0A6E9 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +164,7 @@
 		D82B8CBD1A67820A000E47CA /* piwigo */ = {
 			isa = PBXGroup;
 			children = (
+				D863EEBE1A6A440D00C0A6E9 /* Login */,
 				D82B8CC51A67820A000E47CA /* ViewController.h */,
 				D82B8CC61A67820A000E47CA /* ViewController.m */,
 				D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */,
@@ -168,11 +182,12 @@
 		D82B8CBE1A67820A000E47CA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				D82B8D291A68832C000E47CA /* Model.h */,
-				D82B8D2A1A68832C000E47CA /* Model.m */,
+				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8D091A68783B000E47CA /* AFNetworking */,
 				D82B8CEF1A687831000E47CA /* UIKit+AFNetworking */,
 				D82B8CED1A6790A3000E47CA /* Macros */,
+				D82B8D291A68832C000E47CA /* Model.h */,
+				D82B8D2A1A68832C000E47CA /* Model.m */,
 				D82B8CEE1A6790BF000E47CA /* PrefixHeader.pch */,
 				D82B8CC21A67820A000E47CA /* AppDelegate.h */,
 				D82B8CC31A67820A000E47CA /* AppDelegate.m */,
@@ -207,6 +222,8 @@
 				D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */,
 				D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */,
 				D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */,
+				D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */,
+				D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */,
 			);
 			name = Macros;
 			sourceTree = "<group>";
@@ -259,6 +276,35 @@
 				D82B8D1C1A68783B000E47CA /* AFURLSessionManager.m */,
 			);
 			path = AFNetworking;
+			sourceTree = "<group>";
+		};
+		D863EEBE1A6A440D00C0A6E9 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				D863EECB1A6A495700C0A6E9 /* LoginViewController.h */,
+				D863EECC1A6A495700C0A6E9 /* LoginViewController.m */,
+				D863EEBF1A6A441400C0A6E9 /* UIComponents */,
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
+		D863EEBF1A6A441400C0A6E9 /* UIComponents */ = {
+			isa = PBXGroup;
+			children = (
+				D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */,
+				D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */,
+				D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */,
+				D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */,
+			);
+			name = UIComponents;
+			sourceTree = "<group>";
+		};
+		D863EEC51A6A45E800C0A6E9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -342,7 +388,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D82B8CCF1A67820A000E47CA /* LaunchScreen.xib in Resources */,
+				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -367,11 +413,15 @@
 				D82B8D031A687831000E47CA /* UIAlertView+AFNetworking.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				D82B8D241A68783B000E47CA /* AFURLResponseSerialization.m in Sources */,
+				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D82B8D221A68783B000E47CA /* AFURLConnectionOperation.m in Sources */,
 				D82B8D061A687831000E47CA /* UIProgressView+AFNetworking.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
 				D82B8D1E1A68783B000E47CA /* AFHTTPRequestOperationManager.m in Sources */,
+				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
+				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
+				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D82B8CC11A67820A000E47CA /* main.m in Sources */,
 				D82B8D211A68783B000E47CA /* AFSecurityPolicy.m in Sources */,
 				D82B8D071A687831000E47CA /* UIRefreshControl+AFNetworking.m in Sources */,

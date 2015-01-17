@@ -17,6 +17,7 @@
 	#import "UIColor+AppSpecificColors.h"
 	#import "AFNetworking.h"
 	#import "UIImageView+AFNetworking.h"
+	#import "UIFont+AppFonts.h"
 #endif
 
 #endif
