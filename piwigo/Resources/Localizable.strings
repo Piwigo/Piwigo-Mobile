@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  piwigo
+
+  Created by Spencer Baker on 1/17/15.
+  Copyright (c) 2015 bakercrew. All rights reserved.
+*/
+
+"login_loginButton" = "Login";
+"login_serverPlaceholder" = "Server";
+"login_userPlaceholder" = "Username";
+"login_passwordPlaceholder" = "Password";
+

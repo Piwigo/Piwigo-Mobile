@@ -40,6 +40,7 @@
 		D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */; };
 		D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */; };
 		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
+		D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8C7BE021A6A525F007C8673 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,6 +124,7 @@
 		D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoTextField.m; sourceTree = "<group>"; };
 		D863EECB1A6A495700C0A6E9 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		D863EECC1A6A495700C0A6E9 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		D8C7BE021A6A525F007C8673 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -303,6 +305,7 @@
 			isa = PBXGroup;
 			children = (
 				D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */,
+				D8C7BE021A6A525F007C8673 /* Localizable.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -389,6 +392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
+				D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */,
 				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

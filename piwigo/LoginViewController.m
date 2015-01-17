@@ -37,22 +37,22 @@
 		
 		self.serverTextField = [PiwigoTextField new];
 		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.serverTextField.placeholder = @"Server";	// @TODO: Localize this!
+		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"Server");
 		[self.view addSubview:self.serverTextField];
 		
 		self.userTextField = [PiwigoTextField new];
 		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.userTextField.placeholder = @"Username";	// @TODO: Localize this!
+		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username");
 		[self.view addSubview:self.userTextField];
 		
 		self.passwordTextField = [PiwigoTextField new];
 		self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.passwordTextField.placeholder = @"Password";	// @TODO: Localize this!
+		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password");
 		[self.view addSubview:self.passwordTextField];
 		
 		self.loginButton = [PiwigoButton new];
 		self.loginButton.translatesAutoresizingMaskIntoConstraints = NO;
-		[self.loginButton setTitle:@"Login" forState:UIControlStateNormal];	// @TODO: Localize this!
+		[self.loginButton setTitle:NSLocalizedString(@"login_loginButton", @"Login") forState:UIControlStateNormal];
 		[self.view addSubview:self.loginButton];
 		
 		
