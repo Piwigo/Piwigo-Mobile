@@ -10,41 +10,21 @@
 
 @implementation UIColor (AppSpecificColors)
 
-+(UIColor*)buttonColor
++(UIColor*)piwigoOrange
 {
-	return [UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0];
+	return [UIColor colorWithRed:255/255.0 green:119.5/255.0 blue:0/255.0 alpha:1.0];
 }
-
-
-+(UIColor*)matrixCompleteColor
++(UIColor*)piwigoGray
 {
-	return [UIColor colorWithRed:22/255.0 green:215/255.0 blue:32/255.0 alpha:1.0];
+	return [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0];
 }
-
-+(UIColor*)matrixInProgressColor
++(UIColor*)piwigoGrayLight
 {
-	return [UIColor colorWithRed:255/255.0 green:204/255.0 blue:0/255.0 alpha:1.0];
+	return [UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1.0];
 }
-
-
-+(UIColor*)progressRedColor
++(UIColor*)piwigoBrown
 {
-	return [UIColor colorWithRed:255/255.0 green:81/255.0 blue:69/255.0 alpha:1.0];
-}
-
-+(UIColor*)progressBlueColor
-{
-	return [UIColor colorWithRed:28/255.0 green:168/255.0 blue:248/255.0 alpha:1.0];
-}
-
-+(UIColor*)progressOrangeColor
-{
-	return [UIColor colorWithRed:255/255.0 green:139/255.0 blue:10/255.0 alpha:1.0];
-}
-
-+(UIColor*)progressPurpleColor
-{
-	return [UIColor colorWithRed:233/255.0 green:76/255.0 blue:192/255.0 alpha:1.0];
+	return [UIColor colorWithRed:114/255.0 green:93/255.0 blue:49/255.0 alpha:1.0];
 }
 
 @end

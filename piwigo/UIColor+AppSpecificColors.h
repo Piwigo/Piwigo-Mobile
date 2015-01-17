@@ -10,14 +10,9 @@
 
 @interface UIColor (AppSpecificColors)
 
-+(UIColor*)buttonColor;
-
-+(UIColor*)matrixCompleteColor;
-+(UIColor*)matrixInProgressColor;
-
-+(UIColor*)progressRedColor;
-+(UIColor*)progressBlueColor;
-+(UIColor*)progressOrangeColor;
-+(UIColor*)progressPurpleColor;
++(UIColor*)piwigoOrange;
++(UIColor*)piwigoGray;
++(UIColor*)piwigoGrayLight;
++(UIColor*)piwigoBrown;
 
 @end
