@@ -14,7 +14,10 @@
 +(AFHTTPRequestOperation*)performLoginWithServer:(NSString*)server
 										 andUser:(NSString*)user
 									 andPassword:(NSString*)password
-									onCompletion:(void (^)(BOOL result, id response))completion;
-+(AFHTTPRequestOperation*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion;
+									onCompletion:(void (^)(BOOL result, id response))completion
+									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
++(AFHTTPRequestOperation*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
+									  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 @end

@@ -16,6 +16,7 @@
 										 andUser:(NSString*)user
 									 andPassword:(NSString*)password
 									onCompletion:(void (^)(BOOL result, id response))completion
+									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	[Model sharedInstance].serverName = server;
 	[[Model sharedInstance] saveToDisk];
@@ -39,13 +40,15 @@
 				  }
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
-				  if(completion) {
-						[PiwigoSession showConnectionError:error];
+				  if(fail) {
+					  [PiwigoSession showConnectionError:error];
+					  fail(operation, error);
 				  }
 			  }];
 }
 
 +(AFHTTPRequestOperation*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
+									  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	return [self post:kPiwigoSessionGetStatus
 		URLParameters:nil
@@ -65,8 +68,9 @@
 				  }
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
-				  if(completion) {
+				  if(fail) {
 					  [PiwigoSession showConnectionError:error];
+					  fail(operation, error);
 				  }
 			  }];
 }

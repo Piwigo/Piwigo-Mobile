@@ -28,28 +28,14 @@
 	NSString *server = [Model sharedInstance].serverName;
 	NSString *user = [KeychainAccess getLoginUser];
 	NSString *password = [KeychainAccess getLoginPassword];
-	BOOL loggingIn = NO;
 	if(server.length > 0 && user.length > 0 && password.length > 0)
 	{
-		loggingIn = YES;
-		[PiwigoSession performLoginWithServer:server
-									  andUser:user
-								  andPassword:password
-								 onCompletion:^(BOOL result, id response) {
-									 if(result)
-									 {
-										 [self loadNavigation];
-									 }
-									 else
-									 {
-										 [self.loginVC showLoginFail];
-									 }
-								 }];
+		[self.loginVC performLogin];
 	}
 	
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
-	[self loadLoginWithLoggingIn:loggingIn];
+	[self loadLoginView];
 	
 	return YES;
 }
@@ -62,9 +48,8 @@
 	self.loginVC = nil;
 }
 
--(void)loadLoginWithLoggingIn:(BOOL)loggingIn;
+-(void)loadLoginView
 {
-//	self.loginVC.loggingIn = loggingIn;
 	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.loginVC];
 	[nav setNavigationBarHidden:YES];
 	self.window.rootViewController = nav;

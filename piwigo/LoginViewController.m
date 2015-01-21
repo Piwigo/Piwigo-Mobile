@@ -14,13 +14,17 @@
 #import "PiwigoSession.h"
 #import "AppDelegate.h"
 
-@interface LoginViewController ()
+@interface LoginViewController () <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIImageView *piwigoLogo;
 @property (nonatomic, strong) PiwigoTextField *serverTextField;
 @property (nonatomic, strong) PiwigoTextField *userTextField;
 @property (nonatomic, strong) PiwigoTextField *passwordTextField;
 @property (nonatomic, strong) PiwigoButton *loginButton;
+
+@property (nonatomic, strong) UIView *loadingView;
+@property (nonatomic, strong) UILabel *loggingInLabel;
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 @end
 
@@ -46,16 +50,18 @@
 		self.serverTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
+		self.serverTextField.returnKeyType = UIReturnKeyNext;
+		self.serverTextField.delegate = self;
 		[self.view addSubview:self.serverTextField];
-		
-		// @TODO: RETURN KEY IS NEXT, AND IT GOES TO THE NEXT FIELD
-		
+				
 		self.userTextField = [PiwigoTextField new];
 		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username");
 		self.userTextField.text = [KeychainAccess getLoginUser];
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+		self.userTextField.returnKeyType = UIReturnKeyNext;
+		self.userTextField.delegate = self;
 		[self.view addSubview:self.userTextField];
 		
 		self.passwordTextField = [PiwigoTextField new];
@@ -63,6 +69,8 @@
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password");
 		self.passwordTextField.secureTextEntry = YES;
 		self.passwordTextField.text = [KeychainAccess getLoginPassword];
+		self.passwordTextField.returnKeyType = UIReturnKeyGo;
+		self.passwordTextField.delegate = self;
 		[self.view addSubview:self.passwordTextField];
 		
 		self.loginButton = [PiwigoButton new];
@@ -72,6 +80,23 @@
 		[self.view addSubview:self.loginButton];
 		
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)]];
+		
+		self.loadingView = [UIView new];
+		self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
+		self.loadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+		self.loadingView.hidden = YES;
+		[self.view addSubview:self.loadingView];
+		
+		self.loggingInLabel = [UILabel new];
+		self.loggingInLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.loggingInLabel.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
+		self.loggingInLabel.font = [UIFont piwigoFontNormal];
+		self.loggingInLabel.textColor = [UIColor whiteColor];
+		[self.loadingView addSubview:self.loggingInLabel];
+		
+		self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+		self.spinner.translatesAutoresizingMaskIntoConstraints = NO;
+		[self.loadingView addSubview:self.spinner];
 		
 		[self setupAutoLayout];
 	}
@@ -129,6 +154,16 @@
 																	  options:kNilOptions
 																	  metrics:metrics
 																		views:views]];
+	
+	
+	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.loadingView]];
+	[self.loadingView addConstraints:[NSLayoutConstraint constraintViewToCenter:self.spinner]];
+	[self.loadingView addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.loggingInLabel]];
+	[self.loadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-[spinner]"
+																			 options:kNilOptions
+																			 metrics:nil
+																			   views:@{@"spinner" : self.spinner,
+																					   @"label" : self.loggingInLabel}]];
 }
 
 -(void)dismissKeyboard
@@ -138,6 +173,8 @@
 
 -(void)performLogin
 {
+	[self showLoading];
+	
 	[PiwigoSession performLoginWithServer:self.serverTextField.text
 								  andUser:self.userTextField.text
 							  andPassword:self.passwordTextField.text
@@ -148,14 +185,18 @@
 								 }
 								 else
 								 {
+									 [self hideLoading];
 									 [self showLoginFail];
 								 }
+							 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+								 [self hideLoading];
 							 }];
 }
 
 -(void)getSessionStatus
 {
 	[PiwigoSession getStatusOnCompletion:^(NSDictionary *responseObject) {
+		[self hideLoading];
 		if(responseObject)
 		{
 			AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -170,7 +211,20 @@
 													  otherButtonTitles:nil];
 			[failAlert show];
 		}
+	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+		[self hideLoading];
 	}];
+}
+
+-(void)showLoading
+{
+	self.loadingView.hidden = NO;
+	[self.spinner startAnimating];
+}
+-(void)hideLoading
+{
+	[self.spinner stopAnimating];
+	self.loadingView.hidden = YES;
 }
 
 -(void)showLoginFail
@@ -181,6 +235,21 @@
 										  cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Okay")
 										  otherButtonTitles:nil];
 	[alert show];
+}
+
+
+#pragma mark -- UITextField Delegate Methods
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+	if(textField == self.serverTextField) {
+		[self.userTextField becomeFirstResponder];
+	} else if (textField == self.userTextField) {
+		[self.passwordTextField becomeFirstResponder];
+	} else if (textField == self.passwordTextField) {
+		[self performLogin];
+	}
+	return YES;
 }
 
 @end

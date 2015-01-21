@@ -10,6 +10,10 @@
 
 @interface LoginViewController : UIViewController
 
+-(void)performLogin;
+
 -(void)showLoginFail;
+-(void)showLoading;
+-(void)hideLoading;
 
 @end
