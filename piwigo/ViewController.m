@@ -32,8 +32,8 @@
 		
 		self.tableView = [UITableView new];
 		self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.tableView.delegate = self;
-		self.tableView.dataSource = self;
+//		self.tableView.delegate = self;
+//		self.tableView.dataSource = self;
 		[self.tableView registerClass:[DirectoryImageTableViewCell class] forCellReuseIdentifier:@"cell"];
 		[self.view addSubview:self.tableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
@@ -52,10 +52,10 @@
 {
 	[super viewWillAppear:animated];
 	
-	self.navigationController.navigationBarHidden = NO;
+//	self.navigationController.navigationBarHidden = NO;
 	
-//	LoginViewController *login = [LoginViewController new];
-//	[self.navigationController pushViewController:login animated:YES];
+	LoginViewController *login = [LoginViewController new];
+	[self.navigationController pushViewController:login animated:YES];
 }
 
 -(void)parseJSON:(NSDictionary*)json

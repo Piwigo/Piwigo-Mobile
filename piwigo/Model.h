@@ -14,4 +14,6 @@
 +(Model*)sharedInstance;
 -(void)saveToDisk;
 
+@property (nonatomic, strong) NSString *serverName;
+
 @end

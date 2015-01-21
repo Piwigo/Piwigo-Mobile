@@ -7,6 +7,7 @@
 //
 
 #import "NetworkHandler.h"
+#import "Model.h"
 
 NSString * const kBaseUrlPath = @"http://pwg.bakercrew.com/piwigo/ws.php?";
 
@@ -22,30 +23,6 @@ NSString * const kBaseUrlPath = @"http://pwg.bakercrew.com/piwigo/ws.php?";
 @end
 
 @implementation NetworkHandler
-
-//+(void)getPost:(NSString*)path success:(SuccessBlock)success
-//{
-//	NSString *string = [NSString stringWithFormat:@"%@format=json&method=pwg.categories.getImages", kBaseUrlPath];
-//	NSURL *url = [NSURL URLWithString:string];
-//	NSURLRequest *request = [NSURLRequest requestWithURL:url];
-//	
-//	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-//	
-//	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-//	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-//	[jsonAcceptableContentTypes addObject:@"text/plain"];
-//	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-//	operation.responseSerializer = jsonResponseSerializer;
-//	
-//	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-//		
-//		success(responseObject);
-//	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//		
-//	}];
-//	
-//	[operation start];
-//}
 
 +(AFHTTPRequestOperation*)getPost:(NSString*)path success:(SuccessBlock)success
 {
@@ -66,6 +43,40 @@ NSString * const kBaseUrlPath = @"http://pwg.bakercrew.com/piwigo/ws.php?";
 					 
 					 NSLog(@"getPost error: %@", error);
 				 }];
+}
+
+// path: format={param1}
+// URLParams: {@"param1" : @"hello" }
++(AFHTTPRequestOperation*)post:(NSString*)path
+				 URLParameters:(NSDictionary*)urlParams
+					parameters:(NSDictionary*)parameters
+					   success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+					   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+		
+	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
+	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
+	[jsonAcceptableContentTypes addObject:@"text/plain"];
+	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
+	manager.responseSerializer = jsonResponseSerializer;
+	
+	return [manager POST:[NetworkHandler getURLWithPath:path andURLParams:urlParams]
+			  parameters:parameters
+				 success:success
+				 failure:fail];
+}
+
++(NSString*)getURLWithPath:(NSString*)path andURLParams:(NSDictionary*)params
+{
+	NSString *url = [NSString stringWithFormat:@"http://%@/ws.php?%@", [Model sharedInstance].serverName, path];
+
+	for(NSString *parameter in params)
+	{
+		url = [url stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", parameter] withString:[params objectForKey:parameter]];
+	}
+	
+	return url;
 }
 
 @end

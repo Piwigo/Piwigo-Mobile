@@ -44,7 +44,7 @@
 	{
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:codedData];
 		Model *modelData = [unarchiver decodeObjectForKey:@"Model"];
-//		self.onLocalPuzzleId = modelData.onLocalPuzzleId;
+		self.serverName = modelData.serverName;
 		
 	}
 }
@@ -61,7 +61,7 @@
 
 - (void) encodeWithCoder:(NSCoder *)encoder {
 	NSMutableArray *saveObject = [[NSMutableArray alloc] init];
-//	[saveObject addObject:@(self.onLocalPuzzleId)];
+	[saveObject addObject:self.serverName];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -69,7 +69,7 @@
 - (id)initWithCoder:(NSCoder *)decoder {
 	self = [super init];
 	NSArray *savedData = [decoder decodeObjectForKey:@"Model"];
-//	self.onLocalPuzzleId = [[savedData objectAtIndex:0] integerValue];
+	self.serverName = [savedData objectAtIndex:0];
 	
 	return self;
 }

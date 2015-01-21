@@ -11,6 +11,7 @@
 @interface UIColor (AppSpecificColors)
 
 +(UIColor*)piwigoOrange;
++(UIColor*)piwigoOrangeSelected;
 +(UIColor*)piwigoGray;
 +(UIColor*)piwigoGrayLight;
 +(UIColor*)piwigoBrown;

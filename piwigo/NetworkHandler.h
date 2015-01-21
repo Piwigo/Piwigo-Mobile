@@ -20,4 +20,10 @@ FOUNDATION_EXPORT NSString * const kBaseUrlPath;
 
 +(AFHTTPRequestOperation*)getPost:(NSString*)path success:(SuccessBlock)success;
 
++(AFHTTPRequestOperation*)post:(NSString*)path
+				 URLParameters:(NSDictionary*)urlParams
+					parameters:(NSDictionary*)parameters
+					   success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+					   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
 @end

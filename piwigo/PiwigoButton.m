@@ -8,12 +8,6 @@
 
 #import "PiwigoButton.h"
 
-@interface PiwigoButton()
-
-//@property (nonatomic, strong) UILabel *buttonLabel;
-
-@end
-
 @implementation PiwigoButton
 
 -(instancetype)init
@@ -26,21 +20,18 @@
 		
 		self.titleLabel.font = [UIFont piwigoFontButton];
 		[self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-		
-//		self.buttonLabel = [UILabel new];
-//		self.buttonLabel.translatesAutoresizingMaskIntoConstraints = NO;
-//		self.buttonLabel.font = [UIFont piwigoFontButton];
-//		self.buttonLabel.textColor = [UIColor whiteColor];
-//		[self addSubview:self.buttonLabel];
-		
-//		[self setupAutoLayout];
 	}
 	return self;
 }
 
-//-(void)setupAutoLayout
-//{
-//	[self addConstraints:[NSLayoutConstraint constraintViewToCenter:self.buttonLabel]];
-//}
+-(void)setHighlighted:(BOOL)highlighted
+{
+	[super setHighlighted:highlighted];
+	if(highlighted) {
+		self.backgroundColor = [UIColor piwigoOrangeSelected];
+	} else {
+		self.backgroundColor = [UIColor piwigoOrange];
+	}
+}
 
 @end

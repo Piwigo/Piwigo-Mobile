@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
+#import "Model.h"
+#import "KeychainAccess.h"
 
 @interface AppDelegate ()
 
