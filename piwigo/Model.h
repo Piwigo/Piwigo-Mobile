@@ -15,5 +15,6 @@
 -(void)saveToDisk;
 
 @property (nonatomic, strong) NSString *serverName;
+@property (nonatomic, strong) NSString *pwgToken;
 
 @end

@@ -8,13 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void(^NetworkBlock)(BOOL okay);
 typedef void(^SuccessBlock)(id responseObject);
-typedef void(^FailureBlock)(id responseObject, NSError *error);
-typedef void(^CompletionBlock)(id responseObject);
-typedef void(^CompletionBoolBlock)(BOOL response);
 
-FOUNDATION_EXPORT NSString * const kBaseUrlPath;
+FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
+FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
+
+
 
 @interface NetworkHandler : NSObject
 

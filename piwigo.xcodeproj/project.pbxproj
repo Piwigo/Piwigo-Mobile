@@ -42,7 +42,7 @@
 		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
 		D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A921A6F4C43001763BC /* KeychainAccess.m */; };
 		D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */; };
-		D87C5A9A1A6F4FB0001763BC /* PiwigoNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* PiwigoNetwork.m */; };
+		D87C5A9A1A6F4FB0001763BC /* PiwigoSession.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* PiwigoSession.m */; };
 		D8C124971A6EE9A00060946C /* DirectoryImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C124961A6EE9A00060946C /* DirectoryImageTableViewCell.m */; };
 		D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8C7BE021A6A525F007C8673 /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -132,8 +132,8 @@
 		D87C5A921A6F4C43001763BC /* KeychainAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainAccess.m; sourceTree = "<group>"; };
 		D87C5A931A6F4C43001763BC /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
-		D87C5A981A6F4FB0001763BC /* PiwigoNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoNetwork.h; sourceTree = "<group>"; };
-		D87C5A991A6F4FB0001763BC /* PiwigoNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoNetwork.m; sourceTree = "<group>"; };
+		D87C5A981A6F4FB0001763BC /* PiwigoSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoSession.h; sourceTree = "<group>"; };
+		D87C5A991A6F4FB0001763BC /* PiwigoSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoSession.m; sourceTree = "<group>"; };
 		D8C124951A6EE9A00060946C /* DirectoryImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryImageTableViewCell.h; sourceTree = "<group>"; };
 		D8C124961A6EE9A00060946C /* DirectoryImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryImageTableViewCell.m; sourceTree = "<group>"; };
 		D8C7BE021A6A525F007C8673 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -298,6 +298,8 @@
 				D863EECC1A6A495700C0A6E9 /* LoginViewController.m */,
 				D8C124951A6EE9A00060946C /* DirectoryImageTableViewCell.h */,
 				D8C124961A6EE9A00060946C /* DirectoryImageTableViewCell.m */,
+				D87C5A981A6F4FB0001763BC /* PiwigoSession.h */,
+				D87C5A991A6F4FB0001763BC /* PiwigoSession.m */,
 				D863EEBF1A6A441400C0A6E9 /* UIComponents */,
 				D87C5A901A6F4C2E001763BC /* Keychain */,
 			);
@@ -338,8 +340,6 @@
 		D87C5A971A6F4F93001763BC /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				D87C5A981A6F4FB0001763BC /* PiwigoNetwork.h */,
-				D87C5A991A6F4FB0001763BC /* PiwigoNetwork.m */,
 				D82B8CE41A678ED2000E47CA /* NetworkHandler.h */,
 				D82B8CE51A678ED2000E47CA /* NetworkHandler.m */,
 			);
@@ -462,7 +462,7 @@
 				D82B8D1E1A68783B000E47CA /* AFHTTPRequestOperationManager.m in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
-				D87C5A9A1A6F4FB0001763BC /* PiwigoNetwork.m in Sources */,
+				D87C5A9A1A6F4FB0001763BC /* PiwigoSession.m in Sources */,
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,

@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "PiwigoNetwork.h"
+#import "PiwigoSession.h"
+#import "KeychainAccess.h"
 #import "Model.h"
 
-@implementation PiwigoNetwork
+@implementation PiwigoSession
 
 +(AFHTTPRequestOperation*)performLoginWithServer:(NSString*)server
 										 andUser:(NSString*)user
@@ -19,16 +20,16 @@
 	[Model sharedInstance].serverName = server;
 	[[Model sharedInstance] saveToDisk];
 	
-	return [self post:@"format=json"
+	return [self post:kPiwigoSessionLogin
 		URLParameters:nil
-		   parameters:@{@"method" : @"pwg.session.login",
-						@"username" : user,
+		   parameters:@{@"username" : user,
 						@"password" : password}
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  
 				  if(completion) {
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"] && [[responseObject objectForKey:@"result"] boolValue])
 					  {
+						  [KeychainAccess storeLoginInKeychainForUser:user andPassword:password];
 						  completion(YES, [responseObject objectForKey:@"result"]);
 					  }
 					  else
@@ -40,6 +41,32 @@
 				  
 				  if(completion) {
 					  completion(NO, error);
+				  }
+			  }];
+}
+
++(AFHTTPRequestOperation*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
+{
+	return [self post:kPiwigoSessionGetStatus
+		URLParameters:nil
+		   parameters:nil
+			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				  
+				  if(completion) {
+					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+					  {
+						  [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result" ] objectForKey:@"pwg_token"];
+						  completion([responseObject objectForKey:@"result"]);
+					  }
+					  else
+					  {
+						  completion(nil);
+					  }
+				  }
+			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+				  
+				  if(completion) {
+					  completion(nil);
 				  }
 			  }];
 }

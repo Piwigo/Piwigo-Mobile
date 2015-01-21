@@ -11,7 +11,7 @@
 #import "PiwigoTextField.h"
 #import "KeychainAccess.h"
 #import "Model.h"
-#import "PiwigoNetwork.h"
+#import "PiwigoSession.h"
 
 @interface LoginViewController ()
 
@@ -137,19 +137,33 @@
 
 -(void)performLogin
 {
-	[PiwigoNetwork performLoginWithServer:self.serverTextField.text
+	[PiwigoSession performLoginWithServer:self.serverTextField.text
 								  andUser:self.userTextField.text
 							  andPassword:self.passwordTextField.text
 							 onCompletion:^(BOOL result, id response) {
 								 if(result)
 								 {
-									 [KeychainAccess storeLoginInKeychainForUser:self.userTextField.text andPassword:self.passwordTextField.text];
+									 [self getSessionStatus];
 								 }
 								 else
 								 {	// @TODO: error
 									 
 								 }
 							 }];
+}
+
+-(void)getSessionStatus
+{
+	[PiwigoSession getStatusOnCompletion:^(NSDictionary *responseObject) {
+		if(responseObject)
+		{
+			
+		}
+		else
+		{	// not logged in...
+			
+		}
+	}];
 }
 
 @end

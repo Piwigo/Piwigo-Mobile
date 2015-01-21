@@ -7,12 +7,14 @@
 //
 
 #import "NetworkHandler.h"
+#import <Foundation/Foundation.h>
 
-@interface PiwigoNetwork : NetworkHandler
+@interface PiwigoSession : NetworkHandler
 
 +(AFHTTPRequestOperation*)performLoginWithServer:(NSString*)server
 										 andUser:(NSString*)user
 									 andPassword:(NSString*)password
 									onCompletion:(void (^)(BOOL result, id response))completion;
++(AFHTTPRequestOperation*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion;
 
 @end

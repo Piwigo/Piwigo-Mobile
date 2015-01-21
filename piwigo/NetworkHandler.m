@@ -9,7 +9,8 @@
 #import "NetworkHandler.h"
 #import "Model.h"
 
-NSString * const kBaseUrlPath = @"http://pwg.bakercrew.com/piwigo/ws.php?";
+NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
+NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 
 @interface NetworkHandler()
 
@@ -18,7 +19,6 @@ NSString * const kBaseUrlPath = @"http://pwg.bakercrew.com/piwigo/ws.php?";
 @property (nonatomic, retain) NSDictionary *dictionary;
 @property (nonatomic, assign) SEL action;
 @property (nonatomic, copy) SuccessBlock block;
-@property (nonatomic, copy) FailureBlock failBlock;
 
 @end
 
@@ -35,7 +35,7 @@ NSString * const kBaseUrlPath = @"http://pwg.bakercrew.com/piwigo/ws.php?";
 	
 	manager.responseSerializer = jsonResponseSerializer;
 	
-	return [manager POST:[NSString stringWithFormat:@"%@format=json&method=pwg.categories.getImages&cat_id=5&per_page=100&page=10", kBaseUrlPath]
+	return [manager POST:[NSString stringWithFormat:@"%@format=json&method=pwg.categories.getImages&cat_id=5&per_page=100&page=10", @"http://pwg.bakercrew.com/piwigo/ws.php?"]
 			  parameters:nil
 				 success:^(AFHTTPRequestOperation *operation, id responseObject) {
 					 success(responseObject);
