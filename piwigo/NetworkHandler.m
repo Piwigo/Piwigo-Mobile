@@ -58,12 +58,13 @@ NSString * const kBaseUrlPath = @"http://pwg.bakercrew.com/piwigo/ws.php?";
 	
 	manager.responseSerializer = jsonResponseSerializer;
 	
-	return [manager POST:[NSString stringWithFormat:@"%@format=json&method=pwg.categories.getImages", kBaseUrlPath]
+	return [manager POST:[NSString stringWithFormat:@"%@format=json&method=pwg.categories.getImages&cat_id=5&per_page=100&page=10", kBaseUrlPath]
 			  parameters:nil
 				 success:^(AFHTTPRequestOperation *operation, id responseObject) {
 					 success(responseObject);
 				 } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					 //
+					 
+					 NSLog(@"getPost error: %@", error);
 				 }];
 }
 

@@ -11,6 +11,7 @@
 #import "NetworkHandler.h"
 #import "ImageDetailViewController.h"
 #import "LoginViewController.h"
+#import "DirectoryImageTableViewCell.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -33,6 +34,7 @@
 		self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
+		[self.tableView registerClass:[DirectoryImageTableViewCell class] forCellReuseIdentifier:@"cell"];
 		[self.view addSubview:self.tableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
 		
@@ -50,10 +52,10 @@
 {
 	[super viewWillAppear:animated];
 	
-//	self.navigationController.navigationBarHidden = NO;
+	self.navigationController.navigationBarHidden = NO;
 	
-	LoginViewController *login = [LoginViewController new];
-	[self.navigationController pushViewController:login animated:YES];
+//	LoginViewController *login = [LoginViewController new];
+//	[self.navigationController pushViewController:login animated:YES];
 }
 
 -(void)parseJSON:(NSDictionary*)json
@@ -101,13 +103,10 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-	if(!cell) {
-		cell = [UITableViewCell new];
-	}
+	DirectoryImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
 	PiwigoImageData *imageData = self.namesArray[indexPath.row];
-	cell.textLabel.text = [NSString stringWithFormat:@"%@\t(%@)", imageData.file, [imageData.categoryIds firstObject]];
+	cell.imageName.text = [NSString stringWithFormat:@"%@\t(%@)", imageData.file, [imageData.categoryIds firstObject]];
 	
 	NSURL *url = [NSURL URLWithString:imageData.squarePath];
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -135,9 +134,9 @@
 	
 }
 
--(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	[cell.imageView cancelImageRequestOperation];
-}
+//-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//	[cell.imageView cancelImageRequestOperation];
+//}
 
 @end
