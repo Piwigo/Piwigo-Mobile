@@ -26,17 +26,17 @@
 		self.tabBar.barTintColor = [UIColor piwigoOrange];
 		
 		AlbumsViewController *albums = [AlbumsViewController new];
-		albums.title = @"Albums";
+		albums.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 		albums.tabBarItem.image = [UIImage imageNamed:@"album"];
 		albums.tabBarItem.selectedImage = [UIImage imageNamed:@"albumSelected"];
 		
 		UploadViewController *upload = [UploadViewController new];
-		upload.title = @"Upload";
+		upload.title = NSLocalizedString(@"tabBar_upload", @"Upload");
 		upload.tabBarItem.image = [UIImage imageNamed:@"cloud"];
 		upload.tabBarItem.selectedImage = [UIImage imageNamed:@"cloudSelected"];
 		
 		SettingsViewController *settings = [SettingsViewController new];
-		settings.title = @"Settings";
+		settings.title = NSLocalizedString(@"tabBar_preferences", @"Preferences");
 		settings.tabBarItem.image = [UIImage imageNamed:@"preferences"];
 		settings.tabBarItem.selectedImage = [UIImage imageNamed:@"preferencesSelected"];
 		

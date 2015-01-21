@@ -64,7 +64,11 @@ NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getS
 	return [manager POST:[NetworkHandler getURLWithPath:path andURLParams:urlParams]
 			  parameters:parameters
 				 success:success
-				 failure:fail];
+				 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+					 if(fail) {
+						 fail(operation, error);
+					 }
+				 }];
 }
 
 +(NSString*)getURLWithPath:(NSString*)path andURLParams:(NSDictionary*)params
@@ -77,6 +81,16 @@ NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getS
 	}
 	
 	return url;
+}
+
++(void)showConnectionError:(NSError*)error
+{
+	UIAlertView *connectionError = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+															  message:[NSString stringWithFormat:@"%@", [error.userInfo objectForKey:@"NSLocalizedDescription"]]
+															 delegate:nil
+													cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Okay")
+													otherButtonTitles:nil];
+	[connectionError show];
 }
 
 @end

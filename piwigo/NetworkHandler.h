@@ -25,4 +25,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
 					   success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
 					   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
+
++(void)showConnectionError:(NSError*)error;
+
 @end

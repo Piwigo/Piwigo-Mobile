@@ -11,3 +11,16 @@
 "login_userPlaceholder" = "Username";
 "login_passwordPlaceholder" = "Password";
 
+"tabBar_albums" = "Albums";
+"tabBar_upload" = "Upload";
+"tabBar_preferences" = "Preferences";
+
+"alertCancelButton" = "Okay";
+
+"loginError_title" = "Login Fail";
+"loginError_message" = "The username and password don't match on the given server";
+
+"sessionStatusError_title" = "Authentication Fail";
+"sessionStatusError_message" = "Failed to authenticate with server.\nTry logging in again.";
+
+"internetErrorGeneral_title" = "Connection Error";

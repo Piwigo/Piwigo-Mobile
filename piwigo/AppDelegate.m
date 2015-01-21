@@ -25,15 +25,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
 	
-//	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-//	[self.window makeKeyAndVisible];
-//	ViewController *startViewController = [[ViewController alloc] init];
-//	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:startViewController];
-//	[nav setNavigationBarHidden:YES];
-//	
-//	self.window.rootViewController = nav;
-//	[self.window makeKeyAndVisible];
-	
 	NSString *server = [Model sharedInstance].serverName;
 	NSString *user = [KeychainAccess getLoginUser];
 	NSString *password = [KeychainAccess getLoginPassword];
@@ -51,7 +42,7 @@
 									 }
 									 else
 									 {
-										 // @TODO: notify loginVC that login failed.
+										 [self.loginVC showLoginFail];
 									 }
 								 }];
 	}

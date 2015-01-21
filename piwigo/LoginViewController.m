@@ -12,6 +12,7 @@
 #import "KeychainAccess.h"
 #import "Model.h"
 #import "PiwigoSession.h"
+#import "AppDelegate.h"
 
 @interface LoginViewController ()
 
@@ -146,8 +147,8 @@
 									 [self getSessionStatus];
 								 }
 								 else
-								 {	// @TODO: error
-									 
+								 {
+									 [self showLoginFail];
 								 }
 							 }];
 }
@@ -157,13 +158,29 @@
 	[PiwigoSession getStatusOnCompletion:^(NSDictionary *responseObject) {
 		if(responseObject)
 		{
-			
+			AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+			[appDelegate loadNavigation];
 		}
 		else
-		{	// not logged in...
-			
+		{
+			UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
+																message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
+															   delegate:nil
+													  cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Okay")
+													  otherButtonTitles:nil];
+			[failAlert show];
 		}
 	}];
+}
+
+-(void)showLoginFail
+{
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"loginError_title", @"Login Fail")
+													message:NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")
+												   delegate:nil
+										  cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Okay")
+										  otherButtonTitles:nil];
+	[alert show];
 }
 
 @end

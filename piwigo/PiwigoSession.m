@@ -40,7 +40,7 @@
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
 				  if(completion) {
-					  completion(NO, error);
+						[PiwigoSession showConnectionError:error];
 				  }
 			  }];
 }
@@ -66,7 +66,7 @@
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
 				  if(completion) {
-					  completion(nil);
+					  [PiwigoSession showConnectionError:error];
 				  }
 			  }];
 }
