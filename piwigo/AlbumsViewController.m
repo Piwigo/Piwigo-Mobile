@@ -1,27 +1,26 @@
 //
-//  ViewController.m
+//  AlbumsViewController.m
 //  piwigo
 //
-//  Created by Spencer Baker on 1/14/15.
+//  Created by Spencer Baker on 1/20/15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "AlbumsViewController.h"
+
 #import "PiwigoImageData.h"
+#import "DirectoryImageTableViewCell.h"
 #import "NetworkHandler.h"
 #import "ImageDetailViewController.h"
-#import "LoginViewController.h"
-#import "DirectoryImageTableViewCell.h"
 
-@interface ViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
-
 @property (nonatomic, strong) NSArray *namesArray;
 
 @end
 
-@implementation ViewController
+@implementation AlbumsViewController
 
 -(instancetype)init
 {
@@ -43,19 +42,8 @@
 				[self parseJSON:responseObject];
 			}
 		}];
-		
 	}
 	return self;
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear:animated];
-	
-//	self.navigationController.navigationBarHidden = NO;
-	
-//	LoginViewController *login = [LoginViewController new];
-//	[self.navigationController pushViewController:login animated:YES];
 }
 
 -(void)parseJSON:(NSDictionary*)json
@@ -133,10 +121,5 @@
 	[self.navigationController pushViewController:img animated:YES];
 	
 }
-
-//-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//	[cell.imageView cancelImageRequestOperation];
-//}
 
 @end

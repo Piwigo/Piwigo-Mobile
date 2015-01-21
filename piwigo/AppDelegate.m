@@ -7,11 +7,15 @@
 //
 
 #import "AppDelegate.h"
-#import "ViewController.h"
+#import "LoginViewController.h"
+#import "TabBarViewController.h"
+#import "PiwigoSession.h"
 #import "Model.h"
 #import "KeychainAccess.h"
 
 @interface AppDelegate ()
+
+@property (nonatomic, strong) LoginViewController *loginVC;
 
 @end
 
@@ -21,16 +25,66 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
 	
+//	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+//	[self.window makeKeyAndVisible];
+//	ViewController *startViewController = [[ViewController alloc] init];
+//	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:startViewController];
+//	[nav setNavigationBarHidden:YES];
+//	
+//	self.window.rootViewController = nav;
+//	[self.window makeKeyAndVisible];
+	
+	NSString *server = [Model sharedInstance].serverName;
+	NSString *user = [KeychainAccess getLoginUser];
+	NSString *password = [KeychainAccess getLoginPassword];
+	BOOL loggingIn = NO;
+	if(server.length > 0 && user.length > 0 && password.length > 0)
+	{
+		loggingIn = YES;
+		[PiwigoSession performLoginWithServer:server
+									  andUser:user
+								  andPassword:password
+								 onCompletion:^(BOOL result, id response) {
+									 if(result)
+									 {
+										 [self loadNavigation];
+									 }
+									 else
+									 {
+										 // @TODO: notify loginVC that login failed.
+									 }
+								 }];
+	}
+	
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
-	ViewController *startViewController = [[ViewController alloc] init];
-	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:startViewController];
-	[nav setNavigationBarHidden:YES];
-	
-	self.window.rootViewController = nav;
-	[self.window makeKeyAndVisible];
+	[self loadLoginWithLoggingIn:loggingIn];
 	
 	return YES;
+}
+
+-(void)loadNavigation
+{
+	TabBarViewController *navigation = [TabBarViewController new];
+	self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
+	[self.loginVC removeFromParentViewController];
+	self.loginVC = nil;
+}
+
+-(void)loadLoginWithLoggingIn:(BOOL)loggingIn;
+{
+//	self.loginVC.loggingIn = loggingIn;
+	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.loginVC];
+	[nav setNavigationBarHidden:YES];
+	self.window.rootViewController = nav;
+}
+
+-(LoginViewController*)loginVC
+{
+	if(_loginVC) return _loginVC;
+	
+	_loginVC = [LoginViewController new];
+	return _loginVC;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

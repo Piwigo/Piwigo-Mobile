@@ -43,6 +43,10 @@
 		D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A921A6F4C43001763BC /* KeychainAccess.m */; };
 		D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */; };
 		D87C5A9A1A6F4FB0001763BC /* PiwigoSession.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* PiwigoSession.m */; };
+		D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */; };
+		D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
+		D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */; };
+		D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */; };
 		D8C124971A6EE9A00060946C /* DirectoryImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C124961A6EE9A00060946C /* DirectoryImageTableViewCell.m */; };
 		D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8C7BE021A6A525F007C8673 /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -134,6 +138,14 @@
 		D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		D87C5A981A6F4FB0001763BC /* PiwigoSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoSession.h; sourceTree = "<group>"; };
 		D87C5A991A6F4FB0001763BC /* PiwigoSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoSession.m; sourceTree = "<group>"; };
+		D8BDCB5C1A6F685E00D106A8 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
+		D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
+		D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadViewController.h; sourceTree = "<group>"; };
+		D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadViewController.m; sourceTree = "<group>"; };
+		D8BDCB681A6F6C2D00D106A8 /* AlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsViewController.h; sourceTree = "<group>"; };
+		D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsViewController.m; sourceTree = "<group>"; };
 		D8C124951A6EE9A00060946C /* DirectoryImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryImageTableViewCell.h; sourceTree = "<group>"; };
 		D8C124961A6EE9A00060946C /* DirectoryImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryImageTableViewCell.m; sourceTree = "<group>"; };
 		D8C7BE021A6A525F007C8673 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -179,6 +191,10 @@
 			isa = PBXGroup;
 			children = (
 				D863EEBE1A6A440D00C0A6E9 /* Login */,
+				D8BDCB5B1A6F682900D106A8 /* TabBar */,
+				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
+				D8BDCB601A6F6B5000D106A8 /* Upload */,
+				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D82B8CC51A67820A000E47CA /* ViewController.h */,
 				D82B8CC61A67820A000E47CA /* ViewController.m */,
 				D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */,
@@ -346,6 +362,42 @@
 			name = Network;
 			sourceTree = "<group>";
 		};
+		D8BDCB5B1A6F682900D106A8 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				D8BDCB5C1A6F685E00D106A8 /* TabBarViewController.h */,
+				D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */,
+			);
+			name = TabBar;
+			sourceTree = "<group>";
+		};
+		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
+			isa = PBXGroup;
+			children = (
+				D8BDCB681A6F6C2D00D106A8 /* AlbumsViewController.h */,
+				D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */,
+			);
+			name = Albums;
+			sourceTree = "<group>";
+		};
+		D8BDCB601A6F6B5000D106A8 /* Upload */ = {
+			isa = PBXGroup;
+			children = (
+				D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */,
+				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
+			);
+			name = Upload;
+			sourceTree = "<group>";
+		};
+		D8BDCB611A6F6B5400D106A8 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */,
+				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -450,12 +502,14 @@
 				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
 				D82B8CC71A67820A000E47CA /* ViewController.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
+				D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */,
 				D82B8D031A687831000E47CA /* UIAlertView+AFNetworking.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				D82B8D241A68783B000E47CA /* AFURLResponseSerialization.m in Sources */,
 				D8C124971A6EE9A00060946C /* DirectoryImageTableViewCell.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D82B8D221A68783B000E47CA /* AFURLConnectionOperation.m in Sources */,
+				D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D82B8D061A687831000E47CA /* UIProgressView+AFNetworking.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
@@ -468,6 +522,7 @@
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
 				D82B8CC11A67820A000E47CA /* main.m in Sources */,
 				D82B8D211A68783B000E47CA /* AFSecurityPolicy.m in Sources */,
+				D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */,
 				D82B8D071A687831000E47CA /* UIRefreshControl+AFNetworking.m in Sources */,
 				D82B8D041A687831000E47CA /* UIButton+AFNetworking.m in Sources */,
 				D82B8D231A68783B000E47CA /* AFURLRequestSerialization.m in Sources */,
@@ -477,6 +532,7 @@
 				D82B8D021A687831000E47CA /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				D82B8D1D1A68783B000E47CA /* AFHTTPRequestOperation.m in Sources */,
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
+				D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */,
 				D82B8D051A687831000E47CA /* UIImageView+AFNetworking.m in Sources */,
 				D82B8D1F1A68783B000E47CA /* AFHTTPSessionManager.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
