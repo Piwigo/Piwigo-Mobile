@@ -181,6 +181,10 @@
     self.af_imageRequestOperation = nil;
 }
 
+-(void)setDownloadProgressBlock:(void (^)(NSUInteger bytesRead, long long totalBytesRead,   long long totalBytesExpectedToRead))block{
+	[self.af_imageRequestOperation setDownloadProgressBlock:block];
+}
+
 @end
 
 #pragma mark -

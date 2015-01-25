@@ -12,6 +12,7 @@
 @interface ImageDetailViewController ()
 
 @property (nonatomic, strong) UIImageView *image;
+@property (nonatomic, strong) UIProgressView *progressBar;
 
 @end
 
@@ -30,6 +31,14 @@
 		[self.view addSubview:self.image];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.image]];
 		
+		self.progressBar = [UIProgressView new];
+		self.progressBar.translatesAutoresizingMaskIntoConstraints = NO;
+		self.progressBar.hidden = YES;
+		self.progressBar.tintColor = [UIColor piwigoOrange];
+		[self.view addSubview:self.progressBar];
+		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
+		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.progressBar amount:64]];
+		[self.progressBar addConstraint:[NSLayoutConstraint constrainViewToHeight:self.progressBar height:10]];
 		
 	}
 	return self;
@@ -47,6 +56,16 @@
 							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 								   
 							   }];
+	
+	[self.image setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+		weakSelf.progressBar.hidden = NO;
+		CGFloat percent = (CGFloat)totalBytesRead / totalBytesExpectedToRead;
+		if(percent == 1) {
+			weakSelf.progressBar.hidden = YES;
+		} else {
+			[weakSelf.progressBar setProgress:percent animated:YES];
+		}
+	}];
 }
 
 @end
