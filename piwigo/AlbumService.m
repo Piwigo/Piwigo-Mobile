@@ -100,6 +100,7 @@
 		imgData.fullResPath = [image objectForKey:@"element_url"];
 		
 		NSDictionary *imageSizes = [image objectForKey:@"derivatives"];
+		imgData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
 		imgData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
 		imgData.mediumPath = [[imageSizes objectForKey:@"medium"] objectForKey:@"url"];
 		

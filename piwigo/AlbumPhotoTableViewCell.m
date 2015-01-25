@@ -48,7 +48,7 @@
 {
 	self.imageName.text = imageData.name;
 	__weak typeof(self) weakSelf = self;
-	[self.thumbnail setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.squarePath]]
+	[self.thumbnail setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.thumbPath]]
 						  placeholderImage:nil
 								   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 									   weakSelf.thumbnail.image = image;
