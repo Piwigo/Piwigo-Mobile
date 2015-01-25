@@ -77,9 +77,11 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	ImageDetailViewController *img = [ImageDetailViewController new];
-	img.imageData = self.photos[indexPath.row];
-	[self.navigationController pushViewController:img animated:YES];
+	AlbumPhotoTableViewCell *cell = (AlbumPhotoTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
+	
+	ImageDetailViewController *imageDetail = [ImageDetailViewController new];
+	[imageDetail setupWithImageData:[self.photos objectAtIndex:indexPath.row] andPlaceHolderImage:cell.thumbnail.image];
+	[self.navigationController pushViewController:imageDetail animated:YES];
 	
 }
 

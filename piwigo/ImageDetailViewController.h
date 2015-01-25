@@ -6,12 +6,12 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "ViewController.h"
+#import <UIKit/UIKit.h>
 
 @class PiwigoImageData;
 
 @interface ImageDetailViewController : UIViewController
 
-@property (nonatomic, strong) PiwigoImageData *imageData;
+-(void)setupWithImageData:(PiwigoImageData*)imageData andPlaceHolderImage:(UIImage*)placeHolder;
 
 @end

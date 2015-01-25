@@ -35,15 +35,13 @@
 	return self;
 }
 
--(void)setImageData:(PiwigoImageData*)imageData
+-(void)setupWithImageData:(PiwigoImageData*)imageData andPlaceHolderImage:(UIImage*)placeHolder
 {
-	_imageData = imageData;
-	
 	self.title = imageData.name;
 	
 	__weak typeof(self) weakSelf = self;
 	[self.image setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
-					  placeholderImage:nil
+					  placeholderImage:placeHolder
 							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								   weakSelf.image.image = image;
 							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {

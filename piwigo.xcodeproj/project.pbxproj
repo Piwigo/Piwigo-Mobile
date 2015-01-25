@@ -13,7 +13,6 @@
 		D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
 		D82B8CC11A67820A000E47CA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC01A67820A000E47CA /* main.m */; };
 		D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC31A67820A000E47CA /* AppDelegate.m */; };
-		D82B8CC71A67820A000E47CA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC61A67820A000E47CA /* ViewController.m */; };
 		D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D82B8CCB1A67820A000E47CA /* Images.xcassets */; };
 		D82B8CDB1A67820A000E47CA /* piwigoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CDA1A67820A000E47CA /* piwigoTests.m */; };
 		D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE51A678ED2000E47CA /* NetworkHandler.m */; };
@@ -79,8 +78,6 @@
 		D82B8CC01A67820A000E47CA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D82B8CC21A67820A000E47CA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D82B8CC31A67820A000E47CA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		D82B8CC51A67820A000E47CA /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		D82B8CC61A67820A000E47CA /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		D82B8CCB1A67820A000E47CA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D82B8CCE1A67820A000E47CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		D82B8CD41A67820A000E47CA /* piwigoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -249,8 +246,6 @@
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
-				D82B8CC51A67820A000E47CA /* ViewController.h */,
-				D82B8CC61A67820A000E47CA /* ViewController.m */,
 				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
 				D87C5A971A6F4F93001763BC /* Network */,
 				D82B8CCB1A67820A000E47CA /* Images.xcassets */,
@@ -552,7 +547,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
-				D82B8CC71A67820A000E47CA /* ViewController.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
 				D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */,
 				D82B8D031A687831000E47CA /* UIAlertView+AFNetworking.m in Sources */,
