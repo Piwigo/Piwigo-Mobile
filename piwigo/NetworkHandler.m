@@ -11,6 +11,8 @@
 
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
+NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
+NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}";
 
 @interface NetworkHandler()
 
@@ -77,7 +79,9 @@ NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getS
 
 	for(NSString *parameter in params)
 	{
-		url = [url stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", parameter] withString:[params objectForKey:parameter]];
+		NSString *replaceMe = [NSString stringWithFormat:@"{%@}", parameter];
+		NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
+		url = [url stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
 	}
 	
 	return url;

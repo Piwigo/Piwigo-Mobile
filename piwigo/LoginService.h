@@ -1,5 +1,5 @@
 //
-//  PiwigoNetwork.h
+//  LoginService.h
 //  piwigo
 //
 //  Created by Spencer Baker on 1/20/15.
@@ -9,7 +9,7 @@
 #import "NetworkHandler.h"
 #import <Foundation/Foundation.h>
 
-@interface PiwigoSession : NetworkHandler
+@interface LoginService : NetworkHandler
 
 +(AFHTTPRequestOperation*)performLoginWithServer:(NSString*)server
 										 andUser:(NSString*)user

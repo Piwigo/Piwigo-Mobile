@@ -11,7 +11,7 @@
 #import "NetworkHandler.h"
 #import "ImageDetailViewController.h"
 #import "LoginViewController.h"
-#import "DirectoryImageTableViewCell.h"
+#import "AlbumPhotoTableViewCell.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -34,7 +34,7 @@
 		self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
-		[self.tableView registerClass:[DirectoryImageTableViewCell class] forCellReuseIdentifier:@"cell"];
+		[self.tableView registerClass:[AlbumPhotoTableViewCell class] forCellReuseIdentifier:@"cell"];
 		[self.view addSubview:self.tableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
 		
@@ -66,7 +66,7 @@
 	for(NSDictionary *image in imagesInfo)
 	{
 		PiwigoImageData *imgData = [PiwigoImageData new];
-		imgData.file = [image objectForKey:@"file"];
+		imgData.name = [image objectForKey:@"file"];
 		imgData.fullResPath = [image objectForKey:@"element_url"];
 		
 		NSDictionary *imageSizes = [image objectForKey:@"derivatives"];
@@ -103,10 +103,10 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	DirectoryImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+	AlbumPhotoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
 	PiwigoImageData *imageData = self.namesArray[indexPath.row];
-	cell.imageName.text = [NSString stringWithFormat:@"%@\t(%@)", imageData.file, [imageData.categoryIds firstObject]];
+	cell.imageName.text = [NSString stringWithFormat:@"%@\t(%@)", imageData.name, [imageData.categoryIds firstObject]];
 	
 	NSURL *url = [NSURL URLWithString:imageData.squarePath];
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];

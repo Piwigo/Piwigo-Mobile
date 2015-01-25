@@ -9,14 +9,14 @@
 #import "AlbumsViewController.h"
 
 #import "PiwigoImageData.h"
-#import "DirectoryImageTableViewCell.h"
-#import "NetworkHandler.h"
-#import "ImageDetailViewController.h"
+#import "AlbumTableViewCell.h"
+#import "AlbumService.h"
+#import "AlbumPhotosViewController.h"
 
 @interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSArray *namesArray;
+@property (nonatomic, strong) UITableView *albumsTableView;
+@property (nonatomic, strong) NSArray *albumsArray;
 
 @end
 
@@ -27,20 +27,23 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor whiteColor];
+		self.view.backgroundColor = [UIColor piwigoGray];
 		
-		self.tableView = [UITableView new];
-		self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.tableView.delegate = self;
-		self.tableView.dataSource = self;
-		[self.tableView registerClass:[DirectoryImageTableViewCell class] forCellReuseIdentifier:@"cell"];
-		[self.view addSubview:self.tableView];
-		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
+		self.albumsTableView = [UITableView new];
+		self.albumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
+		self.albumsTableView.delegate = self;
+		self.albumsTableView.dataSource = self;
+		[self.albumsTableView registerClass:[AlbumTableViewCell class] forCellReuseIdentifier:@"cell"];
+		[self.view addSubview:self.albumsTableView];
+		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
 		
-		[NetworkHandler getPost:nil success:^(id responseObject) {
-			if([responseObject isKindOfClass:[NSDictionary class]]) {
-				[self parseJSON:responseObject];
-			}
+		[AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+			
+			self.albumsArray = albums;
+			[self.albumsTableView reloadData];
+		} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			
+			NSLog(@"Album list err: %@", error);
 		}];
 	}
 	return self;
@@ -55,7 +58,7 @@
 	for(NSDictionary *image in imagesInfo)
 	{
 		PiwigoImageData *imgData = [PiwigoImageData new];
-		imgData.file = [image objectForKey:@"file"];
+		imgData.name = [image objectForKey:@"file"];
 		imgData.fullResPath = [image objectForKey:@"element_url"];
 		
 		NSDictionary *imageSizes = [image objectForKey:@"derivatives"];
@@ -73,8 +76,8 @@
 		
 		[namesList addObject:imgData];
 	}
-	self.namesArray = namesList;
-	[self.tableView reloadData];
+	self.albumsArray = namesList;
+	[self.albumsTableView reloadData];
 }
 
 
@@ -82,7 +85,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return self.namesArray.count;
+	return self.albumsArray.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -92,23 +95,9 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	DirectoryImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+	AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
-	PiwigoImageData *imageData = self.namesArray[indexPath.row];
-	cell.imageName.text = [NSString stringWithFormat:@"%@\t(%@)", imageData.file, [imageData.categoryIds firstObject]];
-	
-	NSURL *url = [NSURL URLWithString:imageData.squarePath];
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
-	
-	__weak UITableViewCell *weakCell = cell;
-	[cell.imageView setImageWithURLRequest:request
-						  placeholderImage:nil
-								   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-									   weakCell.imageView.image = image;
-									   [weakCell setNeedsLayout];
-								   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-									   NSLog(@"error");
-								   }];
+	[cell setupWithAlbumData:[self.albumsArray objectAtIndex:indexPath.row]];
 	
 	return cell;
 }
@@ -117,10 +106,8 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	ImageDetailViewController *img = [ImageDetailViewController new];
-	img.imageData = self.namesArray[indexPath.row];
-	[self.navigationController pushViewController:img animated:YES];
-	
+	AlbumPhotosViewController *album = [[AlbumPhotosViewController alloc] initWithAlbumData:[self.albumsArray objectAtIndex:indexPath.row]];
+	[self.navigationController pushViewController:album animated:YES];
 }
 
 @end

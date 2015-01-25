@@ -1,16 +1,16 @@
 //
-//  PiwigoNetwork.m
+//  LoginService.h
 //  piwigo
 //
 //  Created by Spencer Baker on 1/20/15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "PiwigoSession.h"
+#import "LoginService.h"
 #import "KeychainAccess.h"
 #import "Model.h"
 
-@implementation PiwigoSession
+@implementation LoginService
 
 +(AFHTTPRequestOperation*)performLoginWithServer:(NSString*)server
 										 andUser:(NSString*)user
@@ -41,7 +41,7 @@
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
 				  if(fail) {
-					  [PiwigoSession showConnectionError:error];
+					  [LoginService showConnectionError:error];
 					  fail(operation, error);
 				  }
 			  }];
@@ -69,7 +69,7 @@
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
 				  if(fail) {
-					  [PiwigoSession showConnectionError:error];
+					  [LoginService showConnectionError:error];
 					  fail(operation, error);
 				  }
 			  }];

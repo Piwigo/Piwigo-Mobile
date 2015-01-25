@@ -39,6 +39,8 @@
 {
 	_imageData = imageData;
 	
+	self.title = imageData.name;
+	
 	__weak typeof(self) weakSelf = self;
 	[self.image setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
 					  placeholderImage:nil

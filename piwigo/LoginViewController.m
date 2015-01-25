@@ -11,7 +11,7 @@
 #import "PiwigoTextField.h"
 #import "KeychainAccess.h"
 #import "Model.h"
-#import "PiwigoSession.h"
+#import "LoginService.h"
 #import "AppDelegate.h"
 
 @interface LoginViewController () <UITextFieldDelegate>
@@ -175,7 +175,7 @@
 {
 	[self showLoading];
 	
-	[PiwigoSession performLoginWithServer:self.serverTextField.text
+	[LoginService performLoginWithServer:self.serverTextField.text
 								  andUser:self.userTextField.text
 							  andPassword:self.passwordTextField.text
 							 onCompletion:^(BOOL result, id response) {
@@ -195,7 +195,7 @@
 
 -(void)getSessionStatus
 {
-	[PiwigoSession getStatusOnCompletion:^(NSDictionary *responseObject) {
+	[LoginService getStatusOnCompletion:^(NSDictionary *responseObject) {
 		[self hideLoading];
 		if(responseObject)
 		{

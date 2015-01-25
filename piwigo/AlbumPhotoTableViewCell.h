@@ -1,5 +1,5 @@
 //
-//  DirectoryImageTableViewCell.h
+//  AlbumPhotoTableViewCell.h
 //  piwigo
 //
 //  Created by Spencer Baker on 1/20/15.
@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DirectoryImageTableViewCell : UITableViewCell
+@class PiwigoImageData;
+
+@interface AlbumPhotoTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) UILabel *imageName;
 @property (nonatomic, strong) UIImageView *thumbnail;
+
+-(void)setupWithImageData:(PiwigoImageData*)imageData;
 
 @end

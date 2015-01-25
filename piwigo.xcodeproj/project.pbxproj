@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D818E9F81A74BF5100733991 /* AlbumPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9F71A74BF5100733991 /* AlbumPhotosViewController.m */; };
+		D818E9FB1A74C18500733991 /* AlbumService.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FA1A74C18500733991 /* AlbumService.m */; };
+		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
+		D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
 		D82B8CC11A67820A000E47CA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC01A67820A000E47CA /* main.m */; };
 		D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC31A67820A000E47CA /* AppDelegate.m */; };
 		D82B8CC71A67820A000E47CA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC61A67820A000E47CA /* ViewController.m */; };
@@ -42,12 +46,12 @@
 		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
 		D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A921A6F4C43001763BC /* KeychainAccess.m */; };
 		D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */; };
-		D87C5A9A1A6F4FB0001763BC /* PiwigoSession.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* PiwigoSession.m */; };
+		D87C5A9A1A6F4FB0001763BC /* LoginService.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* LoginService.m */; };
 		D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */; };
 		D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */; };
 		D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */; };
-		D8C124971A6EE9A00060946C /* DirectoryImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C124961A6EE9A00060946C /* DirectoryImageTableViewCell.m */; };
+		D8C124971A6EE9A00060946C /* AlbumPhotoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C124961A6EE9A00060946C /* AlbumPhotoTableViewCell.m */; };
 		D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8C7BE021A6A525F007C8673 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +66,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D818E9F61A74BF5100733991 /* AlbumPhotosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumPhotosViewController.h; sourceTree = "<group>"; };
+		D818E9F71A74BF5100733991 /* AlbumPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumPhotosViewController.m; sourceTree = "<group>"; };
+		D818E9F91A74C18500733991 /* AlbumService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumService.h; sourceTree = "<group>"; };
+		D818E9FA1A74C18500733991 /* AlbumService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumService.m; sourceTree = "<group>"; };
+		D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoAlbumData.h; sourceTree = "<group>"; };
+		D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoAlbumData.m; sourceTree = "<group>"; };
+		D818EA001A74C7BA00733991 /* AlbumTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumTableViewCell.h; sourceTree = "<group>"; };
+		D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumTableViewCell.m; sourceTree = "<group>"; };
 		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D82B8CBF1A67820A000E47CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D82B8CC01A67820A000E47CA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -136,8 +148,8 @@
 		D87C5A921A6F4C43001763BC /* KeychainAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainAccess.m; sourceTree = "<group>"; };
 		D87C5A931A6F4C43001763BC /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
-		D87C5A981A6F4FB0001763BC /* PiwigoSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoSession.h; sourceTree = "<group>"; };
-		D87C5A991A6F4FB0001763BC /* PiwigoSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoSession.m; sourceTree = "<group>"; };
+		D87C5A981A6F4FB0001763BC /* LoginService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginService.h; sourceTree = "<group>"; };
+		D87C5A991A6F4FB0001763BC /* LoginService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginService.m; sourceTree = "<group>"; };
 		D8BDCB5C1A6F685E00D106A8 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
 		D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
 		D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -146,8 +158,8 @@
 		D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadViewController.m; sourceTree = "<group>"; };
 		D8BDCB681A6F6C2D00D106A8 /* AlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsViewController.h; sourceTree = "<group>"; };
 		D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsViewController.m; sourceTree = "<group>"; };
-		D8C124951A6EE9A00060946C /* DirectoryImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryImageTableViewCell.h; sourceTree = "<group>"; };
-		D8C124961A6EE9A00060946C /* DirectoryImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryImageTableViewCell.m; sourceTree = "<group>"; };
+		D8C124951A6EE9A00060946C /* AlbumPhotoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumPhotoTableViewCell.h; sourceTree = "<group>"; };
+		D8C124961A6EE9A00060946C /* AlbumPhotoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumPhotoTableViewCell.m; sourceTree = "<group>"; };
 		D8C7BE021A6A525F007C8673 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -169,6 +181,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D818E9F41A74BEFF00733991 /* Album List */ = {
+			isa = PBXGroup;
+			children = (
+				D8BDCB681A6F6C2D00D106A8 /* AlbumsViewController.h */,
+				D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */,
+				D818EA001A74C7BA00733991 /* AlbumTableViewCell.h */,
+				D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */,
+			);
+			name = "Album List";
+			sourceTree = "<group>";
+		};
+		D818E9F51A74BF1100733991 /* Album Pictures */ = {
+			isa = PBXGroup;
+			children = (
+				D818E9F61A74BF5100733991 /* AlbumPhotosViewController.h */,
+				D818E9F71A74BF5100733991 /* AlbumPhotosViewController.m */,
+				D8C124951A6EE9A00060946C /* AlbumPhotoTableViewCell.h */,
+				D8C124961A6EE9A00060946C /* AlbumPhotoTableViewCell.m */,
+			);
+			name = "Album Pictures";
+			sourceTree = "<group>";
+		};
+		D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8D2E1A688512000E47CA /* PiwigoImageData.h */,
+				D82B8D2F1A688512000E47CA /* PiwigoImageData.m */,
+				D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */,
+				D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */,
+			);
+			name = "Piwigo Data Wrappers";
+			sourceTree = "<group>";
+		};
+		D818EA031A74D32100733991 /* Image Detail */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */,
+				D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */,
+			);
+			name = "Image Detail";
+			sourceTree = "<group>";
+		};
 		D82B8CB21A67820A000E47CA = {
 			isa = PBXGroup;
 			children = (
@@ -197,10 +251,7 @@
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D82B8CC51A67820A000E47CA /* ViewController.h */,
 				D82B8CC61A67820A000E47CA /* ViewController.m */,
-				D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */,
-				D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */,
-				D82B8D2E1A688512000E47CA /* PiwigoImageData.h */,
-				D82B8D2F1A688512000E47CA /* PiwigoImageData.m */,
+				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
 				D87C5A971A6F4F93001763BC /* Network */,
 				D82B8CCB1A67820A000E47CA /* Images.xcassets */,
 				D82B8CBE1A67820A000E47CA /* Supporting Files */,
@@ -312,10 +363,8 @@
 			children = (
 				D863EECB1A6A495700C0A6E9 /* LoginViewController.h */,
 				D863EECC1A6A495700C0A6E9 /* LoginViewController.m */,
-				D8C124951A6EE9A00060946C /* DirectoryImageTableViewCell.h */,
-				D8C124961A6EE9A00060946C /* DirectoryImageTableViewCell.m */,
-				D87C5A981A6F4FB0001763BC /* PiwigoSession.h */,
-				D87C5A991A6F4FB0001763BC /* PiwigoSession.m */,
+				D87C5A981A6F4FB0001763BC /* LoginService.h */,
+				D87C5A991A6F4FB0001763BC /* LoginService.m */,
 				D863EEBF1A6A441400C0A6E9 /* UIComponents */,
 				D87C5A901A6F4C2E001763BC /* Keychain */,
 			);
@@ -374,8 +423,11 @@
 		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
 			isa = PBXGroup;
 			children = (
-				D8BDCB681A6F6C2D00D106A8 /* AlbumsViewController.h */,
-				D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */,
+				D818E9F41A74BEFF00733991 /* Album List */,
+				D818E9F51A74BF1100733991 /* Album Pictures */,
+				D818E9F91A74C18500733991 /* AlbumService.h */,
+				D818E9FA1A74C18500733991 /* AlbumService.m */,
+				D818EA031A74D32100733991 /* Image Detail */,
 			);
 			name = Albums;
 			sourceTree = "<group>";
@@ -506,7 +558,7 @@
 				D82B8D031A687831000E47CA /* UIAlertView+AFNetworking.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				D82B8D241A68783B000E47CA /* AFURLResponseSerialization.m in Sources */,
-				D8C124971A6EE9A00060946C /* DirectoryImageTableViewCell.m in Sources */,
+				D8C124971A6EE9A00060946C /* AlbumPhotoTableViewCell.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D82B8D221A68783B000E47CA /* AFURLConnectionOperation.m in Sources */,
 				D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */,
@@ -516,13 +568,15 @@
 				D82B8D1E1A68783B000E47CA /* AFHTTPRequestOperationManager.m in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
-				D87C5A9A1A6F4FB0001763BC /* PiwigoSession.m in Sources */,
+				D87C5A9A1A6F4FB0001763BC /* LoginService.m in Sources */,
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
 				D82B8CC11A67820A000E47CA /* main.m in Sources */,
 				D82B8D211A68783B000E47CA /* AFSecurityPolicy.m in Sources */,
 				D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */,
+				D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */,
+				D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */,
 				D82B8D071A687831000E47CA /* UIRefreshControl+AFNetworking.m in Sources */,
 				D82B8D041A687831000E47CA /* UIButton+AFNetworking.m in Sources */,
 				D82B8D231A68783B000E47CA /* AFURLRequestSerialization.m in Sources */,
@@ -534,7 +588,9 @@
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */,
 				D82B8D051A687831000E47CA /* UIImageView+AFNetworking.m in Sources */,
+				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				D82B8D1F1A68783B000E47CA /* AFHTTPSessionManager.m in Sources */,
+				D818E9F81A74BF5100733991 /* AlbumPhotosViewController.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
 				D82B8D251A68783B000E47CA /* AFURLSessionManager.m in Sources */,
 			);

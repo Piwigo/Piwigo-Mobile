@@ -1,19 +1,20 @@
 //
-//  DirectoryImageTableViewCell.m
+//  AlbumPhotoTableViewCell.m
 //  piwigo
 //
 //  Created by Spencer Baker on 1/20/15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "DirectoryImageTableViewCell.h"
+#import "AlbumPhotoTableViewCell.h"
+#import "PiwigoImageData.h"
 
-@interface DirectoryImageTableViewCell()
+@interface AlbumPhotoTableViewCell()
 
 
 @end
 
-@implementation DirectoryImageTableViewCell
+@implementation AlbumPhotoTableViewCell
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -22,6 +23,8 @@
 	{
 		self.thumbnail = [UIImageView new];
 		self.thumbnail.translatesAutoresizingMaskIntoConstraints = NO;
+		self.thumbnail.contentMode = UIViewContentModeScaleAspectFit;
+		self.thumbnail.clipsToBounds = YES;
 		[self.contentView addSubview:self.thumbnail];
 		
 		self.imageName = [UILabel new];
@@ -39,6 +42,17 @@
 		
 	}
 	return self;
+}
+
+-(void)setupWithImageData:(PiwigoImageData*)imageData
+{
+	self.imageName.text = imageData.name;
+	__weak typeof(self) weakSelf = self;
+	[self.thumbnail setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.squarePath]]
+						  placeholderImage:nil
+								   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+									   weakSelf.thumbnail.image = image;
+								   } failure:nil];
 }
 
 -(void)prepareForReuse

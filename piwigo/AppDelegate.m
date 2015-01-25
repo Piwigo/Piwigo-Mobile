@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "LoginViewController.h"
 #import "TabBarViewController.h"
-#import "PiwigoSession.h"
+#import "LoginService.h"
 #import "Model.h"
 #import "KeychainAccess.h"
 
