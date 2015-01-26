@@ -47,20 +47,16 @@
 -(void)setupWithImageData:(PiwigoImageData*)imageData
 {
 	self.imageName.text = imageData.name;
-	__weak typeof(self) weakSelf = self;
-	[self.thumbnail setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.thumbPath]]
-						  placeholderImage:nil
-								   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-									   weakSelf.thumbnail.image = image;
-								   } failure:nil];
+	[self.thumbnail setImageWithURL:[NSURL URLWithString:imageData.thumbPath]
+				   placeholderImage:[UIImage imageNamed:@"placeholder"]];
 }
 
 -(void)prepareForReuse
 {
 	[super prepareForReuse];
 	
+	self.thumbnail.image = [UIImage imageNamed:@"placeholder"];
 	[self.thumbnail cancelImageRequestOperation];
-	self.thumbnail.image = nil;
 }
 
 @end

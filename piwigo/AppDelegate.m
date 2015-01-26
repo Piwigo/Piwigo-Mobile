@@ -12,6 +12,7 @@
 #import "LoginService.h"
 #import "Model.h"
 #import "KeychainAccess.h"
+#import "AFNetworkActivityIndicatorManager.h"
 
 @interface AppDelegate ()
 
@@ -36,6 +37,8 @@
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
 	[self loadLoginView];
+	
+	[AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
 	
 	return YES;
 }

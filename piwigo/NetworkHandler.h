@@ -17,8 +17,6 @@ FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetImages;
 
 @interface NetworkHandler : NSObject
 
-+(AFHTTPRequestOperation*)getPost:(NSString*)path success:(SuccessBlock)success;
-
 +(AFHTTPRequestOperation*)post:(NSString*)path
 				 URLParameters:(NSDictionary*)urlParams
 					parameters:(NSDictionary*)parameters

@@ -26,26 +26,6 @@ NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categorie
 
 @implementation NetworkHandler
 
-+(AFHTTPRequestOperation*)getPost:(NSString*)path success:(SuccessBlock)success
-{
-	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-	
-	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-	[jsonAcceptableContentTypes addObject:@"text/plain"];
-	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-	
-	manager.responseSerializer = jsonResponseSerializer;
-	
-	return [manager POST:[NSString stringWithFormat:@"%@format=json&method=pwg.categories.getImages&cat_id=5&per_page=100&page=10", @"http://pwg.bakercrew.com/piwigo/ws.php?"]
-			  parameters:nil
-				 success:^(AFHTTPRequestOperation *operation, id responseObject) {
-					 success(responseObject);
-				 } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					 
-					 NSLog(@"getPost error: %@", error);
-				 }];
-}
 
 // path: format={param1}
 // URLParams: {@"param1" : @"hello" }
@@ -63,7 +43,7 @@ NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categorie
 	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
 	manager.responseSerializer = jsonResponseSerializer;
 	
-	return [manager POST:[NetworkHandler getURLWithPath:path andURLParams:urlParams]
+	AFHTTPRequestOperation *operation = [manager POST:[NetworkHandler getURLWithPath:path andURLParams:urlParams]
 			  parameters:parameters
 				 success:success
 				 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -71,6 +51,10 @@ NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categorie
 						 fail(operation, error);
 					 }
 				 }];
+	
+//	[[Model sharedInstance].piwigoQueue addOperation:operation];
+
+	return operation;
 }
 
 +(NSString*)getURLWithPath:(NSString*)path andURLParams:(NSDictionary*)params

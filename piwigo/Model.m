@@ -21,7 +21,9 @@
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
 		
-		
+		instance.lastPageImageCount = 100;
+		instance.currentPage = -1;
+				
 		[instance readFromDisk];
 	});
 	return instance;

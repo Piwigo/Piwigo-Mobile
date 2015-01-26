@@ -9,6 +9,7 @@
 #import "AlbumService.h"
 #import "PiwigoAlbumData.h"
 #import "PiwigoImageData.h"
+#import "Model.h"
 
 NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
@@ -71,23 +72,30 @@ NSString * const kGetImageOrderRandom = @"random";
 
 +(AFHTTPRequestOperation*)getAlbumPhotosForAlbumId:(NSInteger)albumId
 									 photosPerPage:(NSInteger)perPage
-											onPage:(NSInteger)page
+											onPage:(NSInteger)page	// @TODO: REMOVE this
 										  forOrder:(NSString*)order
 									  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albumImages))completion
 										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
+	if([Model sharedInstance].lastPageImageCount == perPage)
+	{
+		[Model sharedInstance].currentPage++;
+	} else {
+		if(completion) {
+			completion(nil, nil);
+		}
+	}
+	
 	return [self post:kPiwigoCategoriesGetImages
 		URLParameters:@{@"albumId" : @(albumId),
 						@"perPage" : @(perPage),
-						@"page" : @(page),
+						@"page" : @([Model sharedInstance].currentPage),
 						@"order" : order}
 		   parameters:nil
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  
 				  if(completion) {
-					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-					  {
-						  // @TODO: check if there's more images from key: "paging"
+					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
 						  NSArray *albumImages = [AlbumService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
 						  completion(operation, albumImages);
 					  } else {
@@ -104,6 +112,9 @@ NSString * const kGetImageOrderRandom = @"random";
 
 +(NSArray*)parseAlbumImagesJSON:(NSDictionary*)json
 {
+	NSDictionary *paging = [json objectForKey:@"paging"];
+	[Model sharedInstance].lastPageImageCount = [[paging objectForKey:@"count"] integerValue];
+	
 	NSDictionary *imagesInfo = [json objectForKey:@"images"];
 	
 	NSMutableArray *albumImages = [NSMutableArray new];

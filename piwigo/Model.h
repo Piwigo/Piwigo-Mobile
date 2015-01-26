@@ -17,4 +17,7 @@
 @property (nonatomic, strong) NSString *serverName;
 @property (nonatomic, strong) NSString *pwgToken;
 
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) NSInteger lastPageImageCount;
+
 @end
