@@ -12,7 +12,7 @@
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
-NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}";
+NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}&per_page={perPage}&page={page}&order={order}";
 
 @interface NetworkHandler()
 

@@ -10,6 +10,14 @@
 #import "PiwigoAlbumData.h"
 #import "PiwigoImageData.h"
 
+NSString * const kGetImageOrderFileName = @"file";
+NSString * const kGetImageOrderId = @"id";
+NSString * const kGetImageOrderName = @"name";
+NSString * const kGetImageOrderRating = @"rating_score";
+NSString * const kGetImageOrderDateCreated = @"date_creation";
+NSString * const kGetImageOrderDateAdded = @"date_available";
+NSString * const kGetImageOrderRandom = @"random";
+
 @implementation AlbumService
 
 +(AFHTTPRequestOperation*)getAlbumListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
@@ -62,11 +70,17 @@
 }
 
 +(AFHTTPRequestOperation*)getAlbumPhotosForAlbumId:(NSInteger)albumId
+									 photosPerPage:(NSInteger)perPage
+											onPage:(NSInteger)page
+										  forOrder:(NSString*)order
 									  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albumImages))completion
 										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesGetImages
-		URLParameters:@{@"albumId" : @(albumId)}
+		URLParameters:@{@"albumId" : @(albumId),
+						@"perPage" : @(perPage),
+						@"page" : @(page),
+						@"order" : order}
 		   parameters:nil
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  
@@ -74,7 +88,7 @@
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
 					  {
 						  // @TODO: check if there's more images from key: "paging"
-						  NSArray *albumImages = [AlbumService parseAlbumImageJSON:[responseObject objectForKey:@"result"]];
+						  NSArray *albumImages = [AlbumService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
 						  completion(operation, albumImages);
 					  } else {
 						  completion(operation, nil);
@@ -88,7 +102,7 @@
 			  }];
 }
 
-+(NSArray*)parseAlbumImageJSON:(NSDictionary*)json
++(NSArray*)parseAlbumImagesJSON:(NSDictionary*)json
 {
 	NSDictionary *imagesInfo = [json objectForKey:@"images"];
 	

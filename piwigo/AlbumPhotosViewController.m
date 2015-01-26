@@ -33,6 +33,7 @@
 		self.title = albumData.name;
 		
 		self.photosTableView = [UITableView new];
+		self.photosTableView.backgroundColor = [UIColor clearColor];
 		self.photosTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.photosTableView.delegate = self;
 		self.photosTableView.dataSource = self;
@@ -41,6 +42,9 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.photosTableView]];
 		
 		[AlbumService getAlbumPhotosForAlbumId:albumData.albumId
+								 photosPerPage:100
+										onPage:0
+									  forOrder:kGetImageOrderFileName
 								  OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
 									  
 									  self.photos = albumImages;
@@ -83,6 +87,22 @@
 	[imageDetail setupWithImageData:[self.photos objectAtIndex:indexPath.row] andPlaceHolderImage:cell.thumbnail.image];
 	[self.navigationController pushViewController:imageDetail animated:YES];
 	
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView
+				  willDecelerate:(BOOL)decelerate
+{
+	CGPoint offset = aScrollView.contentOffset;
+	CGRect bounds = aScrollView.bounds;
+	CGSize size = aScrollView.contentSize;
+	UIEdgeInsets inset = aScrollView.contentInset;
+	float y = offset.y + bounds.size.height - inset.bottom;
+	float h = size.height;
+	
+	float reload_distance = 50;
+	if(y > h + reload_distance) {
+		NSLog(@"load more rows");
+	}
 }
 
 
