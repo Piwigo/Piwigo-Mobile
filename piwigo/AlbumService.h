@@ -22,7 +22,6 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 +(AFHTTPRequestOperation*)getAlbumPhotosForAlbumId:(NSInteger)albumId
-									 photosPerPage:(NSInteger)perPage
 											onPage:(NSInteger)page
 										  forOrder:(NSString*)order
 									  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albumImages))completion

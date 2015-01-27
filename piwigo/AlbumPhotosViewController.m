@@ -12,6 +12,7 @@
 #import "PiwigoImageData.h"
 #import "PiwigoAlbumData.h"
 #import "AlbumService.h"
+#import "Model.h"
 
 @interface AlbumPhotosViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -20,6 +21,7 @@
 @property (nonatomic, strong) NSArray *photos;
 
 @property (nonatomic, assign) BOOL isLoadingMoreImages;
+@property (nonatomic, assign) BOOL didLoadAllImages;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 @end
@@ -35,13 +37,14 @@
 		self.albumData = albumData;
 		self.title = albumData.name;
 		self.isLoadingMoreImages = NO;
+		self.didLoadAllImages = NO;
 		
 		self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
 		self.spinner.color = [UIColor piwigoGray];
 		self.spinner.frame = CGRectMake(0, 0, 320, 44);
 		
 		self.photosTableView = [UITableView new];
-		self.photosTableView.backgroundColor = [UIColor clearColor];
+		self.photosTableView.backgroundColor = [UIColor whiteColor];
 		self.photosTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.photosTableView.delegate = self;
 		self.photosTableView.dataSource = self;
@@ -56,18 +59,22 @@
 
 -(void)loadMoreImages
 {
+	if(self.didLoadAllImages || self.isLoadingMoreImages) return;
+	
 	self.isLoadingMoreImages = YES;
 	[self.spinner startAnimating];
 	self.photosTableView.tableFooterView = self.spinner;
 	
 	AFHTTPRequestOperation *request = [AlbumService getAlbumPhotosForAlbumId:self.albumData.albumId
-							 photosPerPage:100
 									onPage:0
 								  forOrder:kGetImageOrderFileName
 							  OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
 						  
 								  if(albumImages)
 								  {
+									  if(albumImages.count != [Model sharedInstance].imagesPerPage) {
+										  self.didLoadAllImages = YES;
+									  }
 									  NSMutableArray *currentImages = [[NSMutableArray alloc] initWithArray:self.photos];
 									  [currentImages addObjectsFromArray:albumImages];
 									  self.photos = currentImages;
@@ -75,6 +82,8 @@
 									  NSLog(@"Updated more images");
 									  self.spinner.color = [UIColor piwigoOrange];
 									  self.view.backgroundColor = [UIColor piwigoGray];
+								  } else {
+									  self.didLoadAllImages = YES;
 								  }
 								  self.isLoadingMoreImages = NO;
 								  self.photosTableView.tableFooterView = nil;
@@ -122,7 +131,7 @@
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.row >= [tableView numberOfRowsInSection:0] - 10 && !self.isLoadingMoreImages) {
+	if(indexPath.row >= [tableView numberOfRowsInSection:0] - 10) {
 		NSLog(@"load more rows");
 		[self loadMoreImages];
 	}
@@ -139,8 +148,7 @@
 	float h = size.height;
 	
 	float reload_distance = 50;
-	if(y > h + reload_distance && !self.isLoadingMoreImages) {
-		NSLog(@"load more rows");
+	if(y > h + reload_distance) {
 		[self loadMoreImages];
 	}
 }

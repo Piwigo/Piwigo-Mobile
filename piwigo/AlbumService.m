@@ -71,13 +71,12 @@ NSString * const kGetImageOrderRandom = @"random";
 }
 
 +(AFHTTPRequestOperation*)getAlbumPhotosForAlbumId:(NSInteger)albumId
-									 photosPerPage:(NSInteger)perPage
 											onPage:(NSInteger)page	// @TODO: REMOVE this
 										  forOrder:(NSString*)order
 									  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albumImages))completion
 										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
-	if([Model sharedInstance].lastPageImageCount == perPage)
+	if([Model sharedInstance].lastPageImageCount == [Model sharedInstance].imagesPerPage)
 	{
 		[Model sharedInstance].currentPage++;
 	} else {
@@ -88,7 +87,7 @@ NSString * const kGetImageOrderRandom = @"random";
 	
 	return [self post:kPiwigoCategoriesGetImages
 		URLParameters:@{@"albumId" : @(albumId),
-						@"perPage" : @(perPage),
+						@"perPage" : @([Model sharedInstance].imagesPerPage),
 						@"page" : @([Model sharedInstance].currentPage),
 						@"order" : order}
 		   parameters:nil
