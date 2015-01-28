@@ -111,7 +111,8 @@ NSString * const kGetImageOrderRandom = @"random";
 	for(NSDictionary *image in imagesInfo)
 	{
 		PiwigoImageData *imgData = [PiwigoImageData new];
-		imgData.name = [image objectForKey:@"file"];
+		imgData.fileName = [image objectForKey:@"file"];
+		imgData.name = [image objectForKey:@"name"];
 		imgData.fullResPath = [image objectForKey:@"element_url"];
 		
 		NSDictionary *imageSizes = [image objectForKey:@"derivatives"];

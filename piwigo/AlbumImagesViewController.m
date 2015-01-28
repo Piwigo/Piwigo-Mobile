@@ -12,6 +12,7 @@
 #import "PiwigoAlbumData.h"
 #import "PiwigoImageData.h"
 #import "Model.h"
+#import "ImageDetailViewController.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
@@ -46,6 +47,7 @@
 		self.imagesCollection.dataSource = self;
 		self.imagesCollection.delegate = self;
 		[self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+		self.imagesCollection.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 		[self.view addSubview:self.imagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 		
@@ -104,10 +106,9 @@
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
 	ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-	
 	PiwigoImageData *imageData = [self.images objectAtIndex:indexPath.row];
 	
-	[cell.cellImage setImageWithURL:[NSURL URLWithString:imageData.thumbPath] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+	[cell setupWithImageData:imageData];
 	
 	return cell;
 }
@@ -115,6 +116,22 @@
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
 	return UIEdgeInsetsMake(10, 10, 10, 10);
+}
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+	ImageDetailViewController *imageDetail = [ImageDetailViewController new];
+	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
+	[self.navigationController pushViewController:imageDetail animated:YES];
+}
+
+-(void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+{
+	if(indexPath.row >= [collectionView numberOfItemsInSection:0] - 21)
+	{
+		[self loadImageChunk];
+	}
 }
 
 @end

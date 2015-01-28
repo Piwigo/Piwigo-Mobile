@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class PiwigoImageData;
+
 @interface ImageCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) UIImageView *cellImage;
+@property (nonatomic, strong) PiwigoImageData *imageData;
+-(void)setupWithImageData:(PiwigoImageData*)imageData;
 
 @end
