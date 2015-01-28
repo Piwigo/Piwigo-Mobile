@@ -22,8 +22,6 @@
 		instance = [[self alloc] init];
 		
 		instance.imagesPerPage = 100;
-		instance.lastPageImageCount = 100;
-		instance.currentPage = -1;
 				
 		[instance readFromDisk];
 	});

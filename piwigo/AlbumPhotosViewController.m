@@ -61,6 +61,7 @@
 {
 	if(self.didLoadAllImages || self.isLoadingMoreImages) return;
 	
+	NSLog(@"load more images");
 	self.isLoadingMoreImages = YES;
 	[self.spinner startAnimating];
 	self.photosTableView.tableFooterView = self.spinner;
@@ -132,7 +133,6 @@
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	if(indexPath.row >= [tableView numberOfRowsInSection:0] - 10) {
-		NSLog(@"load more rows");
 		[self loadMoreImages];
 	}
 }

@@ -12,6 +12,7 @@
 #import "AlbumTableViewCell.h"
 #import "AlbumService.h"
 #import "AlbumPhotosViewController.h"
+#import "AlbumImagesViewController.h"
 
 @interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -106,7 +107,8 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	AlbumPhotosViewController *album = [[AlbumPhotosViewController alloc] initWithAlbumData:[self.albumsArray objectAtIndex:indexPath.row]];
+//	AlbumPhotosViewController *album = [[AlbumPhotosViewController alloc] initWithAlbumData:[self.albumsArray objectAtIndex:indexPath.row]];
+	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumData:[self.albumsArray objectAtIndex:indexPath.row]];
 	[self.navigationController pushViewController:album animated:YES];
 }
 
