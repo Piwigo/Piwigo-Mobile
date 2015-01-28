@@ -13,6 +13,7 @@ NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
 NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}&per_page={perPage}&page={page}&order={order}";
+NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
 
 @interface NetworkHandler()
 
@@ -56,6 +57,58 @@ NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categorie
 
 	return operation;
 }
+
++(AFHTTPRequestOperation*)postMultiPart:(NSString*)path
+							 parameters:(NSDictionary*)parameters
+							   success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+							   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestSerializer *request = [AFHTTPRequestSerializer serializer];
+	[request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+	manager.requestSerializer = request;
+	
+	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
+	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
+	[jsonAcceptableContentTypes addObject:@"text/plain"];
+	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
+	manager.responseSerializer = jsonResponseSerializer;
+	
+	
+	return [manager POST:[NetworkHandler getURLWithPath:path andURLParams:nil]
+			  parameters:nil
+constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+	
+	NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+	[mutableHeaders setValue:[NSString stringWithFormat:@"multipart/form-data"] forKey:@"Content-Type"];
+	
+	[formData appendPartWithFileData:[parameters objectForKey:@"data"]
+								name:@"file"
+							fileName:@"blob"
+							mimeType:@"image/jpeg"];
+	
+	[formData appendPartWithFormData:[[parameters objectForKey:@"name"] dataUsingEncoding:NSUTF8StringEncoding]
+								name:@"name"];
+	
+	[formData appendPartWithFormData:[[parameters objectForKey:@"chunk"] dataUsingEncoding:NSUTF8StringEncoding]
+								name:@"chunk"];
+	[formData appendPartWithFormData:[[parameters objectForKey:@"chunks"] dataUsingEncoding:NSUTF8StringEncoding]
+								name:@"chunks"];
+	
+	[formData appendPartWithFormData:[[parameters objectForKey:@"album"] dataUsingEncoding:NSUTF8StringEncoding]
+								name:@"category"];
+//	[formData appendPartWithFormData:[@"0" dataUsingEncoding:NSUTF8StringEncoding]
+//								name:@"level"];
+	
+	[formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
+								name:@"pwg_token"];
+	}
+				 success:success
+				 failure:fail];
+}
+
+
 
 +(NSString*)getURLWithPath:(NSString*)path andURLParams:(NSDictionary*)params
 {

@@ -14,6 +14,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetList;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetImages;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUpload;
 
 @interface NetworkHandler : NSObject
 
@@ -22,6 +23,11 @@ FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetImages;
 					parameters:(NSDictionary*)parameters
 					   success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
 					   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
++(AFHTTPRequestOperation*)postMultiPart:(NSString*)path
+							 parameters:(NSDictionary*)parameters
+								success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+								failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 
 +(void)showConnectionError:(NSError*)error;
