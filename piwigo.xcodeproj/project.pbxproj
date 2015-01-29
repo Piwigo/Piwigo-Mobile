@@ -56,6 +56,8 @@
 		D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */; };
 		D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7261A794CC900AEA7F1 /* UploadService.m */; };
 		D8D3F7291A79619C00AEA7F1 /* uploadMe.JPG in Resources */ = {isa = PBXBuildFile; fileRef = D8D3F7281A79619C00AEA7F1 /* uploadMe.JPG */; };
+		D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */; };
+		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +171,10 @@
 		D8D3F7251A794CC900AEA7F1 /* UploadService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadService.h; sourceTree = "<group>"; };
 		D8D3F7261A794CC900AEA7F1 /* UploadService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadService.m; sourceTree = "<group>"; };
 		D8D3F7281A79619C00AEA7F1 /* uploadMe.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = uploadMe.JPG; sourceTree = "<group>"; };
+		D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosFetch.h; sourceTree = "<group>"; };
+		D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosFetch.m; sourceTree = "<group>"; };
+		D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalImageCollectionViewCell.h; sourceTree = "<group>"; };
+		D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImageCollectionViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -443,10 +449,14 @@
 			isa = PBXGroup;
 			children = (
 				D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */,
-				D8D3F7281A79619C00AEA7F1 /* uploadMe.JPG */,
 				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
+				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
+				D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */,
 				D8D3F7251A794CC900AEA7F1 /* UploadService.h */,
 				D8D3F7261A794CC900AEA7F1 /* UploadService.m */,
+				D8D3F7281A79619C00AEA7F1 /* uploadMe.JPG */,
+				D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */,
+				D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */,
 			);
 			name = Upload;
 			sourceTree = "<group>";
@@ -591,6 +601,7 @@
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */,
 				D87C5A9A1A6F4FB0001763BC /* LoginService.m in Sources */,
+				D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */,
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
@@ -610,6 +621,7 @@
 				D82B8D1D1A68783B000E47CA /* AFHTTPRequestOperation.m in Sources */,
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
+				D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */,
 				D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */,
 				D82B8D051A687831000E47CA /* UIImageView+AFNetworking.m in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,

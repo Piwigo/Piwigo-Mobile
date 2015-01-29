@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class ALAssetsLibrary;
+
 @interface Model : NSObject
 
 +(Model*)sharedInstance;
 -(void)saveToDisk;
++(ALAssetsLibrary*)defaultAssetsLibrary;
 
 @property (nonatomic, strong) NSString *serverName;
 @property (nonatomic, strong) NSString *pwgToken;
