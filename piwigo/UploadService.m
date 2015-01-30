@@ -11,7 +11,7 @@
 
 @implementation UploadService
 
-+(void)uploadImage:(UIImage*)image
++(void)uploadImage:(NSData*)imageData
 			  withName:(NSString*)imageName
 			  forAlbum:(NSInteger)album
 			onProgress:(void (^)(NSInteger current, NSInteger total))progress
@@ -19,13 +19,12 @@
 			 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	NSInteger chunkSize = 500 * 1024;
-	NSData *imgData = UIImageJPEGRepresentation(image, 1.0);
 	
-	NSInteger chunks = imgData.length / chunkSize;
-	if(imgData.length % chunkSize != 0) {
+	NSInteger chunks = imageData.length / chunkSize;
+	if(imageData.length % chunkSize != 0) {
 		chunks++;
 	}
-	[self sendChunk:imgData
+	[self sendChunk:imageData
 			 offset:0
 		   withName:imageName
 		   forAlbum:album

@@ -91,7 +91,13 @@
 {
 	NSString *imageAssetKey = self.localImages.allKeys[indexPath.row];
 	ALAsset *imageAsset = [self.localImages objectForKey:imageAssetKey];
-	[UploadService uploadImage:[UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]]
+	
+	ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
+	Byte *buffer = (Byte*)malloc(rep.size);
+	NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
+	NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+	
+	[UploadService uploadImage:imageData
 					  withName:[[imageAsset defaultRepresentation] filename]
 					  forAlbum:6
 					onProgress:^(NSInteger current, NSInteger total) {
@@ -107,6 +113,7 @@
 //	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
 //	[self.navigationController pushViewController:imageDetail animated:YES];
 }
+
 
 
 @end

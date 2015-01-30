@@ -12,7 +12,7 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 
 @interface UploadService : NetworkHandler
 
-+(void)uploadImage:(UIImage*)image
++(void)uploadImage:(NSData*)imageData
 			  withName:(NSString*)imageName
 			  forAlbum:(NSInteger)album
 			onProgress:(void (^)(NSInteger current, NSInteger total))progress
