@@ -11,6 +11,7 @@
 #import "PhotosFetch.h"
 #import "LocalImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
@@ -88,6 +89,19 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+	NSString *imageAssetKey = self.localImages.allKeys[indexPath.row];
+	ALAsset *imageAsset = [self.localImages objectForKey:imageAssetKey];
+	[UploadService uploadImage:[UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]]
+					  withName:[[imageAsset defaultRepresentation] filename]
+					  forAlbum:6
+					onProgress:^(NSInteger current, NSInteger total) {
+						NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
+					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+						NSLog(@"DONE UPLOAD");
+					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						NSLog(@"ERROR: %@", error);
+					}];
+	
 //	ImageDetailViewController *imageDetail = [ImageDetailViewController new];
 //	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 //	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];

@@ -65,9 +65,15 @@ NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
 {
 	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 	
-	AFHTTPRequestSerializer *request = [AFHTTPRequestSerializer serializer];
-	[request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
-	manager.requestSerializer = request;
+//	AFHTTPRequestSerializer *request = [AFHTTPRequestSerializer serializer];
+//	[request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+//	manager.requestSerializer = request;
+	
+//	AFHTTPResponseSerializer *response = [AFHTTPResponseSerializer serializer];
+//	NSMutableSet *httpAcceptableContentTypes = [NSMutableSet setWithSet:response.acceptableContentTypes];
+//	[httpAcceptableContentTypes addObject:@"text/plain"];
+//	response.acceptableContentTypes = httpAcceptableContentTypes;
+//	manager.responseSerializer = response;
 	
 	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
 	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];

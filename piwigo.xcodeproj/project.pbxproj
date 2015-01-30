@@ -265,6 +265,8 @@
 				D863EEBE1A6A440D00C0A6E9 /* Login */,
 				D8BDCB5B1A6F682900D106A8 /* TabBar */,
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
+				D818E9F91A74C18500733991 /* AlbumService.h */,
+				D818E9FA1A74C18500733991 /* AlbumService.m */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
@@ -442,8 +444,6 @@
 			children = (
 				D818E9F41A74BEFF00733991 /* Album List */,
 				D818E9F51A74BF1100733991 /* Album Pictures */,
-				D818E9F91A74C18500733991 /* AlbumService.h */,
-				D818E9FA1A74C18500733991 /* AlbumService.m */,
 				D818EA031A74D32100733991 /* Image Detail */,
 			);
 			name = Albums;
