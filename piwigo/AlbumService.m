@@ -10,6 +10,7 @@
 #import "PiwigoAlbumData.h"
 #import "PiwigoImageData.h"
 #import "Model.h"
+#import "CategoriesData.h"
 
 NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
@@ -33,6 +34,7 @@ NSString * const kGetImageOrderRandom = @"random";
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
 					  {
 						  NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
+						  [[CategoriesData sharedInstance] addCategories:albums];
 						  completion(operation, albums);
 					  } else {
 						  completion(operation, nil);
@@ -52,7 +54,7 @@ NSString * const kGetImageOrderRandom = @"random";
 	for(NSDictionary *category in json)
 	{
 		PiwigoAlbumData *albumData = [PiwigoAlbumData new];
-		albumData.albumId = [[category objectForKey:@"id"] integerValue];
+		albumData.albumId = [category objectForKey:@"id"];
 		albumData.name = [category objectForKey:@"name"];
 		albumData.comment = [category objectForKey:@"comment"];
 		albumData.globalRank = [[category objectForKey:@"global_rank"] integerValue];
@@ -111,6 +113,7 @@ NSString * const kGetImageOrderRandom = @"random";
 	for(NSDictionary *image in imagesInfo)
 	{
 		PiwigoImageData *imgData = [PiwigoImageData new];
+		imgData.imageId = [image objectForKey:@"id"];
 		imgData.fileName = [image objectForKey:@"file"];
 		imgData.name = [image objectForKey:@"name"];
 		imgData.fullResPath = [image objectForKey:@"element_url"];

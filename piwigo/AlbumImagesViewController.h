@@ -8,10 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@class PiwigoAlbumData;
-
 @interface AlbumImagesViewController : UIViewController
 
--(instancetype)initWithAlbumData:(PiwigoAlbumData*)albumData;
+-(instancetype)initWithAlbumId:(NSString*)albumId;
 
 @end

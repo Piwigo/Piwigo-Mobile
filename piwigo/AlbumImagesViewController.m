@@ -9,16 +9,14 @@
 #import "AlbumImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "AlbumService.h"
-#import "PiwigoAlbumData.h"
-#import "PiwigoImageData.h"
+#import "CategoriesData.h"
 #import "Model.h"
 #import "ImageDetailViewController.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
-@property (nonatomic, strong) PiwigoAlbumData *albumData;
-@property (nonatomic, strong) NSArray *images;
+@property (nonatomic, strong) NSString *albumId;
 
 @property (nonatomic, assign) NSInteger lastImageBulkCount;
 @property (nonatomic, assign) NSInteger onPage;
@@ -30,14 +28,14 @@
 
 @implementation AlbumImagesViewController
 
--(instancetype)initWithAlbumData:(PiwigoAlbumData*)albumData
+-(instancetype)initWithAlbumId:(NSString*)albumId
 {
 	self = [super init];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoGray];
-		self.albumData = albumData;
-		self.title = self.albumData.name;
+		self.albumId = albumId;
+		self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.albumId] name];
 		self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
 		self.onPage = 0;
 		
@@ -63,7 +61,7 @@
 	NSLog(@"load more images");
 	self.isLoadingMoreImages = YES;
 	
-	AFHTTPRequestOperation *request = [AlbumService getAlbumPhotosForAlbumId:self.albumData.albumId
+	AFHTTPRequestOperation *request = [AlbumService getAlbumPhotosForAlbumId:[self.albumId integerValue]
 																	  onPage:self.onPage
 																	forOrder:kGetImageOrderFileName
 																OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
@@ -73,9 +71,9 @@
 																		if(albumImages.count != [Model sharedInstance].imagesPerPage) {
 																			self.didLoadAllImages = YES;
 																		}
-																		NSMutableArray *currentImages = [[NSMutableArray alloc] initWithArray:self.images];
-																		[currentImages addObjectsFromArray:albumImages];
-																		self.images = currentImages;
+																		PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:self.albumId];
+																		[albumData addImages:albumImages];
+																		
 																		[self.imagesCollection reloadData];
 																		NSLog(@"Updated more images");
 																	} else {
@@ -94,7 +92,7 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	return self.images.count;
+	return [[[CategoriesData sharedInstance].categories objectForKey:self.albumId] imageList].count;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -106,7 +104,8 @@
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
 	ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-	PiwigoImageData *imageData = [self.images objectAtIndex:indexPath.row];
+	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:self.albumId];
+	PiwigoImageData *imageData = [albumData.imageList objectAtIndex:indexPath.row];
 	
 	[cell setupWithImageData:imageData];
 	
@@ -120,7 +119,7 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	ImageDetailViewController *imageDetail = [ImageDetailViewController new];
+	ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithImageIndex:indexPath.row];
 	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
 	[self.navigationController pushViewController:imageDetail animated:YES];
@@ -132,6 +131,14 @@
 	{
 		[self loadImageChunk];
 	}
+}
+
+
+#pragma mark - ImageDetailDelegate Methods
+
+-(void)showNextImage
+{
+	
 }
 
 @end

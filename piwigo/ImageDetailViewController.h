@@ -12,6 +12,7 @@
 
 @interface ImageDetailViewController : UIViewController
 
+-(instancetype)initWithImageIndex:(NSInteger)imageIndex;
 -(void)setupWithImageData:(PiwigoImageData*)imageData andPlaceHolderImage:(UIImage*)placeHolder;
 
 @end

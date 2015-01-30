@@ -13,11 +13,11 @@
 #import "AlbumService.h"
 #import "AlbumPhotosViewController.h"
 #import "AlbumImagesViewController.h"
+#import "CategoriesData.h"
 
 @interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *albumsTableView;
-@property (nonatomic, strong) NSArray *albumsArray;
 
 @end
 
@@ -40,7 +40,6 @@
 		
 		[AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 			
-			self.albumsArray = albums;
 			[self.albumsTableView reloadData];
 		} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			
@@ -51,42 +50,11 @@
 }
 
 
--(void)parseJSON:(NSDictionary*)json
-{
-	NSDictionary *imagesInfo = [[json objectForKey:@"result"] objectForKey:@"images"];
-	
-	NSMutableArray *namesList = [NSMutableArray new];
-	for(NSDictionary *image in imagesInfo)
-	{
-		PiwigoImageData *imgData = [PiwigoImageData new];
-		imgData.name = [image objectForKey:@"file"];
-		imgData.fullResPath = [image objectForKey:@"element_url"];
-		
-		NSDictionary *imageSizes = [image objectForKey:@"derivatives"];
-		imgData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
-		imgData.mediumPath = [[imageSizes objectForKey:@"medium"] objectForKey:@"url"];
-		
-		NSArray *categories = [image objectForKey:@"categories"];
-		NSMutableArray *categoryIds = [NSMutableArray new];
-		for(NSDictionary *category in categories)
-		{
-			[categoryIds addObject:[category objectForKey:@"id"]];
-		}
-		
-		imgData.categoryIds = categoryIds;
-		
-		[namesList addObject:imgData];
-	}
-	self.albumsArray = namesList;
-	[self.albumsTableView reloadData];
-}
-
-
 #pragma mark -- UITableView Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return self.albumsArray.count;
+	return [[CategoriesData sharedInstance].categories allKeys].count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -98,7 +66,9 @@
 {
 	AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
-	[cell setupWithAlbumData:[self.albumsArray objectAtIndex:indexPath.row]];
+	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:[[CategoriesData sharedInstance].categories.allKeys objectAtIndex:indexPath.row]];
+	
+	[cell setupWithAlbumData:albumData];
 	
 	return cell;
 }
@@ -107,8 +77,9 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-//	AlbumPhotosViewController *album = [[AlbumPhotosViewController alloc] initWithAlbumData:[self.albumsArray objectAtIndex:indexPath.row]];
-	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumData:[self.albumsArray objectAtIndex:indexPath.row]];
+	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:[[CategoriesData sharedInstance].categories.allKeys objectAtIndex:indexPath.row]];
+	
+	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
 	[self.navigationController pushViewController:album animated:YES];
 }
 

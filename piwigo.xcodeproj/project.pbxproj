@@ -58,6 +58,7 @@
 		D8D3F7291A79619C00AEA7F1 /* uploadMe.JPG in Resources */ = {isa = PBXBuildFile; fileRef = D8D3F7281A79619C00AEA7F1 /* uploadMe.JPG */; };
 		D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */; };
 		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
+		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -175,6 +176,8 @@
 		D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosFetch.m; sourceTree = "<group>"; };
 		D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalImageCollectionViewCell.h; sourceTree = "<group>"; };
 		D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImageCollectionViewCell.m; sourceTree = "<group>"; };
+		D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesData.h; sourceTree = "<group>"; };
+		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +267,7 @@
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
+				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
 				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
 				D87C5A971A6F4F93001763BC /* Network */,
 				D82B8CCB1A67820A000E47CA /* Images.xcassets */,
@@ -481,6 +485,15 @@
 			name = TableView;
 			sourceTree = "<group>";
 		};
+		D8D3F7621A7AF27C00AEA7F1 /* Data Cache */ = {
+			isa = PBXGroup;
+			children = (
+				D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */,
+				D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */,
+			);
+			name = "Data Cache";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -585,6 +598,7 @@
 			files = (
 				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
+				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
 				D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */,
 				D82B8D031A687831000E47CA /* UIAlertView+AFNetworking.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,

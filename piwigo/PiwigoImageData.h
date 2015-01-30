@@ -10,6 +10,7 @@
 
 @interface PiwigoImageData : NSObject
 
+@property (nonatomic, strong) NSString *imageId;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *fileName;
 @property (nonatomic, strong) NSString *thumbPath;

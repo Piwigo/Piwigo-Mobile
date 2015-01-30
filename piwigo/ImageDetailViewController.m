@@ -14,16 +14,19 @@
 @property (nonatomic, strong) UIImageView *image;
 @property (nonatomic, strong) UIProgressView *progressBar;
 
+@property (nonatomic, assign) NSInteger currentImageIndex;
+
 @end
 
 @implementation ImageDetailViewController
 
--(instancetype)init
+-(instancetype)initWithImageIndex:(NSInteger)imageIndex
 {
 	self = [super init];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor blackColor];
+		self.currentImageIndex = imageIndex;
 		
 		self.image = [UIImageView new];
 		self.image.translatesAutoresizingMaskIntoConstraints = NO;
@@ -39,6 +42,14 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
 		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.progressBar amount:64]];
 		[self.progressBar addConstraint:[NSLayoutConstraint constrainViewToHeight:self.progressBar height:10]];
+		
+		UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)];
+		rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+		[self.view addGestureRecognizer:rightSwipe];
+		
+		UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)];
+		leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
+		[self.view addGestureRecognizer:leftSwipe];
 		
 	}
 	return self;
@@ -66,6 +77,16 @@
 			[weakSelf.progressBar setProgress:percent animated:YES];
 		}
 	}];
+}
+
+-(void)swipeRight
+{
+	
+}
+
+-(void)swipeLeft
+{
+	
 }
 
 @end

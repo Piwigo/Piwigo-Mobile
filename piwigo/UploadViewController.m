@@ -88,10 +88,10 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	ImageDetailViewController *imageDetail = [ImageDetailViewController new];
+//	ImageDetailViewController *imageDetail = [ImageDetailViewController new];
 //	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 //	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
-	[self.navigationController pushViewController:imageDetail animated:YES];
+//	[self.navigationController pushViewController:imageDetail animated:YES];
 }
 
 
