@@ -8,7 +8,7 @@
 
 #import "TabBarViewController.h"
 #import "AlbumsViewController.h"
-#import "UploadViewController.h"
+#import "CategoryPickViewController.h"
 #import "SettingsViewController.h"
 
 @interface TabBarViewController ()
@@ -33,7 +33,7 @@
 		albums.tabBarItem.selectedImage = [UIImage imageNamed:@"albumSelected"];
 		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:albums]];
 		
-		UploadViewController *upload = [UploadViewController new];
+		CategoryPickViewController *upload = [CategoryPickViewController new];
 		upload.title = NSLocalizedString(@"tabBar_upload", @"Upload");
 		upload.tabBarItem.image = [UIImage imageNamed:@"cloud"];
 		upload.tabBarItem.selectedImage = [UIImage imageNamed:@"cloudSelected"];

@@ -97,7 +97,7 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	CGFloat size = collectionView.frame.size.width / 3 - 14;
+	CGFloat size = MIN(collectionView.frame.size.width, collectionView.frame.size.height) / 3 - 14;
 	return CGSizeMake(size, size);
 }
 
@@ -130,14 +130,6 @@
 	{
 		[self loadImageChunk];
 	}
-}
-
-
-#pragma mark - ImageDetailDelegate Methods
-
--(void)showNextImage
-{
-	
 }
 
 @end

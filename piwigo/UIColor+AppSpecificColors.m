@@ -30,5 +30,9 @@
 {
 	return [UIColor colorWithRed:114/255.0 green:93/255.0 blue:49/255.0 alpha:1.0];
 }
++(UIColor*)piwigoWhiteCream
+{
+	return [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1];
+}
 
 @end

@@ -10,4 +10,6 @@
 
 @interface UploadViewController : UIViewController
 
+-(instancetype)initWithCategoryId:(NSString*)categoryId;
+
 @end

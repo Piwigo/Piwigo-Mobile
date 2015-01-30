@@ -12,22 +12,25 @@
 #import "LocalImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "CategoriesData.h"
 
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, strong) NSDictionary *localImages;
-
+@property (nonatomic, strong) NSString *categoryId;
 @end
 
 @implementation UploadViewController
 
--(instancetype)init
+-(instancetype)initWithCategoryId:(NSString*)categoryId
 {
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor whiteColor];
+		self.view.backgroundColor = [UIColor piwigoWhiteCream];
+		self.categoryId = categoryId;
+		self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] name];
 		
 		self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -35,7 +38,7 @@
 		self.localImagesCollection.dataSource = self;
 		self.localImagesCollection.delegate = self;
 		[self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
-		self.localImagesCollection.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+		self.localImagesCollection.indicatorStyle = UIScrollViewIndicatorStyleDefault;
 		[self.view addSubview:self.localImagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
 		
@@ -45,18 +48,6 @@
 			[self.localImagesCollection reloadData];
 		}];
 		
-//		UIImage *uploadMe = [UIImage imageNamed:@"uploadMe.jpg"];
-//		[UploadService uploadImage:uploadMe
-//						  withName:@"multi"
-//						  forAlbum:1
-//						onProgress:^(NSInteger current, NSInteger total) {
-//							NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
-//						}
-//					  OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
-//						  NSLog(@"DONE: %@", response);
-//					  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//						  NSLog(@"FAIL! : %@", error);
-//					  }];
 	}
 	return self;
 }
@@ -68,7 +59,7 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	CGFloat size = collectionView.frame.size.width / 3 - 14;
+	CGFloat size = MIN(collectionView.frame.size.width, collectionView.frame.size.height) / 3 - 14;
 	return CGSizeMake(size, size);
 }
 
@@ -99,7 +90,7 @@
 	
 	[UploadService uploadImage:imageData
 					  withName:[[imageAsset defaultRepresentation] filename]
-					  forAlbum:6
+					  forAlbum:[self.categoryId integerValue]
 					onProgress:^(NSInteger current, NSInteger total) {
 						NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
@@ -113,7 +104,6 @@
 //	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
 //	[self.navigationController pushViewController:imageDetail animated:YES];
 }
-
 
 
 @end

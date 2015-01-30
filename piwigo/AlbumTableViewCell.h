@@ -12,7 +12,6 @@
 
 @interface AlbumTableViewCell : UITableViewCell
 
--(instancetype)initWithAlbumData:(PiwigoAlbumData*)albumData;
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
 
 @property (nonatomic, strong) PiwigoAlbumData *albumData;

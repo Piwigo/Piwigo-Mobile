@@ -80,6 +80,7 @@
 						onFailure:fail];
 			  }
 		  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			  // failed, send it again
 			  [self sendChunk:data
 					   offset:oldOffset
 					 withName:imageName

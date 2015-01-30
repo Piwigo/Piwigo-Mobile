@@ -46,6 +46,7 @@
 		D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A921A6F4C43001763BC /* KeychainAccess.m */; };
 		D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */; };
 		D87C5A9A1A6F4FB0001763BC /* LoginService.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* LoginService.m */; };
+		D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */; };
 		D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */; };
 		D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */; };
@@ -55,7 +56,6 @@
 		D8D3F7201A785DF800AEA7F1 /* AlbumImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */; };
 		D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */; };
 		D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7261A794CC900AEA7F1 /* UploadService.m */; };
-		D8D3F7291A79619C00AEA7F1 /* uploadMe.JPG in Resources */ = {isa = PBXBuildFile; fileRef = D8D3F7281A79619C00AEA7F1 /* uploadMe.JPG */; };
 		D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */; };
 		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
@@ -154,6 +154,8 @@
 		D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		D87C5A981A6F4FB0001763BC /* LoginService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginService.h; sourceTree = "<group>"; };
 		D87C5A991A6F4FB0001763BC /* LoginService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginService.m; sourceTree = "<group>"; };
+		D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryPickViewController.h; sourceTree = "<group>"; };
+		D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryPickViewController.m; sourceTree = "<group>"; };
 		D8BDCB5C1A6F685E00D106A8 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
 		D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
 		D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -171,7 +173,6 @@
 		D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionViewCell.m; sourceTree = "<group>"; };
 		D8D3F7251A794CC900AEA7F1 /* UploadService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadService.h; sourceTree = "<group>"; };
 		D8D3F7261A794CC900AEA7F1 /* UploadService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadService.m; sourceTree = "<group>"; };
-		D8D3F7281A79619C00AEA7F1 /* uploadMe.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = uploadMe.JPG; sourceTree = "<group>"; };
 		D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosFetch.h; sourceTree = "<group>"; };
 		D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosFetch.m; sourceTree = "<group>"; };
 		D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalImageCollectionViewCell.h; sourceTree = "<group>"; };
@@ -430,6 +431,28 @@
 			name = Network;
 			sourceTree = "<group>";
 		};
+		D8A5014A1A7B3D4200C04C17 /* Pick Album */ = {
+			isa = PBXGroup;
+			children = (
+				D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */,
+				D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */,
+			);
+			name = "Pick Album";
+			sourceTree = "<group>";
+		};
+		D8A5014E1A7B432600C04C17 /* Local Images */ = {
+			isa = PBXGroup;
+			children = (
+				D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */,
+				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
+				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
+				D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */,
+				D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */,
+				D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */,
+			);
+			name = "Local Images";
+			sourceTree = "<group>";
+		};
 		D8BDCB5B1A6F682900D106A8 /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -452,15 +475,10 @@
 		D8BDCB601A6F6B5000D106A8 /* Upload */ = {
 			isa = PBXGroup;
 			children = (
-				D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */,
-				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
-				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
-				D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */,
+				D8A5014A1A7B3D4200C04C17 /* Pick Album */,
+				D8A5014E1A7B432600C04C17 /* Local Images */,
 				D8D3F7251A794CC900AEA7F1 /* UploadService.h */,
 				D8D3F7261A794CC900AEA7F1 /* UploadService.m */,
-				D8D3F7281A79619C00AEA7F1 /* uploadMe.JPG */,
-				D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */,
-				D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */,
 			);
 			name = Upload;
 			sourceTree = "<group>";
@@ -577,7 +595,6 @@
 			files = (
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */,
-				D8D3F7291A79619C00AEA7F1 /* uploadMe.JPG in Resources */,
 				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -607,6 +624,7 @@
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D82B8D221A68783B000E47CA /* AFURLConnectionOperation.m in Sources */,
 				D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */,
+				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D82B8D061A687831000E47CA /* UIProgressView+AFNetworking.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
