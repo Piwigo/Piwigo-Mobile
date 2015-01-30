@@ -39,4 +39,10 @@
 	self.categories = newCategories;
 }
 
+-(PiwigoImageData*)getImageForCategory:(NSString*)category andIndex:(NSInteger)index
+{
+	if(index > [[[CategoriesData sharedInstance].categories objectForKey:category] imageList].count) return nil;
+	return [[[[CategoriesData sharedInstance].categories objectForKey:category] imageList] objectAtIndex:index];
+}
+
 @end

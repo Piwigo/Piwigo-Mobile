@@ -15,5 +15,5 @@
 
 @property (nonatomic, readonly) NSDictionary *categories;
 -(void)addCategories:(NSArray*)categories;
-
+-(PiwigoImageData*)getImageForCategory:(NSString*)category andIndex:(NSInteger)index;
 @end

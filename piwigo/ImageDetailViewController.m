@@ -7,26 +7,28 @@
 //
 
 #import "ImageDetailViewController.h"
-#import "PiwigoImageData.h"
+#import "CategoriesData.h"
 
 @interface ImageDetailViewController ()
 
 @property (nonatomic, strong) UIImageView *image;
 @property (nonatomic, strong) UIProgressView *progressBar;
 
+@property (nonatomic, strong) NSString *categoryId;
 @property (nonatomic, assign) NSInteger currentImageIndex;
 
 @end
 
 @implementation ImageDetailViewController
 
--(instancetype)initWithImageIndex:(NSInteger)imageIndex
+-(instancetype)initWithCategoryId:(NSString*)categoryId andImageIndex:(NSInteger)imageIndex
 {
 	self = [super init];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor blackColor];
 		self.currentImageIndex = imageIndex;
+		self.categoryId = categoryId;
 		
 		self.image = [UIImageView new];
 		self.image.translatesAutoresizingMaskIntoConstraints = NO;
@@ -44,11 +46,11 @@
 		[self.progressBar addConstraint:[NSLayoutConstraint constrainViewToHeight:self.progressBar height:10]];
 		
 		UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)];
-		rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+		rightSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
 		[self.view addGestureRecognizer:rightSwipe];
 		
 		UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)];
-		leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
+		leftSwipe.direction = UISwipeGestureRecognizerDirectionRight;
 		[self.view addGestureRecognizer:leftSwipe];
 		
 	}
@@ -81,12 +83,30 @@
 
 -(void)swipeRight
 {
-	
+	self.currentImageIndex++;
+	if(self.currentImageIndex < [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] imageList].count) {
+		[self updateCurrentImage];
+	} else {
+		self.currentImageIndex--;
+	}
 }
 
 -(void)swipeLeft
 {
-	
+	self.currentImageIndex--;
+	if(self.currentImageIndex >= 0) {
+		[self updateCurrentImage];
+	} else {
+		self.currentImageIndex++;
+	}
+}
+
+-(void)updateCurrentImage
+{
+	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:self.currentImageIndex];
+	self.title = imageData.name;
+	[self.image setImageWithURL:[NSURL URLWithString:imageData.mediumPath]
+			   placeholderImage:[UIImage imageNamed:@"placeholder"]];
 }
 
 @end

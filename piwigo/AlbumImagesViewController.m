@@ -16,7 +16,7 @@
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
-@property (nonatomic, strong) NSString *albumId;
+@property (nonatomic, strong) NSString *categoryId;
 
 @property (nonatomic, assign) NSInteger lastImageBulkCount;
 @property (nonatomic, assign) NSInteger onPage;
@@ -34,8 +34,8 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoGray];
-		self.albumId = albumId;
-		self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.albumId] name];
+		self.categoryId = albumId;
+		self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] name];
 		self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
 		self.onPage = 0;
 		
@@ -61,7 +61,7 @@
 	NSLog(@"load more images");
 	self.isLoadingMoreImages = YES;
 	
-	AFHTTPRequestOperation *request = [AlbumService getAlbumPhotosForAlbumId:[self.albumId integerValue]
+	AFHTTPRequestOperation *request = [AlbumService getAlbumPhotosForAlbumId:[self.categoryId integerValue]
 																	  onPage:self.onPage
 																	forOrder:kGetImageOrderFileName
 																OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
@@ -71,7 +71,7 @@
 																		if(albumImages.count != [Model sharedInstance].imagesPerPage) {
 																			self.didLoadAllImages = YES;
 																		}
-																		PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:self.albumId];
+																		PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:self.categoryId];
 																		[albumData addImages:albumImages];
 																		
 																		[self.imagesCollection reloadData];
@@ -92,7 +92,7 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	return [[[CategoriesData sharedInstance].categories objectForKey:self.albumId] imageList].count;
+	return [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] imageList].count;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -104,9 +104,8 @@
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
 	ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:self.albumId];
-	PiwigoImageData *imageData = [albumData.imageList objectAtIndex:indexPath.row];
 	
+	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:indexPath.row];
 	[cell setupWithImageData:imageData];
 	
 	return cell;
@@ -119,7 +118,7 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithImageIndex:indexPath.row];
+	ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId andImageIndex:indexPath.row];
 	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
 	[self.navigationController pushViewController:imageDetail animated:YES];
