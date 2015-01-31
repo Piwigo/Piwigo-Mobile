@@ -48,20 +48,6 @@
 	self.imageList = newImageList;
 }
 
-//- (NSArray *)removeDuplicatesInArray:(NSArray*)arrayToFilter{
-//	
-//	NSMutableSet *seenDates = [NSMutableSet set];
-//	NSPredicate *dupDatesPred = [NSPredicate predicateWithBlock: ^BOOL(id obj, NSDictionary *bind) {
-//		YourClass *e = (YourClass*)obj;
-//		BOOL seen = [seenDates containsObject:e.propertyName];
-//		if (!seen) {
-//			[seenDates addObject:e.when];
-//		}
-//		return !seen;
-//	}];
-//	return [arrayToFilter filteredArrayUsingPredicate:dupDatesPred];
-//}
-
 -(void)sortImageList:(ImageListOrder)order
 {
 	// @TODO: change sort based on enum

@@ -13,7 +13,7 @@
 #import "Model.h"
 #import "ImageDetailViewController.h"
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) NSString *categoryId;
@@ -119,6 +119,7 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 	ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId andImageIndex:indexPath.row];
+	imageDetail.delegate = self;
 	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
 	[self.navigationController pushViewController:imageDetail animated:YES];
@@ -130,6 +131,13 @@
 	{
 		[self loadImageChunk];
 	}
+}
+
+#pragma mark -- ImageDetailDelegate Methods
+
+-(void)didDeleteImage
+{
+	[self.imagesCollection reloadData];
 }
 
 @end
