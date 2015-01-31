@@ -34,6 +34,7 @@
 		self.albumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.albumsTableView.delegate = self;
 		self.albumsTableView.dataSource = self;
+		self.albumsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 		[self.albumsTableView registerClass:[AlbumTableViewCell class] forCellReuseIdentifier:@"cell"];
 		[self.view addSubview:self.albumsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
@@ -59,7 +60,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 44.0;
+	return 180.0;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

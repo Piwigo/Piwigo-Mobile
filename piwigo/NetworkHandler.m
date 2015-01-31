@@ -14,6 +14,7 @@ NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getS
 NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
 NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}&per_page={perPage}&page={page}&order={order}";
 NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
+NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo&image_id={imageId}";
 
 @interface NetworkHandler()
 
@@ -53,8 +54,6 @@ NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
 					 }
 				 }];
 	
-//	[[Model sharedInstance].piwigoQueue addOperation:operation];
-
 	return operation;
 }
 
@@ -64,16 +63,6 @@ NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
 							   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-	
-//	AFHTTPRequestSerializer *request = [AFHTTPRequestSerializer serializer];
-//	[request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
-//	manager.requestSerializer = request;
-	
-//	AFHTTPResponseSerializer *response = [AFHTTPResponseSerializer serializer];
-//	NSMutableSet *httpAcceptableContentTypes = [NSMutableSet setWithSet:response.acceptableContentTypes];
-//	[httpAcceptableContentTypes addObject:@"text/plain"];
-//	response.acceptableContentTypes = httpAcceptableContentTypes;
-//	manager.responseSerializer = response;
 	
 	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
 	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];

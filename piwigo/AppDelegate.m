@@ -26,6 +26,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
 	
+//	[[UINavigationBar appearance] setTintColor:[UIColor yellowColor]];
+//	[[UINavigationBar appearance] setBarTintColor:[UIColor piwigoGray]];
+	
 	NSString *server = [Model sharedInstance].serverName;
 	NSString *user = [KeychainAccess getLoginUser];
 	NSString *password = [KeychainAccess getLoginPassword];

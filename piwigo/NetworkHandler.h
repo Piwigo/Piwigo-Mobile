@@ -15,6 +15,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetList;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetImages;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUpload;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesGetInfo;
 
 @interface NetworkHandler : NSObject
 

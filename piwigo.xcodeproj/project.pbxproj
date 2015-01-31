@@ -38,6 +38,9 @@
 		D82B8D2B1A68832C000E47CA /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2A1A68832C000E47CA /* Model.m */; };
 		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
 		D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */; };
+		D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8361A7BFF1900231886 /* LEColorPicker.m */; };
+		D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */; };
+		D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B83C1A7C06A500231886 /* OutlinedText.m */; };
 		D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */; };
 		D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */; };
 		D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */; };
@@ -139,6 +142,12 @@
 		D82B8D2F1A688512000E47CA /* PiwigoImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoImageData.m; sourceTree = "<group>"; };
 		D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailViewController.h; sourceTree = "<group>"; };
 		D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController.m; sourceTree = "<group>"; };
+		D847B8351A7BFF1900231886 /* LEColorPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEColorPicker.h; sourceTree = "<group>"; };
+		D847B8361A7BFF1900231886 /* LEColorPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEColorPicker.m; sourceTree = "<group>"; };
+		D847B8371A7BFF1900231886 /* UIColor+YUVSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YUVSpace.h"; sourceTree = "<group>"; };
+		D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+YUVSpace.m"; sourceTree = "<group>"; };
+		D847B83B1A7C06A500231886 /* OutlinedText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlinedText.h; sourceTree = "<group>"; };
+		D847B83C1A7C06A500231886 /* OutlinedText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlinedText.m; sourceTree = "<group>"; };
 		D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoButton.h; sourceTree = "<group>"; };
 		D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoButton.m; sourceTree = "<group>"; };
 		D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+AppFonts.h"; sourceTree = "<group>"; };
@@ -266,8 +275,6 @@
 				D863EEBE1A6A440D00C0A6E9 /* Login */,
 				D8BDCB5B1A6F682900D106A8 /* TabBar */,
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
-				D818E9F91A74C18500733991 /* AlbumService.h */,
-				D818E9FA1A74C18500733991 /* AlbumService.m */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
@@ -285,6 +292,7 @@
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8D091A68783B000E47CA /* AFNetworking */,
 				D82B8CEF1A687831000E47CA /* UIKit+AFNetworking */,
+				D847B8341A7BFF1900231886 /* LEColorPicker */,
 				D82B8CED1A6790A3000E47CA /* Macros */,
 				D82B8D291A68832C000E47CA /* Model.h */,
 				D82B8D2A1A68832C000E47CA /* Model.m */,
@@ -318,6 +326,8 @@
 		D82B8CED1A6790A3000E47CA /* Macros */ = {
 			isa = PBXGroup;
 			children = (
+				D847B83B1A7C06A500231886 /* OutlinedText.h */,
+				D847B83C1A7C06A500231886 /* OutlinedText.m */,
 				D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */,
 				D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */,
 				D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */,
@@ -376,6 +386,17 @@
 				D82B8D1C1A68783B000E47CA /* AFURLSessionManager.m */,
 			);
 			path = AFNetworking;
+			sourceTree = "<group>";
+		};
+		D847B8341A7BFF1900231886 /* LEColorPicker */ = {
+			isa = PBXGroup;
+			children = (
+				D847B8351A7BFF1900231886 /* LEColorPicker.h */,
+				D847B8361A7BFF1900231886 /* LEColorPicker.m */,
+				D847B8371A7BFF1900231886 /* UIColor+YUVSpace.h */,
+				D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */,
+			);
+			path = LEColorPicker;
 			sourceTree = "<group>";
 		};
 		D863EEBE1A6A440D00C0A6E9 /* Login */ = {
@@ -468,6 +489,8 @@
 				D818E9F41A74BEFF00733991 /* Album List */,
 				D818E9F51A74BF1100733991 /* Album Pictures */,
 				D818EA031A74D32100733991 /* Image Detail */,
+				D818E9F91A74C18500733991 /* AlbumService.h */,
+				D818E9FA1A74C18500733991 /* AlbumService.m */,
 			);
 			name = Albums;
 			sourceTree = "<group>";
@@ -613,6 +636,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */,
 				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
 				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
@@ -630,11 +654,13 @@
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
 				D82B8D1E1A68783B000E47CA /* AFHTTPRequestOperationManager.m in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
+				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */,
 				D87C5A9A1A6F4FB0001763BC /* LoginService.m in Sources */,
 				D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */,
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
+				D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
 				D82B8CC11A67820A000E47CA /* main.m in Sources */,

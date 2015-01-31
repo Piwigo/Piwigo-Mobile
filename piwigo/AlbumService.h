@@ -16,6 +16,8 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDateCreated;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDateAdded;
 FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 
+@class PiwigoImageData;
+
 @interface AlbumService : NetworkHandler
 
 +(AFHTTPRequestOperation*)getAlbumListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
@@ -26,4 +28,9 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 										  forOrder:(NSString*)order
 									  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albumImages))completion
 										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
++(AFHTTPRequestOperation*)getImageInfoById:(NSInteger)imageId
+						  ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, PiwigoImageData *imageData))completion
+								 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
 @end

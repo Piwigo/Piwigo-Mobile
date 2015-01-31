@@ -15,7 +15,5 @@
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
 
 @property (nonatomic, strong) PiwigoAlbumData *albumData;
-@property (nonatomic, strong) UILabel *albumName;
-@property (nonatomic, strong) UIImageView *thumbnail;
 
 @end

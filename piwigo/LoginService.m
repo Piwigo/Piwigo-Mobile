@@ -59,6 +59,8 @@
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
 					  {
 						  [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result" ] objectForKey:@"pwg_token"];
+						  [Model sharedInstance].language = [[responseObject objectForKey:@"result" ] objectForKey:@"language"];
+						  [Model sharedInstance].version = [[responseObject objectForKey:@"result" ] objectForKey:@"version"];
 						  completion([responseObject objectForKey:@"result"]);
 					  }
 					  else

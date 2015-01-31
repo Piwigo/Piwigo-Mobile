@@ -66,6 +66,11 @@ NSString * const kGetImageOrderRandom = @"random";
 			albumData.albumThumbnailUrl = [category objectForKey:@"tn_url"];
 		}
 		
+		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+		[dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
+		albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"date_last"]];
+		
 		[albums addObject:albumData];
 	}
 	
@@ -112,29 +117,61 @@ NSString * const kGetImageOrderRandom = @"random";
 	NSMutableArray *albumImages = [NSMutableArray new];
 	for(NSDictionary *image in imagesInfo)
 	{
-		PiwigoImageData *imgData = [PiwigoImageData new];
-		imgData.imageId = [image objectForKey:@"id"];
-		imgData.fileName = [image objectForKey:@"file"];
-		imgData.name = [image objectForKey:@"name"];
-		imgData.fullResPath = [image objectForKey:@"element_url"];
-		
-		NSDictionary *imageSizes = [image objectForKey:@"derivatives"];
-		imgData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
-		imgData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
-		imgData.mediumPath = [[imageSizes objectForKey:@"medium"] objectForKey:@"url"];
-		
-		NSArray *categories = [image objectForKey:@"categories"];
-		NSMutableArray *categoryIds = [NSMutableArray new];
-		for(NSDictionary *category in categories)
-		{
-			[categoryIds addObject:[category objectForKey:@"id"]];
-		}
-		
-		imgData.categoryIds = categoryIds;
-		
+		PiwigoImageData *imgData = [AlbumService parseBasicImageInfoJSON:image];
 		[albumImages addObject:imgData];
 	}
 	return albumImages;
+}
+
++(AFHTTPRequestOperation*)getImageInfoById:(NSInteger)imageId
+						  ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, PiwigoImageData *imageData))completion
+										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	return [self post:kPiwigoImagesGetInfo
+		URLParameters:@{@"imageId" : @(imageId)}
+		   parameters:nil
+			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				  
+				  if(completion) {
+					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+					  {
+						  completion(operation, [AlbumService parseBasicImageInfoJSON:[responseObject objectForKey:@"result"]]);
+					  } else {
+						  completion(operation, nil);
+					  }
+				  }
+			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+				  
+				  if(fail) {
+					  fail(operation, error);
+				  }
+			  }];
+}
+
++(PiwigoImageData*)parseBasicImageInfoJSON:(NSDictionary*)imageJson
+{
+	PiwigoImageData *imageData = [PiwigoImageData new];
+	
+	imageData.imageId = [imageJson objectForKey:@"id"];
+	imageData.fileName = [imageJson objectForKey:@"file"];
+	imageData.name = [imageJson objectForKey:@"name"];
+	imageData.fullResPath = [imageJson objectForKey:@"element_url"];
+	
+	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
+	imageData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
+	imageData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
+	imageData.mediumPath = [[imageSizes objectForKey:@"medium"] objectForKey:@"url"];
+	
+	NSArray *categories = [imageJson objectForKey:@"categories"];
+	NSMutableArray *categoryIds = [NSMutableArray new];
+	for(NSDictionary *category in categories)
+	{
+		[categoryIds addObject:[category objectForKey:@"id"]];
+	}
+	
+	imageData.categoryIds = categoryIds;
+	
+	return imageData;
 }
 
 @end

@@ -23,12 +23,13 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor whiteColor];
+		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		
 		self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.categoriesTableView.delegate = self;
 		self.categoriesTableView.dataSource = self;
+		self.categoriesTableView.backgroundColor = [UIColor piwigoWhiteCream];
 		[self.view addSubview:self.categoriesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 		
@@ -49,16 +50,14 @@
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
 	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-//	header.translatesAutoresizingMaskIntoConstraints = NO;
-	header.backgroundColor = [UIColor piwigoGrayLight];
 	
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor whiteColor];
+	headerLabel.textColor = [UIColor piwigoGray];
 	headerLabel.text = @"Select an album to upload images to";	// @TODO: localize this!
 	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintVerticalCenterView:headerLabel]];
+	[header addConstraint:[NSLayoutConstraint constrainViewFromBottom:headerLabel amount:10]];
 	[header addConstraint:[NSLayoutConstraint constrainViewFromLeft:headerLabel amount:15]];
 	
 	return header;
