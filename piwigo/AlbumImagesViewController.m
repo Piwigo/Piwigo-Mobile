@@ -24,6 +24,12 @@
 @property (nonatomic, assign) BOOL didLoadAllImages;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
+@property (nonatomic, strong) UIBarButtonItem *selectBarButton;
+@property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
+@property (nonatomic, assign) BOOL isSelect;
+@property (nonatomic, strong) NSMutableArray *selectedImageIds;
+
 @end
 
 @implementation AlbumImagesViewController
@@ -50,8 +56,47 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 		
 		[self loadImageChunk];
+		
+		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(select)];
+		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelected)];
+		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
+		self.isSelect = NO;
+		self.selectedImageIds = [NSMutableArray new];
 	}
 	return self;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+	[self loadNavButtons];
+}
+
+-(void)loadNavButtons
+{
+	if(!self.isSelect) {
+		self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
+	} else {
+		self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.deleteBarButton];
+	}
+}
+
+-(void)select
+{
+	self.isSelect = YES;
+	[self loadNavButtons];
+}
+-(void)cancelSelect
+{
+	self.isSelect = NO;
+	[self loadNavButtons];
+	self.selectedImageIds = [NSMutableArray new];
+}
+
+-(void)deleteSelected
+{
+	
 }
 
 -(void)loadImageChunk
@@ -76,6 +121,8 @@
 								 }];
 }
 
+#pragma mark -- UICollectionView Methods
+
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
 	return [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] imageList].count;
@@ -94,6 +141,10 @@
 	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:indexPath.row];
 	[cell setupWithImageData:imageData];
 	
+	if([self.selectedImageIds containsObject:imageData.imageId]) {
+		cell.isSelected = YES;
+	}
+	
 	return cell;
 }
 
@@ -104,11 +155,25 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId andImageIndex:indexPath.row];
-	imageDetail.delegate = self;
 	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
-	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
-	[self.navigationController pushViewController:imageDetail animated:YES];
+	if(!self.isSelect)
+	{
+		ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId andImageIndex:indexPath.row];
+		imageDetail.delegate = self;
+		[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
+		[self.navigationController pushViewController:imageDetail animated:YES];
+	}
+	else
+	{
+		if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
+			[self.selectedImageIds addObject:selectedCell.imageData.imageId];
+			selectedCell.isSelected = YES;
+		} else {
+			selectedCell.isSelected = NO;
+			[self.selectedImageIds removeObject:selectedCell.imageData.imageId];
+		}
+		[collectionView reloadItemsAtIndexPaths:@[indexPath]];
+	}
 }
 
 -(void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath

@@ -12,6 +12,7 @@
 @interface ImageCollectionViewCell()
 
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIImageView *selectedImage;
 
 @end
 
@@ -23,6 +24,7 @@
 	if(self)
 	{
 		self.backgroundColor = [UIColor whiteColor];
+		self.isSelected = NO;
 		
 		self.cellImage = [UIImageView new];
 		self.cellImage.translatesAutoresizingMaskIntoConstraints = NO;
@@ -71,6 +73,18 @@
 																	 attribute:NSLayoutAttributeTop
 																	multiplier:1.0
 																	  constant:-5]];
+		
+		self.selectedImage = [UIImageView new];
+		self.selectedImage.translatesAutoresizingMaskIntoConstraints = NO;
+		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
+		UIImage *checkMark = [UIImage imageNamed:@"checkMark"];
+		self.selectedImage.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		self.selectedImage.tintColor = [UIColor piwigoOrange];
+		self.selectedImage.hidden = YES;
+		[self.contentView addSubview:self.selectedImage];
+		[self.contentView addConstraints:[NSLayoutConstraint constrainViewToSize:self.selectedImage size:CGSizeMake(25, 25)]];
+		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromRight:self.selectedImage amount:5]];
+		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromTop:self.selectedImage amount:5]];
 	}
 	return self;
 }
@@ -86,6 +100,14 @@
 -(void)prepareForReuse
 {
 	self.cellImage.image = nil;
+	self.isSelected = NO;
+}
+
+-(void)setIsSelected:(BOOL)isSelected
+{
+	_isSelected = isSelected;
+
+	self.selectedImage.hidden = !isSelected;
 }
 
 @end
