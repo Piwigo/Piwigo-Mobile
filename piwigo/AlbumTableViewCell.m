@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UILabel *numberOfImages;
 @property (nonatomic, strong) UILabel *date;
 @property (nonatomic, strong) UIView *textUnderlay;
+@property (nonatomic, strong) UIImageView *cellDisclosure;
 
 @end
 
@@ -70,6 +71,14 @@
 		self.date.textColor = [UIColor piwigoGrayLight];
 		[self.contentView addSubview:self.date];
 		
+		UIImage *cellDisclosureImg = [UIImage imageNamed:@"cellDisclosure"];
+		self.cellDisclosure = [UIImageView new];
+		self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
+		self.cellDisclosure.image = [cellDisclosureImg imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		self.cellDisclosure.tintColor = [UIColor piwigoGrayLight];
+		self.cellDisclosure.contentMode = UIViewContentModeScaleAspectFit;
+		[self.contentView addSubview:self.cellDisclosure];
+		
 		[self setupAutoLayout];
 	}
 	return self;
@@ -112,6 +121,10 @@
 																 attribute:NSLayoutAttributeTop
 																multiplier:1.0
 																  constant:-5]];
+	
+	[self.cellDisclosure addConstraints:[NSLayoutConstraint constrainViewToSize:self.cellDisclosure size:CGSizeMake(23, 23)]];
+	[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromRight:self.cellDisclosure amount:15]];
+	[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromBottom:self.cellDisclosure amount:38]];
 }
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
@@ -148,7 +161,8 @@
 						   UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
 						   weakSelf.textUnderlay.backgroundColor = bgColor;
 						   weakSelf.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
-						   weakSelf.date.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
+						   weakSelf.date.textColor = weakSelf.numberOfImages.textColor;
+						   weakSelf.cellDisclosure.tintColor = weakSelf.numberOfImages.textColor;
 															   
 					  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 						  NSLog(@"fail to get imgage for album");

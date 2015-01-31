@@ -62,16 +62,17 @@
 	self.title = imageData.name;
 	
 	__weak typeof(self) weakSelf = self;
+	self.progressBar.hidden = NO;
 	[self.image setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
 					  placeholderImage:placeHolder
 							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								   weakSelf.image.image = image;
+								   weakSelf.progressBar.hidden = YES;
 							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 								   
 							   }];
 	
 	[self.image setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-		weakSelf.progressBar.hidden = NO;
 		CGFloat percent = (CGFloat)totalBytesRead / totalBytesExpectedToRead;
 		if(percent == 1) {
 			weakSelf.progressBar.hidden = YES;
