@@ -38,7 +38,7 @@
 	for(PiwigoAlbumData *categoryData in categories)
 	{
 		[newCategories setObject:categoryData forKey:categoryData.albumId];
-		[newSortedKeys setObject:[NSString stringWithFormat:@"%@", @(categoryData.globalRank)] forKeyedSubscript:categoryData.albumId];
+		[newSortedKeys setObject:categoryData.albumId forKey:[NSString stringWithFormat:@"%@", @(categoryData.globalRank)]];
 	}
 	self.categories = newCategories;
 	self.sortedKeys = newSortedKeys;
