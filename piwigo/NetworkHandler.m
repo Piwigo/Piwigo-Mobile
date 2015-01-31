@@ -15,6 +15,7 @@ NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.
 NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}&per_page={perPage}&page={page}&order={order}";
 NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
 NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo&image_id={imageId}";
+NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
 
 @interface NetworkHandler()
 

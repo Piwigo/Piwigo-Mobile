@@ -11,27 +11,56 @@
 @interface PiwigoAlbumData()
 
 @property (nonatomic, strong) NSArray *imageList;
-@property (nonatomic, strong) NSDictionary *imageNameList;
+@property (nonatomic, strong) NSMutableDictionary *imageIds;
 
 @end
 
 @implementation PiwigoAlbumData
 
+-(instancetype)init
+{
+	self = [super init];
+	if(self)
+	{
+		self.imageIds = [NSMutableDictionary new];
+	}
+	return self;
+}
+
 -(void)addImages:(NSArray*)images
 {
+	NSMutableArray *newImages = [NSMutableArray new];
+	[images enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		PiwigoImageData *image = (PiwigoImageData*)obj;
+		if(![self.imageIds objectForKey:image.imageId]) {
+			[newImages addObject:image];
+		}
+	}];
+	
+	if(newImages.count <= 0) return;
+	
 	NSMutableArray *newImageList = [[NSMutableArray alloc] initWithArray:self.imageList];
-	NSMutableDictionary *newImageNameList = [[NSMutableDictionary alloc] initWithDictionary:self.imageNameList];
-	for(PiwigoImageData *imageData in images)
+	for(PiwigoImageData *imageData in newImages)
 	{
 		[newImageList addObject:imageData];
-		[newImageNameList setObject:imageData.imageId forKey:imageData.fileName];
+		[self.imageIds setValue:@(0) forKey:imageData.imageId];
 	}
 	self.imageList = newImageList;
-	self.imageNameList = newImageNameList;
-	
-	self.allKeysOrdered = [self.imageNameList.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-//	[self sortImageList:ImageListOrderId];
 }
+
+//- (NSArray *)removeDuplicatesInArray:(NSArray*)arrayToFilter{
+//	
+//	NSMutableSet *seenDates = [NSMutableSet set];
+//	NSPredicate *dupDatesPred = [NSPredicate predicateWithBlock: ^BOOL(id obj, NSDictionary *bind) {
+//		YourClass *e = (YourClass*)obj;
+//		BOOL seen = [seenDates containsObject:e.propertyName];
+//		if (!seen) {
+//			[seenDates addObject:e.when];
+//		}
+//		return !seen;
+//	}];
+//	return [arrayToFilter filteredArrayUsingPredicate:dupDatesPred];
+//}
 
 -(void)sortImageList:(ImageListOrder)order
 {
@@ -42,6 +71,15 @@
 		
 		return [imgData1.imageId integerValue] < [imgData2.imageId integerValue];
 	}];
+}
+
+-(void)removeImage:(PiwigoImageData*)image
+{
+	NSMutableArray *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
+	[newImageArray removeObject:image];
+	self.imageList = newImageArray;
+	
+	[self.imageIds removeObjectForKey:image.imageId];
 }
 
 @end

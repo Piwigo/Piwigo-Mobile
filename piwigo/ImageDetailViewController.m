@@ -8,9 +8,11 @@
 
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"
+#import "ImageService.h"
 
 @interface ImageDetailViewController ()
 
+@property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, strong) UIImageView *image;
 @property (nonatomic, strong) UIProgressView *progressBar;
 
@@ -67,11 +69,12 @@
 
 -(void)setupWithImageData:(PiwigoImageData*)imageData andPlaceHolderImage:(UIImage*)placeHolder
 {
-	self.title = imageData.name;
+	self.imageData = imageData;
+	self.title = self.imageData.name;
 	
 	__weak typeof(self) weakSelf = self;
 	self.progressBar.hidden = NO;
-	[self.image setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
+	[self.image setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.imageData.mediumPath]]
 					  placeholderImage:placeHolder
 							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								   weakSelf.image.image = image;
@@ -129,7 +132,15 @@
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  NSLog(@"%@", @(buttonIndex));
 						  if(buttonIndex == 1) {
-							  // they want to delete it!
+							  [ImageService deleteImageById:[self.imageData.imageId integerValue]
+										   ListOnCompletion:^(AFHTTPRequestOperation *operation) {
+											   // remove this image from our cache
+											   [[CategoriesData sharedInstance] removeImage:self.imageData forCategoryId:self.categoryId];
+											   NSLog(@"deleted!");
+										   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+											   // oh noes!
+											   NSLog(@"fail to delete");
+										   }];
 						  }
 					  }];
 }

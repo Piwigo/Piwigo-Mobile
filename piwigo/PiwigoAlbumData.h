@@ -28,10 +28,9 @@ typedef enum {
 @property (nonatomic, strong) NSDate *dateLast;
 
 @property (nonatomic, readonly) NSArray *imageList;
-@property (nonatomic, strong) NSArray *allKeysOrdered;
-@property (nonatomic, readonly) NSDictionary *imageNameList;
 
 -(void)addImages:(NSArray*)images;
 -(void)sortImageList:(ImageListOrder)order;
+-(void)removeImage:(PiwigoImageData*)image;
 
 @end

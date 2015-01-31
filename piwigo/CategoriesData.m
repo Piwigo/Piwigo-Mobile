@@ -50,4 +50,10 @@
 	return [[[[CategoriesData sharedInstance].categories objectForKey:category] imageList] objectAtIndex:index];
 }
 
+-(void)removeImage:(PiwigoImageData*)image forCategoryId:(NSString*)categoryId
+{
+	PiwigoAlbumData *imageCategory = [self.categories objectForKey:categoryId];
+	[imageCategory removeImage:image];
+}
+
 @end
