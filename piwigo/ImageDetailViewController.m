@@ -53,6 +53,8 @@
 		leftSwipe.direction = UISwipeGestureRecognizerDirectionRight;
 		[self.view addGestureRecognizer:leftSwipe];
 		
+		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView)]];
+		
 	}
 	return self;
 }
@@ -80,6 +82,24 @@
 			[weakSelf.progressBar setProgress:percent animated:YES];
 		}
 	}];
+}
+
+-(void)didTapView
+{
+	[self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
+
+	[UIView animateWithDuration:0.5 animations:^{
+		self.tabBarController.tabBar.hidden = !self.tabBarController.tabBar.hidden;
+	}];
+	
+	CGRect frame = self.tabBarController.tabBar.frame;
+	CGFloat height = frame.size.height;
+	CGFloat offsetY = (frame.origin.y >= self.view.frame.size.height) ? -height : height;
+	
+	[UIView animateWithDuration:0.3
+					 animations:^{
+						 self.tabBarController.tabBar.frame = CGRectOffset(frame, 0, offsetY);
+					 }];
 }
 
 -(void)swipeRight
