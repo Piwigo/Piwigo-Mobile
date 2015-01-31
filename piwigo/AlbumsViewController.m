@@ -55,7 +55,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [[CategoriesData sharedInstance].categories allKeys].count;
+	return [CategoriesData sharedInstance].sortedKeys.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -67,7 +67,7 @@
 {
 	AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:[[CategoriesData sharedInstance].categories.allKeys objectAtIndex:indexPath.row]];
+	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:@([[[CategoriesData sharedInstance].sortedKeys objectForKey:@(indexPath.row + 1)] integerValue])];
 	
 	[cell setupWithAlbumData:albumData];
 	
@@ -78,7 +78,7 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:[[CategoriesData sharedInstance].categories.allKeys objectAtIndex:indexPath.row]];
+	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:@([[[CategoriesData sharedInstance].sortedKeys objectForKey:@(indexPath.row + 1)] integerValue])];
 	
 	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
 	[self.navigationController pushViewController:album animated:YES];

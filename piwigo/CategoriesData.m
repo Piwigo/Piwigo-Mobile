@@ -11,6 +11,7 @@
 @interface CategoriesData()
 
 @property (nonatomic, strong) NSDictionary *categories;
+@property (nonatomic, strong) NSDictionary *sortedKeys;
 
 @end
 
@@ -24,6 +25,7 @@
 		instance = [[self alloc] init];
 		
 		instance.categories = [NSDictionary new];
+		instance.sortedKeys = [NSDictionary new];
 		
 	});
 	return instance;
@@ -32,11 +34,14 @@
 -(void)addCategories:(NSArray*)categories
 {
 	NSMutableDictionary *newCategories = [[NSMutableDictionary alloc] initWithDictionary:self.categories];
+	NSMutableDictionary *newSortedKeys = [[NSMutableDictionary alloc] initWithDictionary:self.sortedKeys];
 	for(PiwigoAlbumData *categoryData in categories)
 	{
 		[newCategories setObject:categoryData forKey:categoryData.albumId];
+		[newSortedKeys setObject:[NSString stringWithFormat:@"%@", @(categoryData.globalRank)] forKeyedSubscript:categoryData.albumId];
 	}
 	self.categories = newCategories;
+	self.sortedKeys = newSortedKeys;
 }
 
 -(PiwigoImageData*)getImageForCategory:(NSString*)category andIndex:(NSInteger)index
