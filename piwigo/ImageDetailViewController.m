@@ -42,8 +42,14 @@
 		self.progressBar.tintColor = [UIColor piwigoOrange];
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
-		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.progressBar amount:64]];
 		[self.progressBar addConstraint:[NSLayoutConstraint constrainViewToHeight:self.progressBar height:10]];
+		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.progressBar
+															  attribute:NSLayoutAttributeTop
+															  relatedBy:NSLayoutRelationEqual
+																 toItem:self.topLayoutGuide
+															  attribute:NSLayoutAttributeBottom
+															 multiplier:1.0
+															   constant:0]];
 		
 		UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)];
 		rightSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
@@ -82,6 +88,50 @@
 			[weakSelf.progressBar setProgress:percent animated:YES];
 		}
 	}];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
+	self.navigationItem.rightBarButtonItem = imageOptionsButton;
+}
+
+-(void)imageOptions
+{
+	[UIActionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem
+								animated:YES
+							   withTitle:@"Image Options"
+					   cancelButtonTitle:@"Cancel"
+				  destructiveButtonTitle:@"Delete"
+					   otherButtonTitles:@[@"Download", @"Rename"]
+								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+									switch(buttonIndex)
+									{
+										case 0: // Delete
+											[self deleteImage];
+											break;
+										case 1: // Download
+											break;
+										case 2: // Rename
+											break;
+									}
+								}];
+}
+
+-(void)deleteImage
+{
+	[UIAlertView showWithTitle:@"Are You Sure?"
+					   message:@"Are you sure you want to delete this image? This cannot be undone!"
+			 cancelButtonTitle:@"Nevermind"
+			 otherButtonTitles:@[@"Yes"]
+					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+						  NSLog(@"%@", @(buttonIndex));
+						  if(buttonIndex == 1) {
+							  // they want to delete it!
+						  }
+					  }];
 }
 
 -(void)didTapView
