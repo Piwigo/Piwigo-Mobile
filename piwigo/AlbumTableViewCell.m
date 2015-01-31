@@ -8,7 +8,7 @@
 
 #import "AlbumTableViewCell.h"
 #import "PiwigoAlbumData.h"
-#import "AlbumService.h"
+#import "ImageService.h"
 #import "LEColorPicker.h"
 #import "OutlinedText.h"
 
@@ -37,6 +37,7 @@
 		self.backgroundImage.contentMode = UIViewContentModeScaleAspectFill;
 		self.backgroundImage.clipsToBounds = YES;
 		self.backgroundImage.backgroundColor = [UIColor piwigoGray];
+		self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
 		[self.contentView addSubview:self.backgroundImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[img]-5-|"
 																				 options:kNilOptions
@@ -138,7 +139,7 @@
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];
 	
 	__weak typeof(self) weakSelf = self;
-	[AlbumService getImageInfoById:albumData.albumThumbnailId
+	[ImageService getImageInfoById:albumData.albumThumbnailId
 				  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
 					  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
 												  placeholderImage:[UIImage imageNamed:@"placeholder"]
@@ -177,7 +178,7 @@
 	[super prepareForReuse];
 	
 	[self.backgroundImage cancelImageRequestOperation];
-	self.backgroundImage.image = nil;
+	self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
 	
 	self.albumName.text = @"";
 	self.numberOfImages.text = @"";

@@ -8,7 +8,7 @@
 
 #import "AlbumImagesViewController.h"
 #import "ImageCollectionViewCell.h"
-#import "AlbumService.h"
+#import "ImageService.h"
 #import "CategoriesData.h"
 #import "Model.h"
 #import "ImageDetailViewController.h"
@@ -61,7 +61,7 @@
 	NSLog(@"load more images");
 	self.isLoadingMoreImages = YES;
 	
-	AFHTTPRequestOperation *request = [AlbumService getAlbumPhotosForAlbumId:[self.categoryId integerValue]
+	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:[self.categoryId integerValue]
 																	  onPage:self.onPage
 																	forOrder:kGetImageOrderFileName
 																OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {

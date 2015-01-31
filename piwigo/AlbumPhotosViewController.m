@@ -11,7 +11,7 @@
 #import "ImageDetailViewController.h"
 #import "PiwigoImageData.h"
 #import "PiwigoAlbumData.h"
-#import "AlbumService.h"
+#import "ImageService.h"
 #import "Model.h"
 
 @interface AlbumPhotosViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -66,7 +66,7 @@
 	[self.spinner startAnimating];
 	self.photosTableView.tableFooterView = self.spinner;
 	
-	AFHTTPRequestOperation *request = [AlbumService getAlbumPhotosForAlbumId:[self.albumData.albumId integerValue]
+	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:[self.albumData.albumId integerValue]
 									onPage:0
 								  forOrder:kGetImageOrderFileName
 							  OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
