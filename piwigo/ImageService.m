@@ -9,6 +9,8 @@
 #import "ImageService.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
+#import "PiwigoAlbumData.h"
+#import "CategoriesData.h"
 
 NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
@@ -141,5 +143,39 @@ NSString * const kGetImageOrderRandom = @"random";
 				  }
 			  }];
 }
+
++(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
+											  forCategory:(NSString*)categoryId
+												   onPage:(NSInteger)onPage
+										 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSInteger count))completion
+												onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	if(lastImageBulkCount != [Model sharedInstance].imagesPerPage) return nil;
+	
+	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:[categoryId integerValue]
+																 onPage:onPage
+															   forOrder:kGetImageOrderFileName
+														   OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
+															   
+															   if(albumImages)
+															   {
+																   PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:categoryId];
+																   [albumData addImages:albumImages];
+															   }
+															   
+															   if(completion) {
+																   completion(operation, albumImages.count);
+															   }
+														   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+															   NSLog(@"Fail get album photos: %@", error);
+															   if(fail) {
+																   fail(fail, error);
+															   }
+														   }];
+	
+	[request setQueuePriority:NSOperationQueuePriorityVeryHigh];
+	return request;
+}
+
 
 @end

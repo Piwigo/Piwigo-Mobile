@@ -34,4 +34,10 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 						 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation))completion
 								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
++(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
+											  forCategory:(NSString*)categoryId
+												   onPage:(NSInteger)onPage
+										 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSInteger count))completion
+												onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
 @end

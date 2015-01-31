@@ -56,38 +56,24 @@
 
 -(void)loadImageChunk
 {
-	if(self.lastImageBulkCount != [Model sharedInstance].imagesPerPage || self.isLoadingMoreImages) return;
+	if(self.isLoadingMoreImages) return;
 	
-	NSLog(@"load more images");
 	self.isLoadingMoreImages = YES;
 	
-	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:[self.categoryId integerValue]
-																	  onPage:self.onPage
-																	forOrder:kGetImageOrderFileName
-																OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
-																	
-																	if(albumImages)
-																	{
-																		if(albumImages.count != [Model sharedInstance].imagesPerPage) {
-																			self.didLoadAllImages = YES;
-																		}
-																		PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:self.categoryId];
-																		[albumData addImages:albumImages];
-																		
-																		[self.imagesCollection reloadData];
-																		NSLog(@"Updated more images");
-																	} else {
-																		self.didLoadAllImages = YES;
-																	}
-																	self.isLoadingMoreImages = NO;
-																	self.onPage++;
-																	self.lastImageBulkCount = albumImages.count;
-																} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-																	NSLog(@"Fail get album photos: %@", error);
-																	self.isLoadingMoreImages = NO;
-																}];
-	
-	[request setQueuePriority:NSOperationQueuePriorityVeryHigh];
+	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
+									  forCategory:self.categoryId
+										   onPage:self.onPage
+								 ListOnCompletion:^(AFHTTPRequestOperation *operation, NSInteger count) {
+									 
+									 self.lastImageBulkCount = count;
+									 self.onPage++;
+									 self.isLoadingMoreImages = NO;
+									 [self.imagesCollection reloadData];
+								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+									 
+									 
+									 self.isLoadingMoreImages = NO;
+								 }];
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
