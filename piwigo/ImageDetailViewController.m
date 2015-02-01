@@ -9,6 +9,7 @@
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"
 #import "ImageService.h"
+#import "ImageDownloadView.h"
 
 @interface ImageDetailViewController ()
 
@@ -18,6 +19,8 @@
 
 @property (nonatomic, strong) NSString *categoryId;
 @property (nonatomic, assign) NSInteger currentImageIndex;
+
+@property (nonatomic, strong) ImageDownloadView *downloadView;
 
 @end
 
@@ -62,7 +65,6 @@
 		[self.view addGestureRecognizer:leftSwipe];
 		
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView)]];
-		
 	}
 	return self;
 }
@@ -78,6 +80,8 @@
 					  placeholderImage:placeHolder
 							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								   weakSelf.image.image = image;
+								   weakSelf.downloadView.downloadImage = image;
+								   weakSelf.downloadView.hidden = YES;
 								   weakSelf.progressBar.hidden = YES;
 							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 								   
@@ -116,8 +120,10 @@
 											[self deleteImage];
 											break;
 										case 1: // Download
+											[self downloadImage];
 											break;
 										case 2: // Rename
+											self.downloadView.percentDownloaded = 0.5;
 											break;
 									}
 								}];
@@ -144,6 +150,45 @@
 										   }];
 						  }
 					  }];
+}
+
+-(void)downloadImage
+{
+	self.downloadView.hidden = NO;
+	
+	[ImageService downloadImage:self.imageData
+					 onProgress:^(NSInteger current, NSInteger total) {
+						 CGFloat progress = (CGFloat)current / total;
+						 self.downloadView.percentDownloaded = progress;
+					 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
+						 [self saveImageToCameraRoll:image];
+					 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						 self.downloadView.hidden = YES;
+						 [UIAlertView showWithTitle:@"Download Fail"
+											message:[NSString stringWithFormat:@"Failed to download image!\n%@", error.description]
+								  cancelButtonTitle:@"Ok"
+								  otherButtonTitles:@[@"Try Again!"]
+										   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+											   if(buttonIndex == 1) {
+												   [self downloadImage];
+											   }
+										   }];
+					 }];
+}
+-(void)saveImageToCameraRoll:(UIImage*)imageToSave
+{
+	UIImageWriteToSavedPhotosAlbum(imageToSave, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+}
+
+// called when the image is done saving to disk
+-(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+	if(error) {
+		// display error
+	}
+	self.downloadView.hidden = YES;
+//	self.saveButton.customView = nil;
+//	self.navigationItem.rightBarButtonItem = nil;
 }
 
 -(void)didTapView
@@ -190,6 +235,18 @@
 	self.title = imageData.name;
 	[self.image setImageWithURL:[NSURL URLWithString:imageData.mediumPath]
 			   placeholderImage:[UIImage imageNamed:@"placeholder"]];
+}
+
+-(ImageDownloadView*)downloadView
+{
+	if(_downloadView) return _downloadView;
+	
+	
+	_downloadView = [ImageDownloadView new];
+	_downloadView.translatesAutoresizingMaskIntoConstraints = NO;
+	[self.view addSubview:_downloadView];
+	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
+	return _downloadView;
 }
 
 @end

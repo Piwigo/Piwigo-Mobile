@@ -34,6 +34,11 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 						 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation))completion
 								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
++(AFHTTPRequestOperation*)downloadImage:(PiwigoImageData*)image
+							 onProgress:(void (^)(NSInteger current, NSInteger total))progress
+					   ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, UIImage *image))completion
+							  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
 +(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
 											  forCategory:(NSString*)categoryId
 												   onPage:(NSInteger)onPage

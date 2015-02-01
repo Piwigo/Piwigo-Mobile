@@ -146,6 +146,28 @@ NSString * const kGetImageOrderRandom = @"random";
 			  }];
 }
 
++(AFHTTPRequestOperation*)downloadImage:(PiwigoImageData*)image
+							 onProgress:(void (^)(NSInteger current, NSInteger total))progress
+					 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, UIImage *image))completion
+							onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	if(!image) return nil;
+	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:image.fullResPath]];
+	AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:requst];
+	requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
+	[requestOperation setCompletionBlockWithSuccess:completion
+											failure:fail];
+	
+	[requestOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+		if(progress) {
+			progress(totalBytesRead, totalBytesExpectedToRead);
+		}
+	}];
+	
+	[requestOperation start];
+	return requestOperation;
+}
+
 +(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
 											  forCategory:(NSString*)categoryId
 												   onPage:(NSInteger)onPage
