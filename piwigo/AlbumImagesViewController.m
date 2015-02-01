@@ -12,6 +12,7 @@
 #import "CategoriesData.h"
 #import "Model.h"
 #import "ImageDetailViewController.h"
+#import "DeletingView.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate>
 
@@ -28,7 +29,10 @@
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, assign) BOOL isSelect;
+@property (nonatomic, assign) BOOL isDeleting;
+@property (nonatomic, assign) NSInteger startDeleteTotalImages;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
+@property (nonatomic, strong) DeletingView *deletingView;
 
 @end
 
@@ -61,7 +65,15 @@
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelected)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.isSelect = NO;
+		self.isDeleting = NO;
+		self.startDeleteTotalImages = -1;
 		self.selectedImageIds = [NSMutableArray new];
+		
+//		self.deletingView = [DeletingView new];
+//		self.deletingView.translatesAutoresizingMaskIntoConstraints = NO;
+//		[self.view addSubview:self.deletingView];
+//		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.deletingView]];
+		
 	}
 	return self;
 }
@@ -91,22 +103,32 @@
 {
 	self.isSelect = NO;
 	[self loadNavButtons];
+	self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] name];
 	self.selectedImageIds = [NSMutableArray new];
 }
-
 -(void)deleteSelected
 {
-	if(self.selectedImageIds.count <= 0) return;
+	if(self.selectedImageIds.count <= 0)
+	{
+		self.isDeleting = NO;
+		self.startDeleteTotalImages = -1;
+		[self cancelSelect];
+		return;
+	}
 	
-	self.deleteBarButton.enabled = NO;
+	if(self.startDeleteTotalImages == -1) self.startDeleteTotalImages = self.selectedImageIds.count;
+	
+	self.isDeleting = YES;
+	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
 	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject]
 				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
-					 self.deleteBarButton.enabled = YES;
 					 [self.selectedImageIds removeLastObject];
+					 NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
+					 self.title = [NSString stringWithFormat:@"Deleting %@%% Done", @(percentDone)];
 					 [self.imagesCollection reloadData];
 					 [self deleteSelected];
 				 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					 self.deleteBarButton.enabled = YES;
+					 self.isDeleting = NO;
 					 [UIAlertView showWithTitle:@"Delete Failed"
 										message:[NSString stringWithFormat:@"Image could not be deleted\n%@", error.description]
 							  cancelButtonTitle:@"Okay"
