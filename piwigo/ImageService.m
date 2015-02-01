@@ -119,18 +119,20 @@ NSString * const kGetImageOrderRandom = @"random";
 	return imageData;
 }
 
-+(AFHTTPRequestOperation*)deleteImageById:(NSInteger)imageId
++(AFHTTPRequestOperation*)deleteImage:(PiwigoImageData*)image
 						  ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation))completion
 								 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
+	if(!image) return nil;
 	return [self post:kPiwigoImageDelete
 		URLParameters:nil
-		   parameters:@{@"image_id" : @(imageId),
+		   parameters:@{@"image_id" : @([image.imageId integerValue]),
 						@"pwg_token" : [Model sharedInstance].pwgToken}
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  
 				  if(completion) {
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+						  [[CategoriesData sharedInstance] removeImage:image];
 						  completion(operation);
 					  } else {
 						  fail(operation, responseObject);

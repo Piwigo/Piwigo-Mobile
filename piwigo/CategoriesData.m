@@ -50,10 +50,28 @@
 	return [[[[CategoriesData sharedInstance].categories objectForKey:category] imageList] objectAtIndex:index];
 }
 
--(void)removeImage:(PiwigoImageData*)image forCategoryId:(NSString*)categoryId
+-(PiwigoImageData*)getImageForCategory:(NSString*)category andId:(NSString*)imageId
 {
-	PiwigoAlbumData *imageCategory = [self.categories objectForKey:categoryId];
-	[imageCategory removeImage:image];
+	PiwigoAlbumData *selectedCategory = [self.categories objectForKey:category];
+	
+	[imageId isKindOfClass:[NSString class]];
+	
+	for(PiwigoImageData *img in selectedCategory.imageList) {
+		if([imageId integerValue] == [img.imageId integerValue])
+		{
+			return img;
+		}
+	}
+	
+	return nil;
+}
+
+-(void)removeImage:(PiwigoImageData*)image
+{
+	for(NSString *category in image.categoryIds) {
+		PiwigoAlbumData *imageCategory = [self.categories objectForKey:category];
+		[imageCategory removeImage:image];
+	}
 }
 
 @end

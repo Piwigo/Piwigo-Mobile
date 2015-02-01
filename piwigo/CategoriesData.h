@@ -17,6 +17,7 @@
 @property (nonatomic, readonly) NSDictionary *sortedKeys;
 -(void)addCategories:(NSArray*)categories;
 -(PiwigoImageData*)getImageForCategory:(NSString*)category andIndex:(NSInteger)index;
--(void)removeImage:(PiwigoImageData*)image forCategoryId:(NSString*)categoryId;
+-(PiwigoImageData*)getImageForCategory:(NSString*)category andId:(NSString*)imageId;
+-(void)removeImage:(PiwigoImageData*)image;
 
 @end

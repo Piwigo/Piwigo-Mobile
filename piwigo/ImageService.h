@@ -30,7 +30,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 						  ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, PiwigoImageData *imageData))completion
 								 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)deleteImageById:(NSInteger)imageId
++(AFHTTPRequestOperation*)deleteImage:(PiwigoImageData*)image
 						 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation))completion
 								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 

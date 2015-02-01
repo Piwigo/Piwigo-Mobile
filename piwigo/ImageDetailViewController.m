@@ -132,10 +132,10 @@
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  NSLog(@"%@", @(buttonIndex));
 						  if(buttonIndex == 1) {
-							  [ImageService deleteImageById:[self.imageData.imageId integerValue]
+							  [ImageService deleteImage:self.imageData
 										   ListOnCompletion:^(AFHTTPRequestOperation *operation) {
 											   // remove this image from our cache
-											   [[CategoriesData sharedInstance] removeImage:self.imageData forCategoryId:self.categoryId];
+//											   [[CategoriesData sharedInstance] removeImage:self.imageData forCategoryId:self.categoryId];
 											   if([self.delegate respondsToSelector:@selector(didDeleteImage)])
 											   {
 												   [self.delegate didDeleteImage];

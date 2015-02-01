@@ -96,7 +96,28 @@
 
 -(void)deleteSelected
 {
+	if(self.selectedImageIds.count <= 0) return;
 	
+	self.deleteBarButton.enabled = NO;
+	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject]
+				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
+					 self.deleteBarButton.enabled = YES;
+					 [self.selectedImageIds removeLastObject];
+					 [self.imagesCollection reloadData];
+					 [self deleteSelected];
+				 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+					 self.deleteBarButton.enabled = YES;
+					 [UIAlertView showWithTitle:@"Delete Failed"
+										message:[NSString stringWithFormat:@"Image could not be deleted\n%@", error.description]
+							  cancelButtonTitle:@"Okay"
+							  otherButtonTitles:@[@"Try Again"]
+									   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+										   if(buttonIndex == 1)
+										   {
+											   [self deleteSelected];
+										   }
+									   }];
+				 }];
 }
 
 -(void)loadImageChunk
