@@ -60,7 +60,7 @@
 		[self loadImageChunk];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(select)];
-		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelected)];
+		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.isSelect = NO;
 		self.isDeleting = NO;
@@ -97,8 +97,27 @@
 	self.isSelect = NO;
 	[self loadNavButtons];
 	self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] name];
+	for(ImageCollectionViewCell *cell in self.imagesCollection.visibleCells) {
+		if(cell.isSelected) cell.isSelected = NO;
+	}
 	self.selectedImageIds = [NSMutableArray new];
 }
+
+-(void)deleteImages
+{
+	if(self.selectedImageIds.count <= 0) return;
+	
+	[UIAlertView showWithTitle:[NSString stringWithFormat:@"Delete Image%@", self.selectedImageIds.count > 1 ? @"s" : @""]
+					   message:[NSString stringWithFormat:@"Are you sure you want to delete the selected %@ image%@? This cannot be undone!", @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? @"s" : @""]
+			 cancelButtonTitle:@"Nevermind"
+			 otherButtonTitles:@[@"Yes"]
+					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+						  if(buttonIndex == 1) {
+							  [self deleteSelected];
+						  }
+					  }];
+}
+
 -(void)deleteSelected
 {
 	if(self.selectedImageIds.count <= 0)
