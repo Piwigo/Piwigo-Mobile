@@ -12,7 +12,6 @@
 #import "CategoriesData.h"
 #import "Model.h"
 #import "ImageDetailViewController.h"
-#import "DeletingView.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate>
 
@@ -32,7 +31,6 @@
 @property (nonatomic, assign) BOOL isDeleting;
 @property (nonatomic, assign) NSInteger startDeleteTotalImages;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
-@property (nonatomic, strong) DeletingView *deletingView;
 
 @end
 
@@ -68,11 +66,6 @@
 		self.isDeleting = NO;
 		self.startDeleteTotalImages = -1;
 		self.selectedImageIds = [NSMutableArray new];
-		
-//		self.deletingView = [DeletingView new];
-//		self.deletingView.translatesAutoresizingMaskIntoConstraints = NO;
-//		[self.view addSubview:self.deletingView];
-//		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.deletingView]];
 		
 	}
 	return self;
