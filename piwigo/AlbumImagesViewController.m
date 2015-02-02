@@ -26,6 +26,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
+@property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) BOOL isDeleting;
@@ -61,6 +62,7 @@
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
+		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.isSelect = NO;
 		self.isDeleting = NO;
@@ -83,7 +85,7 @@
 	if(!self.isSelect) {
 		self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
 	} else {
-		self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.deleteBarButton];
+		self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton];
 	}
 }
 
@@ -154,6 +156,38 @@
 										   }
 									   }];
 				 }];
+}
+
+-(void)downloadImages
+{
+	[self downloadImage];
+	
+}
+
+-(void)downloadImage
+{
+	if(self.selectedImageIds.count <= 0)
+	{
+		//		self.isDeleting = NO;
+		//		self.startDeleteTotalImages = -1;
+		[self cancelSelect];
+		return;
+	}
+	
+	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
+	[ImageService downloadImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject]
+					 onProgress:^(NSInteger current, NSInteger total) {
+						 //
+					 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
+						 [self.selectedImageIds removeLastObject];
+//						 NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
+//						 self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
+						 [self.imagesCollection reloadData];
+						 [self downloadImage];
+						 NSLog(@"downlaod complete");
+					 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						 NSLog(@"download fail");
+					 }];
 }
 
 -(void)loadImageChunk

@@ -37,7 +37,7 @@
 "deleteImage_delete" = "Delete";
 "deleteImage_iamgeSingular" = "Image";
 "deleteImage_iamgePlural" = "Images";
-"delteImage_message" = "Are you sure you want to delete the selected %@ %@ This cannot be undone!"; // Are you sure you want to delete the selected (5) (Image(s)) This cannot be undone!
+"delteImage_message" = "Are you sure you want to delete the selected %@ %@? This cannot be undone!"; // Are you sure you want to delete the selected (5) (Image(s)) This cannot be undone!
 "deleteImage_cancelButton" = "Nevermind";
 "deleteImageProgress_title" = "Deleting %@%% Done"; // Deleting 36% Done
 "deleteImageFail_title" = "Delete Failed";
