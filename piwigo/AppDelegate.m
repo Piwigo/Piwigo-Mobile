@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "LoginViewController.h"
 #import "TabBarViewController.h"
-#import "LoginService.h"
+#import "SessionService.h"
 #import "Model.h"
 #import "KeychainAccess.h"
 #import "AFNetworkActivityIndicatorManager.h"

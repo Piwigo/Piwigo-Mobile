@@ -1,5 +1,5 @@
 //
-//  LoginService.h
+//  SessionService.h
 //  piwigo
 //
 //  Created by Spencer Baker on 1/20/15.
@@ -9,7 +9,7 @@
 #import "NetworkHandler.h"
 #import <Foundation/Foundation.h>
 
-@interface LoginService : NetworkHandler
+@interface SessionService : NetworkHandler
 
 +(AFHTTPRequestOperation*)performLoginWithServer:(NSString*)server
 										 andUser:(NSString*)user
@@ -19,5 +19,8 @@
 
 +(AFHTTPRequestOperation*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
 									  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
++(AFHTTPRequestOperation*)sessionLogoutOnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL sucessfulLogout))completion
+										  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 @end

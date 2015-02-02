@@ -1,16 +1,16 @@
 //
-//  LoginService.h
+//  SessionService.m
 //  piwigo
 //
 //  Created by Spencer Baker on 1/20/15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "LoginService.h"
+#import "SessionService.h"
 #import "KeychainAccess.h"
 #import "Model.h"
 
-@implementation LoginService
+@implementation SessionService
 
 +(AFHTTPRequestOperation*)performLoginWithServer:(NSString*)server
 										 andUser:(NSString*)user
@@ -41,7 +41,7 @@
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
 				  if(fail) {
-					  [LoginService showConnectionError:error];
+					  [SessionService showConnectionError:error];
 					  fail(operation, error);
 				  }
 			  }];
@@ -71,7 +71,34 @@
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
 				  if(fail) {
-					  [LoginService showConnectionError:error];
+					  [SessionService showConnectionError:error];
+					  fail(operation, error);
+				  }
+			  }];
+}
+
++(AFHTTPRequestOperation*)sessionLogoutOnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL sucessfulLogout))completion
+									  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	return [self post:kPiwigoSessionLogout
+		URLParameters:nil
+		   parameters:nil
+			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				  
+				  if(completion) {
+					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+					  {
+						  completion(operation, [[responseObject objectForKey:@"result" ] boolValue]);
+					  }
+					  else
+					  {
+						  completion(operation, NO);
+					  }
+				  }
+			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+				  
+				  if(fail) {
+					  [SessionService showConnectionError:error];
 					  fail(operation, error);
 				  }
 			  }];

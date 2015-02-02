@@ -12,6 +12,7 @@ typedef void(^SuccessBlock)(id responseObject);
 
 FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
+FOUNDATION_EXPORT NSString * const kPiwigoSessionLogout;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetList;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetImages;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUpload;
