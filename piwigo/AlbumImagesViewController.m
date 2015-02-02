@@ -12,6 +12,7 @@
 #import "CategoriesData.h"
 #import "Model.h"
 #import "ImageDetailViewController.h"
+#import "ImageDownloadView.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate>
 
@@ -29,9 +30,10 @@
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, assign) BOOL isSelect;
-@property (nonatomic, assign) BOOL isDeleting;
 @property (nonatomic, assign) NSInteger startDeleteTotalImages;
+@property (nonatomic, assign) NSInteger totalImagesToDownload;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
+@property (nonatomic, strong) ImageDownloadView *downloadView;
 
 @end
 
@@ -65,9 +67,9 @@
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.isSelect = NO;
-		self.isDeleting = NO;
-		self.startDeleteTotalImages = -1;
 		self.selectedImageIds = [NSMutableArray new];
+		
+		self.downloadView.hidden = YES;
 		
 	}
 	return self;
@@ -102,6 +104,7 @@
 	for(ImageCollectionViewCell *cell in self.imagesCollection.visibleCells) {
 		if(cell.isSelected) cell.isSelected = NO;
 	}
+	self.downloadView.hidden = YES;
 	self.selectedImageIds = [NSMutableArray new];
 }
 
@@ -117,6 +120,7 @@
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1) {
+							  self.startDeleteTotalImages = self.selectedImageIds.count;
 							  [self deleteSelected];
 						  }
 					  }];
@@ -126,15 +130,10 @@
 {
 	if(self.selectedImageIds.count <= 0)
 	{
-		self.isDeleting = NO;
-		self.startDeleteTotalImages = -1;
 		[self cancelSelect];
 		return;
 	}
 	
-	if(self.startDeleteTotalImages == -1) self.startDeleteTotalImages = self.selectedImageIds.count;
-	
-	self.isDeleting = YES;
 	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
 	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject]
 				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
@@ -144,7 +143,6 @@
 					 [self.imagesCollection reloadData];
 					 [self deleteSelected];
 				 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					 self.isDeleting = NO;
 					 [UIAlertView showWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
 										message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), error.description]
 							  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
@@ -160,34 +158,55 @@
 
 -(void)downloadImages
 {
+	// @TODO: ask if they want to bulk download %@ images
+	self.totalImagesToDownload = self.selectedImageIds.count;
 	[self downloadImage];
-	
 }
 
 -(void)downloadImage
 {
 	if(self.selectedImageIds.count <= 0)
 	{
-		//		self.isDeleting = NO;
-		//		self.startDeleteTotalImages = -1;
 		[self cancelSelect];
 		return;
 	}
 	
+	self.downloadView.hidden = NO;
 	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
-	[ImageService downloadImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject]
+	
+	PiwigoImageData *downloadingImage = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject];
+	
+	UIImageView *dummyView = [UIImageView new];
+	__weak typeof(self) weakSelf = self;
+	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:downloadingImage.thumbPath]]
+					 placeholderImage:nil
+							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+								  weakSelf.downloadView.downloadImage = image;
+							  } failure:nil];
+	
+	[ImageService downloadImage:downloadingImage
 					 onProgress:^(NSInteger current, NSInteger total) {
-						 //
+						 CGFloat progress = (CGFloat)current / total;
+						 self.downloadView.percentDownloaded = progress;
 					 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
 						 [self.selectedImageIds removeLastObject];
-//						 NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
-//						 self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
+						 NSInteger percentDone = ((CGFloat)(self.totalImagesToDownload - self.selectedImageIds.count) / self.totalImagesToDownload) * 100;
 						 [self.imagesCollection reloadData];
 						 [self downloadImage];
-						 NSLog(@"downlaod complete");
+						 NSLog(@"downlaod complete -- (%@ %%)", @(percentDone));
 					 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 						 NSLog(@"download fail");
 					 }];
+}
+-(ImageDownloadView*)downloadView
+{
+	if(_downloadView) return _downloadView;
+	
+	_downloadView = [ImageDownloadView new];
+	_downloadView.translatesAutoresizingMaskIntoConstraints = NO;
+	[self.view addSubview:_downloadView];
+	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
+	return _downloadView;
 }
 
 -(void)loadImageChunk
