@@ -109,10 +109,10 @@
 {
 	[UIActionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem
 								animated:YES
-							   withTitle:@"Image Options"
-					   cancelButtonTitle:@"Cancel"
-				  destructiveButtonTitle:@"Delete"
-					   otherButtonTitles:@[@"Download", @"Rename"]
+							   withTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
+					   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+				  destructiveButtonTitle:NSLocalizedString(@"deleteImage_delete", @"Delete")
+					   otherButtonTitles:@[NSLocalizedString(@"iamgeOptions_download", @"Download"), NSLocalizedString(@"iamgeOptions_rename",  @"Rename")]
 								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
 									switch(buttonIndex)
 									{
@@ -131,10 +131,10 @@
 
 -(void)deleteImage
 {
-	[UIAlertView showWithTitle:@"Are You Sure?"
-					   message:@"Are you sure you want to delete this image? This cannot be undone!"
-			 cancelButtonTitle:@"Nevermind"
-			 otherButtonTitles:@[@"Yes"]
+	[UIAlertView showWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
+					   message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
+			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Nevermind")
+			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1) {
 							  [ImageService deleteImage:self.imageData
@@ -145,7 +145,7 @@
 											   }
 											   [self.navigationController popViewControllerAnimated:YES];
 										   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-											   // oh noes!
+											   // @TODO: display error to delete image
 											   NSLog(@"fail to delete");
 										   }];
 						  }
@@ -164,10 +164,10 @@
 						 [self saveImageToCameraRoll:image];
 					 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 						 self.downloadView.hidden = YES;
-						 [UIAlertView showWithTitle:@"Download Fail"
-											message:[NSString stringWithFormat:@"Failed to download image!\n%@", error.description]
-								  cancelButtonTitle:@"Ok"
-								  otherButtonTitles:@[@"Try Again!"]
+						 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+											message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), error.description]
+								  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+								  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 										   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 											   if(buttonIndex == 1) {
 												   [self downloadImage];
@@ -184,7 +184,7 @@
 -(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
 	if(error) {
-		// display error
+		// @TODO: display error
 	}
 	self.downloadView.hidden = YES;
 //	self.saveButton.customView = nil;

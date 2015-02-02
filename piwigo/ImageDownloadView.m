@@ -38,7 +38,7 @@
 		
 		self.statusLabel = [UILabel new];
 		self.statusLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.statusLabel.text = @"Downloading Image";
+		self.statusLabel.text = NSLocalizedString(@"downloadingImage", @"Downloading Image");
 		self.statusLabel.font = [UIFont piwigoFontNormal];
 		self.statusLabel.font = [self.statusLabel.font fontWithSize:18];
 		self.statusLabel.textColor = [UIColor piwigoGray];
@@ -74,7 +74,7 @@
 	self.imageProgress.percent = percentDownloaded;
 	NSInteger percent = percentDownloaded * 100;
 	if(percent == 100) {
-		self.percentLabel.text = @"Complete";
+		self.percentLabel.text = NSLocalizedString(@"downloadingImage_complete", @"Complete");
 	} else {
 		self.percentLabel.text = [NSString stringWithFormat:@"%@ %%", @(percent)];
 	}

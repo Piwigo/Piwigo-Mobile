@@ -16,7 +16,10 @@
 "tabBar_upload" = "Upload";
 "tabBar_preferences" = "Preferences";
 
-"alertCancelButton" = "Okay";
+"alertOkayButton" = "Okay";
+"alertYesButton" = "Yes";
+"alertTryAgainButton" = "Try Again";
+"alertCancelButton" = "Cancel";
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given server";
@@ -25,3 +28,39 @@
 "sessionStatusError_message" = "Failed to authenticate with server.\nTry logging in again.";
 
 "internetErrorGeneral_title" = "Connection Error";
+
+
+"categoryTableView_photoCount" = "photos";
+
+"categoryImageList_selectButton" = "Select";
+
+"deleteImage_delete" = "Delete";
+"deleteImage_iamgeSingular" = "Image";
+"deleteImage_iamgePlural" = "Images";
+"delteImage_message" = "Are you sure you want to delete the selected %@ %@ This cannot be undone!"; // Are you sure you want to delete the selected (5) (Image(s)) This cannot be undone!
+"deleteImage_cancelButton" = "Nevermind";
+"deleteImageProgress_title" = "Deleting %@%% Done"; // Deleting 36% Done
+"deleteImageFail_title" = "Delete Failed";
+"deleteImageFail_message" = "Image could not be deleted\n%@"; // Image could not be deleted\n(Error message)
+
+"imageOptions_title" = "Image Options";
+"iamgeOptions_download" = "Download";
+"iamgeOptions_rename" = "Rename";
+
+"deleteSingleImage_title" = "Delete Image";
+"deleteSingleImage_message" = "Are you sure you want to delete this image? This cannot be undone!";
+
+"downloadImageFail_title" = "Download Fail";
+"downloadImageFail_message" = "Failed to download image!\n%@"; // Failed to download image!\n(Error message)
+
+"downloadingImage" = "Downloading Image";
+"downloadingImage_complete" = "Complete";
+
+"categoryUpload_chooseAlbum" = "Select an album to upload images to";
+
+
+
+
+
+
+

@@ -59,7 +59,7 @@
 		
 		[self loadImageChunk];
 		
-		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(select)];
+		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.isSelect = NO;
@@ -107,10 +107,12 @@
 {
 	if(self.selectedImageIds.count <= 0) return;
 	
-	[UIAlertView showWithTitle:[NSString stringWithFormat:@"Delete Image%@", self.selectedImageIds.count > 1 ? @"s" : @""]
-					   message:[NSString stringWithFormat:@"Are you sure you want to delete the selected %@ image%@? This cannot be undone!", @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? @"s" : @""]
-			 cancelButtonTitle:@"Nevermind"
-			 otherButtonTitles:@[@"Yes"]
+	NSString *titleString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"deleteImage_delete", @"Delete"), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_iamgePlural", @"Images") : NSLocalizedString(@"deleteImage_iamgeSingular", @"Image")];
+	NSString *messageString = [NSString stringWithFormat:NSLocalizedString(@"delteImage_message", @"Are you sure you want to delete the selected %@ %@ This cannot be undone!"), @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_iamgePlural", @"Images") : NSLocalizedString(@"deleteImage_iamgeSingular", @"Image")];
+	[UIAlertView showWithTitle:titleString
+					   message:messageString
+			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Nevermind")
+			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1) {
 							  [self deleteSelected];
@@ -136,15 +138,15 @@
 				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
 					 [self.selectedImageIds removeLastObject];
 					 NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
-					 self.title = [NSString stringWithFormat:@"Deleting %@%% Done", @(percentDone)];
+					 self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
 					 [self.imagesCollection reloadData];
 					 [self deleteSelected];
 				 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 					 self.isDeleting = NO;
-					 [UIAlertView showWithTitle:@"Delete Failed"
-										message:[NSString stringWithFormat:@"Image could not be deleted\n%@", error.description]
-							  cancelButtonTitle:@"Okay"
-							  otherButtonTitles:@[@"Try Again"]
+					 [UIAlertView showWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+										message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), error.description]
+							  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+							  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 									   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 										   if(buttonIndex == 1)
 										   {

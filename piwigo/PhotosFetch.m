@@ -49,7 +49,6 @@
 										 }];
 									 }
 								 }
-									 
 								 *stop = NO;
 							 } failureBlock:^(NSError *error) {
 								 NSLog(@"error: %@", error);

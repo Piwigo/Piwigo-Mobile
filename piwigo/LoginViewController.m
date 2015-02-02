@@ -207,7 +207,7 @@
 			UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
 																message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
 															   delegate:nil
-													  cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Okay")
+													  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 													  otherButtonTitles:nil];
 			[failAlert show];
 		}
@@ -232,7 +232,7 @@
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"loginError_title", @"Login Fail")
 													message:NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")
 												   delegate:nil
-										  cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Okay")
+										  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 										  otherButtonTitles:nil];
 	[alert show];
 }

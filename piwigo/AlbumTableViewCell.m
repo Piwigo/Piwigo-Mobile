@@ -133,7 +133,7 @@
 	self.albumData = albumData;
 	
 	self.albumName.text = self.albumData.name;
-	self.numberOfImages.text = [NSString stringWithFormat:@"%@ photos", @(self.albumData.numberOfImages)];	// @TODO: Localize this
+	self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photos")];
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateFormat:@"yyyy-MM-dd"];
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];

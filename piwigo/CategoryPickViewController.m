@@ -55,7 +55,7 @@
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	headerLabel.font = [UIFont piwigoFontNormal];
 	headerLabel.textColor = [UIColor piwigoGray];
-	headerLabel.text = @"Select an album to upload images to";	// @TODO: localize this!
+	headerLabel.text = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
 	[header addSubview:headerLabel];
 	[header addConstraint:[NSLayoutConstraint constrainViewFromBottom:headerLabel amount:10]];
 	[header addConstraint:[NSLayoutConstraint constrainViewFromLeft:headerLabel amount:15]];
