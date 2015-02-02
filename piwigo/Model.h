@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSString *pwgToken;
 @property (nonatomic, strong) NSString *language;
 @property (nonatomic, strong) NSString *version;
+@property (nonatomic, strong) NSString *username;
 
 @property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;

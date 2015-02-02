@@ -9,6 +9,9 @@
 #import "SettingsViewController.h"
 #import "SessionService.h"
 #import "AppDelegate.h"
+#import "Model.h"
+#import "TextFieldTableViewCell.h"
+#import "ButtonTableViewCell.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -37,7 +40,7 @@ typedef enum {
 		self.view.backgroundColor = [UIColor whiteColor];
 		
 		self.rowsInSection = @[
-							   @3,
+							   @2,
 							   @1,
 							   @4,
 							   @2
@@ -68,6 +71,11 @@ typedef enum {
 
 #pragma mark -- UITableView Methods
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 44.0;
+}
+
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
 	return SettingSectionCount;
@@ -80,8 +88,47 @@ typedef enum {
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	UITableViewCell *tableViewCell = [UITableViewCell new];
+	switch(indexPath.section)
+	{
+		case SettingSectionServer:
+		{
+			TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
+			if(!cell)
+			{
+				cell = [TextFieldTableViewCell new];
+			}
+			switch(indexPath.row)
+			{
+				case 0:
+					cell.labelText = @"Server";
+					cell.rightTextField.text = [Model sharedInstance].serverName;
+					break;
+				case 1:
+					cell.labelText = @"Username";
+					cell.rightTextField.text = [Model sharedInstance].username;
+					cell.rightTextField.placeholder = @"Not Logged In";
+					break;
+			}
+			cell.rightTextField.userInteractionEnabled = NO;
+			tableViewCell = cell;
+			break;
+		}
+		case SettingSectionLogout:
+		{
+			ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"button"];
+			if(!cell)
+			{
+				cell = [ButtonTableViewCell new];
+			}
+			cell.buttonText = @"Logout";
+			// @TODO: If they're not logged in, make this login instead of logout
+			tableViewCell = cell;
+			break;
+		}
+	}
 	
-	return [UITableViewCell new];
+	return tableViewCell;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
@@ -120,6 +167,8 @@ typedef enum {
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
 	switch(indexPath.section)
 	{
 		case SettingSectionServer:
@@ -138,13 +187,14 @@ typedef enum {
 
 -(void)logout
 {
-	[UIAlertView showWithTitle:@"Logout"
+	[UIAlertView showWithTitle:@"Logout"	// @TODO: localize these
 					   message:@"Are you sure you want to logout?"
 			 cancelButtonTitle:@"No"
 			 otherButtonTitles:@[@"Yes"]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1)
 						  {
+							  // @TODO: show a logging out spinner
 							  [SessionService sessionLogoutOnCompletion:^(AFHTTPRequestOperation *operation, BOOL sucessfulLogout) {
 								  if(sucessfulLogout)
 								  {

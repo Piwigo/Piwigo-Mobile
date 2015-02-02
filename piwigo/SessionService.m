@@ -31,6 +31,7 @@
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"] && [[responseObject objectForKey:@"result"] boolValue])
 					  {
 						  [KeychainAccess storeLoginInKeychainForUser:user andPassword:password];
+						  [Model sharedInstance].username = user;
 						  completion(YES, [responseObject objectForKey:@"result"]);
 					  }
 					  else
