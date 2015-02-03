@@ -11,6 +11,8 @@
 
 @interface LocalImageCollectionViewCell()
 
+@property (nonatomic, strong) UIImageView *selectedImage;
+
 @end
 
 @implementation LocalImageCollectionViewCell
@@ -30,6 +32,20 @@
 		self.cellImage.image = [UIImage imageNamed:@"placeholder"];
 		[self.contentView addSubview:self.cellImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
+		
+		self.selectedImage = [UIImageView new];
+		self.selectedImage.translatesAutoresizingMaskIntoConstraints = NO;
+		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
+		self.selectedImage.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+		self.selectedImage.layer.cornerRadius = 10;
+		UIImage *checkMark = [UIImage imageNamed:@"checkMark"];
+		self.selectedImage.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		self.selectedImage.tintColor = [UIColor piwigoOrange];
+		self.selectedImage.hidden = YES;
+		[self.contentView addSubview:self.selectedImage];
+		[self.contentView addConstraints:[NSLayoutConstraint constrainViewToSize:self.selectedImage size:CGSizeMake(30, 30)]];
+		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromRight:self.selectedImage amount:5]];
+		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromTop:self.selectedImage amount:5]];
 	}
 	return self;
 }
@@ -42,6 +58,13 @@
 -(void)prepareForReuse
 {
 	self.cellImage.image = nil;
+}
+
+-(void)setCellSelected:(BOOL)cellSelected
+{
+	_cellSelected = cellSelected;
+	
+	self.selectedImage.hidden = !cellSelected;
 }
 
 @end

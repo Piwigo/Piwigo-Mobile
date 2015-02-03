@@ -103,6 +103,13 @@
 -(void)cancelSelect
 {
 	self.selectable = NO;
+	for(NSString *cellKey in self.selectedImageKeys)
+	{
+		NSInteger row = [self.sortedImageKeys indexOfObject:cellKey];
+		LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+		cell.cellSelected = NO;
+	}
+	self.selectedImageKeys = [NSMutableArray new];
 	[self loadNavButtons];
 }
 
@@ -141,7 +148,7 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	LocalImageCollectionViewCell *selectedCell = [collectionView cellForItemAtIndexPath:indexPath];
+	LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	
 	NSString *imageAssetKey = self.sortedImageKeys[indexPath.row];
 	ALAsset *imageAsset = [self.localImages objectForKey:imageAssetKey];
