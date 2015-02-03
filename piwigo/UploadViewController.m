@@ -135,6 +135,7 @@
 	[UploadService uploadImage:imageData
 					  withName:[[imageAsset defaultRepresentation] filename]
 					  forAlbum:[self.categoryId integerValue]
+			   andPrivacyLevel:0
 					onProgress:^(NSInteger current, NSInteger total) {
 						NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
@@ -205,21 +206,22 @@
 	else
 	{
 		
-		ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
-		Byte *buffer = (Byte*)malloc(rep.size);
-		NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
-		NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
-		
-		[UploadService uploadImage:imageData
-						  withName:[[imageAsset defaultRepresentation] filename]
-						  forAlbum:[self.categoryId integerValue]
-						onProgress:^(NSInteger current, NSInteger total) {
-							NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
-						} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
-							NSLog(@"DONE UPLOAD");
-						} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-							NSLog(@"ERROR: %@", error);
-						}];
+//		ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
+//		Byte *buffer = (Byte*)malloc(rep.size);
+//		NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
+//		NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+//		
+//		[UploadService uploadImage:imageData
+//						  withName:[[imageAsset defaultRepresentation] filename]
+//						  forAlbum:[self.categoryId integerValue]
+//				   andPrivacyLevel:0
+//						onProgress:^(NSInteger current, NSInteger total) {
+//							NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
+//						} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+//							NSLog(@"DONE UPLOAD");
+//						} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//							NSLog(@"ERROR: %@", error);
+//						}];
 		
 	//	ImageDetailViewController *imageDetail = [ImageDetailViewController new];
 	//	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];

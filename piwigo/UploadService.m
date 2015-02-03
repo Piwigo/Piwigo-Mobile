@@ -12,8 +12,9 @@
 @implementation UploadService
 
 +(void)uploadImage:(NSData*)imageData
-			  withName:(NSString*)imageName
-			  forAlbum:(NSInteger)album
+		  withName:(NSString*)imageName
+		  forAlbum:(NSInteger)album
+   andPrivacyLevel:(NSInteger)privacyLevel
 			onProgress:(void (^)(NSInteger current, NSInteger total))progress
 		  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 			 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
@@ -28,6 +29,7 @@
 											 offset:0
 										   withName:imageName
 										   forAlbum:album
+									   privacyLevel:privacyLevel
 											onCount:0
 										 countTotal:chunks
 									   OnCompletion:completion
@@ -42,13 +44,14 @@
 }
 
 +(AFHTTPRequestOperation*)sendChunk:(NSData*)data
-		  offset:(NSInteger) offset
-		withName:(NSString*)imageName
-		forAlbum:(NSInteger)album
-		 onCount:(NSInteger)count
-	  countTotal:(NSInteger)chunks
-	OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-			 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+							 offset:(NSInteger) offset
+						   withName:(NSString*)imageName
+						   forAlbum:(NSInteger)album
+					   privacyLevel:(NSInteger)privacyLevel
+							onCount:(NSInteger)count
+						 countTotal:(NSInteger)chunks
+					   OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+						  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	NSInteger chunkSize = 500 * 1024;
 	NSInteger length = data.length;
@@ -62,6 +65,7 @@
 	return [self postMultiPart:kPiwigoImagesUpload
 	   parameters:@{@"name" : imageName,
 					@"album" : [NSString stringWithFormat:@"%@", @(album)],
+					@"privacyLevel" : [NSString stringWithFormat:@"%@", @(privacyLevel)],
 					@"chunk" : [NSString stringWithFormat:@"%@", @(count)],
 					@"chunks" : [NSString stringWithFormat:@"%@", @(chunks)],
 					@"data" : chunk}
@@ -78,6 +82,7 @@
 						   offset:offset
 						 withName:imageName
 						 forAlbum:album
+					 privacyLevel:privacyLevel
 						  onCount:nextChunkNumber
 					   countTotal:chunks
 					 OnCompletion:completion
@@ -89,6 +94,7 @@
 					   offset:oldOffset
 					 withName:imageName
 					 forAlbum:album
+				 privacyLevel:privacyLevel
 					  onCount:count
 				   countTotal:chunks
 				 OnCompletion:completion

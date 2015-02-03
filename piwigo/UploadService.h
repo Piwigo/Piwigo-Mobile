@@ -13,10 +13,11 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 @interface UploadService : NetworkHandler
 
 +(void)uploadImage:(NSData*)imageData
-			  withName:(NSString*)imageName
-			  forAlbum:(NSInteger)album
-			onProgress:(void (^)(NSInteger current, NSInteger total))progress
-		  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-			 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+		  withName:(NSString*)imageName
+		  forAlbum:(NSInteger)album
+   andPrivacyLevel:(NSInteger)privacyLevel
+		onProgress:(void (^)(NSInteger current, NSInteger total))progress
+	  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+		 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 @end

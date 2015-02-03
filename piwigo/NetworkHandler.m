@@ -66,9 +66,6 @@ NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
 {
 	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 	
-	NSString *cookie = [NSString stringWithFormat:@"pwg_id=%@", [Model sharedInstance].pwgToken];
-//	[manager.requestSerializer setValue:cookie forHTTPHeaderField:@"cookie"];
-	
 	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
 	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
 	[jsonAcceptableContentTypes addObject:@"text/plain"];
@@ -97,7 +94,8 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 	
 	[formData appendPartWithFormData:[[parameters objectForKey:@"album"] dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"category"];
-	[formData appendPartWithFormData:[@"0" dataUsingEncoding:NSUTF8StringEncoding]
+	
+	[formData appendPartWithFormData:[[parameters objectForKey:@"privacyLevel"] dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"level"];
 	
 	[formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
