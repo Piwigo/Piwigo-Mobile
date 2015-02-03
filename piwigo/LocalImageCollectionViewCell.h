@@ -12,6 +12,7 @@
 
 @interface LocalImageCollectionViewCell : UICollectionViewCell
 
+@property (nonatomic, assign) BOOL cellSelected;
 @property (nonatomic, strong) UIImageView *cellImage;
 -(void)setupWithImageAsset:(ALAsset*)imageAsset;
 

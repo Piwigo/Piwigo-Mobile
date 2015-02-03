@@ -21,6 +21,7 @@
 	if(self)
 	{
 		self.backgroundColor = [UIColor whiteColor];
+		self.cellSelected = NO;
 		
 		self.cellImage = [UIImageView new];
 		self.cellImage.translatesAutoresizingMaskIntoConstraints = NO;
