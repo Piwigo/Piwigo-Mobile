@@ -171,6 +171,10 @@
 		return;
 	}
 	
+	self.downloadView.multiImage = YES;
+	self.downloadView.totalImageDownloadCount = self.totalImagesToDownload;
+	self.downloadView.imageDownloadCount = self.totalImagesToDownload - self.selectedImageIds.count + 1;
+	
 	self.downloadView.hidden = NO;
 	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
 	
@@ -189,15 +193,31 @@
 						 CGFloat progress = (CGFloat)current / total;
 						 self.downloadView.percentDownloaded = progress;
 					 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
-						 [self.selectedImageIds removeLastObject];
-						 NSInteger percentDone = ((CGFloat)(self.totalImagesToDownload - self.selectedImageIds.count) / self.totalImagesToDownload) * 100;
-						 [self.imagesCollection reloadData];
-						 [self downloadImage];
-						 NSLog(@"downlaod complete -- (%@ %%)", @(percentDone));
+						 [self saveImageToCameraRoll:image];
 					 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 						 NSLog(@"download fail");
 					 }];
 }
+
+-(void)saveImageToCameraRoll:(UIImage*)imageToSave
+{
+	UIImageWriteToSavedPhotosAlbum(imageToSave, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+}
+
+// called when the image is done saving to disk
+-(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+	if(error) {
+		// @TODO: display error
+	}
+	else
+	{
+		[self.selectedImageIds removeLastObject];
+		[self.imagesCollection reloadData];
+		[self downloadImage];
+	}
+}
+
 -(ImageDownloadView*)downloadView
 {
 	if(_downloadView) return _downloadView;

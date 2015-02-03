@@ -15,6 +15,7 @@
 @property (nonatomic, strong) ImageDownloadingProgressView *imageProgress;
 @property (nonatomic, strong) UILabel *statusLabel;
 @property (nonatomic, strong) UILabel *percentLabel;
+@property (nonatomic, strong) UILabel *totalPercentLabel;
 
 @end
 
@@ -33,7 +34,7 @@
 		self.modal.layer.cornerRadius = 20;
 		[self addSubview:self.modal];
 		[self addConstraints:[NSLayoutConstraint constraintViewToCenter:self.modal]];
-		[self addConstraints:[NSLayoutConstraint constrainViewToSize:self.modal size:CGSizeMake(200, 150)]];
+		[self addConstraints:[NSLayoutConstraint constrainViewToSize:self.modal size:CGSizeMake(200, 180)]];
 		
 		
 		self.statusLabel = [UILabel new];
@@ -51,10 +52,25 @@
 		self.percentLabel.text = @"0 %";
 		self.percentLabel.font = [UIFont piwigoFontNormal];
 		self.percentLabel.font = [self.percentLabel.font fontWithSize:15];
-		self.percentLabel.textColor = [UIColor piwigoGray];
+		self.percentLabel.textColor = [UIColor piwigoGrayLight];
 		[self.modal addSubview:self.percentLabel];
 		[self.modal addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.percentLabel]];
-		[self.modal addConstraint:[NSLayoutConstraint constrainViewFromBottom:self.percentLabel amount:10]];
+		
+		self.totalPercentLabel = [UILabel new];
+		self.totalPercentLabel.translatesAutoresizingMaskIntoConstraints = NO;
+//		self.totalPercentLabel.text = @"0 % (0/0)";
+		self.totalPercentLabel.font = [UIFont piwigoFontNormal];
+		self.totalPercentLabel.font = [self.totalPercentLabel.font fontWithSize:16.5];
+		self.totalPercentLabel.textColor = [UIColor piwigoGray];
+		[self.modal addSubview:self.totalPercentLabel];
+		[self.modal addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.totalPercentLabel]];
+		[self.modal addConstraint:[NSLayoutConstraint constrainViewFromBottom:self.totalPercentLabel amount:10]];
+		
+		[self.modal addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[percent][total]"
+																		   options:kNilOptions
+																		   metrics:nil
+																			 views:@{@"percent" : self.percentLabel,
+																					 @"total" : self.totalPercentLabel}]];
 		
 		self.imageProgress = [ImageDownloadingProgressView new];
 		self.imageProgress.translatesAutoresizingMaskIntoConstraints = NO;
@@ -69,6 +85,16 @@
 	self.imageProgress.image = downloadImage;
 }
 
+-(void)setMultiImage:(BOOL)multiImage
+{
+	_multiImage = multiImage;
+	
+	if(multiImage)
+	{
+		self.statusLabel.text = @"Downloading Images";	// @TODO: Localize this
+	}
+}
+
 -(void)setPercentDownloaded:(CGFloat)percentDownloaded
 {
 	self.imageProgress.percent = percentDownloaded;
@@ -77,6 +103,14 @@
 		self.percentLabel.text = NSLocalizedString(@"downloadingImage_complete", @"Complete");
 	} else {
 		self.percentLabel.text = [NSString stringWithFormat:@"%@ %%", @(percent)];
+	}
+	
+	if(self.multiImage)
+	{
+		CGFloat percentPerImage = 100 / self.totalImageDownloadCount;
+		CGFloat currentImageProgress = percentPerImage * ((CGFloat)percent / 100);
+		percent = ((((CGFloat)self.imageDownloadCount - 1) / self.totalImageDownloadCount) * 100) + currentImageProgress;
+		self.totalPercentLabel.text = [NSString stringWithFormat:@"%@%% (%@/%@)", @(percent), @(self.imageDownloadCount), @(self.totalImageDownloadCount)];
 	}
 }
 

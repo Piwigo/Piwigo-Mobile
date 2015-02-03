@@ -13,4 +13,8 @@
 @property (nonatomic, strong) UIImage *downloadImage;
 @property (nonatomic, assign) CGFloat percentDownloaded;
 
+@property (nonatomic, assign) BOOL multiImage;
+@property (nonatomic, assign) NSInteger imageDownloadCount;
+@property (nonatomic, assign) NSInteger totalImageDownloadCount;
+
 @end
