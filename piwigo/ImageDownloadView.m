@@ -58,7 +58,6 @@
 		
 		self.totalPercentLabel = [UILabel new];
 		self.totalPercentLabel.translatesAutoresizingMaskIntoConstraints = NO;
-//		self.totalPercentLabel.text = @"0 % (0/0)";
 		self.totalPercentLabel.font = [UIFont piwigoFontNormal];
 		self.totalPercentLabel.font = [self.totalPercentLabel.font fontWithSize:16.5];
 		self.totalPercentLabel.textColor = [UIColor piwigoGray];
@@ -91,7 +90,7 @@
 	
 	if(multiImage)
 	{
-		self.statusLabel.text = @"Downloading Images";	// @TODO: Localize this
+		self.statusLabel.text = NSLocalizedString(@"downloadingImages", @"Downloading Images");
 	}
 }
 

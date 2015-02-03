@@ -144,7 +144,7 @@
 					 [self deleteSelected];
 				 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 					 [UIAlertView showWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-										message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), error.description]
+										message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
 							  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 							  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 									   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -158,9 +158,19 @@
 
 -(void)downloadImages
 {
-	// @TODO: ask if they want to bulk download %@ images
-	self.totalImagesToDownload = self.selectedImageIds.count;
-	[self downloadImage];
+	if(self.selectedImageIds.count <= 0) return;
+	
+	[UIAlertView showWithTitle:NSLocalizedString(@"downloadImage", @"Download Images")
+					   message:[NSString stringWithFormat:NSLocalizedString(@"downloadImage_confirmation", @"Are you sure you want to downlaod the selected %@ %@?"), @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_iamgePlural", @"Images") : NSLocalizedString(@"deleteImage_iamgeSingular", @"Image")]
+			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
+					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+						  if(buttonIndex == 1)
+						  {
+							  self.totalImagesToDownload = self.selectedImageIds.count;
+							  [self downloadImage];
+						  }
+					  }];
 }
 
 -(void)downloadImage
@@ -207,8 +217,14 @@
 // called when the image is done saving to disk
 -(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
-	if(error) {
-		// @TODO: display error
+	if(error)
+	{
+		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
+						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 otherButtonTitles:nil
+						  tapBlock:nil];
+		[self cancelSelect];
 	}
 	else
 	{

@@ -165,7 +165,7 @@
 					 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 						 self.downloadView.hidden = YES;
 						 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-											message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), error.description]
+											message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
 								  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 								  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 										   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -183,12 +183,15 @@
 // called when the image is done saving to disk
 -(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
-	if(error) {
-		// @TODO: display error
+	if(error)
+	{
+		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
+						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 otherButtonTitles:nil
+						  tapBlock:nil];
 	}
 	self.downloadView.hidden = YES;
-//	self.saveButton.customView = nil;
-//	self.navigationItem.rightBarButtonItem = nil;
 }
 
 -(void)didTapView

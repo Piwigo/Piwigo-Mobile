@@ -20,6 +20,7 @@
 "alertYesButton" = "Yes";
 "alertTryAgainButton" = "Try Again";
 "alertCancelButton" = "Cancel";
+"alertNoButton" = "No";
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given server";
@@ -53,8 +54,14 @@
 "downloadImageFail_title" = "Download Fail";
 "downloadImageFail_message" = "Failed to download image!\n%@"; // Failed to download image!\n(Error message)
 
+"downloadImage" = "Download Images";
+"downloadImage_confirmation" = "Are you sure you want to downlaod the selected %@ %@?"; // Are you sure you want to downlaod the selected (4) (image(s))?
 "downloadingImage" = "Downloading Image";
+"downloadingImages" = "Downloading Images";
 "downloadingImage_complete" = "Complete";
+
+"imageSaveError_title" = "Fail Saving Image";
+"imageSaveError_message" = "Failed to save image. Error: %@"; // Failed to save image. Error: (error message)
 
 "categoryUpload_chooseAlbum" = "Select an album to upload images to";
 
