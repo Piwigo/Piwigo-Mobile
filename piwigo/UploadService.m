@@ -24,24 +24,29 @@
 	if(imageData.length % chunkSize != 0) {
 		chunks++;
 	}
-	[self sendChunk:imageData
-			 offset:0
-		   withName:imageName
-		   forAlbum:album
-			onCount:0
-		 countTotal:chunks
-		 onProgress:progress
-	   OnCompletion:completion
-		  onFailure:fail];
+	AFHTTPRequestOperation *chunk = [self sendChunk:imageData
+											 offset:0
+										   withName:imageName
+										   forAlbum:album
+											onCount:0
+										 countTotal:chunks
+									   OnCompletion:completion
+										  onFailure:fail];
+	
+	[chunk setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+		if(progress)
+		{
+			progress(totalBytesRead, totalBytesExpectedToRead);
+		}
+	}];
 }
 
-+(void)sendChunk:(NSData*)data
++(AFHTTPRequestOperation*)sendChunk:(NSData*)data
 		  offset:(NSInteger) offset
 		withName:(NSString*)imageName
 		forAlbum:(NSInteger)album
 		 onCount:(NSInteger)count
 	  countTotal:(NSInteger)chunks
-	  onProgress:(void (^)(NSInteger current, NSInteger total))progress
 	OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 			 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
@@ -54,7 +59,7 @@
 	NSInteger oldOffset = offset;
 	offset += thisChunkSize;
 	
-	[self postMultiPart:kPiwigoImagesUpload
+	return [self postMultiPart:kPiwigoImagesUpload
 	   parameters:@{@"name" : imageName,
 					@"album" : [NSString stringWithFormat:@"%@", @(album)],
 					@"chunk" : [NSString stringWithFormat:@"%@", @(count)],
@@ -75,7 +80,6 @@
 						 forAlbum:album
 						  onCount:nextChunkNumber
 					   countTotal:chunks
-					   onProgress:progress
 					 OnCompletion:completion
 						onFailure:fail];
 			  }
@@ -87,7 +91,6 @@
 					 forAlbum:album
 					  onCount:count
 				   countTotal:chunks
-				   onProgress:progress
 				 OnCompletion:completion
 					onFailure:fail];
 		  }];

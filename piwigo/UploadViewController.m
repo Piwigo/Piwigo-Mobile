@@ -105,9 +105,7 @@
 	self.selectable = NO;
 	for(NSString *cellKey in self.selectedImageKeys)
 	{
-		NSInteger row = [self.sortedImageKeys indexOfObject:cellKey];
-		LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-		cell.cellSelected = NO;
+		[self deselectCellForKey:cellKey];
 	}
 	self.selectedImageKeys = [NSMutableArray new];
 	[self loadNavButtons];
@@ -115,7 +113,45 @@
 
 -(void)uploadSelected
 {
+	[self uploadNextImage];
+}
+
+-(void)uploadNextImage
+{
+	if(self.selectedImageKeys.count <= 0)
+	{
+		[self cancelSelect];
+		return;
+	}
 	
+	NSString *imageKey = [self.selectedImageKeys lastObject];
+	ALAsset *imageAsset = [self.localImages objectForKey:imageKey];
+	
+	ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
+	Byte *buffer = (Byte*)malloc(rep.size);
+	NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
+	NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+	
+	[UploadService uploadImage:imageData
+					  withName:[[imageAsset defaultRepresentation] filename]
+					  forAlbum:[self.categoryId integerValue]
+					onProgress:^(NSInteger current, NSInteger total) {
+						NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
+					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+						NSLog(@"DONE UPLOAD");
+						[self deselectCellForKey:imageKey];
+						[self.selectedImageKeys removeObject:imageKey];
+						[self uploadNextImage];
+					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						NSLog(@"ERROR: %@", error);
+					}];
+}
+
+-(void)deselectCellForKey:(NSString*)imageKey
+{
+	NSInteger row = [self.sortedImageKeys indexOfObject:imageKey];
+	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+	cell.cellSelected = NO;
 }
 
 #pragma mark -- UICollectionView Methods
