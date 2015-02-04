@@ -38,10 +38,10 @@
 {
 	self.mutableDictionary = [NSMutableDictionary new];
 	ALAssetsLibrary *assetsLibrary = [Model defaultAssetsLibrary];
-	[assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos
+	[assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
 								 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
 								 if (nil != group) {
-									 
+									 [group setAssetsFilter:[ALAssetsFilter allPhotos]];
 									 NSString *groupName = [group valueForProperty:ALAssetsGroupPropertyName];
 									 if([groupName isEqualToString:@"Camera Roll"])
 									 {

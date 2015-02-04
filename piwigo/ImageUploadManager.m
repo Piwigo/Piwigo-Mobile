@@ -83,9 +83,11 @@
 						NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						NSLog(@"DONE UPLOAD");
+						[self.imageUploadQueue removeObjectAtIndex:0];
 						[self uploadNextImage];
 					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 						NSLog(@"ERROR IMAGE UPLOAD: %@", error);
+						[self showUploadError:error];
 					}];
 }
 
@@ -95,6 +97,15 @@
 	{
 		[self uploadNextImage];
 	}
+}
+
+-(void)showUploadError:(NSError*)error
+{
+	[UIAlertView showWithTitle:@"Upload Error"
+					   message:[NSString stringWithFormat:@"Could not upload your image. Error: %@", [error localizedDescription]]
+			 cancelButtonTitle:@"Okay"
+			 otherButtonTitles:nil
+					  tapBlock:nil];
 }
 
 

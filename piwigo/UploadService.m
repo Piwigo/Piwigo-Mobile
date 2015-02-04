@@ -89,16 +89,20 @@
 						onFailure:fail];
 			  }
 		  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-			  // failed, send it again
-			  [self sendChunk:data
-					   offset:oldOffset
-					 withName:imageName
-					 forAlbum:album
-				 privacyLevel:privacyLevel
-					  onCount:count
-				   countTotal:chunks
-				 OnCompletion:completion
-					onFailure:fail];
+			  // failed!
+			  if(fail)
+			  {
+				  fail(operation, error);
+			  }
+//			  [self sendChunk:data
+//					   offset:oldOffset
+//					 withName:imageName
+//					 forAlbum:album
+//				 privacyLevel:privacyLevel
+//					  onCount:count
+//				   countTotal:chunks
+//				 OnCompletion:completion
+//					onFailure:fail];
 		  }];
 }
 
