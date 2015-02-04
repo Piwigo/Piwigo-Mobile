@@ -17,6 +17,8 @@ NSString * const kPiwigoNotificationImageUploadNameKey = @"imageName";
 NSString * const kPiwigoNotificationImageUploadCurrentKey = @"current";
 NSString * const kPiwigoNotificationImageUploadTotalKey = @"total";
 NSString * const kPiwigoNotificationImageUploadPercentKey = @"percent";
+NSString * const kPiwigoNotificationImageUploadCurrentChunkKey = @"currentChunk";
+NSString * const kPiwigoNotificationImageUploadTotalChunksKey = @"totalChunks";
 
 @interface ImageUploadManager()
 
@@ -86,14 +88,16 @@ NSString * const kPiwigoNotificationImageUploadPercentKey = @"percent";
 					  withName:[[imageAsset defaultRepresentation] filename]
 					  forAlbum:nextImageToBeUploaded.categoryToUploadTo
 			   andPrivacyLevel:nextImageToBeUploaded.privacyLevel
-					onProgress:^(NSInteger current, NSInteger total) {
+					onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
 						
 						[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationImageUploading
 																			object:nil
 																		  userInfo:@{kPiwigoNotificationImageUploadNameKey : imageKey,
 																					 kPiwigoNotificationImageUploadCurrentKey : @(current),
 																					 kPiwigoNotificationImageUploadTotalKey : @(total),
-																					 kPiwigoNotificationImageUploadPercentKey : @((CGFloat)current / total)}];
+																					 kPiwigoNotificationImageUploadPercentKey : @((CGFloat)current / total),
+																					 kPiwigoNotificationImageUploadCurrentChunkKey : @(currentChunk),
+																					 kPiwigoNotificationImageUploadTotalChunksKey : @(totalChunks)}];
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						
 						[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationImageUploaded

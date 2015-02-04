@@ -16,7 +16,7 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 		  withName:(NSString*)imageName
 		  forAlbum:(NSInteger)album
    andPrivacyLevel:(NSInteger)privacyLevel
-		onProgress:(void (^)(NSInteger current, NSInteger total))progress
+		onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
 	  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 		 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 

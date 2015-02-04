@@ -125,7 +125,7 @@
 -(void)imageUploadProgress:(NSNotification*)userInfo
 {
 	NSDictionary *info = [userInfo userInfo];
-	NSLog(@"Progress for %@ -- %@", [info objectForKey:kPiwigoNotificationImageUploadNameKey], [info objectForKey:kPiwigoNotificationImageUploadPercentKey]);
+	NSLog(@"Progress for %@ -- %@\t chunks: %@/%@", [info objectForKey:kPiwigoNotificationImageUploadNameKey], [info objectForKey:kPiwigoNotificationImageUploadPercentKey], [info objectForKey:kPiwigoNotificationImageUploadCurrentChunkKey], [info objectForKey:kPiwigoNotificationImageUploadTotalChunksKey]);
 }
 
 -(void)deselectCellForKey:(NSString*)imageKey

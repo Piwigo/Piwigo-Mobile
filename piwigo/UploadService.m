@@ -15,7 +15,7 @@
 		  withName:(NSString*)imageName
 		  forAlbum:(NSInteger)album
    andPrivacyLevel:(NSInteger)privacyLevel
-			onProgress:(void (^)(NSInteger current, NSInteger total))progress
+			onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
 		  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 			 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
@@ -25,33 +25,26 @@
 	if(imageData.length % chunkSize != 0) {
 		chunks++;
 	}
-	AFHTTPRequestOperation *chunk = [self sendChunk:imageData
-											 offset:0
-										   withName:imageName
-										   forAlbum:album
-									   privacyLevel:privacyLevel
-											onCount:0
-										 countTotal:chunks
-										 onProgress:progress
-									   OnCompletion:completion
-										  onFailure:fail];
-	
-//	[chunk setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-//		if(progress)
-//		{
-//			progress(totalBytesRead, totalBytesExpectedToRead);
-//		}
-//	}];
+	[self sendChunk:imageData
+			 offset:0
+		   withName:imageName
+		   forAlbum:album
+	   privacyLevel:privacyLevel
+			onCount:0
+		 countTotal:chunks
+		 onProgress:progress
+	   OnCompletion:completion
+		  onFailure:fail];
 }
 
-+(AFHTTPRequestOperation*)sendChunk:(NSData*)data
++(void)sendChunk:(NSData*)data
 							 offset:(NSInteger) offset
 						   withName:(NSString*)imageName
 						   forAlbum:(NSInteger)album
 					   privacyLevel:(NSInteger)privacyLevel
 							onCount:(NSInteger)count
 						 countTotal:(NSInteger)chunks
-						 onProgress:(void (^)(NSInteger current, NSInteger total))progress
+						 onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
 					   OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 						  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
@@ -61,10 +54,9 @@
 	NSData *chunk = [data subdataWithRange:NSMakeRange(offset, thisChunkSize)];
 	
 	NSInteger nextChunkNumber = count + 1;
-	NSInteger oldOffset = offset;
 	offset += thisChunkSize;
 	
-	return [self postMultiPart:kPiwigoImagesUpload
+	AFHTTPRequestOperation *chunkRequest = [self postMultiPart:kPiwigoImagesUpload
 	   parameters:@{@"name" : imageName,
 					@"album" : [NSString stringWithFormat:@"%@", @(album)],
 					@"privacyLevel" : [NSString stringWithFormat:@"%@", @(privacyLevel)],
@@ -72,10 +64,7 @@
 					@"chunks" : [NSString stringWithFormat:@"%@", @(chunks)],
 					@"data" : chunk}
 		  success:^(AFHTTPRequestOperation *operation, id responseObject) {
-			  if(progress)
-			  {
-				  progress(count + 1, chunks);
-			  }
+			  
 			  if(count >= chunks - 1) {
 				  // done, return
 				  if(completion) {
@@ -100,16 +89,14 @@
 			  {
 				  fail(operation, error);
 			  }
-//			  [self sendChunk:data
-//					   offset:oldOffset
-//					 withName:imageName
-//					 forAlbum:album
-//				 privacyLevel:privacyLevel
-//					  onCount:count
-//				   countTotal:chunks
-//				 OnCompletion:completion
-//					onFailure:fail];
 		  }];
+	
+	[chunkRequest setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+		if(progress)
+		{
+			progress(totalBytesWritten, totalBytesExpectedToWrite, count + 1, chunks);
+		}
+	}];
 }
 
 @end

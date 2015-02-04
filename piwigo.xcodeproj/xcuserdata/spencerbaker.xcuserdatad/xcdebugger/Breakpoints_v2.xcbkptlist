@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "piwigo/ImageUploadManager.m"
-            timestampString = "444721689.603408"
+            timestampString = "444723066.301144"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
             landmarkName = "-uploadNextImage"
             landmarkType = "5">
          </BreakpointContent>
