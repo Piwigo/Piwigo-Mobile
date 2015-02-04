@@ -23,7 +23,18 @@
 
 @implementation PhotosFetch
 
--(void)getLocalPhotosDictionary:(CompletionBlock)completion
++(PhotosFetch*)sharedInstance
+{
+	static PhotosFetch *instance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		instance = [[self alloc] init];
+		
+	});
+	return instance;
+}
+
+-(void)updateLocalPhotosDictionary:(CompletionBlock)completion
 {
 	self.mutableDictionary = [NSMutableDictionary new];
 	ALAssetsLibrary *assetsLibrary = [Model defaultAssetsLibrary];
@@ -43,7 +54,8 @@
 												 if(self.mutableDictionary.count == size)
 												 {
 													 *stop = YES;
-													 completion(self.mutableDictionary);
+													 self.localImages = self.mutableDictionary;
+													 completion(self.localImages);
 												 }
 											 }
 										 }];
@@ -53,6 +65,11 @@
 							 } failureBlock:^(NSError *error) {
 								 NSLog(@"error: %@", error);
 							 }];
+}
+
+-(ALAsset*)getImageAssetForImageName:(NSString*)imageName
+{
+	return [self.localImages objectForKey:imageName];
 }
 
 @end

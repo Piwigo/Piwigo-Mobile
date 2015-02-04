@@ -9,9 +9,14 @@
 #import <Foundation/Foundation.h>
 
 typedef void(^CompletionBlock)(id responseObject);
+@class ALAsset;
 
 @interface PhotosFetch : NSObject
 
--(void)getLocalPhotosDictionary:(CompletionBlock)completion;
+@property (nonatomic, strong) NSDictionary *localImages;
+
++(PhotosFetch*)sharedInstance;
+-(void)updateLocalPhotosDictionary:(CompletionBlock)completion;
+-(ALAsset*)getImageAssetForImageName:(NSString*)imageName;
 
 @end

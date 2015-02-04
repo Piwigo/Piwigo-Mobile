@@ -52,7 +52,7 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
 		
 		PhotosFetch *photoFetch = [PhotosFetch new];
-		[photoFetch getLocalPhotosDictionary:^(id responseObject) {
+		[photoFetch updateLocalPhotosDictionary:^(id responseObject) {
 			self.localImages = responseObject;
 			self.sortedImageKeys = [self.localImages.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 			[self.localImagesCollection reloadData];
@@ -188,7 +188,6 @@
 	LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	
 	NSString *imageAssetKey = self.sortedImageKeys[indexPath.row];
-	ALAsset *imageAsset = [self.localImages objectForKey:imageAssetKey];
 	
 	if(self.selectable)
 	{
@@ -205,6 +204,7 @@
 	}
 	else
 	{
+		ALAsset *imageAsset = [self.localImages objectForKey:imageAssetKey];
 		
 //		ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
 //		Byte *buffer = (Byte*)malloc(rep.size);
