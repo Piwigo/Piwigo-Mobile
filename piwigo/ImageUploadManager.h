@@ -10,10 +10,13 @@
 
 @class ImageUpload;
 
-@protocol ImageUploadManagerDelegate <NSObject>
+@protocol ImageUploadDelegate <NSObject>
 
--(void)imageUploaded:(ImageUpload*)image;
+-(void)imageUploaded:(ImageUpload*)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue;
 -(void)imageProgress:(ImageUpload*)image onCurrent:(NSInteger)current forTotal:(NSInteger)total  onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks;
+
+@optional
+-(void)imagesToUploadChanged:(NSInteger)imagesLeftToUpload;
 
 @end
 
@@ -22,7 +25,7 @@
 +(ImageUploadManager*)sharedInstance;
 
 @property (nonatomic, strong) NSMutableArray *imageUploadQueue;
-@property (nonatomic, weak) id<ImageUploadManagerDelegate> delegate;
+@property (nonatomic, weak) id<ImageUploadDelegate> delegate;
 
 -(void)addImage:(NSString*)imageName forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy;
 -(void)addImages:(NSArray*)imageNames forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy;

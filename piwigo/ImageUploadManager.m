@@ -14,6 +14,8 @@
 @interface ImageUploadManager()
 
 @property (nonatomic, assign) BOOL isUploading;
+@property (nonatomic, assign) NSInteger maximumImagesForBatch;
+@property (nonatomic, assign) NSInteger onCurrentImageUpload;
 
 @end
 
@@ -44,6 +46,7 @@
 {
 	ImageUpload *newImage = [[ImageUpload alloc] initWithImageName:imageName forCategory:category forPrivacyLevel:privacy];
 	[self.imageUploadQueue addObject:newImage];
+	self.maximumImagesForBatch++;
 	[self startUploadIfNeeded];
 }
 
@@ -87,9 +90,10 @@
 						}
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						
-						if([self.delegate respondsToSelector:@selector(imageUploaded:)])
+						self.onCurrentImageUpload++;
+						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:)])
 						{
-							[self.delegate imageUploaded:nextImageToBeUploaded];
+							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch];
 						}
 						[self.imageUploadQueue removeObjectAtIndex:0];
 						[self uploadNextImage];
@@ -114,6 +118,27 @@
 			 cancelButtonTitle:@"Okay"
 			 otherButtonTitles:nil
 					  tapBlock:nil];
+}
+
+-(void)setIsUploading:(BOOL)isUploading
+{
+	_isUploading = isUploading;
+	
+	if(!isUploading)
+	{
+		self.maximumImagesForBatch = 0;
+		self.onCurrentImageUpload = 1;
+	}
+}
+
+-(void)setMaximumImagesForBatch:(NSInteger)maximumImagesForBatch
+{
+	_maximumImagesForBatch = maximumImagesForBatch;
+	
+	if([self.delegate respondsToSelector:@selector(imagesToUploadChanged:)])
+	{
+		[self.delegate imagesToUploadChanged:maximumImagesForBatch];
+	}
 }
 
 

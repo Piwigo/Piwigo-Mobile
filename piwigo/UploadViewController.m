@@ -14,8 +14,9 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "CategoriesData.h"
 #import "ImageUpload.h"
+#import "ImageUploadProgressView.h"
 
-@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadManagerDelegate>
+@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadDelegate>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, strong) NSString *categoryId;
@@ -26,6 +27,8 @@
 
 @property (nonatomic, assign) BOOL selectable;
 @property (nonatomic, retain) NSMutableArray *selectedImageKeys;
+
+@property (nonatomic, strong) ImageUploadProgressView *uploadProgressView;
 
 @end
 
@@ -67,6 +70,18 @@
 															   target:self
 															   action:@selector(uploadSelected)];
 
+		self.uploadProgressView = [ImageUploadProgressView new];
+		self.uploadProgressView.translatesAutoresizingMaskIntoConstraints = NO;
+		[self.view addSubview:self.uploadProgressView];
+		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.uploadProgressView]];
+		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadProgressView
+															  attribute:NSLayoutAttributeBottom
+															  relatedBy:NSLayoutRelationEqual
+																 toItem:self.bottomLayoutGuide
+															  attribute:NSLayoutAttributeTop
+															 multiplier:1.0
+															   constant:0]];
+		[self.view addConstraint:[NSLayoutConstraint constrainViewToHeight:self.uploadProgressView height:50]];
 	}
 	return self;
 }
@@ -110,7 +125,7 @@
 -(void)uploadSelected
 {
 	[[ImageUploadManager sharedInstance] addImages:self.selectedImageKeys forCategory:[self.categoryId integerValue] andPrivacy:0];
-	[ImageUploadManager sharedInstance].delegate = self;
+//	[ImageUploadManager sharedInstance].delegate = self;
 	self.selectedImageKeys = [NSMutableArray new];
 }
 
@@ -174,8 +189,8 @@
 	}
 	else
 	{
-		ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey];
-		
+//		ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey];
+//		
 //		ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
 //		Byte *buffer = (Byte*)malloc(rep.size);
 //		NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
@@ -208,7 +223,7 @@
 	
 }
 
--(void)imageUploaded:(ImageUpload *)image
+-(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue
 {
 	[self deselectCellForKey:image.imageUploadName];
 }
