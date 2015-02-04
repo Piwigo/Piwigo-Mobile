@@ -13,12 +13,11 @@
 #import "ImageDetailViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "CategoriesData.h"
+#import "ImageUpload.h"
 
-@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadManagerDelegate>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
-//@property (nonatomic, strong) NSDictionary *localImages;
-//@property (nonatomic, strong) NSArray *sortedImageKeys;
 @property (nonatomic, strong) NSString *categoryId;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
@@ -67,9 +66,6 @@
 																style:UIBarButtonItemStylePlain
 															   target:self
 															   action:@selector(uploadSelected)];
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUploaded:) name:kPiwigoNotificationImageUploaded object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUploadProgress:) name:kPiwigoNotificationImageUploading object:nil];
 
 	}
 	return self;
@@ -114,18 +110,8 @@
 -(void)uploadSelected
 {
 	[[ImageUploadManager sharedInstance] addImages:self.selectedImageKeys forCategory:[self.categoryId integerValue] andPrivacy:0];
+	[ImageUploadManager sharedInstance].delegate = self;
 	self.selectedImageKeys = [NSMutableArray new];
-}
-
--(void)imageUploaded:(NSNotification*)userInfo
-{
-	NSLog(@"uploaded: %@", [[userInfo userInfo] objectForKey:kPiwigoNotificationImageUploadNameKey]);
-}
-
--(void)imageUploadProgress:(NSNotification*)userInfo
-{
-	NSDictionary *info = [userInfo userInfo];
-	NSLog(@"Progress for %@ -- %@\t chunks: %@/%@", [info objectForKey:kPiwigoNotificationImageUploadNameKey], [info objectForKey:kPiwigoNotificationImageUploadPercentKey], [info objectForKey:kPiwigoNotificationImageUploadCurrentChunkKey], [info objectForKey:kPiwigoNotificationImageUploadTotalChunksKey]);
 }
 
 -(void)deselectCellForKey:(NSString*)imageKey
@@ -135,7 +121,7 @@
 	cell.cellSelected = NO;
 }
 
-#pragma mark -- UICollectionView Methods
+#pragma mark UICollectionView Methods
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
@@ -154,6 +140,10 @@
 	
 	NSString *imageAssetKey = [PhotosFetch sharedInstance].sortedImageKeys[indexPath.row];
 	[cell setupWithImageAsset:[[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey]];
+	
+	if([self.selectedImageKeys containsObject:imageAssetKey]) {
+		cell.cellSelected = YES;
+	}
 	
 	return cell;
 }
@@ -202,12 +192,25 @@
 //						} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 //							NSLog(@"ERROR: %@", error);
 //						}];
-		
-	//	ImageDetailViewController *imageDetail = [ImageDetailViewController new];
-	//	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
-	//	[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
-	//	[self.navigationController pushViewController:imageDetail animated:YES];
+//		
+//		ImageDetailViewController *imageDetail = [ImageDetailViewController new];
+//		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+//		[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
+//		[self.navigationController pushViewController:imageDetail animated:YES];
 	}
+}
+
+
+#pragma mark ImageUploadManagerDelegate Methods
+
+-(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
+{
+	
+}
+
+-(void)imageUploaded:(ImageUpload *)image
+{
+	[self deselectCellForKey:image.imageUploadName];
 }
 
 

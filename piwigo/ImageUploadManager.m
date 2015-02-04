@@ -11,15 +11,6 @@
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
 
-NSString * const kPiwigoNotificationImageUploaded = @"kPiwigoNotificationImageUploaded";
-NSString * const kPiwigoNotificationImageUploading = @"kPiwigoNotificationImageUploading";
-NSString * const kPiwigoNotificationImageUploadNameKey = @"imageName";
-NSString * const kPiwigoNotificationImageUploadCurrentKey = @"current";
-NSString * const kPiwigoNotificationImageUploadTotalKey = @"total";
-NSString * const kPiwigoNotificationImageUploadPercentKey = @"percent";
-NSString * const kPiwigoNotificationImageUploadCurrentChunkKey = @"currentChunk";
-NSString * const kPiwigoNotificationImageUploadTotalChunksKey = @"totalChunks";
-
 @interface ImageUploadManager()
 
 @property (nonatomic, assign) BOOL isUploading;
@@ -90,20 +81,16 @@ NSString * const kPiwigoNotificationImageUploadTotalChunksKey = @"totalChunks";
 			   andPrivacyLevel:nextImageToBeUploaded.privacyLevel
 					onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
 						
-						[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationImageUploading
-																			object:nil
-																		  userInfo:@{kPiwigoNotificationImageUploadNameKey : imageKey,
-																					 kPiwigoNotificationImageUploadCurrentKey : @(current),
-																					 kPiwigoNotificationImageUploadTotalKey : @(total),
-																					 kPiwigoNotificationImageUploadPercentKey : @((CGFloat)current / total),
-																					 kPiwigoNotificationImageUploadCurrentChunkKey : @(currentChunk),
-																					 kPiwigoNotificationImageUploadTotalChunksKey : @(totalChunks)}];
+						if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
+						{
+							[self.delegate imageProgress:nextImageToBeUploaded onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
+						}
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						
-						[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationImageUploaded
-																			object:nil
-																		  userInfo:@{kPiwigoNotificationImageUploadNameKey : imageKey}];
-						
+						if([self.delegate respondsToSelector:@selector(imageUploaded:)])
+						{
+							[self.delegate imageUploaded:nextImageToBeUploaded];
+						}
 						[self.imageUploadQueue removeObjectAtIndex:0];
 						[self uploadNextImage];
 					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {

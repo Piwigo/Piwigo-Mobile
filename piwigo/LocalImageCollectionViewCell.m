@@ -58,6 +58,7 @@
 -(void)prepareForReuse
 {
 	self.cellImage.image = nil;
+	self.cellSelected = NO;
 }
 
 -(void)setCellSelected:(BOOL)cellSelected

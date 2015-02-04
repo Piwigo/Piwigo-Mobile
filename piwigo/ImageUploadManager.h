@@ -8,20 +8,21 @@
 
 #import "UploadService.h"
 
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploaded;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploading;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadNameKey;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadCurrentKey;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadTotalKey;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadPercentKey;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadCurrentChunkKey;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadTotalChunksKey;
+@class ImageUpload;
+
+@protocol ImageUploadManagerDelegate <NSObject>
+
+-(void)imageUploaded:(ImageUpload*)image;
+-(void)imageProgress:(ImageUpload*)image onCurrent:(NSInteger)current forTotal:(NSInteger)total  onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks;
+
+@end
 
 @interface ImageUploadManager : UploadService
 
 +(ImageUploadManager*)sharedInstance;
 
 @property (nonatomic, strong) NSMutableArray *imageUploadQueue;
+@property (nonatomic, weak) id<ImageUploadManagerDelegate> delegate;
 
 -(void)addImage:(NSString*)imageName forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy;
 -(void)addImages:(NSArray*)imageNames forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy;
