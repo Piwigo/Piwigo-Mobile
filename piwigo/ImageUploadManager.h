@@ -8,6 +8,13 @@
 
 #import "UploadService.h"
 
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploaded;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploading;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadNameKey;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadCurrentKey;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadTotalKey;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationImageUploadPercentKey;
+
 @interface ImageUploadManager : UploadService
 
 +(ImageUploadManager*)sharedInstance;

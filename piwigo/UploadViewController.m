@@ -52,8 +52,6 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
 		
 		[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
-//			self.localImages = responseObject;
-//			self.sortedImageKeys = [self.localImages.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 			[self.localImagesCollection reloadData];
 		}];
 		
@@ -70,6 +68,9 @@
 															   target:self
 															   action:@selector(uploadSelected)];
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUploaded:) name:kPiwigoNotificationImageUploaded object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUploadProgress:) name:kPiwigoNotificationImageUploading object:nil];
+
 	}
 	return self;
 }
@@ -116,37 +117,16 @@
 	self.selectedImageKeys = [NSMutableArray new];
 }
 
-//-(void)uploadNextImage
-//{
-//	if(self.selectedImageKeys.count <= 0)
-//	{
-//		[self cancelSelect];
-//		return;
-//	}
-//	
-//	NSString *imageKey = [self.selectedImageKeys lastObject];
-//	ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageKey];
-//	
-//	ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
-//	Byte *buffer = (Byte*)malloc(rep.size);
-//	NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
-//	NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
-//	
-//	[UploadService uploadImage:imageData
-//					  withName:[[imageAsset defaultRepresentation] filename]
-//					  forAlbum:[self.categoryId integerValue]
-//			   andPrivacyLevel:0
-//					onProgress:^(NSInteger current, NSInteger total) {
-//						NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
-//					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
-//						NSLog(@"DONE UPLOAD");
-//						[self deselectCellForKey:imageKey];
-//						[self.selectedImageKeys removeObject:imageKey];
-//						[self uploadNextImage];
-//					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//						NSLog(@"ERROR: %@", error);
-//					}];
-//}
+-(void)imageUploaded:(NSNotification*)userInfo
+{
+	NSLog(@"uploaded: %@", [[userInfo userInfo] objectForKey:kPiwigoNotificationImageUploadNameKey]);
+}
+
+-(void)imageUploadProgress:(NSNotification*)userInfo
+{
+	NSDictionary *info = [userInfo userInfo];
+	NSLog(@"Progress for %@ -- %@", [info objectForKey:kPiwigoNotificationImageUploadNameKey], [info objectForKey:kPiwigoNotificationImageUploadPercentKey]);
+}
 
 -(void)deselectCellForKey:(NSString*)imageKey
 {

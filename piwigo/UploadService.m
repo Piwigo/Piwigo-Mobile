@@ -32,15 +32,16 @@
 									   privacyLevel:privacyLevel
 											onCount:0
 										 countTotal:chunks
+										 onProgress:progress
 									   OnCompletion:completion
 										  onFailure:fail];
 	
-	[chunk setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-		if(progress)
-		{
-			progress(totalBytesRead, totalBytesExpectedToRead);
-		}
-	}];
+//	[chunk setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+//		if(progress)
+//		{
+//			progress(totalBytesRead, totalBytesExpectedToRead);
+//		}
+//	}];
 }
 
 +(AFHTTPRequestOperation*)sendChunk:(NSData*)data
@@ -50,6 +51,7 @@
 					   privacyLevel:(NSInteger)privacyLevel
 							onCount:(NSInteger)count
 						 countTotal:(NSInteger)chunks
+						 onProgress:(void (^)(NSInteger current, NSInteger total))progress
 					   OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 						  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
@@ -70,7 +72,10 @@
 					@"chunks" : [NSString stringWithFormat:@"%@", @(chunks)],
 					@"data" : chunk}
 		  success:^(AFHTTPRequestOperation *operation, id responseObject) {
-			  NSLog(@"completed %@/%@", @(count + 1), @(chunks));
+			  if(progress)
+			  {
+				  progress(count + 1, chunks);
+			  }
 			  if(count >= chunks - 1) {
 				  // done, return
 				  if(completion) {
@@ -85,6 +90,7 @@
 					 privacyLevel:privacyLevel
 						  onCount:nextChunkNumber
 					   countTotal:chunks
+					   onProgress:progress
 					 OnCompletion:completion
 						onFailure:fail];
 			  }

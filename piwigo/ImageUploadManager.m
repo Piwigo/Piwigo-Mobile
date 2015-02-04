@@ -11,6 +11,13 @@
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
 
+NSString * const kPiwigoNotificationImageUploaded = @"kPiwigoNotificationImageUploaded";
+NSString * const kPiwigoNotificationImageUploading = @"kPiwigoNotificationImageUploading";
+NSString * const kPiwigoNotificationImageUploadNameKey = @"imageName";
+NSString * const kPiwigoNotificationImageUploadCurrentKey = @"current";
+NSString * const kPiwigoNotificationImageUploadTotalKey = @"total";
+NSString * const kPiwigoNotificationImageUploadPercentKey = @"percent";
+
 @interface ImageUploadManager()
 
 @property (nonatomic, assign) BOOL isUploading;
@@ -80,9 +87,19 @@
 					  forAlbum:nextImageToBeUploaded.categoryToUploadTo
 			   andPrivacyLevel:nextImageToBeUploaded.privacyLevel
 					onProgress:^(NSInteger current, NSInteger total) {
-						NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
+						
+						[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationImageUploading
+																			object:nil
+																		  userInfo:@{kPiwigoNotificationImageUploadNameKey : imageKey,
+																					 kPiwigoNotificationImageUploadCurrentKey : @(current),
+																					 kPiwigoNotificationImageUploadTotalKey : @(total),
+																					 kPiwigoNotificationImageUploadPercentKey : @((CGFloat)current / total)}];
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
-						NSLog(@"DONE UPLOAD");
+						
+						[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationImageUploaded
+																			object:nil
+																		  userInfo:@{kPiwigoNotificationImageUploadNameKey : imageKey}];
+						
 						[self.imageUploadQueue removeObjectAtIndex:0];
 						[self uploadNextImage];
 					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
