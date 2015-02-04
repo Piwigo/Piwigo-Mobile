@@ -55,7 +55,11 @@
 												 {
 													 *stop = YES;
 													 self.localImages = self.mutableDictionary;
-													 completion(self.localImages);
+													 self.sortedImageKeys = [self.localImages.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+													 if(completion)
+													 {
+														 completion(self.localImages);
+													 }
 												 }
 											 }
 										 }];

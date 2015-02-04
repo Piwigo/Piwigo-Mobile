@@ -25,8 +25,6 @@
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
-		instance.isUploading = NO;
-		
 	});
 	return instance;
 }
@@ -37,7 +35,7 @@
 	if(self)
 	{
 		self.imageUploadQueue = [NSMutableArray new];
-		
+		self.isUploading = NO;
 	}
 	return self;
 }

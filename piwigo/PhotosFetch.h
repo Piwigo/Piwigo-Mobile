@@ -14,6 +14,7 @@ typedef void(^CompletionBlock)(id responseObject);
 @interface PhotosFetch : NSObject
 
 @property (nonatomic, strong) NSDictionary *localImages;
+@property (nonatomic, strong) NSArray *sortedImageKeys;
 
 +(PhotosFetch*)sharedInstance;
 -(void)updateLocalPhotosDictionary:(CompletionBlock)completion;

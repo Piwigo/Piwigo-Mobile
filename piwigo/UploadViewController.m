@@ -17,8 +17,8 @@
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
-@property (nonatomic, strong) NSDictionary *localImages;
-@property (nonatomic, strong) NSArray *sortedImageKeys;
+//@property (nonatomic, strong) NSDictionary *localImages;
+//@property (nonatomic, strong) NSArray *sortedImageKeys;
 @property (nonatomic, strong) NSString *categoryId;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
@@ -51,10 +51,9 @@
 		[self.view addSubview:self.localImagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
 		
-		PhotosFetch *photoFetch = [PhotosFetch new];
-		[photoFetch updateLocalPhotosDictionary:^(id responseObject) {
-			self.localImages = responseObject;
-			self.sortedImageKeys = [self.localImages.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+		[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+//			self.localImages = responseObject;
+//			self.sortedImageKeys = [self.localImages.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 			[self.localImagesCollection reloadData];
 		}];
 		
@@ -125,7 +124,7 @@
 	}
 	
 	NSString *imageKey = [self.selectedImageKeys lastObject];
-	ALAsset *imageAsset = [self.localImages objectForKey:imageKey];
+	ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageKey];
 	
 	ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
 	Byte *buffer = (Byte*)malloc(rep.size);
@@ -150,7 +149,7 @@
 
 -(void)deselectCellForKey:(NSString*)imageKey
 {
-	NSInteger row = [self.sortedImageKeys indexOfObject:imageKey];
+	NSInteger row = [[PhotosFetch sharedInstance].sortedImageKeys indexOfObject:imageKey];
 	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 	cell.cellSelected = NO;
 }
@@ -159,7 +158,7 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	return self.localImages.count;
+	return [PhotosFetch sharedInstance].localImages.count;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -172,8 +171,8 @@
 {
 	LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 	
-	NSString *imageAssetKey = self.sortedImageKeys[indexPath.row];
-	[cell setupWithImageAsset:[self.localImages objectForKey:imageAssetKey]];
+	NSString *imageAssetKey = [PhotosFetch sharedInstance].sortedImageKeys[indexPath.row];
+	[cell setupWithImageAsset:[[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey]];
 	
 	return cell;
 }
@@ -187,7 +186,7 @@
 {
 	LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	
-	NSString *imageAssetKey = self.sortedImageKeys[indexPath.row];
+	NSString *imageAssetKey = [PhotosFetch sharedInstance].sortedImageKeys[indexPath.row];
 	
 	if(self.selectable)
 	{
@@ -204,7 +203,7 @@
 	}
 	else
 	{
-		ALAsset *imageAsset = [self.localImages objectForKey:imageAssetKey];
+		ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey];
 		
 //		ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
 //		Byte *buffer = (Byte*)malloc(rep.size);
