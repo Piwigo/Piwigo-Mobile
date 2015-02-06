@@ -12,9 +12,7 @@
 @implementation UploadService
 
 +(void)uploadImage:(NSData*)imageData
-		  withName:(NSString*)imageName
-		  forAlbum:(NSInteger)album
-   andPrivacyLevel:(NSInteger)privacyLevel
+   withInformation:(NSDictionary*)imageInformation
 			onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
 		  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 			 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
@@ -25,44 +23,40 @@
 	if(imageData.length % chunkSize != 0) {
 		chunks++;
 	}
+	
 	[self sendChunk:imageData
-			 offset:0
-		   withName:imageName
-		   forAlbum:album
-	   privacyLevel:privacyLevel
-			onCount:0
-		 countTotal:chunks
-		 onProgress:progress
-	   OnCompletion:completion
-		  onFailure:fail];
+	WithInformation:[imageInformation mutableCopy]
+						 forOffset:0
+						   onChunk:0
+					forTotalChunks:(NSInteger)chunks
+						onProgress:progress
+					  OnCompletion:completion
+						 onFailure:fail];
 }
 
-+(void)sendChunk:(NSData*)data
-							 offset:(NSInteger) offset
-						   withName:(NSString*)imageName
-						   forAlbum:(NSInteger)album
-					   privacyLevel:(NSInteger)privacyLevel
-							onCount:(NSInteger)count
-						 countTotal:(NSInteger)chunks
-						 onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
-					   OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-						  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(void)sendChunk:(NSData*)imageData
+ WithInformation:(NSMutableDictionary*)imageInformation
+					  forOffset:(NSInteger)offset
+						onChunk:(NSInteger)count
+				 forTotalChunks:(NSInteger)chunks
+					 onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+				   OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+					  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	NSInteger chunkSize = 500 * 1024;
-	NSInteger length = data.length;
+	NSInteger length = [imageData length];
 	NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
-	NSData *chunk = [data subdataWithRange:NSMakeRange(offset, thisChunkSize)];
+	NSData *chunk = [imageData subdataWithRange:NSMakeRange(offset, thisChunkSize)];
 	
 	NSInteger nextChunkNumber = count + 1;
 	offset += thisChunkSize;
 	
+	[imageInformation setObject:chunk forKey:kPiwigoImagesUploadParamData];
+	[imageInformation setObject:[NSString stringWithFormat:@"%@", @(count)] forKey:kPiwigoImagesUploadParamChunk];
+	[imageInformation setObject:[NSString stringWithFormat:@"%@", @(chunks)] forKey:kPiwigoImagesUploadParamChunks];
+	
 	AFHTTPRequestOperation *chunkRequest = [self postMultiPart:kPiwigoImagesUpload
-	   parameters:@{@"name" : imageName,
-					@"album" : [NSString stringWithFormat:@"%@", @(album)],
-					@"privacyLevel" : [NSString stringWithFormat:@"%@", @(privacyLevel)],
-					@"chunk" : [NSString stringWithFormat:@"%@", @(count)],
-					@"chunks" : [NSString stringWithFormat:@"%@", @(chunks)],
-					@"data" : chunk}
+	   parameters:imageInformation
 		  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 			  
 			  if(count >= chunks - 1) {
@@ -72,16 +66,14 @@
 				  }
 			  } else {
 				  // keep going!
-				  [self sendChunk:data
-						   offset:offset
-						 withName:imageName
-						 forAlbum:album
-					 privacyLevel:privacyLevel
-						  onCount:nextChunkNumber
-					   countTotal:chunks
-					   onProgress:progress
-					 OnCompletion:completion
-						onFailure:fail];
+				  [self sendChunk:imageData
+				  WithInformation:imageInformation
+									   forOffset:offset
+										 onChunk:nextChunkNumber
+								  forTotalChunks:chunks
+									  onProgress:progress
+									OnCompletion:completion
+									   onFailure:fail];
 			  }
 		  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			  // failed!

@@ -22,4 +22,16 @@
 	return self;
 }
 
+-(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(NSInteger)privacy author:(NSString*)author description:(NSString*)description andTags:(NSString*)tags
+{
+	self = [self initWithImageName:imageName forCategory:category forPrivacyLevel:privacy];
+	if(self)
+	{
+		self.author = author;
+		self.imageDescription = description;
+		self.tags = tags;
+	}
+	return self;
+}
+
 @end

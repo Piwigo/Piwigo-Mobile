@@ -9,6 +9,7 @@
 #import "NetworkHandler.h"
 #import "Model.h"
 
+// URLs:
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
@@ -17,6 +18,16 @@ NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categorie
 NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
 NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo&image_id={imageId}";
 NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
+
+// parameter keys:
+NSString * const kPiwigoImagesUploadParamData = @"data";
+NSString * const kPiwigoImagesUploadParamName = @"name";
+NSString * const kPiwigoImagesUploadParamChunk = @"chunk";
+NSString * const kPiwigoImagesUploadParamChunks = @"chunks";
+NSString * const kPiwigoImagesUploadParamCategory = @"category";
+NSString * const kPiwigoImagesUploadParamPrivacy = @"privacyLevel";
+NSString * const kPiwigoImagesUploadParamAuthor = @"author";
+NSString * const kPiwigoImagesUploadParamDescription = @"description";
 
 @interface NetworkHandler()
 
@@ -79,24 +90,31 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 	NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
 	[mutableHeaders setValue:[NSString stringWithFormat:@"multipart/form-data"] forKey:@"Content-Type"];
 	
-	[formData appendPartWithFileData:[parameters objectForKey:@"data"]
+	[formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
 								name:@"file"
-							fileName:[parameters objectForKey:@"name"]
+							fileName:[parameters objectForKey:kPiwigoImagesUploadParamName]
 							mimeType:@"image/jpeg"];
 	
-	[formData appendPartWithFormData:[[parameters objectForKey:@"name"] dataUsingEncoding:NSUTF8StringEncoding]
+	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"name"];
 	
-	[formData appendPartWithFormData:[[parameters objectForKey:@"chunk"] dataUsingEncoding:NSUTF8StringEncoding]
+	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"chunk"];
-	[formData appendPartWithFormData:[[parameters objectForKey:@"chunks"] dataUsingEncoding:NSUTF8StringEncoding]
+	
+	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"chunks"];
 	
-	[formData appendPartWithFormData:[[parameters objectForKey:@"album"] dataUsingEncoding:NSUTF8StringEncoding]
+	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"category"];
 	
-	[formData appendPartWithFormData:[[parameters objectForKey:@"privacyLevel"] dataUsingEncoding:NSUTF8StringEncoding]
+	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"level"];
+	
+	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamAuthor] dataUsingEncoding:NSUTF8StringEncoding]
+								name:@"author"];
+	
+	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamDescription] dataUsingEncoding:NSUTF8StringEncoding]
+								name:@"comment"];
 	
 	[formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"pwg_token"];

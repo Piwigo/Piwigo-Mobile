@@ -78,10 +78,16 @@
 	NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
 	NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
 	
+	NSDictionary *imageProperties = @{
+									  kPiwigoImagesUploadParamName : [[imageAsset defaultRepresentation] filename],
+									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.categoryToUploadTo)],
+									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.privacyLevel)],
+									  kPiwigoImagesUploadParamAuthor : @"Me",
+									  kPiwigoImagesUploadParamDescription : @"Description"
+									  };
+	
 	[UploadService uploadImage:imageData
-					  withName:[[imageAsset defaultRepresentation] filename]
-					  forAlbum:nextImageToBeUploaded.categoryToUploadTo
-			   andPrivacyLevel:nextImageToBeUploaded.privacyLevel
+			   withInformation:imageProperties
 					onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
 						
 						if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])

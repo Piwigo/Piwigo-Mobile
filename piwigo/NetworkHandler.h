@@ -19,6 +19,16 @@ FOUNDATION_EXPORT NSString * const kPiwigoImagesUpload;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesGetInfo;
 FOUNDATION_EXPORT NSString * const kPiwigoImageDelete;
 
+// parameter keys:
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamData;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamName;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamChunk;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamChunks;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamCategory;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamPrivacy;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamAuthor;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamDescription;
+
 @interface NetworkHandler : NSObject
 
 +(AFHTTPRequestOperation*)post:(NSString*)path
