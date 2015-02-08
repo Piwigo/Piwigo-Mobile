@@ -40,7 +40,7 @@
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Afl-1t-r1a">
                                                     <rect key="frame" x="118" y="7" width="474" height="30"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" returnKeyType="next"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -54,6 +54,31 @@
                                         <connections>
                                             <outlet property="cellLabel" destination="DRW-X6-zj8" id="90t-JI-lkA"/>
                                             <outlet property="cellTextField" destination="Afl-1t-r1a" id="eps-QD-MyV"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="textArea" rowHeight="100" id="Bpu-ru-Cr7" customClass="EditImageTextViewTableViewCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Bpu-ru-Cr7" id="IBt-8g-0eO">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zMu-VQ-mu0" customClass="UIPlaceHolderTextView">
+                                                    <rect key="frame" x="8" y="8" width="584" height="83.5"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
+                                                </textView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="centerY" secondItem="zMu-VQ-mu0" secondAttribute="centerY" id="4KQ-tv-Rbv"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="zMu-VQ-mu0" secondAttribute="trailing" id="6Nc-9Z-Y9l"/>
+                                                <constraint firstItem="zMu-VQ-mu0" firstAttribute="top" secondItem="IBt-8g-0eO" secondAttribute="topMargin" id="V0v-XK-n2a"/>
+                                                <constraint firstItem="zMu-VQ-mu0" firstAttribute="leading" secondItem="IBt-8g-0eO" secondAttribute="leadingMargin" id="iC8-pb-IVl"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="zMu-VQ-mu0" secondAttribute="bottom" id="lih-d1-5GR"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="textView" destination="zMu-VQ-mu0" id="veE-6Q-NLz"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

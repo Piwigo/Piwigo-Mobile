@@ -30,6 +30,7 @@ typedef enum {
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	if(indexPath.row == EditImageDetailsOrderDescription) return 100.0;
 	return 44.0;
 }
 
@@ -62,11 +63,17 @@ typedef enum {
 		}
 		case EditImageDetailsOrderDescription:
 		{
+			cell = [tableView dequeueReusableCellWithIdentifier:@"textArea"];
 			break;
 		}
 	}
 	
 	return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

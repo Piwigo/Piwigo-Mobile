@@ -78,6 +78,8 @@
 		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
 		D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */; };
 		D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */; };
+		D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */; };
+		D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -234,6 +236,10 @@
 		D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageDetails.storyboard; sourceTree = "<group>"; };
 		D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextFieldTableViewCell.h; sourceTree = "<group>"; };
 		D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextFieldTableViewCell.m; sourceTree = "<group>"; };
+		D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextViewTableViewCell.h; sourceTree = "<group>"; };
+		D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextViewTableViewCell.m; sourceTree = "<group>"; };
+		D8F325181A87F624007CBDAC /* UIPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPlaceHolderTextView.h; sourceTree = "<group>"; };
+		D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPlaceHolderTextView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -636,7 +642,11 @@
 			children = (
 				D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */,
 				D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */,
+				D8F325181A87F624007CBDAC /* UIPlaceHolderTextView.h */,
+				D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */,
 				D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */,
+				D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */,
+				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
 				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
 				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
 			);
@@ -763,6 +773,7 @@
 				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D82B8D061A687831000E47CA /* UIProgressView+AFNetworking.m in Sources */,
+				D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
 				D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */,
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
@@ -798,6 +809,7 @@
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8083A4F1A7CB65400A95605 /* UIActionSheet+Blocks.m in Sources */,
+				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
 				D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */,
 				D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */,
 				D82B8D051A687831000E47CA /* UIImageView+AFNetworking.m in Sources */,
