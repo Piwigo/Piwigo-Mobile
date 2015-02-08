@@ -75,6 +75,9 @@
 		D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */; };
 		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
+		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
+		D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */; };
+		D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -226,6 +229,11 @@
 		D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImageCollectionViewCell.m; sourceTree = "<group>"; };
 		D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesData.h; sourceTree = "<group>"; };
 		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
+		D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageDetailsViewController.h; sourceTree = "<group>"; };
+		D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageDetailsViewController.m; sourceTree = "<group>"; };
+		D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageDetails.storyboard; sourceTree = "<group>"; };
+		D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextFieldTableViewCell.h; sourceTree = "<group>"; };
+		D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextFieldTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -280,6 +288,7 @@
 				D8C71A4A1A848B070048BA33 /* ImageUploadTableViewCell.h */,
 				D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */,
 				D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */,
+				D8F325111A875939007CBDAC /* Edit Image Details */,
 			);
 			name = "Upload Progress";
 			sourceTree = "<group>";
@@ -622,6 +631,18 @@
 			name = "Data Cache";
 			sourceTree = "<group>";
 		};
+		D8F325111A875939007CBDAC /* Edit Image Details */ = {
+			isa = PBXGroup;
+			children = (
+				D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */,
+				D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */,
+				D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */,
+				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
+				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
+			);
+			name = "Edit Image Details";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -707,6 +728,7 @@
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */,
 				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
+				D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -742,6 +764,7 @@
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D82B8D061A687831000E47CA /* UIProgressView+AFNetworking.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
+				D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */,
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
 				D82B8D1E1A68783B000E47CA /* AFHTTPRequestOperationManager.m in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
@@ -784,6 +807,7 @@
 				D82B8D1F1A68783B000E47CA /* AFHTTPSessionManager.m in Sources */,
 				D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */,
 				D818E9F81A74BF5100733991 /* AlbumPhotosViewController.m in Sources */,
+				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
 				D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
 				D82B8D251A68783B000E47CA /* AFURLSessionManager.m in Sources */,

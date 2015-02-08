@@ -12,6 +12,7 @@
 
 @interface ImageUploadTableViewCell : UITableViewCell
 
+@property (nonatomic, strong) ImageUpload *imageUploadInfo;
 -(void)setupWithImageInfo:(ImageUpload*)imageInfo;
 
 @end

@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "piwigo/ImageUploadViewController.m"
-            timestampString = "445074490.152777"
+            timestampString = "445077528.409269"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
             landmarkName = "-viewWillAppear:"
             landmarkType = "5">
          </BreakpointContent>

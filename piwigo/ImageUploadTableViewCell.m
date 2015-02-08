@@ -35,6 +35,8 @@
 
 -(void)setupWithImageInfo:(ImageUpload*)imageInfo
 {
+	self.imageUploadInfo = imageInfo;
+	
 	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetForImageName:imageInfo.image];
 	self.image.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
 	

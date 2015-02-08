@@ -9,6 +9,7 @@
 #import "ImageUploadViewController.h"
 #import "ImageUploadTableViewCell.h"
 #import "ImageUpload.h"
+#import "EditImageDetailsViewController.h"
 
 @interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -88,6 +89,15 @@
 	[cell setupWithImageInfo:image];
 	
 	return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
+	EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
+	[self.navigationController pushViewController:editImageVC animated:YES];
 }
 
 @end
