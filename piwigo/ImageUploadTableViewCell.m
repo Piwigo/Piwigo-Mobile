@@ -8,6 +8,7 @@
 
 #import "ImageUploadTableViewCell.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "PhotosFetch.h"
 #import "ImageUpload.h"
 
 @interface ImageUploadTableViewCell()
@@ -34,6 +35,9 @@
 
 -(void)setupWithImageInfo:(ImageUpload*)imageInfo
 {
+	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetForImageName:imageInfo.image];
+	self.image.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
+	
 	self.imageTitle.text = imageInfo.imageUploadName;
 	self.author.text = imageInfo.author;
 	self.tags.text = imageInfo.tags;

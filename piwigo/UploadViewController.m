@@ -15,6 +15,7 @@
 #import "CategoriesData.h"
 #import "ImageUpload.h"
 #import "ImageUploadProgressView.h"
+#import "ImageUploadViewController.h"
 
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadDelegate>
 
@@ -82,6 +83,8 @@
 															 multiplier:1.0
 															   constant:0]];
 		[self.view addConstraint:[NSLayoutConstraint constrainViewToHeight:self.uploadProgressView height:50]];
+		
+		[self.uploadProgressView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showImageUpload)]];
 	}
 	return self;
 }
@@ -91,6 +94,16 @@
 	[super viewWillAppear:animated];
 	
 	[self loadNavButtons];
+}
+
+-(void)showImageUpload
+{
+	
+	ImageUploadViewController *vc = [ImageUploadViewController new];
+	vc.imagesSelected = self.selectedImageKeys;
+	vc.selectedCategory = [self.categoryId integerValue];
+	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+	[self.navigationController presentViewController:nav animated:YES completion:nil];
 }
 
 -(void)loadNavButtons
@@ -189,29 +202,7 @@
 	}
 	else
 	{
-//		ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey];
-//		
-//		ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
-//		Byte *buffer = (Byte*)malloc(rep.size);
-//		NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
-//		NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
-//		
-//		[UploadService uploadImage:imageData
-//						  withName:[[imageAsset defaultRepresentation] filename]
-//						  forAlbum:[self.categoryId integerValue]
-//				   andPrivacyLevel:0
-//						onProgress:^(NSInteger current, NSInteger total) {
-//							NSLog(@"%@/%@ (%.4f)", @(current), @(total), (CGFloat)current / total);
-//						} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
-//							NSLog(@"DONE UPLOAD");
-//						} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//							NSLog(@"ERROR: %@", error);
-//						}];
-//		
-//		ImageDetailViewController *imageDetail = [ImageDetailViewController new];
-//		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
-//		[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
-//		[self.navigationController pushViewController:imageDetail animated:YES];
+		
 	}
 }
 

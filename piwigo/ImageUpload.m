@@ -15,6 +15,7 @@
 	self = [super init];
 	if(self)
 	{
+		self.image = imageName;
 		self.imageUploadName = imageName;
 		self.categoryToUploadTo = category;
 		self.privacyLevel = privacy;

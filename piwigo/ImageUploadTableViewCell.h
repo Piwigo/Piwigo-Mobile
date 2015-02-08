@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class ImageUpload;
+
 @interface ImageUploadTableViewCell : UITableViewCell
+
+-(void)setupWithImageInfo:(ImageUpload*)imageInfo;
 
 @end
