@@ -96,6 +96,9 @@
                             <constraint firstAttribute="centerX" secondItem="T0l-Ou-dhs" secondAttribute="centerX" id="phn-Ha-cOH"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="editImageDetailsTableView" destination="T0l-Ou-dhs" id="waf-Hs-Bx5"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jIA-hH-7tD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

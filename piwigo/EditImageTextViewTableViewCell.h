@@ -10,4 +10,6 @@
 
 @interface EditImageTextViewTableViewCell : UITableViewCell
 
+-(NSString*)getTextViewText;
+
 @end

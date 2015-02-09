@@ -8,6 +8,7 @@
 
 #import "EditImageDetailsViewController.h"
 #import "EditImageTextFieldTableViewCell.h"
+#import "EditImageTextViewTableViewCell.h"
 #import "ImageUpload.h"
 
 typedef enum {
@@ -20,11 +21,39 @@ typedef enum {
 
 @interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource>
 
+@property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
 
 @end
 
 @implementation EditImageDetailsViewController
 
+-(void)awakeFromNib
+{
+	[super awakeFromNib];
+	
+	self.title = @"Edit Image Details";
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+	if([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
+	{
+		[self updateImageDetails];
+		[self.delegate didFinishEditingDetails:self.imageDetails];
+	}
+}
+
+-(void)updateImageDetails
+{
+	EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+	self.imageDetails.imageUploadName = textFieldCell.getTextFieldText;
+	
+	textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+	self.imageDetails.author = textFieldCell.getTextFieldText;
+	
+	EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
+	self.imageDetails.imageDescription = textViewCell.getTextViewText;
+}
 
 #pragma mark UITableView methods
 

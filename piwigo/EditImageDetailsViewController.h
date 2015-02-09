@@ -10,8 +10,15 @@
 
 @class ImageUpload;
 
+@protocol EditImageDetailsDelegate <NSObject>
+
+-(void)didFinishEditingDetails:(ImageUpload*)details;
+
+@end
+
 @interface EditImageDetailsViewController : UIViewController
 
+@property (nonatomic, weak) id<EditImageDetailsDelegate> delegate;
 @property (nonatomic, strong) ImageUpload *imageDetails;
 
 @end

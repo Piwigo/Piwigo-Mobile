@@ -34,12 +34,9 @@
 	}
 }
 
--(void)textViewDidChange:(UITextView *)textView
+-(NSString*)getTextViewText
 {
-	if(textView.text.length <= 0)
-	{
-		NSLog(@"empty");
-	}
+	return self.textView.text;
 }
 
 @end

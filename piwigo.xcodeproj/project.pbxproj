@@ -645,12 +645,20 @@
 				D8F325181A87F624007CBDAC /* UIPlaceHolderTextView.h */,
 				D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */,
 				D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */,
+				D8F3251B1A884E34007CBDAC /* Custom Cells */,
+			);
+			name = "Edit Image Details";
+			sourceTree = "<group>";
+		};
+		D8F3251B1A884E34007CBDAC /* Custom Cells */ = {
+			isa = PBXGroup;
+			children = (
 				D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */,
 				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
 				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
 				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
 			);
-			name = "Edit Image Details";
+			name = "Custom Cells";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -11,7 +11,7 @@
 #import "ImageUpload.h"
 #import "EditImageDetailsViewController.h"
 
-@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, EditImageDetailsDelegate>
 
 @property (nonatomic, strong) UITableView *uploadImagesTableView;
 @property (nonatomic, strong) NSMutableArray *imagesToUpload;
@@ -27,6 +27,8 @@
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.imagesToUpload = [NSMutableArray new];
+		
+		self.title = @"Images";
 		
 		self.uploadImagesTableView = [UITableView new];
 		self.uploadImagesTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -63,7 +65,8 @@
 {
 	for(NSString *imageName in self.imagesSelected)
 	{
-		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:0 author:@"Me" description:@"No Description" andTags:@"No Tags"];
+		// @TODO: Get a default privacy and default author
+		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:0 author:@"Default Author" description:@"" andTags:@""];
 		[self.imagesToUpload addObject:image];
 	}
 }
@@ -97,7 +100,24 @@
 	
 	UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
 	EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
+	editImageVC.imageDetails = [self.imagesToUpload objectAtIndex:indexPath.row];
+	editImageVC.delegate = self;
 	[self.navigationController pushViewController:editImageVC animated:YES];
+}
+
+#pragma mark EditImageDetailsDelegate Methods
+
+-(void)didFinishEditingDetails:(ImageUpload *)details
+{
+	NSInteger index = 0;
+	for(ImageUpload *image in self.imagesToUpload)
+	{
+		if([image.image isEqualToString:details.image]) break;
+		index++;
+	}
+	
+	[self.imagesToUpload replaceObjectAtIndex:index withObject:details];
+	[self.uploadImagesTableView reloadData];
 }
 
 @end
