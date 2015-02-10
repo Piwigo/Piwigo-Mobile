@@ -45,9 +45,7 @@
 -(void)addImage:(NSString*)imageName forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy
 {
 	ImageUpload *newImage = [[ImageUpload alloc] initWithImageName:imageName forCategory:category forPrivacyLevel:privacy];
-	[self.imageUploadQueue addObject:newImage];
-	self.maximumImagesForBatch++;
-	[self startUploadIfNeeded];
+	[self addImage:newImage];
 }
 
 -(void)addImages:(NSArray*)imageNames forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy
@@ -55,6 +53,21 @@
 	for(NSString* imageName in imageNames)
 	{
 		[self addImage:imageName forCategory:category andPrivacy:privacy];
+	}
+}
+
+-(void)addImage:(ImageUpload*)image
+{
+	[self.imageUploadQueue addObject:image];
+	self.maximumImagesForBatch++;
+	[self startUploadIfNeeded];
+}
+
+-(void)addImages:(NSArray*)images
+{
+	for(ImageUpload *image in images)
+	{
+		[self addImage:image];
 	}
 }
 
@@ -79,11 +92,11 @@
 	NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
 	
 	NSDictionary *imageProperties = @{
-									  kPiwigoImagesUploadParamName : [[imageAsset defaultRepresentation] filename],
+									  kPiwigoImagesUploadParamName : nextImageToBeUploaded.imageUploadName,
 									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.categoryToUploadTo)],
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.privacyLevel)],
-									  kPiwigoImagesUploadParamAuthor : @"Me",
-									  kPiwigoImagesUploadParamDescription : @"Description"
+									  kPiwigoImagesUploadParamAuthor : nextImageToBeUploaded.author,
+									  kPiwigoImagesUploadParamDescription : nextImageToBeUploaded.imageDescription
 									  };
 	
 	[UploadService uploadImage:imageData
@@ -97,9 +110,9 @@
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						
 						self.onCurrentImageUpload++;
-						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:)])
+						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
 						{
-							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch];
+							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
 						}
 						[self.imageUploadQueue removeObjectAtIndex:0];
 						[self uploadNextImage];

@@ -10,6 +10,7 @@
 #import "ImageUploadTableViewCell.h"
 #import "ImageUpload.h"
 #import "EditImageDetailsViewController.h"
+#import "ImageUploadManager.h"
 
 @interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, EditImageDetailsDelegate>
 
@@ -46,13 +47,25 @@
 {
 	[super viewWillAppear:animated];
 	
-	UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+	UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel)];
 	self.navigationItem.leftBarButtonItem = back;
+	
+	UIBarButtonItem *upload = [[UIBarButtonItem alloc] initWithTitle:@"Upload"
+															   style:UIBarButtonItemStylePlain
+															  target:self
+															  action:@selector(startUpload)];
+	self.navigationItem.rightBarButtonItem = upload;
 }
 
--(void)done
+-(void)cancel
 {
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)startUpload
+{
+	// @TODO: Ask user if they really want to add these images to the upload queue
+	[[ImageUploadManager sharedInstance] addImages:self.imagesToUpload];
 }
 
 -(void)setImagesSelected:(NSArray *)imagesSelected

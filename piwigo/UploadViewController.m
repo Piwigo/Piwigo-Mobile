@@ -17,7 +17,7 @@
 #import "ImageUploadProgressView.h"
 #import "ImageUploadViewController.h"
 
-@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadDelegate>
+@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, strong) NSString *categoryId;
@@ -29,7 +29,7 @@
 @property (nonatomic, assign) BOOL selectable;
 @property (nonatomic, retain) NSMutableArray *selectedImageKeys;
 
-@property (nonatomic, strong) ImageUploadProgressView *uploadProgressView;
+//@property (nonatomic, strong) ImageUploadProgressView *uploadProgressView;
 
 @end
 
@@ -71,20 +71,19 @@
 															   target:self
 															   action:@selector(uploadSelected)];
 
-		self.uploadProgressView = [ImageUploadProgressView new];
-		self.uploadProgressView.translatesAutoresizingMaskIntoConstraints = NO;
-		[self.view addSubview:self.uploadProgressView];
-		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.uploadProgressView]];
-		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadProgressView
-															  attribute:NSLayoutAttributeBottom
-															  relatedBy:NSLayoutRelationEqual
-																 toItem:self.bottomLayoutGuide
-															  attribute:NSLayoutAttributeTop
-															 multiplier:1.0
-															   constant:0]];
-		[self.view addConstraint:[NSLayoutConstraint constrainViewToHeight:self.uploadProgressView height:50]];
+//		self.uploadProgressView = [ImageUploadProgressView new];
+//		self.uploadProgressView.translatesAutoresizingMaskIntoConstraints = NO;
+//		[self.view addSubview:self.uploadProgressView];
+//		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.uploadProgressView]];
+//		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadProgressView
+//															  attribute:NSLayoutAttributeBottom
+//															  relatedBy:NSLayoutRelationEqual
+//																 toItem:self.bottomLayoutGuide
+//															  attribute:NSLayoutAttributeTop
+//															 multiplier:1.0
+//															   constant:0]];
+//		[self.view addConstraint:[NSLayoutConstraint constrainViewToHeight:self.uploadProgressView height:50]];
 		
-		[self.uploadProgressView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showImageUpload)]];
 	}
 	return self;
 }
@@ -94,16 +93,6 @@
 	[super viewWillAppear:animated];
 	
 	[self loadNavButtons];
-}
-
--(void)showImageUpload
-{
-	
-	ImageUploadViewController *vc = [ImageUploadViewController new];
-	vc.imagesSelected = self.selectedImageKeys;
-	vc.selectedCategory = [self.categoryId integerValue];
-	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-	[self.navigationController presentViewController:nav animated:YES completion:nil];
 }
 
 -(void)loadNavButtons
@@ -137,9 +126,19 @@
 
 -(void)uploadSelected
 {
-	[[ImageUploadManager sharedInstance] addImages:self.selectedImageKeys forCategory:[self.categoryId integerValue] andPrivacy:0];
+	[self showImageUpload];
+//	[[ImageUploadManager sharedInstance] addImages:self.selectedImageKeys forCategory:[self.categoryId integerValue] andPrivacy:0];
 //	[ImageUploadManager sharedInstance].delegate = self;
-	self.selectedImageKeys = [NSMutableArray new];
+//	self.selectedImageKeys = [NSMutableArray new];
+}
+
+-(void)showImageUpload
+{
+	ImageUploadViewController *vc = [ImageUploadViewController new];
+	vc.imagesSelected = self.selectedImageKeys;
+	vc.selectedCategory = [self.categoryId integerValue];
+	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+	[self.navigationController presentViewController:nav animated:YES completion:nil];
 }
 
 -(void)deselectCellForKey:(NSString*)imageKey
@@ -204,19 +203,6 @@
 	{
 		
 	}
-}
-
-
-#pragma mark ImageUploadManagerDelegate Methods
-
--(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
-{
-	
-}
-
--(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue
-{
-	[self deselectCellForKey:image.imageUploadName];
 }
 
 

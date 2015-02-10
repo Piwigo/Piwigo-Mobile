@@ -131,7 +131,7 @@ typedef enum {
 	return tableViewCell;
 }
 
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
 	return [self.headerHeights[section] floatValue];
 }
