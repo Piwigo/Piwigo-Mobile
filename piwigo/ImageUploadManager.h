@@ -25,6 +25,7 @@
 +(ImageUploadManager*)sharedInstance;
 
 @property (nonatomic, strong) NSMutableArray *imageUploadQueue;
+@property (nonatomic, readonly) NSInteger maximumImagesForBatch;
 @property (nonatomic, weak) id<ImageUploadDelegate> delegate;
 
 -(void)addImage:(NSString*)imageName forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy;

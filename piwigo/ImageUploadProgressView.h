@@ -8,6 +8,23 @@
 
 #import <UIKit/UIKit.h>
 
+@class ImageUpload;
+
+@protocol ImageUploadProgressDelegate <NSObject>
+
+-(void)imageUploaded:(ImageUpload*)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary*)response;
+-(void)imageProgress:(ImageUpload*)image onCurrent:(NSInteger)current forTotal:(NSInteger)total  onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks;
+
+@optional
+-(void)imagesToUploadChanged:(NSInteger)imagesLeftToUpload;
+
+@end
+
 @interface ImageUploadProgressView : UIView
+
++(ImageUploadProgressView*)sharedInstance;
+@property (nonatomic, weak) id<ImageUploadProgressDelegate> delegate;
+
+-(void)addViewToView:(UIView*)view forBottomLayout:(id)bottomLayout;
 
 @end

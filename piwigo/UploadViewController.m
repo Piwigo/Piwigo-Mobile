@@ -17,7 +17,7 @@
 #import "ImageUploadProgressView.h"
 #import "ImageUploadViewController.h"
 
-@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, strong) NSString *categoryId;
@@ -70,19 +70,6 @@
 																style:UIBarButtonItemStylePlain
 															   target:self
 															   action:@selector(uploadSelected)];
-
-//		self.uploadProgressView = [ImageUploadProgressView new];
-//		self.uploadProgressView.translatesAutoresizingMaskIntoConstraints = NO;
-//		[self.view addSubview:self.uploadProgressView];
-//		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.uploadProgressView]];
-//		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadProgressView
-//															  attribute:NSLayoutAttributeBottom
-//															  relatedBy:NSLayoutRelationEqual
-//																 toItem:self.bottomLayoutGuide
-//															  attribute:NSLayoutAttributeTop
-//															 multiplier:1.0
-//															   constant:0]];
-//		[self.view addConstraint:[NSLayoutConstraint constrainViewToHeight:self.uploadProgressView height:50]];
 		
 	}
 	return self;
@@ -93,6 +80,17 @@
 	[super viewWillAppear:animated];
 	
 	[self loadNavButtons];
+	[ImageUploadProgressView sharedInstance].delegate = self;
+	for(ImageUpload *image in [ImageUploadManager sharedInstance].imageUploadQueue)
+	{
+		[self.selectedImageKeys addObject:image.image];
+	}
+	[self.localImagesCollection reloadData];
+	
+	if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
+	{
+		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
+	}
 }
 
 -(void)loadNavButtons
@@ -135,10 +133,11 @@
 -(void)showImageUpload
 {
 	ImageUploadViewController *vc = [ImageUploadViewController new];
-	vc.imagesSelected = self.selectedImageKeys;
 	vc.selectedCategory = [self.categoryId integerValue];
+	vc.imagesSelected = self.selectedImageKeys;
 	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
 	[self.navigationController presentViewController:nav animated:YES completion:nil];
+	self.selectedImageKeys = [NSMutableArray new];
 }
 
 -(void)deselectCellForKey:(NSString*)imageKey
@@ -202,6 +201,28 @@
 	else
 	{
 		
+	}
+}
+
+#pragma mark ImageUploadProgressDelegate Methods
+
+-(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
+{
+	
+}
+
+-(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
+{
+	[self deselectCellForKey:image.image];
+	NSInteger index = 0;
+	for(NSString *key in self.selectedImageKeys)
+	{
+		if([key isEqualToString:image.image])
+		{
+			[self.selectedImageKeys removeObjectAtIndex:index];
+			break;
+		}
+		index++;
 	}
 }
 

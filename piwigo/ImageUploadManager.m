@@ -108,12 +108,18 @@
 							[self.delegate imageProgress:nextImageToBeUploaded onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
 						}
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
-						
 						self.onCurrentImageUpload++;
-						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+						
+						if([response objectForKey:@"result"])
 						{
-							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
+							// @TODO: if it's all the way done, then use the response to edit the image properties
+							if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+							{
+								[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
+							}
 						}
+						
+						
 						[self.imageUploadQueue removeObjectAtIndex:0];
 						[self uploadNextImage];
 					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {

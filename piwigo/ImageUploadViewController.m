@@ -11,8 +11,9 @@
 #import "ImageUpload.h"
 #import "EditImageDetailsViewController.h"
 #import "ImageUploadManager.h"
+#import "ImageUploadProgressView.h"
 
-@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, EditImageDetailsDelegate>
+@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, ImageUploadProgressDelegate, EditImageDetailsDelegate>
 
 @property (nonatomic, strong) UITableView *uploadImagesTableView;
 @property (nonatomic, strong) NSMutableArray *imagesToUpload;
@@ -39,6 +40,12 @@
 		[self.view addSubview:self.uploadImagesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.uploadImagesTableView]];
 		
+		[ImageUploadProgressView sharedInstance].delegate = self;
+		
+		if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
+		{
+			[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
+		}
 	}
 	return self;
 }
@@ -84,6 +91,19 @@
 	}
 }
 
+-(void)removeImageFromTableView:(ImageUpload*)imageToRemove
+{
+	for(NSInteger i = 0; i < self.imagesToUpload.count; i++)
+	{
+		if([((ImageUpload*)[self.imagesToUpload objectAtIndex:i]).image isEqualToString:imageToRemove.image])
+		{
+			[self.imagesToUpload removeObjectAtIndex:i];
+			[self.uploadImagesTableView reloadData];
+			break;
+		}
+	}
+}
+
 #pragma mark UITableView Methods
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -116,6 +136,18 @@
 	editImageVC.imageDetails = [self.imagesToUpload objectAtIndex:indexPath.row];
 	editImageVC.delegate = self;
 	[self.navigationController pushViewController:editImageVC animated:YES];
+}
+
+#pragma mark ImageUploadProgressDelegate Methods
+
+-(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
+{
+	
+}
+
+-(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
+{
+	[self removeImageFromTableView:image];
 }
 
 #pragma mark EditImageDetailsDelegate Methods

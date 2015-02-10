@@ -22,6 +22,16 @@
 
 @implementation ImageUploadProgressView
 
++(ImageUploadProgressView*)sharedInstance
+{
+	static ImageUploadProgressView *instance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		instance = [[self alloc] init];
+	});
+	return instance;
+}
+
 -(instancetype)init
 {
 	self = [super init];
@@ -56,6 +66,33 @@
 	return self;
 }
 
+-(void)addViewToView:(UIView*)view forBottomLayout:(id)bottomLayout
+{
+	self.translatesAutoresizingMaskIntoConstraints = NO;
+	[view addSubview:self];
+	[view addConstraints:[NSLayoutConstraint constraintFillWidth:self]];
+	[view addConstraint:[NSLayoutConstraint constraintWithItem:self
+														  attribute:NSLayoutAttributeBottom
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:bottomLayout
+														  attribute:NSLayoutAttributeTop
+														 multiplier:1.0
+														   constant:0]];
+	[view addConstraint:[NSLayoutConstraint constrainViewToHeight:self height:50]];
+}
+
+-(void)updateImageCountLabel
+{
+	if(self.maxImages == 0)
+	{
+		self.imageCountLabel.text = @"Completed";
+	}
+	else
+	{
+		self.imageCountLabel.text = [NSString stringWithFormat:@"Uploading %@/%@", @(self.currentImage), @(self.maxImages)];
+	}
+}
+
 #pragma mark ImageUploadManagerDelegate Methods
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
@@ -69,9 +106,14 @@
 		totalProgress = 1;
 	}
 	[self.uploadProgress setProgress:totalProgress animated:YES];
+	
+	if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
+	{
+		[self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
+	}
 }
 
--(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue
+-(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
 	self.currentImage = rank;
 	if(rank >= totalInQueue)
@@ -80,23 +122,36 @@
 	}
 	[self updateImageCountLabel];
 	[self.uploadProgress setProgress:0 animated:NO];
+	
+	if(rank == totalInQueue)
+	{
+		if(self.superview)
+		{
+			[UIView animateWithDuration:0.8
+								  delay:1.0
+								options:kNilOptions
+							 animations:^{
+								 self.alpha = 0;
+							 } completion:^(BOOL finished) {
+								 [self removeFromSuperview];
+							 }];
+		}
+	}
+	
+	if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+	{
+		[self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
+	}
 }
 
 -(void)imagesToUploadChanged:(NSInteger)imagesLeftToUpload
 {
 	self.maxImages = imagesLeftToUpload;
 	[self updateImageCountLabel];
-}
-
--(void)updateImageCountLabel
-{
-	if(self.maxImages == 0)
+	
+	if([self.delegate respondsToSelector:@selector(imagesToUploadChanged:)])
 	{
-		self.imageCountLabel.text = @"Completed";
-	}
-	else
-	{
-		self.imageCountLabel.text = [NSString stringWithFormat:@"Uploading %@/%@", @(self.currentImage), @(self.maxImages)];
+		[self.delegate imagesToUploadChanged:imagesLeftToUpload];
 	}
 }
 
