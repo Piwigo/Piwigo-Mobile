@@ -23,6 +23,9 @@
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *username;
 
+@property (nonatomic, assign) NSInteger defaultPrivacyLevel;
+@property (nonatomic, strong) NSString *defaultAuthor;
+
 @property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger lastPageImageCount;

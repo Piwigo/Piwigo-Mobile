@@ -29,8 +29,6 @@
 @property (nonatomic, assign) BOOL selectable;
 @property (nonatomic, retain) NSMutableArray *selectedImageKeys;
 
-//@property (nonatomic, strong) ImageUploadProgressView *uploadProgressView;
-
 @end
 
 @implementation UploadViewController
@@ -125,9 +123,6 @@
 -(void)uploadSelected
 {
 	[self showImageUpload];
-//	[[ImageUploadManager sharedInstance] addImages:self.selectedImageKeys forCategory:[self.categoryId integerValue] andPrivacy:0];
-//	[ImageUploadManager sharedInstance].delegate = self;
-//	self.selectedImageKeys = [NSMutableArray new];
 }
 
 -(void)showImageUpload

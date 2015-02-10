@@ -23,7 +23,9 @@
 		instance = [[self alloc] init];
 		
 		instance.imagesPerPage = 100;
-				
+		instance.defaultPrivacyLevel = 0;
+		instance.defaultAuthor = @"";
+		
 		[instance readFromDisk];
 	});
 	return instance;
@@ -56,6 +58,8 @@
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:codedData];
 		Model *modelData = [unarchiver decodeObjectForKey:@"Model"];
 		self.serverName = modelData.serverName;
+		self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
+		self.defaultAuthor = modelData.defaultAuthor;
 		
 	}
 }
@@ -73,6 +77,8 @@
 - (void) encodeWithCoder:(NSCoder *)encoder {
 	NSMutableArray *saveObject = [[NSMutableArray alloc] init];
 	[saveObject addObject:self.serverName];
+	[saveObject addObject:@(self.defaultPrivacyLevel)];
+	[saveObject addObject:self.defaultAuthor];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -81,6 +87,8 @@
 	self = [super init];
 	NSArray *savedData = [decoder decodeObjectForKey:@"Model"];
 	self.serverName = [savedData objectAtIndex:0];
+	self.defaultPrivacyLevel = [[savedData objectAtIndex:1] integerValue];
+	self.defaultAuthor = [savedData objectAtIndex:2];
 	
 	return self;
 }

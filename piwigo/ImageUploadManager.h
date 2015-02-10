@@ -10,6 +10,14 @@
 
 @class ImageUpload;
 
+typedef enum {
+	kImagePermissionEverybody = 0,
+	kImagePermissionAdminsFamilyFriendsContacts = 1,
+	kImagePermissionAdminsFamilyFriends = 2,
+	kImagePermissionAdminsFamily = 4,
+	kImagePermissionAdmins = 8,
+} kImagePermission;
+
 @protocol ImageUploadDelegate <NSObject>
 
 -(void)imageUploaded:(ImageUpload*)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary*)response;

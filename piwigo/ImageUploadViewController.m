@@ -12,6 +12,7 @@
 #import "EditImageDetailsViewController.h"
 #import "ImageUploadManager.h"
 #import "ImageUploadProgressView.h"
+#import "Model.h"
 
 @interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, ImageUploadProgressDelegate, EditImageDetailsDelegate>
 
@@ -78,7 +79,6 @@
 {
 	// @TODO: Ask user if they really want to add these images to the upload queue
 	[[ImageUploadManager sharedInstance] addImages:self.imagesToUpload];
-	
 	[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
 }
 
@@ -93,7 +93,7 @@
 	for(NSString *imageName in self.imagesSelected)
 	{
 		// @TODO: Get a default privacy and default author
-		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:0 author:@"Default Author" description:@"" andTags:@""];
+		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:@""];
 		[self.imagesToUpload addObject:image];
 	}
 }
