@@ -62,6 +62,11 @@
 															  target:self
 															  action:@selector(startUpload)];
 	self.navigationItem.rightBarButtonItem = upload;
+	
+	if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
+	{
+		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
+	}
 }
 
 -(void)cancel
@@ -73,6 +78,8 @@
 {
 	// @TODO: Ask user if they really want to add these images to the upload queue
 	[[ImageUploadManager sharedInstance] addImages:self.imagesToUpload];
+	
+	[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
 }
 
 -(void)setImagesSelected:(NSArray *)imagesSelected

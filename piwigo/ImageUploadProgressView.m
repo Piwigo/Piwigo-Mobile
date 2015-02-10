@@ -38,6 +38,7 @@
 	if(self)
 	{
 		self.backgroundColor = [UIColor piwigoWhiteCream];
+		self.translatesAutoresizingMaskIntoConstraints = NO;
 		self.currentImage = 1;
 		self.maxImages = 0;
 		
@@ -48,6 +49,9 @@
 		self.imageCountLabel.font = [UIFont piwigoFontNormal];
 		self.imageCountLabel.textColor = [UIColor piwigoGray];
 		self.imageCountLabel.text = @"Uploading 0/0";
+		self.imageCountLabel.minimumScaleFactor = 0.5;
+		self.imageCountLabel.adjustsFontSizeToFitWidth = YES;
+		self.imageCountLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
 		[self addSubview:self.imageCountLabel];
 		[self addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.imageCountLabel]];
 		
@@ -56,7 +60,7 @@
 		[self addSubview:self.uploadProgress];
 		[self addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.uploadProgress]];
 		
-		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-10-[progress]-15-|"
+		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(<=200)]-10-[progress]-15-|"
 																	 options:kNilOptions
 																	 metrics:nil
 																	   views:@{@"label" : self.imageCountLabel,
@@ -68,7 +72,11 @@
 
 -(void)addViewToView:(UIView*)view forBottomLayout:(id)bottomLayout
 {
-	self.translatesAutoresizingMaskIntoConstraints = NO;
+	if(view.superview)
+	{
+		[self removeFromSuperview];
+	}
+	
 	[view addSubview:self];
 	[view addConstraints:[NSLayoutConstraint constraintFillWidth:self]];
 	[view addConstraint:[NSLayoutConstraint constraintWithItem:self
