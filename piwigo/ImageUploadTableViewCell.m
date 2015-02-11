@@ -117,6 +117,7 @@
 	
 	self.isInQueueForUpload = NO;
 	[self.uploadingProgressBar setProgress:0];
+	self.uploadingProgressLabel.text = @"0 %";
 }
 
 @end

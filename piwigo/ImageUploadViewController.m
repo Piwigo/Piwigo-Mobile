@@ -209,6 +209,27 @@
 	}
 }
 
+-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if(indexPath.section == 1 && indexPath.row != 0)
+	{
+		return YES;
+	}
+	return NO;
+}
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if(editingStyle == UITableViewCellEditingStyleDelete)
+	{
+		if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
+		{
+			[[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
+			[tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+		}
+	}
+}
+
 #pragma mark ImageUploadProgressDelegate Methods
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
