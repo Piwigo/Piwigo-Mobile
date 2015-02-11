@@ -41,4 +41,6 @@ typedef enum {
 -(void)addImage:(ImageUpload*)image;
 -(void)addImages:(NSArray*)images;
 
+-(NSInteger)getIndexOfImage:(ImageUpload*)image;
+
 @end

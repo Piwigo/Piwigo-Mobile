@@ -18,7 +18,6 @@
 
 @property (nonatomic, strong) UITableView *uploadImagesTableView;
 @property (nonatomic, strong) NSMutableArray *imagesToEdit;
-@property (nonatomic, strong) NSMutableArray *imagesInQueueToUpload;
 
 @end
 
@@ -31,7 +30,6 @@
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.imagesToEdit = [NSMutableArray new];
-		self.imagesInQueueToUpload = [NSMutableArray new];
 		
 		self.title = @"Images";
 		
@@ -82,9 +80,8 @@
 	// @TODO: Ask user if they really want to add these images to the upload queue
 	[[ImageUploadManager sharedInstance] addImages:self.imagesToEdit];
 	[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
-	
-	self.imagesInQueueToUpload = self.imagesToEdit;
 	self.imagesToEdit = [NSMutableArray new];
+	[self.uploadImagesTableView reloadData];
 }
 
 -(void)setImagesSelected:(NSArray *)imagesSelected
@@ -114,6 +111,14 @@
 			break;
 		}
 	}
+}
+
+-(void)updateImage:(ImageUpload*)image withProgress:(CGFloat)progress
+{
+	NSLog(@"\tUpdate progress -- %@\t %.2f", image.image, progress);
+	NSInteger index = [[ImageUploadManager sharedInstance] getIndexOfImage:image];
+	ImageUploadTableViewCell *cell = (ImageUploadTableViewCell*)[self.uploadImagesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+	cell.imageProgress = progress;
 }
 
 #pragma mark UITableView Methods
@@ -167,7 +172,7 @@
 	}
 	else
 	{
-		return self.imagesInQueueToUpload.count;
+		return [ImageUploadManager sharedInstance].imageUploadQueue.count;
 	}
 }
 
@@ -182,7 +187,9 @@
 	}
 	else
 	{
-		
+		ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
+		[cell setupWithImageInfo:image];
+		cell.isInQueueForUpload = YES;
 	}
 	
 	return cell;
@@ -206,12 +213,18 @@
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
 {
-	
+	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
+	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
+	CGFloat peiceProgress = (CGFloat)current / total;
+	CGFloat totalProgress = onChunkPercent + (chunkPercent * peiceProgress);
+	[self updateImage:image withProgress:totalProgress];
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-	[self removeImageFromTableView:image];
+	NSLog(@"reload table view");
+	[self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+//	[self removeImageFromTableView:image];
 }
 
 #pragma mark EditImageDetailsDelegate Methods

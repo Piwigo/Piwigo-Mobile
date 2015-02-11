@@ -110,17 +110,14 @@
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
-						if([response objectForKey:@"result"])
+						NSLog(@"remove image from queue");
+						[self.imageUploadQueue removeObjectAtIndex:0];
+						// @TODO: if it's all the way done, then use the response to edit the image properties
+						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
 						{
-							// @TODO: if it's all the way done, then use the response to edit the image properties
-							if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-							{
-								[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
-							}
+							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
 						}
 						
-						
-						[self.imageUploadQueue removeObjectAtIndex:0];
 						[self uploadNextImage];
 					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 						NSLog(@"ERROR IMAGE UPLOAD: %@", error);
@@ -164,6 +161,11 @@
 	{
 		[self.delegate imagesToUploadChanged:maximumImagesForBatch];
 	}
+}
+
+-(NSInteger)getIndexOfImage:(ImageUpload*)image
+{
+	return [self.imageUploadQueue indexOfObject:image];
 }
 
 

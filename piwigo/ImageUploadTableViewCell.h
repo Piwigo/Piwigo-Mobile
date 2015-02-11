@@ -12,7 +12,10 @@
 
 @interface ImageUploadTableViewCell : UITableViewCell
 
+@property (nonatomic, assign) BOOL isInQueueForUpload;
+@property (nonatomic, assign) CGFloat imageProgress;
 @property (nonatomic, strong) ImageUpload *imageUploadInfo;
+
 -(void)setupWithImageInfo:(ImageUpload*)imageInfo;
 
 @end
