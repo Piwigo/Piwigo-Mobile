@@ -17,7 +17,8 @@
 @interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, ImageUploadProgressDelegate, EditImageDetailsDelegate>
 
 @property (nonatomic, strong) UITableView *uploadImagesTableView;
-@property (nonatomic, strong) NSMutableArray *imagesToUpload;
+@property (nonatomic, strong) NSMutableArray *imagesToEdit;
+@property (nonatomic, strong) NSMutableArray *imagesInQueueToUpload;
 
 @end
 
@@ -29,7 +30,8 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
-		self.imagesToUpload = [NSMutableArray new];
+		self.imagesToEdit = [NSMutableArray new];
+		self.imagesInQueueToUpload = [NSMutableArray new];
 		
 		self.title = @"Images";
 		
@@ -78,8 +80,11 @@
 -(void)startUpload
 {
 	// @TODO: Ask user if they really want to add these images to the upload queue
-	[[ImageUploadManager sharedInstance] addImages:self.imagesToUpload];
+	[[ImageUploadManager sharedInstance] addImages:self.imagesToEdit];
 	[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
+	
+	self.imagesInQueueToUpload = self.imagesToEdit;
+	self.imagesToEdit = [NSMutableArray new];
 }
 
 -(void)setImagesSelected:(NSArray *)imagesSelected
@@ -94,17 +99,17 @@
 	{
 		// @TODO: Get a default privacy and default author
 		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:@""];
-		[self.imagesToUpload addObject:image];
+		[self.imagesToEdit addObject:image];
 	}
 }
 
 -(void)removeImageFromTableView:(ImageUpload*)imageToRemove
 {
-	for(NSInteger i = 0; i < self.imagesToUpload.count; i++)
+	for(NSInteger i = 0; i < self.imagesToEdit.count; i++)
 	{
-		if([((ImageUpload*)[self.imagesToUpload objectAtIndex:i]).image isEqualToString:imageToRemove.image])
+		if([((ImageUpload*)[self.imagesToEdit objectAtIndex:i]).image isEqualToString:imageToRemove.image])
 		{
-			[self.imagesToUpload removeObjectAtIndex:i];
+			[self.imagesToEdit removeObjectAtIndex:i];
 			[self.uploadImagesTableView reloadData];
 			break;
 		}
@@ -113,6 +118,42 @@
 
 #pragma mark UITableView Methods
 
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+	return 2;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	return 30.0;
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30.0)];
+	header.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.5];
+	
+	UILabel *headerLabel = [UILabel new];
+	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+	headerLabel.textColor = [UIColor whiteColor];
+	headerLabel.font = [UIFont piwigoFontNormal];
+	[header addSubview:headerLabel];
+	[header addConstraint:[NSLayoutConstraint constrainViewFromBottom:headerLabel amount:0]];
+	[header addConstraint:[NSLayoutConstraint constrainViewFromLeft:headerLabel amount:15]];
+	
+	switch(section)
+	{
+		case 0:
+			headerLabel.text = @"Edit Images to Upload";
+			break;
+		case 1:
+			headerLabel.text = @"Images that are Being Uploaded";
+			break;
+	}
+	
+	return header;
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	return 150;
@@ -120,16 +161,29 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return self.imagesToUpload.count;
+	if(section == 0)
+	{
+		return self.imagesToEdit.count;
+	}
+	else
+	{
+		return self.imagesInQueueToUpload.count;
+	}
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	ImageUploadTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
-	ImageUpload *image = [self.imagesToUpload objectAtIndex:indexPath.row];
-	
-	[cell setupWithImageInfo:image];
+	if(indexPath.section == 0)
+	{
+		ImageUpload *image = [self.imagesToEdit objectAtIndex:indexPath.row];
+		[cell setupWithImageInfo:image];
+	}
+	else
+	{
+		
+	}
 	
 	return cell;
 }
@@ -138,11 +192,14 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
-	EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-	editImageVC.imageDetails = [self.imagesToUpload objectAtIndex:indexPath.row];
-	editImageVC.delegate = self;
-	[self.navigationController pushViewController:editImageVC animated:YES];
+	if(indexPath.section == 0)
+	{
+		UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
+		EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
+		editImageVC.imageDetails = [self.imagesToEdit objectAtIndex:indexPath.row];
+		editImageVC.delegate = self;
+		[self.navigationController pushViewController:editImageVC animated:YES];
+	}
 }
 
 #pragma mark ImageUploadProgressDelegate Methods
@@ -162,13 +219,13 @@
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {
 	NSInteger index = 0;
-	for(ImageUpload *image in self.imagesToUpload)
+	for(ImageUpload *image in self.imagesToEdit)
 	{
 		if([image.image isEqualToString:details.image]) break;
 		index++;
 	}
 	
-	[self.imagesToUpload replaceObjectAtIndex:index withObject:details];
+	[self.imagesToEdit replaceObjectAtIndex:index withObject:details];
 	[self.uploadImagesTableView reloadData];
 }
 
