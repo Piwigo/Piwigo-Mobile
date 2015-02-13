@@ -115,8 +115,7 @@
 
 -(void)updateImage:(ImageUpload*)image withProgress:(CGFloat)progress
 {
-	NSLog(@"\tUpdate progress -- %@\t %.2f", image.image, progress);
-	NSInteger index = [[ImageUploadManager sharedInstance] getIndexOfImage:image];
+	// the image being uploaded is always the first object in the array
 	ImageUploadTableViewCell *cell = (ImageUploadTableViewCell*)[self.uploadImagesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
 	cell.imageProgress = progress;
 }
@@ -243,9 +242,7 @@
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-	NSLog(@"reload table view");
 	[self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-//	[self removeImageFromTableView:image];
 }
 
 #pragma mark EditImageDetailsDelegate Methods

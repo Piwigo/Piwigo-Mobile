@@ -110,7 +110,6 @@
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
-						NSLog(@"remove image from queue");
 						[self.imageUploadQueue removeObjectAtIndex:0];
 						// @TODO: if it's all the way done, then use the response to edit the image properties
 						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
