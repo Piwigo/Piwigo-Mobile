@@ -48,6 +48,7 @@
 		D82B8D2B1A68832C000E47CA /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2A1A68832C000E47CA /* Model.m */; };
 		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
 		D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */; };
+		D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D83212321A91B937009372D8 /* LabelTableViewCell.m */; };
 		D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8361A7BFF1900231886 /* LEColorPicker.m */; };
 		D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */; };
 		D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B83C1A7C06A500231886 /* OutlinedText.m */; };
@@ -180,6 +181,8 @@
 		D82B8D2F1A688512000E47CA /* PiwigoImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoImageData.m; sourceTree = "<group>"; };
 		D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailViewController.h; sourceTree = "<group>"; };
 		D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController.m; sourceTree = "<group>"; };
+		D83212311A91B937009372D8 /* LabelTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LabelTableViewCell.h; sourceTree = "<group>"; };
+		D83212321A91B937009372D8 /* LabelTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LabelTableViewCell.m; sourceTree = "<group>"; };
 		D847B8351A7BFF1900231886 /* LEColorPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEColorPicker.h; sourceTree = "<group>"; };
 		D847B8361A7BFF1900231886 /* LEColorPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEColorPicker.m; sourceTree = "<group>"; };
 		D847B8371A7BFF1900231886 /* UIColor+YUVSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YUVSpace.h"; sourceTree = "<group>"; };
@@ -267,6 +270,8 @@
 				D8083A621A7FF30800A95605 /* TextFieldTableViewCell.m */,
 				D8083A651A7FF8F600A95605 /* ButtonTableViewCell.h */,
 				D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */,
+				D83212311A91B937009372D8 /* LabelTableViewCell.h */,
+				D83212321A91B937009372D8 /* LabelTableViewCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -818,6 +823,7 @@
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8083A4F1A7CB65400A95605 /* UIActionSheet+Blocks.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
+				D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */,
 				D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */,
 				D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */,
 				D82B8D051A687831000E47CA /* UIImageView+AFNetworking.m in Sources */,

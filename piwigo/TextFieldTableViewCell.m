@@ -21,7 +21,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoWhiteCream];
+		self.backgroundColor = [UIColor whiteColor];
 		
 		self.leftLabel = [UILabel new];
 		self.leftLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -51,7 +51,7 @@
 	[self.contentView addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.leftLabel]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.rightTextField]];
 	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(80)]-[field]-10-|"
+	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(120)]-[field]-10-|"
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];
@@ -69,6 +69,8 @@
 	[super prepareForReuse];
 	self.rightTextField.userInteractionEnabled = YES;
 	self.rightTextField.text = @"";
+	self.rightTextField.tag = -1;
+	self.rightTextField.delegate = nil;
 	self.labelText = @"";
 }
 

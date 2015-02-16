@@ -12,6 +12,7 @@
 #import "Model.h"
 #import "TextFieldTableViewCell.h"
 #import "ButtonTableViewCell.h"
+#import "LabelTableViewCell.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -21,7 +22,11 @@ typedef enum {
 	SettingSectionCount
 } SettingSection;
 
-@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate>
+typedef enum {
+	kImageUploadSettingAuthor
+} kImageUploadSetting;
+
+@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSArray *rowsInSection;
@@ -93,24 +98,22 @@ typedef enum {
 	{
 		case SettingSectionServer:
 		{
-			TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
+			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
 			if(!cell)
 			{
-				cell = [TextFieldTableViewCell new];
+				cell = [LabelTableViewCell new];
 			}
 			switch(indexPath.row)
 			{
 				case 0:
-					cell.labelText = @"Server";
-					cell.rightTextField.text = [Model sharedInstance].serverName;
+					cell.leftText = @"Server";	// @TODO: Localize this
+					cell.rightText = [Model sharedInstance].serverName;
 					break;
 				case 1:
-					cell.labelText = @"Username";
-					cell.rightTextField.text = [Model sharedInstance].username;
-					cell.rightTextField.placeholder = @"Not Logged In";
+					cell.leftText = @"Username";	// @TODO: Localize this
+					cell.rightText = [Model sharedInstance].username;	// @TODO: if not logged in, put this as "not logged in"
 					break;
 			}
-			cell.rightTextField.userInteractionEnabled = NO;
 			tableViewCell = cell;
 			break;
 		}
@@ -121,9 +124,49 @@ typedef enum {
 			{
 				cell = [ButtonTableViewCell new];
 			}
-			cell.buttonText = @"Logout";
+			cell.buttonText = @"Logout";	// @TODO: Localize this
 			// @TODO: If they're not logged in, make this login instead of logout
 			tableViewCell = cell;
+			break;
+		}
+		case SettingSectionImageUpload:
+		{
+			switch(indexPath.row)
+			{
+				case 0:
+				{
+					TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsField"];
+					if(!cell)
+					{
+						cell = [TextFieldTableViewCell new];
+					}
+					
+					cell.labelText = @"Default Author";	// @TODO: localize this
+					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
+					cell.rightTextField.placeholder = @"Author";	// @TODO: localize this
+					cell.rightTextField.delegate = self;
+					cell.rightTextField.tag = kImageUploadSettingAuthor;
+					
+					tableViewCell = cell;
+					break;
+				}
+				case 1:
+				{
+					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
+					if(!cell)
+					{
+						cell = [LabelTableViewCell new];
+					}
+					
+					cell.leftText = @"Default Privacy";
+					cell.rightText = [NSString stringWithFormat:@"%@", @([Model sharedInstance].defaultPrivacyLevel)];
+					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+					cell.leftLabelWidth = 120;
+					
+					tableViewCell = cell;
+					break;
+				}
+			}
 			break;
 		}
 	}
@@ -183,6 +226,11 @@ typedef enum {
 	}
 }
 
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+	[self.view endEditing:YES];
+}
+
 #pragma mark -- Option Methods
 
 -(void)logout
@@ -210,6 +258,25 @@ typedef enum {
 							  }];
 						  }
 					  }];
+}
+
+#pragma mark UITextFieldDelegate Methods
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+	switch(textField.tag)
+	{
+		case kImageUploadSettingAuthor:
+		{
+			NSMutableString *textFieldString = [textField.text mutableCopy];
+			[textFieldString insertString:string atIndex:range.location];
+			[Model sharedInstance].defaultAuthor = textFieldString;
+			[[Model sharedInstance] saveToDisk];
+			break;
+		}
+	}
+	
+	return YES;
 }
 
 

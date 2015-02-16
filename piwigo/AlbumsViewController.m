@@ -67,9 +67,6 @@
 {
 	AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
-//	NSString *albumIdForIndex = [[CategoriesData sharedInstance].sortedKeys objectForKey:[NSString stringWithFormat:@"%@", @(indexPath.row + 1)]];
-//	NSNumber *index = @([albumIdForIndex integerValue]);
-//	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:index];
 	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectAtIndex:indexPath.row];
 	
 	[cell setupWithAlbumData:albumData];
@@ -81,9 +78,6 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-//	NSString *albumIdForIndex = [[CategoriesData sharedInstance].sortedKeys objectForKey:[NSString stringWithFormat:@"%@", @(indexPath.row + 1)]];
-//	NSNumber *index = @([albumIdForIndex integerValue]);
-//	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:index];
 	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectAtIndex:indexPath.row];
 	
 	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
