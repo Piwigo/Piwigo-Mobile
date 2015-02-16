@@ -37,7 +37,8 @@
 		self.uploadImagesTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.uploadImagesTableView.delegate = self;
 		self.uploadImagesTableView.dataSource = self;
-		[self.uploadImagesTableView registerNib:[UINib nibWithNibName:@"ImageUploadCell" bundle:nil] forCellReuseIdentifier:@"cell"];
+		UINib *cellNib = [UINib nibWithNibName:@"ImageUploadCell" bundle:nil];
+		[self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:@"Cell"];
 		[self.view addSubview:self.uploadImagesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.uploadImagesTableView]];
 		
@@ -177,7 +178,7 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	ImageUploadTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+	ImageUploadTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	
 	if(indexPath.section == 0)
 	{

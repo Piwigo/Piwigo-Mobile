@@ -117,7 +117,7 @@
 	self = [super init];
 	NSArray *savedData = [decoder decodeObjectForKey:@"Model"];
 	self.serverName = [savedData objectAtIndex:0];
-	self.defaultPrivacyLevel = [[savedData objectAtIndex:1] integerValue];
+	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
 	
 	return self;

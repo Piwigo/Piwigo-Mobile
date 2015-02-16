@@ -10,7 +10,7 @@
 
 @implementation ImageUpload
 
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(NSInteger)privacy
+-(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy
 {
 	self = [super init];
 	if(self)
@@ -23,7 +23,7 @@
 	return self;
 }
 
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(NSInteger)privacy author:(NSString*)author description:(NSString*)description andTags:(NSString*)tags
+-(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSString*)tags
 {
 	self = [self initWithImageName:imageName forCategory:category forPrivacyLevel:privacy];
 	if(self)

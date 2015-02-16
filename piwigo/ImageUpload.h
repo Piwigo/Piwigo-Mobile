@@ -7,18 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Model.h"
 
 @interface ImageUpload : NSObject
 
 @property (nonatomic, strong) NSString *image;
 @property (nonatomic, strong) NSString *imageUploadName;
 @property (nonatomic, assign) NSInteger categoryToUploadTo;
-@property (nonatomic, assign) NSInteger privacyLevel;
+@property (nonatomic, assign) kPiwigoPrivacy privacyLevel;
 @property (nonatomic, strong) NSString *author;
 @property (nonatomic, strong) NSString *imageDescription;
 @property (nonatomic, strong) NSString *tags;
 
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(NSInteger)privacy;
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(NSInteger)privacy author:(NSString*)author description:(NSString*)description andTags:(NSString*)tags;
+-(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;
+-(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSString*)tags;
 
 @end

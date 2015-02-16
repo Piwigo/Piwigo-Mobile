@@ -27,7 +27,7 @@ typedef enum {
 	kImageUploadSettingAuthor
 } kImageUploadSetting;
 
-@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSArray *rowsInSection;
@@ -226,6 +226,8 @@ typedef enum {
 			if(indexPath.row == 1)
 			{
 				SelectPrivacyViewController *selectPrivacy = [SelectPrivacyViewController new];
+				selectPrivacy.delegate = self;
+				[selectPrivacy setPrivacy:[Model sharedInstance].defaultPrivacyLevel];
 				[self.navigationController pushViewController:selectPrivacy animated:YES];
 			}
 			break;
@@ -285,6 +287,14 @@ typedef enum {
 	}
 	
 	return YES;
+}
+
+#pragma mark SelectedPrivacyDelegate Methods
+
+-(void)selectedPrivacy:(kPiwigoPrivacy)privacy
+{
+	[Model sharedInstance].defaultPrivacyLevel = privacy;
+	[[Model sharedInstance] saveToDisk];
 }
 
 

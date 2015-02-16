@@ -10,6 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
+#import "Model.h"
 
 @interface ImageUploadTableViewCell()
 
@@ -18,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *author;
 @property (weak, nonatomic) IBOutlet UILabel *tags;
 @property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
+@property (weak, nonatomic) IBOutlet UILabel *privacyLevel;
 
 @property (nonatomic, strong) UIView *uploadingOverlay;
 @property (nonatomic, strong) UIProgressView *uploadingProgressBar;
@@ -78,6 +80,7 @@
 	
 	self.imageTitle.text = imageInfo.imageUploadName;
 	self.author.text = imageInfo.author;
+	self.privacyLevel.text = [NSString stringWithFormat:@"Privacy: %@", [[Model sharedInstance] getNameForPrivacyLevel:imageInfo.privacyLevel]];
 	self.tags.text = imageInfo.tags;
 	self.descriptionLabel.text = imageInfo.imageDescription;
 }
@@ -102,7 +105,7 @@
 	else
 	{
 		[self.uploadingProgressBar setProgress:1.0 animated:YES];
-		self.uploadingProgressLabel.text = @"Completed! Finishing up...";
+		self.uploadingProgressLabel.text = @"Completed! Finishing up..."; // @TODO: Localize this!
 	}
 }
 

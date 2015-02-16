@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Model.h"
+
+@protocol SelectPrivacyDelegate <NSObject>
+
+-(void)selectedPrivacy:(kPiwigoPrivacy)privacy;
+
+@end
 
 @interface SelectPrivacyViewController : UIViewController
+
+@property (nonatomic, weak) id<SelectPrivacyDelegate> delegate;
+-(void)setPrivacy:(kPiwigoPrivacy)privacy;
 
 @end

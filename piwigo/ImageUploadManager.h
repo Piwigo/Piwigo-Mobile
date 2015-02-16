@@ -7,6 +7,7 @@
 //
 
 #import "UploadService.h"
+#import "Model.h"
 
 @class ImageUpload;
 
@@ -36,8 +37,8 @@ typedef enum {
 @property (nonatomic, readonly) NSInteger maximumImagesForBatch;
 @property (nonatomic, weak) id<ImageUploadDelegate> delegate;
 
--(void)addImage:(NSString*)imageName forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy;
--(void)addImages:(NSArray*)imageNames forCategory:(NSInteger)category andPrivacy:(NSInteger)privacy;
+-(void)addImage:(NSString*)imageName forCategory:(NSInteger)category andPrivacy:(kPiwigoPrivacy)privacy;
+-(void)addImages:(NSArray*)imageNames forCategory:(NSInteger)category andPrivacy:(kPiwigoPrivacy)privacy;
 -(void)addImage:(ImageUpload*)image;
 -(void)addImages:(NSArray*)images;
 

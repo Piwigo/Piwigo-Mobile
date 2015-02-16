@@ -12,11 +12,11 @@
 @class ALAssetsLibrary;
 
 typedef enum {
-	kPiwigoPrivacyEverybody = 0,					// white
-	kPiwigoPrivacyAdminsFamilyFriendsContacts = 1,	// blue
-	kPiwigoPrivacyAdminsFamilyFriends = 2,			// green
-	kPiwigoPrivacyAdminsFamily = 4,					// yellow
-	kPiwigoPrivacyAdmins = 8,						// red
+	kPiwigoPrivacyEverybody = 0,
+	kPiwigoPrivacyAdminsFamilyFriendsContacts = 1,
+	kPiwigoPrivacyAdminsFamilyFriends = 2,
+	kPiwigoPrivacyAdminsFamily = 4,
+	kPiwigoPrivacyAdmins = 8,
 	kPiwigoPrivacyCount = 5
 } kPiwigoPrivacy;
 

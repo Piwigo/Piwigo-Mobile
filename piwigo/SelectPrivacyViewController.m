@@ -7,11 +7,11 @@
 //
 
 #import "SelectPrivacyViewController.h"
-#import "Model.h"
 
 @interface SelectPrivacyViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *privacyTableView;
+@property (nonatomic, assign) kPiwigoPrivacy privacy;
 
 @end
 
@@ -32,8 +32,6 @@
 		self.privacyTableView.backgroundColor = [UIColor piwigoWhiteCream];
 		[self.view addSubview:self.privacyTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.privacyTableView]];
-		
-		
 		
 	}
 	return self;
@@ -64,6 +62,11 @@
 	return privacyLevel;
 }
 
+-(void)setPrivacy:(kPiwigoPrivacy)privacy
+{
+	_privacy = privacy;
+}
+
 #pragma mark UITableView Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -81,7 +84,7 @@
 	
 	kPiwigoPrivacy privacyLevel = [self getPrivacyLevelForRow:indexPath.row];
 	
-	if(privacyLevel == [Model sharedInstance].defaultPrivacyLevel)
+	if(privacyLevel == self.privacy)
 	{
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
@@ -91,6 +94,7 @@
 	}
 	
 	cell.textLabel.text = [[Model sharedInstance] getNameForPrivacyLevel:privacyLevel];
+	cell.tag = privacyLevel;
 	
 	return cell;
 }
@@ -101,9 +105,20 @@
 	
 	kPiwigoPrivacy selectedPrivacy = [self getPrivacyLevelForRow:indexPath.row];
 	
-	[Model sharedInstance].defaultPrivacyLevel = selectedPrivacy;
-	[[Model sharedInstance] saveToDisk];
-	[tableView reloadData];
+	for(UITableViewCell *visibleCell in tableView.visibleCells)
+	{
+		visibleCell.accessoryType = UITableViewCellAccessoryNone;
+		if(visibleCell.tag == selectedPrivacy)
+		{
+			visibleCell.accessoryType = UITableViewCellAccessoryCheckmark;
+		}
+	}
+	
+	
+	if([self.delegate respondsToSelector:@selector(selectedPrivacy:)])
+	{
+		[self.delegate selectedPrivacy:selectedPrivacy];
+	}
 	
 	[self.navigationController popViewControllerAnimated:YES];
 }

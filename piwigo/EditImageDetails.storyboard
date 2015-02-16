@@ -81,6 +81,40 @@
                                             <outlet property="textView" destination="zMu-VQ-mu0" id="veE-6Q-NLz"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="label" id="Nua-fo-VbO" customClass="EditImageLabelTableViewCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Nua-fo-VbO" id="i7D-VI-1cA">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Level" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="tP3-bz-PWE">
+                                                    <rect key="frame" x="8" y="8" width="110" height="20.5"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="110" id="8Ls-uo-XmU"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected Privacy Level" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="6MZ-9m-u1O">
+                                                    <rect key="frame" x="128" y="8.5" width="173.5" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="centerY" secondItem="6MZ-9m-u1O" secondAttribute="centerY" constant="3.25" id="20I-b9-3fO"/>
+                                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="6MZ-9m-u1O" secondAttribute="trailing" id="49G-zr-wfj"/>
+                                                <constraint firstItem="tP3-bz-PWE" firstAttribute="leading" secondItem="i7D-VI-1cA" secondAttribute="leadingMargin" id="Bqi-du-hot"/>
+                                                <constraint firstItem="6MZ-9m-u1O" firstAttribute="leading" secondItem="tP3-bz-PWE" secondAttribute="trailing" constant="10" id="WEv-56-35K"/>
+                                                <constraint firstAttribute="centerY" secondItem="tP3-bz-PWE" secondAttribute="centerY" constant="3.5" id="feo-47-Dph"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="privacyLabel" destination="tP3-bz-PWE" id="dQu-vN-zh7"/>
+                                            <outlet property="selectedPrivacyLabel" destination="6MZ-9m-u1O" id="SQS-3p-czE"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="3wd-nH-xaU" id="HLP-PC-biE"/>

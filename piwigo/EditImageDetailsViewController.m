@@ -9,17 +9,20 @@
 #import "EditImageDetailsViewController.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
+#import "EditImageLabelTableViewCell.h"
 #import "ImageUpload.h"
+#import "SelectPrivacyViewController.h"
 
 typedef enum {
 	EditImageDetailsOrderImageName,
 	EditImageDetailsOrderAuthor,
+	EditImageDetailsOrderPrivacy,
 	EditImageDetailsOrderTags,
 	EditImageDetailsOrderDescription,
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
 
@@ -86,6 +89,12 @@ typedef enum {
 			[((EditImageTextFieldTableViewCell*)cell) setLabel:@"Author" andTextField:self.imageDetails.author withPlaceholder:@"Author Name"];
 			break;
 		}
+		case EditImageDetailsOrderPrivacy:
+		{
+			cell = [tableView dequeueReusableCellWithIdentifier:@"label"];
+			[((EditImageLabelTableViewCell*)cell) setPrivacyLevel:self.imageDetails.privacyLevel];
+			break;
+		}
 		case EditImageDetailsOrderTags:
 		{
 			break;
@@ -103,6 +112,24 @@ typedef enum {
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	if(indexPath.row == EditImageDetailsOrderPrivacy)
+	{
+		SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
+		privacySelectVC.delegate = self;
+		[privacySelectVC setPrivacy:self.imageDetails.privacyLevel];
+		[self.navigationController pushViewController:privacySelectVC animated:YES];
+	}
+}
+
+#pragma mark SelectPrivacyDelegate Methods
+
+-(void)selectedPrivacy:(kPiwigoPrivacy)privacy
+{
+	self.imageDetails.privacyLevel = privacy;
+	
+	EditImageLabelTableViewCell *labelCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
+	[labelCell setPrivacyLevel:privacy];
 }
 
 @end
