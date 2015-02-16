@@ -41,6 +41,36 @@
 	return library;
 }
 
+-(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
+{
+	NSString *name = @"";
+	// @TODO: Localize this!
+	switch(privacyLevel)
+	{
+		case kPiwigoPrivacyAdmins:
+			name = @"Admins";
+			break;
+		case kPiwigoPrivacyAdminsFamily:
+			name = @"Admins, Family";
+			break;
+		case kPiwigoPrivacyAdminsFamilyFriends:
+			name = @"Admins, Family, Friends";
+			break;
+		case kPiwigoPrivacyAdminsFamilyFriendsContacts:
+			name = @"Admins, Family, Friends, Contacts";
+			break;
+		case kPiwigoPrivacyEverybody:
+			name = @"Everybody";
+			break;
+			
+			
+		case kPiwigoPrivacyCount:
+			break;
+	}
+	
+	return name;
+}
+
 #pragma mark - Saving to Disk
 + (NSString *)applicationDocumentsDirectory
 {

@@ -37,6 +37,8 @@
 		self.rightLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightLabel.font = [UIFont piwigoFontNormal];
 		self.rightLabel.textColor = [UIColor blackColor];
+		self.rightLabel.adjustsFontSizeToFitWidth = YES;
+		self.rightLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.rightLabel];
 		
 		[self setupConstraints];

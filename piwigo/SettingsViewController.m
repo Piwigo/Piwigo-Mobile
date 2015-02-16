@@ -10,6 +10,7 @@
 #import "SessionService.h"
 #import "AppDelegate.h"
 #import "Model.h"
+#import "SelectPrivacyViewController.h"
 #import "TextFieldTableViewCell.h"
 #import "ButtonTableViewCell.h"
 #import "LabelTableViewCell.h"
@@ -72,6 +73,8 @@ typedef enum {
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+	
+	[self.settingsTableView reloadData];
 }
 
 #pragma mark -- UITableView Methods
@@ -159,7 +162,7 @@ typedef enum {
 					}
 					
 					cell.leftText = @"Default Privacy";
-					cell.rightText = [NSString stringWithFormat:@"%@", @([Model sharedInstance].defaultPrivacyLevel)];
+					cell.rightText = [[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					cell.leftLabelWidth = 120;
 					
@@ -220,6 +223,11 @@ typedef enum {
 			[self logout];
 			break;
 		case SettingSectionImageUpload:
+			if(indexPath.row == 1)
+			{
+				SelectPrivacyViewController *selectPrivacy = [SelectPrivacyViewController new];
+				[self.navigationController pushViewController:selectPrivacy animated:YES];
+			}
 			break;
 		case SettingSectionAbout:
 			break;

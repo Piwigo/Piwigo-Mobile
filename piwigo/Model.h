@@ -11,6 +11,15 @@
 
 @class ALAssetsLibrary;
 
+typedef enum {
+	kPiwigoPrivacyEverybody = 0,					// white
+	kPiwigoPrivacyAdminsFamilyFriendsContacts = 1,	// blue
+	kPiwigoPrivacyAdminsFamilyFriends = 2,			// green
+	kPiwigoPrivacyAdminsFamily = 4,					// yellow
+	kPiwigoPrivacyAdmins = 8,						// red
+	kPiwigoPrivacyCount = 5
+} kPiwigoPrivacy;
+
 @interface Model : NSObject
 
 +(Model*)sharedInstance;
@@ -23,11 +32,13 @@
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *username;
 
-@property (nonatomic, assign) NSInteger defaultPrivacyLevel;
+@property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;
 
 @property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger lastPageImageCount;
+
+-(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 
 @end

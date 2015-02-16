@@ -61,6 +61,7 @@
 		D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */; };
 		D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* SessionService.m */; };
 		D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */; };
+		D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */; };
 		D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */; };
 		D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */; };
@@ -206,6 +207,8 @@
 		D87C5A991A6F4FB0001763BC /* SessionService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionService.m; sourceTree = "<group>"; };
 		D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryPickViewController.h; sourceTree = "<group>"; };
 		D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryPickViewController.m; sourceTree = "<group>"; };
+		D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectPrivacyViewController.h; sourceTree = "<group>"; };
+		D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectPrivacyViewController.m; sourceTree = "<group>"; };
 		D8BDCB5C1A6F685E00D106A8 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
 		D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
 		D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -617,6 +620,8 @@
 			children = (
 				D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */,
 				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
+				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
+				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
 				D8083A641A7FF30B00A95605 /* Cells */,
 			);
 			name = Settings;
@@ -831,6 +836,7 @@
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
 				D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */,
 				D82B8D1F1A68783B000E47CA /* AFHTTPSessionManager.m in Sources */,
+				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,
 				D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */,
 				D818E9F81A74BF5100733991 /* AlbumPhotosViewController.m in Sources */,
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
