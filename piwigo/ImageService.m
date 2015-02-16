@@ -169,21 +169,21 @@ NSString * const kGetImageOrderRandom = @"random";
 }
 
 +(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
-											  forCategory:(NSString*)categoryId
+											  forCategory:(NSInteger)categoryId
 												   onPage:(NSInteger)onPage
 										 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSInteger count))completion
 												onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	if(lastImageBulkCount != [Model sharedInstance].imagesPerPage) return nil;
 	
-	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:[categoryId integerValue]
+	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:categoryId
 																 onPage:onPage
 															   forOrder:kGetImageOrderFileName
 														   OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
 															   
 															   if(albumImages)
 															   {
-																   PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectForKey:categoryId];
+																   PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
 																   [albumData addImages:albumImages];
 															   }
 															   

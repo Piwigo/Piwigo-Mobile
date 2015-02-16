@@ -10,6 +10,6 @@
 
 @interface AlbumImagesViewController : UIViewController
 
--(instancetype)initWithAlbumId:(NSString*)albumId;
+-(instancetype)initWithAlbumId:(NSInteger)albumId;
 
 @end

@@ -17,7 +17,7 @@
 @property (nonatomic, strong) UIImageView *image;
 @property (nonatomic, strong) UIProgressView *progressBar;
 
-@property (nonatomic, strong) NSString *categoryId;
+@property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, assign) NSInteger currentImageIndex;
 
 @property (nonatomic, strong) ImageDownloadView *downloadView;
@@ -26,7 +26,7 @@
 
 @implementation ImageDetailViewController
 
--(instancetype)initWithCategoryId:(NSString*)categoryId andImageIndex:(NSInteger)imageIndex
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andImageIndex:(NSInteger)imageIndex
 {
 	self = [super init];
 	if(self)
@@ -215,7 +215,7 @@
 -(void)swipeRight
 {
 	self.currentImageIndex++;
-	if(self.currentImageIndex < [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] imageList].count) {
+	if(self.currentImageIndex < [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count) {
 		[self updateCurrentImage];
 	} else {
 		self.currentImageIndex--;

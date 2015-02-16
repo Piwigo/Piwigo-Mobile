@@ -20,7 +20,7 @@
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
-@property (nonatomic, strong) NSString *categoryId;
+@property (nonatomic, assign) NSInteger categoryId;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
@@ -33,14 +33,14 @@
 
 @implementation UploadViewController
 
--(instancetype)initWithCategoryId:(NSString*)categoryId
+-(instancetype)initWithCategoryId:(NSInteger)categoryId
 {
 	self = [super init];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.categoryId = categoryId;
-		self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] name];
+		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		
 		self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -128,7 +128,7 @@
 -(void)showImageUpload
 {
 	ImageUploadViewController *vc = [ImageUploadViewController new];
-	vc.selectedCategory = [self.categoryId integerValue];
+	vc.selectedCategory = self.categoryId;
 	vc.imagesSelected = self.selectedImageKeys;
 	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
 	[self.navigationController presentViewController:nav animated:YES completion:nil];

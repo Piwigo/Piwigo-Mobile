@@ -17,7 +17,7 @@
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
-@property (nonatomic, strong) NSString *categoryId;
+@property (nonatomic, assign) NSInteger categoryId;
 
 @property (nonatomic, assign) NSInteger lastImageBulkCount;
 @property (nonatomic, assign) NSInteger onPage;
@@ -39,14 +39,14 @@
 
 @implementation AlbumImagesViewController
 
--(instancetype)initWithAlbumId:(NSString*)albumId
+-(instancetype)initWithAlbumId:(NSInteger)albumId
 {
 	self = [super init];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = albumId;
-		self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] name];
+		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
 		self.onPage = 0;
 		
@@ -100,7 +100,7 @@
 {
 	self.isSelect = NO;
 	[self loadNavButtons];
-	self.title = [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] name];
+	self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 	for(ImageCollectionViewCell *cell in self.imagesCollection.visibleCells) {
 		if(cell.isSelected) cell.isSelected = NO;
 	}
@@ -271,7 +271,7 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	return [[[CategoriesData sharedInstance].categories objectForKey:self.categoryId] imageList].count;
+	return [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath

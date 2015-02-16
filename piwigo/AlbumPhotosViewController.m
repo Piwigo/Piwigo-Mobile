@@ -66,7 +66,7 @@
 	[self.spinner startAnimating];
 	self.photosTableView.tableFooterView = self.spinner;
 	
-	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:[self.albumData.albumId integerValue]
+	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:self.albumData.albumId
 									onPage:0
 								  forOrder:kGetImageOrderFileName
 							  OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {

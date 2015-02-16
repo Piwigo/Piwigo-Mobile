@@ -10,8 +10,7 @@
 
 @interface CategoriesData()
 
-@property (nonatomic, strong) NSDictionary *categories;
-@property (nonatomic, strong) NSDictionary *sortedKeys;
+@property (nonatomic, strong) NSArray *categories;
 
 @end
 
@@ -24,8 +23,7 @@
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
 		
-		instance.categories = [NSDictionary new];
-		instance.sortedKeys = [NSDictionary new];
+		instance.categories = [NSArray new];
 		
 	});
 	return instance;
@@ -33,30 +31,57 @@
 
 -(void)addCategories:(NSArray*)categories
 {
-	NSMutableDictionary *newCategories = [[NSMutableDictionary alloc] initWithDictionary:self.categories];
-	NSMutableDictionary *newSortedKeys = [[NSMutableDictionary alloc] initWithDictionary:self.sortedKeys];
+	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.categories];
 	for(PiwigoAlbumData *categoryData in categories)
 	{
-		[newCategories setObject:categoryData forKey:categoryData.albumId];
-		[newSortedKeys setObject:categoryData.albumId forKey:[NSString stringWithFormat:@"%@", @(categoryData.globalRank)]];
+		BOOL containsAlbum = NO;
+		for(PiwigoAlbumData *existingCategory in self.categories)
+		{
+			if(existingCategory.albumId == categoryData.albumId)
+			{
+				containsAlbum = YES;
+				break;
+			}
+		}
+		if(!containsAlbum)
+		{
+			[newCategories addObject:categoryData];
+		}
 	}
 	self.categories = newCategories;
-	self.sortedKeys = newSortedKeys;
 }
 
--(PiwigoImageData*)getImageForCategory:(NSString*)category andIndex:(NSInteger)index
+-(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId
 {
-	if(index > [[[CategoriesData sharedInstance].categories objectForKey:category] imageList].count) return nil;
-	return [[[[CategoriesData sharedInstance].categories objectForKey:category] imageList] objectAtIndex:index];
+	for(PiwigoAlbumData *existingCategory in self.categories)
+	{
+		if(existingCategory.albumId == categoryId)
+		{
+			return existingCategory;
+			break;
+		}
+	}
+	return nil;
 }
 
--(PiwigoImageData*)getImageForCategory:(NSString*)category andId:(NSString*)imageId
+-(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index
 {
-	PiwigoAlbumData *selectedCategory = [self.categories objectForKey:category];
+	PiwigoAlbumData *selectedCategory = [self getCategoryById:category];
+	if(selectedCategory)
+	{
+		return [selectedCategory.imageList objectAtIndex:index];
+	}
+	return nil;
+}
+
+-(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId
+{
+	PiwigoAlbumData *selectedCategory = [self getCategoryById:category];
 	
 	[imageId isKindOfClass:[NSString class]];
 	
-	for(PiwigoImageData *img in selectedCategory.imageList) {
+	for(PiwigoImageData *img in selectedCategory.imageList)
+	{
 		if([imageId integerValue] == [img.imageId integerValue])
 		{
 			return img;
@@ -68,8 +93,9 @@
 
 -(void)removeImage:(PiwigoImageData*)image
 {
-	for(NSString *category in image.categoryIds) {
-		PiwigoAlbumData *imageCategory = [self.categories objectForKey:category];
+	for(NSString *category in image.categoryIds)
+	{
+		PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
 		[imageCategory removeImage:image];
 	}
 }

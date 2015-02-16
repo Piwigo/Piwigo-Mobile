@@ -20,7 +20,7 @@
 
 @property (nonatomic, weak) id<ImageDetailDelegate> delegate;
 
--(instancetype)initWithCategoryId:(NSString*)categoryId andImageIndex:(NSInteger)imageIndex;
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andImageIndex:(NSInteger)imageIndex;
 -(void)setupWithImageData:(PiwigoImageData*)imageData andPlaceHolderImage:(UIImage*)placeHolder;
 
 @end

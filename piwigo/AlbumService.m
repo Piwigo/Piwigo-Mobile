@@ -45,7 +45,7 @@
 	for(NSDictionary *category in json)
 	{
 		PiwigoAlbumData *albumData = [PiwigoAlbumData new];
-		albumData.albumId = [category objectForKey:@"id"];
+		albumData.albumId = [[category objectForKey:@"id"] integerValue];
 		albumData.name = [category objectForKey:@"name"];
 		albumData.comment = [category objectForKey:@"comment"];
 		albumData.globalRank = [[category objectForKey:@"global_rank"] integerValue];

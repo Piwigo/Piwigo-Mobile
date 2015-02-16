@@ -13,11 +13,11 @@
 
 +(CategoriesData*)sharedInstance;
 
-@property (nonatomic, readonly) NSDictionary *categories;
-@property (nonatomic, readonly) NSDictionary *sortedKeys;
+@property (nonatomic, readonly) NSArray *categories;
 -(void)addCategories:(NSArray*)categories;
--(PiwigoImageData*)getImageForCategory:(NSString*)category andIndex:(NSInteger)index;
--(PiwigoImageData*)getImageForCategory:(NSString*)category andId:(NSString*)imageId;
+-(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId;
+-(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index;
+-(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId;
 -(void)removeImage:(PiwigoImageData*)image;
 
 @end
