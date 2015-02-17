@@ -18,4 +18,10 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 	  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 		 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
++(AFHTTPRequestOperation*)setImageInfoForImageWithId:(NSString*)imageId
+									 withInformation:(NSDictionary*)imageInformation
+										  onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+										OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+										   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
 @end

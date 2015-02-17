@@ -91,4 +91,22 @@
 	}];
 }
 
++(AFHTTPRequestOperation*)setImageInfoForImageWithId:(NSString*)imageId
+									 withInformation:(NSDictionary*)imageInformation
+										  onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+										OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+										   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	AFHTTPRequestOperation *request = [self post:kPiwigoImageSetInfo
+								   URLParameters:nil
+									  parameters:@{
+												   @"image_id" : imageId,
+												   @"author" : [imageInformation objectForKey:kPiwigoImagesUploadParamAuthor],
+												   @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription]
+												   }
+										 success:completion
+										 failure:fail];
+	return request;
+}
+
 @end

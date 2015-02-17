@@ -17,6 +17,7 @@ NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.
 NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}&per_page={perPage}&page={page}&order={order}";
 NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
 NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo&image_id={imageId}";
+NSString * const kPiwigoImageSetInfo = @"format=json&method=pwg.images.setInfo";
 NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
 
 // parameter keys:
@@ -109,12 +110,6 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 	
 	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"level"];
-	
-	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamAuthor] dataUsingEncoding:NSUTF8StringEncoding]
-								name:@"author"];
-	
-	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamDescription] dataUsingEncoding:NSUTF8StringEncoding]
-								name:@"comment"];
 	
 	[formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
 								name:@"pwg_token"];

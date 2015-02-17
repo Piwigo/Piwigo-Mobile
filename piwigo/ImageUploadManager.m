@@ -110,6 +110,8 @@
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
+						[self setImageResponse:response withInfo:imageProperties];
+						
 						[self.imageUploadQueue removeObjectAtIndex:0];
 						// @TODO: if it's all the way done, then use the response to edit the image properties
 						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
@@ -165,6 +167,26 @@
 -(NSInteger)getIndexOfImage:(ImageUpload*)image
 {
 	return [self.imageUploadQueue indexOfObject:image];
+}
+
+-(void)setImageResponse:(NSDictionary*)jsonResponse withInfo:(NSDictionary*)imageProperties
+{
+	if([[jsonResponse objectForKey:@"stat"] isEqualToString:@"ok"])
+	{
+		NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
+		NSString *imageId = [imageResponse objectForKey:@"image_id"];
+		
+		[UploadService setImageInfoForImageWithId:imageId
+								  withInformation:imageProperties
+									   onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
+										   // progress
+									   } OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+										   // completion
+									   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+										   // fail
+									   }];
+		
+	}
 }
 
 
