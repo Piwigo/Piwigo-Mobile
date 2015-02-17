@@ -83,7 +83,7 @@
 	
 	ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
 	
-	NSString *imageKey = nextImageToBeUploaded.imageUploadName;
+	NSString *imageKey = nextImageToBeUploaded.image;
 	ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageKey];
 	
 	ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
