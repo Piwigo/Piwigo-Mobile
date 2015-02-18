@@ -96,7 +96,7 @@
 	for(NSString *imageName in self.imagesSelected)
 	{
 		// @TODO: Get a default privacy and default author
-		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:@""];
+		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:nil];
 		[self.imagesToEdit addObject:image];
 	}
 }
@@ -161,7 +161,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 150;
+	return 180;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

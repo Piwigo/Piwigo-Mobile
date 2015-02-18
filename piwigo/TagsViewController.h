@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol TagsViewControllerDelegate <NSObject>
+
+-(void)didExitWithSelectedTags:(NSArray*)selectedTags;
+
+@end
+
 @interface TagsViewController : UIViewController
+
+@property (nonatomic, weak) id<TagsViewControllerDelegate> delegate;
 
 @end

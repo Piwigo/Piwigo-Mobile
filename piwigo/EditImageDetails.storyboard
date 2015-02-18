@@ -111,8 +111,40 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="privacyLabel" destination="tP3-bz-PWE" id="dQu-vN-zh7"/>
-                                            <outlet property="selectedPrivacyLabel" destination="6MZ-9m-u1O" id="SQS-3p-czE"/>
+                                            <outlet property="leftLabel" destination="tP3-bz-PWE" id="uJw-0v-4Dp"/>
+                                            <outlet property="rightLabel" destination="6MZ-9m-u1O" id="I1B-P7-kh9"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tags" id="daW-18-zRl" customClass="TagsTableViewCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="daW-18-zRl" id="v9N-hs-qE9">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tags" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Isv-kh-FD3">
+                                                    <rect key="frame" x="8" y="11" width="36" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected Tags" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AAB-5e-YaO">
+                                                    <rect key="frame" x="54" y="11.5" width="108" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="AAB-5e-YaO" secondAttribute="trailing" id="NBg-kz-a8t"/>
+                                                <constraint firstAttribute="centerY" secondItem="Isv-kh-FD3" secondAttribute="centerY" constant="0.25" id="a27-Hl-Yya"/>
+                                                <constraint firstAttribute="centerY" secondItem="AAB-5e-YaO" secondAttribute="centerY" constant="0.25" id="cIt-Yn-g20"/>
+                                                <constraint firstItem="Isv-kh-FD3" firstAttribute="leading" secondItem="v9N-hs-qE9" secondAttribute="leadingMargin" id="mtm-iV-0fk"/>
+                                                <constraint firstItem="AAB-5e-YaO" firstAttribute="leading" secondItem="Isv-kh-FD3" secondAttribute="trailing" constant="10" id="vup-mo-NBm"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="leftLabel" destination="Isv-kh-FD3" id="h3x-9T-Dzo"/>
+                                            <outlet property="rightLabel" destination="AAB-5e-YaO" id="lic-7Q-a0v"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

@@ -12,5 +12,6 @@
 
 @property (nonatomic, assign) NSInteger tagId;
 @property (nonatomic, strong) NSString *tagName;
+@property (nonatomic, assign) NSInteger numberOfImagesUnderTag;
 
 @end

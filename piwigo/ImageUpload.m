@@ -23,7 +23,7 @@
 	return self;
 }
 
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSString*)tags
+-(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags
 {
 	self = [self initWithImageName:imageName forCategory:category forPrivacyLevel:privacy];
 	if(self)

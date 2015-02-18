@@ -64,6 +64,7 @@
 		D89045B21A94662300A306FE /* TagsData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B11A94662300A306FE /* TagsData.m */; };
 		D89045B91A946A5B00A306FE /* TagsService.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B81A946A5B00A306FE /* TagsService.m */; };
 		D89045BC1A9470A600A306FE /* TagsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045BB1A9470A600A306FE /* TagsViewController.m */; };
+		D89045BF1A950FF700A306FE /* TagsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045BE1A950FF700A306FE /* TagsTableViewCell.m */; };
 		D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */; };
 		D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */; };
 		D8B04C641A92B1BB00695281 /* EditImageLabelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C631A92B1BB00695281 /* EditImageLabelTableViewCell.m */; };
@@ -218,6 +219,8 @@
 		D89045B81A946A5B00A306FE /* TagsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsService.m; sourceTree = "<group>"; };
 		D89045BA1A9470A600A306FE /* TagsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsViewController.h; sourceTree = "<group>"; };
 		D89045BB1A9470A600A306FE /* TagsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsViewController.m; sourceTree = "<group>"; };
+		D89045BD1A950FF700A306FE /* TagsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsTableViewCell.h; sourceTree = "<group>"; };
+		D89045BE1A950FF700A306FE /* TagsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsTableViewCell.m; sourceTree = "<group>"; };
 		D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryPickViewController.h; sourceTree = "<group>"; };
 		D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryPickViewController.m; sourceTree = "<group>"; };
 		D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectPrivacyViewController.h; sourceTree = "<group>"; };
@@ -700,6 +703,8 @@
 				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
 				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
 				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
+				D89045BD1A950FF700A306FE /* TagsTableViewCell.h */,
+				D89045BE1A950FF700A306FE /* TagsTableViewCell.m */,
 			);
 			name = "Custom Cells";
 			sourceTree = "<group>";
@@ -821,6 +826,7 @@
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D82B8D221A68783B000E47CA /* AFURLConnectionOperation.m in Sources */,
 				D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */,
+				D89045BF1A950FF700A306FE /* TagsTableViewCell.m in Sources */,
 				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D82B8D061A687831000E47CA /* UIProgressView+AFNetworking.m in Sources */,

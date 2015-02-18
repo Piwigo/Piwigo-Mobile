@@ -17,9 +17,9 @@
 @property (nonatomic, assign) kPiwigoPrivacy privacyLevel;
 @property (nonatomic, strong) NSString *author;
 @property (nonatomic, strong) NSString *imageDescription;
-@property (nonatomic, strong) NSString *tags;
+@property (nonatomic, strong) NSArray *tags;
 
 -(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSString*)tags;
+-(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags;
 
 @end

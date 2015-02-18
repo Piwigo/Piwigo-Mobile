@@ -10,6 +10,7 @@
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
 #import "EditImageLabelTableViewCell.h"
+#import "TagsTableViewCell.h"
 #import "ImageUpload.h"
 #import "SelectPrivacyViewController.h"
 #import "TagsViewController.h"
@@ -23,7 +24,7 @@ typedef enum {
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate>
+@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
 
@@ -98,6 +99,8 @@ typedef enum {
 		}
 		case EditImageDetailsOrderTags:
 		{
+			cell = [tableView dequeueReusableCellWithIdentifier:@"tags"];
+			[((TagsTableViewCell*)cell) setTagList:self.imageDetails.tags];
 			break;
 		}
 		case EditImageDetailsOrderDescription:
@@ -124,6 +127,7 @@ typedef enum {
 	else if(indexPath.row == EditImageDetailsOrderTags)
 	{
 		TagsViewController *tagsVC = [TagsViewController new];
+		tagsVC.delegate = self;
 		[self.navigationController pushViewController:tagsVC animated:YES];
 	}
 	
@@ -137,6 +141,14 @@ typedef enum {
 	
 	EditImageLabelTableViewCell *labelCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
 	[labelCell setPrivacyLevel:privacy];
+}
+
+#pragma mark TagsViewControllerDelegate Methods
+
+-(void)didExitWithSelectedTags:(NSArray *)selectedTags
+{
+	self.imageDetails.tags = selectedTags;
+	[self.editImageDetailsTableView reloadData];
 }
 
 @end

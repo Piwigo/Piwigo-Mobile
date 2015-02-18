@@ -10,8 +10,8 @@
 
 @interface EditImageLabelTableViewCell()
 
-@property (weak, nonatomic) IBOutlet UILabel *privacyLabel;
-@property (weak, nonatomic) IBOutlet UILabel *selectedPrivacyLabel;
+@property (weak, nonatomic) IBOutlet UILabel *leftLabel;
+@property (weak, nonatomic) IBOutlet UILabel *rightLabel;
 
 
 @end
@@ -21,7 +21,7 @@
 - (void)awakeFromNib {
     // Initialization code
 	
-	self.privacyLabel.textColor = [UIColor piwigoGray];
+	self.leftLabel.textColor = [UIColor piwigoGray];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -32,7 +32,7 @@
 
 -(void)setPrivacyLevel:(kPiwigoPrivacy)privacy
 {
-	self.selectedPrivacyLabel.text = [[Model sharedInstance] getNameForPrivacyLevel:privacy];
+	self.rightLabel.text = [[Model sharedInstance] getNameForPrivacyLevel:privacy];
 }
 
 @end

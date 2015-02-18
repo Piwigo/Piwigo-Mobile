@@ -11,6 +11,7 @@
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "Model.h"
+#import "TagsData.h"
 
 @interface ImageUploadTableViewCell()
 
@@ -78,11 +79,11 @@
 	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetForImageName:imageInfo.image];
 	self.image.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
 	
-	self.imageTitle.text = imageInfo.imageUploadName;
-	self.author.text = imageInfo.author;
+	self.imageTitle.text = [NSString stringWithFormat:@"Title: %@", imageInfo.imageUploadName]; // @TODO: Localize this!
+	self.author.text = [NSString stringWithFormat:@"Author: %@", imageInfo.author];	// @TODO: localize this!
 	self.privacyLevel.text = [NSString stringWithFormat:@"Privacy: %@", [[Model sharedInstance] getNameForPrivacyLevel:imageInfo.privacyLevel]];
-	self.tags.text = imageInfo.tags;
-	self.descriptionLabel.text = imageInfo.imageDescription;
+	self.tags.text = [NSString stringWithFormat:@"Tags: %@", [TagsData getTagsStringFromList:imageInfo.tags]];
+	self.descriptionLabel.text = [NSString stringWithFormat:@"Description: %@", imageInfo.imageDescription]; // @TODO: Localize this!
 }
 
 -(void)setIsInQueueForUpload:(BOOL)isInQueueForUpload

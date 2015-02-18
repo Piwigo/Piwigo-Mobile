@@ -15,5 +15,6 @@
 @property (nonatomic, strong) NSArray *tagList;
 
 -(void)getTagsOnCompletion:(void (^)(NSArray *tags))completion;
++(NSString*)getTagsStringFromList:(NSArray*)tagList;
 
 @end
