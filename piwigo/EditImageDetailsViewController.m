@@ -12,6 +12,7 @@
 #import "EditImageLabelTableViewCell.h"
 #import "ImageUpload.h"
 #import "SelectPrivacyViewController.h"
+#import "TagsViewController.h"
 
 typedef enum {
 	EditImageDetailsOrderImageName,
@@ -120,6 +121,12 @@ typedef enum {
 		[privacySelectVC setPrivacy:self.imageDetails.privacyLevel];
 		[self.navigationController pushViewController:privacySelectVC animated:YES];
 	}
+	else if(indexPath.row == EditImageDetailsOrderTags)
+	{
+		TagsViewController *tagsVC = [TagsViewController new];
+		[self.navigationController pushViewController:tagsVC animated:YES];
+	}
+	
 }
 
 #pragma mark SelectPrivacyDelegate Methods

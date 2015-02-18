@@ -60,6 +60,10 @@
 		D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A921A6F4C43001763BC /* KeychainAccess.m */; };
 		D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */; };
 		D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* SessionService.m */; };
+		D89045AC1A94654D00A306FE /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
+		D89045B21A94662300A306FE /* TagsData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B11A94662300A306FE /* TagsData.m */; };
+		D89045B91A946A5B00A306FE /* TagsService.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B81A946A5B00A306FE /* TagsService.m */; };
+		D89045BC1A9470A600A306FE /* TagsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045BB1A9470A600A306FE /* TagsViewController.m */; };
 		D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */; };
 		D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */; };
 		D8B04C641A92B1BB00695281 /* EditImageLabelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C631A92B1BB00695281 /* EditImageLabelTableViewCell.m */; };
@@ -206,6 +210,14 @@
 		D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		D87C5A981A6F4FB0001763BC /* SessionService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionService.h; sourceTree = "<group>"; };
 		D87C5A991A6F4FB0001763BC /* SessionService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionService.m; sourceTree = "<group>"; };
+		D89045AA1A94654D00A306FE /* PiwigoTagData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTagData.h; sourceTree = "<group>"; };
+		D89045AB1A94654D00A306FE /* PiwigoTagData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoTagData.m; sourceTree = "<group>"; };
+		D89045B01A94662300A306FE /* TagsData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsData.h; sourceTree = "<group>"; };
+		D89045B11A94662300A306FE /* TagsData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsData.m; sourceTree = "<group>"; };
+		D89045B71A946A5B00A306FE /* TagsService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsService.h; sourceTree = "<group>"; };
+		D89045B81A946A5B00A306FE /* TagsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsService.m; sourceTree = "<group>"; };
+		D89045BA1A9470A600A306FE /* TagsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsViewController.h; sourceTree = "<group>"; };
+		D89045BB1A9470A600A306FE /* TagsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsViewController.m; sourceTree = "<group>"; };
 		D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryPickViewController.h; sourceTree = "<group>"; };
 		D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryPickViewController.m; sourceTree = "<group>"; };
 		D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectPrivacyViewController.h; sourceTree = "<group>"; };
@@ -340,6 +352,8 @@
 				D82B8D2F1A688512000E47CA /* PiwigoImageData.m */,
 				D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */,
 				D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */,
+				D89045AA1A94654D00A306FE /* PiwigoTagData.h */,
+				D89045AB1A94654D00A306FE /* PiwigoTagData.m */,
 			);
 			name = "Piwigo Data Wrappers";
 			sourceTree = "<group>";
@@ -382,6 +396,7 @@
 				D8BDCB5B1A6F682900D106A8 /* TabBar */,
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
+				D89045B31A9469FF00A306FE /* Tags */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
 				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
@@ -562,6 +577,17 @@
 			name = Network;
 			sourceTree = "<group>";
 		};
+		D89045B31A9469FF00A306FE /* Tags */ = {
+			isa = PBXGroup;
+			children = (
+				D89045B71A946A5B00A306FE /* TagsService.h */,
+				D89045B81A946A5B00A306FE /* TagsService.m */,
+				D89045BA1A9470A600A306FE /* TagsViewController.h */,
+				D89045BB1A9470A600A306FE /* TagsViewController.m */,
+			);
+			name = Tags;
+			sourceTree = "<group>";
+		};
 		D8A5014A1A7B3D4200C04C17 /* Pick Album */ = {
 			isa = PBXGroup;
 			children = (
@@ -646,6 +672,8 @@
 			children = (
 				D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */,
 				D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */,
+				D89045B01A94662300A306FE /* TagsData.h */,
+				D89045B11A94662300A306FE /* TagsData.m */,
 			);
 			name = "Data Cache";
 			sourceTree = "<group>";
@@ -801,6 +829,7 @@
 				D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */,
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
 				D82B8D1E1A68783B000E47CA /* AFHTTPRequestOperationManager.m in Sources */,
+				D89045B21A94662300A306FE /* TagsData.m in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
 				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
@@ -822,6 +851,7 @@
 				D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */,
 				D8083AA21A81B34000A95605 /* ImageUpload.m in Sources */,
 				D82B8D071A687831000E47CA /* UIRefreshControl+AFNetworking.m in Sources */,
+				D89045AC1A94654D00A306FE /* PiwigoTagData.m in Sources */,
 				D82B8D041A687831000E47CA /* UIButton+AFNetworking.m in Sources */,
 				D82B8D231A68783B000E47CA /* AFURLRequestSerialization.m in Sources */,
 				D8083A631A7FF30800A95605 /* TextFieldTableViewCell.m in Sources */,
@@ -834,6 +864,7 @@
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8083A4F1A7CB65400A95605 /* UIActionSheet+Blocks.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
+				D89045BC1A9470A600A306FE /* TagsViewController.m in Sources */,
 				D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */,
 				D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */,
 				D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */,
@@ -846,6 +877,7 @@
 				D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */,
 				D818E9F81A74BF5100733991 /* AlbumPhotosViewController.m in Sources */,
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
+				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
 				D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
 				D82B8D251A68783B000E47CA /* AFURLSessionManager.m in Sources */,
