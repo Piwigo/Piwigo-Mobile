@@ -963,7 +963,7 @@
 		D82B8CDF1A67820A000E47CA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PREFIX_HEADER = piwigo/PrefixHeader.pch;
 				INFOPLIST_FILE = piwigo/Info.plist;
@@ -976,7 +976,7 @@
 		D82B8CE01A67820A000E47CA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PREFIX_HEADER = piwigo/PrefixHeader.pch;
 				INFOPLIST_FILE = piwigo/Info.plist;
