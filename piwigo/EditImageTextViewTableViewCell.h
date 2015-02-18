@@ -11,5 +11,6 @@
 @interface EditImageTextViewTableViewCell : UITableViewCell
 
 -(NSString*)getTextViewText;
+-(void)setTextForTextView:(NSString*)text;
 
 @end

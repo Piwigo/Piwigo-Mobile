@@ -39,4 +39,9 @@
 	return self.textView.text;
 }
 
+-(void)setTextForTextView:(NSString*)text
+{
+	self.textView.text = text;
+}
+
 @end

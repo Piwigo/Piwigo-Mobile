@@ -106,6 +106,7 @@ typedef enum {
 		case EditImageDetailsOrderDescription:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"textArea"];
+			[((EditImageTextViewTableViewCell*)cell) setTextForTextView:self.imageDetails.imageDescription];
 			break;
 		}
 	}
