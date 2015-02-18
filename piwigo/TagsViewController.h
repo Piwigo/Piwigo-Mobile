@@ -17,5 +17,6 @@
 @interface TagsViewController : UIViewController
 
 @property (nonatomic, weak) id<TagsViewControllerDelegate> delegate;
+@property (nonatomic, strong) NSArray *alreadySelectedTags;
 
 @end

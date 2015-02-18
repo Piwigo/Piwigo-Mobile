@@ -129,6 +129,7 @@ typedef enum {
 	{
 		TagsViewController *tagsVC = [TagsViewController new];
 		tagsVC.delegate = self;
+		tagsVC.alreadySelectedTags = self.imageDetails.tags;
 		[self.navigationController pushViewController:tagsVC animated:YES];
 	}
 	

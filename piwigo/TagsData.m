@@ -98,4 +98,9 @@
 	return tagListString;
 }
 
+-(NSInteger)getIndexOfTag:(PiwigoTagData*)tag
+{
+	return [self.tagList indexOfObject:tag];
+}
+
 @end

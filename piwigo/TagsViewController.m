@@ -61,6 +61,16 @@
 	}
 }
 
+-(void)setAlreadySelectedTags:(NSArray *)alreadySelectedTags
+{
+	_alreadySelectedTags = alreadySelectedTags;
+	
+	for(PiwigoTagData *tagData in alreadySelectedTags)
+	{
+		[self.selectedIndices addObject:@([[TagsData sharedInstance] getIndexOfTag:tagData])];
+	}
+}
+
 -(void)addOrRemoveIndexToSelected:(NSInteger)index
 {
 	if(![self.selectedIndices containsObject:@(index)])

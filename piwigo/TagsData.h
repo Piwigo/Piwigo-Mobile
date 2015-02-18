@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class PiwigoTagData;
+
 @interface TagsData : NSObject
 
 +(TagsData*)sharedInstance;
@@ -16,5 +18,6 @@
 
 -(void)getTagsOnCompletion:(void (^)(NSArray *tags))completion;
 +(NSString*)getTagsStringFromList:(NSArray*)tagList;
+-(NSInteger)getIndexOfTag:(PiwigoTagData*)tag;
 
 @end
