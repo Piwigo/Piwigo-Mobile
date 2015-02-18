@@ -97,12 +97,16 @@
 										OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 										   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
+	
+	NSString *tagIdList = [[[imageInformation objectForKey:kPiwigoImagesUploadParamTags] valueForKey:@"description"] componentsJoinedByString:@", "];
+	
 	AFHTTPRequestOperation *request = [self post:kPiwigoImageSetInfo
 								   URLParameters:nil
 									  parameters:@{
 												   @"image_id" : imageId,
 												   @"author" : [imageInformation objectForKey:kPiwigoImagesUploadParamAuthor],
-												   @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription]
+												   @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription],
+												   @"tag_ids" : tagIdList
 												   }
 										 success:completion
 										 failure:fail];

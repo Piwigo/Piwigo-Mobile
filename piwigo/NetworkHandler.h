@@ -30,6 +30,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamCategory;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamPrivacy;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamAuthor;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamDescription;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamTags;
 
 @interface NetworkHandler : NSObject
 

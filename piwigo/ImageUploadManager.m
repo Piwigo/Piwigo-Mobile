@@ -10,6 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
+#import "PiwigoTagData.h"
 
 @interface ImageUploadManager()
 
@@ -91,12 +92,19 @@
 	NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
 	NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
 	
+	NSMutableArray *tagIds = [NSMutableArray new];
+	for(PiwigoTagData *tagData in nextImageToBeUploaded.tags)
+	{
+		[tagIds addObject:@(tagData.tagId)];
+	}
+	
 	NSDictionary *imageProperties = @{
 									  kPiwigoImagesUploadParamName : nextImageToBeUploaded.imageUploadName,
 									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.categoryToUploadTo)],
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.privacyLevel)],
 									  kPiwigoImagesUploadParamAuthor : nextImageToBeUploaded.author,
-									  kPiwigoImagesUploadParamDescription : nextImageToBeUploaded.imageDescription
+									  kPiwigoImagesUploadParamDescription : nextImageToBeUploaded.imageDescription,
+									  kPiwigoImagesUploadParamTags : [tagIds copy]
 									  };
 	
 	[UploadService uploadImage:imageData

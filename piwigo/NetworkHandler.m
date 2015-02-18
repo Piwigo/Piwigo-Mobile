@@ -30,6 +30,7 @@ NSString * const kPiwigoImagesUploadParamCategory = @"category";
 NSString * const kPiwigoImagesUploadParamPrivacy = @"privacyLevel";
 NSString * const kPiwigoImagesUploadParamAuthor = @"author";
 NSString * const kPiwigoImagesUploadParamDescription = @"description";
+NSString * const kPiwigoImagesUploadParamTags = @"tags";
 
 @interface NetworkHandler()
 
