@@ -44,6 +44,12 @@ typedef enum {
 	if([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
 	{
 		[self updateImageDetails];
+		
+		if(self.imageDetails.imageUploadName.length == 0)
+		{
+			self.imageDetails.imageUploadName = self.imageDetails.image;
+		}
+		
 		[self.delegate didFinishEditingDetails:self.imageDetails];
 	}
 }
