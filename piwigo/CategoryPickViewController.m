@@ -33,10 +33,18 @@
 		[self.view addSubview:self.categoriesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
 	}
 	return self;
 }
+
+-(void)categoryDataUpdated
+{
+	[self.categoriesTableView reloadData];
+}
+
+#pragma mark UITableView Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {

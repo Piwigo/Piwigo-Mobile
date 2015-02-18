@@ -8,6 +8,8 @@
 
 #import "CategoriesData.h"
 
+NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
+
 @interface CategoriesData()
 
 @property (nonatomic, strong) NSArray *categories;
@@ -48,7 +50,12 @@
 			[newCategories addObject:categoryData];
 		}
 	}
+	
 	self.categories = newCategories;
+	
+	
+	// post to the app that the category data has been updated
+	[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId

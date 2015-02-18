@@ -39,15 +39,22 @@
 		[self.view addSubview:self.albumsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+		
 		[AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 			
-			[self.albumsTableView reloadData];
 		} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			
 			NSLog(@"Album list err: %@", error);
 		}];
+		
 	}
 	return self;
+}
+
+-(void)categoryDataUpdated
+{
+	[self.albumsTableView reloadData];
 }
 
 
