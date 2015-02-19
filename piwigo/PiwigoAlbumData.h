@@ -34,5 +34,6 @@ typedef enum {
 -(void)removeImage:(PiwigoImageData*)image;
 
 -(void)loadCategoryImageDataChunkOnCompletion:(void (^)(BOOL completed))completion;
+-(void)loadAllCategoryImageDataOnCompletion:(void (^)(BOOL completed))completion;
 
 @end

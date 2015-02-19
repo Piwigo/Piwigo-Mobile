@@ -37,6 +37,33 @@
 	return self;
 }
 
+-(void)loadAllCategoryImageDataOnCompletion:(void (^)(BOOL completed))completion
+{
+	[self loopLoadImages:^(BOOL completed) {
+		if(completion)
+		{
+			completion(YES);
+		}
+	}];
+}
+
+-(void)loopLoadImages:(void (^)(BOOL completed))completion
+{
+	[self loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
+		if(self.imageList.count != self.numberOfImages)
+		{
+			[self loopLoadImages:completion];
+		}
+		else
+		{
+			if(completion)
+			{
+				completion(YES);
+			}
+		}
+	}];
+}
+
 -(void)loadCategoryImageDataChunkOnCompletion:(void (^)(BOOL completed))completion
 {
 	if(self.isLoadingMoreImages) return;
