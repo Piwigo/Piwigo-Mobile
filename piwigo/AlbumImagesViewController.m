@@ -13,17 +13,12 @@
 #import "Model.h"
 #import "ImageDetailViewController.h"
 #import "ImageDownloadView.h"
+#import "PiwigoAlbumData.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
-
-@property (nonatomic, assign) NSInteger lastImageBulkCount;
-@property (nonatomic, assign) NSInteger onPage;
-@property (nonatomic, assign) BOOL isLoadingMoreImages;
-@property (nonatomic, assign) BOOL didLoadAllImages;
-@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
@@ -47,8 +42,6 @@
 		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = albumId;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-		self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
-		self.onPage = 0;
 		
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -60,7 +53,9 @@
 		[self.view addSubview:self.imagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 		
-		[self loadImageChunk];
+		[[[CategoriesData sharedInstance] getCategoryById:albumId] loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
+			[self.imagesCollection reloadData];
+		}];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
@@ -245,28 +240,6 @@
 	return _downloadView;
 }
 
--(void)loadImageChunk
-{
-	if(self.isLoadingMoreImages) return;
-	
-	self.isLoadingMoreImages = YES;
-	
-	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
-									  forCategory:self.categoryId
-										   onPage:self.onPage
-								 ListOnCompletion:^(AFHTTPRequestOperation *operation, NSInteger count) {
-									 
-									 self.lastImageBulkCount = count;
-									 self.onPage++;
-									 self.isLoadingMoreImages = NO;
-									 [self.imagesCollection reloadData];
-								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-									 
-									 
-									 self.isLoadingMoreImages = NO;
-								 }];
-}
-
 #pragma mark -- UICollectionView Methods
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -326,7 +299,9 @@
 {
 	if(indexPath.row >= [collectionView numberOfItemsInSection:0] - 21)
 	{
-		[self loadImageChunk];
+		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
+			[self.imagesCollection reloadData];
+		}];
 	}
 }
 

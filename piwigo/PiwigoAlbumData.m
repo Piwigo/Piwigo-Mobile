@@ -7,11 +7,17 @@
 //
 
 #import "PiwigoAlbumData.h"
+#import "ImageService.h"
+#import "Model.h"
 
 @interface PiwigoAlbumData()
 
 @property (nonatomic, strong) NSArray *imageList;
 @property (nonatomic, strong) NSMutableDictionary *imageIds;
+
+@property (nonatomic, assign) BOOL isLoadingMoreImages;
+@property (nonatomic, assign) NSInteger lastImageBulkCount;
+@property (nonatomic, assign) NSInteger onPage;
 
 @end
 
@@ -23,8 +29,40 @@
 	if(self)
 	{
 		self.imageIds = [NSMutableDictionary new];
+		
+		self.isLoadingMoreImages = NO;
+		self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
+		self.onPage = 0;
 	}
 	return self;
+}
+
+-(void)loadCategoryImageDataChunkOnCompletion:(void (^)(BOOL completed))completion
+{
+	if(self.isLoadingMoreImages) return;
+	
+	self.isLoadingMoreImages = YES;
+	
+	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
+									  forCategory:self.albumId
+										   onPage:self.onPage
+								 ListOnCompletion:^(AFHTTPRequestOperation *operation, NSInteger count) {
+									 
+									 self.lastImageBulkCount = count;
+									 self.onPage++;
+									 self.isLoadingMoreImages = NO;
+									 if(completion)
+									 {
+										 completion(YES);
+									 }
+								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+									 
+									 self.isLoadingMoreImages = NO;
+									 if(completion)
+									 {
+										 completion(NO);
+									 }
+								 }];
 }
 
 -(void)addImages:(NSArray*)images
