@@ -174,7 +174,14 @@ NSString * const kGetImageOrderRandom = @"random";
 										 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSInteger count))completion
 												onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
-	if(lastImageBulkCount != [Model sharedInstance].imagesPerPage) return nil;
+	if(lastImageBulkCount != [Model sharedInstance].imagesPerPage)
+	{
+		if(fail)
+		{
+			fail(nil, nil);
+		}
+		return nil;
+	}
 	
 	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:categoryId
 																 onPage:onPage

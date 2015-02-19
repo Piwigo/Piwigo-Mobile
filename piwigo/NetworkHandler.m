@@ -23,6 +23,7 @@ NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
 
 // parameter keys:
 NSString * const kPiwigoImagesUploadParamData = @"data";
+NSString * const kPiwigoImagesUploadParamFileName = @"fileName";
 NSString * const kPiwigoImagesUploadParamName = @"name";
 NSString * const kPiwigoImagesUploadParamChunk = @"chunk";
 NSString * const kPiwigoImagesUploadParamChunks = @"chunks";
@@ -95,7 +96,7 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 	
 	[formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
 								name:@"file"
-							fileName:[parameters objectForKey:kPiwigoImagesUploadParamName]
+							fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
 							mimeType:@"image/jpeg"];
 	
 	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]

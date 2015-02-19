@@ -99,6 +99,7 @@
 	}
 	
 	NSDictionary *imageProperties = @{
+									  kPiwigoImagesUploadParamFileName : nextImageToBeUploaded.image,
 									  kPiwigoImagesUploadParamName : nextImageToBeUploaded.imageUploadName,
 									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.categoryToUploadTo)],
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.privacyLevel)],
