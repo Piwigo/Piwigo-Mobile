@@ -69,6 +69,8 @@
 		D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */; };
 		D8B04C641A92B1BB00695281 /* EditImageLabelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C631A92B1BB00695281 /* EditImageLabelTableViewCell.m */; };
 		D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */; };
+		D8B9BC7F1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC7E1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m */; };
+		D8B9BC821A96ACA800C1B0E5 /* SortSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */; };
 		D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */; };
 		D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */; };
@@ -230,6 +232,10 @@
 		D8B04C631A92B1BB00695281 /* EditImageLabelTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageLabelTableViewCell.m; sourceTree = "<group>"; };
 		D8B9BC7A1A95B1F600C1B0E5 /* NotUploadedYet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotUploadedYet.h; sourceTree = "<group>"; };
 		D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotUploadedYet.m; sourceTree = "<group>"; };
+		D8B9BC7D1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadHeaderCollectionReusableView.h; sourceTree = "<group>"; };
+		D8B9BC7E1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadHeaderCollectionReusableView.m; sourceTree = "<group>"; };
+		D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortSelectViewController.h; sourceTree = "<group>"; };
+		D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortSelectViewController.m; sourceTree = "<group>"; };
 		D8BDCB5C1A6F685E00D106A8 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
 		D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
 		D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -611,8 +617,12 @@
 				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
 				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
 				D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */,
+				D8B9BC7D1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.h */,
+				D8B9BC7E1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m */,
 				D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */,
 				D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */,
+				D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */,
+				D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */,
 			);
 			name = "Local Images";
 			sourceTree = "<group>";
@@ -847,6 +857,7 @@
 				D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
 				D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */,
+				D8B9BC821A96ACA800C1B0E5 /* SortSelectViewController.m in Sources */,
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
 				D82B8D1E1A68783B000E47CA /* AFHTTPRequestOperationManager.m in Sources */,
 				D89045B21A94662300A306FE /* TagsData.m in Sources */,
@@ -885,6 +896,7 @@
 				D8083A4F1A7CB65400A95605 /* UIActionSheet+Blocks.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
 				D89045BC1A9470A600A306FE /* TagsViewController.m in Sources */,
+				D8B9BC7F1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m in Sources */,
 				D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */,
 				D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */,
 				D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */,

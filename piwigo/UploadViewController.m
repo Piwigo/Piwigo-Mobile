@@ -16,11 +16,15 @@
 #import "ImageUpload.h"
 #import "ImageUploadProgressView.h"
 #import "ImageUploadViewController.h"
+#import "UploadHeaderCollectionReusableView.h"
+#import "SortSelectViewController.h"
 
-@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate>
+@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate, SortSelectViewControllerDelegate>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
+
+@property (nonatomic, strong) NSArray *imageNamesList;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
@@ -28,6 +32,8 @@
 
 @property (nonatomic, assign) BOOL selectable;
 @property (nonatomic, retain) NSMutableArray *selectedImageKeys;
+
+@property (nonatomic, assign) kPiwigoSortBy sortType;
 
 @end
 
@@ -42,19 +48,19 @@
 		self.categoryId = categoryId;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		
+		self.imageNamesList = [NSArray new];
+		self.sortType = kPiwigoSortByName;
+		
 		self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
 		self.localImagesCollection.backgroundColor = [UIColor clearColor];
 		self.localImagesCollection.dataSource = self;
 		self.localImagesCollection.delegate = self;
 		[self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+		[self.localImagesCollection registerClass:[UploadHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
 		self.localImagesCollection.indicatorStyle = UIScrollViewIndicatorStyleDefault;
 		[self.view addSubview:self.localImagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
-		
-		[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
-			[self.localImagesCollection reloadData];
-		}];
 		
 		self.selectable = NO;
 		self.selectedImageKeys = [NSMutableArray new];
@@ -68,8 +74,7 @@
 																style:UIBarButtonItemStylePlain
 															   target:self
 															   action:@selector(uploadSelected)];
-		
-	}
+		}
 	return self;
 }
 
@@ -101,6 +106,20 @@
 	{
 		self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.uploadBarButton];
 	}
+}
+
+-(void)setSortType:(kPiwigoSortBy)sortType
+{
+	_sortType = sortType;
+	
+	self.imageNamesList = [NSArray new];
+	
+	[SortSelectViewController getSortedImageNameArrayFromSortType:sortType
+													  forCategory:self.categoryId
+													 onCompletion:^(NSArray *imageNames) {
+														 self.imageNamesList = imageNames;
+														 [self.localImagesCollection reloadData];
+													 }];
 }
 
 -(void)selectCells
@@ -144,9 +163,36 @@
 
 #pragma mark UICollectionView Methods
 
+-(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+	UploadHeaderCollectionReusableView *header = nil;
+	
+	if(kind == UICollectionElementKindSectionHeader)
+	{
+		header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header" forIndexPath:indexPath];
+		header.currentSortLabel.text = [SortSelectViewController getNameForSortType:self.sortType];
+		[header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+	}
+	
+	return header;
+}
+
+-(void)didSelectCollectionViewHeader
+{
+	SortSelectViewController *sortSelectVC = [SortSelectViewController new];
+	sortSelectVC.delegate = self;
+	sortSelectVC.currentSortType = self.sortType;
+	[self.navigationController pushViewController:sortSelectVC animated:YES];
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+	return CGSizeMake(collectionView.frame.size.width, 44.0);
+}
+
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	return [PhotosFetch sharedInstance].localImages.count;
+	return self.imageNamesList.count;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -159,7 +205,7 @@
 {
 	LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 	
-	NSString *imageAssetKey = [PhotosFetch sharedInstance].sortedImageKeys[indexPath.row];
+	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
 	[cell setupWithImageAsset:[[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey]];
 	
 	if([self.selectedImageKeys containsObject:imageAssetKey]) {
@@ -178,7 +224,7 @@
 {
 	LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	
-	NSString *imageAssetKey = [PhotosFetch sharedInstance].sortedImageKeys[indexPath.row];
+	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
 	
 	if(self.selectable)
 	{
@@ -219,6 +265,14 @@
 		}
 		index++;
 	}
+}
+
+
+#pragma mark SortSelectViewControllerDelegate Methods
+
+-(void)didSelectSortTypeOf:(kPiwigoSortBy)sortType
+{
+	self.sortType = sortType;
 }
 
 
