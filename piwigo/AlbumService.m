@@ -21,13 +21,19 @@
 		   parameters:nil
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  
-				  if(completion) {
-					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+				  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+				  {
+					  NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
+					  [[CategoriesData sharedInstance] addCategories:albums];
+					  if(completion)
 					  {
-						  NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
-						  [[CategoriesData sharedInstance] addCategories:albums];
 						  completion(operation, albums);
-					  } else {
+					  }
+				  }
+				  else
+				  {
+					  if(completion)
+					  {
 						  completion(operation, nil);
 					  }
 				  }
@@ -69,6 +75,22 @@
 	}
 	
 	return albums;
+}
+
++(AFHTTPRequestOperation*)createCategoryWithName:(NSString*)categoryName
+									OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL createdSuccessfully))completion
+									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	return [self post:kPiwigoCategoriesAdd
+		URLParameters:@{@"name" : [categoryName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]}
+		   parameters:nil
+			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				  
+				  if(completion)
+				  {
+					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+				  }
+			  } failure:fail];
 }
 
 @end

@@ -62,6 +62,13 @@
 						  [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result" ] objectForKey:@"pwg_token"];
 						  [Model sharedInstance].language = [[responseObject objectForKey:@"result" ] objectForKey:@"language"];
 						  [Model sharedInstance].version = [[responseObject objectForKey:@"result" ] objectForKey:@"version"];
+						  
+						  NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
+						  if([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"])
+						  {
+							  [Model sharedInstance].hasAdminRights = YES;
+						  }
+						  
 						  completion([responseObject objectForKey:@"result"]);
 					  }
 					  else

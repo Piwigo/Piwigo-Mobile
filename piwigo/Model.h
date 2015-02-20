@@ -31,6 +31,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *language;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *username;
+@property (nonatomic, assign) BOOL hasAdminRights;
 
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;

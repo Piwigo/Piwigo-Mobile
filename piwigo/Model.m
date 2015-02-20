@@ -25,6 +25,7 @@
 		instance.imagesPerPage = 100;
 		instance.defaultPrivacyLevel = 0;
 		instance.defaultAuthor = @"";
+		instance.hasAdminRights = NO;
 		
 		[instance readFromDisk];
 	});
