@@ -10,7 +10,6 @@
 
 @interface LabelTableViewCell()
 
-@property (nonatomic, strong) UILabel *leftLabel;
 @property (nonatomic, strong) UILabel *rightLabel;
 
 @property (nonatomic, strong) NSLayoutConstraint *leftLabelWidthConstraint;
@@ -31,6 +30,8 @@
 		self.leftLabel.font = [UIFont piwigoFontNormal];
 		self.leftLabel.textColor = [UIColor piwigoGray];
 		self.leftLabel.textAlignment = NSTextAlignmentRight;
+		self.leftLabel.adjustsFontSizeToFitWidth = YES;
+		self.leftLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.leftLabel];
 		
 		self.rightLabel = [UILabel new];

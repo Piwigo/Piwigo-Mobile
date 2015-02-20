@@ -10,7 +10,7 @@
 
 @interface UIFont (AppFonts)
 
-+(UIFont*)piwigoFontButton;
 +(UIFont*)piwigoFontNormal;
++(UIFont*)piwigoFontButton;
 
 @end

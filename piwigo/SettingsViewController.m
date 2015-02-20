@@ -14,6 +14,7 @@
 #import "TextFieldTableViewCell.h"
 #import "ButtonTableViewCell.h"
 #import "LabelTableViewCell.h"
+#import "AboutViewController.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -49,7 +50,7 @@ typedef enum {
 							   @2,
 							   @1,
 							   @4,
-							   @2
+							   @1
 							   ];
 		self.headerHeights = @[
 							   @40.0,
@@ -172,6 +173,22 @@ typedef enum {
 			}
 			break;
 		}
+		case SettingSectionAbout:
+		{
+			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
+			if(!cell)
+			{
+				cell = [LabelTableViewCell new];
+			}
+			
+			cell.leftText = @"About Piwigo Mobile";	// @TODO: Localize this!
+			cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			cell.leftLabelWidth = 220;
+			
+			tableViewCell = cell;
+			break;
+		}
 	}
 	
 	return tableViewCell;
@@ -232,7 +249,11 @@ typedef enum {
 			}
 			break;
 		case SettingSectionAbout:
+		{
+			AboutViewController *aboutVC = [AboutViewController new];
+			[self.navigationController pushViewController:aboutVC animated:YES];
 			break;
+		}
 	}
 }
 

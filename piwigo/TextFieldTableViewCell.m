@@ -28,6 +28,8 @@
 		self.leftLabel.font = [UIFont piwigoFontNormal];
 		self.leftLabel.textColor = [UIColor piwigoGray];
 		self.leftLabel.textAlignment = NSTextAlignmentRight;
+		self.leftLabel.adjustsFontSizeToFitWidth = YES;
+		self.leftLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.leftLabel];
 		
 		self.rightTextField = [UITextField new];

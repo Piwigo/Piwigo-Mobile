@@ -71,6 +71,8 @@
 		D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */; };
 		D8B9BC7F1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC7E1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m */; };
 		D8B9BC821A96ACA800C1B0E5 /* SortSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */; };
+		D8B9BC861A96C50700C1B0E5 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */; };
+		D8B9BC8E1A96DC5800C1B0E5 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8B9BC8D1A96DC5800C1B0E5 /* About.strings */; };
 		D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */; };
 		D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */; };
@@ -236,6 +238,9 @@
 		D8B9BC7E1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadHeaderCollectionReusableView.m; sourceTree = "<group>"; };
 		D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortSelectViewController.h; sourceTree = "<group>"; };
 		D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortSelectViewController.m; sourceTree = "<group>"; };
+		D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		D8B9BC8D1A96DC5800C1B0E5 /* About.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = About.strings; sourceTree = "<group>"; };
 		D8BDCB5C1A6F685E00D106A8 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
 		D8BDCB5D1A6F685E00D106A8 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
 		D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -566,6 +571,7 @@
 			children = (
 				D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */,
 				D8C7BE021A6A525F007C8673 /* Localizable.strings */,
+				D8B9BC8D1A96DC5800C1B0E5 /* About.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -636,6 +642,15 @@
 			name = "Not Uploaded Yet";
 			sourceTree = "<group>";
 		};
+		D8B9BC831A96C4EE00C1B0E5 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
+				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
+			);
+			name = About;
+			sourceTree = "<group>";
+		};
 		D8BDCB5B1A6F682900D106A8 /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -675,9 +690,10 @@
 			children = (
 				D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */,
 				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
+				D8083A641A7FF30B00A95605 /* Cells */,
 				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
 				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
-				D8083A641A7FF30B00A95605 /* Cells */,
+				D8B9BC831A96C4EE00C1B0E5 /* About */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -817,6 +833,7 @@
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */,
 				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
+				D8B9BC8E1A96DC5800C1B0E5 /* About.strings in Resources */,
 				D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -899,6 +916,7 @@
 				D8B9BC7F1A969CC400C1B0E5 /* UploadHeaderCollectionReusableView.m in Sources */,
 				D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */,
 				D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */,
+				D8B9BC861A96C50700C1B0E5 /* AboutViewController.m in Sources */,
 				D8BDCB5E1A6F685E00D106A8 /* TabBarViewController.m in Sources */,
 				D82B8D051A687831000E47CA /* UIImageView+AFNetworking.m in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,

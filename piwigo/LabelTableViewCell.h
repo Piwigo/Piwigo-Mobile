@@ -10,6 +10,7 @@
 
 @interface LabelTableViewCell : UITableViewCell
 
+@property (nonatomic, strong) UILabel *leftLabel;
 @property (nonatomic, strong) NSString *leftText;
 @property (nonatomic, strong) NSString *rightText;
 @property (nonatomic, assign) CGFloat leftLabelWidth;
