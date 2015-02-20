@@ -11,6 +11,7 @@
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "PiwigoTagData.h"
+#import "ImageService.h"
 
 @interface ImageUploadManager()
 
@@ -119,10 +120,10 @@
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
+						[self addImageDataToCategoryCache:response];
 						[self setImageResponse:response withInfo:imageProperties];
 						
 						[self.imageUploadQueue removeObjectAtIndex:0];
-						// @TODO: if it's all the way done, then use the response to edit the image properties
 						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
 						{
 							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
@@ -196,6 +197,17 @@
 									   }];
 		
 	}
+}
+
+-(void)addImageDataToCategoryCache:(NSDictionary*)jsonResponse
+{
+	NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
+	[ImageService getImageInfoById:[[imageResponse objectForKey:@"image_id"] integerValue]
+				  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+					  //
+				  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+					  //
+				  }];
 }
 
 

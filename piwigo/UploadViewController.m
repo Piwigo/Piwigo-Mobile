@@ -88,7 +88,7 @@
 	{
 		[self.selectedImageKeys addObject:image.image];
 	}
-	[self.localImagesCollection reloadData];
+	self.sortType = self.sortType;
 	
 	if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 	{
@@ -113,6 +113,7 @@
 	_sortType = sortType;
 	
 	self.imageNamesList = [NSArray new];
+	[self.localImagesCollection reloadData];
 	
 	[SortSelectViewController getSortedImageNameArrayFromSortType:sortType
 													  forCategory:self.categoryId
@@ -261,10 +262,20 @@
 		if([key isEqualToString:image.image])
 		{
 			[self.selectedImageKeys removeObjectAtIndex:index];
+			
+			if(self.sortType == kPiwigoSortByNotUploaded)
+			{
+				NSMutableArray *newList = [self.imageNamesList mutableCopy];
+				[newList removeObject:key];
+				self.imageNamesList = newList;
+				[self.localImagesCollection reloadData];
+			}
+			
 			break;
 		}
 		index++;
 	}
+	
 }
 
 

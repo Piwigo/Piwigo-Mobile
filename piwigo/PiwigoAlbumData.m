@@ -50,7 +50,7 @@
 -(void)loopLoadImages:(void (^)(BOOL completed))completion
 {
 	[self loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
-		if(self.imageList.count != self.numberOfImages)
+		if(completed && self.imageList.count != self.numberOfImages)
 		{
 			[self loopLoadImages:completion];
 		}

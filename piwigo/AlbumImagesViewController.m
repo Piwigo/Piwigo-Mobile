@@ -297,7 +297,7 @@
 
 -(void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.row >= [collectionView numberOfItemsInSection:0] - 21)
+	if([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages] && indexPath.row >= [collectionView numberOfItemsInSection:0] - 21)
 	{
 		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
 			[self.imagesCollection reloadData];

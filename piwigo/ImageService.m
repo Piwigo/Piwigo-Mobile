@@ -80,7 +80,12 @@ NSString * const kGetImageOrderRandom = @"random";
 				  if(completion) {
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
 					  {
-						  completion(operation, [ImageService parseBasicImageInfoJSON:[responseObject objectForKey:@"result"]]);
+						  PiwigoImageData *imageData = [ImageService parseBasicImageInfoJSON:[responseObject objectForKey:@"result"]];
+						  for(NSNumber *categoryId in imageData.categoryIds)
+						  {
+							  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] addImages:@[imageData]];
+						  }
+						  completion(operation, imageData);
 					  } else {
 						  completion(operation, nil);
 					  }
