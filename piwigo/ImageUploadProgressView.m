@@ -17,6 +17,7 @@
 
 @property (nonatomic, assign) NSInteger currentImage;
 @property (nonatomic, assign) NSInteger maxImages;
+@property (nonatomic, assign) NSInteger totalUploadedImages;
 
 @end
 
@@ -41,6 +42,7 @@
 		self.translatesAutoresizingMaskIntoConstraints = NO;
 		self.currentImage = 1;
 		self.maxImages = 0;
+		self.totalUploadedImages = 0;
 		
 		[ImageUploadManager sharedInstance].delegate = self;
 		
@@ -83,7 +85,7 @@
 														  attribute:NSLayoutAttributeBottom
 														  relatedBy:NSLayoutRelationEqual
 															 toItem:bottomLayout
-														  attribute:NSLayoutAttributeTop
+														  attribute:NSLayoutAttributeBottom
 														 multiplier:1.0
 														   constant:0]];
 	[view addConstraint:[NSLayoutConstraint constrainViewToHeight:self height:50]];
@@ -108,12 +110,10 @@
 	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
 	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
 	CGFloat peiceProgress = (CGFloat)current / total;
-	CGFloat totalProgress = onChunkPercent + (chunkPercent * peiceProgress);
-	if(totalProgress > 1)
-	{
-		totalProgress = 1;
-	}
-	[self.uploadProgress setProgress:totalProgress animated:YES];
+	CGFloat totalProgressForThisImage = (onChunkPercent + (chunkPercent * peiceProgress)) / self.maxImages;
+	CGFloat totalBatchProgress = (self.totalUploadedImages / (CGFloat)self.maxImages) + totalProgressForThisImage;
+	
+	[self.uploadProgress setProgress:totalBatchProgress animated:YES];
 	
 	if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
 	{
@@ -123,16 +123,19 @@
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
+	self.totalUploadedImages++;
+	
 	self.currentImage = rank;
 	if(rank >= totalInQueue)
 	{
 		self.currentImage = totalInQueue;
 	}
 	[self updateImageCountLabel];
-	[self.uploadProgress setProgress:0 animated:NO];
 	
-	if(rank == totalInQueue)
+	if(rank > totalInQueue)
 	{
+		[self.uploadProgress setProgress:0 animated:NO];
+		self.totalUploadedImages = 0;
 		if(self.superview)
 		{
 			[UIView animateWithDuration:0.8
