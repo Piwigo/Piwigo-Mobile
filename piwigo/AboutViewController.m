@@ -48,7 +48,7 @@
 		self.usuOSSLabel.font = [UIFont piwigoFontNormal];
 		self.usuOSSLabel.font = [self.usuOSSLabel.font fontWithSize:12];
 		self.usuOSSLabel.textColor = [UIColor piwigoGrayLight];
-		self.usuOSSLabel.text = @"(Utah State University OOS)";
+		self.usuOSSLabel.text = @"(Utah State University OSS)";
 		[self.view addSubview:self.usuOSSLabel];
 		
 		self.textView = [UITextView new];

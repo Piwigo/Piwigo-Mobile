@@ -13,6 +13,8 @@
 @interface LocalImageCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, assign) BOOL cellSelected;
+@property (nonatomic, assign) BOOL cellUploading;
+@property (nonatomic, assign) CGFloat progress;
 @property (nonatomic, strong) UIImageView *cellImage;
 -(void)setupWithImageAsset:(ALAsset*)imageAsset;
 

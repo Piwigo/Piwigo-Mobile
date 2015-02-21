@@ -31,7 +31,8 @@
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
 @property (nonatomic, assign) BOOL selectable;
-@property (nonatomic, retain) NSMutableArray *selectedImageKeys;
+@property (nonatomic, strong) NSMutableArray *selectedImageKeys;
+@property (nonatomic, strong) NSMutableArray *uploadingImageKeys;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
 
@@ -64,6 +65,7 @@
 		
 		self.selectable = NO;
 		self.selectedImageKeys = [NSMutableArray new];
+		self.uploadingImageKeys = [NSMutableArray new];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select")
 																style:UIBarButtonItemStylePlain
@@ -86,7 +88,7 @@
 	[ImageUploadProgressView sharedInstance].delegate = self;
 	for(ImageUpload *image in [ImageUploadManager sharedInstance].imageUploadQueue)
 	{
-		[self.selectedImageKeys addObject:image.image];
+		[self.uploadingImageKeys addObject:image.image];
 	}
 	self.sortType = self.sortType;
 	
@@ -162,6 +164,13 @@
 	cell.cellSelected = NO;
 }
 
+-(void)deselectUploadingCellForKey:(NSString*)key
+{
+	NSInteger row = [[PhotosFetch sharedInstance].sortedImageKeys indexOfObject:key];
+	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+	cell.cellUploading = NO;
+}
+
 #pragma mark UICollectionView Methods
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -209,8 +218,13 @@
 	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
 	[cell setupWithImageAsset:[[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey]];
 	
-	if([self.selectedImageKeys containsObject:imageAssetKey]) {
+	if([self.selectedImageKeys containsObject:imageAssetKey])
+	{
 		cell.cellSelected = YES;
+	}
+	else if([self.uploadingImageKeys containsObject:imageAssetKey])
+	{
+		cell.cellUploading = YES;
 	}
 	
 	return cell;
@@ -227,7 +241,7 @@
 	
 	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
 	
-	if(self.selectable)
+	if(self.selectable && ![self.uploadingImageKeys containsObject:imageAssetKey])
 	{
 		BOOL isCellAlreadySelected = [self.selectedImageKeys containsObject:imageAssetKey];
 		if(!isCellAlreadySelected)
@@ -250,18 +264,29 @@
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
 {
+	NSInteger row = [[PhotosFetch sharedInstance].sortedImageKeys indexOfObject:image.image];
+	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 	
+	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
+	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
+	CGFloat peiceProgress = (CGFloat)current / total;
+	CGFloat totalProgress = onChunkPercent + (chunkPercent * peiceProgress);
+	if(totalProgress > 1)
+	{
+		totalProgress = 1;
+	}
+	cell.progress = totalProgress;
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-	[self deselectCellForKey:image.image];
+	[self deselectUploadingCellForKey:image.image];
 	NSInteger index = 0;
-	for(NSString *key in self.selectedImageKeys)
+	for(NSString *key in self.uploadingImageKeys)
 	{
 		if([key isEqualToString:image.image])
 		{
-			[self.selectedImageKeys removeObjectAtIndex:index];
+			[self.uploadingImageKeys removeObjectAtIndex:index];
 			
 			if(self.sortType == kPiwigoSortByNotUploaded)
 			{
