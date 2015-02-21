@@ -80,6 +80,16 @@
 	return self;
 }
 
+-(void)viewDidLoad
+{
+	[super viewDidLoad];
+	
+	if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+	{
+		[self setEdgesForExtendedLayout:UIRectEdgeNone];
+	}
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
