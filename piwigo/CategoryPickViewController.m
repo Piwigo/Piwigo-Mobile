@@ -9,6 +9,7 @@
 #import "CategoryPickViewController.h"
 #import "CategoriesData.h"
 #import "UploadViewController.h"
+#import "Model.h"
 
 @interface CategoryPickViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -25,15 +26,50 @@
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		
-		self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-		self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.categoriesTableView.delegate = self;
-		self.categoriesTableView.dataSource = self;
-		self.categoriesTableView.backgroundColor = [UIColor piwigoWhiteCream];
-		[self.view addSubview:self.categoriesTableView];
-		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+		if([Model sharedInstance].hasAdminRights)
+		{
+			self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+			self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
+			self.categoriesTableView.delegate = self;
+			self.categoriesTableView.dataSource = self;
+			self.categoriesTableView.backgroundColor = [UIColor piwigoWhiteCream];
+			[self.view addSubview:self.categoriesTableView];
+			[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
+			
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+		}
+		else
+		{
+			UILabel *adminLabel = [UILabel new];
+			adminLabel.translatesAutoresizingMaskIntoConstraints = NO;
+			adminLabel.font = [UIFont piwigoFontNormal];
+			adminLabel.font = [adminLabel.font fontWithSize:20];
+			adminLabel.textColor = [UIColor piwigoOrange];
+			adminLabel.text = @"Admin Rights Needed"; // @TODO: Localize this!
+			[self.view addSubview:adminLabel];
+			[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:adminLabel]];
+			
+			UILabel *description = [UILabel new];
+			description.translatesAutoresizingMaskIntoConstraints = NO;
+			description.font = [UIFont piwigoFontNormal];
+			description.textColor = [UIColor piwigoGray];
+			description.numberOfLines = 4;
+			description.textAlignment = NSTextAlignmentCenter;
+			description.text = @"You're not an admin.\nYou have to be an admin to be able to upload images."; // @TODO: Localize this!
+			[self.view addSubview:description];
+			[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:description]];
+			[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[description]-|"
+																			  options:kNilOptions
+																			  metrics:nil
+																				views:@{@"description" : description}]];
+			
+			[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[admin]-[description]"
+																			  options:kNilOptions
+																			  metrics:nil
+																				views:@{@"admin" : adminLabel,
+																						@"description" : description}]];
+			
+		}
 		
 	}
 	return self;
