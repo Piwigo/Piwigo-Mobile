@@ -260,8 +260,16 @@
 	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:indexPath.row];
 	[cell setupWithImageData:imageData];
 	
-	if([self.selectedImageIds containsObject:imageData.imageId]) {
+	if([self.selectedImageIds containsObject:imageData.imageId])
+	{
 		cell.isSelected = YES;
+	}
+	
+	if([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages] && indexPath.row >= [collectionView numberOfItemsInSection:0] - 21)
+	{
+		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
+			[self.imagesCollection reloadData];
+		}];
 	}
 	
 	return cell;
@@ -292,16 +300,6 @@
 			[self.selectedImageIds removeObject:selectedCell.imageData.imageId];
 		}
 		[collectionView reloadItemsAtIndexPaths:@[indexPath]];
-	}
-}
-
--(void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
-{
-	if([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages] && indexPath.row >= [collectionView numberOfItemsInSection:0] - 21)
-	{
-		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
-			[self.imagesCollection reloadData];
-		}];
 	}
 }
 

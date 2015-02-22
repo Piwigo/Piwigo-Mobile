@@ -285,7 +285,6 @@
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
 	[self deselectUploadingCellForKey:image.image];
-	NSInteger index = 0;
 	if(self.sortType == kPiwigoSortByNotUploaded)
 	{
 		NSMutableArray *newList = [self.imageNamesList mutableCopy];
