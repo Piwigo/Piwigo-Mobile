@@ -10,6 +10,7 @@
 #import "CategoriesData.h"
 #import "ImageService.h"
 #import "ImageDownloadView.h"
+#import "Model.h"
 
 @interface ImageDetailViewController ()
 
@@ -111,9 +112,10 @@
 								animated:YES
 							   withTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
 					   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-				  destructiveButtonTitle:NSLocalizedString(@"deleteImage_delete", @"Delete")
-					   otherButtonTitles:@[NSLocalizedString(@"iamgeOptions_download", @"Download"), NSLocalizedString(@"iamgeOptions_rename",  @"Rename")]
+				  destructiveButtonTitle:[Model sharedInstance].hasAdminRights ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
+					   otherButtonTitles:@[NSLocalizedString(@"iamgeOptions_download", @"Download"), NSLocalizedString(@"iamgeOptions_edit",  @"Edit")]
 								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 1;
 									switch(buttonIndex)
 									{
 										case 0: // Delete
@@ -122,8 +124,8 @@
 										case 1: // Download
 											[self downloadImage];
 											break;
-										case 2: // Rename
-											self.downloadView.percentDownloaded = 0.5;
+										case 2: // Edit
+											// @TODO: Show edit image view
 											break;
 									}
 								}];
