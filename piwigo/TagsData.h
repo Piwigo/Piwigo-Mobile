@@ -20,4 +20,6 @@
 +(NSString*)getTagsStringFromList:(NSArray*)tagList;
 -(NSInteger)getIndexOfTag:(PiwigoTagData*)tag;
 
+-(void)clearCache;
+
 @end

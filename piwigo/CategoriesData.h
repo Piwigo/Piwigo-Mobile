@@ -22,4 +22,6 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryDataUpdated;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId;
 -(void)removeImage:(PiwigoImageData*)image;
 
+-(void)clearCache;
+
 @end

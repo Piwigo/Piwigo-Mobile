@@ -15,6 +15,7 @@
 #import "ButtonTableViewCell.h"
 #import "LabelTableViewCell.h"
 #import "AboutViewController.h"
+#import "ClearCache.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -277,6 +278,8 @@ typedef enum {
 							  [SessionService sessionLogoutOnCompletion:^(AFHTTPRequestOperation *operation, BOOL sucessfulLogout) {
 								  if(sucessfulLogout)
 								  {
+									  // clear the cache
+									  [ClearCache clearAllCache];
 									  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 									  [appDelegate loadLoginView];
 								  }

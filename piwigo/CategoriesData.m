@@ -31,6 +31,11 @@ NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationC
 	return instance;
 }
 
+-(void)clearCache
+{
+	self.categories = [NSArray new];
+}
+
 -(void)addCategories:(NSArray*)categories
 {
 	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.categories];

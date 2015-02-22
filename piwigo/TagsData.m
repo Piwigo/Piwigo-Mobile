@@ -24,6 +24,11 @@
 	return instance;
 }
 
+-(void)clearCache
+{
+	self.tagList = [NSArray new];
+}
+
 -(void)addTagList:(NSArray*)newTags
 {
 	NSMutableArray *tags = [[NSMutableArray alloc] initWithArray:self.tagList];
