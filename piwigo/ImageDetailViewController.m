@@ -17,6 +17,7 @@
 @property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, strong) UIImageView *image;
 @property (nonatomic, strong) UIProgressView *progressBar;
+@property (nonatomic, strong) NSLayoutConstraint *topProgressBarConstraint;
 
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, assign) NSInteger currentImageIndex;
@@ -49,13 +50,14 @@
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
 		[self.progressBar addConstraint:[NSLayoutConstraint constrainViewToHeight:self.progressBar height:10]];
-		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.progressBar
+		self.topProgressBarConstraint = [NSLayoutConstraint constraintWithItem:self.progressBar
 															  attribute:NSLayoutAttributeTop
 															  relatedBy:NSLayoutRelationEqual
-																 toItem:self.topLayoutGuide
-															  attribute:NSLayoutAttributeBottom
+																 toItem:self.view
+															  attribute:NSLayoutAttributeTop
 															 multiplier:1.0
-															   constant:0]];
+															   constant:0];
+		[self.view addConstraint:self.topProgressBarConstraint];
 		
 		UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)];
 		rightSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
@@ -66,36 +68,10 @@
 		[self.view addGestureRecognizer:leftSwipe];
 		
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView)]];
+		
+		[self updateCurrentImage];
 	}
 	return self;
-}
-
--(void)setupWithImageData:(PiwigoImageData*)imageData andPlaceHolderImage:(UIImage*)placeHolder
-{
-	self.imageData = imageData;
-	self.title = self.imageData.name;
-	
-	__weak typeof(self) weakSelf = self;
-	self.progressBar.hidden = NO;
-	[self.image setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.imageData.mediumPath]]
-					  placeholderImage:placeHolder
-							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-								   weakSelf.image.image = image;
-								   weakSelf.downloadView.downloadImage = image;
-								   weakSelf.downloadView.hidden = YES;
-								   weakSelf.progressBar.hidden = YES;
-							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-								   
-							   }];
-	
-	[self.image setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-		CGFloat percent = (CGFloat)totalBytesRead / totalBytesExpectedToRead;
-		if(percent == 1) {
-			weakSelf.progressBar.hidden = YES;
-		} else {
-			[weakSelf.progressBar setProgress:percent animated:YES];
-		}
-	}];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -104,6 +80,8 @@
 	
 	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
 	self.navigationItem.rightBarButtonItem = imageOptionsButton;
+	
+	self.topProgressBarConstraint.constant = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
 }
 
 -(void)imageOptions
@@ -202,6 +180,8 @@
 
 	[UIView animateWithDuration:0.5 animations:^{
 		self.tabBarController.tabBar.hidden = !self.tabBarController.tabBar.hidden;
+		self.topProgressBarConstraint.constant = !self.tabBarController.tabBar.hidden ? self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height : [UIApplication sharedApplication].statusBarFrame.size.height;
+		
 	}];
 	
 	CGRect frame = self.tabBarController.tabBar.frame;
@@ -237,9 +217,29 @@
 -(void)updateCurrentImage
 {
 	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:self.currentImageIndex];
-	self.title = imageData.name;
-	[self.image setImageWithURL:[NSURL URLWithString:imageData.mediumPath]
-			   placeholderImage:[UIImage imageNamed:@"placeholder"]];
+
+	__weak typeof(self) weakSelf = self;
+	self.progressBar.hidden = NO;
+	[self.image setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
+					  placeholderImage:[UIImage imageNamed:@"placeholder"]
+							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+								   weakSelf.image.image = image;
+								   weakSelf.downloadView.downloadImage = image;
+								   weakSelf.downloadView.hidden = YES;
+								   weakSelf.progressBar.hidden = YES;
+								   [weakSelf.progressBar setProgress:0];
+							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+								   
+							   }];
+	
+	[self.image setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+		CGFloat percent = (CGFloat)totalBytesRead / totalBytesExpectedToRead;
+		if(percent == 1) {
+			weakSelf.progressBar.hidden = YES;
+		} else {
+			[weakSelf.progressBar setProgress:percent animated:YES];
+		}
+	}];
 }
 
 -(ImageDownloadView*)downloadView

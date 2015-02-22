@@ -11,7 +11,6 @@
 #import "PiwigoImageData.h"
 #import "AlbumTableViewCell.h"
 #import "AlbumService.h"
-#import "AlbumPhotosViewController.h"
 #import "AlbumImagesViewController.h"
 #import "CategoriesData.h"
 #import "Model.h"

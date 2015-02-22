@@ -287,7 +287,6 @@
 	{
 		ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId andImageIndex:indexPath.row];
 		imageDetail.delegate = self;
-		[imageDetail setupWithImageData:selectedCell.imageData andPlaceHolderImage:selectedCell.cellImage.image];
 		[self.navigationController pushViewController:imageDetail animated:YES];
 	}
 	else
