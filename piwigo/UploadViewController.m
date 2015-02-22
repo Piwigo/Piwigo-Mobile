@@ -32,7 +32,6 @@
 
 @property (nonatomic, assign) BOOL selectable;
 @property (nonatomic, strong) NSMutableArray *selectedImageKeys;
-@property (nonatomic, strong) NSMutableArray *uploadingImageKeys;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
 
@@ -65,7 +64,6 @@
 		
 		self.selectable = NO;
 		self.selectedImageKeys = [NSMutableArray new];
-		self.uploadingImageKeys = [NSMutableArray new];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select")
 																style:UIBarButtonItemStylePlain
@@ -96,10 +94,6 @@
 	
 	[self loadNavButtons];
 	[ImageUploadProgressView sharedInstance].delegate = self;
-	for(ImageUpload *image in [ImageUploadManager sharedInstance].imageUploadQueue)
-	{
-		[self.uploadingImageKeys addObject:image.image];
-	}
 	self.sortType = self.sortType;
 	
 	if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
@@ -292,25 +286,13 @@
 {
 	[self deselectUploadingCellForKey:image.image];
 	NSInteger index = 0;
-	for(NSString *key in self.uploadingImageKeys)
+	if(self.sortType == kPiwigoSortByNotUploaded)
 	{
-		if([key isEqualToString:image.image])
-		{
-			[self.uploadingImageKeys removeObjectAtIndex:index];
-			
-			if(self.sortType == kPiwigoSortByNotUploaded)
-			{
-				NSMutableArray *newList = [self.imageNamesList mutableCopy];
-				[newList removeObject:key];
-				self.imageNamesList = newList;
-				[self.localImagesCollection reloadData];
-			}
-			
-			break;
-		}
-		index++;
+		NSMutableArray *newList = [self.imageNamesList mutableCopy];
+		[newList removeObject:image.image];
+		self.imageNamesList = newList;
+		[self.localImagesCollection reloadData];
 	}
-	
 }
 
 
