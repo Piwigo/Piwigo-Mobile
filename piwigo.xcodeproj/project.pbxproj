@@ -52,6 +52,8 @@
 		D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */; };
 		D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B83C1A7C06A500231886 /* OutlinedText.m */; };
 		D860440B1A995C580067E5D1 /* ClearCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D860440A1A995C580067E5D1 /* ClearCache.m */; };
+		D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */; };
+		D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D86044101A99922F0067E5D1 /* ImageScrollView.m */; };
 		D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */; };
 		D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */; };
 		D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */; };
@@ -200,6 +202,10 @@
 		D847B83C1A7C06A500231886 /* OutlinedText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlinedText.m; sourceTree = "<group>"; };
 		D86044091A995C580067E5D1 /* ClearCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearCache.h; sourceTree = "<group>"; };
 		D860440A1A995C580067E5D1 /* ClearCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearCache.m; sourceTree = "<group>"; };
+		D860440C1A99894C0067E5D1 /* ImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePreviewViewController.h; sourceTree = "<group>"; };
+		D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePreviewViewController.m; sourceTree = "<group>"; };
+		D860440F1A99922F0067E5D1 /* ImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageScrollView.h; sourceTree = "<group>"; };
+		D86044101A99922F0067E5D1 /* ImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageScrollView.m; sourceTree = "<group>"; };
 		D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoButton.h; sourceTree = "<group>"; };
 		D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoButton.m; sourceTree = "<group>"; };
 		D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+AppFonts.h"; sourceTree = "<group>"; };
@@ -376,6 +382,10 @@
 			children = (
 				D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */,
 				D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */,
+				D860440C1A99894C0067E5D1 /* ImagePreviewViewController.h */,
+				D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */,
+				D860440F1A99922F0067E5D1 /* ImageScrollView.h */,
+				D86044101A99922F0067E5D1 /* ImageScrollView.m */,
 				D8083A591A7DBD5000A95605 /* ImageDownloadView.h */,
 				D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */,
 				D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */,
@@ -848,6 +858,7 @@
 				D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */,
 				D82B8D031A687831000E47CA /* UIAlertView+AFNetworking.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
+				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
 				D8C71A4C1A848B070048BA33 /* ImageUploadTableViewCell.m in Sources */,
 				D82B8D241A68783B000E47CA /* AFURLResponseSerialization.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
@@ -913,6 +924,7 @@
 				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,
 				D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */,
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
+				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
 				D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,

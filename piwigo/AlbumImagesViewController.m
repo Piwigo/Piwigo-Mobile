@@ -286,7 +286,7 @@
 	if(!self.isSelect)
 	{
 		ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId andImageIndex:indexPath.row];
-		imageDetail.delegate = self;
+		imageDetail.imgDetailDelegate = self;
 		[self.navigationController pushViewController:imageDetail animated:YES];
 	}
 	else

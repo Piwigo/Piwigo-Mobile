@@ -11,16 +11,15 @@
 #import "ImageService.h"
 #import "ImageDownloadView.h"
 #import "Model.h"
+#import "ImagePreviewViewController.h"
 
-@interface ImageDetailViewController ()
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 
 @property (nonatomic, strong) PiwigoImageData *imageData;
-@property (nonatomic, strong) UIImageView *image;
 @property (nonatomic, strong) UIProgressView *progressBar;
 @property (nonatomic, strong) NSLayoutConstraint *topProgressBarConstraint;
 
 @property (nonatomic, assign) NSInteger categoryId;
-@property (nonatomic, assign) NSInteger currentImageIndex;
 
 @property (nonatomic, strong) ImageDownloadView *downloadView;
 
@@ -30,18 +29,24 @@
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId andImageIndex:(NSInteger)imageIndex
 {
-	self = [super init];
+	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor blackColor];
-		self.currentImageIndex = imageIndex;
 		self.categoryId = categoryId;
 		
-		self.image = [UIImageView new];
-		self.image.translatesAutoresizingMaskIntoConstraints = NO;
-		self.image.contentMode = UIViewContentModeScaleAspectFit;
-		[self.view addSubview:self.image];
-		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.image]];
+		self.dataSource = self;
+		self.delegate = self;
+		
+		PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:imageIndex];
+		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
+		[startingImage setImageWithImageData:imageData];
+		startingImage.imageIndex = imageIndex;
+		
+		[self setViewControllers:@[startingImage]
+					   direction:UIPageViewControllerNavigationDirectionForward
+						animated:NO
+					  completion:nil];
 		
 		self.progressBar = [UIProgressView new];
 		self.progressBar.translatesAutoresizingMaskIntoConstraints = NO;
@@ -59,17 +64,7 @@
 															   constant:0];
 		[self.view addConstraint:self.topProgressBarConstraint];
 		
-		UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)];
-		rightSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-		[self.view addGestureRecognizer:rightSwipe];
-		
-		UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)];
-		leftSwipe.direction = UISwipeGestureRecognizerDirectionRight;
-		[self.view addGestureRecognizer:leftSwipe];
-		
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView)]];
-		
-		[self updateCurrentImage];
 	}
 	return self;
 }
@@ -82,6 +77,11 @@
 	self.navigationItem.rightBarButtonItem = imageOptionsButton;
 	
 	self.topProgressBarConstraint.constant = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+	
+	if([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
+	{
+		self.automaticallyAdjustsScrollViewInsets = false;
+	}
 }
 
 -(void)imageOptions
@@ -119,9 +119,9 @@
 						  if(buttonIndex == 1) {
 							  [ImageService deleteImage:self.imageData
 										   ListOnCompletion:^(AFHTTPRequestOperation *operation) {
-											   if([self.delegate respondsToSelector:@selector(didDeleteImage)])
+											   if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage)])
 											   {
-												   [self.delegate didDeleteImage];
+												   [self.imgDetailDelegate didDeleteImage];
 											   }
 											   [self.navigationController popViewControllerAnimated:YES];
 										   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -194,54 +194,6 @@
 					 }];
 }
 
--(void)swipeRight
-{
-	self.currentImageIndex++;
-	if(self.currentImageIndex < [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count) {
-		[self updateCurrentImage];
-	} else {
-		self.currentImageIndex--;
-	}
-}
-
--(void)swipeLeft
-{
-	self.currentImageIndex--;
-	if(self.currentImageIndex >= 0) {
-		[self updateCurrentImage];
-	} else {
-		self.currentImageIndex++;
-	}
-}
-
--(void)updateCurrentImage
-{
-	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:self.currentImageIndex];
-
-	__weak typeof(self) weakSelf = self;
-	self.progressBar.hidden = NO;
-	[self.image setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
-					  placeholderImage:[UIImage imageNamed:@"placeholder"]
-							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-								   weakSelf.image.image = image;
-								   weakSelf.downloadView.downloadImage = image;
-								   weakSelf.downloadView.hidden = YES;
-								   weakSelf.progressBar.hidden = YES;
-								   [weakSelf.progressBar setProgress:0];
-							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-								   
-							   }];
-	
-	[self.image setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-		CGFloat percent = (CGFloat)totalBytesRead / totalBytesExpectedToRead;
-		if(percent == 1) {
-			weakSelf.progressBar.hidden = YES;
-		} else {
-			[weakSelf.progressBar setProgress:percent animated:YES];
-		}
-	}];
-}
-
 -(ImageDownloadView*)downloadView
 {
 	if(_downloadView) return _downloadView;
@@ -252,6 +204,58 @@
 	[self.view addSubview:_downloadView];
 	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
 	return _downloadView;
+}
+
+#pragma mark -- UIPageViewControllerDataSource
+
+-(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
+{
+	NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
+	
+	if(currentIndex >= [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count - 1)
+	{
+		return nil;
+	}
+	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex + 1];
+	ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
+	[nextImage setImageWithImageData:imageData];
+	nextImage.imageIndex = currentIndex + 1;
+	return nextImage;
+}
+
+-(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
+{
+	NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
+	
+	if(currentIndex <= 0)
+	{
+		return nil;
+	}
+	
+	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex - 1];
+	ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
+	[prevImage setImageWithImageData:imageData];
+	prevImage.imageIndex = currentIndex - 1;
+	return prevImage;
+}
+
+-(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
+{
+	ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
+	view.imagePreviewDelegate = self;
+	self.progressBar.hidden = view.imageLoaded;
+	[self.progressBar setProgress:0];
+}
+
+#pragma mark ImagePreviewDelegate Methods
+
+-(void)downloadProgress:(CGFloat)progress
+{
+	[self.progressBar setProgress:progress animated:YES];
+	if(progress == 1)
+	{
+		self.progressBar.hidden = YES;
+	}
 }
 
 @end

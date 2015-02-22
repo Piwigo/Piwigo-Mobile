@@ -16,9 +16,9 @@
 
 @class PiwigoImageData;
 
-@interface ImageDetailViewController : UIViewController
+@interface ImageDetailViewController : UIPageViewController
 
-@property (nonatomic, weak) id<ImageDetailDelegate> delegate;
+@property (nonatomic, weak) id<ImageDetailDelegate> imgDetailDelegate;
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId andImageIndex:(NSInteger)imageIndex;
 
