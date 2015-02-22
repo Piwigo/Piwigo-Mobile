@@ -232,7 +232,7 @@
 	{
 		cell.cellSelected = YES;
 	}
-	else if([self.uploadingImageKeys containsObject:imageAssetKey])
+	else if([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:imageAssetKey])
 	{
 		cell.cellUploading = YES;
 	}
@@ -251,7 +251,7 @@
 	
 	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
 	
-	if(self.selectable && ![self.uploadingImageKeys containsObject:imageAssetKey])
+	if(self.selectable && ![[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:imageAssetKey])
 	{
 		BOOL isCellAlreadySelected = [self.selectedImageKeys containsObject:imageAssetKey];
 		if(!isCellAlreadySelected)

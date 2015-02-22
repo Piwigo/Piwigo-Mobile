@@ -39,6 +39,7 @@
 	if(self)
 	{
 		self.imageUploadQueue = [NSMutableArray new];
+		self.imageNamesUploadQueue = [NSMutableDictionary new];
 		self.isUploading = NO;
 	}
 	return self;
@@ -63,6 +64,7 @@
 	[self.imageUploadQueue addObject:image];
 	self.maximumImagesForBatch++;
 	[self startUploadIfNeeded];
+	[self.imageNamesUploadQueue setObject:image.image forKey:image.image];
 }
 
 -(void)addImages:(NSArray*)images
@@ -124,6 +126,7 @@
 						[self setImageResponse:response withInfo:imageProperties];
 						
 						[self.imageUploadQueue removeObjectAtIndex:0];
+						[self.imageNamesUploadQueue removeObjectForKey:imageKey];
 						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
 						{
 							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
