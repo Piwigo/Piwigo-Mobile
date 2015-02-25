@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="T0l-Ou-dhs">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="textField" id="GhX-cy-KIv" customClass="EditImageTextFieldTableViewCell">
@@ -97,7 +97,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected Privacy Level" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="6MZ-9m-u1O">
-                                                    <rect key="frame" x="128" y="8.5" width="173.5" height="20.5"/>
+                                                    <rect key="frame" x="128" y="8" width="173.5" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -128,7 +128,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected Tags" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="AAB-5e-YaO">
-                                                    <rect key="frame" x="54" y="11.5" width="108" height="20.5"/>
+                                                    <rect key="frame" x="54" y="11" width="108" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
@@ -157,13 +157,22 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="height" secondItem="T0l-Ou-dhs" secondAttribute="height" id="6Jh-Zc-gOX"/>
+                            <constraint firstItem="T0l-Ou-dhs" firstAttribute="top" secondItem="v9H-sj-q9x" secondAttribute="top" id="94b-hI-HOc"/>
                             <constraint firstAttribute="width" secondItem="T0l-Ou-dhs" secondAttribute="width" id="Pz4-gf-8Sm"/>
+                            <constraint firstItem="uVf-G5-mw5" firstAttribute="top" secondItem="T0l-Ou-dhs" secondAttribute="bottom" id="VMi-6n-Cc1"/>
                             <constraint firstAttribute="centerY" secondItem="T0l-Ou-dhs" secondAttribute="centerY" id="lZo-zb-hC8"/>
                             <constraint firstAttribute="centerX" secondItem="T0l-Ou-dhs" secondAttribute="centerX" id="phn-Ha-cOH"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="6Jh-Zc-gOX"/>
+                                <exclude reference="lZo-zb-hC8"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="editImageDetailsTableView" destination="T0l-Ou-dhs" id="waf-Hs-Bx5"/>
+                        <outlet property="tableViewBottomConstraint" destination="VMi-6n-Cc1" id="wm1-dE-uoj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jIA-hH-7tD" userLabel="First Responder" sceneMemberID="firstResponder"/>

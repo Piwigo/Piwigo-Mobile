@@ -26,11 +26,9 @@
 
 @property (nonatomic, strong) NSArray *imageNamesList;
 
-@property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
-@property (nonatomic, assign) BOOL selectable;
 @property (nonatomic, strong) NSMutableArray *selectedImageKeys;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
@@ -62,13 +60,8 @@
 		[self.view addSubview:self.localImagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
 		
-		self.selectable = NO;
 		self.selectedImageKeys = [NSMutableArray new];
 		
-		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select")
-																style:UIBarButtonItemStylePlain
-															   target:self
-															   action:@selector(selectCells)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"]
 																style:UIBarButtonItemStylePlain
@@ -104,13 +97,13 @@
 
 -(void)loadNavButtons
 {
-	if(!self.selectable)
+	if(self.selectedImageKeys.count > 0)
 	{
-		self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
+		self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.uploadBarButton];
 	}
 	else
 	{
-		self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.uploadBarButton];
+		self.navigationItem.rightBarButtonItems = nil;
 	}
 }
 
@@ -129,15 +122,8 @@
 													 }];
 }
 
--(void)selectCells
-{
-	self.selectable = YES;
-	[self loadNavButtons];
-}
-
 -(void)cancelSelect
 {
-	self.selectable = NO;
 	for(NSString *cellKey in self.selectedImageKeys)
 	{
 		[self deselectCellForKey:cellKey];
@@ -245,7 +231,7 @@
 	
 	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
 	
-	if(self.selectable && ![[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:imageAssetKey])
+	if(![[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:imageAssetKey])
 	{
 		BOOL isCellAlreadySelected = [self.selectedImageKeys containsObject:imageAssetKey];
 		if(!isCellAlreadySelected)
@@ -258,10 +244,8 @@
 		}
 		selectedCell.cellSelected = !isCellAlreadySelected;
 	}
-	else
-	{
-		
-	}
+	
+	[self loadNavButtons];
 }
 
 #pragma mark ImageUploadProgressDelegate Methods

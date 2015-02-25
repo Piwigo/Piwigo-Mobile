@@ -27,6 +27,7 @@ typedef enum {
 @interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewBottomConstraint;
 
 @end
 
@@ -37,6 +38,9 @@ typedef enum {
 	[super awakeFromNib];
 	
 	self.title = @"Edit Image Details";
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -64,6 +68,19 @@ typedef enum {
 	
 	EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
 	self.imageDetails.imageDescription = textViewCell.getTextViewText;
+}
+
+-(void)keyboardWillChange:(NSNotification*)notification
+{
+	CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+	keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+	
+	self.tableViewBottomConstraint.constant = keyboardRect.size.height;
+}
+
+-(void)keyboardWillDismiss:(NSNotification*)notification
+{
+	self.tableViewBottomConstraint.constant = 0;
 }
 
 #pragma mark UITableView methods

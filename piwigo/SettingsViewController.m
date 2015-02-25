@@ -35,6 +35,7 @@ typedef enum {
 @property (nonatomic, strong) NSArray *rowsInSection;
 @property (nonatomic, strong) NSArray *headerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
 
 @end
 
@@ -66,8 +67,13 @@ typedef enum {
 		self.settingsTableView.delegate = self;
 		self.settingsTableView.dataSource = self;
 		[self.view addSubview:self.settingsTableView];
-		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.settingsTableView]];
+		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.settingsTableView]];
+		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.settingsTableView amount:0]];
+		self.tableViewBottomConstraint = [NSLayoutConstraint constrainViewFromBottom:self.settingsTableView amount:0];
+		[self.view addConstraint:self.tableViewBottomConstraint];
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
 	}
 	return self;
 }
@@ -77,6 +83,19 @@ typedef enum {
 	[super viewWillAppear:animated];
 	
 	[self.settingsTableView reloadData];
+}
+
+-(void)keyboardWillChange:(NSNotification*)notification
+{
+	CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+	keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+	
+	self.tableViewBottomConstraint.constant = -keyboardRect.size.height;
+}
+
+-(void)keyboardWillDismiss:(NSNotification*)notification
+{
+	self.tableViewBottomConstraint.constant = 0;
 }
 
 #pragma mark -- UITableView Methods
