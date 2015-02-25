@@ -70,6 +70,7 @@
 
 +(void)getSortedImageNameArrayFromSortType:(kPiwigoSortBy)sortType
 							   forCategory:(NSInteger)category
+							   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	switch(sortType)
@@ -81,7 +82,7 @@
 		}
 		case kPiwigoSortByNotUploaded:
 		{
-			[self getNotUploadedImageListForCategory:category onCompletion:completion];
+			[self getNotUploadedImageListForCategory:category forProgress:progress onCompletion:completion];
 			break;
 		}
 		
@@ -105,9 +106,12 @@
 	}];
 }
 
-+(void)getNotUploadedImageListForCategory:(NSInteger)category onCompletion:(void (^)(NSArray *imageNames))completion
++(void)getNotUploadedImageListForCategory:(NSInteger)category
+							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+							 onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	[NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:category
+														forProgress:progress
 													   onCompletion:^(NSArray *missingImages) {
 															if(completion)
 															{

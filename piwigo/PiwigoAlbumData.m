@@ -9,6 +9,7 @@
 #import "PiwigoAlbumData.h"
 #import "ImageService.h"
 #import "Model.h"
+#import "CategoriesData.h"
 
 @interface PiwigoAlbumData()
 
@@ -37,9 +38,11 @@
 	return self;
 }
 
--(void)loadAllCategoryImageDataOnCompletion:(void (^)(BOOL completed))completion
+-(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+							  OnCompletion:(void (^)(BOOL completed))completion
 {
-	[self loopLoadImages:^(BOOL completed) {
+	[self loopLoadImagesForProgress:progress
+					   onCompletion:^(BOOL completed) {
 		if(completion)
 		{
 			completion(YES);
@@ -47,12 +50,15 @@
 	}];
 }
 
--(void)loopLoadImages:(void (^)(BOOL completed))completion
+-(void)loopLoadImagesForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+					onCompletion:(void (^)(BOOL completed))completion
 {
-	[self loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
+	[self loadCategoryImageDataChunkForProgress:progress
+								   OnCompletion:^(BOOL completed) {
 		if(completed && self.imageList.count != self.numberOfImages)
 		{
-			[self loopLoadImages:completion];
+			[self loopLoadImagesForProgress:progress
+							   onCompletion:completion];
 		}
 		else
 		{
@@ -64,7 +70,8 @@
 	}];
 }
 
--(void)loadCategoryImageDataChunkOnCompletion:(void (^)(BOOL completed))completion
+-(void)loadCategoryImageDataChunkForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+								OnCompletion:(void (^)(BOOL completed))completion
 {
 	if(self.isLoadingMoreImages) return;
 	
@@ -78,6 +85,16 @@
 									 self.lastImageBulkCount = count;
 									 self.onPage++;
 									 self.isLoadingMoreImages = NO;
+									 
+									 if(progress)
+									 {
+										 PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.albumId];
+										 NSInteger numOfImgs = downloadingCategory.numberOfImages;
+										 NSInteger numberOfDownloadsNeeded = numOfImgs / [Model sharedInstance].imagesPerPage;
+										 numberOfDownloadsNeeded += numOfImgs % [Model sharedInstance].imagesPerPage == 0 ? 0 : 1;
+										 progress(self.onPage, numberOfDownloadsNeeded);
+									 }
+									 
 									 if(completion)
 									 {
 										 completion(YES);

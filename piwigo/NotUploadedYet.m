@@ -13,9 +13,12 @@
 
 @implementation NotUploadedYet
 
-+(void)getListOfImageNamesThatArentUploadedForCategory:(NSInteger)categoryId onCompletion:(void (^)(NSArray *missingImages))completion
++(void)getListOfImageNamesThatArentUploadedForCategory:(NSInteger)categoryId
+										   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+										  onCompletion:(void (^)(NSArray *missingImages))completion
 {
-	[[[CategoriesData sharedInstance] getCategoryById:categoryId] loadAllCategoryImageDataOnCompletion:^(BOOL completed) {
+	[[[CategoriesData sharedInstance] getCategoryById:categoryId] loadAllCategoryImageDataForProgress:progress
+																						 OnCompletion:^(BOOL completed) {
 		NSArray *onlineImageData = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList;
 		
 		NSMutableDictionary *onlineImageNamesLookup = [NSMutableDictionary new];

@@ -28,6 +28,7 @@ typedef enum {
 +(NSString*)getNameForSortType:(kPiwigoSortBy)sortType;
 +(void)getSortedImageNameArrayFromSortType:(kPiwigoSortBy)sortType
 							   forCategory:(NSInteger)category
+							   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  onCompletion:(void (^)(NSArray *imageNames))completion;
 
 @end

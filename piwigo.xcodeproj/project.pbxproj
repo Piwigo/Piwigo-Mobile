@@ -89,6 +89,7 @@
 		D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */; };
 		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
+		D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F113591A9E40EF000EC0A6 /* LoadingView.m */; };
 		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
 		D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */; };
 		D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */; };
@@ -272,6 +273,8 @@
 		D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImageCollectionViewCell.m; sourceTree = "<group>"; };
 		D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesData.h; sourceTree = "<group>"; };
 		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
+		D8F113581A9E40EF000EC0A6 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
+		D8F113591A9E40EF000EC0A6 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageDetailsViewController.h; sourceTree = "<group>"; };
 		D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageDetailsViewController.m; sourceTree = "<group>"; };
 		D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageDetails.storyboard; sourceTree = "<group>"; };
@@ -420,6 +423,7 @@
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D89045B31A9469FF00A306FE /* Tags */,
+				D8F113541A9E403E000EC0A6 /* Loading View */,
 				D8B9BC791A95B1CE00C1B0E5 /* Not Uploaded Yet */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
@@ -717,6 +721,15 @@
 			name = "Data Cache";
 			sourceTree = "<group>";
 		};
+		D8F113541A9E403E000EC0A6 /* Loading View */ = {
+			isa = PBXGroup;
+			children = (
+				D8F113581A9E40EF000EC0A6 /* LoadingView.h */,
+				D8F113591A9E40EF000EC0A6 /* LoadingView.m */,
+			);
+			name = "Loading View";
+			sourceTree = "<group>";
+		};
 		D8F325111A875939007CBDAC /* Edit Image Details */ = {
 			isa = PBXGroup;
 			children = (
@@ -919,6 +932,7 @@
 				D82B8D051A687831000E47CA /* UIImageView+AFNetworking.m in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
+				D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */,
 				D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */,
 				D82B8D1F1A68783B000E47CA /* AFHTTPSessionManager.m in Sources */,
 				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,

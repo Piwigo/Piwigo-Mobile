@@ -18,6 +18,7 @@
 #import "ImageUploadViewController.h"
 #import "UploadHeaderCollectionReusableView.h"
 #import "SortSelectViewController.h"
+#import "LoadingView.h"
 
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate, SortSelectViewControllerDelegate>
 
@@ -33,6 +34,7 @@
 @property (nonatomic, strong) NSMutableArray *selectedImageKeys;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
+@property (nonatomic, strong) LoadingView *loadingView;
 
 @end
 
@@ -69,7 +71,7 @@
 																style:UIBarButtonItemStylePlain
 															   target:self
 															   action:@selector(uploadSelected)];
-		}
+	}
 	return self;
 }
 
@@ -89,7 +91,6 @@
 	
 	[self loadNavButtons];
 	[ImageUploadProgressView sharedInstance].delegate = self;
-	self.sortType = self.sortType;
 	
 	if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 	{
@@ -113,12 +114,30 @@
 {
 	_sortType = sortType;
 	
+	if(sortType == kPiwigoSortByNotUploaded)
+	{
+		self.loadingView = [LoadingView new];
+		self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
+		[self.loadingView showLoadingWithLabel:@"Downloading Image Info" andProgressLabel:@"0 %"];
+		[self.view addSubview:self.loadingView];
+		[self.view addConstraints:[NSLayoutConstraint constraintViewToCenter:self.loadingView]];
+	}
+	
 	self.imageNamesList = [NSArray new];
 	[self.localImagesCollection reloadData];
 	
 	[SortSelectViewController getSortedImageNameArrayFromSortType:sortType
 													  forCategory:self.categoryId
+													  forProgress:^(NSInteger onPage, NSInteger outOf) {
+														  
+														  [self.loadingView setProgressLabelText:[NSString stringWithFormat:@"%@%%", @(onPage / (CGFloat)outOf * 100)]];
+													  }
 													 onCompletion:^(NSArray *imageNames) {
+														 
+														 if(sortType == kPiwigoSortByNotUploaded)
+														 {
+															 [self.loadingView hideLoadingWithLabel:@"Done" showCheckMark:YES withDelay:0.5];
+														 }
 														 self.imageNamesList = imageNames;
 														 [self.localImagesCollection reloadData];
 													 }];

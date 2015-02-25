@@ -53,7 +53,8 @@
 		[self.view addSubview:self.imagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 		
-		[[[CategoriesData sharedInstance] getCategoryById:albumId] loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
+		[[[CategoriesData sharedInstance] getCategoryById:albumId] loadCategoryImageDataChunkForProgress:nil
+																							OnCompletion:^(BOOL completed) {
 			[self.imagesCollection reloadData];
 		}];
 		
@@ -274,7 +275,8 @@
 	
 	if([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages] && indexPath.row >= [collectionView numberOfItemsInSection:0] - 21)
 	{
-		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkOnCompletion:^(BOOL completed) {
+		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkForProgress:nil
+																									OnCompletion:^(BOOL completed) {
 			[self.imagesCollection reloadData];
 		}];
 	}

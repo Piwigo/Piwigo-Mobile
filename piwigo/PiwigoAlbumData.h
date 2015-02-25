@@ -33,7 +33,8 @@ typedef enum {
 -(void)sortImageList:(ImageListOrder)order;
 -(void)removeImage:(PiwigoImageData*)image;
 
--(void)loadCategoryImageDataChunkOnCompletion:(void (^)(BOOL completed))completion;
--(void)loadAllCategoryImageDataOnCompletion:(void (^)(BOOL completed))completion;
-
+-(void)loadCategoryImageDataChunkForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+								OnCompletion:(void (^)(BOOL completed))completion;
+-(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+							  OnCompletion:(void (^)(BOOL completed))completion;
 @end
