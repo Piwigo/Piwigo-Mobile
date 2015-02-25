@@ -7,13 +7,13 @@
 //
 
 #import "LoadingView.h"
+#import "UICountingLabel.h"
 
 @interface LoadingView()
 
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIImageView *checkMark;
-@property (nonatomic, strong) UILabel *progressLabel;
 
 @property (nonatomic, strong) NSLayoutConstraint *heightConstraint;
 @end
@@ -49,11 +49,10 @@
 		self.checkMark.tintColor = [UIColor greenColor];
 		[self addSubview:self.checkMark];
 		
-		self.progressLabel = [UILabel new];
+		self.progressLabel = [UICountingLabel new];
 		self.progressLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.progressLabel.font = [UIFont systemFontOfSize:15];
 		self.progressLabel.textColor = [UIColor whiteColor];
-		self.progressLabel.text = @"";
 		[self addSubview:self.progressLabel];
 		
 		[self setupConstraints];

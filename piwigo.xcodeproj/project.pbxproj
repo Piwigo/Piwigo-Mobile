@@ -90,6 +90,7 @@
 		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
 		D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F113591A9E40EF000EC0A6 /* LoadingView.m */; };
+		D8F1135D1A9E4E43000EC0A6 /* UICountingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */; };
 		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
 		D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */; };
 		D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */; };
@@ -275,6 +276,8 @@
 		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
 		D8F113581A9E40EF000EC0A6 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		D8F113591A9E40EF000EC0A6 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
+		D8F1135B1A9E4E43000EC0A6 /* UICountingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICountingLabel.h; sourceTree = "<group>"; };
+		D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICountingLabel.m; sourceTree = "<group>"; };
 		D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageDetailsViewController.h; sourceTree = "<group>"; };
 		D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageDetailsViewController.m; sourceTree = "<group>"; };
 		D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageDetails.storyboard; sourceTree = "<group>"; };
@@ -726,6 +729,8 @@
 			children = (
 				D8F113581A9E40EF000EC0A6 /* LoadingView.h */,
 				D8F113591A9E40EF000EC0A6 /* LoadingView.m */,
+				D8F1135B1A9E4E43000EC0A6 /* UICountingLabel.h */,
+				D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */,
 			);
 			name = "Loading View";
 			sourceTree = "<group>";
@@ -867,6 +872,7 @@
 				D8083A521A7CB78900A95605 /* UIAlertView+Blocks.m in Sources */,
 				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
+				D8F1135D1A9E4E43000EC0A6 /* UICountingLabel.m in Sources */,
 				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
 				D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */,
 				D82B8D031A687831000E47CA /* UIAlertView+AFNetworking.m in Sources */,

@@ -82,18 +82,16 @@
 										   onPage:self.onPage
 								 ListOnCompletion:^(AFHTTPRequestOperation *operation, NSInteger count) {
 									 
-									 self.lastImageBulkCount = count;
-									 self.onPage++;
-									 self.isLoadingMoreImages = NO;
-									 
 									 if(progress)
 									 {
 										 PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.albumId];
 										 NSInteger numOfImgs = downloadingCategory.numberOfImages;
-										 NSInteger numberOfDownloadsNeeded = numOfImgs / [Model sharedInstance].imagesPerPage;
-										 numberOfDownloadsNeeded += numOfImgs % [Model sharedInstance].imagesPerPage == 0 ? 0 : 1;
-										 progress(self.onPage, numberOfDownloadsNeeded);
+										 progress(self.onPage, numOfImgs);
 									 }
+									 
+									 self.lastImageBulkCount = count;
+									 self.onPage++;
+									 self.isLoadingMoreImages = NO;
 									 
 									 if(completion)
 									 {

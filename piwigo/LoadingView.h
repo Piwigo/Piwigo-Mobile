@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class UICountingLabel;
+
 @interface LoadingView : UIView
+
+@property (nonatomic, strong) UICountingLabel *progressLabel;
 
 -(void)hideLoadingWithLabel:(NSString*)text showCheckMark:(BOOL)show withDelay:(CGFloat)delay;
 -(void)showLoadingWithLabel:(NSString*)text andProgressLabel:(NSString*)progressText;

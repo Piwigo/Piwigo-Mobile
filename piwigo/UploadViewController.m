@@ -19,6 +19,7 @@
 #import "UploadHeaderCollectionReusableView.h"
 #import "SortSelectViewController.h"
 #import "LoadingView.h"
+#import "UICountingLabel.h"
 
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate, SortSelectViewControllerDelegate>
 
@@ -118,7 +119,10 @@
 	{
 		self.loadingView = [LoadingView new];
 		self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
-		[self.loadingView showLoadingWithLabel:@"Downloading Image Info" andProgressLabel:@"0 %"];
+		PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+		NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @(downloadingCategory.numberOfImages)];
+		self.loadingView.progressLabel.format = progressLabelFormat;
+		[self.loadingView showLoadingWithLabel:@"Downloading Image Info" andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
 		[self.view addSubview:self.loadingView];
 		[self.view addConstraints:[NSLayoutConstraint constraintViewToCenter:self.loadingView]];
 	}
@@ -126,11 +130,20 @@
 	self.imageNamesList = [NSArray new];
 	[self.localImagesCollection reloadData];
 	
+	__block NSDate *lastTime = [NSDate date];
+	
 	[SortSelectViewController getSortedImageNameArrayFromSortType:sortType
 													  forCategory:self.categoryId
 													  forProgress:^(NSInteger onPage, NSInteger outOf) {
 														  
-														  [self.loadingView setProgressLabelText:[NSString stringWithFormat:@"%@%%", @(onPage / (CGFloat)outOf * 100)]];
+														  NSInteger lastImageCount = onPage * [Model sharedInstance].imagesPerPage;
+														  NSInteger currentDownloaded = (onPage + 1) * [Model sharedInstance].imagesPerPage;
+														  
+														  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
+														  
+														  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
+														  
+														  lastTime = [NSDate date];
 													  }
 													 onCompletion:^(NSArray *imageNames) {
 														 
