@@ -82,7 +82,14 @@
 	if(!self.isSelect) {
 		self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
 	} else {
-		self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton];
+		if([Model sharedInstance].hasAdminRights)
+		{
+			self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton];
+		}
+		else
+		{
+			self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton];
+		}
 	}
 }
 
