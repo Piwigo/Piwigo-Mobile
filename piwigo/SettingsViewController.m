@@ -50,7 +50,7 @@ typedef enum {
 		self.rowsInSection = @[
 							   @2,
 							   @1,
-							   @4,
+							   @2,
 							   @1
 							   ];
 		self.headerHeights = @[
@@ -169,6 +169,21 @@ typedef enum {
 					cell.leftLabelWidth = 120;
 					
 					tableViewCell = cell;
+					break;
+				}
+				case 2:
+				{
+					TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsField"];
+					if(!cell)
+					{
+						cell = [TextFieldTableViewCell new];
+					}
+					cell.labelText = @"Image Width";
+					cell.rightTextField.text = @"";
+					break;
+				}
+				case 3:
+				{
 					break;
 				}
 			}
