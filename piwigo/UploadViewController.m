@@ -26,6 +26,7 @@
 
 @property (nonatomic, strong) NSArray *imageNamesList;
 
+@property (nonatomic, strong) UIBarButtonItem *selectAllBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
@@ -62,6 +63,7 @@
 		
 		self.selectedImageKeys = [NSMutableArray new];
 		
+		self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Select All" style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"]
 																style:UIBarButtonItemStylePlain
@@ -103,7 +105,7 @@
 	}
 	else
 	{
-		self.navigationItem.rightBarButtonItems = nil;
+		self.navigationItem.rightBarButtonItems = @[self.selectAllBarButton];
 	}
 }
 
@@ -120,6 +122,13 @@
 														 self.imageNamesList = imageNames;
 														 [self.localImagesCollection reloadData];
 													 }];
+}
+
+-(void)selectAll
+{
+	self.selectedImageKeys = [self.imageNamesList mutableCopy];
+	[self loadNavButtons];
+	[self.localImagesCollection reloadData];
 }
 
 -(void)cancelSelect
@@ -149,14 +158,14 @@
 
 -(void)deselectCellForKey:(NSString*)imageKey
 {
-	NSInteger row = [[PhotosFetch sharedInstance].sortedImageKeys indexOfObject:imageKey];
+	NSInteger row = [self.imageNamesList indexOfObject:imageKey];
 	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 	cell.cellSelected = NO;
 }
 
 -(void)deselectUploadingCellForKey:(NSString*)key
 {
-	NSInteger row = [[PhotosFetch sharedInstance].sortedImageKeys indexOfObject:key];
+	NSInteger row = [self.imageNamesList indexOfObject:key];
 	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 	cell.cellUploading = NO;
 }
@@ -252,7 +261,7 @@
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
 {
-	NSInteger row = [[PhotosFetch sharedInstance].sortedImageKeys indexOfObject:image.image];
+	NSInteger row = [self.imageNamesList indexOfObject:image.image];
 	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 	
 	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
