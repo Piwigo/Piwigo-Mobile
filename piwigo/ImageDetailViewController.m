@@ -39,6 +39,7 @@
 		self.delegate = self;
 		
 		PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:imageIndex];
+		self.imageData = imageData;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
 		[startingImage setImageWithImageData:imageData];
 		startingImage.imageIndex = imageIndex;
@@ -135,6 +136,14 @@
 -(void)downloadImage
 {
 	self.downloadView.hidden = NO;
+	
+	UIImageView *dummyView = [UIImageView new];
+	__weak typeof(self) weakSelf = self;
+	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.imageData.thumbPath]]
+					 placeholderImage:nil
+							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+								  weakSelf.downloadView.downloadImage = image;
+							  } failure:nil];
 	
 	[ImageService downloadImage:self.imageData
 					 onProgress:^(NSInteger current, NSInteger total) {
@@ -245,6 +254,7 @@
 	view.imagePreviewDelegate = self;
 	self.progressBar.hidden = view.imageLoaded;
 	[self.progressBar setProgress:0];
+	self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
 }
 
 #pragma mark ImagePreviewDelegate Methods

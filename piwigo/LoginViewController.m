@@ -116,11 +116,12 @@
 							};
 	NSDictionary *metrics = @{
 							  @"imageSide" : @25,
-							  @"imageTopBottom" : @40,
+							  @"imageTop" : @40,
+							  @"imageBottom" : @20,
 							  @"side" : @35
 							  };
 	
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-imageTopBottom-[logo]-imageTopBottom-[server]-[user]-[password]-[login]"
+	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-imageTop-[logo]-imageBottom-[server]-[user]-[password]-[login]"
 																	  options:kNilOptions
 																	  metrics:metrics
 																		views:views]];
@@ -173,6 +174,7 @@
 
 -(void)performLogin
 {
+	[self.view endEditing:YES];
 	[self showLoading];
 	
 	[SessionService performLoginWithServer:self.serverTextField.text
