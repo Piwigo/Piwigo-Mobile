@@ -59,8 +59,8 @@
 				
 		self.userTextField = [PiwigoTextField new];
 		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username");
-		self.userTextField.text = [KeychainAccess getLoginUser];
+		self.userTextField.placeholder = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"login_userPlaceholder", @"Username"), @"(optional)"];
+//		self.userTextField.text = [KeychainAccess getLoginUser];
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.userTextField.returnKeyType = UIReturnKeyNext;
@@ -69,9 +69,9 @@
 		
 		self.passwordTextField = [PiwigoTextField new];
 		self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password");
+		self.passwordTextField.placeholder = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"login_passwordPlaceholder", @"Password"), @"(optional)"];
 		self.passwordTextField.secureTextEntry = YES;
-		self.passwordTextField.text = [KeychainAccess getLoginPassword];
+//		self.passwordTextField.text = [KeychainAccess getLoginPassword];
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
 		self.passwordTextField.delegate = self;
 		[self.view addSubview:self.passwordTextField];
@@ -193,22 +193,31 @@
 	[self.view endEditing:YES];
 	[self showLoading];
 	
-	[SessionService performLoginWithServer:self.serverTextField.text
-								  andUser:self.userTextField.text
-							  andPassword:self.passwordTextField.text
-							 onCompletion:^(BOOL result, id response) {
-								 if(result)
-								 {
-									 [self getSessionStatus];
-								 }
-								 else
-								 {
+	[Model sharedInstance].serverName = self.serverTextField.text;
+	[[Model sharedInstance] saveToDisk];
+
+	if(self.userTextField.text.length > 0)
+	{
+		[SessionService performLoginWithUser:self.userTextField.text
+								  andPassword:self.passwordTextField.text
+								 onCompletion:^(BOOL result, id response) {
+									 if(result)
+									 {
+										 [self getSessionStatus];
+									 }
+									 else
+									 {
+										 [self hideLoading];
+										 [self showLoginFail];
+									 }
+								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 									 [self hideLoading];
-									 [self showLoginFail];
-								 }
-							 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-								 [self hideLoading];
-							 }];
+								 }];
+	}
+	else
+	{
+		[self getSessionStatus];
+	}
 }
 
 -(void)getSessionStatus

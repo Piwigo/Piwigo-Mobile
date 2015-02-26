@@ -32,10 +32,10 @@
 	NSString *server = [Model sharedInstance].serverName;
 	NSString *user = [KeychainAccess getLoginUser];
 	NSString *password = [KeychainAccess getLoginPassword];
-	if(server.length > 0 && user.length > 0 && password.length > 0)
-	{
-		[self.loginVC performLogin];
-	}
+//	if(server.length > 0 && user.length > 0 && password.length > 0)
+//	{
+//		[self.loginVC performLogin];
+//	}
 	
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];

@@ -135,7 +135,14 @@ typedef enum {
 					break;
 				case 1:
 					cell.leftText = @"Username";	// @TODO: Localize this
-					cell.rightText = [Model sharedInstance].username;	// @TODO: if not logged in, put this as "not logged in"
+					if([Model sharedInstance].username.length > 0)
+					{
+						cell.rightText = [Model sharedInstance].username;
+					}
+					else
+					{
+						cell.rightText = @" - Not Logged In - ";	// @TODO: Localize this
+					}
 					break;
 			}
 			tableViewCell = cell;
@@ -148,8 +155,14 @@ typedef enum {
 			{
 				cell = [ButtonTableViewCell new];
 			}
-			cell.buttonText = @"Logout";	// @TODO: Localize this
-			// @TODO: If they're not logged in, make this login instead of logout
+			if([Model sharedInstance].username.length > 0)
+			{
+				cell.buttonText = @"Logout";	// @TODO: Localize this
+			}
+			else
+			{
+				cell.buttonText = @"Login";
+			}
 			tableViewCell = cell;
 			break;
 		}
@@ -301,39 +314,47 @@ typedef enum {
 
 -(void)logout
 {
-	[UIAlertView showWithTitle:@"Logout"	// @TODO: localize these
-					   message:@"Are you sure you want to logout?"
-			 cancelButtonTitle:@"No"
-			 otherButtonTitles:@[@"Yes"]
-					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  if(buttonIndex == 1)
-						  {
-							  [SessionService sessionLogoutOnCompletion:^(AFHTTPRequestOperation *operation, BOOL sucessfulLogout) {
-								  if(sucessfulLogout)
-								  {
-									  // clear the cache
-									  [ClearCache clearAllCache];
-									  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-									  [appDelegate loadLoginView];
-								  }
-								  else
-								  {
-									  [UIAlertView showWithTitle:@"Logout Failed"
-														 message:@"Failed to logout\nTry again?"
-											   cancelButtonTitle:@"Okay"
-											   otherButtonTitles:@[@"Yes"]
-														tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-															if(buttonIndex == 1)
-															{
-																[self logout];
-															}
-														}];
-								  }
-							  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-								  
-							  }];
-						  }
-					  }];
+	if([Model sharedInstance].username.length > 0)
+	{
+		[UIAlertView showWithTitle:@"Logout"	// @TODO: localize these
+						   message:@"Are you sure you want to logout?"
+				 cancelButtonTitle:@"No"
+				 otherButtonTitles:@[@"Yes"]
+						  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+							  if(buttonIndex == 1)
+							  {
+								  [SessionService sessionLogoutOnCompletion:^(AFHTTPRequestOperation *operation, BOOL sucessfulLogout) {
+									  if(sucessfulLogout)
+									  {
+										  [ClearCache clearAllCache];
+										  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+										  [appDelegate loadLoginView];
+									  }
+									  else
+									  {
+										  [UIAlertView showWithTitle:@"Logout Failed"
+															 message:@"Failed to logout\nTry again?"
+												   cancelButtonTitle:@"Okay"
+												   otherButtonTitles:@[@"Yes"]
+															tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+																if(buttonIndex == 1)
+																{
+																	[self logout];
+																}
+															}];
+									  }
+								  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+									  
+								  }];
+							  }
+						  }];
+	}
+	else
+	{
+		[ClearCache clearAllCache];
+		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+		[appDelegate loadLoginView];
+	}
 }
 
 #pragma mark UITextFieldDelegate Methods

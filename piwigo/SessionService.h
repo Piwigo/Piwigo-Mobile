@@ -11,8 +11,7 @@
 
 @interface SessionService : NetworkHandler
 
-+(AFHTTPRequestOperation*)performLoginWithServer:(NSString*)server
-										 andUser:(NSString*)user
++(AFHTTPRequestOperation*)performLoginWithUser:(NSString*)user
 									 andPassword:(NSString*)password
 									onCompletion:(void (^)(BOOL result, id response))completion
 									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
