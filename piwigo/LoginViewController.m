@@ -60,7 +60,7 @@
 		self.userTextField = [PiwigoTextField new];
 		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.userTextField.placeholder = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"login_userPlaceholder", @"Username"), @"(optional)"];
-//		self.userTextField.text = [KeychainAccess getLoginUser];
+		self.userTextField.text = [KeychainAccess getLoginUser];
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.userTextField.returnKeyType = UIReturnKeyNext;
@@ -71,7 +71,7 @@
 		self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.passwordTextField.placeholder = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"login_passwordPlaceholder", @"Password"), @"(optional)"];
 		self.passwordTextField.secureTextEntry = YES;
-//		self.passwordTextField.text = [KeychainAccess getLoginPassword];
+		self.passwordTextField.text = [KeychainAccess getLoginPassword];
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
 		self.passwordTextField.delegate = self;
 		[self.view addSubview:self.passwordTextField];
@@ -229,10 +229,16 @@
 			if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
 			{	// they need to update
 				[UIAlertView showWithTitle:@"Server Incompatable"	// @TODO: Localize this!
-								   message:@"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile"
+								   message:@"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"
 						 cancelButtonTitle:@"Okay"
-						 otherButtonTitles:nil
-								  tapBlock:nil];
+						 otherButtonTitles:@[@"Yes"]
+								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+									  if(buttonIndex == 1)
+									  {	// proceed at their own risk
+										  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+										  [appDelegate loadNavigation];
+									  }
+								  }];
 			}
 			else
 			{	// their version is okay

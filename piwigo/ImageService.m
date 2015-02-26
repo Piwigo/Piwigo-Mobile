@@ -57,7 +57,11 @@ NSString * const kGetImageOrderRandom = @"random";
 	NSDictionary *paging = [json objectForKey:@"paging"];
 	[Model sharedInstance].lastPageImageCount = [[paging objectForKey:@"count"] integerValue];
 	
-	NSDictionary *imagesInfo = [json objectForKey:@"images"];
+	NSArray *imagesInfo = [json objectForKey:@"images"];
+	if(![imagesInfo isKindOfClass:[NSArray class]])
+	{
+		return nil;
+	}
 	
 	NSMutableArray *albumImages = [NSMutableArray new];
 	for(NSDictionary *image in imagesInfo)
@@ -187,14 +191,6 @@ NSString * const kGetImageOrderRandom = @"random";
 		}
 		return nil;
 	}
-//	if(lastImageBulkCount != [Model sharedInstance].imagesPerPage)
-//	{
-//		if(fail)
-//		{
-//			fail(nil, nil);
-//		}
-//		return nil;
-//	}
 	
 	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:categoryId
 																 onPage:onPage

@@ -287,7 +287,7 @@
 		cell.isSelected = YES;
 	}
 	
-	if([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages] && indexPath.row >= [collectionView numberOfItemsInSection:0] - 21)
+	if(indexPath.row >= [collectionView numberOfItemsInSection:0] - 21 && [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
 	{
 		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkForProgress:nil
 																									OnCompletion:^(BOOL completed) {
