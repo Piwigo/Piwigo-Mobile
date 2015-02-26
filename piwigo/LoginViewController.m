@@ -201,8 +201,19 @@
 		[self hideLoading];
 		if(responseObject)
 		{
-			AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-			[appDelegate loadNavigation];
+			if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
+			{	// they need to update
+				[UIAlertView showWithTitle:@"Server Incompatable"	// @TODO: Localize this!
+								   message:@"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile"
+						 cancelButtonTitle:@"Okay"
+						 otherButtonTitles:nil
+								  tapBlock:nil];
+			}
+			else
+			{	// their version is okay
+				AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+				[appDelegate loadNavigation];
+			}
 		}
 		else
 		{
