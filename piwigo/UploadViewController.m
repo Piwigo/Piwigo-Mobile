@@ -25,8 +25,8 @@
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
-
 @property (nonatomic, strong) NSArray *imageNamesList;
+@property (nonatomic, strong) UILabel *noImagesLabel;
 
 @property (nonatomic, strong) UIBarButtonItem *selectAllBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
@@ -64,6 +64,17 @@
 		[self.view addSubview:self.localImagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
 		
+		self.noImagesLabel = [UILabel new];
+		self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.noImagesLabel.font = [UIFont piwigoFontNormal];
+		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
+		self.noImagesLabel.textColor = [UIColor piwigoGrayLight];
+		self.noImagesLabel.text = @"No Images";
+		self.noImagesLabel.hidden = YES;
+		[self.view addSubview:self.noImagesLabel];
+		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.noImagesLabel amount:60]];
+		[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.noImagesLabel]];
+		
 		self.selectedImageKeys = [NSMutableArray new];
 		
 		self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Select All" style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
@@ -97,6 +108,8 @@
 	{
 		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
 	}
+	
+	self.sortType = self.sortType;
 }
 
 -(void)loadNavButtons
@@ -115,16 +128,27 @@
 {
 	_sortType = sortType;
 	
+	PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+
 	if(sortType == kPiwigoSortByNotUploaded)
 	{
-		self.loadingView = [LoadingView new];
-		self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
-		PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-		NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @(downloadingCategory.numberOfImages)];
-		self.loadingView.progressLabel.format = progressLabelFormat;
-		[self.loadingView showLoadingWithLabel:@"Downloading Image Info" andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
-		[self.view addSubview:self.loadingView];
-		[self.view addConstraints:[NSLayoutConstraint constraintViewToCenter:self.loadingView]];
+		if(!self.loadingView.superview)
+		{
+			self.loadingView = [LoadingView new];
+			self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
+			NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @(downloadingCategory.numberOfImages)];
+			self.loadingView.progressLabel.format = progressLabelFormat;
+			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
+			[self.loadingView showLoadingWithLabel:@"Downloading Image Info" andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
+			[self.view addSubview:self.loadingView];
+			[self.view addConstraints:[NSLayoutConstraint constraintViewToCenter:self.loadingView]];
+			
+			
+			if(downloadingCategory.numberOfImages != downloadingCategory.imageList.count)
+			{
+				[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
+			}
+		}
 	}
 	
 	self.imageNamesList = [NSArray new];
@@ -135,11 +159,16 @@
 	[SortSelectViewController getSortedImageNameArrayFromSortType:sortType
 													  forCategory:self.categoryId
 													  forProgress:^(NSInteger onPage, NSInteger outOf) {
-														  
-														  NSInteger lastImageCount = onPage * [Model sharedInstance].imagesPerPage;
-														  NSInteger currentDownloaded = (onPage + 1) * [Model sharedInstance].imagesPerPage;
+
+														  NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
+														  NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
 														  
 														  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
+														  
+														  if(currentDownloaded > downloadingCategory.numberOfImages)
+														  {
+															  currentDownloaded = downloadingCategory.numberOfImages;
+														  }
 														  
 														  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
 														  
@@ -233,6 +262,8 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+	self.noImagesLabel.hidden = self.imageNamesList.count != 0;
+
 	return self.imageNamesList.count;
 }
 
