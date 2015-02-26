@@ -126,8 +126,17 @@
 											   }
 											   [self.navigationController popViewControllerAnimated:YES];
 										   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-											   // @TODO: display error to delete image
-											   NSLog(@"fail to delete");
+											   [UIAlertView showWithTitle:@"Delete Fail"
+																  message:@"Failed to delete image\nRetry?"
+														cancelButtonTitle:@"No"
+														otherButtonTitles:@[@"Yes"]
+																 tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+																	 if(buttonIndex == 1)
+																	 {
+																		 [self deleteImage];
+																	 }
+																 }];
+											   NSLog(@"fail to delete!");
 										   }];
 						  }
 					  }];

@@ -78,7 +78,6 @@
 
 -(void)startUpload
 {
-	// @TODO: Ask user if they really want to add these images to the upload queue
 	[[ImageUploadManager sharedInstance] addImages:self.imagesToEdit];
 	[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
 	self.imagesToEdit = [NSMutableArray new];

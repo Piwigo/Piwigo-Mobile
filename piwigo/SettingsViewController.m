@@ -308,7 +308,6 @@ typedef enum {
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1)
 						  {
-							  // @TODO: show a logging out spinner
 							  [SessionService sessionLogoutOnCompletion:^(AFHTTPRequestOperation *operation, BOOL sucessfulLogout) {
 								  if(sucessfulLogout)
 								  {
@@ -319,7 +318,16 @@ typedef enum {
 								  }
 								  else
 								  {
-									  // @TODO: show logout error
+									  [UIAlertView showWithTitle:@"Logout Failed"
+														 message:@"Failed to logout\nTry again?"
+											   cancelButtonTitle:@"Okay"
+											   otherButtonTitles:@[@"Yes"]
+														tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+															if(buttonIndex == 1)
+															{
+																[self logout];
+															}
+														}];
 								  }
 							  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 								  
