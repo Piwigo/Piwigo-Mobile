@@ -165,7 +165,7 @@ NSString * const kGetImageOrderRandom = @"random";
 	
 	[requestOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 		if(progress) {
-			progress(totalBytesRead, totalBytesExpectedToRead);
+			progress((NSInteger)totalBytesRead, (NSInteger)totalBytesExpectedToRead);
 		}
 	}];
 	

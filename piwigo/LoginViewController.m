@@ -22,6 +22,9 @@
 @property (nonatomic, strong) PiwigoTextField *passwordTextField;
 @property (nonatomic, strong) PiwigoButton *loginButton;
 
+@property (nonatomic, strong) NSLayoutConstraint *logoTopConstraint;
+@property (nonatomic, assign) NSInteger topConstraintAmount;
+
 @property (nonatomic, strong) UIView *loadingView;
 @property (nonatomic, strong) UILabel *loggingInLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
@@ -120,11 +123,15 @@
 							  @"imageBottom" : @20,
 							  @"side" : @35
 							  };
+	self.topConstraintAmount = 40;
 	
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-imageTop-[logo]-imageBottom-[server]-[user]-[password]-[login]"
+	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[logo]-imageBottom-[server]-[user]-[password]-[login]"
 																	  options:kNilOptions
 																	  metrics:metrics
 																		views:views]];
+	
+	self.logoTopConstraint = [NSLayoutConstraint constrainViewFromTop:self.piwigoLogo amount:self.topConstraintAmount];
+	[self.view addConstraint:self.logoTopConstraint];
 	
 	[self.piwigoLogo addConstraint:[NSLayoutConstraint constrainViewToHeight:self.piwigoLogo height:textFeildHeight + 36]];
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-imageSide-[logo]-imageSide-|"
@@ -167,8 +174,17 @@
 																					   @"label" : self.loggingInLabel}]];
 }
 
+-(void)moveTextFieldsBy:(NSInteger)amount
+{
+	self.logoTopConstraint.constant = amount;
+	[UIView animateWithDuration:0.3 animations:^{
+		[self.view layoutIfNeeded];
+	}];
+}
+
 -(void)dismissKeyboard
 {
+	[self moveTextFieldsBy:self.topConstraintAmount];
 	[self.view endEditing:YES];
 }
 
@@ -260,9 +276,30 @@
 	} else if (textField == self.userTextField) {
 		[self.passwordTextField becomeFirstResponder];
 	} else if (textField == self.passwordTextField) {
+		if(self.view.frame.size.height > 320)
+		{
+			[self moveTextFieldsBy:self.topConstraintAmount];
+		}
 		[self performLogin];
 	}
 	return YES;
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+	if(self.view.frame.size.height > 500) return;
+	
+	NSInteger amount = 0;
+	if (textField == self.userTextField)
+	{
+		amount = -self.topConstraintAmount;
+	}
+	else if (textField == self.passwordTextField)
+	{
+		amount = -self.topConstraintAmount * 2;
+	}
+	
+	[self moveTextFieldsBy:amount];
 }
 
 @end
