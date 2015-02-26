@@ -76,21 +76,23 @@
 			 cancelButtonTitle:@"Cancel"
 			 otherButtonTitles:@[@"Add"]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  NSLog(@"%@", [alertView textFieldAtIndex:0].text);
-						  [AlbumService createCategoryWithName:[alertView textFieldAtIndex:0].text
-												  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL createdSuccessfully) {
-													  if(createdSuccessfully)
-													  {
-														  [AlbumService getAlbumListOnCompletion:nil onFailure:nil];
-													  }
-													  else
-													  {
+						  if(buttonIndex == 1)
+						  {
+							  [AlbumService createCategoryWithName:[alertView textFieldAtIndex:0].text
+													  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL createdSuccessfully) {
+														  if(createdSuccessfully)
+														  {
+															  [AlbumService getAlbumListOnCompletion:nil onFailure:nil];
+														  }
+														  else
+														  {
+															  [self showCreateCategoryError];
+														  }
+													  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+														  
 														  [self showCreateCategoryError];
-													  }
-												  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-													  
-													  [self showCreateCategoryError];
-												  }];
+													  }];
+						  }
 					  }];
 }
 
