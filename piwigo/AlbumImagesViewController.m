@@ -29,6 +29,7 @@
 @property (nonatomic, assign) NSInteger totalImagesToDownload;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
 @property (nonatomic, strong) ImageDownloadView *downloadView;
+@property (nonatomic, strong) UILabel *noImagesLabel;
 
 @end
 
@@ -57,6 +58,17 @@
 																							OnCompletion:^(BOOL completed) {
 			[self.imagesCollection reloadData];
 		}];
+		
+		self.noImagesLabel = [UILabel new];
+		self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.noImagesLabel.font = [UIFont piwigoFontNormal];
+		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
+		self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
+		self.noImagesLabel.text = @"No Images";
+		self.noImagesLabel.hidden = YES;
+		[self.view addSubview:self.noImagesLabel];
+		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.noImagesLabel amount:80]];
+		[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.noImagesLabel]];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
@@ -252,6 +264,8 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+	self.noImagesLabel.hidden = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != 0;
+	
 	return [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 }
 
