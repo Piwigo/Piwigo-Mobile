@@ -16,6 +16,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryDataUpdated;
 +(CategoriesData*)sharedInstance;
 
 @property (nonatomic, readonly) NSArray *categories;
+
 -(void)addCategories:(NSArray*)categories;
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index;

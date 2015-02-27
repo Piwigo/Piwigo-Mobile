@@ -15,5 +15,6 @@
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
 
 @property (nonatomic, strong) PiwigoAlbumData *albumData;
+@property (nonatomic, readonly) UIImageView *backgroundImage;
 
 @end

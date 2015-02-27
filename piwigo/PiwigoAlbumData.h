@@ -26,6 +26,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger albumThumbnailId;
 @property (nonatomic, strong) NSString *albumThumbnailUrl;
 @property (nonatomic, strong) NSDate *dateLast;
+@property (nonatomic, strong) UIImage *categoryImage;
 
 @property (nonatomic, readonly) NSArray *imageList;
 

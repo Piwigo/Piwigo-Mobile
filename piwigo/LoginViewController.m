@@ -217,6 +217,7 @@
 	else
 	{
 		[self getSessionStatus];
+		[KeychainAccess resetKeychain];
 	}
 }
 

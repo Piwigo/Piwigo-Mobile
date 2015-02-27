@@ -56,6 +56,8 @@
 		self.albumName.font = [UIFont piwigoFontNormal];
 		self.albumName.font = [self.albumName.font fontWithSize:21.0];
 		self.albumName.textColor = [UIColor piwigoOrange];
+		self.albumName.adjustsFontSizeToFitWidth = YES;
+		self.albumName.minimumScaleFactor = 0.6;
 		[self.contentView addSubview:self.albumName];
 		
 		self.numberOfImages = [UILabel new];
@@ -97,8 +99,21 @@
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
+																 attribute:NSLayoutAttributeLeft
+																 relatedBy:NSLayoutRelationEqual
+																	toItem:self.contentView
+																 attribute:NSLayoutAttributeLeft
+																multiplier:1.0
+																  constant:20]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
+																 attribute:NSLayoutAttributeRight
+																 relatedBy:NSLayoutRelationLessThanOrEqual
+																	toItem:self.contentView
+																 attribute:NSLayoutAttributeRight
+																multiplier:1.0
+																  constant:-30]];
 	
-	[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromLeft:self.albumName amount:20]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.numberOfImages
 																	attribute:NSLayoutAttributeLeft
 																	relatedBy:NSLayoutRelationEqual
@@ -138,39 +153,52 @@
 	[formatter setDateFormat:@"yyyy-MM-dd"];
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];
 	
-	__weak typeof(self) weakSelf = self;
-	[ImageService getImageInfoById:albumData.albumThumbnailId
-				  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
-					  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
-												  placeholderImage:[UIImage imageNamed:@"placeholder"]
-														   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-															   weakSelf.backgroundImage.image = image;
-															   
-						   LEColorPicker *colorPicker = [LEColorPicker new];
-						   LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
-						   UIColor *backgroundColor = colorScheme.backgroundColor;
-//						   UIColor *primaryColor = colorScheme.primaryTextColor;
-//						   UIColor *secondaryColor = colorScheme.secondaryTextColor;
-															   
-						   CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
-						   CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
-						   CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
+	if(albumData.categoryImage)
+	{
+		[self setupBgWithImage:albumData.categoryImage];
+	}
+	else
+	{
+		__weak typeof(self) weakSelf = self;
+		[ImageService getImageInfoById:albumData.albumThumbnailId
+					  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+						  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
+													  placeholderImage:nil
+															   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 																   
-						   
-						   int threshold = 105;
-						   int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
-						   UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
-						   weakSelf.textUnderlay.backgroundColor = bgColor;
-						   weakSelf.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
-						   weakSelf.date.textColor = weakSelf.numberOfImages.textColor;
-						   weakSelf.cellDisclosure.tintColor = weakSelf.numberOfImages.textColor;
-															   
-					  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-						  NSLog(@"fail to get imgage for album");
+																   albumData.categoryImage = image;
+																   [weakSelf setupBgWithImage:image];
+						  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+							  NSLog(@"fail to get imgage for album");
+						  }];
+					  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						  NSLog(@"Fail to get album bg image");
 					  }];
-				  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					  NSLog(@"Fail to get album bg image");
-				  }];
+	}
+}
+
+-(void)setupBgWithImage:(UIImage*)image
+{
+	self.backgroundImage.image = image;
+	
+	LEColorPicker *colorPicker = [LEColorPicker new];
+	LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
+	UIColor *backgroundColor = colorScheme.backgroundColor;
+//	UIColor *primaryColor = colorScheme.primaryTextColor;
+//	UIColor *secondaryColor = colorScheme.secondaryTextColor;
+
+	CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
+	CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
+	CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
+
+
+	int threshold = 105;
+	int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
+	UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
+	self.textUnderlay.backgroundColor = bgColor;
+	self.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
+	self.date.textColor = self.numberOfImages.textColor;
+	self.cellDisclosure.tintColor = self.numberOfImages.textColor;
 }
 
 -(void)prepareForReuse
