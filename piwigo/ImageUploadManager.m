@@ -12,6 +12,7 @@
 #import "ImageUpload.h"
 #import "PiwigoTagData.h"
 #import "ImageService.h"
+#import "CategoriesData.h"
 
 @interface ImageUploadManager()
 
@@ -122,6 +123,7 @@
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
+						[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo].numberOfImages++;
 						[self addImageDataToCategoryCache:response];
 						[self setImageResponse:response withInfo:imageProperties];
 						
