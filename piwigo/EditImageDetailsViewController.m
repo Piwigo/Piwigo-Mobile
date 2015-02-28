@@ -14,6 +14,8 @@
 #import "ImageUpload.h"
 #import "SelectPrivacyViewController.h"
 #import "TagsViewController.h"
+#import "ImageService.h"
+#import "UploadService.h"
 
 typedef enum {
 	EditImageDetailsOrderImageName,
@@ -43,19 +45,72 @@ typedef enum {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
 }
 
+// NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
+-(void)setIsEdit:(BOOL)isEdit
+{
+	_isEdit = isEdit;
+	// @TODO: show loading
+	[ImageService getImageInfoById:self.imageDetails.imageId
+				  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+					  self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
+					  [self.editImageDetailsTableView reloadData];
+				  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+					  // @TODO: tell the user that the image details couldn't be loaded.
+				  }];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+	self.navigationController.navigationBarHidden = NO;
+	
+	if(self.isEdit)
+	{
+		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
+		UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
+		
+		self.navigationItem.leftBarButtonItem = cancel;
+		self.navigationItem.rightBarButtonItem = done;
+	}
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
 	if([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
 	{
-		[self updateImageDetails];
-		
-		if(self.imageDetails.imageUploadName.length == 0)
-		{
-			self.imageDetails.imageUploadName = self.imageDetails.image;
-		}
-		
+		[self prepareImageForChanges];
 		[self.delegate didFinishEditingDetails:self.imageDetails];
 	}
+}
+-(void)prepareImageForChanges
+{
+	[self updateImageDetails];
+	
+	if(self.imageDetails.imageUploadName.length == 0)
+	{
+		self.imageDetails.imageUploadName = self.imageDetails.image;
+	}
+}
+
+-(void)cancelEdit
+{
+	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)doneEdit
+{
+	[self prepareImageForChanges];
+	
+	[UploadService updateImageInfo:self.imageDetails
+						onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
+							// progress
+						} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+							// complete
+							[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+						} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+							// @TODO: show error
+						}];
 }
 
 -(void)updateImageDetails

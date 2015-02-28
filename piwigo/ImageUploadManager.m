@@ -204,6 +204,7 @@
 
 -(void)addImageDataToCategoryCache:(NSDictionary*)jsonResponse
 {
+	
 	NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
 	[ImageService getImageInfoById:[[imageResponse objectForKey:@"image_id"] integerValue]
 				  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {

@@ -307,6 +307,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D80391061AA0217A00B9B5FE /* Edit Image */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Edit Image";
+			sourceTree = "<group>";
+		};
 		D8083A641A7FF30B00A95605 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -396,6 +403,7 @@
 				D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */,
 				D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */,
 				D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */,
+				D80391061AA0217A00B9B5FE /* Edit Image */,
 			);
 			name = "Image Detail";
 			sourceTree = "<group>";

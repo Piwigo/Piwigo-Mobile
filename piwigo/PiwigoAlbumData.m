@@ -110,14 +110,45 @@
 -(void)addImages:(NSArray*)images
 {
 	NSMutableArray *newImages = [NSMutableArray new];
+	NSMutableArray *updateImages = [[NSMutableArray alloc] initWithArray:images];
 	[images enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		PiwigoImageData *image = (PiwigoImageData*)obj;
 		if(![self.imageIds objectForKey:image.imageId]) {
 			[newImages addObject:image];
+			[updateImages removeObject:image];
 		}
 	}];
 	
-	if(newImages.count <= 0) return;
+	if(updateImages.count > 0)
+	{
+		NSMutableArray *newImageUpdateList = [[NSMutableArray alloc] initWithArray:self.imageList];
+		for(PiwigoImageData *updateImage in updateImages)
+		{
+			for(PiwigoImageData *existingImage in self.imageList)
+			{
+				if([existingImage.imageId integerValue] == [updateImage.imageId integerValue])
+				{
+					[newImageUpdateList removeObject:existingImage];
+					break;
+				}
+			}
+		}
+		
+		// this image has already been added, so update it
+		for(PiwigoImageData *updateImage in updateImages)
+		{
+			for(PiwigoImageData *existingImage in self.imageList)
+			{
+				if([existingImage.imageId integerValue]  == [updateImage.imageId integerValue])
+				{
+					[newImageUpdateList addObject:updateImage];
+					break;
+				}
+			}
+		}
+		
+		self.imageList = newImageUpdateList;
+	}
 	
 	NSMutableArray *newImageList = [[NSMutableArray alloc] initWithArray:self.imageList];
 	for(PiwigoImageData *imageData in newImages)

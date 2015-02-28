@@ -15,6 +15,10 @@
 @property (nonatomic, strong) NSString *fileName;
 @property (nonatomic, strong) NSString *thumbPath;
 @property (nonatomic, strong) NSString *squarePath;
+@property (nonatomic, assign) NSInteger privacyLevel;
+@property (nonatomic, strong) NSString *author;
+@property (nonatomic, strong) NSString *imageDescription;
+@property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, strong) NSArray *categoryIds;
 @property (nonatomic, strong) NSString *mediumPath;
 @property (nonatomic, strong) NSString *fullResPath;

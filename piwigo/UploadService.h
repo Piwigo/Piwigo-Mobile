@@ -10,6 +10,8 @@
 
 FOUNDATION_EXPORT NSString * const kUploadImage;
 
+@class ImageUpload;
+
 @interface UploadService : NetworkHandler
 
 +(void)uploadImage:(NSData*)imageData
@@ -23,5 +25,10 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 										  onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
 										OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 										   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
++(AFHTTPRequestOperation*)updateImageInfo:(ImageUpload*)imageInfo
+							   onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+							 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 @end

@@ -11,6 +11,7 @@
 #import "PiwigoImageData.h"
 #import "PiwigoAlbumData.h"
 #import "CategoriesData.h"
+#import "PiwigoTagData.h"
 
 NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
@@ -111,6 +112,10 @@ NSString * const kGetImageOrderRandom = @"random";
 	imageData.name = [imageJson objectForKey:@"name"];
 	imageData.fullResPath = [imageJson objectForKey:@"element_url"];
 	
+	imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
+	imageData.author = [imageJson objectForKey:@"author"];
+	imageData.imageDescription = [imageJson objectForKey:@"comment"];
+	
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
 	imageData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
 	imageData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
@@ -124,6 +129,17 @@ NSString * const kGetImageOrderRandom = @"random";
 	}
 	
 	imageData.categoryIds = categoryIds;
+	
+	NSArray *tags = [imageJson objectForKey:@"tags"];
+	NSMutableArray *imageTags = [NSMutableArray new];
+	for(NSDictionary *tag in tags)
+	{
+		PiwigoTagData *tagData = [PiwigoTagData new];
+		tagData.tagId = [[tag objectForKey:@"id"] integerValue];
+		tagData.tagName = [tag objectForKey:@"name"];
+		[imageTags addObject:tagData];
+	}
+	imageData.tags = imageTags;
 	
 	return imageData;
 }

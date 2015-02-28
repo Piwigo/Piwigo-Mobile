@@ -23,6 +23,10 @@
 
 -(void)setLabel:(NSString*)label andTextField:(NSString*)text withPlaceholder:(NSString*)placeholder
 {
+	if(!text)
+	{
+		text = @"";
+	}
 	self.cellLabel.text = label;
 	self.cellTextField.text = text;
 	self.cellTextField.placeholder = placeholder;

@@ -105,7 +105,16 @@
 
 -(NSInteger)getIndexOfTag:(PiwigoTagData*)tag
 {
-	return [self.tagList indexOfObject:tag];
+	NSInteger count = 0;
+	for(PiwigoTagData *tagData in self.tagList)
+	{
+		if(tagData.tagId == tag.tagId)
+		{
+			return count;
+		}
+		count++;
+	}
+	return count;
 }
 
 @end

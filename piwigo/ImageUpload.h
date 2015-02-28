@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "Model.h"
 
+@class PiwigoImageData;
+
 @interface ImageUpload : NSObject
 
 @property (nonatomic, strong) NSString *image;
@@ -18,8 +20,11 @@
 @property (nonatomic, strong) NSString *author;
 @property (nonatomic, strong) NSString *imageDescription;
 @property (nonatomic, strong) NSArray *tags;
+@property (nonatomic, assign) NSInteger imageId;
 
 -(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;
 -(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags;
+
+-(instancetype)initWithImageData:(PiwigoImageData*)imageData;
 
 @end

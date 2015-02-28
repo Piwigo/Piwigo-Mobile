@@ -12,6 +12,8 @@
 #import "ImageDownloadView.h"
 #import "Model.h"
 #import "ImagePreviewViewController.h"
+#import "EditImageDetailsViewController.h"
+#import "ImageUpload.h"
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 
@@ -104,8 +106,15 @@
 											[self downloadImage];
 											break;
 										case 2: // Edit
-											// @TODO: Show edit image view
+										{
+											UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
+											EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
+											editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
+											editImageVC.isEdit = YES;
+											UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
+											[self.navigationController presentViewController:presentNav animated:YES completion:nil];
 											break;
+										}
 									}
 								}];
 }

@@ -8,6 +8,8 @@
 
 #import "UploadService.h"
 #import "Model.h"
+#import "ImageUpload.h"
+#import "PiwigoTagData.h"
 
 @implementation UploadService
 
@@ -106,11 +108,41 @@
 												   @"image_id" : imageId,
 												   @"author" : [imageInformation objectForKey:kPiwigoImagesUploadParamAuthor],
 												   @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription],
-												   @"tag_ids" : tagIdList
+												   @"tag_ids" : tagIdList,
+												   @"name" : [imageInformation objectForKey:kPiwigoImagesUploadParamName],
+												   @"level" : [imageInformation objectForKey:kPiwigoImagesUploadParamPrivacy],
+												   @"method" : @"pwg.images.setInfo",
+												   @"single_value_mode" : @"replace"
 												   }
 										 success:completion
 										 failure:fail];
 	return request;
+}
+
++(AFHTTPRequestOperation*)updateImageInfo:(ImageUpload*)imageInfo
+							   onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+							 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	NSMutableArray *tagIds = [NSMutableArray new];
+	for(PiwigoTagData *tagData in imageInfo.tags)
+	{
+		[tagIds addObject:@(tagData.tagId)];
+	}
+	
+	NSDictionary *imageProperties = @{
+									  kPiwigoImagesUploadParamName : imageInfo.imageUploadName,
+									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(imageInfo.privacyLevel)],
+									  kPiwigoImagesUploadParamAuthor : imageInfo.author,
+									  kPiwigoImagesUploadParamDescription : imageInfo.imageDescription,
+									  kPiwigoImagesUploadParamTags : [tagIds copy]
+									  };
+	
+	return [self setImageInfoForImageWithId:[NSString stringWithFormat:@"%@", @(imageInfo.imageId)]
+									 withInformation:imageProperties
+										  onProgress:progress
+										OnCompletion:completion
+										   onFailure:fail];
 }
 
 @end
