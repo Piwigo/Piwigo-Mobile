@@ -16,6 +16,8 @@ typedef enum {
 	ImageListOrderDate
 } ImageListOrder;
 
+@class ImageUpload;
+
 @interface PiwigoAlbumData : NSObject
 
 @property (nonatomic, assign) NSInteger albumId;
@@ -38,4 +40,5 @@ typedef enum {
 								OnCompletion:(void (^)(BOOL completed))completion;
 -(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  OnCompletion:(void (^)(BOOL completed))completion;
+-(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
 @end

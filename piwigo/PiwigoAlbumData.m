@@ -10,6 +10,7 @@
 #import "ImageService.h"
 #import "Model.h"
 #import "CategoriesData.h"
+#import "ImageUpload.h"
 
 @interface PiwigoAlbumData()
 
@@ -177,6 +178,19 @@
 	self.imageList = newImageArray;
 	
 	[self.imageIds removeObjectForKey:image.imageId];
+}
+
+-(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload
+{
+	PiwigoImageData *newImageData = [[CategoriesData sharedInstance] getImageForCategory:imageUpload.categoryToUploadTo andId:[NSString stringWithFormat:@"%@", @(imageUpload.imageId)]];
+	
+	newImageData.name = imageUpload.imageUploadName;
+	newImageData.privacyLevel = imageUpload.privacyLevel;
+	newImageData.author = imageUpload.author;
+	newImageData.imageDescription = imageUpload.imageDescription;
+	newImageData.tags = imageUpload.tags;
+	
+	[self addImages:@[newImageData]];
 }
 
 @end

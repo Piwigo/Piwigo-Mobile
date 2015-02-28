@@ -10,6 +10,7 @@
 #import "Model.h"
 #import "ImageUpload.h"
 #import "PiwigoTagData.h"
+#import "CategoriesData.h"
 
 @implementation UploadService
 
@@ -141,8 +142,17 @@
 	return [self setImageInfoForImageWithId:[NSString stringWithFormat:@"%@", @(imageInfo.imageId)]
 									 withInformation:imageProperties
 										  onProgress:progress
-										OnCompletion:completion
-										   onFailure:fail];
+										OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+											
+											// update the cache
+											[[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateCacheWithImageUploadInfo:imageInfo];
+											
+											if(completion)
+											{
+												completion(operation, response);
+											}
+										}
+								  onFailure:fail];
 }
 
 @end
