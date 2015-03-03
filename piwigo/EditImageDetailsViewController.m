@@ -16,6 +16,7 @@
 #import "TagsViewController.h"
 #import "ImageService.h"
 #import "UploadService.h"
+#import "LoadingView.h"
 
 typedef enum {
 	EditImageDetailsOrderImageName,
@@ -49,7 +50,6 @@ typedef enum {
 -(void)setIsEdit:(BOOL)isEdit
 {
 	_isEdit = isEdit;
-	// @TODO: show loading
 	[ImageService getImageInfoById:self.imageDetails.imageId
 				  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
 					  self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
@@ -102,14 +102,30 @@ typedef enum {
 {
 	[self prepareImageForChanges];
 	
+	LoadingView *loading = [LoadingView new];
+	[self.view addSubview:loading];
+	[self.view addConstraints:[NSLayoutConstraint constraintViewToCenter:loading]];
+	[loading showLoadingWithLabel:@"Setting Image Information" andProgressLabel:nil];
+	
 	[UploadService updateImageInfo:self.imageDetails
-						onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
+						onProgress:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 							// progress
 						} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 							// complete
+							[loading hideLoadingWithLabel:@"Saved" showCheckMark:YES withDelay:0.3];
 							[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 						} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-							// @TODO: show error
+							[loading hideLoadingWithLabel:@"Failed" showCheckMark:NO withDelay:0.0];
+							[UIAlertView showWithTitle:@"Failed to Update"
+											   message:@"Failed to update your changes with your server\nTry again?"
+									 cancelButtonTitle:@"No"
+									 otherButtonTitles:@[@"Yes"]
+											  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+												  if(buttonIndex == 1)
+												  {
+													  [self doneEdit];
+												  }
+											  }];
 						}];
 }
 

@@ -12,7 +12,6 @@
 
 @interface ImagePreviewViewController ()
 
-@property (nonatomic, strong) ImageScrollView *scrollView;
 
 @end
 

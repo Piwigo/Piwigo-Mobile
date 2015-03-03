@@ -110,11 +110,23 @@ NSString * const kGetImageOrderRandom = @"random";
 	imageData.imageId = [imageJson objectForKey:@"id"];
 	imageData.fileName = [imageJson objectForKey:@"file"];
 	imageData.name = [imageJson objectForKey:@"name"];
+	if(!imageData.name || [imageData.name isKindOfClass:[NSNull class]])
+	{
+		imageData.name = @"";
+	}
 	imageData.fullResPath = [imageJson objectForKey:@"element_url"];
 	
 	imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
 	imageData.author = [imageJson objectForKey:@"author"];
+	if(!imageData.author || [imageData.author isKindOfClass:[NSNull class]])
+	{
+		imageData.author = @"";
+	}
 	imageData.imageDescription = [imageJson objectForKey:@"comment"];
+	if(!imageData.imageDescription || [imageData.imageDescription isKindOfClass:[NSNull class]])
+	{
+		imageData.imageDescription = @"";
+	}
 	
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
 	imageData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];

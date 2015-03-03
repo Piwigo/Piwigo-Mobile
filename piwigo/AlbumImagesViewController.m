@@ -14,8 +14,10 @@
 #import "ImageDetailViewController.h"
 #import "ImageDownloadView.h"
 #import "PiwigoAlbumData.h"
+#import "SortHeaderCollectionReusableView.h"
+#import "CategorySortViewController.h"
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
@@ -31,6 +33,8 @@
 @property (nonatomic, strong) ImageDownloadView *downloadView;
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
+@property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
+
 @end
 
 @implementation AlbumImagesViewController
@@ -43,6 +47,7 @@
 		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = albumId;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+		self.currentSortCategory = 0;
 		
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -50,6 +55,7 @@
 		self.imagesCollection.dataSource = self;
 		self.imagesCollection.delegate = self;
 		[self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
 		self.imagesCollection.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 		[self.view addSubview:self.imagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
@@ -88,6 +94,7 @@
 	[super viewWillAppear:animated];
 	
 	[self loadNavButtons];
+	[self.imagesCollection reloadData];
 }
 
 -(void)loadNavButtons
@@ -260,7 +267,70 @@
 	return _downloadView;
 }
 
+-(void)loadMoreImages
+{
+	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkForProgress:nil
+																								OnCompletion:^(BOOL completed) {
+																									[self.imagesCollection reloadData];
+																								}];
+}
+
+-(void)setCurrentSortCategory:(kPiwigoSortCategory)currentSortCategory
+{
+	if(_currentSortCategory == currentSortCategory)
+	{
+		return;
+	}
+	
+	_currentSortCategory = currentSortCategory;
+	
+	if([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+	{
+		// load all the images
+		NSLog(@"count: %@", @([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count));
+		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:^(NSInteger onPage, NSInteger outOf) {
+			// progress
+		} OnCompletion:^(BOOL completed) {
+			// complete
+			NSLog(@"count: %@", @([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count));
+			[self.imagesCollection reloadData];
+		}];
+	}
+	else
+	{
+		
+	}
+	
+}
+
 #pragma mark -- UICollectionView Methods
+
+-(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+	SortHeaderCollectionReusableView *header = nil;
+	
+	if(kind == UICollectionElementKindSectionHeader)
+	{
+		header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header" forIndexPath:indexPath];
+		header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
+		[header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+	}
+	
+	return header;
+}
+
+-(void)didSelectCollectionViewHeader
+{
+	CategorySortViewController *categorySort = [CategorySortViewController new];
+	categorySort.currentCategorySortType = self.currentSortCategory;
+	categorySort.sortDelegate = self;
+	[self.navigationController pushViewController:categorySort animated:YES];
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+	return CGSizeMake(collectionView.frame.size.width, 44.0);
+}
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
@@ -289,10 +359,7 @@
 	
 	if(indexPath.row >= [collectionView numberOfItemsInSection:0] - 21 && [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
 	{
-		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkForProgress:nil
-																									OnCompletion:^(BOOL completed) {
-			[self.imagesCollection reloadData];
-		}];
+		[self loadMoreImages];
 	}
 	
 	return cell;
@@ -330,6 +397,20 @@
 -(void)didDeleteImage
 {
 	[self.imagesCollection reloadData];
+}
+
+-(void)needToLoadMoreImages
+{
+	[self loadMoreImages];
+}
+
+
+#pragma mark CategorySortDelegate Methods
+
+-(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
+{
+	self.currentSortCategory = sortType;
+	
 }
 
 @end

@@ -22,12 +22,12 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 
 +(AFHTTPRequestOperation*)setImageInfoForImageWithId:(NSString*)imageId
 									 withInformation:(NSDictionary*)imageInformation
-										  onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+										  onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
 										OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 										   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 +(AFHTTPRequestOperation*)updateImageInfo:(ImageUpload*)imageInfo
-							   onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+							   onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
 							 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 

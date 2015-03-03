@@ -14,6 +14,7 @@
 #import "ImagePreviewViewController.h"
 #import "EditImageDetailsViewController.h"
 #import "ImageUpload.h"
+#import "ImageScrollView.h"
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 
@@ -42,6 +43,7 @@
 		
 		PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:imageIndex];
 		self.imageData = imageData;
+		self.title = self.imageData.name;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
 		[startingImage setImageWithImageData:imageData];
 		startingImage.imageIndex = imageIndex;
@@ -239,6 +241,15 @@
 {
 	NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
 	
+	// check to see if they've scroll beyond a certain threshold, then load more image data
+	if(currentIndex >= [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count - 21 && [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+	{
+		if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
+		{
+			[self.imgDetailDelegate needToLoadMoreImages];
+		}
+	}
+	
 	if(currentIndex >= [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count - 1)
 	{
 		return nil;
@@ -268,11 +279,15 @@
 
 -(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
 {
+	ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
+	[removedVC.scrollView.imageView cancelImageRequestOperation];
+	
 	ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
 	view.imagePreviewDelegate = self;
 	self.progressBar.hidden = view.imageLoaded;
 	[self.progressBar setProgress:0];
 	self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+	self.title = self.imageData.name;
 }
 
 #pragma mark ImagePreviewDelegate Methods

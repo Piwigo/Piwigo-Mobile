@@ -193,7 +193,7 @@
 		
 		[UploadService setImageInfoForImageWithId:imageId
 								  withInformation:imageProperties
-									   onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
+									   onProgress:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 										   // progress
 									   } OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 										   // completion

@@ -11,6 +11,7 @@
 @protocol ImageDetailDelegate <NSObject>
 
 -(void)didDeleteImage;
+-(void)needToLoadMoreImages;
 
 @end
 

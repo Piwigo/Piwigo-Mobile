@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UploadHeaderCollectionReusableView : UICollectionReusableView
+@interface SortHeaderCollectionReusableView : UICollectionReusableView
 
 @property (nonatomic, strong) UILabel *currentSortLabel;
 

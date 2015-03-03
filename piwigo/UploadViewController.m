@@ -16,7 +16,7 @@
 #import "ImageUpload.h"
 #import "ImageUploadProgressView.h"
 #import "ImageUploadViewController.h"
-#import "UploadHeaderCollectionReusableView.h"
+#import "SortHeaderCollectionReusableView.h"
 #import "SortSelectViewController.h"
 #import "LoadingView.h"
 #import "UICountingLabel.h"
@@ -59,7 +59,7 @@
 		self.localImagesCollection.dataSource = self;
 		self.localImagesCollection.delegate = self;
 		[self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
-		[self.localImagesCollection registerClass:[UploadHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
+		[self.localImagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
 		self.localImagesCollection.indicatorStyle = UIScrollViewIndicatorStyleDefault;
 		[self.view addSubview:self.localImagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
@@ -235,7 +235,7 @@
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-	UploadHeaderCollectionReusableView *header = nil;
+	SortHeaderCollectionReusableView *header = nil;
 	
 	if(kind == UICollectionElementKindSectionHeader)
 	{

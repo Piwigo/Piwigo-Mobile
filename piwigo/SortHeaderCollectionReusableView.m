@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "UploadHeaderCollectionReusableView.h"
+#import "SortHeaderCollectionReusableView.h"
 
-@interface UploadHeaderCollectionReusableView()
+@interface SortHeaderCollectionReusableView()
 
 @end
 
-@implementation UploadHeaderCollectionReusableView
+@implementation SortHeaderCollectionReusableView
 
 -(instancetype)initWithFrame:(CGRect)frame
 {

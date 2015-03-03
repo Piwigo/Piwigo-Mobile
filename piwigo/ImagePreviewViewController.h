@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class PiwigoImageData;
+@class ImageScrollView;
 
 @protocol ImagePreviewDelegate <NSObject>
 
@@ -19,6 +20,7 @@
 @interface ImagePreviewViewController : UINavigationController
 
 @property (nonatomic, weak) id<ImagePreviewDelegate> imagePreviewDelegate;
+@property (nonatomic, strong) ImageScrollView *scrollView;
 @property (nonatomic, assign) NSInteger imageIndex;
 @property (nonatomic, assign) BOOL imageLoaded;
 
