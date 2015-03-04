@@ -16,10 +16,12 @@
 #import "PiwigoAlbumData.h"
 #import "SortHeaderCollectionReusableView.h"
 #import "CategorySortViewController.h"
+#import "CategoryImageSort.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
+@property (nonatomic, strong) NSArray *imageList;
 @property (nonatomic, assign) NSInteger categoryId;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
@@ -48,6 +50,10 @@
 		self.categoryId = albumId;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		self.currentSortCategory = 0;
+		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+		if(self.imageList.count <= 100) {
+			[self loadMoreImages];
+		}
 		
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -271,6 +277,7 @@
 {
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkForProgress:nil
 																								OnCompletion:^(BOOL completed) {
+																									self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 																									[self.imagesCollection reloadData];
 																								}];
 }
@@ -284,15 +291,16 @@
 	
 	_currentSortCategory = currentSortCategory;
 	
-	if([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+	if(self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
 	{
+		// @TODO: Show a progress of downloading images to sort them
 		// load all the images
 		NSLog(@"count: %@", @([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count));
 		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:^(NSInteger onPage, NSInteger outOf) {
 			// progress
 		} OnCompletion:^(BOOL completed) {
 			// complete
-			NSLog(@"count: %@", @([[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count));
+			self.imageList = [CategoryImageSort sortImages:self.imageList forSortOrder:_currentSortCategory];
 			[self.imagesCollection reloadData];
 		}];
 	}
@@ -334,9 +342,9 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	self.noImagesLabel.hidden = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != 0;
+	self.noImagesLabel.hidden = self.imageList.count != 0;
 	
-	return [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
+	return self.imageList.count;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -349,7 +357,7 @@
 {
 	ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 	
-	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:indexPath.row];
+	PiwigoImageData *imageData = [self.imageList objectAtIndex:indexPath.row];
 	[cell setupWithImageData:imageData];
 	
 	if([self.selectedImageIds containsObject:imageData.imageId])
@@ -357,7 +365,7 @@
 		cell.isSelected = YES;
 	}
 	
-	if(indexPath.row >= [collectionView numberOfItemsInSection:0] - 21 && [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+	if(indexPath.row >= [collectionView numberOfItemsInSection:0] - 21 && self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
 	{
 		[self loadMoreImages];
 	}
@@ -375,7 +383,7 @@
 	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	if(!self.isSelect)
 	{
-		ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId andImageIndex:indexPath.row];
+		ImageDetailViewController *imageDetail = [self.imageList objectAtIndex:indexPath.row];
 		imageDetail.imgDetailDelegate = self;
 		[self.navigationController pushViewController:imageDetail animated:YES];
 	}

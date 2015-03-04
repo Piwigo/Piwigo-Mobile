@@ -132,6 +132,11 @@ NSString * const kGetImageOrderRandom = @"random";
 		imageData.imageDescription = @"";
 	}
 	
+	NSString *dateString = [imageJson objectForKey:@"date_available"];
+	NSDateFormatter *dateFormat = [NSDateFormatter new];
+	[dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+	imageData.dateAvailable = [dateFormat dateFromString:dateString];
+	
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
 	imageData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
 	imageData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];

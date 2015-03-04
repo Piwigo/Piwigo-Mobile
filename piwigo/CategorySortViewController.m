@@ -104,7 +104,7 @@
 			name = @"Date Ascending";
 			break;
 		case kPiwigoSortCategoryDateCreatedDescending:
-			name = @"Date Descending";
+			name = @"Date Descending (most recent first)";
 			break;
 		case kPiwigoSortCategoryIdAscending:
 			name = @"Image ID Ascending";

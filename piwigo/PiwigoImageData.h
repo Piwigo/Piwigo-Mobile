@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSArray *categoryIds;
 @property (nonatomic, strong) NSString *mediumPath;
 @property (nonatomic, strong) NSString *fullResPath;
+@property (nonatomic, strong) NSDate *dateAvailable;
 @property (nonatomic, assign) BOOL isVideo;
 
 @end
