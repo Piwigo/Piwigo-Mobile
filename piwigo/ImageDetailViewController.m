@@ -26,22 +26,35 @@
 
 @property (nonatomic, strong) ImageDownloadView *downloadView;
 
+@property (nonatomic, assign) BOOL isSorted;
+@property (nonatomic, strong) NSArray *sortedImages;
+
 @end
 
 @implementation ImageDetailViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId andImageIndex:(NSInteger)imageIndex
+// @TODO: BUG:: don't use imageIndex based on the cached data -- you want to pull from the sorted list that's sorted in the ViewController-- abstract it out and have both views pull from the same source.
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex isSorted:(BOOL)isSorted withArray:(NSArray*)array
 {
 	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor blackColor];
 		self.categoryId = categoryId;
+		self.isSorted = isSorted;
+		if(self.isSorted)
+		{
+			self.sortedImages = array;
+		}
 		
 		self.dataSource = self;
 		self.delegate = self;
 		
 		PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:imageIndex];
+		if(self.isSorted)
+		{
+			imageData = [self.sortedImages objectAtIndex:imageIndex];
+		}
 		self.imageData = imageData;
 		self.title = self.imageData.name;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
@@ -255,6 +268,10 @@
 		return nil;
 	}
 	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex + 1];
+	if(self.isSorted)
+	{
+		imageData = [self.sortedImages objectAtIndex:currentIndex + 1];
+	}
 	ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
 	[nextImage setImageWithImageData:imageData];
 	nextImage.imageIndex = currentIndex + 1;
@@ -271,6 +288,10 @@
 	}
 	
 	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex - 1];
+	if(self.isSorted)
+	{
+		imageData = [self.sortedImages objectAtIndex:currentIndex - 1];
+	}
 	ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
 	[prevImage setImageWithImageData:imageData];
 	prevImage.imageIndex = currentIndex - 1;
@@ -287,6 +308,10 @@
 	self.progressBar.hidden = view.imageLoaded;
 	[self.progressBar setProgress:0];
 	self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+	if(self.isSorted)
+	{
+		self.imageData = [self.sortedImages objectAtIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+	}
 	self.title = self.imageData.name;
 }
 

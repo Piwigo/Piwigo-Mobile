@@ -416,7 +416,7 @@
 	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	if(!self.isSelect)
 	{
-		ImageDetailViewController *imageDetail = [self.imageList objectAtIndex:indexPath.row];
+		ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row isSorted:(self.currentSortCategory != 0) withArray:[self.imageList copy]];
 		imageDetail.imgDetailDelegate = self;
 		[self.navigationController pushViewController:imageDetail animated:YES];
 	}

@@ -21,6 +21,6 @@
 
 @property (nonatomic, weak) id<ImageDetailDelegate> imgDetailDelegate;
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId andImageIndex:(NSInteger)imageIndex;
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex isSorted:(BOOL)isSorted withArray:(NSArray*)array;
 
 @end
