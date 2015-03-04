@@ -36,6 +36,12 @@
 
 -(void)setImageWithImageData:(PiwigoImageData*)imageData
 {
+	if(imageData.isVideo)
+	{
+		// @TODO: add video download here for a video view for the pageView
+		return;
+	}
+	
 	__weak typeof(self) weakSelf = self;
 	[self.scrollView.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
 					  placeholderImage:[UIImage imageNamed:@"placeholder"]

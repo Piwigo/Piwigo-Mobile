@@ -109,6 +109,10 @@ NSString * const kGetImageOrderRandom = @"random";
 	
 	imageData.imageId = [imageJson objectForKey:@"id"];
 	imageData.fileName = [imageJson objectForKey:@"file"];
+	if([imageData.fileName rangeOfString:@".mp4"].location != NSNotFound || [imageData.fileName rangeOfString:@".MP4"].location != NSNotFound)
+	{
+		imageData.isVideo = YES;
+	}
 	imageData.name = [imageJson objectForKey:@"name"];
 	if(!imageData.name || [imageData.name isKindOfClass:[NSNull class]])
 	{
