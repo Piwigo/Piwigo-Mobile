@@ -33,7 +33,6 @@ typedef enum {
 @property (nonatomic, readonly) NSArray *imageList;
 
 -(void)addImages:(NSArray*)images;
--(void)sortImageList:(ImageListOrder)order;
 -(void)removeImage:(PiwigoImageData*)image;
 
 -(void)loadCategoryImageDataChunkForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress

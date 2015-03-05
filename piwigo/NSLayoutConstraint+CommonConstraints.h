@@ -31,6 +31,7 @@
 +(NSArray*)constraintCenterView:(UIView*)view;
 
 
+
 // -------------------------- SIZING --------------------------
 /*! Match the view's width of it's superview
  * \param view The view to be matched
@@ -50,8 +51,6 @@
  */
 +(NSArray*)constraintFillSize:(UIView*)view;
 
-
-// -------------------------- FRAME --------------------------
 /*! Sets a view's height to a specific size
  * \param view The view whose height is to be changed
  * \param height The specific height wanted
@@ -80,6 +79,21 @@
  */
 +(NSLayoutConstraint*)constraintViewToSameBase:(UIView*)view1 equalToView:(UIView*)view2;
 
+/*! Constrains a view's width to be equal to it's height
+ * \param view The view to be constrained
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewWidthToEqualHeight:(UIView*)view;
+
+/*! Constrains a view's height to be equal to it's width
+ * \param view The view to be constrained
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewHeightToEqualWidth:(UIView*)view;
+
+
+
+// -------------------------- FRAME --------------------------
 /*! Constrains a view a specific amount from the left of it's superview
  * \param view The view to be constrained
  * \param leftAmount The specific amount of pixels for the view to be from the left
@@ -107,18 +121,6 @@
  * \returns A NSLayoutConstraint is returned
  */
 +(NSLayoutConstraint*)constraintViewFromBottom:(UIView*)view amount:(CGFloat)bottomAmount;
-
-/*! Constrains a view's width to be equal to it's height
- * \param view The view to be constrained
- * \returns A NSLayoutConstraint is returned
- */
-+(NSLayoutConstraint*)constraintViewWidthToEqualHeight:(UIView*)view;
-
-/*! Constrains a view's height to be equal to it's width
- * \param view The view to be constrained
- * \returns A NSLayoutConstraint is returned
- */
-+(NSLayoutConstraint*)constraintViewHeightToEqualWidth:(UIView*)view;
 
 /*! Constrains a view's origin to be the same as another
  * \param view The view to be moved to the other
