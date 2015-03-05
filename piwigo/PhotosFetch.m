@@ -41,7 +41,7 @@
 	[assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
 								 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
 								 if (nil != group) {
-									 [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+//									 [group setAssetsFilter:[ALAssetsFilter allPhotos]];
 									 NSString *groupName = [group valueForProperty:ALAssetsGroupPropertyName];
 									 if([groupName isEqualToString:@"Camera Roll"])
 									 {

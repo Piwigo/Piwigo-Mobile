@@ -177,25 +177,50 @@
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
 							  } failure:nil];
-	
-	[ImageService downloadImage:self.imageData
-					 onProgress:^(NSInteger current, NSInteger total) {
-						 CGFloat progress = (CGFloat)current / total;
-						 self.downloadView.percentDownloaded = progress;
-					 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
-						 [self saveImageToCameraRoll:image];
-					 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-						 self.downloadView.hidden = YES;
-						 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-											message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
-								  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
-								  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
-										   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-											   if(buttonIndex == 1) {
-												   [self downloadImage];
-											   }
-										   }];
-					 }];
+	if(!self.imageData.isVideo)
+	{
+		[ImageService downloadImage:self.imageData
+						 onProgress:^(NSInteger current, NSInteger total) {
+							 CGFloat progress = (CGFloat)current / total;
+							 self.downloadView.percentDownloaded = progress;
+						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
+							 [self saveImageToCameraRoll:image];
+						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+							 self.downloadView.hidden = YES;
+							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+												message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
+									  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
+											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+												   if(buttonIndex == 1) {
+													   [self downloadImage];
+												   }
+											   }];
+						 }];
+	}
+	else
+	{
+		[ImageService downloadVideo:self.imageData
+						 onProgress:^(NSInteger current, NSInteger total) {
+							 CGFloat progress = (CGFloat)current / total;
+							 self.downloadView.percentDownloaded = progress;
+						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, id response) {
+							 NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+							 NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:self.imageData.fileName];
+							 UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
+						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+							 self.downloadView.hidden = YES;
+							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+												message:[NSString stringWithFormat:@"Failed to download video!\n%@", [error localizedDescription]] // @TODO: Localize this
+									  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
+											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+												   if(buttonIndex == 1) {
+													   [self downloadImage];
+												   }
+											   }];
+						 }];
+	}
 }
 -(void)saveImageToCameraRoll:(UIImage*)imageToSave
 {
@@ -209,6 +234,18 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 otherButtonTitles:nil
+						  tapBlock:nil];
+	}
+	self.downloadView.hidden = YES;
+}
+-(void)movie:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+	if(error)
+	{
+		[UIAlertView showWithTitle:@"Fail Saving Video"// @TODO: Localize these!
+						   message:[NSString stringWithFormat:@"Failed to save video. Error: %@", [error localizedDescription]]
 				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 				 otherButtonTitles:nil
 						  tapBlock:nil];

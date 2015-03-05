@@ -109,7 +109,10 @@ NSString * const kGetImageOrderRandom = @"random";
 	
 	imageData.imageId = [imageJson objectForKey:@"id"];
 	imageData.fileName = [imageJson objectForKey:@"file"];
-	if([imageData.fileName rangeOfString:@".mp4"].location != NSNotFound || [imageData.fileName rangeOfString:@".MP4"].location != NSNotFound)
+	if([imageData.fileName rangeOfString:@".mp4"].location != NSNotFound ||
+	   [imageData.fileName rangeOfString:@".MP4"].location != NSNotFound ||
+	   [imageData.fileName rangeOfString:@".MOV"].location != NSNotFound ||
+	   [imageData.fileName rangeOfString:@".mov"].location != NSNotFound)
 	{
 		imageData.isVideo = YES;
 	}
@@ -201,6 +204,30 @@ NSString * const kGetImageOrderRandom = @"random";
 	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:image.fullResPath]];
 	AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:requst];
 	requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
+	[requestOperation setCompletionBlockWithSuccess:completion
+											failure:fail];
+	
+	[requestOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+		if(progress) {
+			progress((NSInteger)totalBytesRead, (NSInteger)totalBytesExpectedToRead);
+		}
+	}];
+	
+	[requestOperation start];
+	return requestOperation;
+}
+
++(AFHTTPRequestOperation*)downloadVideo:(PiwigoImageData*)video
+							 onProgress:(void (^)(NSInteger current, NSInteger total))progress
+					   ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, id response))completion
+							  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	if(!video) return nil;
+	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:video.fullResPath]];
+	AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:requst];
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:video.fileName];
+	requestOperation.outputStream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
 	[requestOperation setCompletionBlockWithSuccess:completion
 											failure:fail];
 	
