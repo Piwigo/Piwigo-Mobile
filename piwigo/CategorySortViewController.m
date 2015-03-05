@@ -112,6 +112,12 @@
 		case kPiwigoSortCategoryIdDescending:
 			name = @"Image ID Descending";
 			break;
+		case kPiwigoSortCategoryVideoOnly:
+			name = @"Videos Only";
+			break;
+		case kPiwigoSortCategoryImageOnly:
+			name = @"Images Only";
+			break;
 			
 		case kPiwigoSortCategoryCount:
 			break;

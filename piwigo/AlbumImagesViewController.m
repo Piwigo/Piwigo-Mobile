@@ -311,6 +311,8 @@
 
 -(void)loadMoreImages
 {
+	if(self.currentSortCategory != 0) return;
+	
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkForProgress:nil
 																								OnCompletion:^(BOOL completed) {
 																									self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
@@ -320,6 +322,12 @@
 
 -(void)setCurrentSortCategory:(kPiwigoSortCategory)currentSortCategory
 {
+	if(_currentSortCategory == kPiwigoSortCategoryVideoOnly ||
+	   _currentSortCategory == kPiwigoSortCategoryImageOnly)
+	{
+		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+	}
+	
 	if(_currentSortCategory == currentSortCategory)
 	{
 		return;
@@ -372,7 +380,8 @@
 	}
 	else
 	{
-		
+		self.imageList = [CategoryImageSort sortImages:self.imageList forSortOrder:_currentSortCategory];
+		[self.imagesCollection reloadData];
 	}
 	
 }

@@ -81,6 +81,24 @@
 		}
 			
 			
+		case kPiwigoSortCategoryVideoOnly:
+		{
+			NSIndexSet *set = [images indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
+				return obj.isVideo;
+			}];
+			newImageList = [images objectsAtIndexes:set];
+			break;
+		}
+		case kPiwigoSortCategoryImageOnly:
+		{
+			NSIndexSet *set = [images indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
+				return !obj.isVideo;
+			}];
+			newImageList = [images objectsAtIndexes:set];
+			break;
+		}
+			
+			
 		case kPiwigoSortCategoryCount:
 			break;
 	}
