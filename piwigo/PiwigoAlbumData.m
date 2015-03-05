@@ -160,17 +160,6 @@
 	self.imageList = newImageList;
 }
 
--(void)sortImageList:(ImageListOrder)order
-{
-	// @TODO: change sort based on enum
-	self.imageList = [self.imageList sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		PiwigoImageData *imgData1 = (PiwigoImageData*)obj1;
-		PiwigoImageData *imgData2 = (PiwigoImageData*)obj2;
-		
-		return [imgData1.imageId integerValue] < [imgData2.imageId integerValue];
-	}];
-}
-
 -(void)removeImage:(PiwigoImageData*)image
 {
 	NSMutableArray *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];

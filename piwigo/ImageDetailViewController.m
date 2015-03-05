@@ -33,7 +33,6 @@
 
 @implementation ImageDetailViewController
 
-// @TODO: BUG:: don't use imageIndex based on the cached data -- you want to pull from the sorted list that's sorted in the ViewController-- abstract it out and have both views pull from the same source.
 -(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex isSorted:(BOOL)isSorted withArray:(NSArray*)array
 {
 	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
