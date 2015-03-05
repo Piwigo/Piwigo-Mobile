@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIImageView *selectedImage;
+@property (nonatomic, strong) UIView *playView;
 
 @end
 
@@ -33,6 +34,19 @@
 		self.cellImage.image = [UIImage imageNamed:@"placeholder"];
 		[self.contentView addSubview:self.cellImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
+		
+		self.playView = [UIView new];
+		self.playView.translatesAutoresizingMaskIntoConstraints = NO;
+		self.playView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+		self.playView.hidden = YES;
+		[self.contentView addSubview:self.playView];
+		UIImageView *playImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"play"]];
+		playImage.translatesAutoresizingMaskIntoConstraints = NO;
+		playImage.contentMode = UIViewContentModeScaleAspectFit;
+		[self.playView addSubview:playImage];
+		[self.playView addConstraints:[NSLayoutConstraint constrainViewToSize:playImage size:CGSizeMake(40, 40)]];
+		[self.playView addConstraints:[NSLayoutConstraint constraintViewToCenter:playImage]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.playView]];
 		
 		UIView *bottomLayer = [UIView new];
 		bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
@@ -97,12 +111,18 @@
 	
 	[self.cellImage setImageWithURL:[NSURL URLWithString:self.imageData.thumbPath] placeholderImage:[UIImage imageNamed:@"placeholder"]];
 	self.nameLabel.text = imageData.name;
+	
+	if(imageData.isVideo)
+	{
+		self.playView.hidden = NO;
+	}
 }
 
 -(void)prepareForReuse
 {
 	self.cellImage.image = nil;
 	self.isSelected = NO;
+	self.playView.hidden = YES;
 }
 
 -(void)setIsSelected:(BOOL)isSelected
