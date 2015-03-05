@@ -20,6 +20,7 @@
 @property (nonatomic, strong) UILabel *date;
 @property (nonatomic, strong) UIView *textUnderlay;
 @property (nonatomic, strong) UIImageView *cellDisclosure;
+@property (nonatomic, strong) AFHTTPRequestOperation *cellDataRequest;
 
 @end
 
@@ -160,19 +161,26 @@
 	else
 	{
 		__weak typeof(self) weakSelf = self;
-		[ImageService getImageInfoById:albumData.albumThumbnailId
+		self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
 					  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
-						  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
-													  placeholderImage:nil
-															   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-																   
-																   albumData.categoryImage = image;
-																   [weakSelf setupBgWithImage:image];
-						  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-							  NSLog(@"fail to get imgage for album");
-						  }];
+						  if(!imageData.mediumPath)
+						  {
+							  albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+						  }
+						  else
+						  {
+							  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
+														  placeholderImage:nil
+																   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+																	   
+																	   albumData.categoryImage = image;
+																	   [weakSelf setupBgWithImage:image];
+							  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+								  NSLog(@"fail to get imgage for album");
+							  }];
+						  }
 					  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-						  NSLog(@"Fail to get album bg image");
+						  NSLog(@"Fail to get album bg image: %@", [error localizedDescription]);
 					  }];
 	}
 }
@@ -205,6 +213,7 @@
 {
 	[super prepareForReuse];
 	
+	[self.cellDataRequest cancel];
 	[self.backgroundImage cancelImageRequestOperation];
 	self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
 	

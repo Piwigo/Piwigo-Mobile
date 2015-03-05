@@ -35,6 +35,7 @@
 		self.albumsTableView.delegate = self;
 		self.albumsTableView.dataSource = self;
 		self.albumsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+		self.albumsTableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 		[self.albumsTableView registerClass:[AlbumTableViewCell class] forCellReuseIdentifier:@"cell"];
 		[self.view addSubview:self.albumsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
