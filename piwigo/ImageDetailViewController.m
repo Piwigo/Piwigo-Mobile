@@ -99,7 +99,9 @@
 	if([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
 	{
 		self.automaticallyAdjustsScrollViewInsets = false;
+		self.edgesForExtendedLayout = UIRectEdgeNone;
 	}
+
 }
 
 -(void)imageOptions
@@ -257,20 +259,65 @@
 {
 	[self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 
-	[UIView animateWithDuration:0.5 animations:^{
-		self.tabBarController.tabBar.hidden = !self.tabBarController.tabBar.hidden;
-		self.topProgressBarConstraint.constant = !self.tabBarController.tabBar.hidden ? self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height : [UIApplication sharedApplication].statusBarFrame.size.height;
-		
-	}];
+	if(self.navigationController.navigationBarHidden)
+	{
+		[self hideTabBar:self.tabBarController];
+	}
+	else
+	{
+		[self showTabBar:self.tabBarController];
+	}
+}
+- (void) hideTabBar:(UITabBarController *) tabbarcontroller
+{
+	CGRect screenRect = [[UIScreen mainScreen] bounds];
 	
-	CGRect frame = self.tabBarController.tabBar.frame;
-	CGFloat height = frame.size.height;
-	CGFloat offsetY = (frame.origin.y >= self.view.frame.size.height) ? -height : height;
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDuration:0.3];
+	float fHeight = screenRect.size.height;
+	if(  UIDeviceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation) )
+	{
+		fHeight = screenRect.size.width;
+	}
 	
-	[UIView animateWithDuration:0.3
-					 animations:^{
-						 self.tabBarController.tabBar.frame = CGRectOffset(frame, 0, offsetY);
-					 }];
+	for(UIView *view in tabbarcontroller.view.subviews)
+	{
+		if([view isKindOfClass:[UITabBar class]])
+		{
+			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
+		}
+		else
+		{
+			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
+			view.backgroundColor = [UIColor blackColor];
+		}
+	}
+	[UIView commitAnimations];
+}
+- (void) showTabBar:(UITabBarController *) tabbarcontroller
+{
+	CGRect screenRect = [[UIScreen mainScreen] bounds];
+	float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
+	
+	if(  UIDeviceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation) )
+	{
+		fHeight = screenRect.size.width - tabbarcontroller.tabBar.frame.size.height;
+	}
+	
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDuration:0.3];
+	for(UIView *view in tabbarcontroller.view.subviews)
+	{
+		if([view isKindOfClass:[UITabBar class]])
+		{
+			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
+		}
+		else
+		{
+			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
+		}
+	}
+	[UIView commitAnimations];
 }
 
 -(ImageDownloadView*)downloadView
@@ -345,6 +392,10 @@
 	self.progressBar.hidden = view.imageLoaded;
 	[self.progressBar setProgress:0];
 	self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+	if(self.imageData.isVideo)
+	{
+		self.progressBar.hidden = YES;
+	}
 	if(self.isSorted)
 	{
 		self.imageData = [self.sortedImages objectAtIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];

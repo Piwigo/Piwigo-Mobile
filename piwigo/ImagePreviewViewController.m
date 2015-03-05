@@ -38,7 +38,7 @@
 {
 	if(imageData.isVideo)
 	{
-		// @TODO: add video download here for a video view for the pageView
+		[self.scrollView setupPlayerWithURL:imageData.fullResPath];
 		return;
 	}
 	

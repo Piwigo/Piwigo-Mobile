@@ -42,4 +42,19 @@
 	return self.imageView;
 }
 
+-(void)setupPlayerWithURL:(NSString*)videoURL
+{
+	self.maximumZoomScale = 1.0;
+	self.minimumZoomScale = 1.0;
+	
+	self.player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:videoURL]];
+	[self.player setControlStyle:MPMovieControlStyleDefault];
+	self.player.scalingMode = MPMovieScalingModeAspectFit;
+	self.player.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	[self  addSubview: self.player.view];
+	[self  bringSubviewToFront:self.player.view];
+	[self.player prepareToPlay];
+	self.player.shouldAutoplay = NO;	
+}
+
 @end
