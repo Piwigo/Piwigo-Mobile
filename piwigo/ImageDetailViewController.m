@@ -94,8 +94,6 @@
 	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
 	self.navigationItem.rightBarButtonItem = imageOptionsButton;
 	
-	self.topProgressBarConstraint.constant = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-	
 	if([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
 	{
 		self.automaticallyAdjustsScrollViewInsets = false;

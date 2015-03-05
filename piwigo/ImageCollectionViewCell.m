@@ -124,6 +124,7 @@
 {
 	self.cellImage.image = nil;
 	self.isSelected = NO;
+	self.playImage.hidden = YES;
 }
 
 -(void)setIsSelected:(BOOL)isSelected
