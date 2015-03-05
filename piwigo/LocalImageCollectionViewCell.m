@@ -12,6 +12,7 @@
 @interface LocalImageCollectionViewCell()
 
 @property (nonatomic, strong) UIImageView *selectedImage;
+@property (nonatomic, strong) UIView *darkenView;
 
 @property (nonatomic, strong) UIView *uploadingView;
 @property (nonatomic, strong) UIProgressView *uploadingProgress;
@@ -36,11 +37,16 @@
 		[self.contentView addSubview:self.cellImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
+		self.darkenView = [UIView new];
+		self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
+		self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
+		self.darkenView.hidden = YES;
+		[self.contentView addSubview:self.darkenView];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
+		
 		self.selectedImage = [UIImageView new];
 		self.selectedImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
-		self.selectedImage.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-		self.selectedImage.layer.cornerRadius = 10;
 		UIImage *checkMark = [UIImage imageNamed:@"checkMark"];
 		self.selectedImage.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		self.selectedImage.tintColor = [UIColor piwigoOrange];
@@ -103,6 +109,7 @@
 	_cellSelected = cellSelected;
 	
 	self.selectedImage.hidden = !cellSelected;
+	self.darkenView.hidden = !cellSelected;
 }
 
 -(void)setCellUploading:(BOOL)uploading

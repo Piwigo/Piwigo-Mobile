@@ -13,7 +13,8 @@
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIImageView *selectedImage;
-@property (nonatomic, strong) UIView *playView;
+@property (nonatomic, strong) UIView *darkenView;
+@property (nonatomic, strong) UIImageView *playImage;
 
 @end
 
@@ -35,18 +36,20 @@
 		[self.contentView addSubview:self.cellImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
-		self.playView = [UIView new];
-		self.playView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.playView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-		self.playView.hidden = YES;
-		[self.contentView addSubview:self.playView];
-		UIImageView *playImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"play"]];
-		playImage.translatesAutoresizingMaskIntoConstraints = NO;
-		playImage.contentMode = UIViewContentModeScaleAspectFit;
-		[self.playView addSubview:playImage];
-		[self.playView addConstraints:[NSLayoutConstraint constrainViewToSize:playImage size:CGSizeMake(40, 40)]];
-		[self.playView addConstraints:[NSLayoutConstraint constraintViewToCenter:playImage]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.playView]];
+		self.darkenView = [UIView new];
+		self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
+		self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
+		self.darkenView.hidden = YES;
+		[self.contentView addSubview:self.darkenView];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
+		
+		self.playImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"play"]];
+		self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
+		self.playImage.contentMode = UIViewContentModeScaleAspectFit;
+		self.playImage.hidden = YES;
+		[self.contentView addSubview:self.playImage];
+		[self.contentView addConstraints:[NSLayoutConstraint constrainViewToSize:self.playImage size:CGSizeMake(40, 40)]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintViewToCenter:self.playImage]];
 		
 		UIView *bottomLayer = [UIView new];
 		bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
@@ -91,8 +94,6 @@
 		self.selectedImage = [UIImageView new];
 		self.selectedImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
-		self.selectedImage.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-		self.selectedImage.layer.cornerRadius = 10;
 		UIImage *checkMark = [UIImage imageNamed:@"checkMark"];
 		self.selectedImage.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		self.selectedImage.tintColor = [UIColor piwigoOrange];
@@ -114,7 +115,8 @@
 	
 	if(imageData.isVideo)
 	{
-		self.playView.hidden = NO;
+		self.darkenView.hidden = NO;
+		self.playImage.hidden = NO;
 	}
 }
 
@@ -122,7 +124,6 @@
 {
 	self.cellImage.image = nil;
 	self.isSelected = NO;
-	self.playView.hidden = YES;
 }
 
 -(void)setIsSelected:(BOOL)isSelected
@@ -130,6 +131,7 @@
 	_isSelected = isSelected;
 
 	self.selectedImage.hidden = !isSelected;
+	self.darkenView.hidden = !isSelected;
 }
 
 @end
