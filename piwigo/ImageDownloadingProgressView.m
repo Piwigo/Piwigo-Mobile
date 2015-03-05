@@ -29,17 +29,17 @@
 		self.downloadingImageSilhouette.clipsToBounds = YES;
 		self.downloadingImageSilhouette.alpha = 0.1;
 		[self addSubview:self.downloadingImageSilhouette];
-		[self addConstraints:[NSLayoutConstraint constraintViewToCenter:self.downloadingImageSilhouette]];
+		[self addConstraints:[NSLayoutConstraint constraintCenterView:self.downloadingImageSilhouette]];
 		
 		self.downloadingImage = [UIImageView new];
 		self.downloadingImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.downloadingImage.contentMode = UIViewContentModeBottom;
 		self.downloadingImage.clipsToBounds = YES;
 		[self addSubview:self.downloadingImage];
-		[self addConstraint:[NSLayoutConstraint constrainViewFromBottom:self.downloadingImage amount:33]];
-		[self addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.downloadingImage]];
-		[self addConstraint:[NSLayoutConstraint constrainViewToWidth:self.downloadingImage width:150]];
-		self.imageHeightConstraint = [NSLayoutConstraint constrainViewToHeight:self.downloadingImage height:0];
+		[self addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.downloadingImage amount:33]];
+		[self addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.downloadingImage]];
+		[self addConstraint:[NSLayoutConstraint constraintView:self.downloadingImage toWidth:150]];
+		self.imageHeightConstraint = [NSLayoutConstraint constraintView:self.downloadingImage toHeight:0];
 		[self addConstraint:self.imageHeightConstraint];
 		
 		[self addConstraint:[NSLayoutConstraint constraintWithItem:self.downloadingImageSilhouette

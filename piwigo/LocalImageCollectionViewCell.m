@@ -52,9 +52,9 @@
 		self.selectedImage.tintColor = [UIColor piwigoOrange];
 		self.selectedImage.hidden = YES;
 		[self.contentView addSubview:self.selectedImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constrainViewToSize:self.selectedImage size:CGSizeMake(30, 30)]];
-		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromRight:self.selectedImage amount:5]];
-		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromTop:self.selectedImage amount:5]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(30, 30)]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:5]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 		
 		
 		// uploading stuff:
@@ -68,7 +68,7 @@
 		self.uploadingProgress = [UIProgressView new];
 		self.uploadingProgress.translatesAutoresizingMaskIntoConstraints = NO;
 		[self.uploadingView addSubview:self.uploadingProgress];
-		[self.uploadingView addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.uploadingProgress]];
+		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadingProgress]];
 		[self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[progress]-10-|"
 																				   options:kNilOptions
 																				   metrics:nil
@@ -80,7 +80,7 @@
 		uploadingLabel.textColor = [UIColor piwigoWhiteCream];
 		uploadingLabel.text = @"Uploading...";	// @TODO: Localize this!
 		[self.uploadingView addSubview:uploadingLabel];
-		[self.uploadingView addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:uploadingLabel]];
+		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:uploadingLabel]];
 		[self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-[progress]"
 																				   options:kNilOptions
 																				   metrics:nil

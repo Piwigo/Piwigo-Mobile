@@ -48,8 +48,8 @@
 		self.playImage.contentMode = UIViewContentModeScaleAspectFit;
 		self.playImage.hidden = YES;
 		[self.contentView addSubview:self.playImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constrainViewToSize:self.playImage size:CGSizeMake(40, 40)]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintViewToCenter:self.playImage]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(40, 40)]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.playImage]];
 		
 		UIView *bottomLayer = [UIView new];
 		bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
@@ -57,7 +57,7 @@
 		bottomLayer.alpha = 0.6;
 		[self.contentView addSubview:bottomLayer];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:bottomLayer]];
-		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromBottom:bottomLayer amount:0]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:bottomLayer amount:0]];
 		
 		self.nameLabel = [UILabel new];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -66,8 +66,8 @@
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.nameLabel];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.nameLabel]];
-		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromBottom:self.nameLabel amount:5]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.nameLabel]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.nameLabel amount:5]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.nameLabel
 																	 attribute:NSLayoutAttributeLeft
 																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
@@ -99,9 +99,9 @@
 		self.selectedImage.tintColor = [UIColor piwigoOrange];
 		self.selectedImage.hidden = YES;
 		[self.contentView addSubview:self.selectedImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constrainViewToSize:self.selectedImage size:CGSizeMake(30, 30)]];
-		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromRight:self.selectedImage amount:5]];
-		[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromTop:self.selectedImage amount:5]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(30, 30)]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:5]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 	}
 	return self;
 }

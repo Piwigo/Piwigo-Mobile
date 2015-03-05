@@ -50,8 +50,8 @@
 							@"field" : self.rightTextField
 							};
 	
-	[self.contentView addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.leftLabel]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.rightTextField]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftLabel]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.rightTextField]];
 	
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(120)]-[field]-10-|"
 																			 options:kNilOptions

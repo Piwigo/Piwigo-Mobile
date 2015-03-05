@@ -36,7 +36,7 @@
 
 -(void)setupConstraints
 {
-	[self.contentView addConstraints:[NSLayoutConstraint constraintViewToCenter:self.buttonLabel]];
+	[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.buttonLabel]];
 }
 
 -(void)setButtonText:(NSString *)buttonText

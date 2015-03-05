@@ -141,8 +141,8 @@
 	headerLabel.textColor = [UIColor whiteColor];
 	headerLabel.font = [UIFont piwigoFontNormal];
 	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constrainViewFromBottom:headerLabel amount:0]];
-	[header addConstraint:[NSLayoutConstraint constrainViewFromLeft:headerLabel amount:15]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:0]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:15]];
 	
 	switch(section)
 	{

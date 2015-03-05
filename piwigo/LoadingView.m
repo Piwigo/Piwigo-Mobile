@@ -68,7 +68,7 @@
 								   @"progress" : self.progressLabel
 								   };
 	
-	self.heightConstraint = [NSLayoutConstraint constrainViewToHeight:self height:150];
+	self.heightConstraint = [NSLayoutConstraint constraintView:self toHeight:150];
 	[self addConstraint:self.heightConstraint];
 	[self addConstraint:[NSLayoutConstraint constraintWithItem:self
 													 attribute:NSLayoutAttributeLeft
@@ -96,11 +96,11 @@
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:loadingViews]];
-	[self addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.textLabel]];
-	[self addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.spinner]];
-	[self addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.progressLabel]];
+	[self addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.textLabel]];
+	[self addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.spinner]];
+	[self addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.progressLabel]];
 	
-	[self addConstraints:[NSLayoutConstraint constrainViewToSameLocation:self.checkMark asView:self.spinner]];
+	[self addConstraints:[NSLayoutConstraint constraintViewToSameLocation:self.checkMark asView:self.spinner]];
 }
 
 -(void)hideLoadingWithLabel:(NSString*)text showCheckMark:(BOOL)show withDelay:(CGFloat)delay

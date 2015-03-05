@@ -47,7 +47,7 @@
 			adminLabel.textColor = [UIColor piwigoOrange];
 			adminLabel.text = @"Admin Rights Needed"; // @TODO: Localize this!
 			[self.view addSubview:adminLabel];
-			[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:adminLabel]];
+			[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:adminLabel]];
 			
 			UILabel *description = [UILabel new];
 			description.translatesAutoresizingMaskIntoConstraints = NO;
@@ -57,7 +57,7 @@
 			description.textAlignment = NSTextAlignmentCenter;
 			description.text = @"You're not an admin.\nYou have to be an admin to be able to upload images."; // @TODO: Localize this!
 			[self.view addSubview:description];
-			[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:description]];
+			[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:description]];
 			[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[description]-|"
 																			  options:kNilOptions
 																			  metrics:nil
@@ -101,8 +101,8 @@
 	headerLabel.textColor = [UIColor piwigoGray];
 	headerLabel.text = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
 	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constrainViewFromBottom:headerLabel amount:10]];
-	[header addConstraint:[NSLayoutConstraint constrainViewFromLeft:headerLabel amount:15]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:15]];
 	
 	return header;
 }

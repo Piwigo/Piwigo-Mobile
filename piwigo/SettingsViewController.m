@@ -68,8 +68,8 @@ typedef enum {
 		self.settingsTableView.dataSource = self;
 		[self.view addSubview:self.settingsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.settingsTableView]];
-		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.settingsTableView amount:0]];
-		self.tableViewBottomConstraint = [NSLayoutConstraint constrainViewFromBottom:self.settingsTableView amount:0];
+		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.settingsTableView amount:0]];
+		self.tableViewBottomConstraint = [NSLayoutConstraint constraintViewFromBottom:self.settingsTableView amount:0];
 		[self.view addConstraint:self.tableViewBottomConstraint];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];

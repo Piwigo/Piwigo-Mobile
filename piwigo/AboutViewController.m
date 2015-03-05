@@ -79,9 +79,9 @@
 							@"textView" : self.textView
 							};
 	
-	[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.piwigoTitle]];
-	[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.byLabel]];
-	[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.usuOSSLabel]];
+	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoTitle]];
+	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel]];
+	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.usuOSSLabel]];
 	
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-15-[by][usu]-20-[textView]-65-|"
 																	  options:kNilOptions

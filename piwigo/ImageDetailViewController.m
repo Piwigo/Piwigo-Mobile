@@ -71,7 +71,7 @@
 		self.progressBar.tintColor = [UIColor piwigoOrange];
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
-		[self.progressBar addConstraint:[NSLayoutConstraint constrainViewToHeight:self.progressBar height:10]];
+		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:10]];
 		self.topProgressBarConstraint = [NSLayoutConstraint constraintWithItem:self.progressBar
 															  attribute:NSLayoutAttributeTop
 															  relatedBy:NSLayoutRelationEqual

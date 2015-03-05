@@ -43,7 +43,7 @@
 	self.uploadingProgressBar = [UIProgressView new];
 	self.uploadingProgressBar.translatesAutoresizingMaskIntoConstraints = NO;
 	[self.uploadingOverlay addSubview:self.uploadingProgressBar];
-	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.uploadingProgressBar]];
+	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadingProgressBar]];
 	[self.uploadingOverlay addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[bar]-20-|"
 																				  options:kNilOptions
 																				  metrics:nil
@@ -55,7 +55,7 @@
 	self.uploadingProgressLabel.textColor = [UIColor whiteColor];
 	self.uploadingProgressLabel.text = @"0 %";
 	[self.uploadingOverlay addSubview:self.uploadingProgressLabel];
-	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.uploadingProgressLabel]];
+	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgressLabel]];
 	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadingProgressLabel
 																	  attribute:NSLayoutAttributeBottom
 																	  relatedBy:NSLayoutRelationEqual

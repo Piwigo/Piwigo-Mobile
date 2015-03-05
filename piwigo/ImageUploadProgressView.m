@@ -55,12 +55,12 @@
 		self.imageCountLabel.adjustsFontSizeToFitWidth = YES;
 		self.imageCountLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
 		[self addSubview:self.imageCountLabel];
-		[self addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.imageCountLabel]];
+		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.imageCountLabel]];
 		
 		self.uploadProgress = [[UIProgressView alloc] init];
 		self.uploadProgress.translatesAutoresizingMaskIntoConstraints = NO;
 		[self addSubview:self.uploadProgress];
-		[self addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.uploadProgress]];
+		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadProgress]];
 		
 		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(<=200)]-10-[progress]-15-|"
 																	 options:kNilOptions
@@ -88,7 +88,7 @@
 														  attribute:NSLayoutAttributeBottom
 														 multiplier:1.0
 														   constant:0]];
-	[view addConstraint:[NSLayoutConstraint constrainViewToHeight:self height:50]];
+	[view addConstraint:[NSLayoutConstraint constraintView:self toHeight:50]];
 }
 
 -(void)updateImageCountLabel

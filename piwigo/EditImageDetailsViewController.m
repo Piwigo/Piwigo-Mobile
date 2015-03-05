@@ -104,7 +104,7 @@ typedef enum {
 	
 	LoadingView *loading = [LoadingView new];
 	[self.view addSubview:loading];
-	[self.view addConstraints:[NSLayoutConstraint constraintViewToCenter:loading]];
+	[self.view addConstraints:[NSLayoutConstraint constraintCenterView:loading]];
 	[loading showLoadingWithLabel:@"Setting Image Information" andProgressLabel:nil];
 	
 	[UploadService updateImageInfo:self.imageDetails

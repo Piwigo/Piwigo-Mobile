@@ -33,8 +33,8 @@
 		self.modal.backgroundColor = [UIColor piwigoWhiteCream];
 		self.modal.layer.cornerRadius = 20;
 		[self addSubview:self.modal];
-		[self addConstraints:[NSLayoutConstraint constraintViewToCenter:self.modal]];
-		[self addConstraints:[NSLayoutConstraint constrainViewToSize:self.modal size:CGSizeMake(200, 180)]];
+		[self addConstraints:[NSLayoutConstraint constraintCenterView:self.modal]];
+		[self addConstraints:[NSLayoutConstraint constraintView:self.modal toSize:CGSizeMake(200, 180)]];
 		
 		
 		self.statusLabel = [UILabel new];
@@ -44,8 +44,8 @@
 		self.statusLabel.font = [self.statusLabel.font fontWithSize:18];
 		self.statusLabel.textColor = [UIColor piwigoGray];
 		[self.modal addSubview:self.statusLabel];
-		[self.modal addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.statusLabel]];
-		[self.modal addConstraint:[NSLayoutConstraint constrainViewFromTop:self.statusLabel amount:10]];
+		[self.modal addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.statusLabel]];
+		[self.modal addConstraint:[NSLayoutConstraint constraintViewFromTop:self.statusLabel amount:10]];
 		
 		self.percentLabel = [UILabel new];
 		self.percentLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -54,7 +54,7 @@
 		self.percentLabel.font = [self.percentLabel.font fontWithSize:15];
 		self.percentLabel.textColor = [UIColor piwigoGrayLight];
 		[self.modal addSubview:self.percentLabel];
-		[self.modal addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.percentLabel]];
+		[self.modal addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.percentLabel]];
 		
 		self.totalPercentLabel = [UILabel new];
 		self.totalPercentLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -62,8 +62,8 @@
 		self.totalPercentLabel.font = [self.totalPercentLabel.font fontWithSize:16.5];
 		self.totalPercentLabel.textColor = [UIColor piwigoGray];
 		[self.modal addSubview:self.totalPercentLabel];
-		[self.modal addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.totalPercentLabel]];
-		[self.modal addConstraint:[NSLayoutConstraint constrainViewFromBottom:self.totalPercentLabel amount:10]];
+		[self.modal addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.totalPercentLabel]];
+		[self.modal addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.totalPercentLabel amount:10]];
 		
 		[self.modal addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[percent][total]"
 																		   options:kNilOptions
@@ -74,7 +74,7 @@
 		self.imageProgress = [ImageDownloadingProgressView new];
 		self.imageProgress.translatesAutoresizingMaskIntoConstraints = NO;
 		[self.modal addSubview:self.imageProgress];
-		[self.modal addConstraints:[NSLayoutConstraint constraintViewToCenter:self.imageProgress]];
+		[self.modal addConstraints:[NSLayoutConstraint constraintCenterView:self.imageProgress]];
 	}
 	return self;
 }

@@ -54,10 +54,10 @@
 							@"right" : self.rightLabel
 							};
 	
-	[self.contentView addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.leftLabel]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.rightLabel]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftLabel]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.rightLabel]];
 	
-	self.leftLabelWidthConstraint = [NSLayoutConstraint constrainViewToWidth:self.leftLabel width:80];
+	self.leftLabelWidthConstraint = [NSLayoutConstraint constraintView:self.leftLabel toWidth:80];
 	[self.contentView addConstraint:self.leftLabelWidthConstraint];
 	
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[right]-10-|"

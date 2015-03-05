@@ -123,14 +123,14 @@
 																   multiplier:1.0
 																	 constant:0]];
 	
-	[self.contentView addConstraint:[NSLayoutConstraint constrainViewToSameBase:self.date equalBaseAsView:self.numberOfImages]];
-	[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromRight:self.date amount:20]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintViewToSameBase:self.date equalToView:self.numberOfImages]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.date amount:20]];
 	
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[bg]-5-|"
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:@{@"bg" : self.textUnderlay}]];
-	[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromBottom:self.textUnderlay amount:0]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.textUnderlay amount:0]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.textUnderlay
 																 attribute:NSLayoutAttributeTop
 																 relatedBy:NSLayoutRelationEqual
@@ -139,9 +139,9 @@
 																multiplier:1.0
 																  constant:-5]];
 	
-	[self.cellDisclosure addConstraints:[NSLayoutConstraint constrainViewToSize:self.cellDisclosure size:CGSizeMake(23, 23)]];
-	[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromRight:self.cellDisclosure amount:15]];
-	[self.contentView addConstraint:[NSLayoutConstraint constrainViewFromBottom:self.cellDisclosure amount:38]];
+	[self.cellDisclosure addConstraints:[NSLayoutConstraint constraintView:self.cellDisclosure toSize:CGSizeMake(23, 23)]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.cellDisclosure amount:15]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.cellDisclosure amount:38]];
 }
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData

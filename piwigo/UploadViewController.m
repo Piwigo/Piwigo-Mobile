@@ -72,8 +72,8 @@
 		self.noImagesLabel.text = @"No Images";
 		self.noImagesLabel.hidden = YES;
 		[self.view addSubview:self.noImagesLabel];
-		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.noImagesLabel amount:60]];
-		[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.noImagesLabel]];
+		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:60]];
+		[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
 		
 		self.selectedImageKeys = [NSMutableArray new];
 		
@@ -141,7 +141,7 @@
 			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
 			[self.loadingView showLoadingWithLabel:@"Downloading Image Info" andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
 			[self.view addSubview:self.loadingView];
-			[self.view addConstraints:[NSLayoutConstraint constraintViewToCenter:self.loadingView]];
+			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
 			
 			
 			if(downloadingCategory.numberOfImages != downloadingCategory.imageList.count)

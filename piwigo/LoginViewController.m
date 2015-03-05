@@ -130,34 +130,34 @@
 																	  metrics:metrics
 																		views:views]];
 	
-	self.logoTopConstraint = [NSLayoutConstraint constrainViewFromTop:self.piwigoLogo amount:self.topConstraintAmount];
+	self.logoTopConstraint = [NSLayoutConstraint constraintViewFromTop:self.piwigoLogo amount:self.topConstraintAmount];
 	[self.view addConstraint:self.logoTopConstraint];
 	
-	[self.piwigoLogo addConstraint:[NSLayoutConstraint constrainViewToHeight:self.piwigoLogo height:textFeildHeight + 36]];
+	[self.piwigoLogo addConstraint:[NSLayoutConstraint constraintView:self.piwigoLogo toHeight:textFeildHeight + 36]];
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-imageSide-[logo]-imageSide-|"
 																	  options:kNilOptions
 																	  metrics:metrics
 																		views:views]];
 	
-	[self.serverTextField addConstraint:[NSLayoutConstraint constrainViewToHeight:self.serverTextField height:textFeildHeight]];
+	[self.serverTextField addConstraint:[NSLayoutConstraint constraintView:self.serverTextField toHeight:textFeildHeight]];
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[server]-side-|"
 																	  options:kNilOptions
 																	  metrics:metrics
 																		views:views]];
 	
-	[self.userTextField addConstraint:[NSLayoutConstraint constrainViewToHeight:self.userTextField height:textFeildHeight]];
+	[self.userTextField addConstraint:[NSLayoutConstraint constraintView:self.userTextField toHeight:textFeildHeight]];
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[user]-side-|"
 																	  options:kNilOptions
 																	  metrics:metrics
 																		views:views]];
 	
-	[self.passwordTextField addConstraint:[NSLayoutConstraint constrainViewToHeight:self.passwordTextField height:textFeildHeight]];
+	[self.passwordTextField addConstraint:[NSLayoutConstraint constraintView:self.passwordTextField toHeight:textFeildHeight]];
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[password]-side-|"
 																	  options:kNilOptions
 																	  metrics:metrics
 																		views:views]];
 	
-	[self.loginButton addConstraint:[NSLayoutConstraint constrainViewToHeight:self.loginButton height:textFeildHeight]];
+	[self.loginButton addConstraint:[NSLayoutConstraint constraintView:self.loginButton toHeight:textFeildHeight]];
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[login]-side-|"
 																	  options:kNilOptions
 																	  metrics:metrics
@@ -165,8 +165,8 @@
 	
 	
 	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.loadingView]];
-	[self.loadingView addConstraints:[NSLayoutConstraint constraintViewToCenter:self.spinner]];
-	[self.loadingView addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.loggingInLabel]];
+	[self.loadingView addConstraints:[NSLayoutConstraint constraintCenterView:self.spinner]];
+	[self.loadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.loggingInLabel]];
 	[self.loadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-[spinner]"
 																			 options:kNilOptions
 																			 metrics:nil

@@ -10,7 +10,7 @@
 
 @implementation NSLayoutConstraint (CommonConstraints)
 
-+(NSLayoutConstraint*)constraintHorizontalCenterView:(UIView*)view
++(NSLayoutConstraint*)constraintCenterVerticalView:(UIView*)view
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeCenterX
@@ -21,7 +21,7 @@
 										 constant:0];
 }
 
-+(NSLayoutConstraint*)constraintVerticalCenterView:(UIView*)view
++(NSLayoutConstraint*)constraintCenterHorizontalView:(UIView*)view
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeCenterY
@@ -32,11 +32,11 @@
 										 constant:0];
 }
 
-+(NSArray*)constraintViewToCenter:(UIView*)view
++(NSArray*)constraintCenterView:(UIView*)view
 {
 	return @[
-			 [NSLayoutConstraint constraintVerticalCenterView:view],
-			 [NSLayoutConstraint constraintHorizontalCenterView:view]
+			 [NSLayoutConstraint constraintCenterHorizontalView:view],
+			 [NSLayoutConstraint constraintCenterVerticalView:view]
 			 ];
 }
 
@@ -86,7 +86,7 @@
 	return array;
 }
 
-+(NSLayoutConstraint*)constrainViewToHeight:(UIView*)view height:(NSInteger)height
++(NSLayoutConstraint*)constraintView:(UIView*)view toHeight:(CGFloat)height
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeHeight
@@ -97,7 +97,7 @@
 										 constant:height];
 }
 
-+(NSLayoutConstraint*)constrainViewToWidth:(UIView*)view width:(NSInteger)width
++(NSLayoutConstraint*)constraintView:(UIView*)view toWidth:(CGFloat)width
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeWidth
@@ -108,17 +108,17 @@
 										 constant:width];
 }
 
-+(NSArray*)constrainViewToSize:(UIView*)view size:(CGSize)size
++(NSArray*)constraintView:(UIView*)view toSize:(CGSize)size
 {
 	return @[
-			 [NSLayoutConstraint constrainViewToHeight:view height:size.height],
-			 [NSLayoutConstraint constrainViewToWidth:view width:size.width]
+			 [NSLayoutConstraint constraintView:view toHeight:size.height],
+			 [NSLayoutConstraint constraintView:view toWidth:size.width]
 			 ];
 }
 
-+(NSLayoutConstraint*)constrainViewToSameBase:(UIView*)view equalBaseAsView:(UIView*)view2
++(NSLayoutConstraint*)constraintViewToSameBase:(UIView*)view1 equalToView:(UIView*)view2
 {
-	return [NSLayoutConstraint constraintWithItem:view
+	return [NSLayoutConstraint constraintWithItem:view1
 										 attribute:NSLayoutAttributeBaseline
 										 relatedBy:NSLayoutRelationEqual
 											toItem:view2
@@ -127,7 +127,7 @@
 										  constant:0];
 }
 
-+(NSLayoutConstraint*)constrainViewFromLeft:(UIView*)view amount:(CGFloat)leftAmount
++(NSLayoutConstraint*)constraintViewFromLeft:(UIView*)view amount:(CGFloat)leftAmount
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeLeft
@@ -138,7 +138,7 @@
 										 constant:leftAmount];
 }
 
-+(NSLayoutConstraint*)constrainViewFromRight:(UIView*)view amount:(CGFloat)rightAmount
++(NSLayoutConstraint*)constraintViewFromRight:(UIView*)view amount:(CGFloat)rightAmount
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeRight
@@ -149,7 +149,7 @@
 										 constant:-rightAmount];
 }
 
-+(NSLayoutConstraint*)constrainViewFromTop:(UIView*)view amount:(CGFloat)topAmount
++(NSLayoutConstraint*)constraintViewFromTop:(UIView*)view amount:(CGFloat)topAmount
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeTop
@@ -160,7 +160,7 @@
 										 constant:topAmount];
 }
 
-+(NSLayoutConstraint*)constrainViewFromBottom:(UIView*)view amount:(CGFloat)bottomAmount
++(NSLayoutConstraint*)constraintViewFromBottom:(UIView*)view amount:(CGFloat)bottomAmount
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeBottom
@@ -171,7 +171,7 @@
 										 constant:-bottomAmount];
 }
 
-+(NSLayoutConstraint*)constrainViewWidthToEqualHeight:(UIView*)view
++(NSLayoutConstraint*)constraintViewWidthToEqualHeight:(UIView*)view
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeWidth
@@ -183,7 +183,7 @@
 }
 
 
-+(NSLayoutConstraint*)constrainViewHeightToEqualWidth:(UIView*)view
++(NSLayoutConstraint*)constraintViewHeightToEqualWidth:(UIView*)view
 {
 	return [NSLayoutConstraint constraintWithItem:view
 										attribute:NSLayoutAttributeHeight
@@ -194,7 +194,7 @@
 										 constant:0];
 }
 
-+(NSArray*)constrainViewToSameLocation:(UIView*)view asView:(UIView*)copyView
++(NSArray*)constraintViewToSameLocation:(UIView*)view asView:(UIView*)copyView
 {
 	return @[
 			 [NSLayoutConstraint constraintWithItem:view

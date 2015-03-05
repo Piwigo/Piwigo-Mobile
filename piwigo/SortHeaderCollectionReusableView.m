@@ -26,8 +26,8 @@
 		sortLabel.text = @"Sort by";	// @TODO: Localize this!
 		sortLabel.font = [UIFont piwigoFontNormal];
 		[self addSubview:sortLabel];
-		[self addConstraint:[NSLayoutConstraint constraintVerticalCenterView:sortLabel]];
-		[self addConstraint:[NSLayoutConstraint constrainViewFromLeft:sortLabel amount:15]];
+		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:sortLabel]];
+		[self addConstraint:[NSLayoutConstraint constraintViewFromLeft:sortLabel amount:15]];
 		
 		UIImageView *disclosure = [UIImageView new];
 		disclosure.translatesAutoresizingMaskIntoConstraints = NO;
@@ -35,8 +35,8 @@
 		disclosure.image = disclosureImg;
 		disclosure.tintColor = [UIColor piwigoGrayLight];
 		[self addSubview:disclosure];
-		[self addConstraints:[NSLayoutConstraint constrainViewToSize:disclosure size:CGSizeMake(30, 30)]];
-		[self addConstraint:[NSLayoutConstraint constraintVerticalCenterView:disclosure]];
+		[self addConstraints:[NSLayoutConstraint constraintView:disclosure toSize:CGSizeMake(30, 30)]];
+		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:disclosure]];
 		
 		self.currentSortLabel = [UILabel new];
 		self.currentSortLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -44,7 +44,7 @@
 		self.currentSortLabel.font = [UIFont piwigoFontNormal];
 		self.currentSortLabel.textColor = [UIColor piwigoGrayLight];
 		[self addSubview:self.currentSortLabel];
-		[self addConstraint:[NSLayoutConstraint constraintVerticalCenterView:self.currentSortLabel]];
+		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.currentSortLabel]];
 
 		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[label]-5-[disclosure]-5-|"
 																	 options:kNilOptions

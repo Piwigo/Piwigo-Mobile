@@ -10,38 +10,121 @@
 
 @interface NSLayoutConstraint (CommonConstraints)
 
-/*! Centers the view left to right |--here--|
- * \param view View to be centered
+
+// -------------------------- CENTERING --------------------------
+/*! Centers the view vertically, this is left to right "|--here--|"
+ * \param view The view to be centered
  * \returns A NSLayoutConstraint is returned
  */
-+(NSLayoutConstraint*)constraintHorizontalCenterView:(UIView*)view;
++(NSLayoutConstraint*)constraintCenterVerticalView:(UIView*)view;
 
-/*! Centers the view top to bottom
- * \param view View to be centered
+/*! Centers the view horizontally, this is top to bottom
+ * \param view The view to be centered
  * \returns A NSLayoutConstraint is returned
  */
-+(NSLayoutConstraint*)constraintVerticalCenterView:(UIView*)view;
++(NSLayoutConstraint*)constraintCenterHorizontalView:(UIView*)view;
 
-+(NSArray*)constraintViewToCenter:(UIView*)view;
+/*! Centers the view both horizontally and vertically
+ * \param view The view to be centered
+ * \returns An array of NSLayoutConstraints is returned
+ */
++(NSArray*)constraintCenterView:(UIView*)view;
 
+
+// -------------------------- SIZING --------------------------
+/*! Match the view's width of it's superview
+ * \param view The view to be matched
+ * \returns An array of NSLayoutConstraints is returned
+ */
 +(NSArray*)constraintFillWidth:(UIView*)view;
 
+/*! Match the view's height of it's superview
+ * \param view The view to be matched
+ * \returns An array of NSLayoutConstraints is returned
+ */
 +(NSArray*)constraintFillHeight:(UIView*)view;
 
+/*! Match the view's width and height of it's superview
+ * \param view The view to be matched in size
+ * \returns An array of NSLayoutConstraints is returned
+ */
 +(NSArray*)constraintFillSize:(UIView*)view;
 
-+(NSLayoutConstraint*)constrainViewToHeight:(UIView*)view height:(NSInteger)height;
-+(NSLayoutConstraint*)constrainViewToWidth:(UIView*)view width:(NSInteger)width;
-+(NSArray*)constrainViewToSize:(UIView*)view size:(CGSize)size;
 
-+(NSLayoutConstraint*)constrainViewToSameBase:(UIView*)view equalBaseAsView:(UIView*)view2;
-+(NSLayoutConstraint*)constrainViewFromLeft:(UIView*)view amount:(CGFloat)leftAmount;
-+(NSLayoutConstraint*)constrainViewFromRight:(UIView*)view amount:(CGFloat)rightAmount;
-+(NSLayoutConstraint*)constrainViewFromTop:(UIView*)view amount:(CGFloat)topAmount;
-+(NSLayoutConstraint*)constrainViewFromBottom:(UIView*)view amount:(CGFloat)bottomAmount;
+// -------------------------- FRAME --------------------------
+/*! Sets a view's height to a specific size
+ * \param view The view whose height is to be changed
+ * \param height The specific height wanted
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintView:(UIView*)view toHeight:(CGFloat)height;
 
-+(NSLayoutConstraint*)constrainViewWidthToEqualHeight:(UIView*)view;
-+(NSLayoutConstraint*)constrainViewHeightToEqualWidth:(UIView*)view;
-+(NSArray*)constrainViewToSameLocation:(UIView*)view asView:(UIView*)copyView;
+/*! Sets a view's width to a specific size
+ * \param view The view whose width is to be changed
+ * \param width The specific width wanted
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintView:(UIView*)view toWidth:(CGFloat)width;
+
+/*! Sets a view's size
+ * \param view The view whose size is to be changed
+ * \param size The specific CGSize wanted
+ * \returns An array of NSLayoutConstraints is returned
+ */
++(NSArray*)constraintView:(UIView*)view toSize:(CGSize)size;
+
+/*! Sets view1's baseline equal to view2's baseline
+ * \param view1 The view whose baseline is to be changed
+ * \param view2 The view whose baseline is to be used to set the other
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewToSameBase:(UIView*)view1 equalToView:(UIView*)view2;
+
+/*! Constrains a view a specific amount from the left of it's superview
+ * \param view The view to be constrained
+ * \param leftAmount The specific amount of pixels for the view to be from the left
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewFromLeft:(UIView*)view amount:(CGFloat)leftAmount;
+
+/*! Constrains a view a specific amount from the right of it's superview
+ * \param view The view to be constrained
+ * \param rightAmount The specific amount of pixels for the view to be from the right
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewFromRight:(UIView*)view amount:(CGFloat)rightAmount;
+
+/*! Constrains a view a specific amount from the top of it's superview
+ * \param view The view to be constrained
+ * \param topAmount The specific amount of pixels for the view to be from the top
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewFromTop:(UIView*)view amount:(CGFloat)topAmount;
+
+/*! Constrains a view a specific amount from the bottom of it's superview
+ * \param view The view to be constrained
+ * \param bottomAmount The specific amount of pixels for the view to be from the bottom
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewFromBottom:(UIView*)view amount:(CGFloat)bottomAmount;
+
+/*! Constrains a view's width to be equal to it's height
+ * \param view The view to be constrained
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewWidthToEqualHeight:(UIView*)view;
+
+/*! Constrains a view's height to be equal to it's width
+ * \param view The view to be constrained
+ * \returns A NSLayoutConstraint is returned
+ */
++(NSLayoutConstraint*)constraintViewHeightToEqualWidth:(UIView*)view;
+
+/*! Constrains a view's origin to be the same as another
+ * \param view The view to be moved to the other
+ * \param copyView The view whose location is to be used
+ * \returns An array of NSLayoutConstraints is returned
+ */
++(NSArray*)constraintViewToSameLocation:(UIView*)view asView:(UIView*)copyView;
 
 @end

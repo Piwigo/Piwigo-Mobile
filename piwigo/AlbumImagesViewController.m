@@ -82,8 +82,8 @@
 		self.noImagesLabel.text = @"No Images";
 		self.noImagesLabel.hidden = YES;
 		[self.view addSubview:self.noImagesLabel];
-		[self.view addConstraint:[NSLayoutConstraint constrainViewFromTop:self.noImagesLabel amount:80]];
-		[self.view addConstraint:[NSLayoutConstraint constraintHorizontalCenterView:self.noImagesLabel]];
+		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:80]];
+		[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
@@ -346,7 +346,7 @@
 			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
 			[self.loadingView showLoadingWithLabel:@"Downloading Image Info for Sort" andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
 			[self.view addSubview:self.loadingView];
-			[self.view addConstraints:[NSLayoutConstraint constraintViewToCenter:self.loadingView]];
+			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
 			
 			
 			if(self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
