@@ -228,16 +228,32 @@
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
 							  } failure:nil];
-	
-	[ImageService downloadImage:downloadingImage
-					 onProgress:^(NSInteger current, NSInteger total) {
-						 CGFloat progress = (CGFloat)current / total;
-						 self.downloadView.percentDownloaded = progress;
-					 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
-						 [self saveImageToCameraRoll:image];
-					 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-						 NSLog(@"download fail");
-					 }];
+	if(!downloadingImage.isVideo)
+	{
+		[ImageService downloadImage:downloadingImage
+						 onProgress:^(NSInteger current, NSInteger total) {
+							 CGFloat progress = (CGFloat)current / total;
+							 self.downloadView.percentDownloaded = progress;
+						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
+							 [self saveImageToCameraRoll:image];
+						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+							 NSLog(@"download fail");
+						 }];
+	}
+	else
+	{
+		[ImageService downloadVideo:downloadingImage
+						 onProgress:^(NSInteger current, NSInteger total) {
+							 CGFloat progress = (CGFloat)current / total;
+							 self.downloadView.percentDownloaded = progress;
+						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, id response) {
+							 NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+							 NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:downloadingImage.fileName];
+							 UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
+						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+							 NSLog(@"download fail");
+						 }];
+	}
 }
 
 -(void)saveImageToCameraRoll:(UIImage*)imageToSave
@@ -256,6 +272,23 @@
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 		[self cancelSelect];
+	}
+	else
+	{
+		[self.selectedImageIds removeLastObject];
+		[self.imagesCollection reloadData];
+		[self downloadImage];
+	}
+}
+-(void)movie:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+	if(error)
+	{
+		[UIAlertView showWithTitle:@"Fail Saving Video"// @TODO: Localize these!
+						   message:[NSString stringWithFormat:@"Failed to save video. Error: %@", [error localizedDescription]]
+				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 otherButtonTitles:nil
+						  tapBlock:nil];
 	}
 	else
 	{
