@@ -71,11 +71,11 @@
 
 -(void)addCategory
 {
-	[UIAlertView showWithTitle:@"Create New Album"
-					   message:@"Album name"
+	[UIAlertView showWithTitle:NSLocalizedString(@"createNewAlbum_title", @"Create New Album")
+					   message:NSLocalizedString(@"createNewAlbum_message", @"Album name")
 						 style:UIAlertViewStylePlainTextInput
-			 cancelButtonTitle:@"Cancel"
-			 otherButtonTitles:@[@"Add"]
+			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+			 otherButtonTitles:@[NSLocalizedString(@"alertAddButton", @"Add")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1)
 						  {
@@ -99,9 +99,9 @@
 
 -(void)showCreateCategoryError
 {
-	[UIAlertView showWithTitle:@"Create Album Error"
-					   message:@"Failed to create a new album"
-			 cancelButtonTitle:@"Okay"
+	[UIAlertView showWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error")
+					   message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }

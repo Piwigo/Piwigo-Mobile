@@ -130,18 +130,18 @@ typedef enum {
 			switch(indexPath.row)
 			{
 				case 0:
-					cell.leftText = @"Server";	// @TODO: Localize this
+					cell.leftText = NSLocalizedString(@"settings_server", @"Server");
 					cell.rightText = [Model sharedInstance].serverName;
 					break;
 				case 1:
-					cell.leftText = @"Username";	// @TODO: Localize this
+					cell.leftText = NSLocalizedString(@"settings_username", @"Username");
 					if([Model sharedInstance].username.length > 0)
 					{
 						cell.rightText = [Model sharedInstance].username;
 					}
 					else
 					{
-						cell.rightText = @" - Not Logged In - ";	// @TODO: Localize this
+						cell.rightText = NSLocalizedString(@"settings_notLoggedIn", @" - Not Logged In - ");
 					}
 					break;
 			}
@@ -157,11 +157,11 @@ typedef enum {
 			}
 			if([Model sharedInstance].username.length > 0)
 			{
-				cell.buttonText = @"Logout";	// @TODO: Localize this
+				cell.buttonText = NSLocalizedString(@"settings_logout", @"Logout");
 			}
 			else
 			{
-				cell.buttonText = @"Login";
+				cell.buttonText = NSLocalizedString(@"login", @"Login");
 			}
 			tableViewCell = cell;
 			break;
@@ -178,9 +178,9 @@ typedef enum {
 						cell = [TextFieldTableViewCell new];
 					}
 					
-					cell.labelText = @"Default Author";	// @TODO: localize this
+					cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Default Author");
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
-					cell.rightTextField.placeholder = @"Author";	// @TODO: localize this
+					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author");
 					cell.rightTextField.delegate = self;
 					cell.rightTextField.tag = kImageUploadSettingAuthor;
 					
@@ -195,7 +195,7 @@ typedef enum {
 						cell = [LabelTableViewCell new];
 					}
 					
-					cell.leftText = @"Default Privacy";
+					cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Default Privacy");
 					cell.rightText = [[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					cell.leftLabelWidth = 120;
@@ -205,13 +205,13 @@ typedef enum {
 				}
 				case 2:
 				{
-					TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsField"];
-					if(!cell)
-					{
-						cell = [TextFieldTableViewCell new];
-					}
-					cell.labelText = @"Image Width";
-					cell.rightTextField.text = @"";
+//					TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsField"];
+//					if(!cell)
+//					{
+//						cell = [TextFieldTableViewCell new];
+//					}
+//					cell.labelText = @"Image Width";
+//					cell.rightTextField.text = @"";
 					break;
 				}
 				case 3:
@@ -229,7 +229,7 @@ typedef enum {
 				cell = [LabelTableViewCell new];
 			}
 			
-			cell.leftText = @"About Piwigo Mobile";	// @TODO: Localize this!
+			cell.leftText = NSLocalizedString(@"settings_about", @"About Piwigo Mobile");
 			cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			cell.leftLabelWidth = 220;
@@ -263,13 +263,13 @@ typedef enum {
 	switch(section)
 	{
 		case SettingSectionServer:
-			headerLabel.text = @"Piwigo Server";
+			headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
 			break;
 		case SettingSectionImageUpload:
-			headerLabel.text = @"Image Upload Settings";
+			headerLabel.text = NSLocalizedString(@"settingsHeader_imageSettings", @"Image Upload Settings");
 			break;
 		case SettingSectionAbout:
-			headerLabel.text = @"About";
+			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"About");
 			break;
 	}
 	
@@ -316,10 +316,10 @@ typedef enum {
 {
 	if([Model sharedInstance].username.length > 0)
 	{
-		[UIAlertView showWithTitle:@"Logout"	// @TODO: localize these
-						   message:@"Are you sure you want to logout?"
-				 cancelButtonTitle:@"No"
-				 otherButtonTitles:@[@"Yes"]
+		[UIAlertView showWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
+						   message:NSLocalizedString(@"logoutConfirmation_message", @"Are you sure you want to logout?")
+				 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+				 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 						  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 							  if(buttonIndex == 1)
 							  {
@@ -332,10 +332,10 @@ typedef enum {
 									  }
 									  else
 									  {
-										  [UIAlertView showWithTitle:@"Logout Failed"
-															 message:@"Failed to logout\nTry again?"
-												   cancelButtonTitle:@"Okay"
-												   otherButtonTitles:@[@"Yes"]
+										  [UIAlertView showWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
+															 message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
+												   cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+												   otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 															tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 																if(buttonIndex == 1)
 																{

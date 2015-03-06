@@ -55,7 +55,16 @@ typedef enum {
 					  self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
 					  [self.editImageDetailsTableView reloadData];
 				  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					  // @TODO: tell the user that the image details couldn't be loaded.
+					  [UIAlertView showWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+										 message:NSLocalizedString(@"imageDetailsFetchError_message", @"Fetching the image data failed\nTry again?")
+							   cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+							   otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
+										tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+											if(buttonIndex == 1)
+											{
+												self.isEdit = _isEdit;
+											}
+										}];
 				  }];
 }
 

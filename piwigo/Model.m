@@ -45,23 +45,22 @@
 -(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
 {
 	NSString *name = @"";
-	// @TODO: Localize this!
 	switch(privacyLevel)
 	{
 		case kPiwigoPrivacyAdmins:
-			name = @"Admins";
+			name = NSLocalizedString(@"privacyLevel_admin", @"Admins");
 			break;
 		case kPiwigoPrivacyAdminsFamily:
-			name = @"Admins, Family";
+			name = NSLocalizedString(@"privacyLevel_adminFamily", @"Admins, Family");
 			break;
 		case kPiwigoPrivacyAdminsFamilyFriends:
-			name = @"Admins, Family, Friends";
+			name = NSLocalizedString(@"privacyLevel_adminsFamilyFriends", @"Admins, Family, Friends");
 			break;
 		case kPiwigoPrivacyAdminsFamilyFriendsContacts:
-			name = @"Admins, Family, Friends, Contacts";
+			name = NSLocalizedString(@"privacyLevel_adminsFamilyFriendsContacts", @"Admins, Family, Friends, Contacts");
 			break;
 		case kPiwigoPrivacyEverybody:
-			name = @"Everybody";
+			name = NSLocalizedString(@"privacyLevel_everybody", @"Everybody");
 			break;
 			
 			

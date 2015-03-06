@@ -23,7 +23,7 @@
 		
 		UILabel *sortLabel = [UILabel new];
 		sortLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		sortLabel.text = @"Sort by";	// @TODO: Localize this!
+		sortLabel.text = NSLocalizedString(@"sortBy", @"Sort by");
 		sortLabel.font = [UIFont piwigoFontNormal];
 		[self addSubview:sortLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:sortLabel]];
@@ -40,7 +40,7 @@
 		
 		self.currentSortLabel = [UILabel new];
 		self.currentSortLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.currentSortLabel.text = @"Name";
+		self.currentSortLabel.text = NSLocalizedString(@"localImageSort_name", @"Name");
 		self.currentSortLabel.font = [UIFont piwigoFontNormal];
 		self.currentSortLabel.textColor = [UIColor piwigoGrayLight];
 		[self addSubview:self.currentSortLabel];

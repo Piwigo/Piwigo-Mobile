@@ -23,7 +23,7 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
-		self.title = @"Privacy Level";	// @TODO: Localize this!
+		self.title = NSLocalizedString(@"privacyLevel", @"Privacy Level");
 		
 		self.privacyTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.privacyTableView.translatesAutoresizingMaskIntoConstraints = NO;

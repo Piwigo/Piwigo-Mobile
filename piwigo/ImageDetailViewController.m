@@ -210,7 +210,7 @@
 						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 							 self.downloadView.hidden = YES;
 							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-												message:[NSString stringWithFormat:@"Failed to download video!\n%@", [error localizedDescription]] // @TODO: Localize this
+												message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), [error localizedDescription]]
 									  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -243,8 +243,8 @@
 {
 	if(error)
 	{
-		[UIAlertView showWithTitle:@"Fail Saving Video"// @TODO: Localize these!
-						   message:[NSString stringWithFormat:@"Failed to save video. Error: %@", [error localizedDescription]]
+		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
+						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
 				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 				 otherButtonTitles:nil
 						  tapBlock:nil];

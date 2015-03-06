@@ -79,7 +79,7 @@
 		self.noImagesLabel.font = [UIFont piwigoFontNormal];
 		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
 		self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
-		self.noImagesLabel.text = @"No Images"; // @TODO: Localize this!
+		self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
 		self.noImagesLabel.hidden = YES;
 		[self.view addSubview:self.noImagesLabel];
 		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:120]];
@@ -284,8 +284,8 @@
 {
 	if(error)
 	{
-		[UIAlertView showWithTitle:@"Fail Saving Video"// @TODO: Localize these!
-						   message:[NSString stringWithFormat:@"Failed to save video. Error: %@", [error localizedDescription]]
+		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
+						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
 				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 				 otherButtonTitles:nil
 						  tapBlock:nil];

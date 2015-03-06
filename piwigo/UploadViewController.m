@@ -69,7 +69,7 @@
 		self.noImagesLabel.font = [UIFont piwigoFontNormal];
 		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
 		self.noImagesLabel.textColor = [UIColor piwigoGrayLight];
-		self.noImagesLabel.text = @"No Images";
+		self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
 		self.noImagesLabel.hidden = YES;
 		[self.view addSubview:self.noImagesLabel];
 		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:60]];
@@ -77,7 +77,7 @@
 		
 		self.selectedImageKeys = [NSMutableArray new];
 		
-		self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Select All" style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
+		self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"selectAll", @"Select All") style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"]
 																style:UIBarButtonItemStylePlain

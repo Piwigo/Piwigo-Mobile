@@ -22,7 +22,7 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor whiteColor];
-		self.title = @"Sort Type"; // @TODO: Localize this!
+		self.title = NSLocalizedString(@"sortTitle", @"Sort Type");
 		
 		self.sortSelectTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.sortSelectTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -89,34 +89,34 @@
 	switch(sortType)
 	{
 		case kPiwigoSortCategoryNameAscending:
-			name = @"Name Ascending";
+			name = NSLocalizedString(@"categorySort_nameAscending", @"Name Ascending");
 			break;
 		case kPiwigoSortCategoryNameDescending:
-			name = @"Name Descending";
+			name = NSLocalizedString(@"categorySort_nameDescending", @"Name Descending");
 			break;
 		case kPiwigoSortCategoryFileNameAscending:
-			name = @"File Name Ascending";
+			name = NSLocalizedString(@"categorySort_fileNameAscending", @"File Name Ascending");
 			break;
 		case kPiwigoSortCategoryFileNameDescending:
-			name = @"File Name Descending";
+			name = NSLocalizedString(@"categorySort_fileNameDescending", @"File Name Descending");
 			break;
 		case kPiwigoSortCategoryDateCreatedAscending:
-			name = @"Date Ascending";
+			name = NSLocalizedString(@"categorySort_dateAscending", @"Date Ascending");
 			break;
 		case kPiwigoSortCategoryDateCreatedDescending:
-			name = @"Date Descending (most recent first)";
+			name = NSLocalizedString(@"categorySort_dateDescending", @"Date Descending");
 			break;
 		case kPiwigoSortCategoryIdAscending:
-			name = @"Image ID Ascending";
+			name = NSLocalizedString(@"categorySort_imageIDAscending", @"Image ID Ascending");
 			break;
 		case kPiwigoSortCategoryIdDescending:
-			name = @"Image ID Descending";
+			name = NSLocalizedString(@"categorySort_imageIDDescending", @"Image ID Descending");
 			break;
 		case kPiwigoSortCategoryVideoOnly:
-			name = @"Videos Only";
+			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
 			break;
 		case kPiwigoSortCategoryImageOnly:
-			name = @"Images Only";
+			name = NSLocalizedString(@"categorySort_imagesOnly", @"Images Only");
 			break;
 			
 		case kPiwigoSortCategoryCount:

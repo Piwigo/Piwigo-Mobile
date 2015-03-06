@@ -35,7 +35,7 @@
 	if(tagsString.length <= 0)
 	{
 		self.rightLabel.textColor = [UIColor lightGrayColor];
-		self.rightLabel.text = @"none";	//@TODO: Localize this!
+		self.rightLabel.text = NSLocalizedString(@"none", @"none");
 	}
 	else
 	{

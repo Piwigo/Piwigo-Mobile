@@ -25,7 +25,7 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor whiteColor];
-		self.title = @"Tags";	// @TODO: Localize this!
+		self.title = NSLocalizedString(@"tags", @"Tags");
 		
 		self.selectedIndices = [NSMutableArray new];
 		

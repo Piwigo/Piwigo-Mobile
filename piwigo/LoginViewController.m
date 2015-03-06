@@ -59,7 +59,7 @@
 				
 		self.userTextField = [PiwigoTextField new];
 		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.userTextField.placeholder = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"login_userPlaceholder", @"Username"), @"(optional)"];
+		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username (optional)");
 		self.userTextField.text = [KeychainAccess getLoginUser];
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -69,7 +69,7 @@
 		
 		self.passwordTextField = [PiwigoTextField new];
 		self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.passwordTextField.placeholder = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"login_passwordPlaceholder", @"Password"), @"(optional)"];
+		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
 		self.passwordTextField.text = [KeychainAccess getLoginPassword];
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
@@ -78,7 +78,7 @@
 		
 		self.loginButton = [PiwigoButton new];
 		self.loginButton.translatesAutoresizingMaskIntoConstraints = NO;
-		[self.loginButton setTitle:NSLocalizedString(@"login_loginButton", @"Login") forState:UIControlStateNormal];
+		[self.loginButton setTitle:NSLocalizedString(@"login", @"Login") forState:UIControlStateNormal];
 		[self.loginButton addTarget:self action:@selector(performLogin) forControlEvents:UIControlEventTouchUpInside];
 		[self.view addSubview:self.loginButton];
 		
@@ -229,10 +229,10 @@
 		{
 			if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
 			{	// they need to update
-				[UIAlertView showWithTitle:@"Server Incompatable"	// @TODO: Localize this!
-								   message:@"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"
-						 cancelButtonTitle:@"Okay"
-						 otherButtonTitles:@[@"Yes"]
+				[UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatable_title", @"Server Incompatable")
+								   message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatable_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
+						 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+						 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 									  if(buttonIndex == 1)
 									  {	// proceed at their own risk

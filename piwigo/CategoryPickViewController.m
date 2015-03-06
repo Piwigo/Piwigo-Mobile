@@ -45,7 +45,7 @@
 			adminLabel.font = [UIFont piwigoFontNormal];
 			adminLabel.font = [adminLabel.font fontWithSize:20];
 			adminLabel.textColor = [UIColor piwigoOrange];
-			adminLabel.text = @"Admin Rights Needed"; // @TODO: Localize this!
+			adminLabel.text = NSLocalizedString(@"adminRights_title", @"Admin Rights Needed");
 			[self.view addSubview:adminLabel];
 			[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:adminLabel]];
 			
@@ -55,7 +55,7 @@
 			description.textColor = [UIColor piwigoGray];
 			description.numberOfLines = 4;
 			description.textAlignment = NSTextAlignmentCenter;
-			description.text = @"You're not an admin.\nYou have to be an admin to be able to upload images."; // @TODO: Localize this!
+			description.text = NSLocalizedString(@"adminRights_message", @"You're not an admin.\nYou have to be an admin to be able to upload images.");
 			[self.view addSubview:description];
 			[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:description]];
 			[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[description]-|"

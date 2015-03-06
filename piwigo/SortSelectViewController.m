@@ -24,7 +24,7 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor whiteColor];
-		self.title = @"Sort Type"; // @TODO: Localize this!
+		self.title = NSLocalizedString(@"sortTitle", @"Sort Type");
 		
 		self.sortSelectTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.sortSelectTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -54,14 +54,14 @@
 	switch(sortType)
 	{
 		case kPiwigoSortByName:
-			name = @"Name"; // @TODO: Localize this!
+			name = NSLocalizedString(@"localImageSort_name", @"Name");
 			break;
 		case kPiwigoSortByNotUploaded:
-			name = @"Not Uploaded"; // @TODO: Localize this!
+			name = NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded");
 			break;
 			
 		default:
-			name = @"Undefined"; // @TODO: Localize this!
+			name = NSLocalizedString(@"localImageSort_undefined", @"Undefined");
 			break;
 	}
 	

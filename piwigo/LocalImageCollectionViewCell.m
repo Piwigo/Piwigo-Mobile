@@ -78,7 +78,7 @@
 		uploadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		uploadingLabel.font = [UIFont piwigoFontNormal];
 		uploadingLabel.textColor = [UIColor piwigoWhiteCream];
-		uploadingLabel.text = @"Uploading...";	// @TODO: Localize this!
+		uploadingLabel.text = NSLocalizedString(@"imageUploadingTableCell_uploading", @"Uploading...");
 		[self.uploadingView addSubview:uploadingLabel];
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:uploadingLabel]];
 		[self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-[progress]"
