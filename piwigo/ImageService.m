@@ -112,7 +112,11 @@ NSString * const kGetImageOrderRandom = @"random";
 	if([imageData.fileName rangeOfString:@".mp4"].location != NSNotFound ||
 	   [imageData.fileName rangeOfString:@".MP4"].location != NSNotFound ||
 	   [imageData.fileName rangeOfString:@".MOV"].location != NSNotFound ||
-	   [imageData.fileName rangeOfString:@".mov"].location != NSNotFound)
+	   [imageData.fileName rangeOfString:@".mov"].location != NSNotFound ||
+	   [imageData.fileName rangeOfString:@".AVI"].location != NSNotFound ||
+	   [imageData.fileName rangeOfString:@".avi"].location != NSNotFound ||
+	   [imageData.fileName rangeOfString:@".MP3"].location != NSNotFound ||
+	   [imageData.fileName rangeOfString:@".mp3"].location != NSNotFound)
 	{
 		imageData.isVideo = YES;
 	}
