@@ -136,8 +136,30 @@
 						
 						[self uploadNextImage];
 					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-						NSLog(@"ERROR IMAGE UPLOAD: %@", error);
-						[self showUploadError:error];
+						if(error.code == -1016 &&
+						   ([nextImageToBeUploaded.image rangeOfString:@".MOV"].location != NSNotFound ||
+						   [nextImageToBeUploaded.image rangeOfString:@".mov"].location != NSNotFound))
+						{	// they need to install the VideoJS plugin
+							[UIAlertView showWithTitle:@"Video Upload Error"
+											   message:@"You need to add the plugin \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo"
+									 cancelButtonTitle:@"Okay"
+									 otherButtonTitles:nil
+											  tapBlock:nil];
+						}
+						else
+						{
+							NSLog(@"ERROR IMAGE UPLOAD: %@", error);
+							[self showUploadError:error];
+						}
+						
+						[self.imageUploadQueue removeObjectAtIndex:0];
+						[self.imageNamesUploadQueue removeObjectForKey:imageKey];
+						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+						{
+							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
+						}
+						
+						[self uploadNextImage];
 					}];
 }
 

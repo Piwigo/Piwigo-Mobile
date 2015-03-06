@@ -79,10 +79,10 @@
 		self.noImagesLabel.font = [UIFont piwigoFontNormal];
 		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
 		self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
-		self.noImagesLabel.text = @"No Images";
+		self.noImagesLabel.text = @"No Images"; // @TODO: Localize this!
 		self.noImagesLabel.hidden = YES;
 		[self.view addSubview:self.noImagesLabel];
-		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:80]];
+		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:120]];
 		[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
