@@ -46,10 +46,17 @@
 																				   views:@{@"img" : self.backgroundImage}]];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.backgroundImage]];
 		
-		
-		self.textUnderlay = [UIView new];
+		if(IS_OS_8_OR_LATER)
+		{
+			UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+			self.textUnderlay = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+		}
+		else
+		{
+			self.textUnderlay = [UIView new];
+			self.textUnderlay.alpha = 0.5;
+		}
 		self.textUnderlay.translatesAutoresizingMaskIntoConstraints = NO;
-		self.textUnderlay.alpha = 0.5;
 		[self.contentView addSubview:self.textUnderlay];
 		
 		self.albumName = [OutlinedText new];
@@ -65,21 +72,21 @@
 		self.numberOfImages.translatesAutoresizingMaskIntoConstraints = NO;
 		self.numberOfImages.font = [UIFont piwigoFontNormal];
 		self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
-		self.numberOfImages.textColor = [UIColor piwigoGrayLight];
+		self.numberOfImages.textColor = [UIColor piwigoWhiteCream];
 		[self.contentView addSubview:self.numberOfImages];
 		
 		self.date = [UILabel new];
 		self.date.translatesAutoresizingMaskIntoConstraints = NO;
 		self.date.font = [UIFont piwigoFontNormal];
 		self.date.font = [self.date.font fontWithSize:16.0];
-		self.date.textColor = [UIColor piwigoGrayLight];
+		self.date.textColor = [UIColor piwigoWhiteCream];
 		[self.contentView addSubview:self.date];
 		
 		UIImage *cellDisclosureImg = [UIImage imageNamed:@"cellDisclosure"];
 		self.cellDisclosure = [UIImageView new];
 		self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
 		self.cellDisclosure.image = [cellDisclosureImg imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-		self.cellDisclosure.tintColor = [UIColor piwigoGrayLight];
+		self.cellDisclosure.tintColor = [UIColor piwigoWhiteCream];
 		self.cellDisclosure.contentMode = UIViewContentModeScaleAspectFit;
 		[self.contentView addSubview:self.cellDisclosure];
 		
@@ -189,24 +196,27 @@
 {
 	self.backgroundImage.image = image;
 	
-	LEColorPicker *colorPicker = [LEColorPicker new];
-	LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
-	UIColor *backgroundColor = colorScheme.backgroundColor;
-//	UIColor *primaryColor = colorScheme.primaryTextColor;
-//	UIColor *secondaryColor = colorScheme.secondaryTextColor;
+	if(!IS_OS_8_OR_LATER)
+	{
+		LEColorPicker *colorPicker = [LEColorPicker new];
+		LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
+		UIColor *backgroundColor = colorScheme.backgroundColor;
+	//	UIColor *primaryColor = colorScheme.primaryTextColor;
+	//	UIColor *secondaryColor = colorScheme.secondaryTextColor;
 
-	CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
-	CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
-	CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
+		CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
+		CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
+		CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
 
 
-	int threshold = 105;
-	int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
-	UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
-	self.textUnderlay.backgroundColor = bgColor;
-	self.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
-	self.date.textColor = self.numberOfImages.textColor;
-	self.cellDisclosure.tintColor = self.numberOfImages.textColor;
+		int threshold = 105;
+		int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
+		UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
+		self.textUnderlay.backgroundColor = bgColor;
+		self.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
+		self.date.textColor = self.numberOfImages.textColor;
+		self.cellDisclosure.tintColor = self.numberOfImages.textColor;
+	}
 }
 
 -(void)prepareForReuse
@@ -219,6 +229,12 @@
 	
 	self.albumName.text = @"";
 	self.numberOfImages.text = @"";
+}
+
+-(void)setFrame:(CGRect)frame
+{
+	frame.size.height -= 8.0;
+	[super setFrame:frame];
 }
 
 @end

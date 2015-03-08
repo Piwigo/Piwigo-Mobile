@@ -32,6 +32,7 @@
 		
 		self.albumsTableView = [UITableView new];
 		self.albumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
+		self.albumsTableView.backgroundColor = [UIColor clearColor];
 		self.albumsTableView.delegate = self;
 		self.albumsTableView.dataSource = self;
 		self.albumsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -116,7 +117,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 180.0;
+	return 180.0 + 8.0;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
