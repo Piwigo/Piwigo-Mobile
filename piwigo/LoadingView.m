@@ -1,6 +1,6 @@
 //
 //  LoadingView.m
-//  missionprep
+//  piwigo
 //
 //  Created by Spencer Baker on 12/30/14.
 //  Copyright (c) 2014 BakerCrew. All rights reserved.

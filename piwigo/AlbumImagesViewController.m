@@ -373,14 +373,14 @@
 			lastTime = [NSDate date];
 		} OnCompletion:^(BOOL completed) {
 
-			self.imageList = [CategoryImageSort sortImages:self.imageList forSortOrder:_currentSortCategory];
+			self.imageList = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:_currentSortCategory];
 			[self.loadingView hideLoadingWithLabel:@"Done" showCheckMark:YES withDelay:0.5];
 			[self.imagesCollection reloadData];
 		}];
 	}
 	else
 	{
-		self.imageList = [CategoryImageSort sortImages:self.imageList forSortOrder:_currentSortCategory];
+		self.imageList = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:_currentSortCategory];
 		[self.imagesCollection reloadData];
 	}
 	

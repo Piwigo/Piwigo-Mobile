@@ -1,6 +1,6 @@
 //
 //  Model.h
-//  WordSearch
+//  piwigo
 //
 //  Created by Spencer Baker on 9/10/14.
 //  Copyright (c) 2014 CS 3450. All rights reserved.

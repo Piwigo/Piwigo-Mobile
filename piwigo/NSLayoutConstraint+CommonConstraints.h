@@ -1,6 +1,5 @@
 //
 //  NSLayoutConstraint+CommonConstraints.h
-//  zombiekit
 //
 //  Created by Spencer Baker on 8/13/14.
 //  Copyright (c) 2014 BakerCrew. All rights reserved.

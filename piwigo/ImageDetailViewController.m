@@ -344,7 +344,7 @@
 		}
 	}
 	
-	if(currentIndex >= [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count - 1)
+	if(currentIndex >= self.sortedImages.count - 1)
 	{
 		return nil;
 	}

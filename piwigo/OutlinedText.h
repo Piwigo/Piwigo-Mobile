@@ -1,6 +1,6 @@
 //
 //  OutlinedText.h
-//  wordschain
+//  piwigo
 //
 //  Created by Spencer Baker on 4/1/14.
 //  Copyright (c) 2014 BakerCrew Games. All rights reserved.
