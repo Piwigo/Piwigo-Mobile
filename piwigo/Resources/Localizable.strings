@@ -38,6 +38,8 @@
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Description:";
 "imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
+"imageUploadDetailsEdit_title" = "Edit Images to Upload";
+"imageUploadDetailsUploading_title" = "Images that are Being Uploaded";
 
 "imageUploadingTableCell_uploading" = "Uploading...";
 
@@ -78,7 +80,7 @@
 "settings_notLoggedIn" = " - Not Logged In - ";
 "settings_logout" = "Logout";
 "settings_defaultAuthor" = "Default Author";
-"settings_defaultAuthorPlaceholder" = "Author";
+"settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Default Privacy";
 "settings_about" = "About Piwigo Mobile";
 
@@ -105,6 +107,11 @@
 "categorySort_imageIDDescending" = "Image ID Descending";
 "categorySort_videosOnly" = "Videos Only";
 "categorySort_imagesOnly" = "Images Only";
+
+"editImageDetails_name" = "Image Name";
+"editImageDetails_author" = "Author";
+"editImageDetails_descriptionPlaceholder" = "Description";
+
 
 // ----------------------- ERROR STRINGS -----------------------
 

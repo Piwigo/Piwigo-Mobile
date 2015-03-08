@@ -147,10 +147,10 @@
 	switch(section)
 	{
 		case 0:
-			headerLabel.text = @"Edit Images to Upload";
+			headerLabel.text = NSLocalizedString(@"imageUploadDetailsEdit_title", @"Edit Images to Upload");
 			break;
 		case 1:
-			headerLabel.text = @"Images that are Being Uploaded";
+			headerLabel.text = NSLocalizedString(@"imageUploadDetailsUploading_title", @"Images that are Being Uploaded");
 			break;
 	}
 	

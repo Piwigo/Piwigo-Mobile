@@ -43,8 +43,13 @@
 		self.statusLabel.font = [UIFont piwigoFontNormal];
 		self.statusLabel.font = [self.statusLabel.font fontWithSize:18];
 		self.statusLabel.textColor = [UIColor piwigoGray];
+		self.statusLabel.adjustsFontSizeToFitWidth = YES;
+		self.statusLabel.minimumScaleFactor = 0.5;
 		[self.modal addSubview:self.statusLabel];
-		[self.modal addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.statusLabel]];
+		[self.modal addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[status]-5-|"
+																		   options:kNilOptions
+																		   metrics:nil
+																			 views:@{@"status" : self.statusLabel}]];
 		[self.modal addConstraint:[NSLayoutConstraint constraintViewFromTop:self.statusLabel amount:10]];
 		
 		self.percentLabel = [UILabel new];

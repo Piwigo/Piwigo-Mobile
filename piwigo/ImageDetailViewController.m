@@ -103,12 +103,19 @@
 
 -(void)imageOptions
 {
+	NSMutableArray *otherButtons = [NSMutableArray new];
+	[otherButtons addObject:NSLocalizedString(@"iamgeOptions_download", @"Download")];
+	if([Model sharedInstance].hasAdminRights)
+	{
+		[otherButtons addObject:NSLocalizedString(@"iamgeOptions_edit",  @"Edit")];
+	}
+	
 	[UIActionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem
 								animated:YES
 							   withTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
 					   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
 				  destructiveButtonTitle:[Model sharedInstance].hasAdminRights ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
-					   otherButtonTitles:@[NSLocalizedString(@"iamgeOptions_download", @"Download"), NSLocalizedString(@"iamgeOptions_edit",  @"Edit")]
+					   otherButtonTitles:otherButtons
 								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
 									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 1;
 									switch(buttonIndex)
@@ -121,6 +128,8 @@
 											break;
 										case 2: // Edit
 										{
+											if(![Model sharedInstance].hasAdminRights) break;
+											
 											UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
 											EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
 											editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];

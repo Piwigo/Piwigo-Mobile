@@ -12,5 +12,5 @@
 @interface EditImageLabelTableViewCell : UITableViewCell
 
 -(void)setPrivacyLevel:(kPiwigoPrivacy)privacy;
-
+-(void)setLeftLabelText:(NSString*)text;
 @end

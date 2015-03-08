@@ -26,6 +26,7 @@
 	self.leftLabel.textColor = [UIColor piwigoGray];
 	
 	self.tagsString = @"";
+	self.leftLabel.text = NSLocalizedString(@"tags", @"Tags");
 }
 
 -(void)setTagsString:(NSString *)tagsString

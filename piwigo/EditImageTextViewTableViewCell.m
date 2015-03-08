@@ -20,7 +20,7 @@
 - (void)awakeFromNib {
     // Initialization code
 	self.textView.font = [UIFont piwigoFontNormal];
-	self.textView.placeholder = @"Description";
+	self.textView.placeholder = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

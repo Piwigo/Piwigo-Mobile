@@ -185,18 +185,19 @@ typedef enum {
 		case EditImageDetailsOrderImageName:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"textField"];
-			[((EditImageTextFieldTableViewCell*)cell) setLabel:@"Image Name" andTextField:self.imageDetails.imageUploadName withPlaceholder:@"Image Name"];
+			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_name", @"Image Name") andTextField:self.imageDetails.imageUploadName withPlaceholder:NSLocalizedString(@"editImageDetails_name", @"Image Name")];
 			break;
 		}
 		case EditImageDetailsOrderAuthor:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"textField"];
-			[((EditImageTextFieldTableViewCell*)cell) setLabel:@"Author" andTextField:self.imageDetails.author withPlaceholder:@"Author Name"];
+			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_author", @"Author") andTextField:self.imageDetails.author withPlaceholder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")];
 			break;
 		}
 		case EditImageDetailsOrderPrivacy:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"label"];
+			[((EditImageLabelTableViewCell*)cell) setLeftLabelText:NSLocalizedString(@"privacyLevel", @"Privacy Level")];
 			[((EditImageLabelTableViewCell*)cell) setPrivacyLevel:self.imageDetails.privacyLevel];
 			break;
 		}

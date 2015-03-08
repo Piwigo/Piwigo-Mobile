@@ -35,4 +35,9 @@
 	self.rightLabel.text = [[Model sharedInstance] getNameForPrivacyLevel:privacy];
 }
 
+-(void)setLeftLabelText:(NSString*)text
+{
+	self.leftLabel.text = text;
+}
+
 @end
