@@ -25,9 +25,10 @@
 		sortLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		sortLabel.text = NSLocalizedString(@"sortBy", @"Sort by");
 		sortLabel.font = [UIFont piwigoFontNormal];
+		sortLabel.minimumScaleFactor = 0.5;
+		sortLabel.adjustsFontSizeToFitWidth = YES;
 		[self addSubview:sortLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:sortLabel]];
-		[self addConstraint:[NSLayoutConstraint constraintViewFromLeft:sortLabel amount:15]];
 		
 		UIImageView *disclosure = [UIImageView new];
 		disclosure.translatesAutoresizingMaskIntoConstraints = NO;
@@ -43,14 +44,17 @@
 		self.currentSortLabel.text = NSLocalizedString(@"localImageSort_name", @"Name");
 		self.currentSortLabel.font = [UIFont piwigoFontNormal];
 		self.currentSortLabel.textColor = [UIColor piwigoGrayLight];
+		self.currentSortLabel.adjustsFontSizeToFitWidth = YES;
+		self.currentSortLabel.minimumScaleFactor = 0.5;
 		[self addSubview:self.currentSortLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.currentSortLabel]];
 
-		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[label]-5-[disclosure]-5-|"
+		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[sort(80)]-[label]-5-[disclosure]-5-|"
 																	 options:kNilOptions
 																	 metrics:nil
 																	   views:@{@"disclosure" : disclosure,
-																			   @"label" : self.currentSortLabel}]];
+																			   @"label" : self.currentSortLabel,
+																			   @"sort" : sortLabel}]];
 		
 	}
 	return self;

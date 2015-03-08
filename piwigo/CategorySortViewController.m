@@ -60,6 +60,9 @@
 	}
 	
 	cell.textLabel.text = [CategorySortViewController getNameForCategorySortType:(kPiwigoSortCategory)indexPath.row];
+	cell.textLabel.minimumScaleFactor = 0.5;
+	cell.textLabel.adjustsFontSizeToFitWidth = YES;
+	cell.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
 	
 	if(indexPath.row == self.currentCategorySortType)
 	{

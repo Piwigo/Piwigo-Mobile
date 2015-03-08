@@ -46,8 +46,14 @@
 			adminLabel.font = [adminLabel.font fontWithSize:20];
 			adminLabel.textColor = [UIColor piwigoOrange];
 			adminLabel.text = NSLocalizedString(@"adminRights_title", @"Admin Rights Needed");
+			adminLabel.minimumScaleFactor = 0.5;
+			adminLabel.adjustsFontSizeToFitWidth = YES;
 			[self.view addSubview:adminLabel];
 			[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:adminLabel]];
+			[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[admin]-10-|"
+																			  options:kNilOptions
+																			  metrics:nil
+																				views:@{@"admin" : adminLabel}]];
 			
 			UILabel *description = [UILabel new];
 			description.translatesAutoresizingMaskIntoConstraints = NO;
@@ -56,6 +62,8 @@
 			description.numberOfLines = 4;
 			description.textAlignment = NSTextAlignmentCenter;
 			description.text = NSLocalizedString(@"adminRights_message", @"You're not an admin.\nYou have to be an admin to be able to upload images.");
+			description.adjustsFontSizeToFitWidth = YES;
+			description.minimumScaleFactor = 0.5;
 			[self.view addSubview:description];
 			[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:description]];
 			[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[description]-|"
@@ -100,9 +108,14 @@
 	headerLabel.font = [UIFont piwigoFontNormal];
 	headerLabel.textColor = [UIColor piwigoGray];
 	headerLabel.text = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
+	headerLabel.adjustsFontSizeToFitWidth = YES;
+	headerLabel.minimumScaleFactor = 0.5;
 	[header addSubview:headerLabel];
 	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:15]];
+	[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+																   options:kNilOptions
+																   metrics:nil
+																	 views:@{@"header" : headerLabel}]];
 	
 	return header;
 }

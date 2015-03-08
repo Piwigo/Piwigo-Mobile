@@ -84,7 +84,7 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-NSDoubleLocalizedStrings YES"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-NSShowNonLocalizedStrings YES"
