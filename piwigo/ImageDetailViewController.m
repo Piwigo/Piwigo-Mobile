@@ -274,17 +274,13 @@
 		[self showTabBar:self.tabBarController];
 	}
 }
-- (void) hideTabBar:(UITabBarController *) tabbarcontroller
+-(void)hideTabBar:(UITabBarController*)tabbarcontroller
 {
 	CGRect screenRect = [[UIScreen mainScreen] bounds];
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.3];
 	float fHeight = screenRect.size.height;
-	if(  UIDeviceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation) )
-	{
-		fHeight = screenRect.size.width;
-	}
 	
 	for(UIView *view in tabbarcontroller.view.subviews)
 	{
@@ -300,15 +296,10 @@
 	}
 	[UIView commitAnimations];
 }
-- (void) showTabBar:(UITabBarController *) tabbarcontroller
+-(void)showTabBar:(UITabBarController*)tabbarcontroller
 {
 	CGRect screenRect = [[UIScreen mainScreen] bounds];
 	float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
-	
-	if(  UIDeviceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation) )
-	{
-		fHeight = screenRect.size.width - tabbarcontroller.tabBar.frame.size.height;
-	}
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.3];

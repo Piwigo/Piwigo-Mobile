@@ -76,12 +76,12 @@
 			albumData.albumThumbnailUrl = [category objectForKey:@"tn_url"];
 		}
 		
-		if([category objectForKey:@"max_date_last"] != [NSNull null])
+		if([category objectForKey:@"date_last"] != [NSNull null])
 		{
 			NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 			[dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
-			albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"max_date_last"]];
+			albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"date_last"]];
 		}
 		
 		[albums addObject:albumData];
