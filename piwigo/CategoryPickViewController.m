@@ -92,7 +92,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [CategoriesData sharedInstance].categories.count;
+	return [CategoriesData sharedInstance].allCategories.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -127,7 +127,7 @@
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
 	}
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
 	
 	cell.textLabel.text = albumData.name;
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -139,7 +139,7 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
 	
 	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:albumData.albumId];
 	[self.navigationController pushViewController:uploadVC animated:YES];

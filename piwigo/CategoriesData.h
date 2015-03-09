@@ -15,13 +15,15 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryDataUpdated;
 
 +(CategoriesData*)sharedInstance;
 
-@property (nonatomic, readonly) NSArray *categories;
+@property (nonatomic, readonly) NSArray *allCategories;
 
--(void)addCategories:(NSArray*)categories;
+-(void)addAllCategories:(NSArray*)categories;
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId;
 -(void)removeImage:(PiwigoImageData*)image;
+
+-(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory;
 
 -(void)clearCache;
 

@@ -19,6 +19,7 @@
 #import "CategoryImageSort.h"
 #import "LoadingView.h"
 #import "UICountingLabel.h"
+#import "CategoryCollectionViewCell.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate>
 
@@ -64,6 +65,7 @@
 		self.imagesCollection.dataSource = self;
 		self.imagesCollection.delegate = self;
 		[self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"category"];
 		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
 		self.imagesCollection.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 		[self.view addSubview:self.imagesCollection];
@@ -73,17 +75,6 @@
 																							OnCompletion:^(BOOL completed) {
 			[self.imagesCollection reloadData];
 		}];
-		
-		self.noImagesLabel = [UILabel new];
-		self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.noImagesLabel.font = [UIFont piwigoFontNormal];
-		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
-		self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
-		self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-		self.noImagesLabel.hidden = YES;
-		[self.view addSubview:self.noImagesLabel];
-		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:120]];
-		[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
@@ -390,16 +381,34 @@
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-	SortHeaderCollectionReusableView *header = nil;
-	
-	if(kind == UICollectionElementKindSectionHeader)
+	if(indexPath.section == 1)
 	{
-		header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header" forIndexPath:indexPath];
-		header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
-		[header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+		SortHeaderCollectionReusableView *header = nil;
+		
+		if(kind == UICollectionElementKindSectionHeader)
+		{
+			header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header" forIndexPath:indexPath];
+			header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
+			[header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+		}
+		
+		self.noImagesLabel = [UILabel new];
+		self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.noImagesLabel.font = [UIFont piwigoFontNormal];
+		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
+		self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
+		self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+		self.noImagesLabel.hidden = self.imageList.count != 0;
+		[header addSubview:self.noImagesLabel];
+		[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.noImagesLabel amount:-40]];
+		[header addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
+		
+		return header;
 	}
 	
-	return header;
+	UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
+
+	return view;
 }
 
 -(void)didSelectCollectionViewHeader
@@ -412,66 +421,113 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
-	return CGSizeMake(collectionView.frame.size.width, 44.0);
+	if(section == 1)
+	{
+		return CGSizeMake(collectionView.frame.size.width, 44.0);
+	}
+	
+	return CGSizeZero;
+}
+
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+	return 2;
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
 	self.noImagesLabel.hidden = self.imageList.count != 0;
 	
-	return self.imageList.count;
+	if(section == 1)
+	{
+		return self.imageList.count;
+	}
+	else
+	{
+		return [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
+	}
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
 	CGFloat size = MIN(collectionView.frame.size.width, collectionView.frame.size.height) / 3 - 14;
-	return CGSizeMake(size, size);
+	if(indexPath.section == 1)
+	{
+		return CGSizeMake(size, size);
+	}
+	else
+	{
+		return CGSizeMake(collectionView.frame.size.width - 20, 188);
+	}
 }
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-	
-	PiwigoImageData *imageData = [self.imageList objectAtIndex:indexPath.row];
-	[cell setupWithImageData:imageData];
-	
-	if([self.selectedImageIds containsObject:imageData.imageId])
+	if(indexPath.section == 1)
 	{
-		cell.isSelected = YES;
+		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+		
+		PiwigoImageData *imageData = [self.imageList objectAtIndex:indexPath.row];
+		[cell setupWithImageData:imageData];
+		
+		if([self.selectedImageIds containsObject:imageData.imageId])
+		{
+			cell.isSelected = YES;
+		}
+		
+		if(indexPath.row >= [collectionView numberOfItemsInSection:1] - 21 && self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+		{
+			[self loadMoreImages];
+		}
+		
+		return cell;
 	}
-	
-	if(indexPath.row >= [collectionView numberOfItemsInSection:0] - 21 && self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+	else
 	{
-		[self loadMoreImages];
+		CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"category" forIndexPath:indexPath];
+		
+		PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
+		
+		[cell setupWithAlbumData:albumData];
+		
+		return cell;
 	}
-	
-	return cell;
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-	return UIEdgeInsetsMake(10, 10, 10, 10);
+	return UIEdgeInsetsMake(10, 10, 40, 10);
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
-	if(!self.isSelect)
+	if(indexPath.section == 1)
 	{
-		ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row isSorted:(self.currentSortCategory != 0) withArray:[self.imageList copy]];
-		imageDetail.imgDetailDelegate = self;
-		[self.navigationController pushViewController:imageDetail animated:YES];
+		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+		if(!self.isSelect)
+		{
+			ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row isSorted:(self.currentSortCategory != 0) withArray:[self.imageList copy]];
+			imageDetail.imgDetailDelegate = self;
+			[self.navigationController pushViewController:imageDetail animated:YES];
+		}
+		else
+		{
+			if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
+				[self.selectedImageIds addObject:selectedCell.imageData.imageId];
+				selectedCell.isSelected = YES;
+			} else {
+				selectedCell.isSelected = NO;
+				[self.selectedImageIds removeObject:selectedCell.imageData.imageId];
+			}
+			[collectionView reloadItemsAtIndexPaths:@[indexPath]];
+		}
 	}
 	else
 	{
-		if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
-			[self.selectedImageIds addObject:selectedCell.imageData.imageId];
-			selectedCell.isSelected = YES;
-		} else {
-			selectedCell.isSelected = NO;
-			[self.selectedImageIds removeObject:selectedCell.imageData.imageId];
-		}
-		[collectionView reloadItemsAtIndexPaths:@[indexPath]];
+		PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
+		
+		AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
+		[self.navigationController pushViewController:album animated:YES];
 	}
 }
 

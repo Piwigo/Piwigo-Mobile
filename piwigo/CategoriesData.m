@@ -12,7 +12,7 @@ NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationC
 
 @interface CategoriesData()
 
-@property (nonatomic, strong) NSArray *categories;
+@property (nonatomic, strong) NSArray *allCategories;
 
 @end
 
@@ -25,7 +25,7 @@ NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationC
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
 		
-		instance.categories = [NSArray new];
+		instance.allCategories = [NSArray new];
 		
 	});
 	return instance;
@@ -33,16 +33,16 @@ NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationC
 
 -(void)clearCache
 {
-	self.categories = [NSArray new];
+	self.allCategories = [NSArray new];
 }
 
--(void)addCategories:(NSArray*)categories
+-(void)addAllCategories:(NSArray*)categories
 {
-	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.categories];
+	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
 	for(PiwigoAlbumData *categoryData in categories)
 	{
 		BOOL containsAlbum = NO;
-		for(PiwigoAlbumData *existingCategory in self.categories)
+		for(PiwigoAlbumData *existingCategory in self.allCategories)
 		{
 			if(existingCategory.albumId == categoryData.albumId)
 			{
@@ -56,7 +56,7 @@ NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationC
 		}
 	}
 	
-	self.categories = newCategories;
+	self.allCategories = newCategories;
 	
 	
 	// post to the app that the category data has been updated
@@ -65,7 +65,7 @@ NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationC
 
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId
 {
-	for(PiwigoAlbumData *existingCategory in self.categories)
+	for(PiwigoAlbumData *existingCategory in self.allCategories)
 	{
 		if(existingCategory.albumId == categoryId)
 		{
@@ -111,6 +111,21 @@ NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationC
 		imageCategory.numberOfImages--;
 		[imageCategory removeImage:image];
 	}
+}
+
+-(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory
+{
+	NSMutableArray *categories = [NSMutableArray new];
+	
+	for(PiwigoAlbumData *category in self.allCategories)
+	{
+		if(category.parentAlbumId == parentCategory)
+		{
+			[categories addObject:category];
+		}
+	}
+	
+	return categories;
 }
 
 @end

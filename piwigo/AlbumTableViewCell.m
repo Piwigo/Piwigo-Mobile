@@ -73,6 +73,10 @@
 		self.numberOfImages.font = [UIFont piwigoFontNormal];
 		self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
 		self.numberOfImages.textColor = [UIColor piwigoWhiteCream];
+		self.numberOfImages.adjustsFontSizeToFitWidth = YES;
+		self.numberOfImages.minimumScaleFactor = 0.8;
+		self.numberOfImages.lineBreakMode = NSLineBreakByTruncatingMiddle;
+		[self.numberOfImages setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
 		[self.contentView addSubview:self.numberOfImages];
 		
 		self.date = [UILabel new];
@@ -80,6 +84,8 @@
 		self.date.font = [UIFont piwigoFontNormal];
 		self.date.font = [self.date.font fontWithSize:16.0];
 		self.date.textColor = [UIColor piwigoWhiteCream];
+		self.date.textAlignment = NSTextAlignmentRight;
+		[self.date setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
 		[self.contentView addSubview:self.date];
 		
 		UIImage *cellDisclosureImg = [UIImage imageNamed:@"cellDisclosure"];
@@ -122,16 +128,20 @@
 																multiplier:1.0
 																  constant:-30]];
 	
-	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.numberOfImages
-																	attribute:NSLayoutAttributeLeft
-																	relatedBy:NSLayoutRelationEqual
-																	   toItem:self.albumName
-																	attribute:NSLayoutAttributeLeft
-																   multiplier:1.0
-																	 constant:0]];
-	
+	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[numImages]-[date]-20-|"
+																			 options:kNilOptions
+																			 metrics:nil
+																			   views:views]];
+//	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.numberOfImages
+//																	attribute:NSLayoutAttributeLeft
+//																	relatedBy:NSLayoutRelationEqual
+//																	   toItem:self.albumName
+//																	attribute:NSLayoutAttributeLeft
+//																   multiplier:1.0
+//																	 constant:0]];
+//	
 	[self.contentView addConstraint:[NSLayoutConstraint constraintViewToSameBase:self.date equalToView:self.numberOfImages]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.date amount:20]];
+//	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.date amount:20]];
 	
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[bg]-5-|"
 																			 options:kNilOptions
@@ -153,10 +163,19 @@
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
 {
+	if(!albumData) return;
+	
 	self.albumData = albumData;
 	
 	self.albumName.text = self.albumData.name;
-	self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photos")];
+	
+	NSString *subCategoryImages = @"";
+	if(self.albumData.numberOfSubAlbumImages != self.albumData.numberOfImages)
+	{
+		subCategoryImages = [NSString stringWithFormat:@", %@ %@", @(self.albumData.numberOfSubAlbumImages), @"photos in sub-albums"];
+	}
+	
+	self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@%@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photos"), subCategoryImages];
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateFormat:@"yyyy-MM-dd"];
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];

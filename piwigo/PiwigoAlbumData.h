@@ -21,10 +21,13 @@ typedef enum {
 @interface PiwigoAlbumData : NSObject
 
 @property (nonatomic, assign) NSInteger albumId;
+@property (nonatomic, assign) NSInteger parentAlbumId;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *comment;
-@property (nonatomic, assign) NSInteger globalRank;
+@property (nonatomic, assign) CGFloat globalRank;
 @property (nonatomic, assign) NSInteger numberOfImages;
+@property (nonatomic, assign) NSInteger numberOfSubAlbumImages;
+@property (nonatomic, assign) NSInteger numberOfSubCategories;
 @property (nonatomic, assign) NSInteger albumThumbnailId;
 @property (nonatomic, strong) NSString *albumThumbnailUrl;
 @property (nonatomic, strong) NSDate *dateLast;

@@ -18,6 +18,7 @@
 @interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *albumsTableView;
+@property (nonatomic, strong) NSArray *categories;
 
 @end
 
@@ -29,6 +30,7 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoGray];
+		self.categories = [NSArray new];
 		
 		self.albumsTableView = [UITableView new];
 		self.albumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -56,6 +58,7 @@
 
 -(void)categoryDataUpdated
 {
+	self.categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:0];
 	[self.albumsTableView reloadData];
 }
 
@@ -112,7 +115,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [CategoriesData sharedInstance].categories.count;
+	return self.categories.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -124,7 +127,7 @@
 {
 	AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
 	
 	[cell setupWithAlbumData:albumData];
 	
@@ -135,7 +138,7 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].categories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
 	
 	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
 	[self.navigationController pushViewController:album animated:YES];

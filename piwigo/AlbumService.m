@@ -24,7 +24,7 @@
 				  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
 				  {
 					  NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
-					  [[CategoriesData sharedInstance] addCategories:albums];
+					  [[CategoriesData sharedInstance] addAllCategories:albums];
 					  if(completion)
 					  {
 						  completion(operation, albums);
@@ -52,10 +52,23 @@
 	{
 		PiwigoAlbumData *albumData = [PiwigoAlbumData new];
 		albumData.albumId = [[category objectForKey:@"id"] integerValue];
+		
+		if([category objectForKey:@"id_uppercat"] == [NSNull null])
+		{
+			albumData.parentAlbumId = 0;
+		}
+		else
+		{
+			albumData.parentAlbumId = [[category objectForKey:@"id_uppercat"] integerValue];
+		}
+		
+		
 		albumData.name = [category objectForKey:@"name"];
 		albumData.comment = [category objectForKey:@"comment"];
-		albumData.globalRank = [[category objectForKey:@"global_rank"] integerValue];
-		albumData.numberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];
+		albumData.globalRank = [[category objectForKey:@"global_rank"] floatValue];
+		albumData.numberOfImages = [[category objectForKey:@"nb_images"] integerValue];
+		albumData.numberOfSubAlbumImages = [[category objectForKey:@"total_nb_images"] integerValue];
+		albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
 		
 		id thumbId = [category objectForKey:@"representative_picture_id"];
 		if(thumbId != [NSNull null]) {
@@ -63,12 +76,12 @@
 			albumData.albumThumbnailUrl = [category objectForKey:@"tn_url"];
 		}
 		
-		if([category objectForKey:@"date_last"] != [NSNull null])
+		if([category objectForKey:@"max_date_last"] != [NSNull null])
 		{
 			NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 			[dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
-			albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"date_last"]];
+			albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"max_date_last"]];
 		}
 		
 		[albums addObject:albumData];
