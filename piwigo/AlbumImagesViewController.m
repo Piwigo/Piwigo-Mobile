@@ -128,6 +128,7 @@
 	}
 	self.downloadView.hidden = YES;
 	self.selectedImageIds = [NSMutableArray new];
+	[UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
 -(void)deleteImages
@@ -203,6 +204,7 @@
 		return;
 	}
 	
+	[UIApplication sharedApplication].idleTimerDisabled = YES;
 	self.downloadView.multiImage = YES;
 	self.downloadView.totalImageDownloadCount = self.totalImagesToDownload;
 	self.downloadView.imageDownloadCount = self.totalImagesToDownload - self.selectedImageIds.count + 1;

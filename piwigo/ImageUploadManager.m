@@ -188,6 +188,11 @@
 	{
 		self.maximumImagesForBatch = 0;
 		self.onCurrentImageUpload = 1;
+		[UIApplication sharedApplication].idleTimerDisabled = NO;
+	}
+	else
+	{
+		[UIApplication sharedApplication].idleTimerDisabled = YES;
 	}
 }
 
