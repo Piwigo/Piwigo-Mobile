@@ -344,14 +344,23 @@
 		}
 	}
 	
-	if(currentIndex >= self.sortedImages.count - 1)
-	{
-		return nil;
-	}
-	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex + 1];
+	
+	PiwigoImageData *imageData = nil;
 	if(self.isSorted)
 	{
+		if(currentIndex >= self.sortedImages.count - 1)
+		{
+			return nil;
+		}
 		imageData = [self.sortedImages objectAtIndex:currentIndex + 1];
+	}
+	else
+	{
+		if(currentIndex >= [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count - 1)
+		{
+			return nil;
+		}
+		imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex + 1];
 	}
 	ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
 	[nextImage setImageWithImageData:imageData];
@@ -368,10 +377,14 @@
 		return nil;
 	}
 	
-	PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex - 1];
+	PiwigoImageData *imageData = nil;
 	if(self.isSorted)
 	{
 		imageData = [self.sortedImages objectAtIndex:currentIndex - 1];
+	}
+	else
+	{
+		imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex - 1];
 	}
 	ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
 	[prevImage setImageWithImageData:imageData];

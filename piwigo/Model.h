@@ -40,6 +40,9 @@ typedef enum {
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger lastPageImageCount;
 
+@property (nonatomic, assign) NSInteger memoryCache;
+@property (nonatomic, assign) NSInteger diskCache;
+
 -(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 
 @end

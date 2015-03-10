@@ -70,6 +70,7 @@
 		D89045BF1A950FF700A306FE /* TagsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045BE1A950FF700A306FE /* TagsTableViewCell.m */; };
 		D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */; };
 		D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */; };
+		D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */; };
 		D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */; };
 		D8B04C641A92B1BB00695281 /* EditImageLabelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C631A92B1BB00695281 /* EditImageLabelTableViewCell.m */; };
 		D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */; };
@@ -242,6 +243,8 @@
 		D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryPickViewController.m; sourceTree = "<group>"; };
 		D8A94EB01AAE3C5600E4B287 /* CategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCollectionViewCell.h; sourceTree = "<group>"; };
 		D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCollectionViewCell.m; sourceTree = "<group>"; };
+		D8A94EB31AAE650800E4B287 /* SliderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliderTableViewCell.h; sourceTree = "<group>"; };
+		D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SliderTableViewCell.m; sourceTree = "<group>"; };
 		D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectPrivacyViewController.h; sourceTree = "<group>"; };
 		D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectPrivacyViewController.m; sourceTree = "<group>"; };
 		D8B04C621A92B1BB00695281 /* EditImageLabelTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageLabelTableViewCell.h; sourceTree = "<group>"; };
@@ -325,6 +328,8 @@
 				D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */,
 				D83212311A91B937009372D8 /* LabelTableViewCell.h */,
 				D83212321A91B937009372D8 /* LabelTableViewCell.m */,
+				D8A94EB31AAE650800E4B287 /* SliderTableViewCell.h */,
+				D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -902,6 +907,7 @@
 				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D82B8D061A687831000E47CA /* UIProgressView+AFNetworking.m in Sources */,
+				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,
 				D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
 				D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */,

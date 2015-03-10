@@ -51,7 +51,6 @@
 			
 			NSLog(@"Album list err: %@", error);
 		}];
-		
 	}
 	return self;
 }

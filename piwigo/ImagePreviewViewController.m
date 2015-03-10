@@ -42,9 +42,11 @@
 		return;
 	}
 	
+	UIImage *thumb = [[UIImageView sharedImageCache] cachedImageForRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.thumbPath]]];
+	
 	__weak typeof(self) weakSelf = self;
 	[self.scrollView.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
-					  placeholderImage:[UIImage imageNamed:@"placeholder"]
+									 placeholderImage:thumb ? thumb : [UIImage imageNamed:@"placeholder"]
 							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								   weakSelf.scrollView.imageView.image = image;
 								   weakSelf.imageLoaded = YES;

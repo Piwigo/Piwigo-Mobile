@@ -10,6 +10,7 @@
 
 @interface ButtonTableViewCell : UITableViewCell
 
+@property (nonatomic, strong) UILabel *buttonLabel;
 @property (nonatomic, strong) NSString *buttonText;
 
 @end

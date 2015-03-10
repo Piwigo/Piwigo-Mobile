@@ -10,8 +10,6 @@
 
 @interface ButtonTableViewCell()
 
-@property (nonatomic, strong) UILabel *buttonLabel;
-
 @end
 
 @implementation ButtonTableViewCell
@@ -21,7 +19,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoWhiteCream];
+		self.backgroundColor = [UIColor whiteColor];
 		
 		self.buttonLabel = [UILabel new];
 		self.buttonLabel.translatesAutoresizingMaskIntoConstraints = NO;

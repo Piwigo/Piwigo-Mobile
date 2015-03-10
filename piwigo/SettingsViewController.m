@@ -16,11 +16,13 @@
 #import "LabelTableViewCell.h"
 #import "AboutViewController.h"
 #import "ClearCache.h"
+#import "SliderTableViewCell.h"
 
 typedef enum {
 	SettingSectionServer,
 	SettingSectionLogout,
 	SettingSectionImageUpload,
+	SettingSectionCache,
 	SettingSectionAbout,
 	SettingSectionCount
 } SettingSection;
@@ -52,11 +54,13 @@ typedef enum {
 							   @2,
 							   @1,
 							   @2,
+							   @2,
 							   @1
 							   ];
 		self.headerHeights = @[
 							   @40.0,
 							   @5.0,
+							   @30.0,
 							   @30.0,
 							   @20.0
 							   ];
@@ -83,6 +87,22 @@ typedef enum {
 	[super viewWillAppear:animated];
 	
 	[self.settingsTableView reloadData];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+	SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
+	[Model sharedInstance].diskCache = [diskCell getCurrentSliderValue];
+	
+	SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
+	[Model sharedInstance].memoryCache = [memoryCell getCurrentSliderValue];
+	
+	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+															 diskPath:nil];
+	[NSURLCache setSharedURLCache:URLCache];
+	
+	[super viewWillDisappear:animated];
 }
 
 -(void)keyboardWillChange:(NSNotification*)notification
@@ -203,21 +223,52 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-				case 2:
+			}
+			break;
+		}
+		case SettingSectionCache:
+		{
+			switch(indexPath.row)
+			{
+				case 0:
 				{
-//					TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsField"];
+					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
+					if(!cell)
+					{
+						cell = [SliderTableViewCell new];
+					}
+					cell.cacheType.text = @"Disk";	// @TODO: Localize this!
+					cell.sliderValue = [Model sharedInstance].diskCache;
+					
+					tableViewCell = cell;
+					break;
+				}
+				case 1:
+				{
+					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
+					if(!cell)
+					{
+						cell = [SliderTableViewCell new];
+					}
+					cell.cacheType.text = @"Memory";	// @TODO: Localize this!
+					cell.sliderValue = [Model sharedInstance].memoryCache;
+					
+					tableViewCell = cell;
+					break;
+				}
+//				case 2:
+//				{
+//					ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"clearCacheButton"];
 //					if(!cell)
 //					{
-//						cell = [TextFieldTableViewCell new];
+//						cell = [ButtonTableViewCell new];
 //					}
-//					cell.labelText = @"Image Width";
-//					cell.rightTextField.text = @"";
-					break;
-				}
-				case 3:
-				{
-					break;
-				}
+//					cell.buttonText = @"Clear Cache";
+//					cell.buttonLabel.textColor = [UIColor redColor];
+//					
+//					tableViewCell = cell;
+//					break;
+//				}
 			}
 			break;
 		}
@@ -268,6 +319,9 @@ typedef enum {
 		case SettingSectionImageUpload:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_imageSettings", @"Image Upload Settings");
 			break;
+		case SettingSectionCache:
+			headerLabel.text = @"Image Cache Settings"; // @TODO: Localize this!
+			break;
 		case SettingSectionAbout:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"About");
 			break;
@@ -296,6 +350,31 @@ typedef enum {
 				[self.navigationController pushViewController:selectPrivacy animated:YES];
 			}
 			break;
+//		case SettingSectionCache:
+//			if(indexPath.row == 2)
+//			{
+//				[UIAlertView showWithTitle:@"DELETE IMAGE CACHE"	// @TODO: Localize these!
+//								   message:@"Are you sure you want to clear your image cache?\nThis will make images take a while to load again."
+//						 cancelButtonTitle:@"No"
+//						 otherButtonTitles:@[@"Yes"]
+//								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+//									  if(buttonIndex == 1)
+//									  {
+//										  // set it to 0 to clear it
+//										  NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
+//																							   diskCapacity:0
+//																								   diskPath:nil];
+//										  [NSURLCache setSharedURLCache:URLCache];
+//										  
+//										  // set it back
+//										  URLCache = [[NSURLCache alloc] initWithMemoryCapacity:500 * 1024 * 1024	// @TODO: set this from the model
+//																				   diskCapacity:500 * 1024 * 1024
+//																					   diskPath:nil];
+//										  [NSURLCache setSharedURLCache:URLCache];
+//									  }
+//								  }];
+//			}
+//			break;
 		case SettingSectionAbout:
 		{
 			AboutViewController *aboutVC = [AboutViewController new];

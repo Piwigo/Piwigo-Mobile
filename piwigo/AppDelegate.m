@@ -26,8 +26,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
 	
-//	[[UINavigationBar appearance] setTintColor:[UIColor yellowColor]];
-//	[[UINavigationBar appearance] setBarTintColor:[UIColor piwigoGray]];
+	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+															 diskPath:nil];
+	[NSURLCache setSharedURLCache:URLCache];
 	
 	NSString *server = [Model sharedInstance].serverName;
 	NSString *user = [KeychainAccess getLoginUser];

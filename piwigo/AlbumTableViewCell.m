@@ -172,7 +172,7 @@
 	NSString *subCategoryImages = @"";
 	if(self.albumData.numberOfSubAlbumImages != self.albumData.numberOfImages)
 	{
-		subCategoryImages = [NSString stringWithFormat:@", %@ %@", @(self.albumData.numberOfSubAlbumImages), @"photos in sub-albums"];
+		subCategoryImages = [NSString stringWithFormat:@", %@ %@", @(self.albumData.numberOfSubAlbumImages), NSLocalizedString(@"categoryTableView_subCategoryImageCount", @"photos in sub-albums")];
 	}
 	
 	self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@%@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photos"), subCategoryImages];

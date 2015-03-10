@@ -27,6 +27,9 @@
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
 		
+		instance.diskCache = 10;
+		instance.memoryCache = 80;
+		
 		[instance readFromDisk];
 	});
 	return instance;
@@ -90,6 +93,8 @@
 		self.serverName = modelData.serverName;
 		self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
 		self.defaultAuthor = modelData.defaultAuthor;
+		self.diskCache = modelData.diskCache;
+		self.memoryCache = modelData.memoryCache;
 		
 	}
 }
@@ -109,6 +114,8 @@
 	[saveObject addObject:self.serverName];
 	[saveObject addObject:@(self.defaultPrivacyLevel)];
 	[saveObject addObject:self.defaultAuthor];
+	[saveObject addObject:@(self.diskCache)];
+	[saveObject addObject:@(self.memoryCache)];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -119,6 +126,8 @@
 	self.serverName = [savedData objectAtIndex:0];
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
+	self.diskCache = [[savedData objectAtIndex:3] integerValue];
+	self.memoryCache = [[savedData objectAtIndex:4] integerValue];
 	
 	return self;
 }

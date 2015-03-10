@@ -44,6 +44,7 @@
 "imageUploadingTableCell_uploading" = "Uploading...";
 
 "categoryTableView_photoCount" = "photos";
+"categoryTableView_subCategoryImageCount" = "photos in sub-albums";
 "categoryImageList_selectButton" = "Select";
 
 "deleteImage_delete" = "Delete";
