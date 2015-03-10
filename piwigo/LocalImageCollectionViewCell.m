@@ -17,6 +17,8 @@
 @property (nonatomic, strong) UIView *uploadingView;
 @property (nonatomic, strong) UIProgressView *uploadingProgress;
 
+@property (nonatomic, strong) UIImageView *playImage;
+
 @end
 
 @implementation LocalImageCollectionViewCell
@@ -56,6 +58,13 @@
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:5]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 		
+		self.playImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"play"]];
+		self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
+		self.playImage.contentMode = UIViewContentModeScaleAspectFit;
+		self.playImage.hidden = YES;
+		[self.contentView addSubview:self.playImage];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(40, 40)]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.playImage]];
 		
 		// uploading stuff:
 		self.uploadingView = [UIView new];
@@ -94,6 +103,11 @@
 -(void)setupWithImageAsset:(ALAsset*)imageAsset
 {
 	self.cellImage.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
+	
+	if ([[imageAsset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo])
+	{
+		self.playImage.hidden = NO;
+	}
 }
 
 -(void)prepareForReuse
@@ -101,6 +115,7 @@
 	self.cellImage.image = nil;
 	self.cellSelected = NO;
 	self.cellUploading = NO;
+	self.playImage.hidden = YES;
 	[self setProgress:0 withAnimation:NO];
 }
 

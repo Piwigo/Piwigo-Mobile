@@ -96,6 +96,7 @@ typedef enum {
 	
 	SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
 	[Model sharedInstance].memoryCache = [memoryCell getCurrentSliderValue];
+	[[Model sharedInstance] saveToDisk];
 	
 	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
 														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024

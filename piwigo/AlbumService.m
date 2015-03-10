@@ -71,7 +71,8 @@
 		albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
 		
 		id thumbId = [category objectForKey:@"representative_picture_id"];
-		if(thumbId != [NSNull null]) {
+		if(thumbId != [NSNull null])
+		{
 			albumData.albumThumbnailId = [[category objectForKey:@"representative_picture_id"] integerValue];
 			albumData.albumThumbnailUrl = [category objectForKey:@"tn_url"];
 		}
