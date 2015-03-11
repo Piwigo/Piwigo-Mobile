@@ -160,6 +160,16 @@
 	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
 	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject]
 				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
+					 
+					 NSIndexSet *set = [self.imageList indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
+						 return [obj.imageId integerValue] != [self.selectedImageIds.lastObject integerValue];
+					 }];
+					 self.imageList = [self.imageList objectsAtIndexes:set];
+					 
+					 NSMutableArray *newList = [[NSMutableArray alloc] initWithArray:self.imageList];
+					 [newList removeObject:self.selectedImageIds.lastObject];
+					 self.imageList = newList;
+					 
 					 [self.selectedImageIds removeLastObject];
 					 NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
 					 self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
