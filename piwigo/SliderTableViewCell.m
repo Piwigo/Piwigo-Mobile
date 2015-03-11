@@ -46,6 +46,8 @@
 		self.sliderCount.textAlignment = NSTextAlignmentCenter;
 		self.sliderCount.font = [UIFont piwigoFontNormal];
 		self.sliderCount.textColor = [UIColor piwigoGray];
+		self.sliderCount.adjustsFontSizeToFitWidth = YES;
+		self.sliderCount.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.sliderCount];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderCount]];
 		

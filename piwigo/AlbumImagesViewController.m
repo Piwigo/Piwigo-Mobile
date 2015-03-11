@@ -318,6 +318,11 @@
 	
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkForProgress:nil
 																								OnCompletion:^(BOOL completed) {
+																									if(!completed)
+																									{
+																										return;
+																									}
+																									
 																									self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 																									[self.imagesCollection reloadData];
 																								}];

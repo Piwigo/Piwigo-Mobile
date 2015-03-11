@@ -275,6 +275,7 @@ NSString * const kGetImageOrderRandom = @"random";
 																   completion(operation, albumImages.count);
 															   }
 														   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+															   
 															   NSLog(@"Fail get album photos: %@", error);
 															   if(fail) {
 																   fail(fail, error);
