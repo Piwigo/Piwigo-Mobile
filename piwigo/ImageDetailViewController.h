@@ -8,14 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class PiwigoImageData;
+
 @protocol ImageDetailDelegate <NSObject>
 
--(void)didDeleteImage;
+-(void)didDeleteImage:(PiwigoImageData*)image;
 -(void)needToLoadMoreImages;
 
 @end
 
-@class PiwigoImageData;
 
 @interface ImageDetailViewController : UIPageViewController
 

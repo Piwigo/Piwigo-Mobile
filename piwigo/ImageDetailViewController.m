@@ -152,9 +152,9 @@
 						  if(buttonIndex == 1) {
 							  [ImageService deleteImage:self.imageData
 										   ListOnCompletion:^(AFHTTPRequestOperation *operation) {
-											   if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage)])
+											   if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
 											   {
-												   [self.imgDetailDelegate didDeleteImage];
+												   [self.imgDetailDelegate didDeleteImage:self.imageData];
 											   }
 											   [self.navigationController popViewControllerAnimated:YES];
 										   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {

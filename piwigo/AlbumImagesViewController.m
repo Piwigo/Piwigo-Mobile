@@ -545,8 +545,17 @@
 
 #pragma mark -- ImageDetailDelegate Methods
 
--(void)didDeleteImage
+-(void)didDeleteImage:(PiwigoImageData *)image
 {
+	NSIndexSet *set = [self.imageList indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
+		return [obj.imageId integerValue] != [image.imageId integerValue];
+	}];
+	self.imageList = [self.imageList objectsAtIndexes:set];
+	
+	NSMutableArray *newList = [[NSMutableArray alloc] initWithArray:self.imageList];
+	[newList removeObject:self.selectedImageIds.lastObject];
+	self.imageList = newList;
+	
 	[self.imagesCollection reloadData];
 }
 
