@@ -8,6 +8,7 @@
 
 #import "ImageUploadManager.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <ImageIO/ImageIO.h>
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "PiwigoTagData.h"
@@ -76,6 +77,93 @@
 	}
 }
 
+-(UIImage*)scaleImage:(UIImage*)image toSize:(CGSize)newSize contentMode:(UIViewContentMode)contentMode
+{
+	if (contentMode == UIViewContentModeScaleToFill)
+	{
+		return [self image:image byScalingToFillSize:newSize];
+	}
+	else if ((contentMode == UIViewContentModeScaleAspectFill) ||
+			 (contentMode == UIViewContentModeScaleAspectFit))
+	{
+		CGFloat horizontalRatio   = image.size.width  / newSize.width;
+		CGFloat verticalRatio     = image.size.height / newSize.height;
+		CGFloat ratio;
+		
+		if (contentMode == UIViewContentModeScaleAspectFill)
+			ratio = MIN(horizontalRatio, verticalRatio);
+		else
+			ratio = MAX(horizontalRatio, verticalRatio);
+		
+		CGSize  sizeForAspectScale = CGSizeMake(image.size.width / ratio, image.size.height / ratio);
+		
+		UIImage *newImage = [self image:image byScalingToFillSize:sizeForAspectScale];
+		
+		// if we're doing aspect fill, then the image still needs to be cropped
+		
+		if (contentMode == UIViewContentModeScaleAspectFill)
+		{
+			CGRect  subRect = CGRectMake(floor((sizeForAspectScale.width - newSize.width) / 2.0),
+										 floor((sizeForAspectScale.height - newSize.height) / 2.0),
+										 newSize.width,
+										 newSize.height);
+			newImage = [self image:newImage byCroppingToBounds:subRect];
+		}
+		
+		return newImage;
+	}
+	
+	return nil;
+}
+- (UIImage *)image:(UIImage*)image byCroppingToBounds:(CGRect)bounds
+{
+	CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], bounds);
+	UIImage *croppedImage = [UIImage imageWithCGImage:imageRef];
+	CGImageRelease(imageRef);
+	return croppedImage;
+}
+- (UIImage*)image:(UIImage*)image byScalingToFillSize:(CGSize)newSize
+{
+	UIGraphicsBeginImageContext(newSize);
+	[image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+	UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	
+	return newImage;
+}
+-(UIImage*)image:(UIImage*)image byScalingAspectFillSize:(CGSize)newSize
+{
+	return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFill];
+}
+-(UIImage*)image:(UIImage*)image byScalingAspectFitSize:(CGSize)newSize
+{
+	return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFit];
+}
+
+-(NSData*)writeMetadataIntoImageData:(NSData *)imageData metadata:(NSDictionary*)metadata
+{
+	// create an imagesourceref
+	CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
+	// this is the type of image (e.g., public.jpeg)
+	CFStringRef UTI = CGImageSourceGetType(source);
+	
+	// create a new data object and write the new image into it
+	NSMutableData *dest_data = [NSMutableData data];
+	CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
+	if (!destination) {
+		NSLog(@"Error: Could not create image destination");
+	}
+	// add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
+	CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
+	BOOL success = NO;
+	success = CGImageDestinationFinalize(destination);
+	if (!success) {
+		NSLog(@"Error: Could not create data from image destination");
+	}
+	CFRelease(destination);
+	CFRelease(source);
+	return dest_data;
+}
 -(void)uploadNextImage
 {
 	if(self.imageUploadQueue.count <= 0)
@@ -91,10 +179,18 @@
 	NSString *imageKey = nextImageToBeUploaded.image;
 	ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageKey];
 	
-	ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
-	Byte *buffer = (Byte*)malloc(rep.size);
-	NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
-	NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+	NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
+	UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
+	CGSize newImageSize = CGSizeApplyAffineTransform(originalImage.size, CGAffineTransformMakeScale([Model sharedInstance].photoResize / 100.0, [Model sharedInstance].photoResize / 100.0));
+	UIImage *imageResized = [self scaleImage:originalImage toSize:newImageSize contentMode:UIViewContentModeScaleAspectFit];
+	
+	// edit the meta data for the correct size:
+	[imageMetadata setObject:@(imageResized.size.height) forKey:@"PixelHeight"];
+	[imageMetadata setObject:@(imageResized.size.width) forKey:@"PixelWidth"];
+	
+	NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, [Model sharedInstance].photoQuality / 100.0);
+	NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
+	
 	
 	NSMutableArray *tagIds = [NSMutableArray new];
 	for(PiwigoTagData *tagData in nextImageToBeUploaded.tags)

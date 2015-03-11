@@ -26,6 +26,8 @@
 		instance.defaultPrivacyLevel = kPiwigoPrivacyAdmins;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
+		instance.photoQuality = 100;
+		instance.photoResize = 100;
 		
 		instance.diskCache = 10;
 		instance.memoryCache = 80;
@@ -95,6 +97,8 @@
 		self.defaultAuthor = modelData.defaultAuthor;
 		self.diskCache = modelData.diskCache;
 		self.memoryCache = modelData.memoryCache;
+		self.photoQuality = modelData.photoQuality;
+		self.photoResize = modelData.photoResize;
 		
 	}
 }
@@ -116,6 +120,8 @@
 	[saveObject addObject:self.defaultAuthor];
 	[saveObject addObject:@(self.diskCache)];
 	[saveObject addObject:@(self.memoryCache)];
+	[saveObject addObject:@(self.photoQuality)];
+	[saveObject addObject:@(self.photoResize)];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -128,6 +134,8 @@
 	self.defaultAuthor = [savedData objectAtIndex:2];
 	self.diskCache = [[savedData objectAtIndex:3] integerValue];
 	self.memoryCache = [[savedData objectAtIndex:4] integerValue];
+	self.photoQuality = [[savedData objectAtIndex:5] integerValue];
+	self.photoResize = [[savedData objectAtIndex:6] integerValue];
 	
 	return self;
 }

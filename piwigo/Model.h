@@ -35,6 +35,8 @@ typedef enum {
 
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;
+@property (nonatomic, assign) NSInteger photoQuality;
+@property (nonatomic, assign) NSInteger photoResize;
 
 @property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;

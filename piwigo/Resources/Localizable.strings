@@ -83,6 +83,11 @@
 "settings_defaultAuthor" = "Default Author";
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Default Privacy";
+"settings_photoQuality" = "Photo Quality";
+"settings_photoSize" = "Photo Size";
+"settings_cacheDisk" = "Disk";
+"settings_cacheMemory" = "Memory";
+"settings_cacheMegabytes" = "MB";
 "settings_about" = "About Piwigo Mobile";
 
 "logoutConfirmation_title" = "Logout";

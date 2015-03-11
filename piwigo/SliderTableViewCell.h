@@ -11,7 +11,10 @@
 @interface SliderTableViewCell : UITableViewCell
 
 @property (nonatomic, assign) NSInteger sliderValue;
-@property (nonatomic, strong) UILabel *cacheType;
+@property (nonatomic, strong) UILabel *sliderName;
+@property (nonatomic, strong) UISlider *slider;
+@property (nonatomic, strong) NSString *sliderCountFormatString;
+@property (nonatomic, assign) NSInteger incrementSliderBy;
 
 -(NSInteger)getCurrentSliderValue;
 

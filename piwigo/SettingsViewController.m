@@ -53,7 +53,7 @@ typedef enum {
 		self.rowsInSection = @[
 							   @2,
 							   @1,
-							   @2,
+							   @4,
 							   @2,
 							   @1
 							   ];
@@ -93,9 +93,14 @@ typedef enum {
 {
 	SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
 	[Model sharedInstance].diskCache = [diskCell getCurrentSliderValue];
-	
 	SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
 	[Model sharedInstance].memoryCache = [memoryCell getCurrentSliderValue];
+	
+	SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingSectionImageUpload]];
+	[Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
+	SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
+	[Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
+	
 	[[Model sharedInstance] saveToDisk];
 	
 	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
@@ -224,6 +229,40 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
+				case 2:
+				{
+					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
+					if(!cell)
+					{
+						cell = [SliderTableViewCell new];
+					}
+					cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"Photo Quality");
+					cell.slider.minimumValue = 0;
+					cell.slider.maximumValue = 100;
+					cell.sliderCountFormatString = @"%";
+					cell.incrementSliderBy = 1;
+					cell.sliderValue = [Model sharedInstance].photoQuality;
+					
+					tableViewCell = cell;
+					break;
+				}
+				case 3:
+				{
+					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
+					if(!cell)
+					{
+						cell = [SliderTableViewCell new];
+					}
+					cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"Photo Size");
+					cell.slider.minimumValue = 1;
+					cell.slider.maximumValue = 100;
+					cell.sliderCountFormatString = @"%";
+					cell.incrementSliderBy = 1;
+					cell.sliderValue = [Model sharedInstance].photoResize;
+					
+					tableViewCell = cell;
+					break;
+				}
 			}
 			break;
 		}
@@ -238,8 +277,11 @@ typedef enum {
 					{
 						cell = [SliderTableViewCell new];
 					}
-					cell.cacheType.text = @"Disk";	// @TODO: Localize this!
+					cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
+					cell.sliderCountFormatString = [NSString stringWithFormat:@" %@", NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
+					cell.incrementSliderBy = 10;
 					cell.sliderValue = [Model sharedInstance].diskCache;
+					
 					
 					tableViewCell = cell;
 					break;
@@ -251,25 +293,15 @@ typedef enum {
 					{
 						cell = [SliderTableViewCell new];
 					}
-					cell.cacheType.text = @"Memory";	// @TODO: Localize this!
+					cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
+					cell.sliderCountFormatString = [NSString stringWithFormat:@" %@", NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
+					cell.incrementSliderBy = 10;
 					cell.sliderValue = [Model sharedInstance].memoryCache;
+					
 					
 					tableViewCell = cell;
 					break;
 				}
-//				case 2:
-//				{
-//					ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"clearCacheButton"];
-//					if(!cell)
-//					{
-//						cell = [ButtonTableViewCell new];
-//					}
-//					cell.buttonText = @"Clear Cache";
-//					cell.buttonLabel.textColor = [UIColor redColor];
-//					
-//					tableViewCell = cell;
-//					break;
-//				}
 			}
 			break;
 		}

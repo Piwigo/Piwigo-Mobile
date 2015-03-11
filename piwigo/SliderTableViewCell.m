@@ -10,7 +10,6 @@
 
 @interface SliderTableViewCell()
 
-@property (nonatomic, strong) UISlider *slider;
 @property (nonatomic, strong) UILabel *sliderCount;
 
 @end
@@ -24,15 +23,15 @@
 	{
 		self.backgroundColor = [UIColor whiteColor];
 		
-		self.cacheType = [UILabel new];
-		self.cacheType.translatesAutoresizingMaskIntoConstraints = NO;
-		self.cacheType.font = [UIFont piwigoFontNormal];
-		self.cacheType.textColor = [UIColor blackColor];
-		self.cacheType.adjustsFontSizeToFitWidth = YES;
-		self.cacheType.minimumScaleFactor = 0.5;
-		self.cacheType.textAlignment = NSTextAlignmentRight;
-		[self.contentView addSubview:self.cacheType];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.cacheType]];
+		self.sliderName = [UILabel new];
+		self.sliderName.translatesAutoresizingMaskIntoConstraints = NO;
+		self.sliderName.font = [UIFont piwigoFontNormal];
+		self.sliderName.textColor = [UIColor blackColor];
+		self.sliderName.adjustsFontSizeToFitWidth = YES;
+		self.sliderName.minimumScaleFactor = 0.5;
+		self.sliderName.textAlignment = NSTextAlignmentRight;
+		[self.contentView addSubview:self.sliderName];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderName]];
 		
 		self.slider = [UISlider new];
 		self.slider.translatesAutoresizingMaskIntoConstraints = NO;
@@ -47,14 +46,13 @@
 		self.sliderCount.textAlignment = NSTextAlignmentCenter;
 		self.sliderCount.font = [UIFont piwigoFontNormal];
 		self.sliderCount.textColor = [UIColor piwigoGray];
-		self.sliderCount.text = @"20 MB";
 		[self.contentView addSubview:self.sliderCount];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderCount]];
 		
-		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(50)]-[count(80)]-[slider]-15-|"
+		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(80)]-[count(80)]-[slider]-15-|"
 																				 options:kNilOptions
 																				 metrics:nil
-																				   views:@{@"label" : self.cacheType,
+																				   views:@{@"label" : self.sliderName,
 																						   @"count" : self.sliderCount,
 																						   @"slider" : self.slider}]];
 	}
@@ -64,10 +62,10 @@
 -(void)sliderChanged
 {
 	NSInteger value = self.slider.value;
-	NSInteger newValue = value - value % 10;
+	NSInteger newValue = value - value % self.incrementSliderBy;
 	
 	self.slider.value = newValue;
-	self.sliderCount.text = [NSString stringWithFormat:@"%@ MB", @(newValue)];
+	self.sliderCount.text = [NSString stringWithFormat:@"%@%@", @(newValue), self.sliderCountFormatString];
 }
 
 -(void)setSliderValue:(NSInteger)sliderValue
