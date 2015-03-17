@@ -8,12 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol AlbumTableViewCellDelegate <NSObject>
+
+-(void)pushView:(UIViewController*)viewController;
+
+@end
+
 @class PiwigoAlbumData;
 
-@interface AlbumTableViewCell : UITableViewCell
+@interface AlbumTableViewCell : MGSwipeTableCell
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
-
+@property (nonatomic, weak) id<AlbumTableViewCellDelegate> cellDelegate;
 @property (nonatomic, strong) PiwigoAlbumData *albumData;
 @property (nonatomic, readonly) UIImageView *backgroundImage;
 

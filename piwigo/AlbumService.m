@@ -107,4 +107,64 @@
 			  } failure:fail];
 }
 
++(AFHTTPRequestOperation*)renameCategory:(NSInteger)categoryId
+								 forName:(NSString*)categoryName
+							OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL renamedSuccessfully))completion
+							   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	return [self post:kPiwigoCategoriesSetInfo
+		URLParameters:nil
+		   parameters:@{
+						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
+						@"name" : categoryName
+						}
+			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				  
+				  if(completion)
+				  {
+					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+				  }
+			  } failure:fail];
+}
+
++(AFHTTPRequestOperation*)deleteCategory:(NSInteger)categoryId
+							OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL deletedSuccessfully))completion
+							   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	return [self post:kPiwigoCategoriesDelete
+		URLParameters:nil
+		   parameters:@{
+						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
+						@"pwg_token" : [Model sharedInstance].pwgToken
+						}
+			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				  
+				  if(completion)
+				  {
+					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+				  }
+			  } failure:fail];
+}
+
++(AFHTTPRequestOperation*)moveCategory:(NSInteger)categoryId
+						  intoCategory:(NSInteger)categoryToMoveIntoId
+						  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL movedSuccessfully))completion
+							 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	return [self post:kPiwigoCategoriesMove
+		URLParameters:nil
+		   parameters:@{
+						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
+						@"pwg_token" : [Model sharedInstance].pwgToken,
+						@"parent" : [NSString stringWithFormat:@"%@", @(categoryToMoveIntoId)]
+						}
+			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				  
+				  if(completion)
+				  {
+					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+				  }
+			  } failure:fail];
+}
+
 @end

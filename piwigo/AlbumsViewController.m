@@ -15,7 +15,7 @@
 #import "CategoriesData.h"
 #import "Model.h"
 
-@interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, AlbumTableViewCellDelegate>
 
 @property (nonatomic, strong) UITableView *albumsTableView;
 @property (nonatomic, strong) NSArray *categories;
@@ -125,6 +125,7 @@
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+	cell.cellDelegate = self;
 	
 	PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
 	
@@ -141,6 +142,13 @@
 	
 	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
 	[self.navigationController pushViewController:album animated:YES];
+}
+
+#pragma mark AlbumTableViewCellDelegate Methods
+
+-(void)pushView:(UIViewController *)viewController
+{
+	[self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

@@ -10,8 +10,15 @@
 
 @class PiwigoAlbumData;
 
+@protocol CategoryCollectionViewCellDelegate <NSObject>
+
+-(void)pushView:(UIViewController*)viewController;
+
+@end
+
 @interface CategoryCollectionViewCell : UICollectionViewCell
 
+@property (nonatomic, weak) id<CategoryCollectionViewCellDelegate> categoryDelegate;
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
 
 @end

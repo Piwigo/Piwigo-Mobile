@@ -17,6 +17,9 @@
 		D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A9E1A81B03100A95605 /* ImageUploadManager.m */; };
 		D8083AA21A81B34000A95605 /* ImageUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083AA11A81B34000A95605 /* ImageUpload.m */; };
 		D8083AA61A82905B00A95605 /* ImageUploadProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */; };
+		D8172DAB1AB2805F00271DB0 /* MGSwipeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172DA81AB2805F00271DB0 /* MGSwipeButton.m */; };
+		D8172DAC1AB2805F00271DB0 /* MGSwipeTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172DAA1AB2805F00271DB0 /* MGSwipeTableCell.m */; };
+		D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */; };
 		D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D818B17F1AA4265D006FC32A /* CategorySortViewController.m */; };
 		D818E9FB1A74C18500733991 /* AlbumService.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FA1A74C18500733991 /* AlbumService.m */; };
 		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
@@ -133,6 +136,12 @@
 		D8083AA11A81B34000A95605 /* ImageUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUpload.m; sourceTree = "<group>"; };
 		D8083AA41A82905B00A95605 /* ImageUploadProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadProgressView.h; sourceTree = "<group>"; };
 		D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadProgressView.m; sourceTree = "<group>"; };
+		D8172DA71AB2805F00271DB0 /* MGSwipeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSwipeButton.h; sourceTree = "<group>"; };
+		D8172DA81AB2805F00271DB0 /* MGSwipeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSwipeButton.m; sourceTree = "<group>"; };
+		D8172DA91AB2805F00271DB0 /* MGSwipeTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSwipeTableCell.h; sourceTree = "<group>"; };
+		D8172DAA1AB2805F00271DB0 /* MGSwipeTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSwipeTableCell.m; sourceTree = "<group>"; };
+		D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveCategoryViewController.h; sourceTree = "<group>"; };
+		D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveCategoryViewController.m; sourceTree = "<group>"; };
 		D818B17E1AA4265D006FC32A /* CategorySortViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySortViewController.h; sourceTree = "<group>"; };
 		D818B17F1AA4265D006FC32A /* CategorySortViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySortViewController.m; sourceTree = "<group>"; };
 		D818E9F91A74C18500733991 /* AlbumService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumService.h; sourceTree = "<group>"; };
@@ -362,6 +371,26 @@
 			name = "Upload Progress";
 			sourceTree = "<group>";
 		};
+		D8172DA61AB2805F00271DB0 /* MGSwipeTableCell */ = {
+			isa = PBXGroup;
+			children = (
+				D8172DA71AB2805F00271DB0 /* MGSwipeButton.h */,
+				D8172DA81AB2805F00271DB0 /* MGSwipeButton.m */,
+				D8172DA91AB2805F00271DB0 /* MGSwipeTableCell.h */,
+				D8172DAA1AB2805F00271DB0 /* MGSwipeTableCell.m */,
+			);
+			path = MGSwipeTableCell;
+			sourceTree = "<group>";
+		};
+		D8172E171AB7C06200271DB0 /* Album Edit */ = {
+			isa = PBXGroup;
+			children = (
+				D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */,
+				D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */,
+			);
+			name = "Album Edit";
+			sourceTree = "<group>";
+		};
 		D818E9F41A74BEFF00733991 /* Album List */ = {
 			isa = PBXGroup;
 			children = (
@@ -369,6 +398,7 @@
 				D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */,
 				D818EA001A74C7BA00733991 /* AlbumTableViewCell.h */,
 				D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */,
+				D8172E171AB7C06200271DB0 /* Album Edit */,
 			);
 			name = "Album List";
 			sourceTree = "<group>";
@@ -461,6 +491,7 @@
 		D82B8CBE1A67820A000E47CA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D8172DA61AB2805F00271DB0 /* MGSwipeTableCell */,
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8D091A68783B000E47CA /* AFNetworking */,
 				D82B8CEF1A687831000E47CA /* UIKit+AFNetworking */,
@@ -887,6 +918,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8172DAB1AB2805F00271DB0 /* MGSwipeButton.m in Sources */,
 				D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */,
 				D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */,
 				D8083A521A7CB78900A95605 /* UIAlertView+Blocks.m in Sources */,
@@ -911,10 +943,12 @@
 				D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
 				D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */,
+				D8172DAC1AB2805F00271DB0 /* MGSwipeTableCell.m in Sources */,
 				D8B9BC821A96ACA800C1B0E5 /* SortSelectViewController.m in Sources */,
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
 				D82B8D1E1A68783B000E47CA /* AFHTTPRequestOperationManager.m in Sources */,
 				D89045B21A94662300A306FE /* TagsData.m in Sources */,
+				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
 				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,

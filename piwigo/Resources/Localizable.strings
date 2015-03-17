@@ -27,9 +27,9 @@
 
 "alertOkayButton" = "Okay";
 "alertYesButton" = "Yes";
+"alertNoButton" = "No";
 "alertTryAgainButton" = "Try Again";
 "alertCancelButton" = "Cancel";
-"alertNoButton" = "No";
 "alertAddButton" = "Add";
 
 "imageUploadDetails_title" = "Title:";
@@ -75,6 +75,7 @@
 
 "settingsHeader_server" = "Piwigo Server";
 "settingsHeader_imageSettings" = "Image Upload Settings";
+"settingsHeader_imageCache" = "Image Cache Settings";
 "settingsHeader_about" = "About";
 "settings_server" = "Server";
 "settings_username" = "Username";
@@ -118,6 +119,23 @@
 "editImageDetails_author" = "Author";
 "editImageDetails_descriptionPlaceholder" = "Description";
 
+"renameCategory_title" = "Rename Album";
+"renameCategory_message" = "Rename album";
+"renameCategory_button" = "Rename";
+"renameCategorySuccess_title" = "Rename Success";
+"renameCategorySuccess_message" = "Successfully renamed your album";
+
+"deleteCategory_title" = "DELETE ALBUM";
+"deleteCategory_message" = "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?";
+"deleteCategoryConfirm_title" = "Are you sure?";
+"deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album\nNumber of images: %@";
+"deleteCategoryConfirm_deleteButton" = "DELETE";
+"deleteCategorySuccess_title" = "Delete Successful";
+"deleteCategorySuccess_message" = "Deleted \"%@\" album successfull";
+
+"moveCategory" = "Move Album";
+"moveCategory_selectParent" = "Select an album to move album \"%@\" into";
+"moveCategory_message" = "Are you sure you want to move \"%@\" into the album \"%@\"?";
 
 // ----------------------- ERROR STRINGS -----------------------
 
@@ -162,10 +180,16 @@
 "albumPhotoError_title" = "Get Album Photos Error";
 "albumPhotoError_message" = "Failed to get album photos (You probably have a corrupt image in your album) Error:";
 
+"renameCategoyError_title" = "Rename Fail";
+"renameCategoyError_message" = "Failed to rename your album";
 
+"deleteCategoryMatchError_title" = "Number Doesn't Match";
+"deleteCategoryMatchError_message" = "The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album";
+"deleteCategoryError_title" = "Delete Fail";
+"deleteCategoryError_message" = "Failed to delete your album";
 
-
-
+"moveCategoryError_title" = "Move Fail";
+"moveCategoryError_message" = "Failed to move your album";
 
 
 

@@ -21,7 +21,7 @@
 #import "UICountingLabel.h"
 #import "CategoryCollectionViewCell.h"
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) NSArray *imageList;
@@ -502,6 +502,7 @@
 	else
 	{
 		CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"category" forIndexPath:indexPath];
+		cell.categoryDelegate = self;
 		
 		PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
 		
@@ -539,13 +540,6 @@
 			[collectionView reloadItemsAtIndexPaths:@[indexPath]];
 		}
 	}
-	else
-	{
-		PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
-		
-		AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
-		[self.navigationController pushViewController:album animated:YES];
-	}
 }
 
 #pragma mark -- ImageDetailDelegate Methods
@@ -575,7 +569,13 @@
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
 {
 	self.currentSortCategory = sortType;
-	
+}
+
+#pragma mark CategoryCollectionViewCellDelegate Methods
+
+-(void)pushView:(UIViewController *)viewController
+{
+	[self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

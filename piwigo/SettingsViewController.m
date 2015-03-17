@@ -353,7 +353,7 @@ typedef enum {
 			headerLabel.text = NSLocalizedString(@"settingsHeader_imageSettings", @"Image Upload Settings");
 			break;
 		case SettingSectionCache:
-			headerLabel.text = @"Image Cache Settings"; // @TODO: Localize this!
+			headerLabel.text = NSLocalizedString(@"settingsHeader_imageCache", @"Image Cache Settings");
 			break;
 		case SettingSectionAbout:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"About");
@@ -386,7 +386,7 @@ typedef enum {
 //		case SettingSectionCache:
 //			if(indexPath.row == 2)
 //			{
-//				[UIAlertView showWithTitle:@"DELETE IMAGE CACHE"	// @TODO: Localize these!
+//				[UIAlertView showWithTitle:@"DELETE IMAGE CACHE"
 //								   message:@"Are you sure you want to clear your image cache?\nThis will make images take a while to load again."
 //						 cancelButtonTitle:@"No"
 //						 otherButtonTitles:@[@"Yes"]
@@ -400,7 +400,7 @@ typedef enum {
 //										  [NSURLCache setSharedURLCache:URLCache];
 //										  
 //										  // set it back
-//										  URLCache = [[NSURLCache alloc] initWithMemoryCapacity:500 * 1024 * 1024	// @TODO: set this from the model
+//										  URLCache = [[NSURLCache alloc] initWithMemoryCapacity:500 * 1024 * 1024
 //																				   diskCapacity:500 * 1024 * 1024
 //																					   diskPath:nil];
 //										  [NSURLCache setSharedURLCache:URLCache];

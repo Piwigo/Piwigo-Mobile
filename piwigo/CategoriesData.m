@@ -36,6 +36,22 @@ NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationC
 	self.allCategories = [NSArray new];
 }
 
+-(void)deleteCategory:(NSInteger)categoryId
+{
+	NSInteger index = 0;
+	for(PiwigoAlbumData *category in self.allCategories)
+	{
+		if(category.albumId == categoryId)
+		{
+			break;
+		}
+		index++;
+	}
+	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+	[newCategories removeObjectAtIndex:index];
+	self.allCategories = newCategories;
+}
+
 -(void)addAllCategories:(NSArray*)categories
 {
 	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];

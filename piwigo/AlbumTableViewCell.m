@@ -11,6 +11,10 @@
 #import "ImageService.h"
 #import "LEColorPicker.h"
 #import "OutlinedText.h"
+#import "Model.h"
+#import "AlbumService.h"
+#import "CategoriesData.h"
+#import "MoveCategoryViewController.h"
 
 @interface AlbumTableViewCell()
 
@@ -97,6 +101,32 @@
 		[self.contentView addSubview:self.cellDisclosure];
 		
 		[self setupAutoLayout];
+		
+		if([Model sharedInstance].hasAdminRights)
+		{
+			self.rightSwipeSettings.transition = MGSwipeTransitionStatic;
+			self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"Rename"
+														  backgroundColor:[UIColor piwigoOrange]
+																 callback:^BOOL(MGSwipeTableCell *sender) {
+																	 [self renameCategory];
+																	 return YES;
+																 }],
+								  [MGSwipeButton buttonWithTitle:@"Move"
+												 backgroundColor:[UIColor piwigoGrayLight]
+														callback:^BOOL(MGSwipeTableCell *sender) {
+															[self moveCategory];
+															return YES;
+														}],
+								  [MGSwipeButton buttonWithTitle:@"Delete"
+												 backgroundColor:[UIColor redColor]
+														callback:^BOOL(MGSwipeTableCell *sender) {
+															[self deleteCategory];
+															return YES;
+														}]];
+		}
+		
+		
+		
 	}
 	return self;
 }
@@ -132,16 +162,7 @@
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];
-//	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.numberOfImages
-//																	attribute:NSLayoutAttributeLeft
-//																	relatedBy:NSLayoutRelationEqual
-//																	   toItem:self.albumName
-//																	attribute:NSLayoutAttributeLeft
-//																   multiplier:1.0
-//																	 constant:0]];
-//	
 	[self.contentView addConstraint:[NSLayoutConstraint constraintViewToSameBase:self.date equalToView:self.numberOfImages]];
-//	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.date amount:20]];
 	
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[bg]-5-|"
 																			 options:kNilOptions
@@ -161,6 +182,136 @@
 	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.cellDisclosure amount:38]];
 }
 
+-(void)renameCategory
+{
+	[UIAlertView showWithTitle:NSLocalizedString(@"renameCategory_title", @"Rename Album")
+					   message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"renameCategory_message", @"Rename album"), self.albumData.name]
+						 style:UIAlertViewStylePlainTextInput
+			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+			 otherButtonTitles:@[NSLocalizedString(@"renameCategory_button", @"Rename")]
+					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+						  if(buttonIndex == 1)
+						  {
+							  [AlbumService renameCategory:self.albumData.albumId
+												   forName:[alertView textFieldAtIndex:0].text
+											  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL renamedSuccessfully) {
+												  
+												  if(renamedSuccessfully)
+												  {
+													  self.albumData.name = [alertView textFieldAtIndex:0].text;
+													  
+													  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+
+													  [UIAlertView showWithTitle:NSLocalizedString(@"renameCategorySuccess_title", @"Rename Success")
+																		 message:NSLocalizedString(@"renameCategorySuccess_message", @"Successfully renamed your album")
+															   cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+															   otherButtonTitles:nil
+																		tapBlock:nil];
+												  }
+												  else
+												  {
+													  [self showRenameErrorWithMessage:nil];
+												  }
+											  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+												  
+												  [self showRenameErrorWithMessage:[error localizedDescription]];
+											  }];
+						  }
+					  }];
+}
+-(void)showRenameErrorWithMessage:(NSString*)message
+{
+	NSString *errorMessage = NSLocalizedString(@"renameCategoyError_message", @"Failed to rename your album");
+	if(message)
+	{
+		errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+	}
+	[UIAlertView showWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
+					   message:errorMessage
+			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+			 otherButtonTitles:nil
+					  tapBlock:nil];
+}
+
+-(void)moveCategory
+{
+	MoveCategoryViewController *moveCategoryVC = [[MoveCategoryViewController alloc] initWithSelectedCategory:self.albumData];
+	if([self.cellDelegate respondsToSelector:@selector(pushView:)])
+	{
+		[self.cellDelegate pushView:moveCategoryVC];
+	}
+}
+
+-(void)deleteCategory
+{
+	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategory_title", @"DELETE ALBUM")
+					   message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_message", @"ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), self.albumData.name, @(self.albumData.numberOfSubAlbumImages)]
+			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
+					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+						  if(buttonIndex == 1)
+						  {
+							  [UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryConfirm_title", @"Are you sure?")
+												 message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategoryConfirm_message", @"Please enter the number of images in order to delete this album\nNumber of images: %@"), @(self.albumData.numberOfImages)]
+												   style:UIAlertViewStylePlainTextInput
+									   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+									   otherButtonTitles:@[NSLocalizedString(@"deleteCategoryConfirm_deleteButton", @"DELETE")]
+												tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+													if(buttonIndex == 1)
+													{
+														NSInteger number = -1;
+														if([alertView textFieldAtIndex:0].text.length > 0)
+														{
+															number = [[alertView textFieldAtIndex:0].text integerValue];
+														}
+														if(number == self.albumData.numberOfSubAlbumImages)
+														{
+															[AlbumService deleteCategory:self.albumData.albumId OnCompletion:^(AFHTTPRequestOperation *operation, BOOL deletedSuccessfully) {
+																if(deletedSuccessfully)
+																{
+																	[[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
+																	[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+																	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategorySuccess_title",  @"Delete Successful")
+																					   message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategorySuccess_message", @"Deleted \"%@\" album successfully"), self.albumData.name]
+																			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+																			 otherButtonTitles:nil
+																					  tapBlock:nil];
+																}
+																else
+																{
+																	[self deleteCategoryError:nil];
+																}
+															} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+																[self deleteCategoryError:[error localizedDescription]];
+															}];
+														}
+														else
+														{	// they entered the wrong amount
+															[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match")
+																			   message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album")
+																	 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+																	 otherButtonTitles:nil
+																			  tapBlock:nil];
+														}
+													}
+												}];
+						  }
+					  }];
+}
+-(void)deleteCategoryError:(NSString*)message
+{
+	NSString *errorMessage = NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album");
+	if(message)
+	{
+		errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+	}
+	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail")
+					   message:errorMessage
+			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+			 otherButtonTitles:nil
+					  tapBlock:nil];
+}
+
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
 {
 	if(!albumData) return;
@@ -172,7 +323,7 @@
 	NSString *subCategoryImages = @"";
 	if(self.albumData.numberOfSubAlbumImages != self.albumData.numberOfImages)
 	{
-		subCategoryImages = [NSString stringWithFormat:@", %@ %@", @(self.albumData.numberOfSubAlbumImages), NSLocalizedString(@"categoryTableView_subCategoryImageCount", @"photos in sub-albums")];
+		subCategoryImages = [NSString stringWithFormat:@", %@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImageCount", @"photos in sub-albums")];
 	}
 	
 	self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@%@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photos"), subCategoryImages];

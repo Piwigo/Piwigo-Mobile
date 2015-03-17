@@ -21,6 +21,8 @@
 	#import "UIFont+AppFonts.h"
 	#import "UIActionSheet+Blocks.h"
 	#import "UIAlertView+Blocks.h"
+	#import "MGSwipeTableCell.h"
+	#import "MGSwipeButton.h"
 #endif
 
 #endif

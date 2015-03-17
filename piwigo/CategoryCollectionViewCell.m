@@ -8,8 +8,10 @@
 
 #import "CategoryCollectionViewCell.h"
 #import "AlbumTableViewCell.h"
+#import "CategoriesData.h"
+#import "AlbumImagesViewController.h"
 
-@interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate>
+@interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, AlbumTableViewCellDelegate>
 
 @property (nonatomic, strong) PiwigoAlbumData *albumData;
 @property (nonatomic, strong) UITableView *tableView;
@@ -24,7 +26,6 @@
 	if(self)
 	{
 		self.tableView = [UITableView new];
-		self.tableView.userInteractionEnabled = NO;
 		self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.tableView.backgroundColor = [UIColor clearColor];
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -66,10 +67,32 @@
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-	cell.userInteractionEnabled = NO;
+	cell.cellDelegate = self;
+	
 	[cell setupWithAlbumData:self.albumData];
 	
 	return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	if([self.categoryDelegate respondsToSelector:@selector(pushView:)])
+	{
+		AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithAlbumId:self.albumData.albumId];
+		[self.categoryDelegate pushView:albumView];
+	}
+}
+
+#pragma mark AlbumTableViewCellDelegate Methods
+
+-(void)pushView:(UIViewController *)viewController
+{
+	if([self.categoryDelegate respondsToSelector:@selector(pushView:)])
+	{
+		[self.categoryDelegate pushView:viewController];
+	}
 }
 
 @end

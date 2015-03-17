@@ -19,4 +19,18 @@
 									OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL createdSuccessfully))completion
 									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
++(AFHTTPRequestOperation*)renameCategory:(NSInteger)categoryId
+								 forName:(NSString*)categoryName
+							OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL renamedSuccessfully))completion
+							   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
++(AFHTTPRequestOperation*)deleteCategory:(NSInteger)categoryId
+							OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL deletedSuccessfully))completion
+							   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
++(AFHTTPRequestOperation*)moveCategory:(NSInteger)categoryId
+						  intoCategory:(NSInteger)categoryToMoveIntoId
+						  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL movedSuccessfully))completion
+							 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
 @end

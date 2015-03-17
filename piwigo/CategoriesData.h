@@ -25,6 +25,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryDataUpdated;
 
 -(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory;
 
+-(void)deleteCategory:(NSInteger)categoryId;
 -(void)clearCache;
 
 @end
