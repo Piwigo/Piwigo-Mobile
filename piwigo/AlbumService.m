@@ -167,4 +167,24 @@
 			  } failure:fail];
 }
 
++(AFHTTPRequestOperation*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
+													forImageId:(NSInteger)imageId
+												  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL setSuccessfully))completion
+													 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+	return [self post:kPiwigoCategoriesSetRepresentative
+		URLParameters:nil
+		   parameters:@{
+						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
+						@"image_id" : [NSString stringWithFormat:@"%@", @(imageId)]
+						}
+			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				  
+				  if(completion)
+				  {
+					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+				  }
+			  } failure:fail];
+}
+
 @end

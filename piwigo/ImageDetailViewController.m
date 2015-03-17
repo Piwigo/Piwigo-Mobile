@@ -15,6 +15,7 @@
 #import "EditImageDetailsViewController.h"
 #import "ImageUpload.h"
 #import "ImageScrollView.h"
+#import "AllCategoriesViewController.h"
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 
@@ -108,6 +109,7 @@
 	if([Model sharedInstance].hasAdminRights)
 	{
 		[otherButtons addObject:NSLocalizedString(@"iamgeOptions_edit",  @"Edit")];
+		[otherButtons addObject:@"Set as Album Image"]; //@TODO: Localize this!
 	}
 	
 	[UIActionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem
@@ -117,7 +119,7 @@
 				  destructiveButtonTitle:[Model sharedInstance].hasAdminRights ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
 					   otherButtonTitles:otherButtons
 								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 1;
+									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 2;
 									switch(buttonIndex)
 									{
 										case 0: // Delete
@@ -136,6 +138,15 @@
 											editImageVC.isEdit = YES;
 											UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
 											[self.navigationController presentViewController:presentNav animated:YES completion:nil];
+											break;
+										}
+										case 3:	// set as album image
+										{
+											if(![Model sharedInstance].hasAdminRights) break;
+											
+											AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue]];
+											[self.navigationController pushViewController:allCategoriesPickVC animated:YES];
+											
 											break;
 										}
 									}

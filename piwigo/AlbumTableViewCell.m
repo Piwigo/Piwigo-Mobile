@@ -125,7 +125,7 @@
 														}]];
 		}
 		
-		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUpdated) name:kPiwigoNotificationCategoryImageUpdated object:nil];
 		
 	}
 	return self;
@@ -180,6 +180,11 @@
 	[self.cellDisclosure addConstraints:[NSLayoutConstraint constraintView:self.cellDisclosure toSize:CGSizeMake(23, 23)]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.cellDisclosure amount:15]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.cellDisclosure amount:38]];
+}
+
+-(void)imageUpdated
+{
+	[self setupBgWithImage:self.albumData.categoryImage];
 }
 
 -(void)renameCategory

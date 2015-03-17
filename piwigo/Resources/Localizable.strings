@@ -137,6 +137,13 @@
 "moveCategory_selectParent" = "Select an album to move album \"%@\" into";
 "moveCategory_message" = "Are you sure you want to move \"%@\" into the album \"%@\"?";
 
+"categorySelection" = "Select Album";
+"categorySelection_forImage" = "Select an album for this image";
+"categoryImageSet_title" = "Set Image Represenative";
+"categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";
+"categoryImageSetSuccess_title" = "Image Set Successful";
+"categoryImageSetSuccess_message" = "The image was set successfully for the album image";
+
 // ----------------------- ERROR STRINGS -----------------------
 
 "serverVersionNotCompatable_title" = "Server Incompatable";
@@ -190,6 +197,9 @@
 
 "moveCategoryError_title" = "Move Fail";
 "moveCategoryError_message" = "Failed to move your album";
+
+"categoryImageSetError_title" = "Image Set Error";
+"categoryImageSetError_message" = "Failed to set the album image";
 
 
 

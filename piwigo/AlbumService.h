@@ -33,4 +33,9 @@
 						  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL movedSuccessfully))completion
 							 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
++(AFHTTPRequestOperation*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
+													forImageId:(NSInteger)imageId
+												  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL setSuccessfully))completion
+													 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
 @end
