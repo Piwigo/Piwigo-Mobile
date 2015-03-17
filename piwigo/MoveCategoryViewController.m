@@ -42,7 +42,7 @@
 		
 		PiwigoAlbumData *rootAlbum = [PiwigoAlbumData new];
 		rootAlbum.albumId = 0;
-		rootAlbum.name = @"----------";
+		rootAlbum.name = @"------------";
 		[newCategoryArray insertObject:rootAlbum atIndex:0];
 		self.categories = newCategoryArray;
 		

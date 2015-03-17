@@ -86,7 +86,9 @@
 													  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL createdSuccessfully) {
 														  if(createdSuccessfully)
 														  {
-															  [AlbumService getAlbumListOnCompletion:nil onFailure:nil];
+															  [AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+																  [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+															  } onFailure:nil];
 														  }
 														  else
 														  {
