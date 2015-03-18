@@ -139,7 +139,7 @@
 			NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @(downloadingCategory.numberOfImages)];
 			self.loadingView.progressLabel.format = progressLabelFormat;
 			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
-			[self.loadingView showLoadingWithLabel:@"Downloading Image Info" andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
+			[self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
 			[self.view addSubview:self.loadingView];
 			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
 			

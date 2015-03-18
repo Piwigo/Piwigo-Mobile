@@ -35,6 +35,8 @@
 		[self.contentView addSubview:self.tableView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+		
 	}
 	return self;
 }
@@ -50,6 +52,11 @@
 	[super prepareForReuse];
 	
 	self.albumData = nil;
+}
+
+-(void)categoriesUpdated
+{
+	[self.tableView reloadData];
 }
 
 #pragma mark UITableViewDataSource Methods

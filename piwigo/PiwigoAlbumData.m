@@ -42,6 +42,7 @@
 -(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  OnCompletion:(void (^)(BOOL completed))completion
 {
+	self.onPage = 0;
 	[self loopLoadImagesForProgress:progress
 					   onCompletion:^(BOOL completed) {
 		if(completion)
@@ -56,7 +57,7 @@
 {
 	[self loadCategoryImageDataChunkForProgress:progress
 								   OnCompletion:^(BOOL completed) {
-		if(completed && self.imageList.count != self.numberOfImages)
+		if(completed && self.lastImageBulkCount && self.imageList.count != self.numberOfImages)
 		{
 			[self loopLoadImagesForProgress:progress
 							   onCompletion:completion];

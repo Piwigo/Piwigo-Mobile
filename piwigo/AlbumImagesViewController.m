@@ -85,6 +85,8 @@
 		
 		self.downloadView.hidden = YES;
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+		
 	}
 	return self;
 }
@@ -95,6 +97,11 @@
 	
 	[self loadNavButtons];
 	[self.imagesCollection reloadData];
+}
+
+-(void)categoriesUpdated
+{
+	[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 }
 
 -(void)loadNavButtons
@@ -352,7 +359,7 @@
 			NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])];
 			self.loadingView.progressLabel.format = progressLabelFormat;
 			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
-			[self.loadingView showLoadingWithLabel:@"Downloading Image Info for Sort" andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
+			[self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfoForSort", @"Downloading Image Info for Sort") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
 			[self.view addSubview:self.loadingView];
 			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
 			

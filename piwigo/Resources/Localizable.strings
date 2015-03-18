@@ -66,6 +66,8 @@
 "downloadingImage" = "Downloading Image";
 "downloadingImages" = "Downloading Images";
 "downloadingImage_complete" = "Complete";
+"downloadingImageInfo" = "Downloading Image Info";
+"downloadingImageInfoForSort" = "Downloading Image Info for Sort";
 
 "privacyLevel_admin" = "Admins";
 "privacyLevel_adminFamily" = "Admins, Family";
@@ -118,6 +120,10 @@
 "editImageDetails_name" = "Image Name";
 "editImageDetails_author" = "Author";
 "editImageDetails_descriptionPlaceholder" = "Description";
+
+"categoryCellOption_rename" = "Rename";
+"categoryCellOption_move" = "Move";
+"categoryCellOption_delete" = "Delete";
 
 "renameCategory_title" = "Rename Album";
 "renameCategory_message" = "Rename album";

@@ -119,7 +119,7 @@
 				  destructiveButtonTitle:[Model sharedInstance].hasAdminRights ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
 					   otherButtonTitles:otherButtons
 								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 2;
+									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 1;
 									switch(buttonIndex)
 									{
 										case 0: // Delete

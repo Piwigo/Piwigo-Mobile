@@ -105,19 +105,19 @@
 		if([Model sharedInstance].hasAdminRights)
 		{
 			self.rightSwipeSettings.transition = MGSwipeTransitionStatic;
-			self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"Rename"
+			self.rightButtons = @[[MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_rename", @"Rename")
 														  backgroundColor:[UIColor piwigoOrange]
 																 callback:^BOOL(MGSwipeTableCell *sender) {
 																	 [self renameCategory];
 																	 return YES;
 																 }],
-								  [MGSwipeButton buttonWithTitle:@"Move"
+								  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_move", @"Move")
 												 backgroundColor:[UIColor piwigoGrayLight]
 														callback:^BOOL(MGSwipeTableCell *sender) {
 															[self moveCategory];
 															return YES;
 														}],
-								  [MGSwipeButton buttonWithTitle:@"Delete"
+								  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_delete", @"Delete")
 												 backgroundColor:[UIColor redColor]
 														callback:^BOOL(MGSwipeTableCell *sender) {
 															[self deleteCategory];

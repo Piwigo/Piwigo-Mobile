@@ -48,6 +48,7 @@
 			adminLabel.text = NSLocalizedString(@"adminRights_title", @"Admin Rights Needed");
 			adminLabel.minimumScaleFactor = 0.5;
 			adminLabel.adjustsFontSizeToFitWidth = YES;
+			adminLabel.textAlignment = NSTextAlignmentCenter;
 			[self.view addSubview:adminLabel];
 			[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:adminLabel]];
 			[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[admin]-10-|"
