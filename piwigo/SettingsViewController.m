@@ -17,6 +17,7 @@
 #import "AboutViewController.h"
 #import "ClearCache.h"
 #import "SliderTableViewCell.h"
+#import "EditPopDownView.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -38,6 +39,7 @@ typedef enum {
 @property (nonatomic, strong) NSArray *headerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
+@property (nonatomic, strong) EditPopDownView *currentPopDown;
 
 @end
 
@@ -375,15 +377,80 @@ typedef enum {
 			[self logout];
 			break;
 		case SettingSectionImageUpload:
-			if(indexPath.row == 1)
+			switch(indexPath.row)
 			{
-				SelectPrivacyViewController *selectPrivacy = [SelectPrivacyViewController new];
-				selectPrivacy.delegate = self;
-				[selectPrivacy setPrivacy:[Model sharedInstance].defaultPrivacyLevel];
-				[self.navigationController pushViewController:selectPrivacy animated:YES];
+				case 1:	// Privacy
+				{
+					SelectPrivacyViewController *selectPrivacy = [SelectPrivacyViewController new];
+					selectPrivacy.delegate = self;
+					[selectPrivacy setPrivacy:[Model sharedInstance].defaultPrivacyLevel];
+					[self.navigationController pushViewController:selectPrivacy animated:YES];
+					break;
+				}
+				case 2: // Photo Quality
+				{
+					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter a Photo Quality from 0 - 100")];
+					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+						SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingSectionImageUpload]];
+						photoQualityCell.sliderValue = [textEntered integerValue];
+						if(!photoQualityCell)
+						{
+							[Model sharedInstance].photoQuality = [textEntered integerValue];
+							[[Model sharedInstance] saveToDisk];
+						}
+					}];
+					break;
+				}
+				case 3:	// Photo Size
+				{
+					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderSize", @"Enter a Photo Size from 1 - 100")];
+					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+						SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
+						photoSizeCell.sliderValue = [textEntered integerValue];
+						if(!photoSizeCell)
+						{
+							[Model sharedInstance].photoResize = [textEntered integerValue];
+							[[Model sharedInstance] saveToDisk];
+						}
+					}];
+					break;
+				}
 			}
+			
 			break;
-//		case SettingSectionCache:
+		case SettingSectionCache:
+		{
+			switch(indexPath.row)
+			{
+				case 0:
+				{
+					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderDisk", @"Enter a Disk Cache from 10 - 500")];
+					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+						SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
+						diskCell.sliderValue = [textEntered integerValue];
+						if(!diskCell)
+						{
+							[Model sharedInstance].diskCache = [textEntered integerValue];
+							[[Model sharedInstance] saveToDisk];
+						}
+					}];
+					break;
+				}
+				case 1:
+				{
+					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderMemory", @"Enter a Memory Cache from 10 - 500")];
+					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+						SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
+						memoryCell.sliderValue = [textEntered integerValue];
+						if(!memoryCell)
+						{
+							[Model sharedInstance].memoryCache = [textEntered integerValue];
+							[[Model sharedInstance] saveToDisk];
+						}
+					}];
+					break;
+				}
+			}
 //			if(indexPath.row == 2)
 //			{
 //				[UIAlertView showWithTitle:@"DELETE IMAGE CACHE"
@@ -407,7 +474,8 @@ typedef enum {
 //									  }
 //								  }];
 //			}
-//			break;
+			break;
+		}
 		case SettingSectionAbout:
 		{
 			AboutViewController *aboutVC = [AboutViewController new];
@@ -420,6 +488,10 @@ typedef enum {
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
 	[self.view endEditing:YES];
+	if(self.currentPopDown)
+	{
+		[self.currentPopDown hide];
+	}
 }
 
 #pragma mark -- Option Methods
