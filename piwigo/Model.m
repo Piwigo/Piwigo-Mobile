@@ -23,7 +23,7 @@
 		instance = [[self alloc] init];
 		
 		instance.imagesPerPage = 100;
-		instance.defaultPrivacyLevel = kPiwigoPrivacyAdmins;
+		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
 		instance.photoQuality = 100;
