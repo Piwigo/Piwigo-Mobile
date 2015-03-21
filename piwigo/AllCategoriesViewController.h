@@ -10,6 +10,6 @@
 
 @interface AllCategoriesViewController : UIViewController
 
--(instancetype)initForImageId:(NSInteger)imageId;
+-(instancetype)initForImageId:(NSInteger)imageId andCategoryId:(NSInteger)categoryId;
 
 @end

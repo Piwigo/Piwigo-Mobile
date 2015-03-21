@@ -13,13 +13,14 @@
 @interface AllCategoriesViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, assign) NSInteger imageId;
+@property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) UITableView *categoriesTableView;
 
 @end
 
 @implementation AllCategoriesViewController
 
--(instancetype)initForImageId:(NSInteger)imageId
+-(instancetype)initForImageId:(NSInteger)imageId andCategoryId:(NSInteger)categoryId
 {
 	self = [super init];
 	if(self)
@@ -27,6 +28,7 @@
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.title = NSLocalizedString(@"categorySelection", @"Select Album");
 		self.imageId = imageId;
+		self.categoryId = categoryId;
 		
 		self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -49,56 +51,99 @@
 
 #pragma mark UITableView Methods
 
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+	return 2;
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+	if(section == 0)
+	{
+		return 1;
+	}
 	return [CategoriesData sharedInstance].allCategories.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+	if(section == 1)
+	{
+		return 0;
+	}
 	return 50.0;
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-	
-	UILabel *headerLabel = [UILabel new];
-	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor piwigoGray];
-	headerLabel.text = NSLocalizedString(@"categorySelection_forImage", @"Select an album for this image");
-	headerLabel.adjustsFontSizeToFitWidth = YES;
-	headerLabel.minimumScaleFactor = 0.5;
-	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
-	[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
-																   options:kNilOptions
-																   metrics:nil
-																	 views:@{@"header" : headerLabel}]];
-	
-	return header;
+	if(section == 0)
+	{
+		UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
+		
+		UILabel *headerLabel = [UILabel new];
+		headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		headerLabel.font = [UIFont piwigoFontNormal];
+		headerLabel.textColor = [UIColor piwigoGray];
+		headerLabel.text = NSLocalizedString(@"categorySelection_forImage", @"Select an album for this image");
+		headerLabel.adjustsFontSizeToFitWidth = YES;
+		headerLabel.minimumScaleFactor = 0.5;
+		[header addSubview:headerLabel];
+		[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
+		[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+																	   options:kNilOptions
+																	   metrics:nil
+																		 views:@{@"header" : headerLabel}]];
+		
+		return header;
+	}
+	return nil;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-	if(!cell) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+	if(indexPath.section == 1)
+	{
+		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+		if(!cell) {
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+		}
+		
+		PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
+		
+		cell.textLabel.text = albumData.name;
+		cell.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+		
+		return cell;
 	}
-	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
-	
-	cell.textLabel.text = albumData.name;
-	cell.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
-	
-	return cell;
+	else
+	{
+		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+		if(!cell) {
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+		}
+		
+		PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+		
+		cell.textLabel.text = albumData.name;
+		cell.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+		
+		return cell;
+	}
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *albumData;
+	
+	if(indexPath.section == 1)
+	{
+		albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
+	}
+	else
+	{
+		albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+	}
 	
 	[UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Set Image Represenative")
 					   message:[NSString stringWithFormat:NSLocalizedString(@"categoryImageSet_message", @"Are you sure you want to set this image for the album \"%@\"?"), albumData.name]

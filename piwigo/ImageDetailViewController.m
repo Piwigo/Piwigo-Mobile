@@ -144,7 +144,7 @@
 										{
 											if(![Model sharedInstance].hasAdminRights) break;
 											
-											AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue]];
+											AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
 											[self.navigationController pushViewController:allCategoriesPickVC animated:YES];
 											
 											break;
