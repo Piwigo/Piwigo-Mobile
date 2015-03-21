@@ -59,11 +59,16 @@
 		
 		NSString *aboutString = NSLocalizedStringFromTableInBundle(@"about_text", @"About", [NSBundle mainBundle], @"About text");
 		NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:aboutString];
-		NSRange afnetworkingRange = [aboutString rangeOfString:@"AFNetworking"];
-		NSRange piwigoDescriptionRange = NSMakeRange(0, afnetworkingRange.location);
+		
+		NSRange range = NSMakeRange(0, aboutString.length);
 		[aboutAttributedString addAttribute:NSFontAttributeName
 									  value:[UIFont systemFontOfSize:18]
-									  range:piwigoDescriptionRange];
+									  range:range];
+//		NSRange afnetworkingRange = [aboutString rangeOfString:@"AFNetworking"];
+//		NSRange piwigoDescriptionRange = NSMakeRange(0, afnetworkingRange.location);
+//		[aboutAttributedString addAttribute:NSFontAttributeName
+//									  value:[UIFont systemFontOfSize:18]
+//									  range:piwigoDescriptionRange];
 		self.textView.attributedText = aboutAttributedString;
 		
 		[self addConstraints];
