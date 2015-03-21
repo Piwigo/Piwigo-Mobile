@@ -21,6 +21,7 @@
 #import "UICountingLabel.h"
 #import "CategoryCollectionViewCell.h"
 #import "AlbumService.h"
+#import "UploadViewController.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
@@ -32,6 +33,7 @@
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
+@property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger startDeleteTotalImages;
 @property (nonatomic, assign) NSInteger totalImagesToDownload;
@@ -82,6 +84,7 @@
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
+		self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadToThisCategory)];
 		self.isSelect = NO;
 		self.selectedImageIds = [NSMutableArray new];
 		
@@ -116,6 +119,7 @@
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
+		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		[self.imagesCollection reloadData];
 		[refreshControl endRefreshing];
 	}];
@@ -133,7 +137,7 @@
 -(void)loadNavButtons
 {
 	if(!self.isSelect) {
-		self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
+		self.navigationItem.rightBarButtonItems = @[self.selectBarButton, self.uploadBarButton];
 	} else {
 		if([Model sharedInstance].hasAdminRights)
 		{
@@ -162,6 +166,12 @@
 	self.downloadView.hidden = YES;
 	self.selectedImageIds = [NSMutableArray new];
 	[UIApplication sharedApplication].idleTimerDisabled = NO;
+}
+
+-(void)uploadToThisCategory
+{
+	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId];
+	[self.navigationController pushViewController:uploadVC animated:YES];
 }
 
 -(void)deleteImages
