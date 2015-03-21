@@ -39,6 +39,7 @@ typedef enum {
 @property (nonatomic, strong) NSArray *headerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
+@property (nonatomic, strong) UIView *darkenView;
 @property (nonatomic, strong) EditPopDownView *currentPopDown;
 
 @end
@@ -80,6 +81,14 @@ typedef enum {
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
+		
+		self.darkenView = [UIView new];
+		self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
+		self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+		self.darkenView.hidden = YES;
+		[self.darkenView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedDarkenView)]];
+		[self.view addSubview:self.darkenView];
+		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
 	}
 	return self;
 }
@@ -124,6 +133,15 @@ typedef enum {
 -(void)keyboardWillDismiss:(NSNotification*)notification
 {
 	self.tableViewBottomConstraint.constant = 0;
+}
+
+-(void)tappedDarkenView
+{
+	self.darkenView.hidden = YES;
+	if(self.currentPopDown)
+	{
+		[self.currentPopDown hide];
+	}
 }
 
 #pragma mark -- UITableView Methods
@@ -389,8 +407,14 @@ typedef enum {
 				}
 				case 2: // Photo Quality
 				{
+					if(self.currentPopDown)
+					{
+						[self.currentPopDown removeFromSuperview];
+					}
 					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter a Photo Quality from 0 - 100")];
+					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+						self.darkenView.hidden = YES;
 						SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingSectionImageUpload]];
 						photoQualityCell.sliderValue = [textEntered integerValue];
 						if(!photoQualityCell)
@@ -403,8 +427,14 @@ typedef enum {
 				}
 				case 3:	// Photo Size
 				{
+					if(self.currentPopDown)
+					{
+						[self.currentPopDown removeFromSuperview];
+					}
 					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderSize", @"Enter a Photo Size from 1 - 100")];
+					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+						self.darkenView.hidden = YES;
 						SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
 						photoSizeCell.sliderValue = [textEntered integerValue];
 						if(!photoSizeCell)
@@ -424,8 +454,14 @@ typedef enum {
 			{
 				case 0:
 				{
+					if(self.currentPopDown)
+					{
+						[self.currentPopDown removeFromSuperview];
+					}
 					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderDisk", @"Enter a Disk Cache from 10 - 500")];
+					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+						self.darkenView.hidden = YES;
 						SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
 						diskCell.sliderValue = [textEntered integerValue];
 						if(!diskCell)
@@ -438,8 +474,14 @@ typedef enum {
 				}
 				case 1:
 				{
+					if(self.currentPopDown)
+					{
+						[self.currentPopDown removeFromSuperview];
+					}
 					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderMemory", @"Enter a Memory Cache from 10 - 500")];
+					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+						self.darkenView.hidden = YES;
 						SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
 						memoryCell.sliderValue = [textEntered integerValue];
 						if(!memoryCell)

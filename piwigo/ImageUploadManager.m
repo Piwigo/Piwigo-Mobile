@@ -188,7 +188,7 @@
 	[imageMetadata setObject:@(imageResized.size.height) forKey:@"PixelHeight"];
 	[imageMetadata setObject:@(imageResized.size.width) forKey:@"PixelWidth"];
 	
-	NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, [Model sharedInstance].photoQuality / 100.0);
+	NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, (100 - [Model sharedInstance].photoQuality) / 100.0);
 	NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
 	
 	

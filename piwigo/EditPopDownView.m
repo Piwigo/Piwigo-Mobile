@@ -10,6 +10,7 @@
 
 @interface EditPopDownView() <UITextFieldDelegate>
 
+@property (nonatomic, strong) UIView *darkenView;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, copy) completed completeBlock;
@@ -63,6 +64,17 @@
 	[view addConstraint:self.topConstraint];
 	[self layoutIfNeeded];
 	
+	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+	CGFloat topConstant;
+	if(UIDeviceOrientationIsPortrait(orientation) || orientation == UIDeviceOrientationFaceUp || orientation == UIDeviceOrientationFaceDown)
+	{
+		topConstant = 64;
+	}
+	else
+	{
+		topConstant = 32;
+	}
+	
 	if(IS_OS_7_OR_LATER)
 	{
 		[UIView animateWithDuration:1.0
@@ -71,7 +83,7 @@
 			  initialSpringVelocity:25.0
 							options:UIViewAnimationOptionCurveEaseIn
 						 animations:^{
-							 self.topConstraint.constant = 65;
+							 self.topConstraint.constant = topConstant;
 							 [view layoutIfNeeded];
 							 [self.textField becomeFirstResponder];
 						 } completion:nil];
@@ -79,7 +91,7 @@
 	else
 	{
 		[UIView animateWithDuration:1.0 animations:^{
-			self.topConstraint.constant = 65;
+			self.topConstraint.constant = topConstant;
 			[view layoutIfNeeded];
 			[self.textField becomeFirstResponder];
 		}];

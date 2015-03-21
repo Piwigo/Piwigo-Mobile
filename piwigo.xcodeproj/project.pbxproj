@@ -99,6 +99,7 @@
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
 		D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */; };
 		D8E4D61E1ABD223B0057EB95 /* ServerField.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D61D1ABD223B0057EB95 /* ServerField.m */; };
+		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
 		D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F113591A9E40EF000EC0A6 /* LoadingView.m */; };
 		D8F1135D1A9E4E43000EC0A6 /* UICountingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */; };
 		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
@@ -304,6 +305,8 @@
 		D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryImageSort.m; sourceTree = "<group>"; };
 		D8E4D61C1ABD223B0057EB95 /* ServerField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerField.h; sourceTree = "<group>"; };
 		D8E4D61D1ABD223B0057EB95 /* ServerField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerField.m; sourceTree = "<group>"; };
+		D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
+		D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
 		D8F113581A9E40EF000EC0A6 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		D8F113591A9E40EF000EC0A6 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		D8F1135B1A9E4E43000EC0A6 /* UICountingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICountingLabel.h; sourceTree = "<group>"; };
@@ -628,6 +631,8 @@
 				D87C5A901A6F4C2E001763BC /* Keychain */,
 				D8E4D61C1ABD223B0057EB95 /* ServerField.h */,
 				D8E4D61D1ABD223B0057EB95 /* ServerField.m */,
+				D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */,
+				D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -995,6 +1000,7 @@
 				D82B8D021A687831000E47CA /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				D82B8D1D1A68783B000E47CA /* AFHTTPRequestOperation.m in Sources */,
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
+				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				D8172E961AB9093100271DB0 /* EditPopDownView.m in Sources */,
 				D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,

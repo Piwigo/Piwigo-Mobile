@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "LoginNavigationController.h"
 #import "LoginViewController.h"
 #import "TabBarViewController.h"
 #import "SessionService.h"
@@ -58,7 +59,7 @@
 
 -(void)loadLoginView
 {
-	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.loginVC];
+	LoginNavigationController *nav = [[LoginNavigationController alloc] initWithRootViewController:self.loginVC];
 	[nav setNavigationBarHidden:YES];
 	self.window.rootViewController = nav;
 }

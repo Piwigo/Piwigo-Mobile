@@ -87,12 +87,12 @@
 "settings_defaultAuthor" = "Default Author";
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Default Privacy";
-"settings_photoQuality" = "Photo Quality";
+"settings_photoQuality" = "Compression";
 "settings_photoSize" = "Photo Size";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Memory";
 "settings_cacheMegabytes" = "MB";
-"settings_placeholderQuality" = "Enter a Photo Quality from 0 - 100";
+"settings_placeholderQuality" = "Enter a Photo Compression from 0 - 100";
 "settings_placeholderSize" = "Enter a Photo Size from 1 - 100";
 "settings_placeholderDisk" = "Enter a Disk Cache from 10 - 500";
 "settings_placeholderMemory" = "Enter a Memory Cache from 10 - 500";

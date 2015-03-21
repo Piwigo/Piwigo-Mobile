@@ -27,7 +27,7 @@
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
-		instance.photoQuality = 100;
+		instance.photoQuality = 0;
 		instance.photoResize = 100;
 		
 		instance.diskCache = 10;
