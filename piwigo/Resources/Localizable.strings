@@ -149,7 +149,7 @@
 
 "categorySelection" = "Select Album";
 "categorySelection_forImage" = "Select an album for this image";
-"categoryImageSet_title" = "Set Image Represenative";
+"categoryImageSet_title" = "Set Image Thumbnail";
 "categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";
 "categoryImageSetSuccess_title" = "Image Set Successful";
 "categoryImageSetSuccess_message" = "The image was set successfully for the album image";
