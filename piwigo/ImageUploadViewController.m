@@ -164,6 +164,10 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+	if(self.imagesToEdit.count == 0 && [ImageUploadManager sharedInstance].imageUploadQueue.count == 0)
+	{
+		[self cancel];
+	}
 	if(section == 0)
 	{
 		return self.imagesToEdit.count;
