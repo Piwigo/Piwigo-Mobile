@@ -79,7 +79,7 @@
 		self.numberOfImages.textColor = [UIColor piwigoWhiteCream];
 		self.numberOfImages.adjustsFontSizeToFitWidth = YES;
 		self.numberOfImages.minimumScaleFactor = 0.8;
-		self.numberOfImages.lineBreakMode = NSLineBreakByTruncatingMiddle;
+		self.numberOfImages.lineBreakMode = NSLineBreakByTruncatingTail;
 		[self.numberOfImages setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
 		[self.contentView addSubview:self.numberOfImages];
 		
