@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
@@ -29,53 +29,53 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Author" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="kZx-l2-fuA">
-                        <rect key="frame" x="106" y="37" width="51.5" height="20.5"/>
+                        <rect key="frame" x="106" y="36.5" width="51.5" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tags" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EB5-0b-2tT">
-                        <rect key="frame" x="106" y="94" width="36" height="20.5"/>
+                        <rect key="frame" x="106" y="93.5" width="36" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="RYD-nO-Ti5">
-                        <rect key="frame" x="8" y="122" width="87.5" height="20.5"/>
+                        <rect key="frame" x="8" y="121.5" width="87.5" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Level" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EMI-PR-dcH">
-                        <rect key="frame" x="106" y="65" width="101.5" height="20.5"/>
+                        <rect key="frame" x="106" y="64.5" width="101.5" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LY3-OB-RQ6" userLabel="Image title underline">
-                        <rect key="frame" x="106" y="29" width="215" height="1"/>
-                        <color key="backgroundColor" red="0.29803922772407532" green="0.29803922772407532" blue="0.29803922772407532" alpha="1" colorSpace="calibratedRGB"/>
+                        <rect key="frame" x="106" y="30.5" width="215" height="1"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="wZ6-O9-Cbp"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PGX-Vc-TjD" userLabel="author underline">
-                        <rect key="frame" x="106" y="55" width="215" height="1"/>
-                        <color key="backgroundColor" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <rect key="frame" x="106" y="59" width="215" height="1"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="gHJ-EY-lTJ"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YxP-dW-r8f" userLabel="privacy underline">
-                        <rect key="frame" x="106" y="86" width="215" height="1"/>
-                        <color key="backgroundColor" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <rect key="frame" x="106" y="87" width="215" height="1"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="aYj-VW-cO0"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OZV-ot-eQL" userLabel="tags underline">
-                        <rect key="frame" x="8" y="114" width="313" height="1"/>
-                        <color key="backgroundColor" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <rect key="frame" x="8" y="116" width="313" height="1"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="YA5-5b-V3x"/>
                         </constraints>
@@ -101,7 +101,7 @@
                     <constraint firstItem="EMI-PR-dcH" firstAttribute="leading" secondItem="jBo-Cw-lok" secondAttribute="trailing" constant="8" id="XMR-CV-mBg"/>
                     <constraint firstItem="YxP-dW-r8f" firstAttribute="leading" secondItem="jBo-Cw-lok" secondAttribute="trailing" constant="8" id="Xk9-9k-sMu"/>
                     <constraint firstItem="NbD-Xm-kp3" firstAttribute="top" secondItem="4cc-Ek-Ioh" secondAttribute="topMargin" id="Xon-rT-n5F"/>
-                    <constraint firstItem="YxP-dW-r8f" firstAttribute="top" secondItem="EMI-PR-dcH" secondAttribute="bottom" constant="0.5" id="acW-SR-S0I"/>
+                    <constraint firstItem="YxP-dW-r8f" firstAttribute="top" secondItem="EMI-PR-dcH" secondAttribute="bottom" constant="2" id="acW-SR-S0I"/>
                     <constraint firstItem="jBo-Cw-lok" firstAttribute="leading" secondItem="4cc-Ek-Ioh" secondAttribute="leadingMargin" id="az6-X6-kAt"/>
                     <constraint firstItem="OZV-ot-eQL" firstAttribute="trailing" secondItem="4cc-Ek-Ioh" secondAttribute="trailingMargin" id="b4U-LC-R2N"/>
                     <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="EMI-PR-dcH" secondAttribute="trailing" id="cAe-Hd-Qkx"/>
@@ -110,10 +110,10 @@
                     <constraint firstItem="EMI-PR-dcH" firstAttribute="top" secondItem="kZx-l2-fuA" secondAttribute="bottom" constant="8" id="kWY-hV-akV"/>
                     <constraint firstItem="LY3-OB-RQ6" firstAttribute="leading" secondItem="jBo-Cw-lok" secondAttribute="trailing" constant="8" id="mj3-HF-ZZX"/>
                     <constraint firstItem="PGX-Vc-TjD" firstAttribute="trailing" secondItem="4cc-Ek-Ioh" secondAttribute="trailingMargin" id="mto-8Y-Cem"/>
-                    <constraint firstItem="OZV-ot-eQL" firstAttribute="top" secondItem="EB5-0b-2tT" secondAttribute="bottom" id="nGD-pn-pvz"/>
+                    <constraint firstItem="OZV-ot-eQL" firstAttribute="top" secondItem="EB5-0b-2tT" secondAttribute="bottom" constant="2" id="nGD-pn-pvz"/>
                     <constraint firstItem="RYD-nO-Ti5" firstAttribute="top" secondItem="EB5-0b-2tT" secondAttribute="bottom" constant="8" id="nSc-ct-owL"/>
-                    <constraint firstItem="LY3-OB-RQ6" firstAttribute="top" secondItem="NbD-Xm-kp3" secondAttribute="bottom" id="t4C-AP-Lba"/>
-                    <constraint firstItem="PGX-Vc-TjD" firstAttribute="top" secondItem="kZx-l2-fuA" secondAttribute="bottom" constant="-2.5" id="ygX-TI-PhX"/>
+                    <constraint firstItem="LY3-OB-RQ6" firstAttribute="top" secondItem="NbD-Xm-kp3" secondAttribute="bottom" constant="2" id="t4C-AP-Lba"/>
+                    <constraint firstItem="PGX-Vc-TjD" firstAttribute="top" secondItem="kZx-l2-fuA" secondAttribute="bottom" constant="2" id="ygX-TI-PhX"/>
                 </constraints>
                 <variation key="default">
                     <mask key="constraints">
