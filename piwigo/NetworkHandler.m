@@ -133,7 +133,7 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 
 +(NSString*)getURLWithPath:(NSString*)path andURLParams:(NSDictionary*)params
 {
-	NSString *url = [NSString stringWithFormat:@"http://%@/ws.php?%@", [Model sharedInstance].serverName, path];
+	NSString *url = [NSString stringWithFormat:@"%@%@/ws.php?%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, path];
 
 	for(NSString *parameter in params)
 	{
@@ -148,7 +148,7 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 +(void)showConnectionError:(NSError*)error
 {
 	UIAlertView *connectionError = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-															  message:[NSString stringWithFormat:@"%@", [error.userInfo objectForKey:@"NSLocalizedDescription"]]
+															  message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
 															 delegate:nil
 													cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 													otherButtonTitles:nil];

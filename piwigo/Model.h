@@ -26,6 +26,7 @@ typedef enum {
 -(void)saveToDisk;
 +(ALAssetsLibrary*)defaultAssetsLibrary;
 
+@property (nonatomic, strong) NSString *serverProtocol;
 @property (nonatomic, strong) NSString *serverName;
 @property (nonatomic, strong) NSString *pwgToken;
 @property (nonatomic, strong) NSString *language;

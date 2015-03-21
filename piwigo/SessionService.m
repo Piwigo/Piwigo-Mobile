@@ -39,8 +39,8 @@
 				  }
 			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 				  
-				  if(fail) {
-					  [SessionService showConnectionError:error];
+				  if(fail)
+				  {
 					  fail(operation, error);
 				  }
 			  }];

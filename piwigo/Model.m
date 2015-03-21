@@ -22,6 +22,7 @@
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
 		
+		instance.serverProtocol = @"http://";
 		instance.imagesPerPage = 100;
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
@@ -92,6 +93,7 @@
 	{
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:codedData];
 		Model *modelData = [unarchiver decodeObjectForKey:@"Model"];
+		self.serverProtocol = modelData.serverProtocol;
 		self.serverName = modelData.serverName;
 		self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
 		self.defaultAuthor = modelData.defaultAuthor;
@@ -122,6 +124,7 @@
 	[saveObject addObject:@(self.memoryCache)];
 	[saveObject addObject:@(self.photoQuality)];
 	[saveObject addObject:@(self.photoResize)];
+	[saveObject addObject:self.serverProtocol];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -136,6 +139,10 @@
 	self.memoryCache = [[savedData objectAtIndex:4] integerValue];
 	self.photoQuality = [[savedData objectAtIndex:5] integerValue];
 	self.photoResize = [[savedData objectAtIndex:6] integerValue];
+	if(savedData.count > 7)
+	{
+		self.serverProtocol = [savedData objectAtIndex:7];
+	}
 	
 	return self;
 }

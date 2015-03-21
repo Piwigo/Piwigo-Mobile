@@ -109,7 +109,7 @@
 	if([Model sharedInstance].hasAdminRights)
 	{
 		[otherButtons addObject:NSLocalizedString(@"iamgeOptions_edit",  @"Edit")];
-		[otherButtons addObject:@"Set as Album Image"]; //@TODO: Localize this!
+		[otherButtons addObject:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")];
 	}
 	
 	[UIActionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem

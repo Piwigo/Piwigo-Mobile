@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "PiwigoButton.h"
 #import "PiwigoTextField.h"
+#import "ServerField.h"
 #import "KeychainAccess.h"
 #import "Model.h"
 #import "SessionService.h"
@@ -17,7 +18,7 @@
 @interface LoginViewController () <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIImageView *piwigoLogo;
-@property (nonatomic, strong) PiwigoTextField *serverTextField;
+@property (nonatomic, strong) ServerField *serverTextField;
 @property (nonatomic, strong) PiwigoTextField *userTextField;
 @property (nonatomic, strong) PiwigoTextField *passwordTextField;
 @property (nonatomic, strong) PiwigoButton *loginButton;
@@ -46,15 +47,15 @@
 		self.piwigoLogo.contentMode = UIViewContentModeScaleAspectFit;
 		[self.view addSubview:self.piwigoLogo];
 		
-		self.serverTextField = [PiwigoTextField new];
+		self.serverTextField = [ServerField new];
 		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"Server");
-		self.serverTextField.text = [Model sharedInstance].serverName;
-		self.serverTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-		self.serverTextField.keyboardType = UIKeyboardTypeURL;
-		self.serverTextField.returnKeyType = UIReturnKeyNext;
-		self.serverTextField.delegate = self;
+		self.serverTextField.textField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"Server");
+		self.serverTextField.textField.text = [Model sharedInstance].serverName;
+		self.serverTextField.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+		self.serverTextField.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+		self.serverTextField.textField.keyboardType = UIKeyboardTypeURL;
+		self.serverTextField.textField.returnKeyType = UIReturnKeyNext;
+		self.serverTextField.textField.delegate = self;
 		[self.view addSubview:self.serverTextField];
 				
 		self.userTextField = [PiwigoTextField new];
@@ -193,7 +194,23 @@
 	[self.view endEditing:YES];
 	[self showLoading];
 	
-	[Model sharedInstance].serverName = self.serverTextField.text;
+	if(self.serverTextField.textField.text.length <= 0)
+	{
+		[UIAlertView showWithTitle:NSLocalizedString(@"loginEmptyServer_title", @"Enter a Web Address")
+						   message:NSLocalizedString(@"loginEmptyServer_message", @"Please enter a Piwigo web address in order to proceed")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 otherButtonTitles:nil
+						  tapBlock:nil];
+		
+		[self hideLoading];
+		return;
+	}
+	
+	NSString *cleanServerString = [self cleanServerString:self.serverTextField.textField.text];
+	self.serverTextField.textField.text = cleanServerString;
+	
+	[Model sharedInstance].serverName = cleanServerString;
+	[Model sharedInstance].serverProtocol = [self.serverTextField getProtocolString];
 	[[Model sharedInstance] saveToDisk];
 
 	if(self.userTextField.text.length > 0)
@@ -212,6 +229,18 @@
 									 }
 								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 									 [self hideLoading];
+
+									 NSString *extraErrorString = @"";
+									 if(error.code == -1012)
+									 {
+										 extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_protocol", @"This might be because your server doesn't support https")];
+									 }
+									 
+									 [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+														message:[NSString stringWithFormat:@"%@%@", [error localizedDescription], extraErrorString]
+											  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+											  otherButtonTitles:nil
+													   tapBlock:nil];
 								 }];
 	}
 	else
@@ -219,6 +248,31 @@
 		[self getSessionStatus];
 		[KeychainAccess resetKeychain];
 	}
+}
+
+-(NSString*)cleanServerString:(NSString*)serverString
+{
+	NSString *server = serverString;
+	
+	NSRange httpRange = [server rangeOfString:@"http://" options:NSCaseInsensitiveSearch];
+	if(httpRange.location == 0)
+	{
+		server = [server substringFromIndex:7];
+	}
+	
+	NSRange httpsRange = [server rangeOfString:@"https://" options:NSCaseInsensitiveSearch];
+	if(httpsRange.location == 0)
+	{
+		server = [server substringFromIndex:8];
+	}
+	
+	NSRange wwwRange = [server rangeOfString:@"www." options:NSCaseInsensitiveSearch];
+	if(wwwRange.location == 0)
+	{
+		server = [server substringFromIndex:4];
+	}
+	
+	return server;
 }
 
 -(void)getSessionStatus
@@ -287,7 +341,7 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-	if(textField == self.serverTextField) {
+	if(textField == self.serverTextField.textField) {
 		[self.userTextField becomeFirstResponder];
 	} else if (textField == self.userTextField) {
 		[self.passwordTextField becomeFirstResponder];
