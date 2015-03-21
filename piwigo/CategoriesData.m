@@ -58,16 +58,22 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
 	for(PiwigoAlbumData *categoryData in categories)
 	{
-		BOOL containsAlbum = NO;
+		NSInteger index = -1;
+		NSInteger curr = 0;
 		for(PiwigoAlbumData *existingCategory in self.allCategories)
 		{
 			if(existingCategory.albumId == categoryData.albumId)
 			{
-				containsAlbum = YES;
+				index = curr;
 				break;
 			}
+			curr++;
 		}
-		if(!containsAlbum)
+		if(index != -1)
+		{
+			[newCategories setObject:categoryData atIndexedSubscript:index];
+		}
+		else
 		{
 			[newCategories addObject:categoryData];
 		}

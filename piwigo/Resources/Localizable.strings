@@ -129,6 +129,7 @@
 "categoryCellOption_rename" = "Rename";
 "categoryCellOption_move" = "Move";
 "categoryCellOption_delete" = "Delete";
+"categoryMainEmtpy" = "There appears to be no albums in your Piwigo. You may pull down to refresh";
 
 "renameCategory_title" = "Rename Album";
 "renameCategory_message" = "Rename album";
@@ -154,6 +155,8 @@
 "categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";
 "categoryImageSetSuccess_title" = "Image Set Successful";
 "categoryImageSetSuccess_message" = "The image was set successfully for the album image";
+
+"pullToRefresh" = "Loading All Images";
 
 // ----------------------- ERROR STRINGS -----------------------
 

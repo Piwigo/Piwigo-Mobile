@@ -20,6 +20,7 @@
 #import "LoadingView.h"
 #import "UICountingLabel.h"
 #import "CategoryCollectionViewCell.h"
+#import "AlbumService.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
@@ -62,6 +63,7 @@
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
 		self.imagesCollection.backgroundColor = [UIColor clearColor];
+		self.imagesCollection.alwaysBounceVertical = YES;
 		self.imagesCollection.dataSource = self;
 		self.imagesCollection.delegate = self;
 		[self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
@@ -97,6 +99,30 @@
 	
 	[self loadNavButtons];
 	[self.imagesCollection reloadData];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
+	
+	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+	refreshControl.backgroundColor = [UIColor piwigoOrange];
+	refreshControl.tintColor = [UIColor piwigoGray];
+	refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Loading All Images")];
+	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+	[self.imagesCollection addSubview:refreshControl];
+}
+
+-(void)refresh:(UIRefreshControl*)refreshControl
+{
+	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
+		[self.imagesCollection reloadData];
+		[refreshControl endRefreshing];
+	}];
+	
+	[AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+		[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+	} onFailure:nil];
 }
 
 -(void)categoriesUpdated

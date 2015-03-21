@@ -19,6 +19,7 @@
 
 @property (nonatomic, strong) UITableView *albumsTableView;
 @property (nonatomic, strong) NSArray *categories;
+@property (nonatomic, strong) UILabel *emptyLabel;
 
 @end
 
@@ -72,6 +73,26 @@
 	}
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
+	
+	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+	refreshControl.backgroundColor = [UIColor piwigoOrange];
+	refreshControl.tintColor = [UIColor piwigoGray];
+	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+	[self.albumsTableView addSubview:refreshControl];
+}
+
+-(void)refresh:(UIRefreshControl*)refreshControl
+{
+	[AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+		[refreshControl endRefreshing];
+	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+		[refreshControl endRefreshing];
+	}];
+}
+
 -(void)addCategory
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"createNewAlbum_title", @"Create New Album")
@@ -116,6 +137,23 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+	if(self.categories.count <= 0)
+	{
+		self.emptyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+		
+		self.emptyLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"There appears to be no albums in your Piwigo. You may pull down to refresh");
+		self.emptyLabel.textColor = [UIColor piwigoWhiteCream];
+		self.emptyLabel.numberOfLines = 0;
+		self.emptyLabel.textAlignment = NSTextAlignmentCenter;
+		self.emptyLabel.font = [UIFont piwigoFontNormal];
+		[self.emptyLabel sizeToFit];
+		
+		self.albumsTableView.backgroundView = self.emptyLabel;
+	}
+	else if(self.emptyLabel)
+	{
+		self.emptyLabel.hidden = YES;
+	}
 	return self.categories.count;
 }
 
