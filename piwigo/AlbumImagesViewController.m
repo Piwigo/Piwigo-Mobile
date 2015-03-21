@@ -200,8 +200,9 @@
 		return;
 	}
 	
+	NSString *imageId = [NSString stringWithFormat:@"%@", @([self.selectedImageIds.lastObject integerValue])];
 	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
-	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject]
+	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:imageId]
 				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
 					 
 					 NSIndexSet *set = [self.imageList indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
