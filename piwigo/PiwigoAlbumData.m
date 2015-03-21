@@ -191,4 +191,18 @@
 	[self addImages:@[newImageData]];
 }
 
+-(NSInteger)getDepthOfCategory
+{
+	NSInteger depth = 0;
+	
+	PiwigoAlbumData *current = self;
+	while(current.parentAlbumId != 0)
+	{
+		depth++;
+		current = [[CategoriesData sharedInstance] getCategoryById:current.parentAlbumId];
+	}
+	
+	return depth;
+}
+
 @end

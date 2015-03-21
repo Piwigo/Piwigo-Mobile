@@ -43,4 +43,6 @@ typedef enum {
 -(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  OnCompletion:(void (^)(BOOL completed))completion;
 -(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
+-(NSInteger)getDepthOfCategory;
+
 @end

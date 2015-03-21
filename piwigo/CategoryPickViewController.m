@@ -130,8 +130,11 @@
 	
 	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
 	
-	cell.textLabel.text = albumData.name;
-	cell.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+	NSInteger depth = [albumData getDepthOfCategory];
+	NSString *front = [@"" stringByPaddingToLength:depth withString:@" " startingAtIndex:0];
+	
+	cell.textLabel.text = [NSString stringWithFormat:@"%@%@", front, albumData.name];
+	cell.textLabel.lineBreakMode = NSLineBreakByTruncatingHead;
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
 	return cell;
