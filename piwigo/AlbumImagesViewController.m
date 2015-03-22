@@ -75,11 +75,6 @@
 		[self.view addSubview:self.imagesCollection];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 		
-		[[[CategoriesData sharedInstance] getCategoryById:albumId] loadCategoryImageDataChunkForProgress:nil
-																							OnCompletion:^(BOOL completed) {
-			[self.imagesCollection reloadData];
-		}];
-		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
@@ -120,6 +115,7 @@
 {
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
 		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+		self.currentSortCategory = self.currentSortCategory;
 		[self.imagesCollection reloadData];
 		[refreshControl endRefreshing];
 	}];
@@ -380,7 +376,7 @@
 		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 	}
 	
-	if(_currentSortCategory == currentSortCategory)
+	if(currentSortCategory == 0)
 	{
 		return;
 	}
