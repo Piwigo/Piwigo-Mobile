@@ -14,7 +14,7 @@ NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 
-NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList&recursive=true";
+NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList&cat_id={categoryId}";
 NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}&per_page={perPage}&page={page}&order={order}";
 NSString * const kPiwigoCategoriesAdd = @"format=json&method=pwg.categories.add&name={name}";
 NSString * const kPiwigoCategoriesSetInfo = @"format=json&method=pwg.categories.setInfo";

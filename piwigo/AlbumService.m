@@ -13,11 +13,14 @@
 
 @implementation AlbumService
 
-+(AFHTTPRequestOperation*)getAlbumListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
-									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(AFHTTPRequestOperation*)getAlbumListForCategory:(NSInteger)categoryId
+									 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
+										onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesGetList
-		URLParameters:nil
+		URLParameters:@{
+						@"categoryId" : @(categoryId)
+						}
 		   parameters:nil
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  

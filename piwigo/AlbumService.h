@@ -12,8 +12,9 @@
 
 @interface AlbumService : NetworkHandler
 
-+(AFHTTPRequestOperation*)getAlbumListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
-										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(AFHTTPRequestOperation*)getAlbumListForCategory:(NSInteger)categoryId
+									 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
+										onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 +(AFHTTPRequestOperation*)createCategoryWithName:(NSString*)categoryName
 									OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL createdSuccessfully))completion

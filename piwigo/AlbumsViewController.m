@@ -46,7 +46,8 @@
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
-		[AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+		[AlbumService getAlbumListForCategory:0
+								 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 			
 		} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			
@@ -86,7 +87,8 @@
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-	[AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+	[AlbumService getAlbumListForCategory:0
+							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 		[refreshControl endRefreshing];
 	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		[refreshControl endRefreshing];
@@ -107,7 +109,8 @@
 													  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL createdSuccessfully) {
 														  if(createdSuccessfully)
 														  {
-															  [AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+															  [AlbumService getAlbumListForCategory:0
+																					   OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 																  [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 															  } onFailure:nil];
 														  }
