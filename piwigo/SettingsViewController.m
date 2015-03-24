@@ -415,12 +415,15 @@ typedef enum {
 					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
 						self.darkenView.hidden = YES;
-						SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingSectionImageUpload]];
-						photoQualityCell.sliderValue = [textEntered integerValue];
-						if(!photoQualityCell)
+						if(textEntered.length > 0)
 						{
-							[Model sharedInstance].photoQuality = [textEntered integerValue];
-							[[Model sharedInstance] saveToDisk];
+							SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingSectionImageUpload]];
+							photoQualityCell.sliderValue = [textEntered integerValue];
+							if(!photoQualityCell)
+							{
+								[Model sharedInstance].photoQuality = [textEntered integerValue];
+								[[Model sharedInstance] saveToDisk];
+							}
 						}
 					}];
 					break;
@@ -435,12 +438,15 @@ typedef enum {
 					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
 						self.darkenView.hidden = YES;
-						SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
-						photoSizeCell.sliderValue = [textEntered integerValue];
-						if(!photoSizeCell)
+						if(textEntered.length > 0)
 						{
-							[Model sharedInstance].photoResize = [textEntered integerValue];
-							[[Model sharedInstance] saveToDisk];
+							SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
+							photoSizeCell.sliderValue = [textEntered integerValue];
+							if(!photoSizeCell)
+							{
+								[Model sharedInstance].photoResize = [textEntered integerValue];
+								[[Model sharedInstance] saveToDisk];
+							}
 						}
 					}];
 					break;
@@ -462,12 +468,15 @@ typedef enum {
 					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
 						self.darkenView.hidden = YES;
-						SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
-						diskCell.sliderValue = [textEntered integerValue];
-						if(!diskCell)
+						if(textEntered.length > 0)
 						{
-							[Model sharedInstance].diskCache = [textEntered integerValue];
-							[[Model sharedInstance] saveToDisk];
+							SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
+							diskCell.sliderValue = [textEntered integerValue];
+							if(!diskCell)
+							{
+								[Model sharedInstance].diskCache = [textEntered integerValue];
+								[[Model sharedInstance] saveToDisk];
+							}
 						}
 					}];
 					break;
@@ -482,12 +491,15 @@ typedef enum {
 					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
 						self.darkenView.hidden = YES;
-						SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
-						memoryCell.sliderValue = [textEntered integerValue];
-						if(!memoryCell)
+						if(textEntered.length > 0)
 						{
-							[Model sharedInstance].memoryCache = [textEntered integerValue];
-							[[Model sharedInstance] saveToDisk];
+							SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
+							memoryCell.sliderValue = [textEntered integerValue];
+							if(!memoryCell)
+							{
+								[Model sharedInstance].memoryCache = [textEntered integerValue];
+								[[Model sharedInstance] saveToDisk];
+							}
 						}
 					}];
 					break;

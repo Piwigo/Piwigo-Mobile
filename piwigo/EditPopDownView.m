@@ -130,7 +130,7 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-	if(textField.text.length > 0 && self.completeBlock)
+	if(self.completeBlock)
 	{
 		self.completeBlock(textField.text);
 	}
