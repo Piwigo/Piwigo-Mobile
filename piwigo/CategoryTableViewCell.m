@@ -106,6 +106,7 @@
 	self.categoryData = category;
 
 	NSInteger depth = [self.categoryData getDepthOfCategory];
+	if(depth <= 0) depth = 1;
 	NSString *front = [@"" stringByPaddingToLength:depth-1 withString:@"-" startingAtIndex:0];
 	
 	self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", front, self.categoryData.name];
