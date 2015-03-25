@@ -13,6 +13,7 @@
 @interface ServerField()
 
 @property (nonatomic, strong) UILabel *protocolLabel;
+@property (nonatomic, strong) UILabel *descriptionLabel;
 @property (nonatomic, strong) UIView *divider;
 
 @end
@@ -45,6 +46,16 @@
 		self.protocolLabel.minimumScaleFactor = 0.5;
 		[self addSubview:self.protocolLabel];
 		
+		self.descriptionLabel = [UILabel new];
+		self.descriptionLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.descriptionLabel.font = [UIFont piwigoFontNormal];
+		self.descriptionLabel.font = [self.descriptionLabel.font fontWithSize:12];
+		self.descriptionLabel.adjustsFontSizeToFitWidth = YES;
+		self.descriptionLabel.minimumScaleFactor = 0.5;
+		self.descriptionLabel.textAlignment = NSTextAlignmentCenter;
+		self.descriptionLabel.text = NSLocalizedString(@"login_protocolDescription", @"(Tap to Change)");
+		[self addSubview:self.descriptionLabel];
+		
 		self.textField = [PiwigoTextField new];
 		self.textField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.textField.layer.cornerRadius = 0;
@@ -66,6 +77,7 @@
 {
 	NSDictionary *views = @{
 							@"label" : self.protocolLabel,
+							@"desc" : self.descriptionLabel,
 							@"divider" : self.divider,
 							@"field" : self.textField
 							};
@@ -86,6 +98,22 @@
 													 attribute:NSLayoutAttributeLeft
 													multiplier:1.0
 													  constant:0]];
+	
+	[self addConstraint:[NSLayoutConstraint constraintWithItem:self.descriptionLabel
+													 attribute:NSLayoutAttributeLeft
+													 relatedBy:NSLayoutRelationGreaterThanOrEqual
+														toItem:self.protocolLabel
+													 attribute:NSLayoutAttributeLeft
+													multiplier:1.0
+													  constant:3]];
+	[self addConstraint:[NSLayoutConstraint constraintWithItem:self.descriptionLabel
+													 attribute:NSLayoutAttributeRight
+													 relatedBy:NSLayoutRelationLessThanOrEqual
+														toItem:self.protocolLabel
+													 attribute:NSLayoutAttributeRight
+													multiplier:1.0
+													  constant:-3]];
+	[self addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.descriptionLabel amount:3]];
 	
 }
 
