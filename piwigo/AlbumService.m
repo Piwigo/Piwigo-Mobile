@@ -17,9 +17,18 @@
 									 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
 										onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
+	if(categoryId != -1 && [Model sharedInstance].loadAllCategoryInfo && categoryId != 0) return  nil;
+	
+	NSString *recursiveString = [Model sharedInstance].loadAllCategoryInfo ? @"true" : @"false";
+	if(categoryId == -1)
+	{	// hack-ish way to force load all albums -- send a categoyId as -1
+		recursiveString = @"true";
+		categoryId = 0;
+	}
 	return [self post:kPiwigoCategoriesGetList
 		URLParameters:@{
-						@"categoryId" : @(categoryId)
+						@"categoryId" : @(categoryId),
+						@"recursive" : recursiveString
 						}
 		   parameters:nil
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {

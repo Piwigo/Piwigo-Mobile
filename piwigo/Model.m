@@ -33,6 +33,8 @@
 		instance.diskCache = 10;
 		instance.memoryCache = 80;
 		
+		instance.loadAllCategoryInfo = YES;
+		
 		[instance readFromDisk];
 	});
 	return instance;
@@ -101,6 +103,7 @@
 		self.memoryCache = modelData.memoryCache;
 		self.photoQuality = modelData.photoQuality;
 		self.photoResize = modelData.photoResize;
+		self.loadAllCategoryInfo = modelData.loadAllCategoryInfo;
 		
 	}
 }
@@ -125,6 +128,7 @@
 	[saveObject addObject:@(self.photoQuality)];
 	[saveObject addObject:@(self.photoResize)];
 	[saveObject addObject:self.serverProtocol];
+	[saveObject addObject:[NSNumber numberWithBool:self.loadAllCategoryInfo]];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -142,6 +146,12 @@
 	if(savedData.count > 7)
 	{
 		self.serverProtocol = [savedData objectAtIndex:7];
+	}
+	if(savedData.count > 8)
+	{
+		self.loadAllCategoryInfo = [[savedData objectAtIndex:8] boolValue];
+	} else {
+		self.loadAllCategoryInfo = YES;
 	}
 	
 	return self;

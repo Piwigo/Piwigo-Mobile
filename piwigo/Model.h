@@ -46,6 +46,8 @@ typedef enum {
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;
 
+@property (nonatomic, assign) BOOL loadAllCategoryInfo;
+
 -(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 
 @end
