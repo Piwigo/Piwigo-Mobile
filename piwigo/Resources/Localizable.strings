@@ -11,6 +11,7 @@
 "login_userPlaceholder" = "Username (optional)";
 "login_passwordPlaceholder" = "Password (optional)";
 "login_loggingIn" = "Logging In...";
+"login_protocolDescription" = "(tap to change)";
 
 "tabBar_albums" = "Albums";
 "tabBar_upload" = "Upload";
@@ -187,6 +188,7 @@
 "imageSaveError_message" = "Failed to save image. Error: %@";
 
 "categoryUpload_chooseAlbum" = "Select an album to upload images to";
+"categoyUpload_loadSubCategories" = "load";
 
 "videoSaveError_title" = "Fail Saving Video";
 "videoSaveError_message" = "Failed to save video. Error: %@";

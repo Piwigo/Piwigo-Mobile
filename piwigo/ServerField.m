@@ -53,7 +53,7 @@
 		self.descriptionLabel.adjustsFontSizeToFitWidth = YES;
 		self.descriptionLabel.minimumScaleFactor = 0.5;
 		self.descriptionLabel.textAlignment = NSTextAlignmentCenter;
-		self.descriptionLabel.text = NSLocalizedString(@"login_protocolDescription", @"(Tap to Change)");
+		self.descriptionLabel.text = NSLocalizedString(@"login_protocolDescription", @"(tap to change)");
 		[self addSubview:self.descriptionLabel];
 		
 		self.textField = [PiwigoTextField new];

@@ -53,7 +53,7 @@
 		self.selectLabel.font = [self.selectLabel.font fontWithSize:13];
 		self.selectLabel.textColor = [UIColor lightGrayColor];
 		self.selectLabel.textAlignment = NSTextAlignmentRight;
-		self.selectLabel.text = @"load";	// @TODO: Localize this!
+		self.selectLabel.text = NSLocalizedString(@"categoyUpload_loadSubCategories", @"load");
 		[self.contentView addSubview:self.selectLabel];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.selectLabel]];
 		
