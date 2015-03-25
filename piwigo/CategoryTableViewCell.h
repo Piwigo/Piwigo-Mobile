@@ -19,6 +19,8 @@
 @interface CategoryTableViewCell : UITableViewCell
 
 @property (nonatomic, weak) id<CategoryCellDelegate> categoryDelegate;
+@property (nonatomic, assign) BOOL hasLoadedSubCategories;
+
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category;
 
 @end

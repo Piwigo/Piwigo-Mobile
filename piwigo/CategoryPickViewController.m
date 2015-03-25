@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
 @property (nonatomic, strong) NSMutableArray *categories;
+@property (nonatomic, strong) NSMutableDictionary *categoriesThatHaveLoadedSubCategories;
 
 @end
 
@@ -32,6 +33,7 @@
 		if([Model sharedInstance].hasAdminRights)
 		{
 			self.categories = [NSMutableArray new];
+			self.categoriesThatHaveLoadedSubCategories = [NSMutableDictionary new];
 			[self buildCategoryArray];
 			
 			self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -185,6 +187,10 @@
 	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
 	
 	[cell setupWithCategoryData:categoryData];
+	if([self.categoriesThatHaveLoadedSubCategories objectForKey:[NSString stringWithFormat:@"%@", @(categoryData.albumId)]])
+	{
+		cell.hasLoadedSubCategories = YES;
+	}
 	
 	return cell;
 }
@@ -194,16 +200,21 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
 	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-	
-	[AlbumService getAlbumListForCategory:categoryData.albumId OnCompletion:nil onFailure:nil];
+
+	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:categoryData.albumId];
+	[self.navigationController pushViewController:uploadVC animated:YES];
 }
 
 #pragma mark CategoryCellDelegate Methods
 
 -(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
 {
-	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:categoryTapped.albumId];
-	[self.navigationController pushViewController:uploadVC animated:YES];
+	
+	[AlbumService getAlbumListForCategory:categoryTapped.albumId
+							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+								 [self.categoriesThatHaveLoadedSubCategories setValue:@(categoryTapped.albumId) forKey:[NSString stringWithFormat:@"%@", @(categoryTapped.albumId)]];
+	} onFailure:nil];
+	
 }
 
 @end
