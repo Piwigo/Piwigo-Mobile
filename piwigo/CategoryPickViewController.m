@@ -144,8 +144,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	// @TODO: don't get the direct category data -- save it into a local array and then sort it based on parent albums (it's uppercat)
-	return self.categories.count;// [CategoriesData sharedInstance].allCategories.count;
+	return self.categories.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -183,7 +182,7 @@
 	CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	cell.categoryDelegate = self;
 	
-	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row]; //[[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
 	
 	[cell setupWithCategoryData:categoryData];
 	
@@ -194,7 +193,7 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row]; // [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
 	
 	[AlbumService getAlbumListForCategory:categoryData.albumId OnCompletion:nil onFailure:nil];
 }
