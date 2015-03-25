@@ -85,6 +85,11 @@
 		
 		self.downloadView.hidden = YES;
 		
+		[AlbumService getAlbumListForCategory:self.categoryId
+								 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+									 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+								 } onFailure:nil];
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
 	}
@@ -120,7 +125,8 @@
 		[refreshControl endRefreshing];
 	}];
 	
-	[AlbumService getAlbumListOnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+	[AlbumService getAlbumListForCategory:self.categoryId
+							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 		[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 	} onFailure:nil];
 }

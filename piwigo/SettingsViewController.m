@@ -18,10 +18,13 @@
 #import "ClearCache.h"
 #import "SliderTableViewCell.h"
 #import "EditPopDownView.h"
+#import "SwitchTableViewCell.h"
+#import "AlbumService.h"
 
 typedef enum {
 	SettingSectionServer,
 	SettingSectionLogout,
+	SettingSectionGeneral,
 	SettingSectionImageUpload,
 	SettingSectionCache,
 	SettingSectionAbout,
@@ -56,6 +59,7 @@ typedef enum {
 		self.rowsInSection = @[
 							   @2,
 							   @1,
+							   @1,
 							   @4,
 							   @2,
 							   @1
@@ -63,6 +67,7 @@ typedef enum {
 		self.headerHeights = @[
 							   @40.0,
 							   @5.0,
+							   @30.0,
 							   @30.0,
 							   @30.0,
 							   @20.0
@@ -210,6 +215,36 @@ typedef enum {
 				cell.buttonText = NSLocalizedString(@"login", @"Login");
 			}
 			tableViewCell = cell;
+			break;
+		}
+		case SettingSectionGeneral:
+		{
+			switch(indexPath.row)
+			{
+				case 0:
+				{
+					SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchCell"];
+					if(!cell)
+					{
+						cell = [SwitchTableViewCell new];
+					}
+					
+					cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Load All Albums on Start\n(Uncheck this if your albums aren't showing up)");
+					[cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
+					cell.cellSwitchBlock = ^(BOOL switchState) {
+						if(![Model sharedInstance].loadAllCategoryInfo && switchState)
+						{
+							[AlbumService getAlbumListForCategory:-1 OnCompletion:nil onFailure:nil];
+						}
+						
+						[Model sharedInstance].loadAllCategoryInfo = switchState;
+						[[Model sharedInstance] saveToDisk];
+					};
+					
+					tableViewCell = cell;
+					break;
+				}
+			}
 			break;
 		}
 		case SettingSectionImageUpload:
@@ -368,6 +403,9 @@ typedef enum {
 	{
 		case SettingSectionServer:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+			break;
+		case SettingSectionGeneral:
+			headerLabel.text = NSLocalizedString(@"settings_general", @"General");
 			break;
 		case SettingSectionImageUpload:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_imageSettings", @"Image Upload Settings");
@@ -621,6 +659,5 @@ typedef enum {
 	[Model sharedInstance].defaultPrivacyLevel = privacy;
 	[[Model sharedInstance] saveToDisk];
 }
-
 
 @end

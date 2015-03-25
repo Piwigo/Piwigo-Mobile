@@ -193,16 +193,20 @@
 
 -(NSInteger)getDepthOfCategory
 {
-	NSInteger depth = 0;
-	
-	PiwigoAlbumData *current = self;
-	while(current.parentAlbumId != 0)
-	{
-		depth++;
-		current = [[CategoriesData sharedInstance] getCategoryById:current.parentAlbumId];
-	}
-	
-	return depth;
+	return self.upperCategories ? [self.upperCategories count] : 0;
+}
+
+-(BOOL)containsUpperCategory:(NSInteger)category
+{
+	return self.nearestUpperCategory == category;
+//	for(NSString *cat in self.upperCategories)
+//	{
+//		if([cat integerValue] == category)
+//		{
+//			return YES;
+//		}
+//	}
+//	return NO;
 }
 
 @end

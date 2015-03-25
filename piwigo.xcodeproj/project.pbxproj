@@ -68,6 +68,8 @@
 		D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A921A6F4C43001763BC /* KeychainAccess.m */; };
 		D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */; };
 		D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* SessionService.m */; };
+		D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */; };
+		D88A685E1AC26FA4002A3259 /* SwitchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D88A685D1AC26FA4002A3259 /* SwitchTableViewCell.m */; };
 		D89045AC1A94654D00A306FE /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
 		D89045B21A94662300A306FE /* TagsData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B11A94662300A306FE /* TagsData.m */; };
 		D89045B91A946A5B00A306FE /* TagsService.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B81A946A5B00A306FE /* TagsService.m */; };
@@ -246,6 +248,10 @@
 		D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		D87C5A981A6F4FB0001763BC /* SessionService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionService.h; sourceTree = "<group>"; };
 		D87C5A991A6F4FB0001763BC /* SessionService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionService.m; sourceTree = "<group>"; };
+		D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryTableViewCell.h; sourceTree = "<group>"; };
+		D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryTableViewCell.m; sourceTree = "<group>"; };
+		D88A685C1AC26FA4002A3259 /* SwitchTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchTableViewCell.h; sourceTree = "<group>"; };
+		D88A685D1AC26FA4002A3259 /* SwitchTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwitchTableViewCell.m; sourceTree = "<group>"; };
 		D89045AA1A94654D00A306FE /* PiwigoTagData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTagData.h; sourceTree = "<group>"; };
 		D89045AB1A94654D00A306FE /* PiwigoTagData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoTagData.m; sourceTree = "<group>"; };
 		D89045B01A94662300A306FE /* TagsData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsData.h; sourceTree = "<group>"; };
@@ -351,6 +357,8 @@
 				D83212321A91B937009372D8 /* LabelTableViewCell.m */,
 				D8A94EB31AAE650800E4B287 /* SliderTableViewCell.h */,
 				D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */,
+				D88A685C1AC26FA4002A3259 /* SwitchTableViewCell.h */,
+				D88A685D1AC26FA4002A3259 /* SwitchTableViewCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -694,6 +702,8 @@
 			children = (
 				D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */,
 				D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */,
+				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
+				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
 			);
 			name = "Pick Album";
 			sourceTree = "<group>";
@@ -993,6 +1003,7 @@
 				D89045AC1A94654D00A306FE /* PiwigoTagData.m in Sources */,
 				D82B8D041A687831000E47CA /* UIButton+AFNetworking.m in Sources */,
 				D82B8D231A68783B000E47CA /* AFURLRequestSerialization.m in Sources */,
+				D88A685E1AC26FA4002A3259 /* SwitchTableViewCell.m in Sources */,
 				D8083A631A7FF30800A95605 /* TextFieldTableViewCell.m in Sources */,
 				D82B8D201A68783B000E47CA /* AFNetworkReachabilityManager.m in Sources */,
 				D82B8D011A687831000E47CA /* AFNetworkActivityIndicatorManager.m in Sources */,
@@ -1001,6 +1012,7 @@
 				D82B8D1D1A68783B000E47CA /* AFHTTPRequestOperation.m in Sources */,
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
+				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
 				D8172E961AB9093100271DB0 /* EditPopDownView.m in Sources */,
 				D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,

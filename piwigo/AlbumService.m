@@ -13,11 +13,23 @@
 
 @implementation AlbumService
 
-+(AFHTTPRequestOperation*)getAlbumListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
-									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(AFHTTPRequestOperation*)getAlbumListForCategory:(NSInteger)categoryId
+									 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
+										onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
+	if(categoryId != -1 && [Model sharedInstance].loadAllCategoryInfo && categoryId != 0) return  nil;
+	
+	NSString *recursiveString = [Model sharedInstance].loadAllCategoryInfo ? @"true" : @"false";
+	if(categoryId == -1)
+	{	// hack-ish way to force load all albums -- send a categoyId as -1
+		recursiveString = @"true";
+		categoryId = 0;
+	}
 	return [self post:kPiwigoCategoriesGetList
-		URLParameters:nil
+		URLParameters:@{
+						@"categoryId" : @(categoryId),
+						@"recursive" : recursiveString
+						}
 		   parameters:nil
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  
@@ -62,6 +74,10 @@
 			albumData.parentAlbumId = [[category objectForKey:@"id_uppercat"] integerValue];
 		}
 		
+		NSString *upperCats = [category objectForKey:@"uppercats"];
+		albumData.upperCategories = [upperCats componentsSeparatedByString:@","];
+		
+		albumData.nearestUpperCategory = albumData.upperCategories.count > 2 ? [[albumData.upperCategories objectAtIndex:albumData.upperCategories.count - 2] integerValue] : [[albumData.upperCategories objectAtIndex:0] integerValue];
 		
 		albumData.name = [category objectForKey:@"name"];
 		albumData.comment = [category objectForKey:@"comment"];

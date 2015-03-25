@@ -340,7 +340,7 @@
 	{
 		[self setupBgWithImage:albumData.categoryImage];
 	}
-	else
+	else if(albumData.albumThumbnailId > 0)
 	{
 		__weak typeof(self) weakSelf = self;
 		self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId

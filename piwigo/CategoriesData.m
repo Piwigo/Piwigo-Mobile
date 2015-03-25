@@ -69,8 +69,15 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 			}
 			curr++;
 		}
+		
 		if(index != -1)
 		{
+			PiwigoAlbumData *existingData = [newCategories objectAtIndex:index];
+			if(existingData.albumThumbnailId == categoryData.albumThumbnailId)
+			{
+				categoryData.categoryImage = existingData.categoryImage;
+			}
+			
 			[newCategories setObject:categoryData atIndexedSubscript:index];
 		}
 		else
@@ -102,7 +109,7 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index
 {
 	PiwigoAlbumData *selectedCategory = [self getCategoryById:category];
-	if(selectedCategory)
+	if(selectedCategory && index < selectedCategory.imageList.count)
 	{
 		return [selectedCategory.imageList objectAtIndex:index];
 	}

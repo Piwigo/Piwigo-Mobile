@@ -10,10 +10,13 @@
 #import "CategoriesData.h"
 #import "UploadViewController.h"
 #import "Model.h"
+#import "CategoryTableViewCell.h"
+#import "AlbumService.h"
 
-@interface CategoryPickViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface CategoryPickViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
+@property (nonatomic, strong) NSMutableArray *categories;
 
 @end
 
@@ -28,11 +31,15 @@
 		
 		if([Model sharedInstance].hasAdminRights)
 		{
+			self.categories = [NSMutableArray new];
+			[self buildCategoryArray];
+			
 			self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 			self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
 			self.categoriesTableView.delegate = self;
 			self.categoriesTableView.dataSource = self;
 			self.categoriesTableView.backgroundColor = [UIColor piwigoWhiteCream];
+			[self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
 			[self.view addSubview:self.categoriesTableView];
 			[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 			
@@ -86,14 +93,58 @@
 
 -(void)categoryDataUpdated
 {
+	[self buildCategoryArray];
 	[self.categoriesTableView reloadData];
+}
+
+-(void)buildCategoryArray
+{
+	NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
+	NSMutableArray *diff = [NSMutableArray new];
+	for(PiwigoAlbumData *category in allCategories)
+	{
+		BOOL doesNotExist = YES;
+		for(PiwigoAlbumData *existingCat in self.categories)
+		{
+			if(category.albumId == existingCat.albumId)
+			{
+				doesNotExist = NO;
+				break;
+			}
+		}
+		if(doesNotExist)
+		{
+			[diff addObject:category];
+		}
+	}
+	
+	for(PiwigoAlbumData *category in diff)
+	{
+		if(category.upperCategories.count > 1)
+		{
+			NSInteger indexOfParent = 0;
+			for(PiwigoAlbumData *existingCategory in self.categories)
+			{
+				if([category containsUpperCategory:existingCategory.albumId])
+				{
+					[self.categories insertObject:category atIndex:indexOfParent+1];
+					break;
+				}
+				indexOfParent++;
+			}
+		}
+		else
+		{
+			[self.categories addObject:category];
+		}
+	}
 }
 
 #pragma mark UITableView Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [CategoriesData sharedInstance].allCategories.count;
+	return self.categories.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -121,21 +172,19 @@
 	return header;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 44.0;
+}
+
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-	if(!cell) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-	}
+	CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+	cell.categoryDelegate = self;
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
 	
-	NSInteger depth = [albumData getDepthOfCategory];
-	NSString *front = [@"" stringByPaddingToLength:depth withString:@" " startingAtIndex:0];
-	
-	cell.textLabel.text = [NSString stringWithFormat:@"%@%@", front, albumData.name];
-	cell.textLabel.lineBreakMode = NSLineBreakByTruncatingHead;
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	[cell setupWithCategoryData:categoryData];
 	
 	return cell;
 }
@@ -144,9 +193,16 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
+	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
 	
-	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:albumData.albumId];
+	[AlbumService getAlbumListForCategory:categoryData.albumId OnCompletion:nil onFailure:nil];
+}
+
+#pragma mark CategoryCellDelegate Methods
+
+-(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
+{
+	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:categoryTapped.albumId];
 	[self.navigationController pushViewController:uploadVC animated:YES];
 }
 

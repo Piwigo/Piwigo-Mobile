@@ -22,6 +22,8 @@ typedef enum {
 
 @property (nonatomic, assign) NSInteger albumId;
 @property (nonatomic, assign) NSInteger parentAlbumId;
+@property (nonatomic, strong) NSArray *upperCategories;
+@property (nonatomic, assign) NSInteger nearestUpperCategory;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *comment;
 @property (nonatomic, assign) CGFloat globalRank;
@@ -44,5 +46,6 @@ typedef enum {
 							  OnCompletion:(void (^)(BOOL completed))completion;
 -(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
 -(NSInteger)getDepthOfCategory;
+-(BOOL)containsUpperCategory:(NSInteger)category;
 
 @end
