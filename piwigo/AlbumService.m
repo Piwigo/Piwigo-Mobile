@@ -65,6 +65,10 @@
 			albumData.parentAlbumId = [[category objectForKey:@"id_uppercat"] integerValue];
 		}
 		
+		NSString *upperCats = [category objectForKey:@"uppercats"];
+		albumData.upperCategories = [upperCats componentsSeparatedByString:@","];
+		
+		albumData.nearestUpperCategory = albumData.upperCategories.count > 2 ? [[albumData.upperCategories objectAtIndex:albumData.upperCategories.count - 2] integerValue] : [[albumData.upperCategories objectAtIndex:0] integerValue];
 		
 		albumData.name = [category objectForKey:@"name"];
 		albumData.comment = [category objectForKey:@"comment"];
