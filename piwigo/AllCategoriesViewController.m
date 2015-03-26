@@ -171,7 +171,7 @@
 												  category.albumThumbnailUrl = imgData.thumbPath;
 
 												  UIImageView *dummyView = [UIImageView new];
-												  [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imgData.mediumPath]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+												  [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imgData.mediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 													  category.categoryImage = image;
 													  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryImageUpdated object:nil];
 												  } failure:nil];

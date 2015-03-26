@@ -205,7 +205,7 @@ NSString * const kGetImageOrderRandom = @"random";
 							onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	if(!image) return nil;
-	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:image.fullResPath]];
+	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:[image.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 	AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:requst];
 	requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
 	[requestOperation setCompletionBlockWithSuccess:completion
@@ -227,7 +227,7 @@ NSString * const kGetImageOrderRandom = @"random";
 							  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	if(!video) return nil;
-	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:video.fullResPath]];
+	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:[video.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 	AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:requst];
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:video.fileName];

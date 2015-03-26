@@ -142,7 +142,7 @@
 		return;
 	}
 	
-	[self.cellImage setImageWithURL:[NSURL URLWithString:self.imageData.thumbPath] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+	[self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
 	self.nameLabel.text = imageData.name;
 	
 	if(imageData.isVideo)

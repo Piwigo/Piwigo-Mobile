@@ -42,10 +42,10 @@
 		return;
 	}
 	
-	UIImage *thumb = [[UIImageView sharedImageCache] cachedImageForRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.thumbPath]]];
+	UIImage *thumb = [[UIImageView sharedImageCache] cachedImageForRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]];
 	
 	__weak typeof(self) weakSelf = self;
-	[self.scrollView.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
+	[self.scrollView.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.mediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
 									 placeholderImage:thumb ? thumb : [UIImage imageNamed:@"placeholder"]
 							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								   weakSelf.scrollView.imageView.image = image;

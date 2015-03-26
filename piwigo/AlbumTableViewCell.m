@@ -351,7 +351,7 @@
 						  }
 						  else
 						  {
-							  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageData.mediumPath]]
+							  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.mediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
 														  placeholderImage:nil
 																   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 																	   
