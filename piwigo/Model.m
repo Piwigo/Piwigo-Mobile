@@ -146,6 +146,8 @@
 	if(savedData.count > 7)
 	{
 		self.serverProtocol = [savedData objectAtIndex:7];
+	} else {
+		self.serverProtocol = @"http://";
 	}
 	if(savedData.count > 8)
 	{

@@ -637,8 +637,6 @@
 				D87C5A991A6F4FB0001763BC /* SessionService.m */,
 				D863EEBF1A6A441400C0A6E9 /* UIComponents */,
 				D87C5A901A6F4C2E001763BC /* Keychain */,
-				D8E4D61C1ABD223B0057EB95 /* ServerField.h */,
-				D8E4D61D1ABD223B0057EB95 /* ServerField.m */,
 				D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */,
 				D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */,
 			);
@@ -652,6 +650,8 @@
 				D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */,
 				D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */,
 				D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */,
+				D8E4D61C1ABD223B0057EB95 /* ServerField.h */,
+				D8E4D61D1ABD223B0057EB95 /* ServerField.m */,
 			);
 			name = UIComponents;
 			sourceTree = "<group>";

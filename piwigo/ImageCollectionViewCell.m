@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UIImageView *selectedImage;
 @property (nonatomic, strong) UIView *darkenView;
 @property (nonatomic, strong) UIImageView *playImage;
+@property (nonatomic, strong) UILabel *noDataLabel;
 
 @end
 
@@ -102,6 +103,31 @@
 		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(30, 30)]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:5]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
+		
+		self.noDataLabel = [UILabel new];
+		self.noDataLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.noDataLabel.font = [UIFont piwigoFontNormal];
+		self.noDataLabel.textColor = [UIColor redColor];
+		self.noDataLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+		self.noDataLabel.layer.cornerRadius = 3.0;
+		self.noDataLabel.text = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
+		self.noDataLabel.hidden = YES;
+		[self.contentView addSubview:self.noDataLabel];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.noDataLabel]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
+																	 attribute:NSLayoutAttributeLeft
+																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
+																		toItem:self.contentView
+																	 attribute:NSLayoutAttributeLeft
+																	multiplier:1.0
+																	  constant:0]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
+																	 attribute:NSLayoutAttributeRight
+																	 relatedBy:NSLayoutRelationLessThanOrEqual
+																		toItem:self.contentView
+																	 attribute:NSLayoutAttributeRight
+																	multiplier:1.0
+																	  constant:0]];
 	}
 	return self;
 }
@@ -109,6 +135,12 @@
 -(void)setupWithImageData:(PiwigoImageData*)imageData
 {
 	self.imageData = imageData;
+
+	if(!self.imageData || !self.imageData.thumbPath || self.imageData.thumbPath.length <= 0)
+	{
+		self.noDataLabel.hidden = NO;
+		return;
+	}
 	
 	[self.cellImage setImageWithURL:[NSURL URLWithString:self.imageData.thumbPath] placeholderImage:[UIImage imageNamed:@"placeholder"]];
 	self.nameLabel.text = imageData.name;
@@ -125,6 +157,7 @@
 	self.cellImage.image = nil;
 	self.isSelected = NO;
 	self.playImage.hidden = YES;
+	self.noDataLabel.hidden = YES;
 }
 
 -(void)setIsSelected:(BOOL)isSelected
