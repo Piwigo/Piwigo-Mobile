@@ -53,7 +53,7 @@
 							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 								   
 							   }];
-	
+
 	[self.scrollView.imageView setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 		CGFloat percent = (CGFloat)totalBytesRead / totalBytesExpectedToRead;
 		if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])

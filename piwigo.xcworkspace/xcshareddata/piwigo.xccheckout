@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>947181CB-745C-4CDA-A179-C026941FAF54</string>
+	<key>IDESourceControlProjectName</key>
+	<string>piwigo</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>43D1D3A1B2E3EFF20582111FA2AE669841817436</key>
+		<string>https://github.com/Piwigo/Piwigo-Mobile.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>piwigo.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>43D1D3A1B2E3EFF20582111FA2AE669841817436</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Piwigo/Piwigo-Mobile.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>43D1D3A1B2E3EFF20582111FA2AE669841817436</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>43D1D3A1B2E3EFF20582111FA2AE669841817436</string>
+			<key>IDESourceControlWCCName</key>
+			<string>piwigo</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -17,8 +17,9 @@
 	#define IS_OS_7_OR_LATER    ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
 	#import "NSLayoutConstraint+CommonConstraints.h"
 	#import "UIColor+AppSpecificColors.h"
-	#import "AFNetworking.h"
-	#import "UIImageView+AFNetworking.h"
+	#import <AFNetworking.h>
+	#import <UIImageView+AFNetworking.h>
+	#import "UIImageView+DownloadProgress.h"
 	#import "UIFont+AppFonts.h"
 	#import "UIActionSheet+Blocks.h"
 	#import "UIAlertView+Blocks.h"
