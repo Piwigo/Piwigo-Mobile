@@ -9,6 +9,7 @@
 #import "CategoryPickViewController.h"
 #import "CategoriesData.h"
 #import "UploadViewController.h"
+#import "LocalAlbumsViewController.h"
 #import "Model.h"
 #import "CategoryTableViewCell.h"
 #import "AlbumService.h"
@@ -201,8 +202,10 @@
 	
 	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
 
-	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:categoryData.albumId];
-	[self.navigationController pushViewController:uploadVC animated:YES];
+//	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:categoryData.albumId];
+//	[self.navigationController pushViewController:uploadVC animated:YES];
+	LocalAlbumsViewController *localAlbums = [LocalAlbumsViewController new];
+	[self.navigationController pushViewController:localAlbums animated:YES];
 }
 
 #pragma mark CategoryCellDelegate Methods

@@ -13,11 +13,13 @@ typedef void(^CompletionBlock)(id responseObject);
 
 @interface PhotosFetch : NSObject
 
+@property (nonatomic, strong) NSArray *assetGroups;
 @property (nonatomic, strong) NSDictionary *localImages;
 @property (nonatomic, strong) NSArray *sortedImageKeys;
 
 +(PhotosFetch*)sharedInstance;
 -(void)updateLocalPhotosDictionary:(CompletionBlock)completion;
--(ALAsset*)getImageAssetForImageName:(NSString*)imageName;
+-(ALAsset*)getImageAssetInAlbum:(NSString*)albumURL withImageName:(NSString*)imageName;
+-(NSDictionary*)getImagesInAlbum:(NSString*)albumURL;
 
 @end

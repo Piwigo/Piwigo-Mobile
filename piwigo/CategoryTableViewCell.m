@@ -153,4 +153,9 @@
 	self.rightDisclosure.image = [[UIImage imageNamed:@"down"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 }
 
+-(void)setCellLeftLabel:(NSString*)text
+{
+	self.categoryLabel.text = text;
+}
+
 @end

@@ -14,8 +14,6 @@
 @interface PhotosFetch()
 
 @property (nonatomic, strong) ALAssetsLibrary *library;
-@property (nonatomic, strong) NSDictionary *imageDictionary;
-@property (nonatomic, strong) NSMutableDictionary *mutableDictionary;
 
 @property (nonatomic, assign) NSInteger count;
 
@@ -36,44 +34,59 @@
 
 -(void)updateLocalPhotosDictionary:(CompletionBlock)completion
 {
-	self.mutableDictionary = [NSMutableDictionary new];
+	NSMutableArray *assetGroups = [NSMutableArray new];
+	NSMutableDictionary *allImages = [NSMutableDictionary new];
+	
 	ALAssetsLibrary *assetsLibrary = [Model defaultAssetsLibrary];
 	[assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
 								 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-								 if (nil != group) {
-//									 [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-									 NSString *groupName = [group valueForProperty:ALAssetsGroupPropertyName];
-									 if([groupName isEqualToString:@"Camera Roll"])
+									 if (group != nil)
 									 {
-										 NSInteger size = [group numberOfAssets];
+										 NSString *groupURL = [group valueForProperty:ALAssetsGroupPropertyURL];
+										 [assetGroups addObject:group];
 										 
+										 NSMutableDictionary *images = [NSMutableDictionary new];
+										 
+										 NSInteger size = [group numberOfAssets];
 										 [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
 											 if (nil != result)
 											 {
-												 [self.mutableDictionary setObject:result forKey:[[result defaultRepresentation] filename]];
-												 if(self.mutableDictionary.count == size)
+												 [images setObject:result forKey:[[result defaultRepresentation] filename]];
+												 if(images.count == size)
 												 {
 													 *stop = YES;
-													 self.localImages = self.mutableDictionary;
-													 self.sortedImageKeys = [self.localImages.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-													 if(completion)
-													 {
-														 completion(self.localImages);
-													 }
+													 [allImages setObject:images forKey:groupURL];
 												 }
 											 }
 										 }];
+										 *stop = NO;
 									 }
-								 }
-								 *stop = NO;
-							 } failureBlock:^(NSError *error) {
-								 NSLog(@"error: %@", error);
-							 }];
+									 else
+									 {
+										 *stop = YES;
+										 self.localImages = allImages;
+										 if(completion)
+										 {
+											 completion(self.localImages);
+										 }
+									 }
+								 } failureBlock:^(NSError *error) {
+									 NSLog(@"error: %@", error);
+									 if(completion)
+									 {
+										 completion(nil);
+									 }
+								 }];
 }
 
--(ALAsset*)getImageAssetForImageName:(NSString*)imageName
+-(ALAsset*)getImageAssetInAlbum:(NSString*)albumURL withImageName:(NSString*)imageName
 {
-	return [self.localImages objectForKey:imageName];
+	return [[self.localImages objectForKey:albumURL] objectForKey:imageName];
+}
+
+-(NSDictionary*)getImagesInAlbum:(NSString*)albumURL
+{
+	return [self.localImages objectForKey:albumURL];
 }
 
 @end

@@ -23,4 +23,6 @@
 
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category;
 
+-(void)setCellLeftLabel:(NSString*)text;
+
 @end
