@@ -101,7 +101,6 @@
 	[super viewWillAppear:animated];
 	
 	[self loadNavButtons];
-	[self.imagesCollection reloadData];
 }
 
 -(void)viewDidAppear:(BOOL)animated
