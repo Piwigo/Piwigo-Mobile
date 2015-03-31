@@ -184,12 +184,6 @@
 		server = [server substringFromIndex:8];
 	}
 	
-	NSRange wwwRange = [server rangeOfString:@"www." options:NSCaseInsensitiveSearch];
-	if(wwwRange.location == 0)
-	{
-		server = [server substringFromIndex:4];
-	}
-	
 	return server;
 }
 
