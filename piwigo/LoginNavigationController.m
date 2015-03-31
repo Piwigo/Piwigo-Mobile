@@ -16,7 +16,11 @@
 
 -(NSUInteger)supportedInterfaceOrientations
 {
-	return UIInterfaceOrientationMaskPortrait;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return UIInterfaceOrientationMaskPortrait;
+    } else {
+        return  UIInterfaceOrientationMaskAll;
+    }
 }
 
 @end

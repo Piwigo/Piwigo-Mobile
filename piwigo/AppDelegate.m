@@ -8,7 +8,8 @@
 
 #import "AppDelegate.h"
 #import "LoginNavigationController.h"
-#import "LoginViewController.h"
+#import "LoginViewController_iPhone.h"
+#import "LoginViewController_iPad.h"
 #import "TabBarViewController.h"
 #import "SessionService.h"
 #import "Model.h"
@@ -67,8 +68,12 @@
 -(LoginViewController*)loginVC
 {
 	if(_loginVC) return _loginVC;
-	
-	_loginVC = [LoginViewController new];
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        _loginVC = [LoginViewController_iPhone new];
+    } else {
+        _loginVC = [LoginViewController_iPad new];
+    }
 	return _loginVC;
 }
 
