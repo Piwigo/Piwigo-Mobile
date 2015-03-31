@@ -11,11 +11,12 @@
 
 @implementation ImageUpload
 
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy
+-(instancetype)initWithImageFromAlbum:(NSURL*)localAlbum withName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy
 {
 	self = [super init];
 	if(self)
 	{
+		self.localAlbum = localAlbum;
 		self.image = imageName;
 		self.imageUploadName = imageName;
 		self.categoryToUploadTo = category;
@@ -24,9 +25,9 @@
 	return self;
 }
 
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags
+-(instancetype)initWithImageFromAlbum:(NSURL*)localAlbum withName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags
 {
-	self = [self initWithImageName:imageName forCategory:category forPrivacyLevel:privacy];
+	self = [self initWithImageFromAlbum:localAlbum withName:imageName forCategory:category forPrivacyLevel:privacy];
 	if(self)
 	{
 		if([description isKindOfClass:[NSNull class]])
@@ -43,7 +44,8 @@
 
 -(instancetype)initWithImageData:(PiwigoImageData*)imageData
 {
-	self = [self initWithImageName:imageData.name forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
+	// @TODO: does this need a local image album?
+	self = [self initWithImageFromAlbum:nil withName:imageData.name forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
 	if(self)
 	{
 		self.imageId = [imageData.imageId integerValue];

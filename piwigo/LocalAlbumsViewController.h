@@ -10,4 +10,6 @@
 
 @interface LocalAlbumsViewController : UIViewController
 
+-(instancetype)initWithCategoryId:(NSInteger)categoryId;
+
 @end

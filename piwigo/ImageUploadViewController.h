@@ -11,6 +11,7 @@
 @interface ImageUploadViewController : UIViewController
 
 @property (nonatomic, assign) NSInteger selectedCategory;
+@property (nonatomic, strong) NSURL *localAlbum;
 @property (nonatomic, strong) NSArray *imagesSelected;
 
 @end

@@ -25,6 +25,7 @@
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
+@property (nonatomic, strong) NSURL *localAlbumURL;
 @property (nonatomic, strong) NSArray *imageNamesList;
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
@@ -41,17 +42,21 @@
 
 @implementation UploadViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andLocalAlbumURL:(NSURL*)localAlbumURL
 {
 	self = [super init];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.categoryId = categoryId;
+		self.localAlbumURL = localAlbumURL;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		
 		self.imageNamesList = [NSArray new];
-		self.sortType = kPiwigoSortByName;
+		self.sortType = kPiwigoSortByNewest;
+		
+		NSDictionary *albumImages = [[PhotosFetch sharedInstance].localImages objectForKey:self.localAlbumURL];
+		self.imageNamesList = albumImages.allKeys;
 		
 		self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -110,6 +115,8 @@
 	}
 	
 	self.sortType = self.sortType;
+	// @TODO: this reload isn't necessary, the sort will take care of it
+	[self.localImagesCollection reloadData];
 }
 
 -(void)loadNavButtons
@@ -126,6 +133,8 @@
 
 -(void)setSortType:(kPiwigoSortBy)sortType
 {
+	// @TODO: fix the sorting
+//	return;
 	_sortType = sortType;
 	
 	PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
@@ -157,6 +166,7 @@
 	__block NSDate *lastTime = [NSDate date];
 	
 	[SortSelectViewController getSortedImageNameArrayFromSortType:sortType
+													forLocalAlbum:self.localAlbumURL
 													  forCategory:self.categoryId
 													  forProgress:^(NSInteger onPage, NSInteger outOf) {
 
@@ -211,6 +221,7 @@
 {
 	ImageUploadViewController *vc = [ImageUploadViewController new];
 	vc.selectedCategory = self.categoryId;
+	vc.localAlbum = self.localAlbumURL;
 	vc.imagesSelected = self.selectedImageKeys;
 	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
 	[self.navigationController presentViewController:nav animated:YES completion:nil];
@@ -278,7 +289,8 @@
 	LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 	
 	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
-	[cell setupWithImageAsset:[[PhotosFetch sharedInstance].localImages objectForKey:imageAssetKey]];
+	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetInAlbum:self.localAlbumURL withImageName:imageAssetKey];
+	[cell setupWithImageAsset:imageAsset];
 	
 	if([self.selectedImageKeys containsObject:imageAssetKey])
 	{

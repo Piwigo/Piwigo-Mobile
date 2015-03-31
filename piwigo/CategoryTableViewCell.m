@@ -95,7 +95,6 @@
 		[self.contentView bringSubviewToFront:self.selectLabel];
 		[self.contentView bringSubviewToFront:self.rightDisclosure];
 		
-		
 		[self.rightHitView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedRightHit)]];
 	}
 	return self;
@@ -153,9 +152,12 @@
 	self.rightDisclosure.image = [[UIImage imageNamed:@"down"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 }
 
+#pragma mark LocalAlbums Methods
+
 -(void)setCellLeftLabel:(NSString*)text
 {
 	self.categoryLabel.text = text;
+	[self hideRightViews];
 }
 
 @end

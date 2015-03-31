@@ -11,21 +11,26 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "Model.h"
 #import "PhotosFetch.h"
+#import "UploadViewController.h"
 
 @interface LocalAlbumsViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *localAlbumsTableView;
+@property (nonatomic, assign) NSInteger categoryId;
 
 @end
 
 @implementation LocalAlbumsViewController
 
--(instancetype)init
+-(instancetype)initWithCategoryId:(NSInteger)categoryId
 {
 	self = [super init];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
+		self.categoryId = categoryId;
+		
+		self.title = @"Local Albums";	// @TODO: Localize this!
 		
 		[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
 			[self.localAlbumsTableView reloadData];
@@ -63,13 +68,24 @@
 	
 	[[Model defaultAssetsLibrary] groupForURL:groupURLString resultBlock:^(ALAssetsGroup *group) {
 		NSString *name = [group valueForProperty:ALAssetsGroupPropertyName];
-		[cell setCellLeftLabel:name];
+		[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(group.numberOfAssets), @"Images"]];	// @TODO: Localize this!
 	} failureBlock:^(NSError *error) {
 		NSLog(@"fail %@", [error localizedDescription]);
+		[cell setCellLeftLabel:[NSString stringWithFormat:@"error (%@)", [error localizedDescription]]];	// @TODO: Localize this!
 	}];
 	
-	
 	return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	NSURL *albumURL = [PhotosFetch sharedInstance].localImages.allKeys[indexPath.row];
+	
+	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andLocalAlbumURL:albumURL];
+	[self.navigationController pushViewController:uploadVC animated:YES];
+	
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "SortSelectViewController.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
 
@@ -53,6 +54,12 @@
 	
 	switch(sortType)
 	{
+		case kPiwigoSortByNewest:
+			name = @"Newest"; // @TODO: localize this
+			break;
+		case kPiwigoSortByOldest:
+			name = @"Oldest"; // @TODO: localize this
+			break;
 		case kPiwigoSortByName:
 			name = NSLocalizedString(@"localImageSort_name", @"Name");
 			break;
@@ -68,13 +75,25 @@
 	return name;
 }
 
+// on completion send back a list of image names (keys)
 +(void)getSortedImageNameArrayFromSortType:(kPiwigoSortBy)sortType
+							 forLocalAlbum:(NSURL*)localAlbum
 							   forCategory:(NSInteger)category
 							   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	switch(sortType)
 	{
+		case kPiwigoSortByNewest:
+		{
+			// @TODO: pass in the local album
+			[self getByNewestFirstForAlbum:localAlbum onCompletion:completion];
+			break;
+		}
+		case kPiwigoSortByOldest:
+		{
+			break;
+		}
 		case kPiwigoSortByName:
 		{
 			[self getByNameImageListForCategory:category onCompletion:completion];
@@ -94,6 +113,21 @@
 			}
 		}
 	}
+}
+
++(void)getByNewestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
+{
+	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+		
+		NSDictionary *imagesForAlbum = [responseObject objectForKey:albumURL];
+		NSArray *sortedKeys = [[[imagesForAlbum.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] reverseObjectEnumerator] allObjects];
+		
+		if(completion)
+		{
+			completion(sortedKeys);
+		}
+		
+	}];
 }
 
 +(void)getByNameImageListForCategory:(NSInteger)category onCompletion:(void (^)(NSArray *imageNames))completion

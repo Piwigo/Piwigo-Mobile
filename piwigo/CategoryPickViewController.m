@@ -8,7 +8,6 @@
 
 #import "CategoryPickViewController.h"
 #import "CategoriesData.h"
-#import "UploadViewController.h"
 #import "LocalAlbumsViewController.h"
 #import "Model.h"
 #import "CategoryTableViewCell.h"
@@ -201,10 +200,8 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
 	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-
-//	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:categoryData.albumId];
-//	[self.navigationController pushViewController:uploadVC animated:YES];
-	LocalAlbumsViewController *localAlbums = [LocalAlbumsViewController new];
+	
+	LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:categoryData.albumId];
 	[self.navigationController pushViewController:localAlbums animated:YES];
 }
 

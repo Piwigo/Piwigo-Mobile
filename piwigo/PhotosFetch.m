@@ -34,7 +34,6 @@
 
 -(void)updateLocalPhotosDictionary:(CompletionBlock)completion
 {
-	NSMutableArray *assetGroups = [NSMutableArray new];
 	NSMutableDictionary *allImages = [NSMutableDictionary new];
 	
 	ALAssetsLibrary *assetsLibrary = [Model defaultAssetsLibrary];
@@ -43,7 +42,6 @@
 									 if (group != nil)
 									 {
 										 NSString *groupURL = [group valueForProperty:ALAssetsGroupPropertyURL];
-										 [assetGroups addObject:group];
 										 
 										 NSMutableDictionary *images = [NSMutableDictionary new];
 										 
@@ -79,12 +77,12 @@
 								 }];
 }
 
--(ALAsset*)getImageAssetInAlbum:(NSString*)albumURL withImageName:(NSString*)imageName
+-(ALAsset*)getImageAssetInAlbum:(NSURL*)albumURL withImageName:(NSString*)imageName
 {
 	return [[self.localImages objectForKey:albumURL] objectForKey:imageName];
 }
 
--(NSDictionary*)getImagesInAlbum:(NSString*)albumURL
+-(NSDictionary*)getImagesInAlbum:(NSURL*)albumURL
 {
 	return [self.localImages objectForKey:albumURL];
 }

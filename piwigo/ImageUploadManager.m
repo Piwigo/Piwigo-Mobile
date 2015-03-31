@@ -47,19 +47,19 @@
 	return self;
 }
 
--(void)addImage:(NSString*)imageName forCategory:(NSInteger)category andPrivacy:(kPiwigoPrivacy)privacy
-{
-	ImageUpload *newImage = [[ImageUpload alloc] initWithImageName:imageName forCategory:category forPrivacyLevel:privacy];
-	[self addImage:newImage];
-}
-
--(void)addImages:(NSArray*)imageNames forCategory:(NSInteger)category andPrivacy:(kPiwigoPrivacy)privacy
-{
-	for(NSString* imageName in imageNames)
-	{
-		[self addImage:imageName forCategory:category andPrivacy:privacy];
-	}
-}
+//-(void)addImage:(NSString*)imageName forCategory:(NSInteger)category andPrivacy:(kPiwigoPrivacy)privacy
+//{
+//	ImageUpload *newImage = [[ImageUpload alloc] initWithImageFromAlbum:nil withName:imageName forCategory:category forPrivacyLevel:privacy];
+//	[self addImage:newImage];
+//}
+//
+//-(void)addImages:(NSArray*)imageNames forCategory:(NSInteger)category andPrivacy:(kPiwigoPrivacy)privacy
+//{
+//	for(NSString* imageName in imageNames)
+//	{
+//		[self addImage:imageName forCategory:category andPrivacy:privacy];
+//	}
+//}
 
 -(void)addImage:(ImageUpload*)image
 {
@@ -177,7 +177,7 @@
 	ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
 	
 	NSString *imageKey = nextImageToBeUploaded.image;
-	ALAsset *imageAsset = [[PhotosFetch sharedInstance].localImages objectForKey:imageKey];
+	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetInAlbum:nextImageToBeUploaded.localAlbum withImageName:imageKey];
 	
 	NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
 	UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
