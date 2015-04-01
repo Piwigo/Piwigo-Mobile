@@ -65,7 +65,7 @@
 "imageOptions_setAlbumImage" = "Set as Album Image";
 
 "downloadImage" = "Download Images";
-"downloadImage_confirmation" = "Are you sure you want to downlaod the selected %@ %@?";
+"downloadImage_confirmation" = "Are you sure you want to download the selected %@ %@?";
 "downloadingImage" = "Downloading Image";
 "downloadingImages" = "Downloading Images";
 "downloadingImage_complete" = "Complete";
