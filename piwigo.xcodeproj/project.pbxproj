@@ -94,6 +94,8 @@
 		D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */; };
 		D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */; };
 		DA4A28298929D36CA5D45198 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FC3D86091E15D966251DD6 /* libPods.a */; };
+		ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */; };
+		ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -280,6 +282,10 @@
 		D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextViewTableViewCell.m; sourceTree = "<group>"; };
 		D8F325181A87F624007CBDAC /* UIPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPlaceHolderTextView.h; sourceTree = "<group>"; };
 		D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPlaceHolderTextView.m; sourceTree = "<group>"; };
+		ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPhone.h; sourceTree = "<group>"; };
+		ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPhone.m; sourceTree = "<group>"; };
+		ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPad.h; sourceTree = "<group>"; };
+		ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPad.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -557,6 +563,10 @@
 			children = (
 				D863EECB1A6A495700C0A6E9 /* LoginViewController.h */,
 				D863EECC1A6A495700C0A6E9 /* LoginViewController.m */,
+				ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */,
+				ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */,
+				ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */,
+				ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */,
 				D87C5A981A6F4FB0001763BC /* SessionService.h */,
 				D87C5A991A6F4FB0001763BC /* SessionService.m */,
 				D863EEBF1A6A441400C0A6E9 /* UIComponents */,
@@ -931,6 +941,7 @@
 				D8172DAC1AB2805F00271DB0 /* MGSwipeTableCell.m in Sources */,
 				D8B9BC821A96ACA800C1B0E5 /* SortSelectViewController.m in Sources */,
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
+				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				D89045B21A94662300A306FE /* TagsData.m in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
@@ -972,6 +983,7 @@
 				D860440B1A995C580067E5D1 /* ClearCache.m in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
+				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
 				D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */,
 				D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */,
 				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,
