@@ -570,6 +570,7 @@
 		if(!self.isSelect)
 		{
 			ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row isSorted:(self.currentSortCategory != 0) withArray:[self.imageList copy]];
+			imageDetail.hidesBottomBarWhenPushed = YES;
 			imageDetail.imgDetailDelegate = self;
 			[self.navigationController pushViewController:imageDetail animated:YES];
 		}
