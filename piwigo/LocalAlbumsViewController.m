@@ -30,7 +30,7 @@
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.categoryId = categoryId;
 		
-		self.title = @"Local Albums";	// @TODO: Localize this!
+		self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
 		
 		[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
 			[self.localAlbumsTableView reloadData];
@@ -68,10 +68,10 @@
 	
 	[[Model defaultAssetsLibrary] groupForURL:groupURLString resultBlock:^(ALAssetsGroup *group) {
 		NSString *name = [group valueForProperty:ALAssetsGroupPropertyName];
-		[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(group.numberOfAssets), @"Images"]];	// @TODO: Localize this!
+		[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(group.numberOfAssets), NSLocalizedString(@"deleteImage_iamgePlural", @"Images")]];
 	} failureBlock:^(NSError *error) {
 		NSLog(@"fail %@", [error localizedDescription]);
-		[cell setCellLeftLabel:[NSString stringWithFormat:@"error (%@)", [error localizedDescription]]];	// @TODO: Localize this!
+		[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@)", NSLocalizedString(@"error", @"Error"), [error localizedDescription]]];
 	}];
 	
 	return cell;

@@ -55,13 +55,10 @@
 	switch(sortType)
 	{
 		case kPiwigoSortByNewest:
-			name = @"Newest"; // @TODO: localize this
+			name = NSLocalizedString(@"localImageSort_newest", @"Newest");
 			break;
 		case kPiwigoSortByOldest:
-			name = @"Oldest"; // @TODO: localize this
-			break;
-		case kPiwigoSortByName:
-			name = NSLocalizedString(@"localImageSort_name", @"Name");
+			name = NSLocalizedString(@"localImageSort_oldest", @"Oldest");
 			break;
 		case kPiwigoSortByNotUploaded:
 			name = NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded");
@@ -86,22 +83,17 @@
 	{
 		case kPiwigoSortByNewest:
 		{
-			// @TODO: pass in the local album
 			[self getByNewestFirstForAlbum:localAlbum onCompletion:completion];
 			break;
 		}
 		case kPiwigoSortByOldest:
 		{
-			break;
-		}
-		case kPiwigoSortByName:
-		{
-			[self getByNameImageListForCategory:category onCompletion:completion];
+			[self getByOldestFirstForAlbum:localAlbum onCompletion:completion];
 			break;
 		}
 		case kPiwigoSortByNotUploaded:
 		{
-			[self getNotUploadedImageListForCategory:category forProgress:progress onCompletion:completion];
+			[self getNotUploadedImageListForCategory:category forLocalAlbum:localAlbum forProgress:progress onCompletion:completion];
 			break;
 		}
 		
@@ -115,36 +107,43 @@
 	}
 }
 
++(NSArray*)getSortedImagesForAlbum:(NSURL*)albumURL
+{
+	NSDictionary *imagesForAlbum = [[PhotosFetch sharedInstance].localImages objectForKey:albumURL];
+	return [imagesForAlbum.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+}
+
 +(void)getByNewestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
 		
-		NSDictionary *imagesForAlbum = [responseObject objectForKey:albumURL];
-		NSArray *sortedKeys = [[[imagesForAlbum.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] reverseObjectEnumerator] allObjects];
-		
 		if(completion)
 		{
-			completion(sortedKeys);
+			completion([[[self getSortedImagesForAlbum:albumURL] reverseObjectEnumerator] allObjects]);
 		}
 		
 	}];
 }
 
-+(void)getByNameImageListForCategory:(NSInteger)category onCompletion:(void (^)(NSArray *imageNames))completion
++(void)getByOldestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+		
 		if(completion)
 		{
-			completion([PhotosFetch sharedInstance].sortedImageKeys);
+			completion([self getSortedImagesForAlbum:albumURL]);
 		}
+		
 	}];
 }
 
 +(void)getNotUploadedImageListForCategory:(NSInteger)category
+							forLocalAlbum:(NSURL*)albumURL
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							 onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	[NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:category
+													  forLocalAlbum:albumURL
 														forProgress:progress
 													   onCompletion:^(NSArray *missingImages) {
 															if(completion)

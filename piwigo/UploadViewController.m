@@ -115,8 +115,6 @@
 	}
 	
 	self.sortType = self.sortType;
-	// @TODO: this reload isn't necessary, the sort will take care of it
-	[self.localImagesCollection reloadData];
 }
 
 -(void)loadNavButtons
@@ -133,8 +131,6 @@
 
 -(void)setSortType:(kPiwigoSortBy)sortType
 {
-	// @TODO: fix the sorting
-//	return;
 	_sortType = sortType;
 	
 	PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];

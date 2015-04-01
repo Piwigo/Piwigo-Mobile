@@ -11,7 +11,6 @@
 typedef enum {
 	kPiwigoSortByNewest,
 	kPiwigoSortByOldest,
-	kPiwigoSortByName,
 	kPiwigoSortByNotUploaded,
 	kPiwigoSortByCount
 } kPiwigoSortBy;

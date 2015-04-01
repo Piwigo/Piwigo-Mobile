@@ -44,7 +44,6 @@
 
 -(instancetype)initWithImageData:(PiwigoImageData*)imageData
 {
-	// @TODO: does this need a local image album?
 	self = [self initWithImageFromAlbum:nil withName:imageData.name forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
 	if(self)
 	{
