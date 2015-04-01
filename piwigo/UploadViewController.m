@@ -151,7 +151,14 @@
 			
 			if(downloadingCategory.numberOfImages != downloadingCategory.imageList.count)
 			{
-				[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
+				if(downloadingCategory.numberOfImages >= 100)
+				{
+					[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
+				}
+				else
+				{
+					[self.loadingView.progressLabel countFrom:0 to:downloadingCategory.numberOfImages withDuration:1];
+				}
 			}
 		}
 	}
