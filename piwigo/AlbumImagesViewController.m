@@ -28,7 +28,6 @@
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) NSArray *imageList;
 @property (nonatomic, assign) NSInteger categoryId;
-@property (nonatomic, strong) NSString *currentSort;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
@@ -57,7 +56,7 @@
 		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = albumId;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-		self.currentSortCategory = kPiwigoSortCategoryIdAscending;
+		self.currentSortCategory = 0;
 		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if(self.imageList.count <= 100) {
 			[self loadMoreImages];
@@ -362,8 +361,7 @@
 {
 	if(self.currentSortCategory != 0) return;
 	
-	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkWithSort:self.currentSort
-																							  forProgress:nil
+	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkForProgress:nil
 																								OnCompletion:^(BOOL completed) {
 																									if(!completed)
 																									{
@@ -377,120 +375,67 @@
 
 -(void)setCurrentSortCategory:(kPiwigoSortCategory)currentSortCategory
 {
-	
-	// check if we already have loaded all the images for this category
-	// if we have
-	//		perform a manual sort on the images
-	// if not:
-	//		get the new sort order
-	//		start on page 0
-	//		request new images for page 0
-	// if filter by images or videos only
-	//		download all image data
-	
-	NSString *sort = @"";
-	switch(currentSortCategory)
+	if(_currentSortCategory == kPiwigoSortCategoryVideoOnly ||
+	   _currentSortCategory == kPiwigoSortCategoryImageOnly)
 	{
-		case kPiwigoSortCategoryNameAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryNameDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderDescending];
-			break;
-		case kPiwigoSortCategoryFileNameAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryFileNameDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderDescending];
-			break;
-		case kPiwigoSortCategoryDateCreatedAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryDateCreatedDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
-			break;
-		case kPiwigoSortCategoryIdAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderId, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryIdDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderId, kGetImageOrderDescending];
-			break;
-			// @TODO: hook these back up again...
-		case kPiwigoSortCategoryVideoOnly:
-			sort = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
-			break;
-		case kPiwigoSortCategoryImageOnly:
-			sort = NSLocalizedString(@"categorySort_imagesOnly", @"Images Only");
-			break;
-			
-		case kPiwigoSortCategoryCount:
-			break;
+		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 	}
 	
-	self.currentSort = sort;
+	if(currentSortCategory == 0)
+	{
+		return;
+	}
 	
+	_currentSortCategory = currentSortCategory;
 	
-//	if(_currentSortCategory == kPiwigoSortCategoryVideoOnly ||
-//	   _currentSortCategory == kPiwigoSortCategoryImageOnly)
-//	{
-//		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-//	}
-//	
-//	if(currentSortCategory == 0)
-//	{
-//		return;
-//	}
-//	
-//	_currentSortCategory = currentSortCategory;
-//	
-//	if(self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
-//	{
-//		if(!self.loadingView.superview)
-//		{
-//			self.loadingView = [LoadingView new];
-//			self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
-//			NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])];
-//			self.loadingView.progressLabel.format = progressLabelFormat;
-//			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
-//			[self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfoForSort", @"Downloading Image Info for Sort") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
-//			[self.view addSubview:self.loadingView];
-//			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
-//			
-//			
-//			if(self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
-//			{
-//				[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
-//			}
-//		}
-//		// load all the images
-//		__block NSDate *lastTime = [NSDate date];
-//		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:^(NSInteger onPage, NSInteger outOf) {
-//			
-//			NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
-//			NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
-//			
-//			NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
-//			
-//			if(currentDownloaded > [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
-//			{
-//				currentDownloaded = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages];
-//			}
-//			
-//			[self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
-//			
-//			lastTime = [NSDate date];
-//		} OnCompletion:^(BOOL completed) {
-//
-//			self.imageList = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:_currentSortCategory];
-//			[self.loadingView hideLoadingWithLabel:@"Done" showCheckMark:YES withDelay:0.5];
-//			[self.imagesCollection reloadData];
-//		}];
-//	}
-//	else
-//	{
-//		self.imageList = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:_currentSortCategory];
-//		[self.imagesCollection reloadData];
-//	}
+	if(self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+	{
+		if(!self.loadingView.superview)
+		{
+			self.loadingView = [LoadingView new];
+			self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
+			NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])];
+			self.loadingView.progressLabel.format = progressLabelFormat;
+			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
+			[self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfoForSort", @"Downloading Image Info for Sort") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
+			[self.view addSubview:self.loadingView];
+			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
+			
+			
+			if(self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+			{
+				[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
+			}
+		}
+		// load all the images
+		__block NSDate *lastTime = [NSDate date];
+		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:^(NSInteger onPage, NSInteger outOf) {
+			
+			NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
+			NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
+			
+			NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
+			
+			if(currentDownloaded > [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+			{
+				currentDownloaded = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages];
+			}
+			
+			[self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
+			
+			lastTime = [NSDate date];
+		} OnCompletion:^(BOOL completed) {
+
+			self.imageList = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:_currentSortCategory];
+			[self.loadingView hideLoadingWithLabel:@"Done" showCheckMark:YES withDelay:0.5];
+			[self.imagesCollection reloadData];
+		}];
+	}
+	else
+	{
+		self.imageList = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:_currentSortCategory];
+		[self.imagesCollection reloadData];
+	}
 	
 }
 

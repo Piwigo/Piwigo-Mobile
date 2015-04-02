@@ -43,8 +43,7 @@
 							  OnCompletion:(void (^)(BOOL completed))completion
 {
 	self.onPage = 0;
-	[self loopLoadImagesForSort:@""
-				   withProgress:progress
+	[self loopLoadImagesForProgress:progress
 					   onCompletion:^(BOOL completed) {
 		if(completion)
 		{
@@ -53,17 +52,14 @@
 	}];
 }
 
--(void)loopLoadImagesForSort:(NSString*)sort
-				withProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+-(void)loopLoadImagesForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 					onCompletion:(void (^)(BOOL completed))completion
 {
-	[self loadCategoryImageDataChunkWithSort:sort
-								 forProgress:progress
+	[self loadCategoryImageDataChunkForProgress:progress
 								   OnCompletion:^(BOOL completed) {
 		if(completed && self.lastImageBulkCount && self.imageList.count != self.numberOfImages)
 		{
-			[self loopLoadImagesForSort:sort
-						   withProgress:progress
+			[self loopLoadImagesForProgress:progress
 							   onCompletion:completion];
 		}
 		else
@@ -76,8 +72,7 @@
 	}];
 }
 
--(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
-							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+-(void)loadCategoryImageDataChunkForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion
 {
 	if(self.isLoadingMoreImages) return;
@@ -87,7 +82,6 @@
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
 									  forCategory:self.albumId
 										   onPage:self.onPage
-										  forSort:sort
 								 ListOnCompletion:^(AFHTTPRequestOperation *operation, NSInteger count) {
 									 
 									 if(progress)
