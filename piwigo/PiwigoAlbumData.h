@@ -40,7 +40,8 @@ typedef enum {
 -(void)addImages:(NSArray*)images;
 -(void)removeImage:(PiwigoImageData*)image;
 
--(void)loadCategoryImageDataChunkForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+-(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
+							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion;
 -(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  OnCompletion:(void (^)(BOOL completed))completion;
