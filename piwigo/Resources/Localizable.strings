@@ -46,6 +46,7 @@
 
 "categoryTableView_photoCount" = "photos";
 "categoryTableView_subCategoryImageCount" = "photos in sub-albums";
+"categoryTableView_subCategoryImageCountIpad" = "%1$@ photos in %2$@ sub-albums";
 "categoryImageList_selectButton" = "Select";
 "categoryImageList_noDataError" = "Error No Data";
 

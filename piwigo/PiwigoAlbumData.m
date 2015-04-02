@@ -209,4 +209,30 @@
 //	return NO;
 }
 
+
+#pragma mark - debugging support -
+
+-(NSString *)description {
+    NSMutableArray * descriptionArray = [[NSMutableArray alloc] init];
+    [descriptionArray addObject:[NSString stringWithFormat:@"<%@: 0x%x> = {", [self class], (NSUInteger)self]];
+    
+    [descriptionArray addObject:[NSString stringWithFormat:@"name                   = %@", (0 == [self.name length] ? @"''" : self.name)]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"globalRank             = %ld", (long)self.globalRank]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"albumId                = %ld", (long)self.albumId]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"parentAlbumId          = %ld", (long)self.parentAlbumId]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"nearestUpperCategory   = %ld", (long)self.nearestUpperCategory]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"upperCategories [%ld]  = %@", (long)self.upperCategories.count, self.upperCategories]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"numberOfImages         = %ld", (long)self.numberOfImages]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"numberOfSubAlbumImages = %ld", (long)self.numberOfSubAlbumImages]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"numberOfSubCategories  = %ld", (long)self.numberOfSubCategories]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"albumThumbnailId       = %ld", (long)self.albumThumbnailId]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"albumThumbnailUrl      = %@", (0 == self.albumThumbnailUrl.length ? @"''" : self.albumThumbnailUrl)]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"dateLast               = %@", self.dateLast]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"categoryImage          = %@", (nil == self.categoryImage) ? @"Assigned" : @"nil"]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"comment                = %@", (0 == self.comment.length ? @"''" : self.comment)]];
+    [descriptionArray addObject:@"}"];
+
+    return [descriptionArray componentsJoinedByString:@"\n"];
+}
+
 @end

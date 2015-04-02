@@ -11,6 +11,7 @@
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
 #import "TabBarViewController.h"
+#import "AlbumsCollectionViewController.h"
 #import "SessionService.h"
 #import "Model.h"
 #import "KeychainAccess.h"
@@ -52,10 +53,16 @@
 
 -(void)loadNavigation
 {
-	TabBarViewController *navigation = [TabBarViewController new];
-	self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
-	[self.loginVC removeFromParentViewController];
-	self.loginVC = nil;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {        
+        TabBarViewController *navigation = [TabBarViewController new];
+        self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
+    } else {
+        UICollectionViewFlowLayout *grid = [[UICollectionViewFlowLayout alloc] init];
+        AlbumsCollectionViewController *navigation = [[AlbumsCollectionViewController alloc] initWithCollectionViewLayout:grid];
+        self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
+    }
+    [self.loginVC removeFromParentViewController];
+    self.loginVC = nil;
 }
 
 -(void)loadLoginView

@@ -94,6 +94,8 @@
 		D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */; };
 		D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */; };
 		DA4A28298929D36CA5D45198 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FC3D86091E15D966251DD6 /* libPods.a */; };
+		ED0391521ACC2BAB00301DEC /* AlbumsCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED0391511ACC2BAB00301DEC /* AlbumsCollectionViewController.m */; };
+		ED0391551ACC2D2800301DEC /* AlbumCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */; };
 		ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */; };
 		ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */; };
 /* End PBXBuildFile section */
@@ -282,6 +284,10 @@
 		D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextViewTableViewCell.m; sourceTree = "<group>"; };
 		D8F325181A87F624007CBDAC /* UIPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPlaceHolderTextView.h; sourceTree = "<group>"; };
 		D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPlaceHolderTextView.m; sourceTree = "<group>"; };
+		ED0391501ACC2BAB00301DEC /* AlbumsCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsCollectionViewController.h; sourceTree = "<group>"; };
+		ED0391511ACC2BAB00301DEC /* AlbumsCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsCollectionViewController.m; sourceTree = "<group>"; };
+		ED0391531ACC2D2800301DEC /* AlbumCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumCollectionViewCell.h; sourceTree = "<group>"; };
+		ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumCollectionViewCell.m; sourceTree = "<group>"; };
 		ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPhone.h; sourceTree = "<group>"; };
 		ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPhone.m; sourceTree = "<group>"; };
 		ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPad.h; sourceTree = "<group>"; };
@@ -689,6 +695,7 @@
 		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
 			isa = PBXGroup;
 			children = (
+				ED03914F1ACC2B7E00301DEC /* Album Collection */,
 				D818E9F41A74BEFF00733991 /* Album List */,
 				D818E9F51A74BF1100733991 /* Album Pictures */,
 				D818EA031A74D32100733991 /* Image Detail */,
@@ -776,6 +783,17 @@
 				D89045BE1A950FF700A306FE /* TagsTableViewCell.m */,
 			);
 			name = "Custom Cells";
+			sourceTree = "<group>";
+		};
+		ED03914F1ACC2B7E00301DEC /* Album Collection */ = {
+			isa = PBXGroup;
+			children = (
+				ED0391501ACC2BAB00301DEC /* AlbumsCollectionViewController.h */,
+				ED0391511ACC2BAB00301DEC /* AlbumsCollectionViewController.m */,
+				ED0391531ACC2D2800301DEC /* AlbumCollectionViewCell.h */,
+				ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */,
+			);
+			name = "Album Collection";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -973,6 +991,7 @@
 				D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8083A4F1A7CB65400A95605 /* UIActionSheet+Blocks.m in Sources */,
+				ED0391521ACC2BAB00301DEC /* AlbumsCollectionViewController.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
 				D89045BC1A9470A600A306FE /* TagsViewController.m in Sources */,
 				D8B9BC7F1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m in Sources */,
@@ -983,6 +1002,7 @@
 				D860440B1A995C580067E5D1 /* ClearCache.m in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
+				ED0391551ACC2D2800301DEC /* AlbumCollectionViewCell.m in Sources */,
 				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
 				D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */,
 				D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */,
