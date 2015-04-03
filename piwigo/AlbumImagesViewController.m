@@ -23,9 +23,8 @@
 #import "AlbumService.h"
 #import "LocalAlbumsViewController.h"
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate >
 
-@property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) NSArray *imageList;
 @property (nonatomic, assign) NSInteger categoryId;
 
@@ -69,7 +68,7 @@
 		self.imagesCollection.dataSource = self;
 		self.imagesCollection.delegate = self;
 		[self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
-		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"category"];
+//		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"category"];
 		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
 		self.imagesCollection.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 		[self.view addSubview:self.imagesCollection];
@@ -510,18 +509,6 @@
 	}
 }
 
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-	CGFloat size = MIN(collectionView.frame.size.width, collectionView.frame.size.height) / 3 - 14;
-	if(indexPath.section == 1)
-	{
-		return CGSizeMake(size, size);
-	}
-	else
-	{
-		return CGSizeMake(collectionView.frame.size.width - 20, 188);
-	}
-}
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -546,15 +533,20 @@
 	}
 	else
 	{
-		CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"category" forIndexPath:indexPath];
-		cell.categoryDelegate = self;
-		
-		PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
-		
-		[cell setupWithAlbumData:albumData];
+
+        PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
+        UICollectionViewCell *cell = [self cellWithAlbumData:albumData
+                                         collectionView:collectionView atIndexPath:indexPath];
 		
 		return cell;
 	}
+}
+
+-(UICollectionViewCell*)cellWithAlbumData:(PiwigoAlbumData *)albumData
+                      collectionView:(UICollectionView *)collectionView
+                         atIndexPath:(NSIndexPath *)indexPath {
+    MyLog(@"Error when calling this method. Did you call the device specific version?");
+    return nil; //child must override
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -562,9 +554,9 @@
 	return UIEdgeInsetsMake(10, 10, 40, 10);
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+-(void)collectionView:(UICollectionView *)collectionView inSectionOneSidSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1)
+    if(indexPath.section == 1)
 	{
 		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 		if(!self.isSelect)
@@ -585,7 +577,9 @@
 			}
 			[collectionView reloadItemsAtIndexPaths:@[indexPath]];
 		}
-	}
+    } else {
+        MyLog(@"Error, no such section");
+    }
 }
 
 #pragma mark -- ImageDetailDelegate Methods

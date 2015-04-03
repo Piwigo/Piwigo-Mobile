@@ -9,7 +9,7 @@
 #import "AlbumsCollectionViewController.h"
 
 #import "AlbumCollectionViewCell.h"
-#import "AlbumImagesViewController.h"
+#import "AlbumImagesViewController_iPad.h"
 #import "AlbumService.h"
 #import "CategoriesData.h"
 #import "CategoryPickViewController.h"
@@ -217,7 +217,7 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
     
-    AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
+    AlbumImagesViewController_iPad *album = [[AlbumImagesViewController_iPad alloc] initWithAlbumId:albumData.albumId];
     [self.navigationController pushViewController:album animated:YES];
 }
 

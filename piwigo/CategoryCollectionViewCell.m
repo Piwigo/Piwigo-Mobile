@@ -9,7 +9,7 @@
 #import "CategoryCollectionViewCell.h"
 #import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
-#import "AlbumImagesViewController.h"
+#import "AlbumImagesViewController_iPhone.h"
 
 @interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, AlbumTableViewCellDelegate>
 
@@ -87,7 +87,7 @@
 	
 	if([self.categoryDelegate respondsToSelector:@selector(pushView:)])
 	{
-		AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithAlbumId:self.albumData.albumId];
+		AlbumImagesViewController_iPhone *albumView = [[AlbumImagesViewController_iPhone alloc] initWithAlbumId:self.albumData.albumId];
 		[self.categoryDelegate pushView:albumView];
 	}
 }

@@ -11,7 +11,7 @@
 #import "PiwigoImageData.h"
 #import "AlbumTableViewCell.h"
 #import "AlbumService.h"
-#import "AlbumImagesViewController.h"
+#import "AlbumImagesViewController_iPhone.h"
 #import "CategoriesData.h"
 #import "Model.h"
 
@@ -183,7 +183,7 @@
 	
 	PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
 	
-	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
+	AlbumImagesViewController *album = [[AlbumImagesViewController_iPhone alloc] initWithAlbumId:albumData.albumId];
 	[self.navigationController pushViewController:album animated:YES];
 }
 

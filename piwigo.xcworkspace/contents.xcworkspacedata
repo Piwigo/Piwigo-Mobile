@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:AlbumsViewController_iPad.h">
+   </FileRef>
+   <FileRef
+      location = "group:AlbumsViewController_iPad.m">
+   </FileRef>
+   <FileRef
       location = "group:piwigo.xcodeproj">
    </FileRef>
    <FileRef

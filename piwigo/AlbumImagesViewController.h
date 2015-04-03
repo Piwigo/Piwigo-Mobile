@@ -7,9 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+@class PiwigoAlbumData;
 
 @interface AlbumImagesViewController : UIViewController
 
+@property (nonatomic, strong) UICollectionView *imagesCollection;
+
 -(instancetype)initWithAlbumId:(NSInteger)albumId;
+
+-(UICollectionViewCell*)cellWithAlbumData:(PiwigoAlbumData *)albumData
+                      collectionView:(UICollectionView *)collectionView
+                         atIndexPath:(NSIndexPath *)indexPath;
+
+-(void)collectionView:(UICollectionView *)collectionView inSectionOneSidSelectItemAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
