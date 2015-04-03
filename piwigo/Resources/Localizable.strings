@@ -66,7 +66,7 @@
 "imageOptions_setAlbumImage" = "Set as Album Image";
 
 "downloadImage" = "Download Images";
-"downloadImage_confirmation" = "Are you sure you want to downlaod the selected %@ %@?";
+"downloadImage_confirmation" = "Are you sure you want to download the selected %@ %@?";
 "downloadingImage" = "Downloading Image";
 "downloadingImages" = "Downloading Images";
 "downloadingImage_complete" = "Complete";
@@ -106,7 +106,10 @@
 "logoutConfirmation_title" = "Logout";
 "logoutConfirmation_message" = "Are you sure you want to logout?";
 
-"localImageSort_name" = "Name";
+"localAlbums" = "Local Albums";
+
+"localImageSort_newest" = "Newest";
+"localImageSort_oldest" = "Oldest";
 "localImageSort_notUploaded" = "Not Uploaded";
 "localImageSort_undefined" = "Undefined";
 
@@ -164,6 +167,8 @@
 "pullToRefresh" = "Loading All Images";
 
 // ----------------------- ERROR STRINGS -----------------------
+
+"error" = "Error";
 
 "serverVersionNotCompatable_title" = "Server Incompatable";
 "serverVersionNotCompatable_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?";

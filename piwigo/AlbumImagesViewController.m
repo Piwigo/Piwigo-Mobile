@@ -21,7 +21,7 @@
 #import "UICountingLabel.h"
 #import "CategoryCollectionViewCell.h"
 #import "AlbumService.h"
-#import "UploadViewController.h"
+#import "LocalAlbumsViewController.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
@@ -171,8 +171,8 @@
 
 -(void)uploadToThisCategory
 {
-	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId];
-	[self.navigationController pushViewController:uploadVC animated:YES];
+	LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:self.categoryId];
+	[self.navigationController pushViewController:localAlbums animated:YES];
 }
 
 -(void)deleteImages
@@ -570,6 +570,7 @@
 		if(!self.isSelect)
 		{
 			ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row isSorted:(self.currentSortCategory != 0) withArray:[self.imageList copy]];
+			imageDetail.hidesBottomBarWhenPushed = YES;
 			imageDetail.imgDetailDelegate = self;
 			[self.navigationController pushViewController:imageDetail animated:YES];
 		}

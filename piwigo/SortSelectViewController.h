@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 
 typedef enum {
-	kPiwigoSortByName,
+	kPiwigoSortByNewest,
+	kPiwigoSortByOldest,
 	kPiwigoSortByNotUploaded,
 	kPiwigoSortByCount
 } kPiwigoSortBy;
@@ -27,6 +28,7 @@ typedef enum {
 
 +(NSString*)getNameForSortType:(kPiwigoSortBy)sortType;
 +(void)getSortedImageNameArrayFromSortType:(kPiwigoSortBy)sortType
+							 forLocalAlbum:(NSURL*)localAlbum
 							   forCategory:(NSInteger)category
 							   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  onCompletion:(void (^)(NSArray *imageNames))completion;

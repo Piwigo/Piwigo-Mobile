@@ -287,45 +287,48 @@
 }
 -(void)hideTabBar:(UITabBarController*)tabbarcontroller
 {
-	CGRect screenRect = [[UIScreen mainScreen] bounds];
+	return;
 	
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:0.3];
-	float fHeight = screenRect.size.height;
-	
-	for(UIView *view in tabbarcontroller.view.subviews)
-	{
-		if([view isKindOfClass:[UITabBar class]])
-		{
-			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
-		}
-		else
-		{
-			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
-			view.backgroundColor = [UIColor blackColor];
-		}
-	}
-	[UIView commitAnimations];
+//	CGRect screenRect = [[UIScreen mainScreen] bounds];
+//	
+//	[UIView beginAnimations:nil context:NULL];
+//	[UIView setAnimationDuration:0.3];
+//	float fHeight = screenRect.size.height;
+//	
+//	for(UIView *view in tabbarcontroller.view.subviews)
+//	{
+//		if([view isKindOfClass:[UITabBar class]])
+//		{
+//			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
+//		}
+//		else
+//		{
+//			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
+//			view.backgroundColor = [UIColor blackColor];
+//		}
+//	}
+//	[UIView commitAnimations];
 }
 -(void)showTabBar:(UITabBarController*)tabbarcontroller
 {
-	CGRect screenRect = [[UIScreen mainScreen] bounds];
-	float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
-	
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:0.3];
-	for(UIView *view in tabbarcontroller.view.subviews)
-	{
-		if([view isKindOfClass:[UITabBar class]])
-		{
-			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
-		}
-		else
-		{
-			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
-		}
-	}
-	[UIView commitAnimations];
+	return;
+//	CGRect screenRect = [[UIScreen mainScreen] bounds];
+//	float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
+//	
+//	[UIView beginAnimations:nil context:NULL];
+//	[UIView setAnimationDuration:0.3];
+//	for(UIView *view in tabbarcontroller.view.subviews)
+//	{
+//		if([view isKindOfClass:[UITabBar class]])
+//		{
+//			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
+//		}
+//		else
+//		{
+//			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
+//		}
+//	}
+//	[UIView commitAnimations];
 }
 
 -(ImageDownloadView*)downloadView

@@ -94,7 +94,7 @@
 {
 	for(NSString *imageName in self.imagesSelected)
 	{
-		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:nil];
+		ImageUpload *image = [[ImageUpload alloc] initWithImageFromAlbum:self.localAlbum withName:imageName forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:nil];
 		[self.imagesToEdit addObject:image];
 	}
 }

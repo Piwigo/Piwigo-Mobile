@@ -84,6 +84,7 @@
 		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
 		D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */; };
+		D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */; };
 		D8E4D61E1ABD223B0057EB95 /* ServerField.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D61D1ABD223B0057EB95 /* ServerField.m */; };
 		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
 		D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F113591A9E40EF000EC0A6 /* LoadingView.m */; };
@@ -267,6 +268,8 @@
 		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
 		D8D63B9D1AA69E0000F0ED39 /* CategoryImageSort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryImageSort.h; sourceTree = "<group>"; };
 		D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryImageSort.m; sourceTree = "<group>"; };
+		D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalAlbumsViewController.h; sourceTree = "<group>"; };
+		D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalAlbumsViewController.m; sourceTree = "<group>"; };
 		D8E4D61C1ABD223B0057EB95 /* ServerField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerField.h; sourceTree = "<group>"; };
 		D8E4D61D1ABD223B0057EB95 /* ServerField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerField.m; sourceTree = "<group>"; };
 		D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
@@ -651,6 +654,8 @@
 		D8A5014E1A7B432600C04C17 /* Local Images */ = {
 			isa = PBXGroup;
 			children = (
+				D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */,
+				D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */,
 				D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */,
 				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
 				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
@@ -947,6 +952,7 @@
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
 				D8C71A4C1A848B070048BA33 /* ImageUploadTableViewCell.m in Sources */,
+				D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */,
 				D89045BF1A950FF700A306FE /* TagsTableViewCell.m in Sources */,

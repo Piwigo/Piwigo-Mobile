@@ -7,6 +7,7 @@
 //
 
 #import "SortSelectViewController.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
 
@@ -53,8 +54,11 @@
 	
 	switch(sortType)
 	{
-		case kPiwigoSortByName:
-			name = NSLocalizedString(@"localImageSort_name", @"Name");
+		case kPiwigoSortByNewest:
+			name = NSLocalizedString(@"localImageSort_newest", @"Newest");
+			break;
+		case kPiwigoSortByOldest:
+			name = NSLocalizedString(@"localImageSort_oldest", @"Oldest");
 			break;
 		case kPiwigoSortByNotUploaded:
 			name = NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded");
@@ -68,21 +72,28 @@
 	return name;
 }
 
+// on completion send back a list of image names (keys)
 +(void)getSortedImageNameArrayFromSortType:(kPiwigoSortBy)sortType
+							 forLocalAlbum:(NSURL*)localAlbum
 							   forCategory:(NSInteger)category
 							   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	switch(sortType)
 	{
-		case kPiwigoSortByName:
+		case kPiwigoSortByNewest:
 		{
-			[self getByNameImageListForCategory:category onCompletion:completion];
+			[self getByNewestFirstForAlbum:localAlbum onCompletion:completion];
+			break;
+		}
+		case kPiwigoSortByOldest:
+		{
+			[self getByOldestFirstForAlbum:localAlbum onCompletion:completion];
 			break;
 		}
 		case kPiwigoSortByNotUploaded:
 		{
-			[self getNotUploadedImageListForCategory:category forProgress:progress onCompletion:completion];
+			[self getNotUploadedImageListForCategory:category forLocalAlbum:localAlbum forProgress:progress onCompletion:completion];
 			break;
 		}
 		
@@ -96,21 +107,43 @@
 	}
 }
 
-+(void)getByNameImageListForCategory:(NSInteger)category onCompletion:(void (^)(NSArray *imageNames))completion
++(NSArray*)getSortedImagesForAlbum:(NSURL*)albumURL
+{
+	NSDictionary *imagesForAlbum = [[PhotosFetch sharedInstance].localImages objectForKey:albumURL];
+	return [imagesForAlbum.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+}
+
++(void)getByNewestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+		
 		if(completion)
 		{
-			completion([PhotosFetch sharedInstance].sortedImageKeys);
+			completion([[[self getSortedImagesForAlbum:albumURL] reverseObjectEnumerator] allObjects]);
 		}
+		
+	}];
+}
+
++(void)getByOldestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
+{
+	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+		
+		if(completion)
+		{
+			completion([self getSortedImagesForAlbum:albumURL]);
+		}
+		
 	}];
 }
 
 +(void)getNotUploadedImageListForCategory:(NSInteger)category
+							forLocalAlbum:(NSURL*)albumURL
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							 onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	[NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:category
+													  forLocalAlbum:albumURL
 														forProgress:progress
 													   onCompletion:^(NSArray *missingImages) {
 															if(completion)
