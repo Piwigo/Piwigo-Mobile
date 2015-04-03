@@ -10,4 +10,6 @@
 
 @interface AlbumsCollectionViewController : UICollectionViewController
 
++(NSString *)nibName;
+
 @end

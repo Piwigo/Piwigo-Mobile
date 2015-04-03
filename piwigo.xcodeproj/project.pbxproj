@@ -700,7 +700,7 @@
 		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
 			isa = PBXGroup;
 			children = (
-				ED03914F1ACC2B7E00301DEC /* Album Collection */,
+				ED03914F1ACC2B7E00301DEC /* Album Collection (iPad) */,
 				D818E9F41A74BEFF00733991 /* Album List */,
 				D818E9F51A74BF1100733991 /* Album Pictures */,
 				D818EA031A74D32100733991 /* Image Detail */,
@@ -790,7 +790,7 @@
 			name = "Custom Cells";
 			sourceTree = "<group>";
 		};
-		ED03914F1ACC2B7E00301DEC /* Album Collection */ = {
+		ED03914F1ACC2B7E00301DEC /* Album Collection (iPad) */ = {
 			isa = PBXGroup;
 			children = (
 				ED0391501ACC2BAB00301DEC /* AlbumsCollectionViewController.h */,
@@ -798,7 +798,7 @@
 				ED0391531ACC2D2800301DEC /* AlbumCollectionViewCell.h */,
 				ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */,
 			);
-			name = "Album Collection";
+			name = "Album Collection (iPad)";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

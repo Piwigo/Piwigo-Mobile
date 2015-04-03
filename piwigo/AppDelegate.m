@@ -58,8 +58,8 @@
         self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
     } else {
         UICollectionViewFlowLayout *grid = [[UICollectionViewFlowLayout alloc] init];
-        AlbumsCollectionViewController *navigation = [[AlbumsCollectionViewController alloc] initWithCollectionViewLayout:grid];
-        self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
+        AlbumsCollectionViewController *albumCollection = [[AlbumsCollectionViewController alloc] initWithCollectionViewLayout:grid];
+        self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albumCollection];
     }
     [self.loginVC removeFromParentViewController];
     self.loginVC = nil;

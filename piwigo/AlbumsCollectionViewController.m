@@ -8,16 +8,20 @@
 
 #import "AlbumsCollectionViewController.h"
 
-#import "PiwigoImageData.h"
 #import "AlbumCollectionViewCell.h"
-#import "AlbumService.h"
 #import "AlbumImagesViewController.h"
+#import "AlbumService.h"
 #import "CategoriesData.h"
+#import "CategoryPickViewController.h"
 #import "Model.h"
+#import "PiwigoImageData.h"
+#import "SettingsViewController.h"
+
 
 @interface AlbumsCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
-@property (nonatomic, strong) UICollectionView *albumsView;
+@property (nonatomic, strong) UIBarButtonItem *uploadButton;
+@property (nonatomic, strong) UIBarButtonItem *addButton;
 @property (nonatomic, strong) NSArray *categories;
 @property (nonatomic, strong) UILabel *emptyLabel;
 
@@ -25,75 +29,66 @@
 
 @implementation AlbumsCollectionViewController
 
-#warning TODO: add upload and settings button
--(id)initWithCollectionViewLayout:(UICollectionViewFlowLayout *)layout {
++(NSString *)nibName {
+    return @"AlbumsCollectionView";
+}
+
+-(instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout {
     if (self = [super initWithCollectionViewLayout:layout]) {
-        [self.collectionView registerClass:[AlbumCollectionViewCell class] forCellWithReuseIdentifier:[AlbumCollectionViewCell cellReuseIdentifier]];
-        self.view.backgroundColor           = [UIColor piwigoGray];
-        self.collectionView.indicatorStyle  = UIScrollViewIndicatorStyleWhite;
-        self.collectionView.backgroundColor = [UIColor piwigoGray];
-        self.navigationItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-
-        self.categories = [NSArray new];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
-        
-        [AlbumService getAlbumListForCategory:0
-                                 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
-                                     
-                                 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                     
-                                     MyLog(@"Album list err: %@", error);
-                                 }];
-
+        _categories = [NSArray new];
     }
     return self;
 }
 
--(instancetype)initOFFxxxx
-{
-    self = [super init];
-    if(self)
+
+-(void)categoryDataUpdated {
+    if([Model sharedInstance].hasAdminRights)
     {
-        self.view.backgroundColor = [UIColor piwigoGray];
-        self.categories = [NSArray new];
-        
-        self.albumsView = [UICollectionView new];
-        self.albumsView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.albumsView.backgroundColor = [UIColor clearColor];
-        self.albumsView.delegate = self;
-        self.albumsView.dataSource = self;
-        self.albumsView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-        [self.albumsView registerClass:[AlbumCollectionViewCell class]
-            forCellWithReuseIdentifier:[AlbumCollectionViewCell cellReuseIdentifier]];
-        [self.view addSubview:self.albumsView];
-        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsView]];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
-        
-        [AlbumService getAlbumListForCategory:0
-                                 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
-                                     
-                                 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                     
-                                     MyLog(@"Album list err: %@", error);
-                                 }];
+        if (nil == self.addButton) {
+            _addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];
+        }
+        self.navigationItem.rightBarButtonItems = @[self.addButton, self.uploadButton];
+    } else {
+        self.navigationItem.rightBarButtonItem = self.uploadButton;
     }
-    return self;
-}
-
--(void)categoryDataUpdated
-{
     self.categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:0];
     [self.collectionView reloadData];
 }
 
 -(void)viewDidLoad {
     [super viewDidLoad];
-    if([Model sharedInstance].hasAdminRights)
-    {
-        UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];
-        self.navigationItem.rightBarButtonItem = addCategory;
-    }
+//self.navigationItem.title = @"hello";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    
+    [AlbumService getAlbumListForCategory:0
+                             OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+                                 
+                             } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                 
+                                 MyLog(@"Album list err: %@", error);
+                             }];
+
+    self.view.backgroundColor           = [UIColor piwigoGray];
+    
+    self.collectionView.indicatorStyle  = UIScrollViewIndicatorStyleWhite;
+    self.collectionView.backgroundColor = [UIColor piwigoGray];
+    [self.collectionView registerClass:[AlbumCollectionViewCell class] forCellWithReuseIdentifier:[AlbumCollectionViewCell cellReuseIdentifier]];
+
+    self.navigationItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.alpha           = 0.7f;
+    self.navigationController.navigationBar.translucent     = YES;
+    self.navigationController.navigationBar.tintColor       = [UIColor piwigoWhiteCream];
+
+    UIBarButtonItem *prefsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"]
+                                                                    style:UIBarButtonItemStylePlain target:self
+                                                                   action:@selector(prefsSelected)];
+    _uploadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"]
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(uploadSelected)];
+    self.navigationItem.leftBarButtonItem = prefsButton;
+    self.navigationItem.rightBarButtonItem = self.uploadButton;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -116,6 +111,7 @@
                              }];
 }
 
+#pragma mark - Buttons -
 -(void)addCategory
 {
     [UIAlertView showWithTitle:NSLocalizedString(@"createNewAlbum_title", @"Create New Album")
@@ -156,13 +152,33 @@
                       tapBlock:nil];
 }
 
-#pragma mark - UICollectionView Datasource
+-(void)uploadSelected {
+    CategoryPickViewController *uploadVC = [CategoryPickViewController new];
+    [self.navigationController pushViewController:uploadVC animated:YES];
+}
+
+-(void)prefsSelected {
+    SettingsViewController *settingsVC = [SettingsViewController new];
+    [self.navigationController pushViewController:settingsVC animated:YES];
+}
+
+#pragma mark - UICollectionView Datasource -
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     if(self.categories.count <= 0) {
+        self.emptyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+        
+        self.emptyLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"There appears to be no albums in your Piwigo. You may pull down to refresh");
+        self.emptyLabel.textColor = [UIColor piwigoWhiteCream];
+        self.emptyLabel.numberOfLines = 0;
+        self.emptyLabel.textAlignment = NSTextAlignmentCenter;
+        self.emptyLabel.font = [UIFont piwigoFontNormal];
+        [self.emptyLabel sizeToFit];
+        
+        self.collectionView.backgroundView = self.emptyLabel;
         return 0;
     } else {
-        //        PiwigoAlbumData *albumData = [self.categories objectAtIndex:section];
-        return 1; //albumData.numberOfSubAlbumImages;
+        self.emptyLabel.hidden = YES;
+        return 1;
     }
 }
 -(NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
@@ -178,7 +194,7 @@
         self.emptyLabel.font = [UIFont piwigoFontNormal];
         [self.emptyLabel sizeToFit];
         
-        self.albumsView.backgroundView = self.emptyLabel;
+        self.collectionView.backgroundView = self.emptyLabel;
     }
     else if(self.emptyLabel)
     {
