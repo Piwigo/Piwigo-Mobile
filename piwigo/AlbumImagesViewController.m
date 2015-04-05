@@ -59,7 +59,7 @@
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
-		self.currentSortCategory = kPiwigoSortCategoryIdDescending;
+		self.currentSortCategory = [Model sharedInstance].defaultSort;
 		
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;

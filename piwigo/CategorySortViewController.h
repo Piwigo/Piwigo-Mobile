@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 typedef enum {
-	kPiwigoSortCategoryNameAscending,
-	kPiwigoSortCategoryNameDescending,
 	kPiwigoSortCategoryIdAscending,
 	kPiwigoSortCategoryIdDescending,
+	kPiwigoSortCategoryNameAscending,
+	kPiwigoSortCategoryNameDescending,
 	kPiwigoSortCategoryDateCreatedAscending,
 	kPiwigoSortCategoryDateCreatedDescending,
 	kPiwigoSortCategoryFileNameAscending,

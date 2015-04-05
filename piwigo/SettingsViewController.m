@@ -20,6 +20,7 @@
 #import "EditPopDownView.h"
 #import "SwitchTableViewCell.h"
 #import "AlbumService.h"
+#import "CategorySortViewController.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -35,7 +36,7 @@ typedef enum {
 	kImageUploadSettingAuthor
 } kImageUploadSetting;
 
-@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate>
+@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSArray *rowsInSection;
@@ -59,7 +60,7 @@ typedef enum {
 		self.rowsInSection = @[
 							   @2,
 							   @1,
-							   @1,
+							   @2,
 							   @4,
 							   @2,
 							   @1
@@ -240,6 +241,22 @@ typedef enum {
 						[Model sharedInstance].loadAllCategoryInfo = switchState;
 						[[Model sharedInstance] saveToDisk];
 					};
+					
+					tableViewCell = cell;
+					break;
+				}
+				case 1:
+				{
+					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
+					if(!cell)
+					{
+						cell = [LabelTableViewCell new];
+					}
+					
+					cell.leftText = @"Default Sort";
+					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
+					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+					cell.leftLabelWidth = 120;
 					
 					tableViewCell = cell;
 					break;
@@ -432,6 +449,14 @@ typedef enum {
 		case SettingSectionLogout:
 			[self logout];
 			break;
+		case SettingSectionGeneral:
+		{
+			CategorySortViewController *categoryVC = [CategorySortViewController new];
+			categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;
+			categoryVC.sortDelegate = self;
+			[self.navigationController pushViewController:categoryVC animated:YES];
+			break;
+		}
 		case SettingSectionImageUpload:
 			switch(indexPath.row)
 			{
@@ -658,6 +683,15 @@ typedef enum {
 {
 	[Model sharedInstance].defaultPrivacyLevel = privacy;
 	[[Model sharedInstance] saveToDisk];
+}
+
+#pragma mark CategorySortDelegate Methods
+
+-(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
+{
+	[Model sharedInstance].defaultSort = sortType;
+	[[Model sharedInstance] saveToDisk];
+	[self.settingsTableView reloadData];
 }
 
 @end

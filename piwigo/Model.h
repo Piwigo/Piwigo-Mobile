@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "CategorySortViewController.h"
 
 @class ALAssetsLibrary;
 
@@ -47,6 +48,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger diskCache;
 
 @property (nonatomic, assign) BOOL loadAllCategoryInfo;
+@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
 
 -(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 
