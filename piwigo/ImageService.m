@@ -20,6 +20,8 @@ NSString * const kGetImageOrderRating = @"rating_score";
 NSString * const kGetImageOrderDateCreated = @"date_creation";
 NSString * const kGetImageOrderDateAdded = @"date_available";
 NSString * const kGetImageOrderRandom = @"random";
+NSString * const kGetImageOrderAscending = @"asc";
+NSString * const kGetImageOrderDescending = @"desc";
 
 @implementation ImageService
 
@@ -33,7 +35,7 @@ NSString * const kGetImageOrderRandom = @"random";
 		URLParameters:@{@"albumId" : @(albumId),
 						@"perPage" : @([Model sharedInstance].imagesPerPage),
 						@"page" : @(page),
-						@"order" : order}
+						@"order" : [order stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]}
 		   parameters:nil
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  
@@ -248,6 +250,7 @@ NSString * const kGetImageOrderRandom = @"random";
 +(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
 											  forCategory:(NSInteger)categoryId
 												   onPage:(NSInteger)onPage
+												  forSort:(NSString*)sort
 										 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSInteger count))completion
 												onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
@@ -262,7 +265,7 @@ NSString * const kGetImageOrderRandom = @"random";
 	
 	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:categoryId
 																 onPage:onPage
-															   forOrder:kGetImageOrderFileName
+															   forOrder:sort
 														   OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
 															   
 															   if(albumImages)

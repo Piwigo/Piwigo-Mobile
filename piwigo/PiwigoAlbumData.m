@@ -43,7 +43,8 @@
 							  OnCompletion:(void (^)(BOOL completed))completion
 {
 	self.onPage = 0;
-	[self loopLoadImagesForProgress:progress
+	[self loopLoadImagesForSort:@""
+				   withProgress:progress
 					   onCompletion:^(BOOL completed) {
 		if(completion)
 		{
@@ -52,14 +53,17 @@
 	}];
 }
 
--(void)loopLoadImagesForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+-(void)loopLoadImagesForSort:(NSString*)sort
+				withProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 					onCompletion:(void (^)(BOOL completed))completion
 {
-	[self loadCategoryImageDataChunkForProgress:progress
+	[self loadCategoryImageDataChunkWithSort:sort
+								 forProgress:progress
 								   OnCompletion:^(BOOL completed) {
 		if(completed && self.lastImageBulkCount && self.imageList.count != self.numberOfImages)
 		{
-			[self loopLoadImagesForProgress:progress
+			[self loopLoadImagesForSort:sort
+						   withProgress:progress
 							   onCompletion:completion];
 		}
 		else
@@ -72,7 +76,8 @@
 	}];
 }
 
--(void)loadCategoryImageDataChunkForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+-(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
+							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion
 {
 	if(self.isLoadingMoreImages) return;
@@ -82,6 +87,7 @@
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
 									  forCategory:self.albumId
 										   onPage:self.onPage
+										  forSort:sort
 								 ListOnCompletion:^(AFHTTPRequestOperation *operation, NSInteger count) {
 									 
 									 if(progress)
@@ -199,14 +205,15 @@
 -(BOOL)containsUpperCategory:(NSInteger)category
 {
 	return self.nearestUpperCategory == category;
-//	for(NSString *cat in self.upperCategories)
-//	{
-//		if([cat integerValue] == category)
-//		{
-//			return YES;
-//		}
-//	}
-//	return NO;
+}
+
+-(void)resetData
+{
+	self.imageIds = [NSMutableDictionary new];
+	self.isLoadingMoreImages = NO;
+	self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
+	self.onPage = 0;
+	self.imageList = [NSArray new];
 }
 
 @end

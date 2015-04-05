@@ -163,7 +163,7 @@
 "categoryImageSetSuccess_title" = "Image Set Successful";
 "categoryImageSetSuccess_message" = "The image was set successfully for the album image";
 
-"pullToRefresh" = "Loading All Images";
+"pullToRefresh" = "Reload Images";
 
 // ----------------------- ERROR STRINGS -----------------------
 
