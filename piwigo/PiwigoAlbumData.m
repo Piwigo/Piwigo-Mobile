@@ -205,14 +205,15 @@
 -(BOOL)containsUpperCategory:(NSInteger)category
 {
 	return self.nearestUpperCategory == category;
-//	for(NSString *cat in self.upperCategories)
-//	{
-//		if([cat integerValue] == category)
-//		{
-//			return YES;
-//		}
-//	}
-//	return NO;
+}
+
+-(void)resetData
+{
+	self.imageIds = [NSMutableDictionary new];
+	self.isLoadingMoreImages = NO;
+	self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
+	self.onPage = 0;
+	self.imageList = [NSArray new];
 }
 
 @end

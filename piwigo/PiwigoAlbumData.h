@@ -36,6 +36,7 @@ typedef enum {
 @property (nonatomic, strong) UIImage *categoryImage;
 
 @property (nonatomic, readonly) NSArray *imageList;
+@property (nonatomic, readonly) NSInteger onPage;
 
 -(void)addImages:(NSArray*)images;
 -(void)removeImage:(PiwigoImageData*)image;
@@ -48,5 +49,6 @@ typedef enum {
 -(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
 -(NSInteger)getDepthOfCategory;
 -(BOOL)containsUpperCategory:(NSInteger)category;
+-(void)resetData;
 
 @end

@@ -11,14 +11,14 @@
 typedef enum {
 	kPiwigoSortCategoryNameAscending,
 	kPiwigoSortCategoryNameDescending,
-	kPiwigoSortCategoryIdDescending,
 	kPiwigoSortCategoryIdAscending,
+	kPiwigoSortCategoryIdDescending,
 	kPiwigoSortCategoryDateCreatedAscending,
 	kPiwigoSortCategoryDateCreatedDescending,
 	kPiwigoSortCategoryFileNameAscending,
 	kPiwigoSortCategoryFileNameDescending,
-	kPiwigoSortCategoryVideoOnly,
-	kPiwigoSortCategoryImageOnly,
+//	kPiwigoSortCategoryVideoOnly,
+//	kPiwigoSortCategoryImageOnly,
 	
 	kPiwigoSortCategoryCount	
 } kPiwigoSortCategory;

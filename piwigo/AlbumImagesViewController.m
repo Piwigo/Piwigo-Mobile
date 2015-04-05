@@ -13,7 +13,6 @@
 #import "Model.h"
 #import "ImageDetailViewController.h"
 #import "ImageDownloadView.h"
-#import "PiwigoAlbumData.h"
 #import "SortHeaderCollectionReusableView.h"
 #import "CategorySortViewController.h"
 #import "CategoryImageSort.h"
@@ -22,11 +21,12 @@
 #import "CategoryCollectionViewCell.h"
 #import "AlbumService.h"
 #import "LocalAlbumsViewController.h"
+#import "AlbumData.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
-@property (nonatomic, strong) NSArray *imageList;
+@property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSString *currentSort;
 
@@ -57,11 +57,9 @@
 		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = albumId;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-		self.currentSortCategory = kPiwigoSortCategoryIdAscending;
-		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-		if(self.imageList.count <= 100) {
-			[self loadMoreImages];
-		}
+		
+		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
+		self.currentSortCategory = kPiwigoSortCategoryIdDescending;
 		
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -118,11 +116,9 @@
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
-		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-		self.currentSortCategory = self.currentSortCategory;
-		[self.imagesCollection reloadData];
+	[self.albumData reloadAlbumOnCompletion:^{
 		[refreshControl endRefreshing];
+		[self.imagesCollection reloadData];
 	}];
 	
 	[AlbumService getAlbumListForCategory:self.categoryId
@@ -207,14 +203,7 @@
 	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:imageId]
 				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
 					 
-					 NSIndexSet *set = [self.imageList indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
-						 return [obj.imageId integerValue] != [self.selectedImageIds.lastObject integerValue];
-					 }];
-					 self.imageList = [self.imageList objectsAtIndexes:set];
-					 
-					 NSMutableArray *newList = [[NSMutableArray alloc] initWithArray:self.imageList];
-					 [newList removeObject:self.selectedImageIds.lastObject];
-					 self.imageList = newList;
+					 [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
 					 
 					 [self.selectedImageIds removeLastObject];
 					 NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
@@ -358,140 +347,12 @@
 	return _downloadView;
 }
 
--(void)loadMoreImages
-{
-	if(self.currentSortCategory != 0) return;
-	
-	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkWithSort:self.currentSort
-																							  forProgress:nil
-																								OnCompletion:^(BOOL completed) {
-																									if(!completed)
-																									{
-																										return;
-																									}
-																									
-																									self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-																									[self.imagesCollection reloadData];
-																								}];
-}
-
 -(void)setCurrentSortCategory:(kPiwigoSortCategory)currentSortCategory
 {
-	
-	// check if we already have loaded all the images for this category
-	// if we have
-	//		perform a manual sort on the images
-	// if not:
-	//		get the new sort order
-	//		start on page 0
-	//		request new images for page 0
-	// if filter by images or videos only
-	//		download all image data
-	
-	NSString *sort = @"";
-	switch(currentSortCategory)
-	{
-		case kPiwigoSortCategoryNameAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryNameDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderDescending];
-			break;
-		case kPiwigoSortCategoryFileNameAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryFileNameDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderDescending];
-			break;
-		case kPiwigoSortCategoryDateCreatedAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryDateCreatedDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
-			break;
-		case kPiwigoSortCategoryIdAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderId, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryIdDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderId, kGetImageOrderDescending];
-			break;
-			// @TODO: hook these back up again...
-		case kPiwigoSortCategoryVideoOnly:
-			sort = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
-			break;
-		case kPiwigoSortCategoryImageOnly:
-			sort = NSLocalizedString(@"categorySort_imagesOnly", @"Images Only");
-			break;
-			
-		case kPiwigoSortCategoryCount:
-			break;
-	}
-	
-	self.currentSort = sort;
-	
-	
-//	if(_currentSortCategory == kPiwigoSortCategoryVideoOnly ||
-//	   _currentSortCategory == kPiwigoSortCategoryImageOnly)
-//	{
-//		self.imageList = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-//	}
-//	
-//	if(currentSortCategory == 0)
-//	{
-//		return;
-//	}
-//	
-//	_currentSortCategory = currentSortCategory;
-//	
-//	if(self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
-//	{
-//		if(!self.loadingView.superview)
-//		{
-//			self.loadingView = [LoadingView new];
-//			self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
-//			NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])];
-//			self.loadingView.progressLabel.format = progressLabelFormat;
-//			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
-//			[self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfoForSort", @"Downloading Image Info for Sort") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
-//			[self.view addSubview:self.loadingView];
-//			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
-//			
-//			
-//			if(self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
-//			{
-//				[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
-//			}
-//		}
-//		// load all the images
-//		__block NSDate *lastTime = [NSDate date];
-//		[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:^(NSInteger onPage, NSInteger outOf) {
-//			
-//			NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
-//			NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
-//			
-//			NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
-//			
-//			if(currentDownloaded > [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
-//			{
-//				currentDownloaded = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages];
-//			}
-//			
-//			[self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
-//			
-//			lastTime = [NSDate date];
-//		} OnCompletion:^(BOOL completed) {
-//
-//			self.imageList = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:_currentSortCategory];
-//			[self.loadingView hideLoadingWithLabel:@"Done" showCheckMark:YES withDelay:0.5];
-//			[self.imagesCollection reloadData];
-//		}];
-//	}
-//	else
-//	{
-//		self.imageList = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:_currentSortCategory];
-//		[self.imagesCollection reloadData];
-//	}
-	
+	_currentSortCategory = currentSortCategory;
+	[self.albumData updateImageSort:currentSortCategory OnCompletion:^{
+		[self.imagesCollection reloadData];
+	}];
 }
 
 #pragma mark -- UICollectionView Methods
@@ -515,7 +376,7 @@
 		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
 		self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
 		self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-		self.noImagesLabel.hidden = self.imageList.count != 0;
+		self.noImagesLabel.hidden = self.albumData.images.count != 0;
 		[header addSubview:self.noImagesLabel];
 		[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.noImagesLabel amount:-40]];
 		[header addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
@@ -553,11 +414,11 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	self.noImagesLabel.hidden = self.imageList.count != 0;
+	self.noImagesLabel.hidden = self.albumData.images.count != 0;
 	
 	if(section == 1)
 	{
-		return self.imageList.count;
+		return self.albumData.images.count;
 	}
 	else
 	{
@@ -584,7 +445,7 @@
 	{
 		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 		
-		PiwigoImageData *imageData = [self.imageList objectAtIndex:indexPath.row];
+		PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 		[cell setupWithImageData:imageData];
 		
 		if([self.selectedImageIds containsObject:imageData.imageId])
@@ -592,9 +453,11 @@
 			cell.isSelected = YES;
 		}
 		
-		if(indexPath.row >= [collectionView numberOfItemsInSection:1] - 21 && self.imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+		if(indexPath.row >= [collectionView numberOfItemsInSection:1] - 21 && self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
 		{
-			[self loadMoreImages];
+			[self.albumData loadMoreImagesOnCompletion:^{
+				[self.imagesCollection reloadData];
+			}];
 		}
 		
 		return cell;
@@ -624,7 +487,7 @@
 		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 		if(!self.isSelect)
 		{
-			ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row isSorted:(self.currentSortCategory != 0) withArray:[self.imageList copy]];
+			ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row isSorted:(self.currentSortCategory != 0) withArray:[self.albumData.images copy]];
 			imageDetail.hidesBottomBarWhenPushed = YES;
 			imageDetail.imgDetailDelegate = self;
 			[self.navigationController pushViewController:imageDetail animated:YES];
@@ -647,21 +510,15 @@
 
 -(void)didDeleteImage:(PiwigoImageData *)image
 {
-	NSIndexSet *set = [self.imageList indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
-		return [obj.imageId integerValue] != [image.imageId integerValue];
-	}];
-	self.imageList = [self.imageList objectsAtIndexes:set];
-	
-	NSMutableArray *newList = [[NSMutableArray alloc] initWithArray:self.imageList];
-	[newList removeObject:self.selectedImageIds.lastObject];
-	self.imageList = newList;
-	
+	[self.albumData removeImage:image];
 	[self.imagesCollection reloadData];
 }
 
 -(void)needToLoadMoreImages
 {
-	[self loadMoreImages];
+	[self.albumData loadMoreImagesOnCompletion:^{
+		[self.imagesCollection reloadData];
+	}];
 }
 
 
