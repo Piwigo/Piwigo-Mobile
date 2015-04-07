@@ -214,6 +214,7 @@
 	self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
 	self.onPage = 0;
 	self.imageList = [NSArray new];
+}
 
 #pragma mark - debugging support -
 
