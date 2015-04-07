@@ -25,7 +25,6 @@
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate >
 
-@property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSString *currentSort;
