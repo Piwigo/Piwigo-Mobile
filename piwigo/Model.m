@@ -34,6 +34,7 @@
 		instance.memoryCache = 80;
 		
 		instance.loadAllCategoryInfo = YES;
+		instance.defaultSort = kPiwigoSortCategoryIdDescending;
 		
 		[instance readFromDisk];
 	});
@@ -104,6 +105,7 @@
 		self.photoQuality = modelData.photoQuality;
 		self.photoResize = modelData.photoResize;
 		self.loadAllCategoryInfo = modelData.loadAllCategoryInfo;
+		self.defaultSort = modelData.defaultSort;
 		
 	}
 }
@@ -129,6 +131,7 @@
 	[saveObject addObject:@(self.photoResize)];
 	[saveObject addObject:self.serverProtocol];
 	[saveObject addObject:[NSNumber numberWithBool:self.loadAllCategoryInfo]];
+	[saveObject addObject:@(self.defaultSort)];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -154,6 +157,11 @@
 		self.loadAllCategoryInfo = [[savedData objectAtIndex:8] boolValue];
 	} else {
 		self.loadAllCategoryInfo = YES;
+	}
+	if(savedData.count > 9) {
+		self.defaultSort = (kPiwigoSortCategory)[[savedData objectAtIndex:9] intValue];
+	} else {
+		self.defaultSort = kPiwigoSortCategoryIdDescending;
 	}
 	
 	return self;

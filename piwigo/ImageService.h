@@ -15,6 +15,8 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderRating;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDateCreated;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDateAdded;
 FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
+FOUNDATION_EXPORT NSString * const kGetImageOrderAscending;
+FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
 
 @class PiwigoImageData;
 
@@ -46,6 +48,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 +(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
 											  forCategory:(NSInteger)categoryId
 												   onPage:(NSInteger)onPage
+												  forSort:(NSString*)sort
 										 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSInteger count))completion
 												onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 

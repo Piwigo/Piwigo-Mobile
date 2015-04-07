@@ -115,12 +115,12 @@
 		case kPiwigoSortCategoryIdDescending:
 			name = NSLocalizedString(@"categorySort_imageIDDescending", @"Image ID Descending");
 			break;
-		case kPiwigoSortCategoryVideoOnly:
-			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
-			break;
-		case kPiwigoSortCategoryImageOnly:
-			name = NSLocalizedString(@"categorySort_imagesOnly", @"Images Only");
-			break;
+//		case kPiwigoSortCategoryVideoOnly:
+//			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
+//			break;
+//		case kPiwigoSortCategoryImageOnly:
+//			name = NSLocalizedString(@"categorySort_imagesOnly", @"Images Only");
+//			break;
 			
 		case kPiwigoSortCategoryCount:
 			break;
