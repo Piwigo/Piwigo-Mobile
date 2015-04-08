@@ -228,6 +228,8 @@
 "categoryImageSetError_title" = "Image Set Error";
 "categoryImageSetError_message" = "Failed to set the album image";
 
+"groupURLError" = "Invalid group URL";
+
 
 
 

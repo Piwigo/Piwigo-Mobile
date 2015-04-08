@@ -199,10 +199,16 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-	
-	LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:categoryData.albumId];
-	[self.navigationController pushViewController:localAlbums animated:YES];
+	if(self.categories.count < indexPath.row)
+	{
+		PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+		
+		if(categoryData)
+		{
+			LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:categoryData.albumId];
+			[self.navigationController pushViewController:localAlbums animated:YES];
+		}
+	}
 }
 
 #pragma mark CategoryCellDelegate Methods

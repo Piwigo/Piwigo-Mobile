@@ -67,8 +67,16 @@
 	NSURL *groupURLString = [PhotosFetch sharedInstance].localImages.allKeys[indexPath.row];
 	
 	[[Model defaultAssetsLibrary] groupForURL:groupURLString resultBlock:^(ALAssetsGroup *group) {
-		NSString *name = [group valueForProperty:ALAssetsGroupPropertyName];
-		[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(group.numberOfAssets), NSLocalizedString(@"deleteImage_iamgePlural", @"Images")]];
+		if(group)
+		{
+			NSString *name = [group valueForProperty:ALAssetsGroupPropertyName];
+			[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(group.numberOfAssets), NSLocalizedString(@"deleteImage_iamgePlural", @"Images")]];
+		}
+		else
+		{
+			NSLog(@"fail to get album from URL string!");
+			[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@)", NSLocalizedString(@"error", @"Error"), NSLocalizedString(@"groupURLError", @"Invalid group URL")]];
+		}
 	} failureBlock:^(NSError *error) {
 		NSLog(@"fail %@", [error localizedDescription]);
 		[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@)", NSLocalizedString(@"error", @"Error"), [error localizedDescription]]];
