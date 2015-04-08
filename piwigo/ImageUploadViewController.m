@@ -213,22 +213,26 @@
 
 -(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1 && indexPath.row != 0)
+	if(indexPath.section == 1 && indexPath.row == 0)
 	{
-		return YES;
+		return NO;
 	}
-	return NO;
+	return YES;
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	if(editingStyle == UITableViewCellEditingStyleDelete)
 	{
-		if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
+		if(indexPath.section == 0)
+		{
+			[self.imagesToEdit removeObjectAtIndex:indexPath.row];
+		}
+		else if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
 		{
 			[[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
-			[tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
 		}
+		[tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
 	}
 }
 
