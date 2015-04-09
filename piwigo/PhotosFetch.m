@@ -47,9 +47,13 @@
 										 
 										 NSInteger size = [group numberOfAssets];
 										 [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-											 if (nil != result)
+											 if (result != nil)
 											 {
-												 [images setObject:result forKey:[[result defaultRepresentation] filename]];
+												 NSString *key = [[result defaultRepresentation] filename];
+												 if(key && ![key isKindOfClass:[NSNull class]] && ![key isEqualToString:@""])
+												 {
+													 [images setObject:result forKey:[[result defaultRepresentation] filename]];
+												 }
 												 if(images.count == size)
 												 {
 													 *stop = YES;
