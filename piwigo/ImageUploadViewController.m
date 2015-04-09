@@ -94,7 +94,7 @@
 {
 	for(NSString *imageName in self.imagesSelected)
 	{
-		ImageUpload *image = [[ImageUpload alloc] initWithImageName:imageName forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:nil];
+		ImageUpload *image = [[ImageUpload alloc] initWithImageFromAlbum:self.localAlbum withName:imageName forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:nil];
 		[self.imagesToEdit addObject:image];
 	}
 }
@@ -213,22 +213,26 @@
 
 -(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1 && indexPath.row != 0)
+	if(indexPath.section == 1 && indexPath.row == 0)
 	{
-		return YES;
+		return NO;
 	}
-	return NO;
+	return YES;
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	if(editingStyle == UITableViewCellEditingStyleDelete)
 	{
-		if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
+		if(indexPath.section == 0)
+		{
+			[self.imagesToEdit removeObjectAtIndex:indexPath.row];
+		}
+		else if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
 		{
 			[[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
-			[tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
 		}
+		[tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
 	}
 }
 

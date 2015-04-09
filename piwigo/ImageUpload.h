@@ -13,6 +13,7 @@
 
 @interface ImageUpload : NSObject
 
+@property (nonatomic, strong) NSURL *localAlbum;
 @property (nonatomic, strong) NSString *image;
 @property (nonatomic, strong) NSString *imageUploadName;
 @property (nonatomic, assign) NSInteger categoryToUploadTo;
@@ -22,8 +23,8 @@
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, assign) NSInteger imageId;
 
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;
--(instancetype)initWithImageName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags;
+-(instancetype)initWithImageFromAlbum:(NSURL*)localAlbum withName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;
+-(instancetype)initWithImageFromAlbum:(NSURL*)localAlbum withName:(NSString*)imageName forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags;
 
 -(instancetype)initWithImageData:(PiwigoImageData*)imageData;
 

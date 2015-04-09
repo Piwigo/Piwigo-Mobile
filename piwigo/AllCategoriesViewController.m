@@ -9,12 +9,15 @@
 #import "AllCategoriesViewController.h"
 #import "CategoriesData.h"
 #import "AlbumService.h"
+#import "CategoryTableViewCell.h"
 
-@interface AllCategoriesViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface AllCategoriesViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, assign) NSInteger imageId;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) UITableView *categoriesTableView;
+@property (nonatomic, strong) NSMutableArray *categories;
+@property (nonatomic, strong) NSMutableDictionary *categoriesThatHaveLoadedSubCategories;
 
 @end
 
@@ -29,12 +32,16 @@
 		self.title = NSLocalizedString(@"categorySelection", @"Select Album");
 		self.imageId = imageId;
 		self.categoryId = categoryId;
+		self.categories = [NSMutableArray new];
+		self.categoriesThatHaveLoadedSubCategories = [NSMutableDictionary new];
+		[self buildCategoryArray];
 		
 		self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.categoriesTableView.delegate = self;
 		self.categoriesTableView.dataSource = self;
 		self.categoriesTableView.backgroundColor = [UIColor piwigoWhiteCream];
+		[self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
 		[self.view addSubview:self.categoriesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 		
@@ -44,12 +51,60 @@
 	return self;
 }
 
+-(void)buildCategoryArray
+{
+	NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
+	NSMutableArray *diff = [NSMutableArray new];
+	for(PiwigoAlbumData *category in allCategories)
+	{
+		BOOL doesNotExist = YES;
+		for(PiwigoAlbumData *existingCat in self.categories)
+		{
+			if(category.albumId == existingCat.albumId)
+			{
+				doesNotExist = NO;
+				break;
+			}
+		}
+		if(doesNotExist)
+		{
+			[diff addObject:category];
+		}
+	}
+	
+	for(PiwigoAlbumData *category in diff)
+	{
+		if(category.upperCategories.count > 1)
+		{
+			NSInteger indexOfParent = 0;
+			for(PiwigoAlbumData *existingCategory in self.categories)
+			{
+				if([category containsUpperCategory:existingCategory.albumId])
+				{
+					[self.categories insertObject:category atIndex:indexOfParent+1];
+					break;
+				}
+				indexOfParent++;
+			}
+		}
+		else
+		{
+			[self.categories addObject:category];
+		}
+	}
+}
+
 -(void)categoryDataUpdated
 {
 	[self.categoriesTableView reloadData];
 }
 
 #pragma mark UITableView Methods
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 44.0;
+}
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -100,34 +155,32 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+	cell.categoryDelegate = self;
+	
 	if(indexPath.section == 1)
 	{
-		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-		if(!cell) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-		}
-		
 		PiwigoAlbumData *albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
 		
-		cell.textLabel.text = albumData.name;
-		cell.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
-		
-		return cell;
+		[cell setupWithCategoryData:albumData];
+		if([self.categoriesThatHaveLoadedSubCategories objectForKey:[NSString stringWithFormat:@"%@", @(albumData.albumId)]])
+		{
+			cell.hasLoadedSubCategories = YES;
+		}
 	}
 	else
 	{
-		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-		if(!cell) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-		}
-		
 		PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
 		
-		cell.textLabel.text = albumData.name;
-		cell.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+		[cell setupWithCategoryData:albumData];
+		if([self.categoriesThatHaveLoadedSubCategories objectForKey:[NSString stringWithFormat:@"%@", @(albumData.albumId)]])
+		{
+			cell.hasLoadedSubCategories = YES;
+		}
 		
-		return cell;
 	}
+	
+	return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -205,6 +258,17 @@
 			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
+}
+
+#pragma mark CategoryCellDelegate Methods
+
+-(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
+{
+	[AlbumService getAlbumListForCategory:categoryTapped.albumId
+							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+								 [self.categoriesThatHaveLoadedSubCategories setValue:@(categoryTapped.albumId) forKey:[NSString stringWithFormat:@"%@", @(categoryTapped.albumId)]];
+							 } onFailure:nil];
+	
 }
 
 @end

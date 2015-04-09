@@ -10,6 +10,6 @@
 
 @interface UploadViewController : UIViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId;
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andLocalAlbumURL:(NSURL*)localAlbumURL;
 
 @end
