@@ -32,10 +32,6 @@
 		
 		self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
 		
-		[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
-			[self.localAlbumsTableView reloadData];
-		}];
-		
 		self.localAlbumsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.localAlbumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.localAlbumsTableView.delegate = self;
@@ -46,6 +42,35 @@
 		
 	}
 	return self;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+    if (status == ALAuthorizationStatusAuthorized) {
+        [[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+            if (nil == responseObject) { // received nil object. Should not happen, but anyhow:
+                [UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem reading photos")
+                                   message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photos.")
+                         cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+                         otherButtonTitles:nil
+                                  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
+                                          [self.navigationController popViewControllerAnimated:YES];
+                                   }];
+
+            } else { // did receive library items, go ahead
+                [self.localAlbumsTableView reloadData];
+            }
+        }];
+    } else { // no access to photo library
+        [UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"Access not Authorized")
+                           message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+                 otherButtonTitles:nil
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
+                                  [self.navigationController popViewControllerAnimated:YES];
+                          }];
+    }
 }
 
 #pragma mark UITableView Methods
