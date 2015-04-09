@@ -199,7 +199,7 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	if(self.categories.count < indexPath.row)
+	if(self.categories.count > indexPath.row)
 	{
 		PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
 		
