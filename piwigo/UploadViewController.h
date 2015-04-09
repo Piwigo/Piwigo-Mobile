@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class ALAssetsGroup;
+
 @interface UploadViewController : UIViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId andLocalAlbumURL:(NSURL*)localAlbumURL;
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andGroupAsset:(ALAssetsGroup*)groupAsset;
 
 @end

@@ -29,14 +29,15 @@
 		}
 		
 		NSMutableArray *localImageNamesThatNeedToBeUploaded = [NSMutableArray new];
-		
-		for(NSString *imageKey in [[PhotosFetch sharedInstance].localImages objectForKey:localAlbumURL])
-		{
-			if(![onlineImageNamesLookup objectForKey:imageKey])
-			{	// this image doesn't exist in this online category
-				[localImageNamesThatNeedToBeUploaded addObject:imageKey];
-			}
-		}
+
+//		@TODO: Fix this
+//		for(NSString *imageKey in [[PhotosFetch sharedInstance].assetGroups objectForKey:localAlbumURL])
+//		{
+//			if(![onlineImageNamesLookup objectForKey:imageKey])
+//			{	// this image doesn't exist in this online category
+//				[localImageNamesThatNeedToBeUploaded addObject:imageKey];
+//			}
+//		}
 		
 		if(completion)
 		{

@@ -16,6 +16,8 @@
 #import "KeychainAccess.h"
 #import "AFNetworkActivityIndicatorManager.h"
 
+#import "PhotosFetch.h"
+
 @interface AppDelegate ()
 
 @property (nonatomic, strong) LoginViewController *loginVC;

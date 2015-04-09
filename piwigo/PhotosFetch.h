@@ -10,14 +10,16 @@
 
 typedef void(^CompletionBlock)(id responseObject);
 @class ALAsset;
+@class ALAssetsGroup;
 
 @interface PhotosFetch : NSObject
 
-@property (nonatomic, strong) NSDictionary *localImages;
+@property (nonatomic, strong) NSArray *assetGroups;
 @property (nonatomic, strong) NSArray *sortedImageKeys;
 
 +(PhotosFetch*)sharedInstance;
--(void)updateLocalPhotosDictionary:(CompletionBlock)completion;
+-(void)getLocalGroupsOnCompletion:(CompletionBlock)completion;
+-(NSArray*)getImagesForAssetGroup:(ALAssetsGroup*)assetGroup;
 -(ALAsset*)getImageAssetInAlbum:(NSURL*)albumURL withImageName:(NSString*)imageName;
 -(NSDictionary*)getImagesInAlbum:(NSURL*)albumURL;
 

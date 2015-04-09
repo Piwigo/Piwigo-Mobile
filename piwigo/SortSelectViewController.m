@@ -109,13 +109,15 @@
 
 +(NSArray*)getSortedImagesForAlbum:(NSURL*)albumURL
 {
-	NSDictionary *imagesForAlbum = [[PhotosFetch sharedInstance].localImages objectForKey:albumURL];
-	return [imagesForAlbum.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	// @TODO: fix this!
+	return nil;
+//	NSDictionary *imagesForAlbum = [[PhotosFetch sharedInstance].assetGroups objectForKey:albumURL];
+//	return [imagesForAlbum.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 }
 
 +(void)getByNewestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
 {
-	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+	[[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject) {
 		
 		if(completion)
 		{
@@ -127,7 +129,7 @@
 
 +(void)getByOldestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
 {
-	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+	[[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject) {
 		
 		if(completion)
 		{

@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) UITableView *localAlbumsTableView;
 @property (nonatomic, assign) NSInteger categoryId;
+@property (nonatomic, strong) NSArray *groups;
 
 @end
 
@@ -32,7 +33,9 @@
 		
 		self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
 		
-		[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
+		self.groups = [NSArray new];
+		[[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject) {
+			self.groups = responseObject;
 			[self.localAlbumsTableView reloadData];
 		}];
 		
@@ -52,7 +55,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [PhotosFetch sharedInstance].localImages.count;
+	return self.groups.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -64,23 +67,9 @@
 {
 	CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
-	NSURL *groupURLString = [PhotosFetch sharedInstance].localImages.allKeys[indexPath.row];
-	
-	[[Model defaultAssetsLibrary] groupForURL:groupURLString resultBlock:^(ALAssetsGroup *group) {
-		if(group)
-		{
-			NSString *name = [group valueForProperty:ALAssetsGroupPropertyName];
-			[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(group.numberOfAssets), NSLocalizedString(@"deleteImage_iamgePlural", @"Images")]];
-		}
-		else
-		{
-			NSLog(@"fail to get album from URL string!");
-			[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@)", NSLocalizedString(@"error", @"Error"), NSLocalizedString(@"groupURLError", @"Invalid group URL")]];
-		}
-	} failureBlock:^(NSError *error) {
-		NSLog(@"fail %@", [error localizedDescription]);
-		[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@)", NSLocalizedString(@"error", @"Error"), [error localizedDescription]]];
-	}];
+	ALAssetsGroup *groupAsset = [self.groups objectAtIndex:indexPath.row];
+	NSString *name = [groupAsset valueForProperty:ALAssetsGroupPropertyName];
+	[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(groupAsset.numberOfAssets), NSLocalizedString(@"deleteImage_iamgePlural", @"Images")]];
 	
 	return cell;
 }
@@ -89,9 +78,10 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	NSURL *albumURL = [PhotosFetch sharedInstance].localImages.allKeys[indexPath.row];
+	// @TODO: fix this!
+//	NSURL *albumURL = nil;// [PhotosFetch sharedInstance].assetGroups.allKeys[indexPath.row];
 	
-	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andLocalAlbumURL:albumURL];
+	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.groups objectAtIndex:indexPath.row]];
 	[self.navigationController pushViewController:uploadVC animated:YES];
 	
 }

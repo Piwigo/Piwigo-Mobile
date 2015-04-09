@@ -76,7 +76,7 @@
 {
 	self.imageUploadInfo = imageInfo;
 	
-	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetInAlbum:self.imageUploadInfo.localAlbum withImageName:self.imageUploadInfo.image];
+	ALAsset *imageAsset = self.imageUploadInfo.imageAsset;
 	self.image.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
 	
 	self.imageTitle.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_title", @"Title:")], imageInfo.imageUploadName];

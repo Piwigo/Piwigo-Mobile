@@ -32,44 +32,38 @@
 	return instance;
 }
 
--(void)updateLocalPhotosDictionary:(CompletionBlock)completion
+-(void)getLocalGroupsOnCompletion:(CompletionBlock)completion
 {
-	NSMutableDictionary *allImages = [NSMutableDictionary new];
+	NSMutableArray *groupAssets = [NSMutableArray new];
 	
 	ALAssetsLibrary *assetsLibrary = [Model defaultAssetsLibrary];
 	[assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
 								 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-									 if (group != nil)
-									 {
-										 NSString *groupURL = [group valueForProperty:ALAssetsGroupPropertyURL];
-										 
-										 NSMutableDictionary *images = [NSMutableDictionary new];
-										 
-										 NSInteger size = [group numberOfAssets];
-										 [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-											 if (nil != result)
-											 {
-												 [images setObject:result forKey:[[result defaultRepresentation] filename]];
-												 if(images.count == size)
-												 {
-													 *stop = YES;
-													 [allImages setObject:images forKey:groupURL];
-												 }
-											 }
-										 }];
-										 *stop = NO;
-									 }
-									 else
+									 if(!group)
 									 {
 										 *stop = YES;
-										 self.localImages = allImages;
 										 if(completion)
 										 {
-											 completion(self.localImages);
+											 completion(groupAssets);
 										 }
+										 return;
 									 }
+									 
+									 [groupAssets addObject:group];
+									 
 								 } failureBlock:^(NSError *error) {
 									 NSLog(@"error: %@", error);
+									 
+									 // @TODO: display an alert here... fix this one
+									 if ([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusDenied) {
+										 NSString *errorMessage = NSLocalizedString(@"This app does not have access to your photos or videos. You can enable access in Privacy Settings.", nil);
+										 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Access Denied", nil) message:errorMessage delegate:nil cancelButtonTitle:NSLocalizedString(@"Ok", nil) otherButtonTitles:nil] show];
+										 
+									 } else {
+										 NSString *errorMessage = [NSString stringWithFormat:@"Album Error: %@ - %@", [error localizedDescription], [error localizedRecoverySuggestion]];
+										 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:errorMessage delegate:nil cancelButtonTitle:NSLocalizedString(@"Ok", nil) otherButtonTitles:nil] show];
+									 }
+									 
 									 if(completion)
 									 {
 										 completion(nil);
@@ -77,14 +71,35 @@
 								 }];
 }
 
+-(NSArray*)getImagesForAssetGroup:(ALAssetsGroup*)assetGroup
+{
+	NSMutableArray *imageAssets = [NSMutableArray new];
+	
+	[assetGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+		if(!result)
+		{
+			return;
+		}
+		
+		[imageAssets addObject:result];
+		
+	}];
+	
+	return imageAssets;
+}
+
 -(ALAsset*)getImageAssetInAlbum:(NSURL*)albumURL withImageName:(NSString*)imageName
 {
-	return [[self.localImages objectForKey:albumURL] objectForKey:imageName];
+	// @TODO: fix this!
+	return nil;
+//	return [[self.assetGroups objectForKey:albumURL] objectForKey:imageName];
 }
 
 -(NSDictionary*)getImagesInAlbum:(NSURL*)albumURL
 {
-	return [self.localImages objectForKey:albumURL];
+	// @TODO: fix this!
+	return nil;
+//	return [self.assetGroups objectForKey:albumURL];
 }
 
 @end

@@ -163,7 +163,7 @@
 	ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
 	
 	NSString *imageKey = nextImageToBeUploaded.image;
-	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetInAlbum:nextImageToBeUploaded.localAlbum withImageName:imageKey];
+	ALAsset *imageAsset = nextImageToBeUploaded.imageAsset;
 	
 	NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
 	UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
