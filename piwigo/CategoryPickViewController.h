@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CategoryListViewController.h"
 
-@interface CategoryPickViewController : UIViewController
+@interface CategoryPickViewController : CategoryListViewController
 
 @end

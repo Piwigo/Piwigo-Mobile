@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CategoryListViewController.h"
 
-@interface AllCategoriesViewController : UIViewController
+@interface AllCategoriesViewController : CategoryListViewController
 
 -(instancetype)initForImageId:(NSInteger)imageId andCategoryId:(NSInteger)categoryId;
 

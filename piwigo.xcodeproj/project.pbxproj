@@ -88,6 +88,7 @@
 		D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */; };
 		D8E4D61E1ABD223B0057EB95 /* ServerField.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D61D1ABD223B0057EB95 /* ServerField.m */; };
 		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
+		D8EAC8C71AD773FD00D9D15E /* CategoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */; };
 		D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F113591A9E40EF000EC0A6 /* LoadingView.m */; };
 		D8F1135D1A9E4E43000EC0A6 /* UICountingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */; };
 		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
@@ -275,6 +276,8 @@
 		D8E4D61D1ABD223B0057EB95 /* ServerField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerField.m; sourceTree = "<group>"; };
 		D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
 		D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
+		D8EAC8C51AD773FD00D9D15E /* CategoryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListViewController.h; sourceTree = "<group>"; };
+		D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListViewController.m; sourceTree = "<group>"; };
 		D8F113581A9E40EF000EC0A6 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		D8F113591A9E40EF000EC0A6 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		D8F1135B1A9E4E43000EC0A6 /* UICountingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICountingLabel.h; sourceTree = "<group>"; };
@@ -645,6 +648,8 @@
 				D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */,
 				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
 				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
+				D8EAC8C51AD773FD00D9D15E /* CategoryListViewController.h */,
+				D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */,
 			);
 			name = "Pick Album";
 			sourceTree = "<group>";
@@ -935,6 +940,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8EAC8C71AD773FD00D9D15E /* CategoryListViewController.m in Sources */,
 				D8172DAB1AB2805F00271DB0 /* MGSwipeButton.m in Sources */,
 				D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */,
 				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
