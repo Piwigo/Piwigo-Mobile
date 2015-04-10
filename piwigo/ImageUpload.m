@@ -45,8 +45,9 @@
 
 -(instancetype)initWithImageData:(PiwigoImageData*)imageData
 {
-	// @TODO: fix this nil -- can it be nil?
 	self = [self initWithImageAsset:nil forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
+	self.image = imageData.fileName;
+	self.imageUploadName = imageData.name;
 	if(self)
 	{
 		self.imageId = [imageData.imageId integerValue];

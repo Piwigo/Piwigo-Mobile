@@ -26,6 +26,7 @@
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSArray *images;
+@property (nonatomic, strong) ALAssetsGroup *groupAsset;
 
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
@@ -49,9 +50,10 @@
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.categoryId = categoryId;
+		self.groupAsset = groupAsset;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		
-		self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:groupAsset];
+		self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
 		self.sortType = kPiwigoSortByNewest;
 		
 		self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
@@ -111,8 +113,6 @@
 	}
 	
 	self.sortType = self.sortType;
-	// @TODO: not necessary once sort is implemented
-	[self.localImagesCollection reloadData];
 }
 
 -(void)loadNavButtons
@@ -129,72 +129,73 @@
 
 -(void)setSortType:(kPiwigoSortBy)sortType
 {
+	if(sortType != kPiwigoSortByNotUploaded && _sortType == kPiwigoSortByNotUploaded)
+	{
+		self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
+	}
+	
 	_sortType = sortType;
 	
 	PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-
-	// @TODO: Fix the sorting!
-//	if(sortType == kPiwigoSortByNotUploaded)
-//	{
-//		if(!self.loadingView.superview)
-//		{
-//			self.loadingView = [LoadingView new];
-//			self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
-//			NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @(downloadingCategory.numberOfImages)];
-//			self.loadingView.progressLabel.format = progressLabelFormat;
-//			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
-//			[self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
-//			[self.view addSubview:self.loadingView];
-//			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
-//			
-//			
-//			if(downloadingCategory.numberOfImages != downloadingCategory.imageList.count)
-//			{
-//				if(downloadingCategory.numberOfImages >= 100)
-//				{
-//					[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
-//				}
-//				else
-//				{
-//					[self.loadingView.progressLabel countFrom:0 to:downloadingCategory.numberOfImages withDuration:1];
-//				}
-//			}
-//		}
-//	}
-//	
-//	self.imageNamesList = [NSArray new];
-//	[self.localImagesCollection reloadData];
-//	
-//	__block NSDate *lastTime = [NSDate date];
-//	
-//	[SortSelectViewController getSortedImageNameArrayFromSortType:sortType
-//													forLocalAlbum:self.localAlbumURL
-//													  forCategory:self.categoryId
-//													  forProgress:^(NSInteger onPage, NSInteger outOf) {
-//
-//														  NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
-//														  NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
-//														  
-//														  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
-//														  
-//														  if(currentDownloaded > downloadingCategory.numberOfImages)
-//														  {
-//															  currentDownloaded = downloadingCategory.numberOfImages;
-//														  }
-//														  
-//														  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
-//														  
-//														  lastTime = [NSDate date];
-//													  }
-//													 onCompletion:^(NSArray *imageNames) {
-//														 
-//														 if(sortType == kPiwigoSortByNotUploaded)
-//														 {
-//															 [self.loadingView hideLoadingWithLabel:@"Done" showCheckMark:YES withDelay:0.5];
-//														 }
-//														 self.imageNamesList = imageNames;
-//														 [self.localImagesCollection reloadData];
-//													 }];
+	
+	if(sortType == kPiwigoSortByNotUploaded)
+	{
+		if(!self.loadingView.superview)
+		{
+			self.loadingView = [LoadingView new];
+			self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
+			NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @(downloadingCategory.numberOfImages)];
+			self.loadingView.progressLabel.format = progressLabelFormat;
+			self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
+			[self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
+			[self.view addSubview:self.loadingView];
+			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
+			self.loadingView.hidden = YES;
+			
+			if(downloadingCategory.numberOfImages != downloadingCategory.imageList.count)
+			{
+				self.loadingView.hidden = NO;
+				if(downloadingCategory.numberOfImages >= 100)
+				{
+					[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
+				}
+				else
+				{
+					[self.loadingView.progressLabel countFrom:0 to:downloadingCategory.numberOfImages withDuration:1];
+				}
+			}
+		}
+	}
+	
+	
+	__block NSDate *lastTime = [NSDate date];
+	
+	[SortSelectViewController getSortedImageArrayFromSortType:sortType
+													forImages:self.images
+												  forCategory:self.categoryId
+												  forProgress:^(NSInteger onPage, NSInteger outOf) {
+													  NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
+													  NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
+													  
+													  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
+													  
+													  if(currentDownloaded > downloadingCategory.numberOfImages)
+													  {
+														  currentDownloaded = downloadingCategory.numberOfImages;
+													  }
+													  
+													  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
+													  
+													  lastTime = [NSDate date];
+												  } onCompletion:^(NSArray *images) {
+													  
+													 if(sortType == kPiwigoSortByNotUploaded && !self.loadingView.hidden)
+													 {
+														 [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"done", nil) showCheckMark:YES withDelay:0.5];
+													 }
+													 self.images = images;
+													 [self.localImagesCollection reloadData];
+												  }];
 }
 
 -(void)selectAll
@@ -344,14 +345,13 @@
 	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 	cell.cellUploading = NO;
 	
-	// @TODO: Fix this after sort has been fixed
-//	if(self.sortType == kPiwigoSortByNotUploaded)
-//	{
-//		NSMutableArray *newList = [self.imageNamesList mutableCopy];
-//		[newList removeObject:image.image];
-//		self.imageNamesList = newList;
-//		[self.localImagesCollection reloadData];
-//	}
+	if(self.sortType == kPiwigoSortByNotUploaded)
+	{
+		NSMutableArray *newList = [self.images mutableCopy];
+		[newList removeObject:image.imageAsset];
+		self.images = newList;
+		[self.localImagesCollection reloadData];
+	}
 }
 
 

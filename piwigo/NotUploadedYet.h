@@ -11,7 +11,8 @@
 @interface NotUploadedYet : NSObject
 
 +(void)getListOfImageNamesThatArentUploadedForCategory:(NSInteger)categoryId
-										 forLocalAlbum:(NSURL*)localAlbumURL
+											withImages:(NSArray*)images
 										   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 										  onCompletion:(void (^)(NSArray *missingImages))completion;
+
 @end

@@ -33,6 +33,8 @@
 "alertCancelButton" = "Cancel";
 "alertAddButton" = "Add";
 
+"done" = "Done";
+
 "imageUploadDetails_title" = "Title:";
 "imageUploadDetails_author" = "Author:";
 "imageUploadDetails_privacy" = "Privacy";

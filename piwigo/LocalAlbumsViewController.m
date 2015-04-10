@@ -78,9 +78,6 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	// @TODO: fix this!
-//	NSURL *albumURL = nil;// [PhotosFetch sharedInstance].assetGroups.allKeys[indexPath.row];
-	
 	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.groups objectAtIndex:indexPath.row]];
 	[self.navigationController pushViewController:uploadVC animated:YES];
 	

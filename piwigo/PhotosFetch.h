@@ -20,7 +20,5 @@ typedef void(^CompletionBlock)(id responseObject);
 +(PhotosFetch*)sharedInstance;
 -(void)getLocalGroupsOnCompletion:(CompletionBlock)completion;
 -(NSArray*)getImagesForAssetGroup:(ALAssetsGroup*)assetGroup;
--(ALAsset*)getImageAssetInAlbum:(NSURL*)albumURL withImageName:(NSString*)imageName;
--(NSDictionary*)getImagesInAlbum:(NSURL*)albumURL;
 
 @end

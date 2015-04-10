@@ -27,10 +27,10 @@ typedef enum {
 @property (nonatomic, weak) id<SortSelectViewControllerDelegate> delegate;
 
 +(NSString*)getNameForSortType:(kPiwigoSortBy)sortType;
-+(void)getSortedImageNameArrayFromSortType:(kPiwigoSortBy)sortType
-							 forLocalAlbum:(NSURL*)localAlbum
-							   forCategory:(NSInteger)category
-							   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-							  onCompletion:(void (^)(NSArray *imageNames))completion;
++(void)getSortedImageArrayFromSortType:(kPiwigoSortBy)sortType
+							 forImages:(NSArray*)images
+						   forCategory:(NSInteger)category
+						   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+						  onCompletion:(void (^)(NSArray *images))completion;
 
 @end

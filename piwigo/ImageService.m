@@ -281,7 +281,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 															   
 															   NSLog(@"Fail get album photos: %@", error);
 															   if(fail) {
-																   fail(fail, error);
+																   fail(nil, error);
 															   }
 														   }];
 	
