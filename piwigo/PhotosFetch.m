@@ -34,6 +34,20 @@
 
 -(void)getLocalGroupsOnCompletion:(CompletionBlock)completion
 {
+	ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+	if (status != ALAuthorizationStatusAuthorized) {
+		[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"Access not Authorized")
+						   message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 otherButtonTitles:nil
+						  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
+							  if(completion)
+							  {
+								  completion(@(-1));
+							  }
+						  }];
+	}
+	
 	NSMutableArray *groupAssets = [NSMutableArray new];
 	
 	ALAssetsLibrary *assetsLibrary = [Model defaultAssetsLibrary];
