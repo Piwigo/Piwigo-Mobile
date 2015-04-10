@@ -52,8 +52,7 @@
 									 [groupAssets addObject:group];
 									 
 								 } failureBlock:^(NSError *error) {
-									 NSLog(@"error: %@", error);
-									 
+									 MyLog(@"error: %@", error);
 									 if(completion)
 									 {
 										 completion(nil);
