@@ -11,6 +11,7 @@
 #import "LocalAlbumsViewController.h"
 #import "Model.h"
 #import "AlbumService.h"
+#import "PhotosFetch.h"
 
 @interface CategoryPickViewController () <CategoryListDelegate>
 
@@ -20,12 +21,12 @@
 
 -(instancetype)init
 {
-	
-	
 	if([Model sharedInstance].hasAdminRights)
 	{
 		self = [super init];
 		self.categoryListDelegate = self;
+		
+		[[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:nil];
 	}
 	else
 	{

@@ -67,7 +67,7 @@ typedef enum {
 							   ];
 		self.headerHeights = @[
 							   @40.0,
-							   @5.0,
+							   @0.01,
 							   @30.0,
 							   @30.0,
 							   @30.0,
@@ -254,9 +254,10 @@ typedef enum {
 					}
 					
 					cell.leftText = @"Default Sort";
+					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					cell.leftLabelWidth = 120;
+					cell.leftLabelWidth = 110;
 					
 					tableViewCell = cell;
 					break;
