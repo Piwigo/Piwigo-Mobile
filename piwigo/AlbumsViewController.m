@@ -14,6 +14,7 @@
 #import "AlbumImagesViewController.h"
 #import "CategoriesData.h"
 #import "Model.h"
+#import "iRate.h"
 
 @interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, AlbumTableViewCellDelegate>
 
@@ -72,6 +73,7 @@
 		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
+    [[iRate sharedInstance] promptIfAllCriteriaMet];
 }
 
 -(void)viewDidAppear:(BOOL)animated

@@ -20,11 +20,14 @@ PODS:
   - AFNetworking/UIKit (2.5.2):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - iRate (1.11.3)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
+  - iRate (>= 1.11.3)
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
+  iRate: 09ef501c74ade02013348bc33225ea48f7aa4e55
 
-COCOAPODS: 0.36.1
+COCOAPODS: 0.36.3
