@@ -661,21 +661,17 @@ typedef enum {
 
 #pragma mark UITextFieldDelegate Methods
 
--(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+-(void)textFieldDidEndEditing:(UITextField *)textField
 {
 	switch(textField.tag)
 	{
 		case kImageUploadSettingAuthor:
 		{
-			NSMutableString *textFieldString = [textField.text mutableCopy];
-			[textFieldString insertString:string atIndex:range.location];
-			[Model sharedInstance].defaultAuthor = textFieldString;
+			[Model sharedInstance].defaultAuthor = textField.text;
 			[[Model sharedInstance] saveToDisk];
 			break;
 		}
 	}
-	
-	return YES;
 }
 
 #pragma mark SelectedPrivacyDelegate Methods
