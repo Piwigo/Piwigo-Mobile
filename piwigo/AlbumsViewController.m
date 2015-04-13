@@ -46,16 +46,21 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAlbumData) name:UIApplicationDidBecomeActiveNotification object:nil];
 		
-		[AlbumService getAlbumListForCategory:0
-								 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
-			
-		} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-			
-			NSLog(@"Album list err: %@", error);
-		}];
+		[self getAlbumData];
 	}
 	return self;
+}
+
+-(void)getAlbumData
+{
+	[AlbumService getAlbumListForCategory:0
+							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+								 
+							 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+								 NSLog(@"Album list err: %@", error);
+							 }];
 }
 
 -(void)categoryDataUpdated
