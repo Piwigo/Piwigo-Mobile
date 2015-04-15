@@ -80,6 +80,17 @@
 	return name;
 }
 
+#pragma mark - Getter -
+
+-(NSInteger)photoResize {
+    if (_photoResize < 1) {
+        _photoResize = 1;
+    } else if (_photoResize > 100) {
+        _photoResize = 100;
+    }
+    return _photoResize;
+}
+
 #pragma mark - Saving to Disk
 + (NSString *)applicationDocumentsDirectory
 {
