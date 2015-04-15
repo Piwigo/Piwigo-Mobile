@@ -176,6 +176,8 @@
 
 "pullToRefresh" = "Reload Images";
 
+"version" = "Version:";
+
 // ----------------------- ERROR STRINGS -----------------------
 
 "error" = "Error";
