@@ -90,6 +90,8 @@
 	refreshControl.tintColor = [UIColor piwigoGray];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
+	
+	[self refreshShowingCells];
 }
 
 -(void)refresh:(UIRefreshControl*)refreshControl
@@ -100,6 +102,15 @@
 	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		[refreshControl endRefreshing];
 	}];
+}
+
+-(void)refreshShowingCells
+{
+	for(AlbumTableViewCell *cell in self.albumsTableView.visibleCells)
+	{
+		PiwigoAlbumData *albumData = [self.categories objectAtIndex:[self.albumsTableView indexPathForCell:cell].row];
+		[cell setupWithAlbumData:albumData];
+	}
 }
 
 -(void)addCategory

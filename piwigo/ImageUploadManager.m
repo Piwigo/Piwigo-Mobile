@@ -205,7 +205,7 @@
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
-						[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo].numberOfImages++;
+						[[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo] incrementImageSizeByOne];
 						[self addImageDataToCategoryCache:response];
 						[self setImageResponse:response withInfo:imageProperties];
 						

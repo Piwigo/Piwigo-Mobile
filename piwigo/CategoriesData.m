@@ -138,7 +138,7 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 	for(NSString *category in image.categoryIds)
 	{
 		PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
-		imageCategory.numberOfImages--;
+		[imageCategory deincrementImageSizeByOne];
 		[imageCategory removeImage:image];
 	}
 }

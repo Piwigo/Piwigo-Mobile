@@ -216,4 +216,22 @@
 	self.imageList = [NSArray new];
 }
 
+-(void)incrementImageSizeByOne
+{
+	self.numberOfImages++;
+	for(NSString *category in self.upperCategories)
+	{
+		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].numberOfSubAlbumImages++;
+	}
+}
+
+-(void)deincrementImageSizeByOne
+{
+	self.numberOfImages--;
+	for(NSString *category in self.upperCategories)
+	{
+		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].numberOfSubAlbumImages--;
+	}
+}
+
 @end
