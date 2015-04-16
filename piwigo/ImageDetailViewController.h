@@ -21,7 +21,8 @@
 @interface ImageDetailViewController : UIPageViewController
 
 @property (nonatomic, weak) id<ImageDetailDelegate> imgDetailDelegate;
+@property (nonatomic, strong) NSArray *images;
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex isSorted:(BOOL)isSorted withArray:(NSArray*)array;
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray*)array;
 
 @end
