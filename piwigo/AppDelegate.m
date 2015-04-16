@@ -17,6 +17,9 @@
 #import "KeychainAccess.h"
 #import "AFNetworkActivityIndicatorManager.h"
 
+#import "PhotosFetch.h"
+#import "iRate.h"
+
 @interface AppDelegate ()
 
 @property (nonatomic, strong) LoginViewController *loginVC;
@@ -24,6 +27,17 @@
 @end
 
 @implementation AppDelegate
+
++ (void)initialize {
+    //configure iRate
+    [iRate sharedInstance].appStoreID       = 472225196;
+    [iRate sharedInstance].daysUntilPrompt  = 5;
+    [iRate sharedInstance].usesUntilPrompt  = 5;
+    [iRate sharedInstance].promptForNewVersionIfUserRated = YES;
+    [iRate sharedInstance].promptAtLaunch   = NO;
+//#warning Preview mode
+//    [iRate sharedInstance].previewMode      = YES;
+}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

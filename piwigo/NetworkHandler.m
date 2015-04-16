@@ -70,6 +70,10 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
 	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
 	manager.responseSerializer = jsonResponseSerializer;
 	
+	AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+	[policy setAllowInvalidCertificates:YES];
+	[manager setSecurityPolicy:policy];
+	
 	AFHTTPRequestOperation *operation = [manager POST:[NetworkHandler getURLWithPath:path andURLParams:urlParams]
 			  parameters:parameters
 				 success:success

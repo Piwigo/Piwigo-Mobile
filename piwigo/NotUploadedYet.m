@@ -10,11 +10,12 @@
 #import "CategoriesData.h"
 #import "PiwigoAlbumData.h"
 #import "PhotosFetch.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @implementation NotUploadedYet
 
 +(void)getListOfImageNamesThatArentUploadedForCategory:(NSInteger)categoryId
-										 forLocalAlbum:(NSURL*)localAlbumURL
+											withImages:(NSArray*)images
 										   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 										  onCompletion:(void (^)(NSArray *missingImages))completion
 {
@@ -29,12 +30,13 @@
 		}
 		
 		NSMutableArray *localImageNamesThatNeedToBeUploaded = [NSMutableArray new];
-		
-		for(NSString *imageKey in [[PhotosFetch sharedInstance].localImages objectForKey:localAlbumURL])
+
+		for(ALAsset *imageAsset in images)
 		{
-			if(![onlineImageNamesLookup objectForKey:imageKey])
+			NSString *imageAssetKey = [[imageAsset defaultRepresentation] filename];
+			if(imageAssetKey && ![imageAssetKey isEqualToString:@""] && ![onlineImageNamesLookup objectForKey:imageAssetKey])
 			{	// this image doesn't exist in this online category
-				[localImageNamesThatNeedToBeUploaded addObject:imageKey];
+				[localImageNamesThatNeedToBeUploaded addObject:imageAsset];
 			}
 		}
 		

@@ -25,15 +25,16 @@
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
-@property (nonatomic, strong) NSURL *localAlbumURL;
-@property (nonatomic, strong) NSArray *imageNamesList;
+@property (nonatomic, strong) NSArray *images;
+@property (nonatomic, strong) ALAssetsGroup *groupAsset;
+
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
 @property (nonatomic, strong) UIBarButtonItem *selectAllBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
-@property (nonatomic, strong) NSMutableArray *selectedImageKeys;
+@property (nonatomic, strong) NSMutableArray *selectedImages;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
 @property (nonatomic, strong) LoadingView *loadingView;
@@ -42,21 +43,18 @@
 
 @implementation UploadViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId andLocalAlbumURL:(NSURL*)localAlbumURL
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andGroupAsset:(ALAssetsGroup*)groupAsset
 {
 	self = [super init];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.categoryId = categoryId;
-		self.localAlbumURL = localAlbumURL;
+		self.groupAsset = groupAsset;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		
-		self.imageNamesList = [NSArray new];
+		self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
 		self.sortType = kPiwigoSortByNewest;
-		
-		NSDictionary *albumImages = [[PhotosFetch sharedInstance].localImages objectForKey:self.localAlbumURL];
-		self.imageNamesList = albumImages.allKeys;
 		
 		self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -80,7 +78,7 @@
 		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:60]];
 		[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
 		
-		self.selectedImageKeys = [NSMutableArray new];
+		self.selectedImages = [NSMutableArray new];
 		
 		self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"selectAll", @"Select All") style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
@@ -119,7 +117,7 @@
 
 -(void)loadNavButtons
 {
-	if(self.selectedImageKeys.count > 0)
+	if(self.selectedImages.count > 0)
 	{
 		self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.uploadBarButton];
 	}
@@ -131,10 +129,15 @@
 
 -(void)setSortType:(kPiwigoSortBy)sortType
 {
+	if(sortType != kPiwigoSortByNotUploaded && _sortType == kPiwigoSortByNotUploaded)
+	{
+		self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
+	}
+	
 	_sortType = sortType;
 	
 	PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-
+	
 	if(sortType == kPiwigoSortByNotUploaded)
 	{
 		if(!self.loadingView.superview)
@@ -147,10 +150,11 @@
 			[self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
 			[self.view addSubview:self.loadingView];
 			[self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
-			
+			self.loadingView.hidden = YES;
 			
 			if(downloadingCategory.numberOfImages != downloadingCategory.imageList.count)
 			{
+				self.loadingView.hidden = NO;
 				if(downloadingCategory.numberOfImages >= 100)
 				{
 					[self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
@@ -163,55 +167,56 @@
 		}
 	}
 	
-	self.imageNamesList = [NSArray new];
-	[self.localImagesCollection reloadData];
 	
 	__block NSDate *lastTime = [NSDate date];
 	
-	[SortSelectViewController getSortedImageNameArrayFromSortType:sortType
-													forLocalAlbum:self.localAlbumURL
-													  forCategory:self.categoryId
-													  forProgress:^(NSInteger onPage, NSInteger outOf) {
-
-														  NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
-														  NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
-														  
-														  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
-														  
-														  if(currentDownloaded > downloadingCategory.numberOfImages)
-														  {
-															  currentDownloaded = downloadingCategory.numberOfImages;
-														  }
-														  
-														  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
-														  
-														  lastTime = [NSDate date];
+	[SortSelectViewController getSortedImageArrayFromSortType:sortType
+													forImages:self.images
+												  forCategory:self.categoryId
+												  forProgress:^(NSInteger onPage, NSInteger outOf) {
+													  NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
+													  NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
+													  
+													  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
+													  
+													  if(currentDownloaded > downloadingCategory.numberOfImages)
+													  {
+														  currentDownloaded = downloadingCategory.numberOfImages;
 													  }
-													 onCompletion:^(NSArray *imageNames) {
-														 
-														 if(sortType == kPiwigoSortByNotUploaded)
-														 {
-															 [self.loadingView hideLoadingWithLabel:@"Done" showCheckMark:YES withDelay:0.5];
-														 }
-														 self.imageNamesList = imageNames;
-														 [self.localImagesCollection reloadData];
-													 }];
+													  
+													  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
+													  
+													  lastTime = [NSDate date];
+												  } onCompletion:^(NSArray *images) {
+													  
+													 if(sortType == kPiwigoSortByNotUploaded && !self.loadingView.hidden)
+													 {
+														 [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"done", nil) showCheckMark:YES withDelay:0.5];
+													 }
+													 self.images = images;
+													 [self.localImagesCollection reloadData];
+												  }];
 }
 
 -(void)selectAll
 {
-	self.selectedImageKeys = [self.imageNamesList mutableCopy];
+	self.selectedImages = [self.images mutableCopy];
 	[self loadNavButtons];
 	[self.localImagesCollection reloadData];
 }
 
 -(void)cancelSelect
 {
-	for(NSString *cellKey in self.selectedImageKeys)
+	for(ALAsset *selectedImageAsset in self.selectedImages)
 	{
-		[self deselectCellForKey:cellKey];
+		NSInteger row = [self.images indexOfObject:selectedImageAsset];
+		if(row != NSNotFound)
+		{
+			LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+			cell.cellSelected = NO;
+		}
 	}
-	self.selectedImageKeys = [NSMutableArray new];
+	self.selectedImages = [NSMutableArray new];
 	[self loadNavButtons];
 }
 
@@ -224,25 +229,10 @@
 {
 	ImageUploadViewController *vc = [ImageUploadViewController new];
 	vc.selectedCategory = self.categoryId;
-	vc.localAlbum = self.localAlbumURL;
-	vc.imagesSelected = self.selectedImageKeys;
+	vc.imagesSelected = self.selectedImages;
 	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
 	[self.navigationController presentViewController:nav animated:YES completion:nil];
-	self.selectedImageKeys = [NSMutableArray new];
-}
-
--(void)deselectCellForKey:(NSString*)imageKey
-{
-	NSInteger row = [self.imageNamesList indexOfObject:imageKey];
-	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-	cell.cellSelected = NO;
-}
-
--(void)deselectUploadingCellForKey:(NSString*)key
-{
-	NSInteger row = [self.imageNamesList indexOfObject:key];
-	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-	cell.cellUploading = NO;
+	self.selectedImages = [NSMutableArray new];
 }
 
 #pragma mark UICollectionView Methods
@@ -276,9 +266,9 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	self.noImagesLabel.hidden = self.imageNamesList.count != 0;
+	self.noImagesLabel.hidden = self.images.count != 0;
 
-	return self.imageNamesList.count;
+	return self.images.count;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -291,15 +281,14 @@
 {
 	LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 	
-	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
-	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetInAlbum:self.localAlbumURL withImageName:imageAssetKey];
+	ALAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
 	[cell setupWithImageAsset:imageAsset];
 	
-	if([self.selectedImageKeys containsObject:imageAssetKey])
+	if([self.selectedImages containsObject:imageAsset])
 	{
 		cell.cellSelected = YES;
 	}
-	else if([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:imageAssetKey])
+	else if([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:[[imageAsset defaultRepresentation] filename]])
 	{
 		cell.cellUploading = YES;
 	}
@@ -316,20 +305,17 @@
 {
 	LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	
-	NSString *imageAssetKey = self.imageNamesList[indexPath.row];
+	ALAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
 	
-	if(![[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:imageAssetKey])
-	{
-		BOOL isCellAlreadySelected = [self.selectedImageKeys containsObject:imageAssetKey];
-		if(!isCellAlreadySelected)
-		{
-			[self.selectedImageKeys addObject:imageAssetKey];
-		}
-		else
-		{
-			[self.selectedImageKeys removeObject:imageAssetKey];
-		}
-		selectedCell.cellSelected = !isCellAlreadySelected;
+	if(selectedCell.cellSelected)
+	{	// the cell is selected, remove it
+		[self.selectedImages removeObject:imageAsset];
+		selectedCell.cellSelected = NO;
+	}
+	else
+	{	// select the cell
+		[self.selectedImages addObject:imageAsset];
+		selectedCell.cellSelected = YES;
 	}
 	
 	[self loadNavButtons];
@@ -339,9 +325,9 @@
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
 {
-	NSInteger row = [self.imageNamesList indexOfObject:image.image];
+	NSInteger row = [self.images indexOfObject:image.imageAsset];
 	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-	
+
 	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
 	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
 	CGFloat peiceProgress = (CGFloat)current / total;
@@ -355,12 +341,15 @@
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-	[self deselectUploadingCellForKey:image.image];
+	NSInteger row = [self.images indexOfObject:image.imageAsset];
+	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+	cell.cellUploading = NO;
+	
 	if(self.sortType == kPiwigoSortByNotUploaded)
 	{
-		NSMutableArray *newList = [self.imageNamesList mutableCopy];
-		[newList removeObject:image.image];
-		self.imageNamesList = newList;
+		NSMutableArray *newList = [self.images mutableCopy];
+		[newList removeObject:image.imageAsset];
+		self.images = newList;
 		[self.localImagesCollection reloadData];
 	}
 }

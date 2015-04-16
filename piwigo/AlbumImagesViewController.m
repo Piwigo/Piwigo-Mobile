@@ -99,6 +99,8 @@
 	[super viewWillAppear:animated];
 	
 	[self loadNavButtons];
+	
+	[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 }
 
 -(void)viewDidAppear:(BOOL)animated

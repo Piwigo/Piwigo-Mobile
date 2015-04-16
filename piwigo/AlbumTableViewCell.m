@@ -336,7 +336,9 @@
 	[formatter setDateFormat:@"yyyy-MM-dd"];
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];
 	
-	if(albumData.categoryImage)
+	NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
+	
+	if(albumData.categoryImage && imageSize > 0)
 	{
 		[self setupBgWithImage:albumData.categoryImage];
 	}

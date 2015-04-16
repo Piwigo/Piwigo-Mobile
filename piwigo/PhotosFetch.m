@@ -32,44 +32,41 @@
 	return instance;
 }
 
--(void)updateLocalPhotosDictionary:(CompletionBlock)completion
+-(void)getLocalGroupsOnCompletion:(CompletionBlock)completion
 {
-	NSMutableDictionary *allImages = [NSMutableDictionary new];
+	ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+	if (status != ALAuthorizationStatusAuthorized && status != ALAuthorizationStatusNotDetermined) {
+		[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"Access not Authorized")
+						   message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 otherButtonTitles:nil
+						  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
+							  if(completion)
+							  {
+								  completion(@(-1));
+							  }
+						  }];
+	}
+	
+	NSMutableArray *groupAssets = [NSMutableArray new];
 	
 	ALAssetsLibrary *assetsLibrary = [Model defaultAssetsLibrary];
 	[assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
 								 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-									 if (group != nil)
-									 {
-										 NSString *groupURL = [group valueForProperty:ALAssetsGroupPropertyURL];
-										 
-										 NSMutableDictionary *images = [NSMutableDictionary new];
-										 
-										 NSInteger size = [group numberOfAssets];
-										 [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-											 if (nil != result)
-											 {
-												 [images setObject:result forKey:[[result defaultRepresentation] filename]];
-												 if(images.count == size)
-												 {
-													 *stop = YES;
-													 [allImages setObject:images forKey:groupURL];
-												 }
-											 }
-										 }];
-										 *stop = NO;
-									 }
-									 else
+									 if(!group)
 									 {
 										 *stop = YES;
-										 self.localImages = allImages;
 										 if(completion)
 										 {
-											 completion(self.localImages);
+											 completion(groupAssets);
 										 }
+										 return;
 									 }
+									 
+									 [groupAssets addObject:group];
+									 
 								 } failureBlock:^(NSError *error) {
-									 NSLog(@"error: %@", error);
+									 MyLog(@"error: %@", error);
 									 if(completion)
 									 {
 										 completion(nil);
@@ -77,14 +74,21 @@
 								 }];
 }
 
--(ALAsset*)getImageAssetInAlbum:(NSURL*)albumURL withImageName:(NSString*)imageName
+-(NSArray*)getImagesForAssetGroup:(ALAssetsGroup*)assetGroup
 {
-	return [[self.localImages objectForKey:albumURL] objectForKey:imageName];
-}
-
--(NSDictionary*)getImagesInAlbum:(NSURL*)albumURL
-{
-	return [self.localImages objectForKey:albumURL];
+	NSMutableArray *imageAssets = [NSMutableArray new];
+	
+	[assetGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+		if(!result)
+		{
+			return;
+		}
+		
+		[imageAssets addObject:result];
+		
+	}];
+	
+	return imageAssets;
 }
 
 @end

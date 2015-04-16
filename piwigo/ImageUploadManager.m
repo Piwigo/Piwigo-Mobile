@@ -163,7 +163,7 @@
 	ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
 	
 	NSString *imageKey = nextImageToBeUploaded.image;
-	ALAsset *imageAsset = [[PhotosFetch sharedInstance] getImageAssetInAlbum:nextImageToBeUploaded.localAlbum withImageName:imageKey];
+	ALAsset *imageAsset = nextImageToBeUploaded.imageAsset;
 	
 	NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
 	UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
@@ -205,7 +205,7 @@
 					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
-						[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo].numberOfImages++;
+						[[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo] incrementImageSizeByOne];
 						[self addImageDataToCategoryCache:response];
 						[self setImageResponse:response withInfo:imageProperties];
 						

@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) UILabel *piwigoTitle;
 @property (nonatomic, strong) UILabel *byLabel;
-@property (nonatomic, strong) UILabel *usuOSSLabel;
+@property (nonatomic, strong) UILabel *versionLabel;
 
 @property (nonatomic, strong) UITextView *textView;
 
@@ -44,13 +44,16 @@
 		self.byLabel.text = @"By Spencer Baker";
 		[self.view addSubview:self.byLabel];
 		
-		self.usuOSSLabel = [UILabel new];
-		self.usuOSSLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.usuOSSLabel.font = [UIFont piwigoFontNormal];
-		self.usuOSSLabel.font = [self.usuOSSLabel.font fontWithSize:12];
-		self.usuOSSLabel.textColor = [UIColor piwigoGrayLight];
-		self.usuOSSLabel.text = @"(Utah State University OSS)";
-		[self.view addSubview:self.usuOSSLabel];
+		self.versionLabel = [UILabel new];
+		self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.versionLabel.font = [UIFont piwigoFontNormal];
+		self.versionLabel.font = [self.versionLabel.font fontWithSize:12];
+		self.versionLabel.textColor = [UIColor piwigoGrayLight];
+		[self.view addSubview:self.versionLabel];
+		
+		NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+		NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+		self.versionLabel.text = [NSString stringWithFormat:@"%@ %@ (%@)", NSLocalizedString(@"version", nil), appVersionString, appBuildString];
 		
 		self.textView = [UITextView new];
 		self.textView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -81,13 +84,13 @@
 	NSDictionary *views = @{
 							@"title" : self.piwigoTitle,
 							@"by" : self.byLabel,
-							@"usu" : self.usuOSSLabel,
+							@"usu" : self.versionLabel,
 							@"textView" : self.textView
 							};
 	
 	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoTitle]];
 	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel]];
-	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.usuOSSLabel]];
+	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
 	
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-15-[by][usu]-20-[textView]-65-|"
 																	  options:kNilOptions

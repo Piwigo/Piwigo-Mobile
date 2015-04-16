@@ -14,6 +14,7 @@
 #import "AlbumImagesViewController_iPhone.h"
 #import "CategoriesData.h"
 #import "Model.h"
+#import "iRate.h"
 
 @interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, AlbumTableViewCellDelegate>
 
@@ -45,16 +46,21 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAlbumData) name:UIApplicationDidBecomeActiveNotification object:nil];
 		
-		[AlbumService getAlbumListForCategory:0
-								 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
-			
-		} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-			
-			NSLog(@"Album list err: %@", error);
-		}];
+		[self getAlbumData];
 	}
 	return self;
+}
+
+-(void)getAlbumData
+{
+	[AlbumService getAlbumListForCategory:0
+							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+								 
+							 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+								 NSLog(@"Album list err: %@", error);
+							 }];
 }
 
 -(void)categoryDataUpdated
@@ -72,6 +78,7 @@
 		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
+    [[iRate sharedInstance] promptIfAllCriteriaMet];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -83,6 +90,8 @@
 	refreshControl.tintColor = [UIColor piwigoGray];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
+	
+	[self refreshShowingCells];
 }
 
 -(void)refresh:(UIRefreshControl*)refreshControl
@@ -93,6 +102,15 @@
 	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		[refreshControl endRefreshing];
 	}];
+}
+
+-(void)refreshShowingCells
+{
+	for(AlbumTableViewCell *cell in self.albumsTableView.visibleCells)
+	{
+		PiwigoAlbumData *albumData = [self.categories objectAtIndex:[self.albumsTableView indexPathForCell:cell].row];
+		[cell setupWithAlbumData:albumData];
+	}
 }
 
 -(void)addCategory

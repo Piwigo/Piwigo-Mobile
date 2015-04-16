@@ -50,5 +50,7 @@ typedef enum {
 -(NSInteger)getDepthOfCategory;
 -(BOOL)containsUpperCategory:(NSInteger)category;
 -(void)resetData;
+-(void)incrementImageSizeByOne;
+-(void)deincrementImageSizeByOne;
 
 @end

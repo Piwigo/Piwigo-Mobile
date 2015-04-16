@@ -73,27 +73,27 @@
 }
 
 // on completion send back a list of image names (keys)
-+(void)getSortedImageNameArrayFromSortType:(kPiwigoSortBy)sortType
-							 forLocalAlbum:(NSURL*)localAlbum
-							   forCategory:(NSInteger)category
-							   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-							  onCompletion:(void (^)(NSArray *imageNames))completion
++(void)getSortedImageArrayFromSortType:(kPiwigoSortBy)sortType
+							 forImages:(NSArray*)images
+						   forCategory:(NSInteger)category
+						   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+						  onCompletion:(void (^)(NSArray *images))completion
 {
 	switch(sortType)
 	{
 		case kPiwigoSortByNewest:
 		{
-			[self getByNewestFirstForAlbum:localAlbum onCompletion:completion];
+			[self organizeImages:images byNewestFirstOnCompletion:completion];
 			break;
 		}
 		case kPiwigoSortByOldest:
 		{
-			[self getByOldestFirstForAlbum:localAlbum onCompletion:completion];
+			[self organizeImages:images byOldestFirstOnCompletion:completion];
 			break;
 		}
 		case kPiwigoSortByNotUploaded:
 		{
-			[self getNotUploadedImageListForCategory:category forLocalAlbum:localAlbum forProgress:progress onCompletion:completion];
+			[self getNotUploadedImageListForCategory:category withImages:images forProgress:progress onCompletion:completion];
 			break;
 		}
 		
@@ -107,50 +107,39 @@
 	}
 }
 
-+(NSArray*)getSortedImagesForAlbum:(NSURL*)albumURL
++(void)organizeImages:(NSArray*)images byNewestFirstOnCompletion:(void (^)(NSArray *images))completion
 {
-	NSDictionary *imagesForAlbum = [[PhotosFetch sharedInstance].localImages objectForKey:albumURL];
-	return [imagesForAlbum.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	NSArray *sortedImages = [images sortedArrayUsingComparator:^NSComparisonResult(ALAsset *obj1, ALAsset *obj2) {
+		return [[obj1 valueForProperty:ALAssetPropertyDate] compare:[obj2 valueForProperty:ALAssetPropertyDate]] != NSOrderedDescending;
+	}];
+	
+	if(completion)
+	{
+		completion(sortedImages);
+	}
 }
 
-+(void)getByNewestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
++(void)organizeImages:(NSArray*)images byOldestFirstOnCompletion:(void (^)(NSArray *images))completion
 {
-	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
-		
-		if(completion)
-		{
-			completion([[[self getSortedImagesForAlbum:albumURL] reverseObjectEnumerator] allObjects]);
-		}
-		
+	NSArray *sortedImages = [images sortedArrayUsingComparator:^NSComparisonResult(ALAsset *obj1, ALAsset *obj2) {
+		return [[obj1 valueForProperty:ALAssetPropertyDate] compare:[obj2 valueForProperty:ALAssetPropertyDate]] != NSOrderedAscending;
 	}];
-}
-
-+(void)getByOldestFirstForAlbum:(NSURL*)albumURL onCompletion:(void (^)(NSArray *imageNames))completion
-{
-	[[PhotosFetch sharedInstance] updateLocalPhotosDictionary:^(id responseObject) {
-		
-		if(completion)
-		{
-			completion([self getSortedImagesForAlbum:albumURL]);
-		}
-		
-	}];
+	
+	if(completion)
+	{
+		completion(sortedImages);
+	}
 }
 
 +(void)getNotUploadedImageListForCategory:(NSInteger)category
-							forLocalAlbum:(NSURL*)albumURL
+							   withImages:(NSArray*)images
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							 onCompletion:(void (^)(NSArray *imageNames))completion
 {
 	[NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:category
-													  forLocalAlbum:albumURL
+														 withImages:images
 														forProgress:progress
-													   onCompletion:^(NSArray *missingImages) {
-															if(completion)
-															{
-																completion(missingImages);
-															}
-													   }];
+													   onCompletion:completion];
 }
 
 #pragma mark UITableView Methods

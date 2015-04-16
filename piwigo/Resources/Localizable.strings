@@ -33,6 +33,8 @@
 "alertCancelButton" = "Cancel";
 "alertAddButton" = "Add";
 
+"done" = "Done";
+
 "imageUploadDetails_title" = "Title:";
 "imageUploadDetails_author" = "Author:";
 "imageUploadDetails_privacy" = "Privacy";
@@ -113,6 +115,15 @@
 "localImageSort_notUploaded" = "Not Uploaded";
 "localImageSort_undefined" = "Undefined";
 
+/* tell user to change settings, how */
+"localAlbums_photosNotAuthorized_msg" = "Cannot open local photo library.\nPlease go into the Settings App, Pricacy, Photos and enable access for this app";
+
+/* Access not Authorized */
+"localAlbums_photosNotAuthorized_title" = "No Access";
+
+"localAlbums_photosNiltitle" = "Problem reading photos";
+"localAlbums_photosNnil_msg" = "There is a problem reading your local photos.";
+
 "none" = "none";
 "selectAll" = "Select All";
 
@@ -165,6 +176,8 @@
 "categoryImageSetSuccess_message" = "The image was set successfully for the album image";
 
 "pullToRefresh" = "Reload Images";
+
+"version" = "Version:";
 
 // ----------------------- ERROR STRINGS -----------------------
 
@@ -228,6 +241,8 @@
 
 "categoryImageSetError_title" = "Image Set Error";
 "categoryImageSetError_message" = "Failed to set the album image";
+
+"groupURLError" = "Invalid group URL";
 
 
 
