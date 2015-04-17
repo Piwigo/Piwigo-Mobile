@@ -27,38 +27,26 @@
 
 @property (nonatomic, strong) ImageDownloadView *downloadView;
 
-@property (nonatomic, assign) BOOL isSorted;
-@property (nonatomic, strong) NSArray *sortedImages;
-
 @end
 
 @implementation ImageDetailViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex isSorted:(BOOL)isSorted withArray:(NSArray*)array
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray*)array
 {
 	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor blackColor];
 		self.categoryId = categoryId;
-		self.isSorted = isSorted;
-		if(self.isSorted)
-		{
-			self.sortedImages = array;
-		}
+		self.images = array;
 		
 		self.dataSource = self;
 		self.delegate = self;
 		
-		PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:imageIndex];
-		if(self.isSorted)
-		{
-			imageData = [self.sortedImages objectAtIndex:imageIndex];
-		}
-		self.imageData = imageData;
+		self.imageData = [self.images objectAtIndex:imageIndex];;
 		self.title = self.imageData.name;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
-		[startingImage setImageWithImageData:imageData];
+		[startingImage setImageWithImageData:self.imageData];
 		startingImage.imageIndex = imageIndex;
 		
 		[self setViewControllers:@[startingImage]
@@ -350,7 +338,7 @@
 	NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
 	
 	// check to see if they've scroll beyond a certain threshold, then load more image data
-	if(currentIndex >= [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count - 21 && [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+	if(currentIndex >= self.images.count - 21 && self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
 	{
 		if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
 		{
@@ -359,23 +347,12 @@
 	}
 	
 	
-	PiwigoImageData *imageData = nil;
-	if(self.isSorted)
+	if(currentIndex >= self.images.count - 1)
 	{
-		if(currentIndex >= self.sortedImages.count - 1)
-		{
-			return nil;
-		}
-		imageData = [self.sortedImages objectAtIndex:currentIndex + 1];
+		return nil;
 	}
-	else
-	{
-		if(currentIndex >= [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count - 1)
-		{
-			return nil;
-		}
-		imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex + 1];
-	}
+	PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
+	
 	ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
 	[nextImage setImageWithImageData:imageData];
 	nextImage.imageIndex = currentIndex + 1;
@@ -391,15 +368,8 @@
 		return nil;
 	}
 	
-	PiwigoImageData *imageData = nil;
-	if(self.isSorted)
-	{
-		imageData = [self.sortedImages objectAtIndex:currentIndex - 1];
-	}
-	else
-	{
-		imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex - 1];
-	}
+	PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
+		
 	ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
 	[prevImage setImageWithImageData:imageData];
 	prevImage.imageIndex = currentIndex - 1;
@@ -420,10 +390,9 @@
 	{
 		self.progressBar.hidden = YES;
 	}
-	if(self.isSorted)
-	{
-		self.imageData = [self.sortedImages objectAtIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
-	}
+	
+	self.imageData = [self.images objectAtIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+	
 	self.title = self.imageData.name;
 }
 

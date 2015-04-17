@@ -44,6 +44,8 @@
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) LoadingView *loadingView;
 
+@property (nonatomic, strong) ImageDetailViewController *imageDetailView;
+
 @end
 
 @implementation AlbumImagesViewController
@@ -481,10 +483,10 @@
 		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 		if(!self.isSelect)
 		{
-			ImageDetailViewController *imageDetail = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row isSorted:(self.currentSortCategory != 0) withArray:[self.albumData.images copy]];
-			imageDetail.hidesBottomBarWhenPushed = YES;
-			imageDetail.imgDetailDelegate = self;
-			[self.navigationController pushViewController:imageDetail animated:YES];
+			self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+			self.imageDetailView.hidesBottomBarWhenPushed = YES;
+			self.imageDetailView.imgDetailDelegate = self;
+			[self.navigationController pushViewController:self.imageDetailView animated:YES];
 		}
 		else
 		{
@@ -513,6 +515,10 @@
 -(void)needToLoadMoreImages
 {
 	[self.albumData loadMoreImagesOnCompletion:^{
+		if(self.imageDetailView != nil)
+		{
+			self.imageDetailView.images = self.albumData.images;
+		}
 		[self.imagesCollection reloadData];
 	}];
 }
