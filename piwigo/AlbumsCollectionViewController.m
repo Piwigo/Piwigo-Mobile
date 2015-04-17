@@ -16,7 +16,7 @@
 #import "Model.h"
 #import "PiwigoImageData.h"
 #import "SettingsViewController.h"
-
+#import "iRate.h"
 
 @interface AlbumsCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
@@ -89,6 +89,7 @@
                                                                     action:@selector(uploadSelected)];
     self.navigationItem.leftBarButtonItem = prefsButton;
     self.navigationItem.rightBarButtonItem = self.uploadButton;
+    [[iRate sharedInstance] promptIfAllCriteriaMet];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
