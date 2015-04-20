@@ -21,6 +21,8 @@ typedef enum {
 	kPiwigoPrivacyCount = 5
 } kPiwigoPrivacy;
 
+#define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
+
 @interface Model : NSObject
 
 +(Model*)sharedInstance;
