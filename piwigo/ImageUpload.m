@@ -55,4 +55,51 @@
 	return self;
 }
 
+-(NSString *)author {
+    if (nil == _author) {
+        _author = @"";
+    }
+    return _author;
+}
+
+-(NSString *)imageDescription {
+    if (nil == _imageDescription) {
+        _imageDescription = @"";
+    }
+    return _imageDescription;
+}
+
+-(NSString *)imageUploadName {
+    if (nil == _imageUploadName) {
+        _imageUploadName = @"";
+    }
+    return _imageUploadName;
+}
+
+#pragma mark - debugging support -
+
+-(NSString *)description {
+    NSString *objectIsNil = @"<nil>";
+    
+    NSMutableArray * descriptionArray = [[NSMutableArray alloc] init];
+    [descriptionArray addObject:[NSString stringWithFormat:@"<%@: 0x%lx> = {", [self class], (unsigned long)self]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"imageAsset         = %@", self.imageAsset.defaultRepresentation.url]];
+
+    [descriptionArray addObject:[NSString stringWithFormat:@"image              = %@", (nil == self.image ? objectIsNil :(0 == self.image.length ? @"''" : self.image))]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"imageUploadName    = %@", (nil == self.imageUploadName ? objectIsNil : (0 == self.imageUploadName.length ? @"''" : self.imageUploadName))]];
+    
+    [descriptionArray addObject:[NSString stringWithFormat:@"categoryToUploadTo = %ld", (long)self.categoryToUploadTo]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"privacyLevel       = %@", kPiwigoPrivacyString(self.privacyLevel)]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"imageDescription   = %@", (nil == self.imageDescription ? objectIsNil :(0 == [self.imageDescription length] ? @"''" : self.imageDescription))]];
+
+    [descriptionArray addObject:[NSString stringWithFormat:@"tags [%ld] %@", (long)self.tags.count, self.tags]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"imageId            = %ld", (long)self.imageId]];
+
+
+    [descriptionArray addObject:@"}"];
+    
+    return [descriptionArray componentsJoinedByString:@"\n"];
+}
+
+    
 @end

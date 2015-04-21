@@ -102,7 +102,10 @@
 	
 	[self loadNavButtons];
 	
-	[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+	if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0)
+	{
+		[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+	}
 }
 
 -(void)viewDidAppear:(BOOL)animated
