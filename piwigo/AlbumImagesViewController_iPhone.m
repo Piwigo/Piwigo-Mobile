@@ -56,4 +56,8 @@
     
 }
 
+-(void)pushView:(UIViewController *)viewController {
+    [super pushView:viewController];
+}
+
 @end

@@ -8,7 +8,6 @@
 
 #import "AlbumsCollectionViewController.h"
 
-#import "AlbumCollectionViewCell.h"
 #import "AlbumImagesViewController_iPad.h"
 #import "AlbumService.h"
 #import "CategoriesData.h"
@@ -24,7 +23,9 @@
 @property (nonatomic, strong) UIBarButtonItem *addButton;
 @property (nonatomic, strong) NSArray *categories;
 @property (nonatomic, strong) UILabel *emptyLabel;
-
+@property (nonatomic) BOOL cellEditMode;
+@property (nonatomic, strong) NSIndexPath *cellEditIndexPath;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @end
 
 @implementation AlbumsCollectionViewController
@@ -42,22 +43,61 @@
 
 
 -(void)categoryDataUpdated {
-    if([Model sharedInstance].hasAdminRights)
-    {
+    if([Model sharedInstance].hasAdminRights) {
         if (nil == self.addButton) {
             _addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];
         }
+        
+        if (nil == self.uploadButton) {
+            _uploadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"]
+                                                             style:UIBarButtonItemStylePlain
+                                                            target:self
+                                                            action:@selector(uploadSelected)];
+        }
         self.navigationItem.rightBarButtonItems = @[self.addButton, self.uploadButton];
+        // attach long press gesture to collectionView
+        if (nil == _longPressGestureRecognizer) {
+        _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc]
+                                       initWithTarget:self action:@selector(handleLongPress:)];
+        _longPressGestureRecognizer.minimumPressDuration = 0.5f; //seconds
+        _longPressGestureRecognizer.delegate = self;
+        _longPressGestureRecognizer.delaysTouchesBegan = YES;
+        }
+        [self.collectionView addGestureRecognizer:_longPressGestureRecognizer];
     } else {
-        self.navigationItem.rightBarButtonItem = self.uploadButton;
+        [self.collectionView removeGestureRecognizer:_longPressGestureRecognizer];
     }
     self.categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:0];
     [self.collectionView reloadData];
 }
 
+-(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
+        MyLog(@"Cell: %@", self);
+        CGPoint tapPoint = [gestureRecognizer locationInView:self.collectionView];
+
+        NSIndexPath *indexPath;
+        indexPath = [self.collectionView indexPathForItemAtPoint:tapPoint];
+        if (indexPath == nil){
+            MyLog(@"couldn't find index path");
+        } else {
+            if (self.cellEditMode) { // turn off old selection
+                AlbumCollectionViewCell *cell = (AlbumCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.cellEditIndexPath];
+                [cell exitFromEditMode];
+            }
+            self.cellEditMode = YES;
+            self.cellEditIndexPath = indexPath;
+
+            AlbumCollectionViewCell *cell = (AlbumCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            [cell goIntoEditMode];
+        }
+
+    }
+}
+
 -(void)viewDidLoad {
     [super viewDidLoad];
-//self.navigationItem.title = @"hello";
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     
     [AlbumService getAlbumListForCategory:0
@@ -72,7 +112,8 @@
     
     self.collectionView.indicatorStyle  = UIScrollViewIndicatorStyleWhite;
     self.collectionView.backgroundColor = [UIColor piwigoGray];
-    [self.collectionView registerClass:[AlbumCollectionViewCell class] forCellWithReuseIdentifier:[AlbumCollectionViewCell cellReuseIdentifier]];
+    [self.collectionView registerNib:[AlbumCollectionViewCell nib]
+          forCellWithReuseIdentifier:[AlbumCollectionViewCell cellReuseIdentifier]];
 
     self.navigationItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoOrange];
@@ -83,12 +124,8 @@
     UIBarButtonItem *prefsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"]
                                                                     style:UIBarButtonItemStylePlain target:self
                                                                    action:@selector(prefsSelected)];
-    _uploadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"]
-                                                                     style:UIBarButtonItemStylePlain
-                                                                    target:self
-                                                                    action:@selector(uploadSelected)];
     self.navigationItem.leftBarButtonItem = prefsButton;
-    self.navigationItem.rightBarButtonItem = self.uploadButton;
+    
     [[iRate sharedInstance] promptIfAllCriteriaMet];
 }
 
@@ -205,17 +242,34 @@
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AlbumCollectionViewCell *cell = [cv dequeueReusableCellWithReuseIdentifier:[AlbumCollectionViewCell cellReuseIdentifier] forIndexPath:indexPath];
-#warning    cell.cellDelegate = self;
     
     PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
     [cell setupWithAlbumData:albumData];
-
+    cell.cellDelegate = self;
     cell.backgroundColor = [UIColor whiteColor];
     return cell;
 }
 
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.cellEditMode) {
+        if (self.cellEditIndexPath.section == indexPath.section &&
+            self.cellEditIndexPath.row == indexPath.row) { // turn off
+            AlbumCollectionViewCell *cell = (AlbumCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.cellEditIndexPath];
+            [cell exitFromEditMode];
+            self.cellEditMode = NO;
+        } else { // user tapped somewhere else
+            AlbumCollectionViewCell *cell = (AlbumCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.cellEditIndexPath];
+            [cell exitFromEditMode];
+            [self openAlbumAtIndexPath:indexPath];
+        }
+    } else { // this is just a normal tap on an album
+        [self openAlbumAtIndexPath:indexPath];
+    }
+}
+
+-(void)openAlbumAtIndexPath:(NSIndexPath *)indexPath {
     PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
     
     AlbumImagesViewController_iPad *album = [[AlbumImagesViewController_iPad alloc] initWithAlbumId:albumData.albumId];
@@ -245,6 +299,13 @@
 -(UIEdgeInsets)collectionView:
 (UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     return UIEdgeInsetsMake(10, 10, 40, 10);
+}
+
+#pragma mark AlbumTableViewCellDelegate Methods
+
+-(void)pushView:(UIViewController *)viewController
+{
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 

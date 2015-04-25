@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 @class PiwigoAlbumData;
 
-@interface AlbumImagesViewController : UIViewController
+#import "AlbumCollectionViewCell.h"
+#import "CategoryCollectionViewCell.h"
+
+@interface AlbumImagesViewController : UIViewController <CategoryCollectionViewCellDelegate, AlbumCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 

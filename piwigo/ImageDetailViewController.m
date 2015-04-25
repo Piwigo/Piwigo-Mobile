@@ -124,8 +124,14 @@
 											EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
 											editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
 											editImageVC.isEdit = YES;
-											UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
-											[self.navigationController presentViewController:presentNav animated:YES completion:nil];
+                                            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+                                                UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
+                                                [self.navigationController presentViewController:presentNav animated:YES completion:nil];
+                                            } else {
+                                                // fix for "Attempt to present <EditImageDetailsViewController: 0x78e0ef70>  on <UINavigationController: 0x78f98cd0> which is already presenting <UIAlertController: 0x7999d930>"
+                                                // also see http://stackoverflow.com/a/25585576
+                                                [self performSelector: @selector(presenteditImageViewController:) withObject:editImageVC afterDelay: 0];
+                                            }
 											break;
 										}
 										case 3:	// set as album image
@@ -139,6 +145,20 @@
 										}
 									}
 								}];
+}
+
+// dont fill whole screen on iPad
+-(void) presenteditImageViewController:(UIViewController *)aViewController {
+    UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:aViewController];
+    [aNavigationController.navigationBar setBarStyle:UIBarStyleDefault];
+    [aNavigationController setModalPresentationStyle:UIModalPresentationFormSheet];
+    if(IS_OS_8_OR_LATER) {
+        aNavigationController.preferredContentSize = CGSizeMake(320, 480);
+        [self presentViewController:aNavigationController animated:YES completion:nil];
+    } else {
+        [self presentViewController:aNavigationController animated:YES completion:nil];
+        aNavigationController.view.superview.bounds = CGRectMake(0, 0, 320, 480);
+    }
 }
 
 -(void)deleteImage

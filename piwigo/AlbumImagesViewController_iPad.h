@@ -8,6 +8,8 @@
 
 #import "AlbumImagesViewController.h"
 
-@interface AlbumImagesViewController_iPad : AlbumImagesViewController
+#import "AlbumCollectionViewCell.h"
+
+@interface AlbumImagesViewController_iPad : AlbumImagesViewController <AlbumCollectionViewCellDelegate, UIGestureRecognizerDelegate>
 
 @end

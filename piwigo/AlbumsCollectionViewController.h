@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AlbumsCollectionViewController : UICollectionViewController
+#import "AlbumCollectionViewCell.h"
+
+@interface AlbumsCollectionViewController : UICollectionViewController <AlbumCollectionViewCellDelegate, UIGestureRecognizerDelegate>
 
 +(NSString *)nibName;
 

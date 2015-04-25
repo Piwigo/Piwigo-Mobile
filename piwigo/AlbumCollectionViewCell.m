@@ -19,214 +19,135 @@
 
 @interface AlbumCollectionViewCell()
 
-@property (nonatomic, strong) UIImageView *backgroundImage;
-@property (nonatomic, strong) OutlinedText *albumName;
-@property (nonatomic, strong) UILabel *numberOfImages;
-@property (nonatomic, strong) UILabel *numberOfSubCategoryImages;
-@property (nonatomic, strong) UILabel *date;
-@property (nonatomic, strong) UIView *textUnderlay;
-@property (nonatomic, strong) UIImageView *cellDisclosure;
 @property (nonatomic, strong) AFHTTPRequestOperation *cellDataRequest;
+@property (nonatomic) BOOL isInEditingModePrivate;
+
 
 @end
 
 @implementation AlbumCollectionViewCell
 
++(UINib *)nib {
+    UINib *nib= [UINib nibWithNibName:@"AlbumCollectionViewCell" bundle:nil];
+    return nib;
+}
+
 +(NSString *)cellReuseIdentifier {
     return @"AlbumCollectionViewCell";
 }
 
+-(void)awakeFromNib {
+    self.contentView.backgroundColor = [UIColor piwigoGray];
+    
+    self.backgroundImage.translatesAutoresizingMaskIntoConstraints = NO;
+    self.backgroundImage.contentMode = UIViewContentModeScaleAspectFill;
+    self.backgroundImage.clipsToBounds = YES;
+    self.backgroundImage.backgroundColor = [UIColor piwigoGray];
+    self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
 
--(instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if(self)
+    if(IS_OS_8_OR_LATER)
     {
-        self.contentView.backgroundColor = [UIColor piwigoGray];
-        
-        self.backgroundImage = [UIImageView new];
-        self.backgroundImage.translatesAutoresizingMaskIntoConstraints = NO;
-        self.backgroundImage.contentMode = UIViewContentModeScaleAspectFill;
-        self.backgroundImage.clipsToBounds = YES;
-        self.backgroundImage.backgroundColor = [UIColor piwigoGray];
-        self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
-        [self.contentView addSubview:self.backgroundImage];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[img]-5-|"
-                                                                                 options:kNilOptions
-                                                                                 metrics:nil
-                                                                                   views:@{@"img" : self.backgroundImage}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.backgroundImage]];
-        
-        if(IS_OS_8_OR_LATER)
-        {
-            UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-            self.textUnderlay = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        }
-        else
-        {
-            self.textUnderlay = [UIView new];
-            self.textUnderlay.alpha = 0.5;
-        }
-        self.textUnderlay.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.contentView addSubview:self.textUnderlay];
-        
-        self.albumName = [OutlinedText new];
-        self.albumName.translatesAutoresizingMaskIntoConstraints = NO;
-        self.albumName.font = [UIFont piwigoFontNormal];
-        self.albumName.font = [self.albumName.font fontWithSize:21.0];
-        self.albumName.textColor = [UIColor piwigoOrange];
-        self.albumName.adjustsFontSizeToFitWidth = YES;
-        self.albumName.minimumScaleFactor = 0.6;
-        [self.contentView addSubview:self.albumName];
-        
-        self.numberOfImages = [UILabel new];
-        self.numberOfImages.translatesAutoresizingMaskIntoConstraints = NO;
-        self.numberOfImages.font = [UIFont piwigoFontNormal];
-        self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
-        self.numberOfImages.textColor = [UIColor piwigoWhiteCream];
-        self.numberOfImages.adjustsFontSizeToFitWidth = YES;
-        self.numberOfImages.minimumScaleFactor = 0.8;
-        self.numberOfImages.lineBreakMode = NSLineBreakByTruncatingTail;
-        [self.numberOfImages setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
-        [self.contentView addSubview:self.numberOfImages];
-        
-        self.numberOfSubCategoryImages = [UILabel new];
-        self.numberOfSubCategoryImages.translatesAutoresizingMaskIntoConstraints = NO;
-        self.numberOfSubCategoryImages.font = [UIFont piwigoFontNormal];
-        self.numberOfSubCategoryImages.font = [self.numberOfSubCategoryImages.font fontWithSize:16.0];
-        self.numberOfSubCategoryImages.textColor = [UIColor piwigoWhiteCream];
-        self.numberOfSubCategoryImages.adjustsFontSizeToFitWidth = YES;
-        self.numberOfSubCategoryImages.minimumScaleFactor = 0.8;
-        self.numberOfSubCategoryImages.lineBreakMode = NSLineBreakByTruncatingTail;
-        [self.numberOfSubCategoryImages setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
-        [self.contentView addSubview:self.numberOfSubCategoryImages];
-
-        
-        self.date = [UILabel new];
-        self.date.translatesAutoresizingMaskIntoConstraints = NO;
-        self.date.font = [UIFont piwigoFontNormal];
-        self.date.font = [self.date.font fontWithSize:16.0];
-        self.date.textColor = [UIColor piwigoWhiteCream];
-        self.date.textAlignment = NSTextAlignmentRight;
-        [self.date setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
-        [self.contentView addSubview:self.date];
-        
-        UIImage *cellDisclosureImg = [UIImage imageNamed:@"cellDisclosure"];
-        self.cellDisclosure = [UIImageView new];
-        self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-        self.cellDisclosure.image = [cellDisclosureImg imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.cellDisclosure.tintColor = [UIColor piwigoWhiteCream];
-        self.cellDisclosure.contentMode = UIViewContentModeScaleAspectFit;
-        [self.contentView addSubview:self.cellDisclosure];
-        
-        [self setupAutoLayout];
-        
-        if([Model sharedInstance].hasAdminRights) {
-#warning Impleent tap-and-hold instead of MGSwipeTransitionStatic
-//            self.rightSwipeSettings.transition = MGSwipeTransitionStatic;
-//            self.rightButtons = @[[MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_rename", @"Rename")
-//                                                 backgroundColor:[UIColor piwigoOrange]
-//                                                        callback:^BOOL(MGSwipeTableCell *sender) {
-//                                                            [self renameCategory];
-//                                                            return YES;
-//                                                        }],
-//                                  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_move", @"Move")
-//                                                 backgroundColor:[UIColor piwigoGrayLight]
-//                                                        callback:^BOOL(MGSwipeTableCell *sender) {
-//                                                            [self moveCategory];
-//                                                            return YES;
-//                                                        }],
-//                                  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_delete", @"Delete")
-//                                                 backgroundColor:[UIColor redColor]
-//                                                        callback:^BOOL(MGSwipeTableCell *sender) {
-//                                                            [self deleteCategory];
-//                                                            return YES;
-//                                                        }]];
-        }
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUpdated) name:kPiwigoNotificationCategoryImageUpdated object:nil];
-        
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        _textUnderlay = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    } else {
+        self.textUnderlay.alpha = 0.5;
     }
-    return self;
+    self.textUnderlay.translatesAutoresizingMaskIntoConstraints = NO;
+
+    self.albumName.translatesAutoresizingMaskIntoConstraints = NO;
+    self.albumName.font = [UIFont piwigoFontNormal];
+    self.albumName.font = [self.albumName.font fontWithSize:21.0];
+    self.albumName.textColor = [UIColor piwigoOrange];
+    self.albumName.adjustsFontSizeToFitWidth = YES;
+    self.albumName.minimumScaleFactor = 0.6;
+
+    self.numberOfImages.translatesAutoresizingMaskIntoConstraints = NO;
+    self.numberOfImages.font = [UIFont piwigoFontNormal];
+    self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
+    self.numberOfImages.textColor = [UIColor piwigoWhiteCream];
+    self.numberOfImages.adjustsFontSizeToFitWidth = YES;
+    self.numberOfImages.minimumScaleFactor = 0.8;
+    self.numberOfImages.lineBreakMode = NSLineBreakByTruncatingTail;
+    [self.numberOfImages setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
+
+    self.numberOfSubCategoryImages.translatesAutoresizingMaskIntoConstraints = NO;
+    self.numberOfSubCategoryImages.font = [UIFont piwigoFontNormal];
+    self.numberOfSubCategoryImages.font = [self.numberOfSubCategoryImages.font fontWithSize:16.0];
+    self.numberOfSubCategoryImages.textColor = [UIColor piwigoWhiteCream];
+    self.numberOfSubCategoryImages.adjustsFontSizeToFitWidth = YES;
+    self.numberOfSubCategoryImages.minimumScaleFactor = 0.8;
+    self.numberOfSubCategoryImages.lineBreakMode = NSLineBreakByTruncatingTail;
+    [self.numberOfSubCategoryImages setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
+
+    self.date.translatesAutoresizingMaskIntoConstraints = NO;
+    self.date.font = [UIFont piwigoFontNormal];
+    self.date.font = [self.date.font fontWithSize:16.0];
+    self.date.textColor = [UIColor piwigoWhiteCream];
+    self.date.textAlignment = NSTextAlignmentRight;
+    [self.date setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
+
+    
+    UIImage *cellDisclosureImg = [UIImage imageNamed:@"cellDisclosure"];
+    self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
+    self.cellDisclosure.image = [cellDisclosureImg imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.cellDisclosure.tintColor = [UIColor piwigoWhiteCream];
+    self.cellDisclosure.contentMode = UIViewContentModeScaleAspectFit;
+    
+    
+    [self.deleteButton setTitle:NSLocalizedString(@"categoryCellOption_delete", @"Delete") forState:UIControlStateNormal];
+    [self.moveButton setTitle:NSLocalizedString(@"categoryCellOption_move", @"Move") forState:UIControlStateNormal];
+    [self.renameButton setTitle:NSLocalizedString(@"categoryCellOption_rename", @"Rename") forState:UIControlStateNormal];
+    self.deleteButton.backgroundColor = [UIColor redColor];
+    self.moveButton.backgroundColor = [UIColor piwigoGrayLight];
+    self.renameButton.backgroundColor = [UIColor piwigoOrange];
+    
+    [self.deleteButton setTitleColor:[UIColor piwigoWhiteCream] forState:UIControlStateNormal];
+    [self.moveButton setTitleColor:[UIColor piwigoWhiteCream] forState:UIControlStateNormal];
+    [self.renameButton setTitleColor:[UIColor piwigoWhiteCream] forState:UIControlStateNormal];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUpdated) name:kPiwigoNotificationCategoryImageUpdated object:nil];
+
+    _editViewLeftConstraint.constant = 0.0f;
+    _editViewRightConstraint.constant = -self.editView.bounds.size.width;
 }
 
--(void)setupAutoLayout
-{
-    NSDictionary *views = @{
-                            @"name"         : self.albumName,
-                            @"numImages"    : self.numberOfImages,
-                            @"subImages"    : self.numberOfSubCategoryImages,
-                            @"date"         : self.date,
-                            @"disclosure"   : self.cellDisclosure
-                            };
-    
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[name]-5-[numImages]-1-[subImages]-15-|"
-                                                                             options:NSLayoutFormatAlignAllLeading
-                                                                             metrics:nil
-                                                                               views:views]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-                                                                 attribute:NSLayoutAttributeLeft
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.contentView
-                                                                 attribute:NSLayoutAttributeLeft
-                                                                multiplier:1.0
-                                                                  constant:20]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-                                                                 attribute:NSLayoutAttributeRight
-                                                                 relatedBy:NSLayoutRelationLessThanOrEqual
-                                                                    toItem:self.contentView
-                                                                 attribute:NSLayoutAttributeRight
-                                                                multiplier:1.0
-                                                                  constant:-30]];
-    
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[numImages]"
-                                                                             options:NSLayoutFormatAlignAllLeading
-                                                                             metrics:nil
-                                                                               views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[date]-2-[disclosure]"
-                                                                             options:kNilOptions
-                                                                             metrics:nil
-                                                                               views:views]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.numberOfImages
-                                                                  attribute:NSLayoutAttributeTrailing
-                                                                  relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                     toItem:self.date
-                                                                  attribute:NSLayoutAttributeLeading
-                                                                 multiplier:1.0f
-                                                                   constant:10.0f]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.numberOfImages
-                                                                 attribute:NSLayoutAttributeBaseline
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.date
-                                                                 attribute:NSLayoutAttributeBaseline
-                                                                multiplier:1.0f
-                                                                  constant:0.0f]];
-    
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[bg]-5-|"
-                                                                             options:kNilOptions
-                                                                             metrics:nil
-                                                                               views:@{@"bg" : self.textUnderlay}]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.textUnderlay amount:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.textUnderlay
-                                                                 attribute:NSLayoutAttributeTop
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.albumName
-                                                                 attribute:NSLayoutAttributeTop
-                                                                multiplier:1.0
-                                                                  constant:-5]];
-    
-    [self.cellDisclosure addConstraints:[NSLayoutConstraint constraintView:self.cellDisclosure toSize:CGSizeMake(23, 23)]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.cellDisclosure amount:15]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.cellDisclosure amount:38]];
-}
 
 -(void)imageUpdated
 {
     [self setupBgWithImage:self.albumData.categoryImage];
 }
 
--(void)renameCategory
-{
+#pragma mark - Editing Mode -
+-(void)exitFromEditMode {
+    [self showEditView:NO animated:YES];
+}
+
+-(void)goIntoEditMode {
+    [self showEditView:YES animated:YES];
+}
+
+-(void)showEditView:(BOOL)show animated:(BOOL)animated {
+    CGFloat editViewWidth = self.editView.bounds.size.width;
+    self.isInEditingModePrivate = show;
+    if(animated){
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^{
+                             _editViewLeftConstraint.constant = (show ? - editViewWidth : 0);
+                             _editViewRightConstraint.constant = (show ? 0 : -editViewWidth);
+                             [self.contentView needsUpdateConstraints];
+                             [self.contentView layoutIfNeeded];
+                         }
+                         completion:nil];
+    } else {
+        _editViewLeftConstraint.constant = (show ? - editViewWidth : 0);
+        //                             _editViewRightConstraint.priority = (show ? 0 : -editViewWidth);
+    }
+}
+
+-(void)renameAction:(id)sender {
     [UIAlertView showWithTitle:NSLocalizedString(@"renameCategory_title", @"Rename Album")
                        message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"renameCategory_message", @"Rename album"), self.albumData.name]
                          style:UIAlertViewStylePlainTextInput
@@ -276,7 +197,7 @@
                       tapBlock:nil];
 }
 
--(void)moveCategory
+-(void)moveAction:(id)sender
 {
     MoveCategoryViewController *moveCategoryVC = [[MoveCategoryViewController alloc] initWithSelectedCategory:self.albumData];
     if([self.cellDelegate respondsToSelector:@selector(pushView:)])
@@ -285,7 +206,8 @@
     }
 }
 
--(void)deleteCategory
+-(void)deleteAction:(id)sender
+
 {
     [UIAlertView showWithTitle:NSLocalizedString(@"deleteCategory_title", @"DELETE ALBUM")
                        message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_message", @"ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), self.albumData.name, @(self.albumData.numberOfSubAlbumImages)]
@@ -354,6 +276,8 @@
              otherButtonTitles:nil
                       tapBlock:nil];
 }
+
+#pragma mark -
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
 {

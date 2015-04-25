@@ -18,12 +18,8 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-<<<<<<< HEAD
 piwigo.xcworkspace/xcuserdata/olaf.xcuserdatad/UserInterfaceState.xcuserstate
 
-=======
-*/olaf.xcuserdatad/UserInterfaceState.xcuserstate
->>>>>>> upstream/master
 # CocoaPods
 #
 # We recommend against adding the Pods directory to your .gitignore. However

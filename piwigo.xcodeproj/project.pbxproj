@@ -99,6 +99,7 @@
 		DA4A28298929D36CA5D45198 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FC3D86091E15D966251DD6 /* libPods.a */; };
 		ED0391521ACC2BAB00301DEC /* AlbumsCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED0391511ACC2BAB00301DEC /* AlbumsCollectionViewController.m */; };
 		ED0391551ACC2D2800301DEC /* AlbumCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */; };
+		ED32AF221AE801E800D2D17D /* AlbumCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED32AF211AE801E800D2D17D /* AlbumCollectionViewCell.xib */; };
 		ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */; };
 		ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */; };
 		ED9B28D81ACED4A700CBF162 /* AlbumImagesViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9B28D71ACED4A700CBF162 /* AlbumImagesViewController_iPhone.m */; };
@@ -299,6 +300,7 @@
 		ED0391511ACC2BAB00301DEC /* AlbumsCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsCollectionViewController.m; sourceTree = "<group>"; };
 		ED0391531ACC2D2800301DEC /* AlbumCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumCollectionViewCell.h; sourceTree = "<group>"; };
 		ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumCollectionViewCell.m; sourceTree = "<group>"; };
+		ED32AF211AE801E800D2D17D /* AlbumCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumCollectionViewCell.xib; sourceTree = "<group>"; };
 		ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPhone.h; sourceTree = "<group>"; };
 		ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPhone.m; sourceTree = "<group>"; };
 		ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPad.h; sourceTree = "<group>"; };
@@ -825,6 +827,7 @@
 				ED0391511ACC2BAB00301DEC /* AlbumsCollectionViewController.m */,
 				ED0391531ACC2D2800301DEC /* AlbumCollectionViewCell.h */,
 				ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */,
+				ED32AF211AE801E800D2D17D /* AlbumCollectionViewCell.xib */,
 			);
 			name = "Album Collection (iPad)";
 			sourceTree = "<group>";
@@ -916,6 +919,7 @@
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */,
 				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
+				ED32AF221AE801E800D2D17D /* AlbumCollectionViewCell.xib in Resources */,
 				D8B9BC8E1A96DC5800C1B0E5 /* About.strings in Resources */,
 				D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */,
 			);
