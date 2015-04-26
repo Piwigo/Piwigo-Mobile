@@ -22,7 +22,16 @@
 
 @property (nonatomic, weak) id<ImageDetailDelegate> imgDetailDelegate;
 @property (nonatomic, strong) NSArray *images;
+@property (nonatomic, strong) PiwigoImageData *imageData;
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray*)array;
+
+-(IBAction)deleteImage:(id)sender;
+
+-(IBAction)downloadImage:(id)sender;
+
+/** set as album image
+ */
+-(IBAction)makeAlbumThumbnail:(id)sender;
 
 @end

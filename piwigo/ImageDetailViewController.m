@@ -19,7 +19,6 @@
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 
-@property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, strong) UIProgressView *progressBar;
 @property (nonatomic, strong) NSLayoutConstraint *topProgressBarConstraint;
 
@@ -79,9 +78,6 @@
 {
 	[super viewWillAppear:animated];
 	
-	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
-	self.navigationItem.rightBarButtonItem = imageOptionsButton;
-	
 	if([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
 	{
 		self.automaticallyAdjustsScrollViewInsets = false;
@@ -90,78 +86,8 @@
 
 }
 
--(void)imageOptions
-{
-	NSMutableArray *otherButtons = [NSMutableArray new];
-	[otherButtons addObject:NSLocalizedString(@"iamgeOptions_download", @"Download")];
-	if([Model sharedInstance].hasAdminRights)
-	{
-		[otherButtons addObject:NSLocalizedString(@"iamgeOptions_edit",  @"Edit")];
-		[otherButtons addObject:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")];
-	}
-	
-	[UIActionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem
-								animated:YES
-							   withTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
-					   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-				  destructiveButtonTitle:[Model sharedInstance].hasAdminRights ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
-					   otherButtonTitles:otherButtons
-								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 1;
-									switch(buttonIndex)
-									{
-										case 0: // Delete
-											[self deleteImage];
-											break;
-										case 1: // Download
-											[self downloadImage];
-											break;
-										case 2: // Edit
-										{
-											if(![Model sharedInstance].hasAdminRights) break;
-											
-											UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
-											EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-											editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
-											editImageVC.isEdit = YES;
-                                            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-                                                UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
-                                                [self.navigationController presentViewController:presentNav animated:YES completion:nil];
-                                            } else {
-                                                // fix for "Attempt to present <EditImageDetailsViewController: 0x78e0ef70>  on <UINavigationController: 0x78f98cd0> which is already presenting <UIAlertController: 0x7999d930>"
-                                                // also see http://stackoverflow.com/a/25585576
-                                                [self performSelector: @selector(presenteditImageViewController:) withObject:editImageVC afterDelay: 0];
-                                            }
-											break;
-										}
-										case 3:	// set as album image
-										{
-											if(![Model sharedInstance].hasAdminRights) break;
-											
-											AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
-											[self.navigationController pushViewController:allCategoriesPickVC animated:YES];
-											
-											break;
-										}
-									}
-								}];
-}
-
-// dont fill whole screen on iPad
--(void) presenteditImageViewController:(UIViewController *)aViewController {
-    UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:aViewController];
-    [aNavigationController.navigationBar setBarStyle:UIBarStyleDefault];
-    [aNavigationController setModalPresentationStyle:UIModalPresentationFormSheet];
-    if(IS_OS_8_OR_LATER) {
-        aNavigationController.preferredContentSize = CGSizeMake(320, 480);
-        [self presentViewController:aNavigationController animated:YES completion:nil];
-    } else {
-        [self presentViewController:aNavigationController animated:YES completion:nil];
-        aNavigationController.view.superview.bounds = CGRectMake(0, 0, 320, 480);
-    }
-}
-
--(void)deleteImage
+#pragma mark - Actions -
+-(IBAction)deleteImage:(id)sender
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
 					   message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
@@ -184,7 +110,7 @@
 																 tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 																	 if(buttonIndex == 1)
 																	 {
-																		 [self deleteImage];
+                                                                         [self deleteImage:nil];
 																	 }
 																 }];
 											   NSLog(@"fail to delete!");
@@ -193,7 +119,7 @@
 					  }];
 }
 
--(void)downloadImage
+-(IBAction)downloadImage:(id)sender
 {
 	self.downloadView.hidden = NO;
 	
@@ -220,7 +146,7 @@
 									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 												   if(buttonIndex == 1) {
-													   [self downloadImage];
+                                                       [self downloadImage:nil];
 												   }
 											   }];
 						 }];
@@ -243,12 +169,18 @@
 									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 												   if(buttonIndex == 1) {
-													   [self downloadImage];
+													   [self downloadImage:nil];
 												   }
 											   }];
 						 }];
 	}
 }
+
+-(IBAction)makeAlbumThumbnail:(id)sender {
+    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+    [self.navigationController pushViewController:allCategoriesPickVC animated:YES];
+}
+
 -(void)saveImageToCameraRoll:(UIImage*)imageToSave
 {
 	UIImageWriteToSavedPhotosAlbum(imageToSave, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);

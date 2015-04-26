@@ -11,7 +11,8 @@
 #import "ImageService.h"
 #import "CategoriesData.h"
 #import "Model.h"
-#import "ImageDetailViewController.h"
+#import "ImageDetailViewController_iPad.h"
+#import "ImageDetailViewController_iPhone.h"
 #import "ImageDownloadView.h"
 #import "SortHeaderCollectionReusableView.h"
 #import "CategorySortViewController.h"
@@ -486,7 +487,11 @@
 		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 		if(!self.isSelect)
 		{
-			self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+                self.imageDetailView = [[ImageDetailViewController_iPhone alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+            } else {
+                self.imageDetailView = [[ImageDetailViewController_iPad alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+            }
 			self.imageDetailView.hidesBottomBarWhenPushed = YES;
 			self.imageDetailView.imgDetailDelegate = self;
 			[self.navigationController pushViewController:self.imageDetailView animated:YES];
