@@ -117,4 +117,16 @@
 	return count;
 }
 
+#pragma mark - debugging support -
+
+-(NSString *)description {
+    NSMutableArray * descriptionArray = [[NSMutableArray alloc] init];
+    [descriptionArray addObject:[NSString stringWithFormat:@"<%@: 0x%lx> = {", [self class], (unsigned long)self]];
+    
+    [descriptionArray addObject:[NSString stringWithFormat:@"tagList [%ld]  = %@", (long)self.tagList.count, self.tagList]];
+    [descriptionArray addObject:@"}"];
+    
+    return [descriptionArray componentsJoinedByString:@"\n"];
+}
+    
 @end

@@ -179,6 +179,12 @@
 
 "version" = "Version:";
 
+/* header over list of 'selected' keywords */
+"keywords_selected" = "Selected";
+
+/* header over list of 'all' available keywords */
+"keywords_all" = "All";
+
 // ----------------------- ERROR STRINGS -----------------------
 
 "error" = "Error";
