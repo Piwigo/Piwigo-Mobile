@@ -233,9 +233,16 @@ typedef enum {
 	{
 		TagsViewController *tagsVC = [TagsViewController new];
 		tagsVC.delegate = self;
-		tagsVC.alreadySelectedTags = self.imageDetails.tags;
+		tagsVC.alreadySelectedTags = [self.imageDetails.tags mutableCopy];
 		[self.navigationController pushViewController:tagsVC animated:YES];
-	}
+    } else if (indexPath.row == EditImageDetailsOrderAuthor) {
+        if (0 == self.imageDetails.author.length) { // only update if not yet set, dont overwrite
+            if (0 < [[[Model sharedInstance] defaultAuthor] length]) { // must know the default author
+                self.imageDetails.author = [[Model sharedInstance] defaultAuthor];
+                [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+        }
+    }
 	
 }
 
