@@ -11,6 +11,7 @@
 @protocol AlbumCollectionViewCellDelegate <NSObject>
 
 -(void)pushView:(UIViewController*)viewController;
+-(void)cellDidExitEditingMode:(UIViewController*)viewController;
 
 @end
 

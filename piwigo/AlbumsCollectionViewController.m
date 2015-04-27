@@ -147,6 +147,7 @@
                              } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                  [refreshControl endRefreshing];
                              }];
+    self.cellEditMode = NO;
 }
 
 #pragma mark - Buttons -
@@ -308,5 +309,8 @@
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
+-(void)cellDidExitEditingMode:(UIViewController *)viewController {
+    self.cellEditMode = NO;
+}
 
 @end

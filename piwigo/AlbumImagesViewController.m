@@ -546,4 +546,7 @@
 	[self.navigationController pushViewController:viewController animated:YES];
 }
 
+-(void)cellDidExitEditingMode:(UIViewController *)viewController {
+}
+
 @end

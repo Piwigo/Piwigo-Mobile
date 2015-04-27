@@ -234,6 +234,9 @@
                                                             [AlbumService deleteCategory:self.albumData.albumId OnCompletion:^(AFHTTPRequestOperation *operation, BOOL deletedSuccessfully) {
                                                                 if(deletedSuccessfully)
                                                                 {
+                                                                    if ([self.cellDelegate respondsToSelector:@selector(cellDidExitEditingMode:)]) {
+                                                                        [self.cellDelegate cellDidExitEditingMode:nil];
+                                                                    }
                                                                     [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
                                                                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
                                                                     [UIAlertView showWithTitle:NSLocalizedString(@"deleteCategorySuccess_title",  @"Delete Successful")

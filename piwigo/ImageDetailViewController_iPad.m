@@ -64,12 +64,6 @@
     EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
     editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
     editImageVC.isEdit = YES;
-// [self performSelector: @selector(presenteditImageViewController:) withObject:editImageVC afterDelay: 0];
-//
-//}
-//
-//// dont fill whole screen on iPad
-//-(void) presenteditImageViewController:(UIViewController *)aViewController {
     UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:editImageVC];
     [aNavigationController.navigationBar setBarStyle:UIBarStyleDefault];
     [aNavigationController setModalPresentationStyle:UIModalPresentationFormSheet];
