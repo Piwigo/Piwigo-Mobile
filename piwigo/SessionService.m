@@ -62,10 +62,7 @@
 						  [Model sharedInstance].version = [[responseObject objectForKey:@"result" ] objectForKey:@"version"];
 						  
 						  NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
-						  if([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"])
-						  {
-							  [Model sharedInstance].hasAdminRights = YES;
-						  }
+                          [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
 						  
 						  completion([responseObject objectForKey:@"result"]);
 					  }
