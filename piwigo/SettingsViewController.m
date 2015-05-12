@@ -61,7 +61,7 @@ typedef enum {
 							   @2,
 							   @1,
 							   @2,
-							   @4,
+							   @5,
 							   @2,
 							   @1
 							   ];
@@ -113,12 +113,15 @@ typedef enum {
 	SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
 	[Model sharedInstance].memoryCache = [memoryCell getCurrentSliderValue];
 	
-	SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingSectionImageUpload]];
-	[Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
-	SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
-	[Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
-	
-	[[Model sharedInstance] saveToDisk];
+	if([Model sharedInstance].resizeImageOnUpload)
+	{
+		SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
+		[Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
+		SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
+		[Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
+		
+		[[Model sharedInstance] saveToDisk];
+	}
 	
 	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
 														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
@@ -164,6 +167,13 @@ typedef enum {
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+	if(section == SettingSectionImageUpload) {
+		if([Model sharedInstance].resizeImageOnUpload) {
+			return [self.rowsInSection[section] integerValue];
+		} else {
+			return [self.rowsInSection[section] integerValue] - 2;
+		}
+	}
 	return [self.rowsInSection[section] integerValue];
 }
 
@@ -304,14 +314,35 @@ typedef enum {
 				}
 				case 2:
 				{
+					SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@""];
+					if(!cell) {
+						cell = [SwitchTableViewCell new];
+					}
+					
+					cell.leftLabel.text = @"Resize Before Upload";
+					[cell.cellSwitch setOn:[Model sharedInstance].resizeImageOnUpload];
+					cell.cellSwitchBlock = ^(BOOL switchState) {
+						[Model sharedInstance].resizeImageOnUpload = switchState;
+						if(![Model sharedInstance].resizeImageOnUpload) {
+							[Model sharedInstance].photoQuality = 95;
+						}
+						[[Model sharedInstance] saveToDisk];
+						[self.settingsTableView reloadSections:[NSIndexSet indexSetWithIndex:SettingSectionImageUpload] withRowAnimation:UITableViewRowAnimationAutomatic];
+					};
+					
+					tableViewCell = cell;
+					break;
+				}
+				case 3:
+				{
 					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
 					if(!cell)
 					{
 						cell = [SliderTableViewCell new];
 					}
-					cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"Photo Quality");
-					cell.slider.minimumValue = 0;
-					cell.slider.maximumValue = 100;
+					cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"Img Quality");
+					cell.slider.minimumValue = 50;
+					cell.slider.maximumValue = 98;
 					cell.sliderCountFormatString = @"%";
 					cell.incrementSliderBy = 1;
 					cell.sliderValue = [Model sharedInstance].photoQuality;
@@ -319,7 +350,7 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-				case 3:
+				case 4:
 				{
 					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
 					if(!cell)
@@ -469,30 +500,35 @@ typedef enum {
 					[self.navigationController pushViewController:selectPrivacy animated:YES];
 					break;
 				}
-				case 2: // Photo Quality
+				case 3: // Photo Quality
 				{
 					if(self.currentPopDown)
 					{
 						[self.currentPopDown removeFromSuperview];
 					}
-					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter a Photo Quality from 0 - 100")];
+					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter a Image Quality")];
 					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
 						self.darkenView.hidden = YES;
 						if(textEntered.length > 0)
 						{
-							SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingSectionImageUpload]];
-							photoQualityCell.sliderValue = [textEntered integerValue];
+							SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
+							
+							NSInteger valueEntered = [textEntered integerValue];
+							if(valueEntered < 50) valueEntered = 50;
+							else if(valueEntered > 98) valueEntered = 98;
+							
+							photoQualityCell.sliderValue = valueEntered;
 							if(!photoQualityCell)
 							{
-								[Model sharedInstance].photoQuality = [textEntered integerValue];
+								[Model sharedInstance].photoQuality = valueEntered;
 								[[Model sharedInstance] saveToDisk];
 							}
 						}
 					}];
 					break;
 				}
-				case 3:	// Photo Size
+				case 4:	// Photo Size
 				{
 					if(self.currentPopDown)
 					{
@@ -504,7 +540,7 @@ typedef enum {
 						self.darkenView.hidden = YES;
 						if(textEntered.length > 0)
 						{
-							SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
+							SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
 							photoSizeCell.sliderValue = [textEntered integerValue];
 							if(!photoSizeCell)
 							{

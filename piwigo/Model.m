@@ -27,7 +27,7 @@
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
-		instance.photoQuality = 0;
+		instance.photoQuality = 95;
 		instance.photoResize = 100;
 		
 		instance.diskCache = 10;
@@ -117,6 +117,7 @@
 		self.photoResize = modelData.photoResize;
 		self.loadAllCategoryInfo = modelData.loadAllCategoryInfo;
 		self.defaultSort = modelData.defaultSort;
+		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
 		
 	}
 }
@@ -143,6 +144,7 @@
 	[saveObject addObject:self.serverProtocol];
 	[saveObject addObject:[NSNumber numberWithBool:self.loadAllCategoryInfo]];
 	[saveObject addObject:@(self.defaultSort)];
+	[saveObject addObject:[ NSNumber numberWithBool:self.resizeImageOnUpload]];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -173,6 +175,12 @@
 		self.defaultSort = (kPiwigoSortCategory)[[savedData objectAtIndex:9] intValue];
 	} else {
 		self.defaultSort = kPiwigoSortCategoryIdDescending;
+	}
+	if(savedData.count > 10) {
+		self.resizeImageOnUpload = [[savedData objectAtIndex:10] boolValue];
+	} else {
+		self.resizeImageOnUpload = NO;
+		self.photoQuality = 95;
 	}
 	
 	return self;
