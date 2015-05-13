@@ -21,6 +21,8 @@
 #import "SwitchTableViewCell.h"
 #import "AlbumService.h"
 #import "CategorySortViewController.h"
+#import "PiwigoImageData.h"
+#import "DefaultImageSizeViewController.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -60,7 +62,7 @@ typedef enum {
 		self.rowsInSection = @[
 							   @2,
 							   @1,
-							   @2,
+							   @3,
 							   @5,
 							   @2,
 							   @1
@@ -263,9 +265,25 @@ typedef enum {
 						cell = [LabelTableViewCell new];
 					}
 					
-					cell.leftText = @"Default Sort";
-					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+					cell.leftText = NSLocalizedString(@"defaultSort", @"Default Sort");
+					cell.leftLabel.textAlignment = NSTextAlignmentRight;
 					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
+					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+					cell.leftLabelWidth = 110;
+					
+					tableViewCell = cell;
+					break;
+				}
+				case 2:
+				{
+					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultImageSize"];
+					if(!cell) {
+						cell = [LabelTableViewCell new];
+					}
+					
+					cell.leftText = NSLocalizedString(@"defaultImageSize", @"Default Img Size");
+					cell.leftLabel.textAlignment = NSTextAlignmentRight;
+					cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					cell.leftLabelWidth = 110;
 					
@@ -483,10 +501,23 @@ typedef enum {
 			break;
 		case SettingSectionGeneral:
 		{
-			CategorySortViewController *categoryVC = [CategorySortViewController new];
-			categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;
-			categoryVC.sortDelegate = self;
-			[self.navigationController pushViewController:categoryVC animated:YES];
+			switch(indexPath.row)
+			{
+				case 1:
+				{
+					CategorySortViewController *categoryVC = [CategorySortViewController new];
+					categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;
+					categoryVC.sortDelegate = self;
+					[self.navigationController pushViewController:categoryVC animated:YES];
+					break;
+				}
+				case 2:
+				{
+					DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
+					[self.navigationController pushViewController:defaultImageSizeVC animated:YES];
+					break;
+				}
+			}
 			break;
 		}
 		case SettingSectionImageUpload:

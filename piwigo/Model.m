@@ -8,6 +8,7 @@
 
 #import "Model.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "PiwigoImageData.h"
 
 @interface Model()
 
@@ -29,6 +30,7 @@
 		instance.hasAdminRights = NO;
 		instance.photoQuality = 95;
 		instance.photoResize = 100;
+		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
 		
 		instance.diskCache = 10;
 		instance.memoryCache = 80;
@@ -118,6 +120,7 @@
 		self.loadAllCategoryInfo = modelData.loadAllCategoryInfo;
 		self.defaultSort = modelData.defaultSort;
 		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
+		self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
 		
 	}
 }
@@ -145,6 +148,7 @@
 	[saveObject addObject:[NSNumber numberWithBool:self.loadAllCategoryInfo]];
 	[saveObject addObject:@(self.defaultSort)];
 	[saveObject addObject:[ NSNumber numberWithBool:self.resizeImageOnUpload]];
+	[saveObject addObject:@(self.defaultImagePreviewSize)];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -181,6 +185,11 @@
 	} else {
 		self.resizeImageOnUpload = NO;
 		self.photoQuality = 95;
+	}
+	if(savedData.count > 11) {
+		self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
+	} else {
+		self.defaultImagePreviewSize = kPiwigoImageSizeMedium;
 	}
 	
 	return self;

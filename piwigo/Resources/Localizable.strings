@@ -109,6 +109,7 @@
 
 "localAlbums" = "Local Albums";
 
+"defaultSort" = "Default Sort";
 "localImageSort_newest" = "Newest";
 "localImageSort_oldest" = "Oldest";
 "localImageSort_notUploaded" = "Not Uploaded";
@@ -177,6 +178,21 @@
 "pullToRefresh" = "Reload Images";
 
 "version" = "Version:";
+
+"defaultImageSize" = "Default Img Size";
+"defaultImageSizeTitle" = "Default Image Size";
+"defaultImageSizeHeader" = "Only supported if Multiple Sizes are set on your Piwigo";
+"imageSizeSquare" = "Square";
+"imageSizeThumbnail" = "Thumbnail";
+"imageSizexxSmall" = "Tiny";
+"imageSizexSmall" = "Extra Small";
+"imageSizeSmall" = "Small";
+"imageSizeMedium" = "Medium (defualt)";
+"imageSizeLarge" = "Large";
+"imageSizexLarge" = "Extra Large";
+"imageSizexxLarge" = "Huge";
+"imageSizexFullRes" = "Full Resolution";
+
 
 /* header over list of 'selected' keywords */
 "keywords_selected" = "Selected";

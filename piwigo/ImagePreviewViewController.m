@@ -9,6 +9,7 @@
 #import "ImagePreviewViewController.h"
 #import "PiwigoImageData.h"
 #import "ImageScrollView.h"
+#import "Model.h"
 
 @interface ImagePreviewViewController ()
 
@@ -44,8 +45,9 @@
 	
 	UIImage *thumb = [[UIImageView sharedImageCache] cachedImageForRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]];
 	
+	NSString *URLString = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
 	__weak typeof(self) weakSelf = self;
-	[self.scrollView.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.mediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+	[self.scrollView.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[URLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
 									 placeholderImage:thumb ? thumb : [UIImage imageNamed:@"placeholder"]
 							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								   weakSelf.scrollView.imageView.image = image;
