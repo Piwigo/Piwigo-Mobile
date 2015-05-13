@@ -452,7 +452,7 @@
 	{
 		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 		
-		if(self.albumData.images.count < indexPath.row) {
+		if(self.albumData.images.count >= indexPath.row) {
 			PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 			[cell setupWithImageData:imageData];
 			
@@ -461,8 +461,6 @@
 				cell.isSelected = YES;
 			}
 		}
-		
-		
 		
 		if(indexPath.row >= [collectionView numberOfItemsInSection:1] - 21 && self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
 		{
