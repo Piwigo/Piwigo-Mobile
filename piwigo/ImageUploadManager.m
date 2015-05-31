@@ -167,14 +167,16 @@
 	
 	NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
 	UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
-	CGSize newImageSize = CGSizeApplyAffineTransform(originalImage.size, CGAffineTransformMakeScale([Model sharedInstance].photoResize / 100.0, [Model sharedInstance].photoResize / 100.0));
+	CGFloat scale = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoResize / 100.0 : 1.0;
+	CGSize newImageSize = CGSizeApplyAffineTransform(originalImage.size, CGAffineTransformMakeScale(scale, scale));
 	UIImage *imageResized = [self scaleImage:originalImage toSize:newImageSize contentMode:UIViewContentModeScaleAspectFit];
 	
 	// edit the meta data for the correct size:
 	[imageMetadata setObject:@(imageResized.size.height) forKey:@"PixelHeight"];
 	[imageMetadata setObject:@(imageResized.size.width) forKey:@"PixelWidth"];
 	
-	NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, (100 - [Model sharedInstance].photoQuality) / 100.0);
+	CGFloat compressionQuality = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoQuality / 100.0 : .95;
+	NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
 	NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
 	
 	

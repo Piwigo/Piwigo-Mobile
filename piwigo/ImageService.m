@@ -147,9 +147,15 @@ NSString * const kGetImageOrderDescending = @"desc";
 	imageData.dateAvailable = [dateFormat dateFromString:dateString];
 	
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
-	imageData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
 	imageData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
+	imageData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
 	imageData.mediumPath = [[imageSizes objectForKey:@"medium"] objectForKey:@"url"];
+	imageData.xxSmall = [imageSizes valueForKeyPath:@"2small.url"];
+	imageData.xSmall = [imageSizes valueForKeyPath:@"xsmall.url"];
+	imageData.small = [imageSizes valueForKeyPath:@"small.url"];
+	imageData.large = [imageSizes valueForKeyPath:@"large.url"];
+	imageData.xLarge = [imageSizes valueForKeyPath:@"xlarge.url"];
+	imageData.xxLarge = [imageSizes valueForKeyPath:@"xxlarge.url"];
 	
 	NSArray *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];

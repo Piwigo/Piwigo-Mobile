@@ -26,6 +26,7 @@
 		D818E9FB1A74C18500733991 /* AlbumService.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FA1A74C18500733991 /* AlbumService.m */; };
 		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
 		D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
+		D81C99441B02DB250081C976 /* DefaultImageSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */; };
 		D82B8CC11A67820A000E47CA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC01A67820A000E47CA /* main.m */; };
 		D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC31A67820A000E47CA /* AppDelegate.m */; };
 		D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D82B8CCB1A67820A000E47CA /* Images.xcassets */; };
@@ -160,6 +161,8 @@
 		D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoAlbumData.m; sourceTree = "<group>"; };
 		D818EA001A74C7BA00733991 /* AlbumTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumTableViewCell.h; sourceTree = "<group>"; };
 		D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumTableViewCell.m; sourceTree = "<group>"; };
+		D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultImageSizeViewController.h; sourceTree = "<group>"; };
+		D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultImageSizeViewController.m; sourceTree = "<group>"; };
 		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D82B8CBF1A67820A000E47CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D82B8CC01A67820A000E47CA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -488,6 +491,15 @@
 			name = "Image Detail";
 			sourceTree = "<group>";
 		};
+		D81C993E1B02DA190081C976 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
+				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		D82B8CB21A67820A000E47CA = {
 			isa = PBXGroup;
 			children = (
@@ -769,6 +781,7 @@
 				D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */,
 				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
 				D8083A641A7FF30B00A95605 /* Cells */,
+				D81C993E1B02DA190081C976 /* Views */,
 				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
 				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
 				D8172E941AB9093100271DB0 /* EditPopDownView.h */,
@@ -1022,6 +1035,7 @@
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
 				D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
+				D81C99441B02DB250081C976 /* DefaultImageSizeViewController.m in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
 				D82B8CC11A67820A000E47CA /* main.m in Sources */,
 				D8083A671A7FF8F600A95605 /* ButtonTableViewCell.m in Sources */,

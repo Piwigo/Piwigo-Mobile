@@ -63,7 +63,7 @@
 		self.nameLabel = [UILabel new];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.nameLabel.font = [UIFont piwigoFontNormal];
-		self.nameLabel.textColor = [UIColor piwigoOrange];
+		self.nameLabel.textColor = [UIColor piwigoWhiteCream];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.nameLabel];

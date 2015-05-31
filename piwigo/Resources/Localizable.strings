@@ -92,12 +92,12 @@
 "settings_defaultAuthor" = "Default Author";
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Default Privacy";
-"settings_photoQuality" = "Compression";
+"settings_photoQuality" = "Img Quality";
 "settings_photoSize" = "Photo Size";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Memory";
 "settings_cacheMegabytes" = "MB";
-"settings_placeholderQuality" = "Enter a Photo Compression from 0 - 100";
+"settings_placeholderQuality" = "Enter a Image Quality from 50 - 98";
 "settings_placeholderSize" = "Enter a Photo Size from 1 - 100";
 "settings_placeholderDisk" = "Enter a Disk Cache from 10 - 500";
 "settings_placeholderMemory" = "Enter a Memory Cache from 10 - 500";
@@ -110,6 +110,7 @@
 
 "localAlbums" = "Local Albums";
 
+"defaultSort" = "Default Sort";
 "localImageSort_newest" = "Newest";
 "localImageSort_oldest" = "Oldest";
 "localImageSort_notUploaded" = "Not Uploaded";
@@ -178,6 +179,21 @@
 "pullToRefresh" = "Reload Images";
 
 "version" = "Version:";
+
+"defaultImageSize" = "Default Img Size";
+"defaultImageSizeTitle" = "Default Image Size";
+"defaultImageSizeHeader" = "Only supported if Multiple Sizes are set on your Piwigo";
+"imageSizeSquare" = "Square";
+"imageSizeThumbnail" = "Thumbnail";
+"imageSizexxSmall" = "Tiny";
+"imageSizexSmall" = "Extra Small";
+"imageSizeSmall" = "Small";
+"imageSizeMedium" = "Medium (defualt)";
+"imageSizeLarge" = "Large";
+"imageSizexLarge" = "Extra Large";
+"imageSizexxLarge" = "Huge";
+"imageSizexFullRes" = "Full Resolution";
+
 
 /* header over list of 'selected' keywords */
 "keywords_selected" = "Selected";
