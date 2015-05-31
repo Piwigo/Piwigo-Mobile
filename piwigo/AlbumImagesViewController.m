@@ -23,6 +23,7 @@
 #import "AlbumService.h"
 #import "LocalAlbumsViewController.h"
 #import "AlbumData.h"
+#import "CategoryMoveToViewController.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate >
 
@@ -30,12 +31,6 @@
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSString *currentSort;
 
-@property (nonatomic, strong) UIBarButtonItem *selectBarButton;
-@property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
-@property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
-@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
-@property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
-@property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger startDeleteTotalImages;
 @property (nonatomic, assign) NSInteger totalImagesToDownload;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
@@ -77,9 +72,6 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 		
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
-		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
-		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
-		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadToThisCategory)];
 		self.isSelect = NO;
 		self.selectedImageIds = [NSMutableArray new];
@@ -89,7 +81,9 @@
 		[AlbumService getAlbumListForCategory:self.categoryId
 								 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 									 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-								 } onFailure:nil];
+                                 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                     MyLog(@"Album list err: %@", error);
+                                 }];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
@@ -100,7 +94,11 @@
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-	
+    [self refresh:nil];
+    [self.albumData reloadAlbumOnCompletion:^{
+        [self.imagesCollection reloadData];
+    }];
+
 	[self loadNavButtons];
 	
 	if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0)
@@ -109,9 +107,9 @@
 	}
 }
 
--(void)viewDidAppear:(BOOL)animated
+-(void)viewDidLOad //Appear:(BOOL)animated
 {
-	[super viewDidAppear:animated];
+//	[super viewDidAppear:animated];
 	
 	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
 	refreshControl.backgroundColor = [UIColor piwigoOrange];
@@ -131,7 +129,10 @@
 	[AlbumService getAlbumListForCategory:self.categoryId
 							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 		[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-	} onFailure:nil];
+                             } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                 MyLog(@"Album list err: %@", error);
+                             }];
+
 }
 
 -(void)categoriesUpdated
@@ -139,20 +140,8 @@
 	[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 }
 
--(void)loadNavButtons
-{
-	if(!self.isSelect) {
-		self.navigationItem.rightBarButtonItems = @[self.selectBarButton, self.uploadBarButton];
-	} else {
-		if([Model sharedInstance].hasAdminRights)
-		{
-			self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton];
-		}
-		else
-		{
-			self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton];
-		}
-	}
+-(void)loadNavButtons {
+    MyLog(@"Error when calling this method. Did you call the device specific version?");
 }
 
 -(void)select
@@ -160,6 +149,7 @@
 	self.isSelect = YES;
 	[self loadNavButtons];
 }
+
 -(void)cancelSelect
 {
 	self.isSelect = NO;
@@ -206,7 +196,6 @@
 	}
 	
 	NSString *imageId = [NSString stringWithFormat:@"%@", @([self.selectedImageIds.lastObject integerValue])];
-	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
 	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:imageId]
 				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
 					 
@@ -262,7 +251,6 @@
 	self.downloadView.imageDownloadCount = self.totalImagesToDownload - self.selectedImageIds.count + 1;
 	
 	self.downloadView.hidden = NO;
-	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
 	
 	PiwigoImageData *downloadingImage = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject];
 	
@@ -361,6 +349,28 @@
 		[self.imagesCollection reloadData];
 	}];
 }
+
+
+#pragma mark  Move Selection -
+
+-(IBAction)moveSelection {
+    if (0 < self.selectedImageIds.count) {
+        NSPredicate *predicateSelection = [NSPredicate predicateWithFormat:@"SELF.imageId IN %@",self.selectedImageIds];
+        NSArray *selectedImages =  [self.albumData.images filteredArrayUsingPredicate:predicateSelection];
+        NSPredicate *predicateLeftOvers = [NSPredicate predicateWithFormat:@"not (SELF.imageId IN %@)",self.selectedImageIds];
+        NSArray *leftOverImages =  [self.albumData.images filteredArrayUsingPredicate:predicateLeftOvers];
+        for (PiwigoImageData *pid in leftOverImages) {
+            [self.albumData removeImage:pid];
+        }
+        [self cancelSelect]; // (!) will reset selectdImageIds
+        
+        CategoryMoveToViewController *moveController = [CategoryMoveToViewController new];
+        moveController.selectedImages = selectedImages;
+        [self.navigationController pushViewController:moveController animated:YES];
+    } // else ; // no selection no move
+}
+#pragma mark - UICollectionView Methods -
+
 
 #pragma mark -- UICollectionView Methods
 

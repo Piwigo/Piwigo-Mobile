@@ -173,6 +173,7 @@
 		[self.imageIds setValue:@(0) forKey:imageData.imageId];
 	}
 	self.imageList = newImageList;
+    self.numberOfImages = self.imageList.count;
 }
 
 -(void)removeImage:(PiwigoImageData*)image
@@ -195,6 +196,21 @@
 	newImageData.tags = imageUpload.tags;
 	
 	[self addImages:@[newImageData]];
+}
+
+-(void)updateCacheWithImageData:(PiwigoImageData*)imageData
+{
+    
+    PiwigoImageData *newImageData = [[CategoriesData sharedInstance] getImageForCategory:[imageData.categoryIds.firstObject integerValue] andId:[NSString stringWithFormat:@"%@", imageData.imageId]];
+    if (nil != newImageData){
+        newImageData.name = imageData.name;
+        newImageData.privacyLevel = imageData.privacyLevel;
+        newImageData.author = imageData.author;
+        newImageData.imageDescription = imageData.imageDescription;
+        newImageData.tags = imageData.tags;
+        
+        [self addImages:@[newImageData]];
+    }
 }
 
 -(NSInteger)getDepthOfCategory

@@ -11,10 +11,14 @@
 
 #import "AlbumCollectionViewCell.h"
 #import "CategoryCollectionViewCell.h"
+#import "Model.h"
 
 @interface AlbumImagesViewController : UIViewController <CategoryCollectionViewCellDelegate, AlbumCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
+@property (nonatomic, strong) UIBarButtonItem *selectBarButton;
+@property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
+@property (nonatomic, assign) BOOL isSelect;
 
 -(instancetype)initWithAlbumId:(NSInteger)albumId;
 
@@ -23,5 +27,15 @@
                          atIndexPath:(NSIndexPath *)indexPath;
 
 -(void)collectionView:(UICollectionView *)collectionView inSectionOneSidSelectItemAtIndexPath:(NSIndexPath *)indexPath;
+
+-(void)deleteImages;
+-(void)downloadImages;
+-(void)cancelSelect;
+-(IBAction)moveSelection;
+
+/**
+ Child must override
+ */
+-(void)loadNavButtons;
 
 @end

@@ -11,6 +11,7 @@
 FOUNDATION_EXPORT NSString * const kUploadImage;
 
 @class ImageUpload;
+@class PiwigoImageData;
 
 @interface UploadService : NetworkHandler
 
@@ -30,5 +31,11 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 							   onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
 							 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
 								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+
++(AFHTTPRequestOperation *)updateImageInfo:(PiwigoImageData *)imageInfo
+                                    category:(NSInteger)category
+                                  onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
+                                onCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+                                   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 @end

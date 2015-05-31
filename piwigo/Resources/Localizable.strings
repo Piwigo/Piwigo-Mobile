@@ -266,6 +266,9 @@
 
 "groupURLError" = "Invalid group URL";
 
-
-
-
+"AlbumImageMenueAdmin" = "Admin Menu";
+"AlbumImageButtonDelete" = "Delete";
+"AlbumImageButtonMove" = "Move";
+"AlbumImageButtonDownload" = "Download";
+"AlbumImageButtonEndSelect" = "End Selecting";
+"categoryMove_chooseAlbum" = "Select the destination";

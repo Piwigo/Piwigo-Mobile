@@ -16,6 +16,10 @@
 @property (nonatomic) BOOL cellEditMode;
 @property (nonatomic, strong) NSIndexPath *cellEditIndexPath;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
+@property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
+@property (nonatomic, strong) UIBarButtonItem *moveBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
@@ -25,14 +29,19 @@
     self = [super initWithAlbumId:albumId];
     if(self) {
         [self.imagesCollection registerNib:[AlbumCollectionViewCell nib]
-         // Class:[AlbumCollectionViewCell class]
                 forCellWithReuseIdentifier:[AlbumCollectionViewCell cellReuseIdentifier]];
-    }
+
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
+        self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
+        self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize target:self action:@selector(moveSelection)];
+}
     return self;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    self.imagesCollection.alwaysBounceVertical = YES;
     if([Model sharedInstance].hasAdminRights) {
         // attach long press gesture to collectionView
         if (nil == _longPressGestureRecognizer) {
@@ -130,6 +139,36 @@
     AlbumCollectionViewCell *cell = (AlbumCollectionViewCell *)[self.imagesCollection cellForItemAtIndexPath:indexPath];
     AlbumImagesViewController_iPad *album = [[AlbumImagesViewController_iPad alloc] initWithAlbumId:cell.albumData.albumId];
     [self.navigationController pushViewController:album animated:YES];
+}
+
+-(void)loadNavButtons
+{
+    if(!self.isSelect) {
+        [self.navigationItem setRightBarButtonItems:@[self.selectBarButton, self.uploadBarButton] animated:YES];
+    } else {
+        if([Model sharedInstance].hasAdminRights)
+        {
+            [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton, self.moveBarButton, self.downloadBarButton, self.deleteBarButton] animated:YES];
+        }
+        else
+        {
+            [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton, self.downloadBarButton] animated:YES];
+        }
+    }
+}
+
+-(void)deleteImages {
+    [self.navigationItem setRightBarButtonItem:self.cancelBarButton animated:YES];
+    [super deleteImages];
+}
+
+-(void)downloadImages {
+    [self.navigationItem setRightBarButtonItem:self.cancelBarButton animated:YES];
+    [super downloadImages];
+}
+
+-(void)cancelSelect {
+    [super cancelSelect];
 }
 
 #pragma mark AlbumTableViewCellDelegate Methods

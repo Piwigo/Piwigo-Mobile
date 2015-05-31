@@ -7,6 +7,7 @@
 //
 
 #import "PiwigoImageData.h"
+#import "Model.h"
 
 @implementation PiwigoImageData
 
@@ -92,6 +93,50 @@
 	}
 	
 	return sizeName;
+}
+
+-(NSString *)stringFor:(NSString *)aString {
+    NSString *objectIsNil = @"<nil>";
+    return (nil == aString ? objectIsNil : (0 == [aString length] ? @"''" : aString));
+ }
+-(NSString *)description {
+    
+    NSMutableArray * descriptionArray = [[NSMutableArray alloc] init];
+    [descriptionArray addObject:[NSString stringWithFormat:@"<%@: 0x%lx> = {", [self class], (unsigned long)self]];
+    
+    [descriptionArray addObject:[NSString stringWithFormat:@"name               = %@", [self stringFor:self.name]]];
+    if ([self.imageId isKindOfClass:[NSNumber class]]){
+    [descriptionArray addObject:[NSString stringWithFormat:@"imageId (number)   = %@", [self imageId]]];
+        
+    } else {
+    [descriptionArray addObject:[NSString stringWithFormat:@"imageId (String)   = %@", [self stringFor:self.imageId]]];
+    }
+    [descriptionArray addObject:[NSString stringWithFormat:@"fileName           = %@", [self stringFor:self.fileName]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"author             = %@", [self stringFor:self.author]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"privacyLevel       = %@", kPiwigoPrivacyString(self.privacyLevel)]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"imageDescription   = %@", [self stringFor:self.imageDescription]]];
+    
+    [descriptionArray addObject:[NSString stringWithFormat:@"isVideo            = %@", (self.isVideo ? @"Yes":@"NO")]];
+
+    [descriptionArray addObject:[NSString stringWithFormat:@"fullResPath        = %@", [self stringFor:self.fullResPath]]];
+
+    [descriptionArray addObject:[NSString stringWithFormat:@"tags [%ld]         = %@", (long)self.tags.count, self.tags]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"categoryIds [%ld]  = %@", (long)self.categoryIds.count, self.categoryIds]];
+
+    [descriptionArray addObject:[NSString stringWithFormat:@"squarePath         = %@", [self stringFor:self.squarePath]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"thumbPath          = %@", [self stringFor:self.thumbPath]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"mediumPath         = %@", [self stringFor:self.mediumPath]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"xxSmall            = %@", [self stringFor:self.xxSmall]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"xSmall             = %@", [self stringFor:self.xSmall]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"small              = %@", [self stringFor:self.small]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"large              = %@", [self stringFor:self.large]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"xLarge             = %@", [self stringFor:self.xLarge]]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"xxLarge            = %@", [self stringFor:self.xxLarge]]];
+
+
+    [descriptionArray addObject:@"}"];
+    
+    return [descriptionArray componentsJoinedByString:@"\n"];
 }
 
 @end

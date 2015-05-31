@@ -135,11 +135,11 @@
 	}
 	
 	NSDictionary *imageProperties = @{
-									  kPiwigoImagesUploadParamName : imageInfo.imageUploadName,
-									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(imageInfo.privacyLevel)],
-									  kPiwigoImagesUploadParamAuthor : imageInfo.author,
+									  kPiwigoImagesUploadParamName      : imageInfo.imageUploadName,
+									  kPiwigoImagesUploadParamPrivacy   : [NSString stringWithFormat:@"%@", @(imageInfo.privacyLevel)],
+									  kPiwigoImagesUploadParamAuthor    : imageInfo.author,
 									  kPiwigoImagesUploadParamDescription : imageInfo.imageDescription,
-									  kPiwigoImagesUploadParamTags : [tagIds copy]
+									  kPiwigoImagesUploadParamTags      : [tagIds copy]
 									  };
 	
 	return [self setImageInfoForImageWithId:[NSString stringWithFormat:@"%@", @(imageInfo.imageId)]
@@ -158,4 +158,35 @@
 								  onFailure:fail];
 }
 
++(AFHTTPRequestOperation *)updateImageInfo:(PiwigoImageData *)imageInfo
+                                  category:(NSInteger)category
+                                onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
+                              onCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+                                 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+{
+    AFHTTPRequestOperation *request = [self post:kPiwigoImageSetInfo
+                                   URLParameters:nil
+                                      parameters:@{
+                                                   @"image_id"  : [NSString stringWithFormat:@"%@", imageInfo.imageId],
+                                                   @"categories" : @(category),
+                                                   @"method" : @"pwg.images.setInfo",
+                                                   @"multiple_value_mode" : @"replace"
+                                                   }
+                                         success:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+                                             
+                                             // update the cache
+                                             [[[CategoriesData sharedInstance] getCategoryById:category] updateCacheWithImageData:imageInfo];
+                                             
+                                             if(completion)
+                                             {
+                                                 completion(operation, response);
+                                             }
+                                         }
+                                         failure:fail];
+    [request setDownloadProgressBlock:progress];
+    
+    return request;
+    
+    
+}
 @end
