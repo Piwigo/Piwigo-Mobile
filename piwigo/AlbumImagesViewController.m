@@ -94,10 +94,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-    [self refresh:nil];
-    [self.albumData reloadAlbumOnCompletion:^{
-        [self.imagesCollection reloadData];
-    }];
 
 	[self loadNavButtons];
 	
@@ -107,9 +103,9 @@
 	}
 }
 
--(void)viewDidLOad //Appear:(BOOL)animated
+-(void)viewDidAppear:(BOOL)animated
 {
-//	[super viewDidAppear:animated];
+	[super viewDidAppear:animated];
 	
 	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
 	refreshControl.backgroundColor = [UIColor piwigoOrange];
@@ -125,14 +121,14 @@
 		[refreshControl endRefreshing];
 		[self.imagesCollection reloadData];
 	}];
-	
-	[AlbumService getAlbumListForCategory:self.categoryId
-							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
-		[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    
+    [AlbumService getAlbumListForCategory:self.categoryId
+                             OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+                                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
                              } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                  MyLog(@"Album list err: %@", error);
                              }];
-
+    
 }
 
 -(void)categoriesUpdated
