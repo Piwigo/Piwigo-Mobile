@@ -91,9 +91,18 @@
 	return self;
 }
 
+-(void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationController.navigationBar.translucent = YES;
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+    [self refresh:nil];
+    [self.albumData reloadAlbumOnCompletion:^{
+        [self.imagesCollection reloadData];
+    }];
 
 	[self loadNavButtons];
 	
@@ -349,7 +358,7 @@
 
 #pragma mark  Move Selection -
 
--(IBAction)moveSelection {
+-(NSArray *)prepareSelectedImages {
     if (0 < self.selectedImageIds.count) {
         NSPredicate *predicateSelection = [NSPredicate predicateWithFormat:@"SELF.imageId IN %@",self.selectedImageIds];
         NSArray *selectedImages =  [self.albumData.images filteredArrayUsingPredicate:predicateSelection];
@@ -360,15 +369,13 @@
         }
         [self cancelSelect]; // (!) will reset selectdImageIds
         
-        CategoryMoveToViewController *moveController = [CategoryMoveToViewController new];
-        moveController.selectedImages = selectedImages;
-        [self.navigationController pushViewController:moveController animated:YES];
-    } // else ; // no selection no move
+        return selectedImages;
+    }  else  {
+        return @[];
+    }
 }
+
 #pragma mark - UICollectionView Methods -
-
-
-#pragma mark -- UICollectionView Methods
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {

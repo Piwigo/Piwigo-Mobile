@@ -100,10 +100,15 @@
 		DA4A28298929D36CA5D45198 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FC3D86091E15D966251DD6 /* libPods.a */; };
 		ED0391521ACC2BAB00301DEC /* AlbumsCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED0391511ACC2BAB00301DEC /* AlbumsCollectionViewController.m */; };
 		ED0391551ACC2D2800301DEC /* AlbumCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */; };
+		ED12182A1B2D902E00CB84AC /* UIDevice+DeviceType.m in Sources */ = {isa = PBXBuildFile; fileRef = ED1218291B2D902E00CB84AC /* UIDevice+DeviceType.m */; };
+		ED12182D1B2D9AB400CB84AC /* CategoryMoveToViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED12182C1B2D9AB400CB84AC /* CategoryMoveToViewController_iPhone.m */; };
+		ED1218301B2D9AC900CB84AC /* CategoryMoveToViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = ED12182F1B2D9AC900CB84AC /* CategoryMoveToViewController_iPad.m */; };
 		ED14235F1B1B31B400821315 /* CategoryMoveToViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED14235E1B1B31B400821315 /* CategoryMoveToViewController.m */; };
 		ED32AF221AE801E800D2D17D /* AlbumCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED32AF211AE801E800D2D17D /* AlbumCollectionViewCell.xib */; };
+		ED3D0AE91B220226006750D1 /* CategoryMoveToView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED3D0AE81B220226006750D1 /* CategoryMoveToView.xib */; };
 		ED533AA21AED18B700EE9D41 /* ImageDetailViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = ED533AA11AED18B700EE9D41 /* ImageDetailViewController_iPad.m */; };
 		ED533AA51AED18CE00EE9D41 /* ImageDetailViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED533AA41AED18CE00EE9D41 /* ImageDetailViewController_iPhone.m */; };
+		ED861B861B21DB2B00D05068 /* PiwigoPartialAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = ED861B851B21DB2B00D05068 /* PiwigoPartialAlbumData.m */; };
 		ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */; };
 		ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */; };
 		ED9B28D81ACED4A700CBF162 /* AlbumImagesViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9B28D71ACED4A700CBF162 /* AlbumImagesViewController_iPhone.m */; };
@@ -306,13 +311,22 @@
 		ED0391511ACC2BAB00301DEC /* AlbumsCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsCollectionViewController.m; sourceTree = "<group>"; };
 		ED0391531ACC2D2800301DEC /* AlbumCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumCollectionViewCell.h; sourceTree = "<group>"; };
 		ED0391541ACC2D2800301DEC /* AlbumCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumCollectionViewCell.m; sourceTree = "<group>"; };
+		ED1218281B2D902E00CB84AC /* UIDevice+DeviceType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+DeviceType.h"; sourceTree = "<group>"; };
+		ED1218291B2D902E00CB84AC /* UIDevice+DeviceType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+DeviceType.m"; sourceTree = "<group>"; };
+		ED12182B1B2D9AB400CB84AC /* CategoryMoveToViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryMoveToViewController_iPhone.h; sourceTree = "<group>"; };
+		ED12182C1B2D9AB400CB84AC /* CategoryMoveToViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryMoveToViewController_iPhone.m; sourceTree = "<group>"; };
+		ED12182E1B2D9AC900CB84AC /* CategoryMoveToViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryMoveToViewController_iPad.h; sourceTree = "<group>"; };
+		ED12182F1B2D9AC900CB84AC /* CategoryMoveToViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryMoveToViewController_iPad.m; sourceTree = "<group>"; };
 		ED14235D1B1B31B400821315 /* CategoryMoveToViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryMoveToViewController.h; sourceTree = "<group>"; };
 		ED14235E1B1B31B400821315 /* CategoryMoveToViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryMoveToViewController.m; sourceTree = "<group>"; };
 		ED32AF211AE801E800D2D17D /* AlbumCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumCollectionViewCell.xib; sourceTree = "<group>"; };
+		ED3D0AE81B220226006750D1 /* CategoryMoveToView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryMoveToView.xib; sourceTree = "<group>"; };
 		ED533AA01AED18B700EE9D41 /* ImageDetailViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailViewController_iPad.h; sourceTree = "<group>"; };
 		ED533AA11AED18B700EE9D41 /* ImageDetailViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController_iPad.m; sourceTree = "<group>"; };
 		ED533AA31AED18CE00EE9D41 /* ImageDetailViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailViewController_iPhone.h; sourceTree = "<group>"; };
 		ED533AA41AED18CE00EE9D41 /* ImageDetailViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController_iPhone.m; sourceTree = "<group>"; };
+		ED861B841B21DB2B00D05068 /* PiwigoPartialAlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoPartialAlbumData.h; sourceTree = "<group>"; };
+		ED861B851B21DB2B00D05068 /* PiwigoPartialAlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoPartialAlbumData.m; sourceTree = "<group>"; };
 		ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPhone.h; sourceTree = "<group>"; };
 		ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPhone.m; sourceTree = "<group>"; };
 		ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPad.h; sourceTree = "<group>"; };
@@ -468,6 +482,8 @@
 				D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */,
 				D89045AA1A94654D00A306FE /* PiwigoTagData.h */,
 				D89045AB1A94654D00A306FE /* PiwigoTagData.m */,
+				ED861B841B21DB2B00D05068 /* PiwigoPartialAlbumData.h */,
+				ED861B851B21DB2B00D05068 /* PiwigoPartialAlbumData.m */,
 			);
 			name = "Piwigo Data Wrappers";
 			sourceTree = "<group>";
@@ -547,6 +563,8 @@
 		D82B8CBE1A67820A000E47CA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				ED1218281B2D902E00CB84AC /* UIDevice+DeviceType.h */,
+				ED1218291B2D902E00CB84AC /* UIDevice+DeviceType.m */,
 				D8172DA61AB2805F00271DB0 /* MGSwipeTableCell */,
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D847B8341A7BFF1900231886 /* LEColorPicker */,
@@ -864,6 +882,11 @@
 			children = (
 				ED14235D1B1B31B400821315 /* CategoryMoveToViewController.h */,
 				ED14235E1B1B31B400821315 /* CategoryMoveToViewController.m */,
+				ED3D0AE81B220226006750D1 /* CategoryMoveToView.xib */,
+				ED12182B1B2D9AB400CB84AC /* CategoryMoveToViewController_iPhone.h */,
+				ED12182C1B2D9AB400CB84AC /* CategoryMoveToViewController_iPhone.m */,
+				ED12182E1B2D9AC900CB84AC /* CategoryMoveToViewController_iPad.h */,
+				ED12182F1B2D9AC900CB84AC /* CategoryMoveToViewController_iPad.m */,
 			);
 			name = "Picture Move";
 			sourceTree = "<group>";
@@ -953,6 +976,7 @@
 			files = (
 				D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */,
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
+				ED3D0AE91B220226006750D1 /* CategoryMoveToView.xib in Resources */,
 				D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */,
 				D82B8CCC1A67820A000E47CA /* Images.xcassets in Resources */,
 				ED32AF221AE801E800D2D17D /* AlbumCollectionViewCell.xib in Resources */,
@@ -1010,6 +1034,7 @@
 			files = (
 				D8EAC8C71AD773FD00D9D15E /* CategoryListViewController.m in Sources */,
 				D8172DAB1AB2805F00271DB0 /* MGSwipeButton.m in Sources */,
+				ED1218301B2D9AC900CB84AC /* CategoryMoveToViewController_iPad.m in Sources */,
 				D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */,
 				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
 				D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */,
@@ -1037,6 +1062,7 @@
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				D89045B21A94662300A306FE /* TagsData.m in Sources */,
+				ED12182D1B2D9AB400CB84AC /* CategoryMoveToViewController_iPhone.m in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
 				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
@@ -1049,6 +1075,7 @@
 				D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D81C99441B02DB250081C976 /* DefaultImageSizeViewController.m in Sources */,
+				ED861B861B21DB2B00D05068 /* PiwigoPartialAlbumData.m in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
 				D82B8CC11A67820A000E47CA /* main.m in Sources */,
 				D8083A671A7FF8F600A95605 /* ButtonTableViewCell.m in Sources */,
@@ -1056,6 +1083,7 @@
 				D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */,
 				D8B04C641A92B1BB00695281 /* EditImageLabelTableViewCell.m in Sources */,
 				D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */,
+				ED12182A1B2D902E00CB84AC /* UIDevice+DeviceType.m in Sources */,
 				D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */,
 				D8083AA21A81B34000A95605 /* ImageUpload.m in Sources */,
 				D89045AC1A94654D00A306FE /* PiwigoTagData.m in Sources */,

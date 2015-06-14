@@ -10,6 +10,8 @@
 
 #import "PiwigoAlbumData.h"
 #import "Model.h"
+#import "CategoryMoveToViewController_iPad.h"
+#import "UIDevice+DeviceType.h"
 
 @interface AlbumImagesViewController_iPad ()
 
@@ -171,6 +173,28 @@
     [super cancelSelect];
 }
 
+-(IBAction)moveSelection {
+    NSArray *selectedImages = [super prepareSelectedImages];
+    if (0 < selectedImages.count) {
+        CategoryMoveToViewController_iPad *moveController = [[CategoryMoveToViewController_iPad alloc] initWithSelectedImages:selectedImages];
+        UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:moveController];
+        [aNavigationController.navigationBar setBarStyle:UIBarStyleDefault];
+        [aNavigationController setModalPresentationStyle:UIModalPresentationFormSheet];
+        aNavigationController.navigationBar.barTintColor = [UIColor piwigoOrange];
+        aNavigationController.navigationBar.alpha           = 0.7f;
+        aNavigationController.navigationBar.translucent     = YES;
+        aNavigationController.navigationBar.tintColor       = [UIColor piwigoWhiteCream];
+
+        if([UIDevice isiOS7]) {
+            [self presentViewController:aNavigationController animated:YES completion:nil];
+            aNavigationController.view.superview.bounds = CGRectMake(0, 0, 320, 480);
+        } else {
+            aNavigationController.preferredContentSize = CGSizeMake(320, 480);
+            [self presentViewController:aNavigationController animated:YES completion:nil];
+        }
+
+    }
+}
 #pragma mark AlbumTableViewCellDelegate Methods
 
 -(void)pushView:(UIViewController *)viewController

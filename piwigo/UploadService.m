@@ -158,25 +158,26 @@
 								  onFailure:fail];
 }
 
-+(AFHTTPRequestOperation *)updateImageInfo:(PiwigoImageData *)imageInfo
-                                  category:(NSInteger)category
-                                onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
-                              onCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-                                 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(AFHTTPRequestOperation *)updateAlbumsWithImageInfo:(PiwigoImageData *)imageInfo
+                                          onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
+                                        onCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
+                                           onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
+    NSString *categoryIdString = [imageInfo.categoryIds componentsJoinedByString:@";"];
     AFHTTPRequestOperation *request = [self post:kPiwigoImageSetInfo
                                    URLParameters:nil
                                       parameters:@{
                                                    @"image_id"  : [NSString stringWithFormat:@"%@", imageInfo.imageId],
-                                                   @"categories" : @(category),
+                                                   @"categories" : categoryIdString,
                                                    @"method" : @"pwg.images.setInfo",
                                                    @"multiple_value_mode" : @"replace"
                                                    }
                                          success:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
                                              
                                              // update the cache
-                                             [[[CategoriesData sharedInstance] getCategoryById:category] updateCacheWithImageData:imageInfo];
-                                             
+                                             for (NSNumber *category in imageInfo.categoryIds) {
+                                             [[[CategoriesData sharedInstance] getCategoryById:[category integerValue]] updateCacheWithImageData:imageInfo];
+                                             }
                                              if(completion)
                                              {
                                                  completion(operation, response);

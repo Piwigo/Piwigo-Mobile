@@ -2,12 +2,12 @@
 //  AlbumImagesViewController_iPhone.m
 //  piwigo
 //
-//  Created by Olaf on 03.04.15.
+//  Created by Olaf Greck on 03.04.15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
 #import "AlbumImagesViewController_iPhone.h"
-
+#import "CategoryMoveToViewController_iPhone.h"
 
 @interface AlbumImagesViewController_iPhone ()
 
@@ -143,6 +143,15 @@
                                     }
                                 }];
     
+}
+
+-(IBAction)moveSelection {
+    NSArray *selectedImages = [super prepareSelectedImages];
+    if (0 < selectedImages.count) {
+    CategoryMoveToViewController_iPhone *moveController = [[CategoryMoveToViewController_iPhone alloc] initWithSelectedImages:selectedImages];
+        [self.navigationController setToolbarHidden:YES animated:YES];
+        [self.navigationController pushViewController:moveController animated:YES];
+    }
 }
 
 @end

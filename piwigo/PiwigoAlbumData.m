@@ -173,7 +173,6 @@
 		[self.imageIds setValue:@(0) forKey:imageData.imageId];
 	}
 	self.imageList = newImageList;
-    self.numberOfImages = self.imageList.count;
 }
 
 -(void)removeImage:(PiwigoImageData*)image

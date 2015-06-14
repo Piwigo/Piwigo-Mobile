@@ -271,4 +271,8 @@
 "AlbumImageButtonMove" = "Move";
 "AlbumImageButtonDownload" = "Download";
 "AlbumImageButtonEndSelect" = "End Selecting";
-"categoryMove_chooseAlbum" = "Select the destination";
+
+"categoryMove_chooseAlbum" = "Select linked Album";
+"keywords_Move" = "Move";
+"linked_Albums" = "Linked albums";
+"available_Album" = "Album";

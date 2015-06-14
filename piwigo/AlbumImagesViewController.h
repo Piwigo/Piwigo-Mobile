@@ -31,7 +31,8 @@
 -(void)deleteImages;
 -(void)downloadImages;
 -(void)cancelSelect;
--(IBAction)moveSelection;
+
+-(NSArray *)prepareSelectedImages;
 
 /**
  Child must override
