@@ -41,7 +41,7 @@
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
-	if(downloadedImageDataCount == totalImageCount)
+	if(downloadedImageDataCount >= totalImageCount)
 	{
 		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
 		if(completion)

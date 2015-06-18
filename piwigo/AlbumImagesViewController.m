@@ -142,7 +142,10 @@
 
 -(void)categoriesUpdated
 {
-	[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    [self.albumData loadMoreImagesOnCompletion:^{
+        [self.imagesCollection reloadData];
+    }];
+
 }
 
 -(void)loadNavButtons {
@@ -461,10 +464,9 @@
 			{
 				cell.isSelected = YES;
 			}
-		}
-		
-		if(indexPath.row >= [collectionView numberOfItemsInSection:1] - 21 && self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
-		{
+        }
+        if(indexPath.row >= [collectionView numberOfItemsInSection:1] - 21 && self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+        {
 			[self.albumData loadMoreImagesOnCompletion:^{
 				[self.imagesCollection reloadData];
 			}];

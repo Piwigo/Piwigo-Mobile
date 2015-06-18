@@ -173,8 +173,12 @@
         PiwigoAlbumData *newAlbum = [[CategoriesData sharedInstance] getCategoryById:[anAlbumId integerValue]];
         [newAlbum addImages:self.selectedImages];
     }
-    
-    [self.navigationController popToRootViewControllerAnimated:YES];
+
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 -(void)sendUpdatedImageInfo: (PiwigoImageData *)imageData {
@@ -182,9 +186,9 @@
                         onProgress:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
                             // progress
                         } onCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
-//                            [self performSelectorOnMainThread:@selector(postNotification:)
-//                                                   withObject:[NSNotification notificationWithName:kPiwigoNotificationCategoryDataUpdated object:nil]
-//                                                waitUntilDone:YES];
+                            [self performSelectorOnMainThread:@selector(postNotification:)
+                                                   withObject:[NSNotification notificationWithName:kPiwigoNotificationCategoryDataUpdated object:nil]
+                                                waitUntilDone:YES];
 
                         } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
                             // fail

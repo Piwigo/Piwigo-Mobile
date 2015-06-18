@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CategoryListViewController.h"
 
 @interface CategoryMoveToViewController : UIViewController <UISearchBarDelegate, UISearchDisplayDelegate>
 
