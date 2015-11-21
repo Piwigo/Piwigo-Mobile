@@ -328,10 +328,26 @@
 	NSString *subCategoryImages = @"";
 	if(self.albumData.numberOfSubAlbumImages != self.albumData.numberOfImages)
 	{
-		subCategoryImages = [NSString stringWithFormat:@", %@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImageCount", @"photos in sub-albums")];
-	}
+        if(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages > 1) {
+            subCategoryImages = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImagesCount", @"photos in sub-albums")];
+        } else {
+            subCategoryImages = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImageCount", @"photo in sub-albums")];
+        }
+        if(self.albumData.numberOfImages > 1) {
+            self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photosCount", @"photos"), subCategoryImages];
+        } else if (self.albumData.numberOfImages == 1) {
+            self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photo"), subCategoryImages];
+        } else {
+            self.numberOfImages.text = [NSString stringWithFormat:@"%@", subCategoryImages];
+        }
+    } else {
+        if(self.albumData.numberOfImages > 1) {
+            self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photosCount", @"photos")];
+        } else if (self.albumData.numberOfImages == 1) {
+            self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+        }
+    }
 	
-	self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@%@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photos"), subCategoryImages];
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateFormat:@"yyyy-MM-dd"];
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];
