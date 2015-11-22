@@ -38,11 +38,7 @@
 		
 		self.author = author;
 		self.imageDescription = description;
-        if (tags == nil) {
-            self.tags = [[NSArray alloc] init];     // New images have no tags
-        } else {
-            self.tags = tags;
-        }
+		self.tags = tags;
 	}
 	return self;
 }
