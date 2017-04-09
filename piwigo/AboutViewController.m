@@ -41,7 +41,7 @@
 		self.byLabel.font = [UIFont piwigoFontNormal];
 		self.byLabel.font = [self.byLabel.font fontWithSize:19];
 		self.byLabel.textColor = [UIColor piwigoGrayLight];
-		self.byLabel.text = @"By Spencer Baker";
+		self.byLabel.text = @"By Spencer Baker et al.";
 		[self.view addSubview:self.byLabel];
 		
 		self.versionLabel = [UILabel new];
@@ -72,7 +72,25 @@
 		[aboutAttributedString addAttribute:NSFontAttributeName
 									  value:[UIFont systemFontOfSize:18]
 									  range:piwigoDescriptionRange];
-		self.textView.attributedText = aboutAttributedString;
+
+        NSRange afnetworkingDescriptionRange = NSMakeRange(afnetworkingRange.location, [@"AFNetworking" length]);
+        [aboutAttributedString addAttribute:NSFontAttributeName
+                                      value:[UIFont systemFontOfSize:14]
+                                      range:afnetworkingDescriptionRange];
+
+        NSRange mgSwipeTCRange = [aboutString rangeOfString:@"MGSwipeTableCell"];
+        NSRange mgSwipeTCDescriptionRange = NSMakeRange(mgSwipeTCRange.location, [@"MGSwipeTableCell" length]);
+        [aboutAttributedString addAttribute:NSFontAttributeName
+                                      value:[UIFont systemFontOfSize:14]
+                                      range:mgSwipeTCDescriptionRange];
+        
+        NSRange uiCountingLabelRange = [aboutString rangeOfString:@"UICountingLabel"];
+        NSRange uiCountingLabelDescriptionRange = NSMakeRange(uiCountingLabelRange.location, [@"UICountingLabel" length]);
+        [aboutAttributedString addAttribute:NSFontAttributeName
+                                      value:[UIFont systemFontOfSize:14]
+                                      range:uiCountingLabelDescriptionRange];
+        
+        self.textView.attributedText = aboutAttributedString;
 		
 		[self addConstraints];
 	}
