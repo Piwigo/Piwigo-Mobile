@@ -46,8 +46,10 @@
 
 "imageUploadingTableCell_uploading" = "Uploading...";
 
-"categoryTableView_photoCount" = "photos";
-"categoryTableView_subCategoryImageCount" = "photos in sub-albums";
+"categoryTableView_photoCount" = "photo";
+"categoryTableView_photosCount" = "photos";
+"categoryTableView_subCategoryImageCount" = "photo in sub-albums";
+"categoryTableView_subCategoryImagesCount" = "photos in sub-albums";
 "categoryImageList_selectButton" = "Select";
 "categoryImageList_noDataError" = "Error No Data";
 
