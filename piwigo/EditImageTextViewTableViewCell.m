@@ -18,8 +18,11 @@
 @implementation EditImageTextViewTableViewCell
 
 - (void)awakeFromNib {
+
     // Initialization code
-	self.textView.font = [UIFont piwigoFontNormal];
+    [super awakeFromNib];
+
+    self.textView.font = [UIFont piwigoFontNormal];
 	self.textView.placeholder = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
 }
 
