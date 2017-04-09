@@ -331,7 +331,7 @@
         if(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages > 1) {
             subCategoryImages = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImagesCount", @"photos in sub-albums")];
         } else {
-            subCategoryImages = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImageCount", @"photo in sub-albums")];
+            subCategoryImages = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImageCount", @"photo in a sub-album")];
         }
         if(self.albumData.numberOfImages > 1) {
             self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photosCount", @"photos"), subCategoryImages];
