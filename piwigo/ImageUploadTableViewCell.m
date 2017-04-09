@@ -31,7 +31,9 @@
 @implementation ImageUploadTableViewCell
 
 - (void)awakeFromNib {
+    
     // Initialization code
+    [super awakeFromNib];
 	
 	self.uploadingOverlay = [UIView new];
 	self.uploadingOverlay.translatesAutoresizingMaskIntoConstraints = NO;
