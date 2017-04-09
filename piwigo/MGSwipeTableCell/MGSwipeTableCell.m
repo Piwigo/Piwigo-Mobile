@@ -413,6 +413,8 @@ static NSMutableSet * singleSwipePerTable;
 
 -(void) awakeFromNib
 {
+    [super awakeFromNib];
+
     if (!_panRecognizer) {
         [self initViews:YES];
     }
