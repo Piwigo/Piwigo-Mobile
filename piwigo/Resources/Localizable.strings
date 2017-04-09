@@ -48,7 +48,7 @@
 
 "categoryTableView_photoCount" = "photo";
 "categoryTableView_photosCount" = "photos";
-"categoryTableView_subCategoryImageCount" = "photo in sub-albums";
+"categoryTableView_subCategoryImageCount" = "photo in a sub-album";
 "categoryTableView_subCategoryImagesCount" = "photos in sub-albums";
 "categoryImageList_selectButton" = "Select";
 "categoryImageList_noDataError" = "Error No Data";
@@ -86,7 +86,7 @@
 "settingsHeader_imageSettings" = "Image Upload Settings";
 "settingsHeader_imageCache" = "Image Cache Settings";
 "settingsHeader_about" = "About";
-"settings_server" = "Web Address";
+"settings_server" = "Address";
 "settings_username" = "Username";
 "settings_notLoggedIn" = " - Not Logged In - ";
 "settings_logout" = "Logout";
@@ -102,9 +102,9 @@
 "settings_placeholderSize" = "Enter a Photo Size from 1 - 100";
 "settings_placeholderDisk" = "Enter a Disk Cache from 10 - 500";
 "settings_placeholderMemory" = "Enter a Memory Cache from 10 - 500";
-"settings_about" = "About Piwigo Mobile";
+"settings_about" = "Piwigo Mobile";
 "settings_general" = "General";
-"settings_loadAllCategories" = "Load All Albums on Start\n(Uncheck this if your albums aren't showing up)";
+"settings_loadAllCategories" = "Load All Albums on Start\n(Uncheck this if albums do not show up)";
 
 "logoutConfirmation_title" = "Logout";
 "logoutConfirmation_message" = "Are you sure you want to logout?";
@@ -181,7 +181,7 @@
 
 "version" = "Version:";
 
-"defaultImageSize" = "Default Img Size";
+"defaultImageSize" = "Default Size";
 "defaultImageSizeTitle" = "Default Image Size";
 "defaultImageSizeHeader" = "Only supported if Multiple Sizes are set on your Piwigo";
 "imageSizeSquare" = "Square";
@@ -189,7 +189,7 @@
 "imageSizexxSmall" = "Tiny";
 "imageSizexSmall" = "Extra Small";
 "imageSizeSmall" = "Small";
-"imageSizeMedium" = "Medium (defualt)";
+"imageSizeMedium" = "Medium (default)";
 "imageSizeLarge" = "Large";
 "imageSizexLarge" = "Extra Large";
 "imageSizexxLarge" = "Huge";
