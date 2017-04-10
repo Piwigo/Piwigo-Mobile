@@ -125,7 +125,7 @@
 -(void)updateViewConstraints {
     [self.view removeConstraints:self.portraitConstraints];
     [self.view removeConstraints:self.landscpaeConstraints];
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
         [self.view addConstraints:self.landscpaeConstraints];
     } else {
         [self.view addConstraints:self.portraitConstraints];
