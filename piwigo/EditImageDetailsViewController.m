@@ -86,12 +86,15 @@ typedef enum {
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-	if([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
+    [super viewWillDisappear:animated];
+    
+    if([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
 	{
 		[self prepareImageForChanges];
 		[self.delegate didFinishEditingDetails:self.imageDetails];
 	}
 }
+
 -(void)prepareImageForChanges
 {
 	[self updateImageDetails];
