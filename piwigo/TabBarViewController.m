@@ -45,8 +45,8 @@
 		settings.tabBarItem.selectedImage = [UIImage imageNamed:@"preferencesSelected"];
 		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:settings]];
 		
-		[[UITabBarItem appearance] setTitleTextAttributes:@{UITextAttributeTextColor : [UIColor blackColor]} forState:UIControlStateNormal];
-		[[UITabBarItem appearance] setTitleTextAttributes:@{UITextAttributeTextColor : [UIColor whiteColor]} forState:UIControlStateSelected];
+		[[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateNormal];
+		[[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateSelected];
 		
 		self.viewControllers = tabs;
 	}

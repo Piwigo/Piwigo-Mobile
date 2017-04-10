@@ -73,7 +73,7 @@ typedef enum {
 							   @30.0,
 							   @30.0,
 							   @30.0,
-							   @20.0
+							   @30.0
 							   ];
 		
 		self.settingsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -242,7 +242,7 @@ typedef enum {
 						cell = [SwitchTableViewCell new];
 					}
 					
-					cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Load All Albums on Start\n(Uncheck this if your albums aren't showing up)");
+					cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Load All Albums on Start\n(Uncheck this if albums do not show up)");
 					[cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
 					cell.cellSwitchBlock = ^(BOOL switchState) {
 						if(![Model sharedInstance].loadAllCategoryInfo && switchState)
@@ -259,14 +259,14 @@ typedef enum {
 				}
 				case 1:
 				{
-					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
+					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sort"];
 					if(!cell)
 					{
 						cell = [LabelTableViewCell new];
 					}
 					
 					cell.leftText = NSLocalizedString(@"defaultSort", @"Default Sort");
-					cell.leftLabel.textAlignment = NSTextAlignmentRight;
+					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					cell.leftLabelWidth = 110;
@@ -281,8 +281,8 @@ typedef enum {
 						cell = [LabelTableViewCell new];
 					}
 					
-					cell.leftText = NSLocalizedString(@"defaultImageSize", @"Default Img Size");
-					cell.leftLabel.textAlignment = NSTextAlignmentRight;
+					cell.leftText = NSLocalizedString(@"defaultImageSize", @"Default Size");
+					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 					cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					cell.leftLabelWidth = 110;
@@ -316,7 +316,7 @@ typedef enum {
 				}
 				case 1:
 				{
-					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
+					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
 					if(!cell)
 					{
 						cell = [LabelTableViewCell new];
@@ -332,7 +332,7 @@ typedef enum {
 				}
 				case 2:
 				{
-					SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@""];
+					SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"resize"];
 					if(!cell) {
 						cell = [SwitchTableViewCell new];
 					}
@@ -370,7 +370,7 @@ typedef enum {
 				}
 				case 4:
 				{
-					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
+					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoSize"];
 					if(!cell)
 					{
 						cell = [SliderTableViewCell new];
@@ -429,13 +429,13 @@ typedef enum {
 		}
 		case SettingSectionAbout:
 		{
-			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
+			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"about"];
 			if(!cell)
 			{
 				cell = [LabelTableViewCell new];
 			}
 			
-			cell.leftText = NSLocalizedString(@"settings_about", @"About Piwigo Mobile");
+			cell.leftText = NSLocalizedString(@"settings_about", @"Piwigo Mobile");
 			cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			cell.leftLabelWidth = 220;

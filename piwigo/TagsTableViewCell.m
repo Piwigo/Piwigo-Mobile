@@ -23,7 +23,9 @@
 - (void)awakeFromNib
 {
     // Initialization code
-	self.leftLabel.textColor = [UIColor piwigoGray];
+    [super awakeFromNib];
+
+    self.leftLabel.textColor = [UIColor piwigoGray];
 	
 	self.tagsString = @"";
 	self.leftLabel.text = NSLocalizedString(@"tags", @"Tags");

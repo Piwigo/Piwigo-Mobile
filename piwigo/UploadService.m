@@ -89,7 +89,7 @@
 	[chunkRequest setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
 		if(progress)
 		{
-			progress(totalBytesWritten, totalBytesExpectedToWrite, count + 1, chunks);
+			progress((NSInteger)totalBytesWritten, (NSInteger)totalBytesExpectedToWrite, count + 1, chunks);
 		}
 	}];
 }

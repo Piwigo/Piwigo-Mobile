@@ -19,7 +19,9 @@
 @implementation EditImageLabelTableViewCell
 
 - (void)awakeFromNib {
+
     // Initialization code
+    [super awakeFromNib];
 	
 	self.leftLabel.textColor = [UIColor piwigoGray];
 }
