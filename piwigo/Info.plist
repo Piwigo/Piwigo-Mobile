@@ -22,10 +22,14 @@
 	<string>13</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>so that it will be able to upload images on your galleries.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>LacunaRegular.TTF</string>
 	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch Screen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -43,7 +47,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>so that it will be able to upload images on your galleries.</string>
 </dict>
 </plist>
