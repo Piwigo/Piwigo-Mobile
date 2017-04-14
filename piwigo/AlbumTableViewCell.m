@@ -325,31 +325,33 @@
 	
 	self.albumName.text = self.albumData.name;
 	
-	NSString *subCategoryImages = @"";
-	if(self.albumData.numberOfSubAlbumImages != self.albumData.numberOfImages)
-	{
-        if(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages > 1) {
-            subCategoryImages = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImagesCount", @"photos in sub-albums")];
-        } else {
-            subCategoryImages = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfSubAlbumImages - self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_subCategoryImageCount", @"photo in a sub-album")];
-        }
-        if(self.albumData.numberOfImages > 1) {
-            self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photosCount", @"photos"), subCategoryImages];
-        } else if (self.albumData.numberOfImages == 1) {
-            self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photo"), subCategoryImages];
-        } else {
-            self.numberOfImages.text = [NSString stringWithFormat:@"%@", subCategoryImages];
-        }
+    if (self.albumData.numberOfSubCategories == 0) {
+        
+        // There are no sub-albums
+        self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@",
+                                    (long)self.albumData.numberOfImages,
+                                    self.albumData.numberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+        
+    } else if (self.albumData.numberOfImages + self.albumData.numberOfSubAlbumImages == 0) {
+            
+        // There are no images but sub-albums
+        self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@",
+                                    (long)self.albumData.numberOfSubCategories,
+                                    self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
+
     } else {
-        if(self.albumData.numberOfImages > 1) {
-            self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photosCount", @"photos")];
-        } else if (self.albumData.numberOfImages == 1) {
-            self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@", @(self.albumData.numberOfImages), NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
-        }
+        
+        // There are images and sub-albums
+        self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@, %ld %@",
+                                    (long)self.albumData.numberOfImages + self.albumData.numberOfSubAlbumImages,
+                                    self.albumData.numberOfImages  + self.albumData.numberOfSubAlbumImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo"),
+                                    (long)self.albumData.numberOfSubCategories,
+                                    self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
-	
+    
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-	[formatter setDateFormat:@"yyyy-MM-dd"];
+    formatter.formatterBehavior = NSDateFormatterBehavior10_4;
+    formatter.dateStyle = NSDateFormatterShortStyle;
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];
 	
 	NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
