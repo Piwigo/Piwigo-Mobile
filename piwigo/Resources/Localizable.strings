@@ -211,9 +211,10 @@
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given web address";
-"loginError_protocol" = "This might be because your server doesn't support https";
+"loginError_HTTPS" = "This might be because your server doesn't support HTTPS.";
+"loginError_HTTP" = "This might be because your server doesn't support HTTP.";
 "loginEmptyServer_title" = "Enter a Web Address";
-"loginEmptyServer_message" = "Please enter a Piwigo web address in order to proceed";
+"loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
 
 "sessionStatusError_title" = "Authentication Fail";
 "sessionStatusError_message" = "Failed to authenticate with the server.\nTry logging in again.";

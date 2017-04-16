@@ -115,7 +115,7 @@
 	if(self.serverTextField.textField.text.length <= 0)
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"loginEmptyServer_title", @"Enter a Web Address")
-						   message:NSLocalizedString(@"loginEmptyServer_message", @"Please enter a Piwigo web address in order to proceed")
+						   message:NSLocalizedString(@"loginEmptyServer_message", @"Please select a protocol and enter a Piwigo web address in order to proceed.")
 				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
@@ -148,13 +148,31 @@
 								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 									 [self hideLoading];
 
-									 NSString *extraErrorString = @"";
-									 if(error.code == -1012)
-									 {
-										 extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_protocol", @"This might be because your server doesn't support https")];
-									 }
-									 
-									 [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+									 NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
+                                     NSString *extraErrorString = @"";
+                                     switch (error.code) {
+                                         case -1011:
+                                             extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_HTTP", @"This might be because your server doesn't support HTTP.")];
+                                             break;
+                                             
+                                         case -1012:
+                                             extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_HTTPS", @"This might be because your server doesn't support HTTPS.")];
+                                             break;
+                                             
+                                         default:
+                                             break;
+                                     }
+//									 if(error.code == -1012)
+//									 {
+//										 extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_HTTPS", @"This might be because your server doesn't support HTTPS.")];
+//									 }
+//									 
+//                                     if(error.code == -1011)
+//                                     {
+//                                         extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_HTTP", @"This might be because your server doesn't support HTTP.")];
+//                                     }
+
+                                     [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
 														message:[NSString stringWithFormat:@"%@%@", [error localizedDescription], extraErrorString]
 											  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
 											  otherButtonTitles:nil

@@ -23,7 +23,7 @@
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
 		
-		instance.serverProtocol = @"http://";
+		instance.serverProtocol = @"https://";
 		instance.imagesPerPage = 100;
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
@@ -167,7 +167,7 @@
 	{
 		self.serverProtocol = [savedData objectAtIndex:7];
 	} else {
-		self.serverProtocol = @"http://";
+		self.serverProtocol = @"https://";
 	}
 	if(savedData.count > 8)
 	{
