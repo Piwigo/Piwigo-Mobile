@@ -162,15 +162,6 @@
                                          default:
                                              break;
                                      }
-//									 if(error.code == -1012)
-//									 {
-//										 extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_HTTPS", @"This might be because your server doesn't support HTTPS.")];
-//									 }
-//									 
-//                                     if(error.code == -1011)
-//                                     {
-//                                         extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_HTTP", @"This might be because your server doesn't support HTTP.")];
-//                                     }
 
                                      [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
 														message:[NSString stringWithFormat:@"%@%@", [error localizedDescription], extraErrorString]
