@@ -11,7 +11,8 @@
 @interface AboutViewController ()
 
 @property (nonatomic, strong) UILabel *piwigoTitle;
-@property (nonatomic, strong) UILabel *byLabel;
+@property (nonatomic, strong) UILabel *byLabel1;
+@property (nonatomic, strong) UILabel *byLabel2;
 @property (nonatomic, strong) UILabel *versionLabel;
 
 @property (nonatomic, strong) UITextView *textView;
@@ -36,15 +37,23 @@
 		self.piwigoTitle.text = @"Piwigo Mobile";
 		[self.view addSubview:self.piwigoTitle];
 		
-		self.byLabel = [UILabel new];
-		self.byLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.byLabel.font = [UIFont piwigoFontNormal];
-		self.byLabel.font = [self.byLabel.font fontWithSize:19];
-		self.byLabel.textColor = [UIColor piwigoGrayLight];
-		self.byLabel.text = @"By Spencer Baker et al.";
-		[self.view addSubview:self.byLabel];
+		self.byLabel1 = [UILabel new];
+		self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
+		self.byLabel1.font = [UIFont piwigoFontNormal];
+		self.byLabel1.font = [self.byLabel1.font fontWithSize:19];
+		self.byLabel1.textColor = [UIColor piwigoGrayLight];
+		self.byLabel1.text = @"By Spencer Baker, Olaf Greck,";
+		[self.view addSubview:self.byLabel1];
 		
-		self.versionLabel = [UILabel new];
+        self.byLabel2 = [UILabel new];
+        self.byLabel2.translatesAutoresizingMaskIntoConstraints = NO;
+        self.byLabel2.font = [UIFont piwigoFontNormal];
+        self.byLabel2.font = [self.byLabel2.font fontWithSize:19];
+        self.byLabel2.textColor = [UIColor piwigoGrayLight];
+        self.byLabel2.text = @"and Eddy Lelièvre-Berna";
+        [self.view addSubview:self.byLabel2];
+
+        self.versionLabel = [UILabel new];
 		self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.versionLabel.font = [UIFont piwigoFontNormal];
 		self.versionLabel.font = [self.versionLabel.font fontWithSize:12];
@@ -101,16 +110,18 @@
 {
 	NSDictionary *views = @{
 							@"title" : self.piwigoTitle,
-							@"by" : self.byLabel,
+							@"by1" : self.byLabel1,
+                            @"by2" : self.byLabel2,
 							@"usu" : self.versionLabel,
 							@"textView" : self.textView
 							};
 	
 	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoTitle]];
-	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel]];
+	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel1]];
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
 	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
 	
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-15-[by][usu]-20-[textView]-65-|"
+	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-15-[by1]-[by2][usu]-20-[textView]-65-|"
 																	  options:kNilOptions
 																	  metrics:nil
 																		views:views]];

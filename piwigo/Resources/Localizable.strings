@@ -37,7 +37,7 @@
 
 "imageUploadDetails_title" = "Title:";
 "imageUploadDetails_author" = "Author:";
-"imageUploadDetails_privacy" = "Privacy";
+"imageUploadDetails_privacy" = "Privacy:";
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Description:";
 "imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
@@ -143,8 +143,11 @@
 "categorySort_videosOnly" = "Videos Only";
 "categorySort_imagesOnly" = "Images Only";
 
-"editImageDetails_name" = "Image Name";
-"editImageDetails_author" = "Author";
+"editImageDetails_title" = "Title:";
+"editImageDetails_titlePlaceholder" = "Title";
+"editImageDetails_author" = "Author:";
+"editImageDetails_tags" = "Tags:";
+"editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
 
 "categoryCellOption_rename" = "Rename";

@@ -307,7 +307,7 @@ typedef enum {
 					
 					cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Default Author");
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
-					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author");
+					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
 					cell.rightTextField.delegate = self;
 					cell.rightTextField.tag = kImageUploadSettingAuthor;
 					
