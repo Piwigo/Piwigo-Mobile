@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "EditImageDetailsViewController.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
@@ -29,6 +30,7 @@ typedef enum {
 
 @interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIImageView *image;
 @property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewBottomConstraint;
 
@@ -73,7 +75,13 @@ typedef enum {
 	[super viewWillAppear:animated];
 	
 	self.navigationController.navigationBarHidden = NO;
-	
+
+    // Hide the 1px header
+    self.editImageDetailsTableView.contentInset = UIEdgeInsetsMake(-1.0f, 0.0f, 0.0f, 0.0);
+
+    ALAsset *imageAsset = self.imageDetails.imageAsset;
+    self.image.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
+
 	if(self.isEdit)
 	{
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
@@ -168,9 +176,15 @@ typedef enum {
 
 #pragma mark UITableView methods
 
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 1.0f;        // To hide the section header
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.row == EditImageDetailsOrderDescription) return 100.0;
+    if((indexPath.row == EditImageDetailsOrderPrivacy) ||(indexPath.row == EditImageDetailsOrderTags)) return 68.0;
+    if(indexPath.row == EditImageDetailsOrderDescription) return 100.0;
 	return 44.0;
 }
 
@@ -188,19 +202,19 @@ typedef enum {
 		case EditImageDetailsOrderImageName:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"textField"];
-			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_name", @"Image Name") andTextField:self.imageDetails.imageUploadName withPlaceholder:NSLocalizedString(@"editImageDetails_name", @"Image Name")];
+			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_title", @"Title:") andTextField:self.imageDetails.imageUploadName withPlaceholder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")];
 			break;
 		}
 		case EditImageDetailsOrderAuthor:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"textField"];
-			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_author", @"Author") andTextField:self.imageDetails.author withPlaceholder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")];
+			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_author", @"Author:") andTextField:self.imageDetails.author withPlaceholder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")];
 			break;
 		}
 		case EditImageDetailsOrderPrivacy:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"label"];
-			[((EditImageLabelTableViewCell*)cell) setLeftLabelText:NSLocalizedString(@"privacyLevel", @"Privacy Level")];
+			[((EditImageLabelTableViewCell*)cell) setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
 			[((EditImageLabelTableViewCell*)cell) setPrivacyLevel:self.imageDetails.privacyLevel];
 			break;
 		}
