@@ -116,7 +116,7 @@
 {
 	self.image.image = nil;
 	self.imageTitle.text = @"";
-	self.imageTitle.text = @"";
+    self.privacyLevel.text = @"";
 	self.author.text = @"";
 	self.tags.text = @"";
 	self.descriptionLabel.text = @"";
