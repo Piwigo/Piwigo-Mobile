@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -876,11 +876,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0830;
-				ORGANIZATIONNAME = bakercrew;
+				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
 					D82B8CBA1A67820A000E47CA = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = ZU5THW8T5W;
+						DevelopmentTeam = ZEC3W885H6;
 						ProvisioningStyle = Manual;
 					};
 					D82B8CD31A67820A000E47CA = {
@@ -892,7 +892,7 @@
 				};
 			};
 			buildConfigurationList = D82B8CB61A67820A000E47CA /* Build configuration list for PBXProject "piwigo" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
