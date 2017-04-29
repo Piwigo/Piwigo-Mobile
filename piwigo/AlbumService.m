@@ -108,11 +108,15 @@
 }
 
 +(AFHTTPRequestOperation*)createCategoryWithName:(NSString*)categoryName
+                                      withStatus:(NSString*)categoryStatus
 									OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL createdSuccessfully))completion
 									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesAdd
-		URLParameters:@{@"name" : [categoryName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]}
+		URLParameters:@{
+                        @"name" : [categoryName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+                        @"status" : categoryStatus
+                        }
 		   parameters:nil
 			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
 				  

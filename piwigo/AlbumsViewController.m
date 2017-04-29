@@ -124,6 +124,7 @@
 						  if(buttonIndex == 1)
 						  {
 							  [AlbumService createCategoryWithName:[alertView textFieldAtIndex:0].text
+                                                        withStatus:@"public"
 													  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL createdSuccessfully) {
 														  if(createdSuccessfully)
 														  {

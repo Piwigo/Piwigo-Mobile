@@ -17,6 +17,7 @@
 										onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
 +(AFHTTPRequestOperation*)createCategoryWithName:(NSString*)categoryName
+                                      withStatus:(NSString*)categoryStatus
 									OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL createdSuccessfully))completion
 									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
 
