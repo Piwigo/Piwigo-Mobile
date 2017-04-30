@@ -183,18 +183,19 @@
 {
 	if(self.selectedImageIds.count <= 0) return;
 	
-	NSString *titleString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"deleteImage_delete", @"Delete"), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_iamgePlural", @"Images") : NSLocalizedString(@"deleteImage_iamgeSingular", @"Image")];
-	NSString *messageString = [NSString stringWithFormat:NSLocalizedString(@"delteImage_message", @"Are you sure you want to delete the selected %@ %@ This cannot be undone!"), @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_iamgePlural", @"Images") : NSLocalizedString(@"deleteImage_iamgeSingular", @"Image")];
+	NSString *titleString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"deleteImage_delete", @"Delete"), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_imagePlural", @"Images") : NSLocalizedString(@"deleteImage_imageSingular", @"Image")];
+	NSString *messageString = [NSString stringWithFormat:NSLocalizedString(@"delteImage_message", @"Are you sure you want to delete the selected %@ %@ This cannot be undone!"), @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_imagePlural", @"Images") : NSLocalizedString(@"deleteImage_imageSingular", @"Image")];
 	[UIAlertView showWithTitle:titleString
 					   message:messageString
-			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Nevermind")
+			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Cancel")
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1) {
 							  self.startDeleteTotalImages = self.selectedImageIds.count;
 							  [self deleteSelected];
 						  }
-					  }];
+					  }
+     ];
 }
 
 -(void)deleteSelected
@@ -205,30 +206,54 @@
 		return;
 	}
 	
-	NSString *imageId = [NSString stringWithFormat:@"%@", @([self.selectedImageIds.lastObject integerValue])];
+//	NSString *imageId = [NSString stringWithFormat:@"%@", @([self.selectedImageIds.lastObject integerValue])];
 	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
-	[ImageService deleteImage:[[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:imageId]
-				 ListOnCompletion:^(AFHTTPRequestOperation *operation) {
-					 
-					 [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
-					 
-					 [self.selectedImageIds removeLastObject];
-					 NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
-					 self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
-					 [self.imagesCollection reloadData];
-					 [self deleteSelected];
-				 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					 [UIAlertView showWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-										message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
-							  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
-							  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
-									   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-										   if(buttonIndex == 1)
-										   {
-											   [self deleteSelected];
-										   }
-									   }];
-				 }];
+    
+//    PiwigoImageData* imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:imageId];
+//    if (imageData == nil) {
+    // Image data are not always available —> Load them
+    [ImageService getImageInfoById:[self.selectedImageIds.lastObject integerValue]
+     
+              ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+
+                  // Let's delete the image
+                  [ImageService deleteImage:imageData ListOnCompletion:^(AFHTTPRequestOperation *operation) {
+                      
+                      [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
+                      
+                      [self.selectedImageIds removeLastObject];
+                      NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
+                      self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
+                      [self.imagesCollection reloadData];
+                      [self deleteSelected];
+                  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                      [UIAlertView showWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                                         message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                               cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+                               otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
+                                        tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                            if(buttonIndex == 1)
+                                            {
+                                                [self deleteSelected];
+                                            }
+                                        }];
+                  }];
+
+              } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                  [UIAlertView showWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+                                     message:NSLocalizedString(@"imageDetailsFetchError_continueMessage", @"Fetching the image data failed\nNContinue?")
+                           cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+                           otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
+                                    tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                        if(buttonIndex == 1)
+                                        {
+                                            [self deleteSelected];
+                                        }
+                                    }];
+              }
+     ];
+//    }
+
 }
 
 -(void)downloadImages
@@ -236,7 +261,7 @@
 	if(self.selectedImageIds.count <= 0) return;
 	
 	[UIAlertView showWithTitle:NSLocalizedString(@"downloadImage", @"Download Images")
-					   message:[NSString stringWithFormat:NSLocalizedString(@"downloadImage_confirmation", @"Are you sure you want to downlaod the selected %@ %@?"), @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_iamgePlural", @"Images") : NSLocalizedString(@"deleteImage_iamgeSingular", @"Image")]
+					   message:[NSString stringWithFormat:NSLocalizedString(@"downloadImage_confirmation", @"Are you sure you want to downlaod the selected %@ %@?"), @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_imagePlural", @"Images") : NSLocalizedString(@"deleteImage_imageSingular", @"Image")]
 			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -313,7 +338,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 		[self cancelSelect];
@@ -331,7 +356,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 	}
