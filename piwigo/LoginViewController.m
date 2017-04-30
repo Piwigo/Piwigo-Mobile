@@ -116,7 +116,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"loginEmptyServer_title", @"Enter a Web Address")
 						   message:NSLocalizedString(@"loginEmptyServer_message", @"Please select a protocol and enter a Piwigo web address in order to proceed.")
-				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 		
@@ -148,24 +148,10 @@
 								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 									 [self hideLoading];
 
-									 NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
-                                     NSString *extraErrorString = @"";
-                                     switch (error.code) {
-                                         case -1011:
-                                             extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_HTTP", @"This might be because your server doesn't support HTTP.")];
-                                             break;
-                                             
-                                         case -1012:
-                                             extraErrorString = [NSString stringWithFormat:@"\n%@", NSLocalizedString(@"loginError_HTTPS", @"This might be because your server doesn't support HTTPS.")];
-                                             break;
-                                             
-                                         default:
-                                             break;
-                                     }
-
+									 NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);                                     
                                      [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-														message:[NSString stringWithFormat:@"%@%@", [error localizedDescription], extraErrorString]
-											  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+														message:[error localizedDescription]
+											  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 											  otherButtonTitles:nil
 													   tapBlock:nil];
 								 }];
@@ -217,7 +203,7 @@
 								  }];
 			}
 			else
-			{	// their version is okay
+			{	// their version is Ok
 				AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 				[appDelegate loadNavigation];
 			}
@@ -227,7 +213,7 @@
 			UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
 																message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
 															   delegate:nil
-													  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+													  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 													  otherButtonTitles:nil];
 			[failAlert show];
 		}
@@ -252,7 +238,7 @@
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"loginError_title", @"Login Fail")
 													message:NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")
 												   delegate:nil
-										  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+										  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 										  otherButtonTitles:nil];
 	[alert show];
 }

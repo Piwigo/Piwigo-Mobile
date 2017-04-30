@@ -209,7 +209,7 @@
 
 													  [UIAlertView showWithTitle:NSLocalizedString(@"renameCategorySuccess_title", @"Rename Success")
 																		 message:NSLocalizedString(@"renameCategorySuccess_message", @"Successfully renamed your album")
-															   cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+															   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 															   otherButtonTitles:nil
 																		tapBlock:nil];
 												  }
@@ -233,7 +233,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
 					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
@@ -278,7 +278,7 @@
 																	[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 																	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategorySuccess_title",  @"Delete Successful")
 																					   message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategorySuccess_message", @"Deleted \"%@\" album successfully"), self.albumData.name]
-																			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+																			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 																			 otherButtonTitles:nil
 																					  tapBlock:nil];
 																}
@@ -294,7 +294,7 @@
 														{	// they entered the wrong amount
 															[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match")
 																			   message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album")
-																	 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+																	 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 																	 otherButtonTitles:nil
 																			  tapBlock:nil];
 														}
@@ -312,7 +312,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail")
 					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }

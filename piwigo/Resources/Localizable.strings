@@ -26,7 +26,7 @@
 "privacyLevel" = "Privacy Level";
 "tags" = "Tags";
 
-"alertOkayButton" = "Okay";
+"alertOkButton" = "Ok";
 "alertYesButton" = "Yes";
 "alertNoButton" = "No";
 "alertTryAgainButton" = "Try Again";
@@ -54,18 +54,18 @@
 "categoryImageList_noDataError" = "Error No Data";
 
 "deleteImage_delete" = "Delete";
-"deleteImage_iamgeSingular" = "Image";
-"deleteImage_iamgePlural" = "Images";
+"deleteImage_imageSingular" = "Image";
+"deleteImage_imagePlural" = "Images";
 "delteImage_message" = "Are you sure you want to delete the selected %@ %@? This cannot be undone!";
-"deleteImage_cancelButton" = "Nevermind";
+"deleteImage_cancelButton" = "Cancel";
 "deleteImageProgress_title" = "Deleting %@%% Done";
 
 "deleteSingleImage_title" = "Delete Image";
 "deleteSingleImage_message" = "Are you sure you want to delete this image? This cannot be undone!";
 
 "imageOptions_title" = "Image Options";
-"iamgeOptions_download" = "Download";
-"iamgeOptions_edit" = "Edit";
+"imageOptions_download" = "Download";
+"imageOptions_edit" = "Edit";
 "imageOptions_setAlbumImage" = "Set as Album Image";
 
 "downloadImage" = "Download Images";
@@ -83,16 +83,16 @@
 "privacyLevel_everybody" = "Everybody";
 
 "settingsHeader_server" = "Piwigo Server";
-"settingsHeader_imageSettings" = "Image Upload Settings";
-"settingsHeader_imageCache" = "Image Cache Settings";
+"settingsHeader_upload" = "Default Upload Settings";
+"settingsHeader_cache" = "Cache Settings";
 "settingsHeader_about" = "About";
 "settings_server" = "Address";
 "settings_username" = "Username";
 "settings_notLoggedIn" = " - Not Logged In - ";
 "settings_logout" = "Logout";
-"settings_defaultAuthor" = "Default Author";
+"settings_defaultAuthor" = "Author";
 "settings_defaultAuthorPlaceholder" = "Author Name";
-"settings_defaultPrivacy" = "Default Privacy";
+"settings_defaultPrivacy" = "Privacy";
 "settings_photoQuality" = "Img Quality";
 "settings_photoSize" = "Photo Size";
 "settings_cacheDisk" = "Disk";
@@ -103,8 +103,8 @@
 "settings_placeholderDisk" = "Enter a Disk Cache from 10 - 500";
 "settings_placeholderMemory" = "Enter a Memory Cache from 10 - 500";
 "settings_about" = "Piwigo Mobile";
-"settings_general" = "General";
-"settings_loadAllCategories" = "Load All Albums on Start\n(Uncheck this if albums do not show up)";
+"settingsHeader_general" = "General Settings";
+"settings_loadAllCategories" = "Recursive Root Album Load";
 
 "logoutConfirmation_title" = "Logout";
 "logoutConfirmation_message" = "Are you sure you want to logout?";
@@ -214,8 +214,6 @@
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given web address";
-"loginError_HTTPS" = "This might be because your server doesn't support HTTPS.";
-"loginError_HTTP" = "This might be because your server doesn't support HTTP.";
 "loginEmptyServer_title" = "Enter a Web Address";
 "loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
 
@@ -241,7 +239,8 @@
 "videoSaveError_message" = "Failed to save video. Error: %@";
 
 "imageDetailsFetchError_title" = "Image Details Fetch Failed";
-"imageDetailsFetchError_message" = "Fetching the image data failed\nTry again?";
+"imageDetailsFetchError_retryMessage" = "Fetching the image data failed\nTry again?";
+"imageDetailsFetchError_continueMessage" = "Fetching the image data failed\nContinue?";
 
 "videoUploadError_title" = "Video Upload Error";
 "videoUploadError_message" = "You need to add the plugin \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo";

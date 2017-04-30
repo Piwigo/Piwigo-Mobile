@@ -148,7 +148,7 @@
 												  
 												  [UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSetSuccess_title", @"Image Set Successful")
 																	 message:NSLocalizedString(@"categoryImageSetSuccess_message", @"The image was set successfully for the album image")
-														   cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+														   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 														   otherButtonTitles:nil
 																	tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 																		[self.navigationController popViewControllerAnimated:YES];
@@ -171,7 +171,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSetError_title", @"Image Set Error")
 					   message:bodyMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }

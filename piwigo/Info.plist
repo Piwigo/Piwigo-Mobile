@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>15</string>
+	<string>16</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -28,7 +28,7 @@
 		<true/>
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>so that it will be able to upload images on your galleries.</string>
+	<string>so that it will be able to upload images to your galleries.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>LacunaRegular.TTF</string>

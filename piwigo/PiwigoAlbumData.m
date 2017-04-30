@@ -111,7 +111,7 @@
 									 {
 										 [UIAlertView showWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error")
 															message:[NSString stringWithFormat:@"%@\n%@", NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (You probably have a corrupt image in your album) Error:"), [error localizedDescription]]
-												  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+												  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 												  otherButtonTitles:nil
 														   tapBlock:nil];
 									 }

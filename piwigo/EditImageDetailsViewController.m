@@ -30,9 +30,9 @@ typedef enum {
 
 @interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
-@property (weak, nonatomic) IBOutlet UIImageView *image;
 @property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewBottomConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewTopConstraint;
 
 @end
 
@@ -58,7 +58,7 @@ typedef enum {
 					  [self.editImageDetailsTableView reloadData];
 				  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 					  [UIAlertView showWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-										 message:NSLocalizedString(@"imageDetailsFetchError_message", @"Fetching the image data failed\nTry again?")
+										 message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
 							   cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
 							   otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 										tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -78,9 +78,6 @@ typedef enum {
 
     // Hide the 1px header
     self.editImageDetailsTableView.contentInset = UIEdgeInsetsMake(-1.0f, 0.0f, 0.0f, 0.0);
-
-    ALAsset *imageAsset = self.imageDetails.imageAsset;
-    self.image.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
 
 	if(self.isEdit)
 	{

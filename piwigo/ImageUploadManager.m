@@ -226,7 +226,7 @@
 						{	// they need to install the VideoJS plugin
 							[UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
 											   message:NSLocalizedString(@"videoUploadError_message", @"You need to add the plugin \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo")
-									 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+									 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 									 otherButtonTitles:nil
 											  tapBlock:nil];
 						}
@@ -259,7 +259,7 @@
 {
 	[UIAlertView showWithTitle:@"Upload Error"
 					   message:[NSString stringWithFormat:@"Could not upload your image. Error: %@", [error localizedDescription]]
-			 cancelButtonTitle:@"Okay"
+			 cancelButtonTitle:@"Ok"
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }

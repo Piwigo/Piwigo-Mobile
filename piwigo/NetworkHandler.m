@@ -158,7 +158,7 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 	UIAlertView *connectionError = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
 															  message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
 															 delegate:nil
-													cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+													cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 													otherButtonTitles:nil];
 	[connectionError show];
 }

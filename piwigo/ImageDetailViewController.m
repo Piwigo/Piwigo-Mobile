@@ -43,7 +43,7 @@
 		self.dataSource = self;
 		self.delegate = self;
 		
-		self.imageData = [self.images objectAtIndex:imageIndex];;
+		self.imageData = [self.images objectAtIndex:imageIndex];
 		self.title = self.imageData.name;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
 		[startingImage setImageWithImageData:self.imageData];
@@ -93,10 +93,10 @@
 -(void)imageOptions
 {
 	NSMutableArray *otherButtons = [NSMutableArray new];
-	[otherButtons addObject:NSLocalizedString(@"iamgeOptions_download", @"Download")];
+	[otherButtons addObject:NSLocalizedString(@"imageOptions_download", @"Download")];
 	if([Model sharedInstance].hasAdminRights)
 	{
-		[otherButtons addObject:NSLocalizedString(@"iamgeOptions_edit",  @"Edit")];
+		[otherButtons addObject:NSLocalizedString(@"imageOptions_edit",  @"Edit")];
 		[otherButtons addObject:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")];
 	}
 	
@@ -145,7 +145,7 @@
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
 					   message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
-			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Nevermind")
+			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Cancel")
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1) {
@@ -196,7 +196,7 @@
 							 self.downloadView.hidden = YES;
 							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
 												message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
-									  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+									  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 												   if(buttonIndex == 1) {
@@ -219,7 +219,7 @@
 							 self.downloadView.hidden = YES;
 							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
 												message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), [error localizedDescription]]
-									  cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+									  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 												   if(buttonIndex == 1) {
@@ -241,7 +241,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 	}
@@ -253,7 +253,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 	}

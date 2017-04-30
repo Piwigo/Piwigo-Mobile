@@ -134,7 +134,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"moveCategoryError_title", @"Move Fail")
 					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }

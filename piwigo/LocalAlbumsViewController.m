@@ -43,7 +43,7 @@
 			{
 				[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem reading photos")
 								   message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photos.")
-						 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+						 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 						 otherButtonTitles:nil
 								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
 									  [self.navigationController popViewControllerAnimated:YES];
@@ -87,7 +87,7 @@
 	
 	ALAssetsGroup *groupAsset = [self.groups objectAtIndex:indexPath.row];
 	NSString *name = [groupAsset valueForProperty:ALAssetsGroupPropertyName];
-	[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(groupAsset.numberOfAssets), NSLocalizedString(@"deleteImage_iamgePlural", @"Images")]];
+	[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(groupAsset.numberOfAssets), NSLocalizedString(@"deleteImage_imagePlural", @"Images")]];
 	
 	return cell;
 }

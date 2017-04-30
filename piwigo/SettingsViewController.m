@@ -242,7 +242,7 @@ typedef enum {
 						cell = [SwitchTableViewCell new];
 					}
 					
-					cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Recursive Albums Load");
+					cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Recursive Root Album Load");
 					[cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
 					cell.cellSwitchBlock = ^(BOOL switchState) {
 						if(![Model sharedInstance].loadAllCategoryInfo && switchState)
