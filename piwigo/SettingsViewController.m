@@ -242,7 +242,7 @@ typedef enum {
 						cell = [SwitchTableViewCell new];
 					}
 					
-					cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Load All Albums on Start\n(Uncheck this if albums do not show up)");
+					cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Recursive Albums Load");
 					[cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
 					cell.cellSwitchBlock = ^(BOOL switchState) {
 						if(![Model sharedInstance].loadAllCategoryInfo && switchState)
@@ -305,7 +305,7 @@ typedef enum {
 						cell = [TextFieldTableViewCell new];
 					}
 					
-					cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Default Author");
+					cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Author");
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
 					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
 					cell.rightTextField.delegate = self;
@@ -322,10 +322,10 @@ typedef enum {
 						cell = [LabelTableViewCell new];
 					}
 					
-					cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Default Privacy");
+					cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
 					cell.rightText = [[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					cell.leftLabelWidth = 120;
+					cell.leftLabelWidth = 100;
 					
 					tableViewCell = cell;
 					break;
@@ -472,13 +472,13 @@ typedef enum {
 			headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
 			break;
 		case SettingSectionGeneral:
-			headerLabel.text = NSLocalizedString(@"settings_general", @"General");
+			headerLabel.text = NSLocalizedString(@"settingsHeader_general", @"General Settings");
 			break;
 		case SettingSectionImageUpload:
-			headerLabel.text = NSLocalizedString(@"settingsHeader_imageSettings", @"Image Upload Settings");
+			headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
 			break;
 		case SettingSectionCache:
-			headerLabel.text = NSLocalizedString(@"settingsHeader_imageCache", @"Image Cache Settings");
+			headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings");
 			break;
 		case SettingSectionAbout:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"About");

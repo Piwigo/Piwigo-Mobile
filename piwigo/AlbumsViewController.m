@@ -98,10 +98,10 @@
 {
 	[AlbumService getAlbumListForCategory:0
 							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
-		[refreshControl endRefreshing];
+                                 [refreshControl endRefreshing];
 	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		[refreshControl endRefreshing];
-	}];
+        [refreshControl endRefreshing];
+}];
 }
 
 -(void)refreshShowingCells
@@ -149,7 +149,7 @@
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error")
 					   message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album")
-			 cancelButtonTitle:NSLocalizedString(@"alertOkayButton", @"Okay")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }

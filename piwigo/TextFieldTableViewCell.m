@@ -27,7 +27,6 @@
 		self.leftLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.leftLabel.font = [UIFont piwigoFontNormal];
 		self.leftLabel.textColor = [UIColor piwigoGray];
-		self.leftLabel.textAlignment = NSTextAlignmentRight;
 		self.leftLabel.adjustsFontSizeToFitWidth = YES;
 		self.leftLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.leftLabel];
@@ -35,7 +34,8 @@
 		self.rightTextField = [UITextField new];
 		self.rightTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightTextField.font = [UIFont piwigoFontNormal];
-		self.rightTextField.textColor = [UIColor blackColor];
+		self.rightTextField.textColor = [UIColor piwigoBrown];
+        self.rightTextField.textAlignment = NSTextAlignmentRight;
 		[self.contentView addSubview:self.rightTextField];
 		
 		[self setupConstraints];

@@ -35,7 +35,7 @@
 		instance.diskCache = 10;
 		instance.memoryCache = 80;
 		
-		instance.loadAllCategoryInfo = YES;
+		instance.loadAllCategoryInfo = NO;
 		instance.defaultSort = kPiwigoSortCategoryIdDescending;
 		
 		[instance readFromDisk];
