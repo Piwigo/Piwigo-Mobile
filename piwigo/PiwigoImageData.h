@@ -32,7 +32,8 @@ typedef enum {
 @property (nonatomic, strong) NSString *imageDescription;
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, strong) NSArray *categoryIds;
-@property (nonatomic, strong) NSDate *dateAvailable;
+@property (nonatomic, strong) NSDate *datePosted;
+@property (nonatomic, strong) NSDate *dateCreated;
 @property (nonatomic, assign) BOOL isVideo;
 @property (nonatomic, strong) NSString *fullResPath;
 

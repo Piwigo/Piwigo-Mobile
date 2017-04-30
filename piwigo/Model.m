@@ -36,7 +36,7 @@
 		instance.memoryCache = 80;
 		
 		instance.loadAllCategoryInfo = YES;
-		instance.defaultSort = kPiwigoSortCategoryIdDescending;
+		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
 		
 		[instance readFromDisk];
 	});
@@ -178,7 +178,7 @@
 	if(savedData.count > 9) {
 		self.defaultSort = (kPiwigoSortCategory)[[savedData objectAtIndex:9] intValue];
 	} else {
-		self.defaultSort = kPiwigoSortCategoryIdDescending;
+		self.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
 	}
 	if(savedData.count > 10) {
 		self.resizeImageOnUpload = [[savedData objectAtIndex:10] boolValue];

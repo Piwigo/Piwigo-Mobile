@@ -132,14 +132,14 @@
 "createNewAlbum_title" = "Create New Album";
 "createNewAlbum_message" = "Album name";
 
-"categorySort_nameAscending" = "Name Ascending";
-"categorySort_nameDescending" = "Name Descending";
-"categorySort_fileNameAscending" = "File Name Ascending";
-"categorySort_fileNameDescending" = "File Name Descending";
-"categorySort_dateAscending" = "Date Ascending";
-"categorySort_dateDescending" = "Date Descending";
-"categorySort_imageIDAscending" = "Image ID Ascending";
-"categorySort_imageIDDescending" = "Image ID Descending";
+"categorySort_nameAscending" = "Photo Title, A → Z";
+"categorySort_nameDescending" = "Photo Title, Z → A";
+"categorySort_fileNameAscending" = "File Name, A → Z";
+"categorySort_fileNameDescending" = "File Name, Z → A";
+"categorySort_dateCreatedDescending" = "Date Created, new → old";
+"categorySort_dateCreatedAscending" = "Date Created, old → new";
+"categorySort_datePostedDescending" = "Date Posted, new → old";
+"categorySort_datePostedAscending" = "Date Posted, old → new";
 "categorySort_videosOnly" = "Videos Only";
 "categorySort_imagesOnly" = "Images Only";
 

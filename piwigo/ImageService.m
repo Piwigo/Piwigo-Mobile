@@ -18,7 +18,7 @@ NSString * const kGetImageOrderId = @"id";
 NSString * const kGetImageOrderName = @"name";
 NSString * const kGetImageOrderRating = @"rating_score";
 NSString * const kGetImageOrderDateCreated = @"date_creation";
-NSString * const kGetImageOrderDateAdded = @"date_available";
+NSString * const kGetImageOrderDatePosted = @"date_available";
 NSString * const kGetImageOrderRandom = @"random";
 NSString * const kGetImageOrderAscending = @"asc";
 NSString * const kGetImageOrderDescending = @"desc";
@@ -144,8 +144,10 @@ NSString * const kGetImageOrderDescending = @"desc";
 	NSString *dateString = [imageJson objectForKey:@"date_available"];
 	NSDateFormatter *dateFormat = [NSDateFormatter new];
 	[dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-	imageData.dateAvailable = [dateFormat dateFromString:dateString];
-	
+	imageData.datePosted = [dateFormat dateFromString:dateString];
+    dateString = [imageJson objectForKey:@"date_creation"];
+    if (![dateString isKindOfClass:[NSNull class]]) imageData.dateCreated = [dateFormat dateFromString:dateString];
+    
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
 	imageData.squarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
 	imageData.thumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];

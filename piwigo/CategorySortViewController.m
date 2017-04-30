@@ -92,28 +92,28 @@
 	switch(sortType)
 	{
 		case kPiwigoSortCategoryNameAscending:
-			name = NSLocalizedString(@"categorySort_nameAscending", @"Name Ascending");
+			name = NSLocalizedString(@"categorySort_nameAscending", @"Photo Title, A → Z");
 			break;
 		case kPiwigoSortCategoryNameDescending:
-			name = NSLocalizedString(@"categorySort_nameDescending", @"Name Descending");
+			name = NSLocalizedString(@"categorySort_nameDescending", @"Photo Title, Z → A");
 			break;
 		case kPiwigoSortCategoryFileNameAscending:
-			name = NSLocalizedString(@"categorySort_fileNameAscending", @"File Name Ascending");
+			name = NSLocalizedString(@"categorySort_fileNameAscending", @"File Name, A → Z");
 			break;
 		case kPiwigoSortCategoryFileNameDescending:
-			name = NSLocalizedString(@"categorySort_fileNameDescending", @"File Name Descending");
+			name = NSLocalizedString(@"categorySort_fileNameDescending", @"File Name, Z → A");
 			break;
-		case kPiwigoSortCategoryDateCreatedAscending:
-			name = NSLocalizedString(@"categorySort_dateAscending", @"Date Ascending");
+        case kPiwigoSortCategoryDateCreatedDescending:
+            name = NSLocalizedString(@"categorySort_dateCreatedDescending", @"Date Created, new → old");
+            break;
+        case kPiwigoSortCategoryDateCreatedAscending:
+            name = NSLocalizedString(@"categorySort_dateCreatedAscending", @"Date Created, old → new");
+            break;
+		case kPiwigoSortCategoryDatePostedDescending:
+			name = NSLocalizedString(@"categorySort_datePostedDescending", @"Date Posted, new → old");
 			break;
-		case kPiwigoSortCategoryDateCreatedDescending:
-			name = NSLocalizedString(@"categorySort_dateDescending", @"Date Descending");
-			break;
-		case kPiwigoSortCategoryIdAscending:
-			name = NSLocalizedString(@"categorySort_imageIDAscending", @"Image ID Ascending");
-			break;
-		case kPiwigoSortCategoryIdDescending:
-			name = NSLocalizedString(@"categorySort_imageIDDescending", @"Image ID Descending");
+		case kPiwigoSortCategoryDatePostedAscending:
+			name = NSLocalizedString(@"categorySort_datePostedAscending", @"Date Posted, old → new");
 			break;
 //		case kPiwigoSortCategoryVideoOnly:
 //			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");

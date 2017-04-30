@@ -77,24 +77,28 @@
 		case kPiwigoSortCategoryNameDescending:
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderDescending];
 			break;
-		case kPiwigoSortCategoryFileNameAscending:
+
+        case kPiwigoSortCategoryFileNameAscending:
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderAscending];
 			break;
 		case kPiwigoSortCategoryFileNameDescending:
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderDescending];
 			break;
-		case kPiwigoSortCategoryDateCreatedAscending:
+		
+        case kPiwigoSortCategoryDateCreatedAscending:
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
+            break;
+        case kPiwigoSortCategoryDateCreatedDescending:
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
+            break;
+            
+        case kPiwigoSortCategoryDatePostedAscending:
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
 			break;
-		case kPiwigoSortCategoryDateCreatedDescending:
+		case kPiwigoSortCategoryDatePostedDescending:
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
 			break;
-		case kPiwigoSortCategoryIdAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderId, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortCategoryIdDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderId, kGetImageOrderDescending];
-			break;
+
 //		case kPiwigoSortCategoryVideoOnly:
 //			//			sort = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
 //			break;
