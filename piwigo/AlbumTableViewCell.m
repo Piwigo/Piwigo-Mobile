@@ -372,18 +372,40 @@
 						  else
 						  {
 							  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.mediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
-														  placeholderImage:nil
-																   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-																	   
-																	   albumData.categoryImage = image;
-																	   [weakSelf setupBgWithImage:image];
+                                                  placeholderImage:nil
+                                                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                               albumData.categoryImage = image;
+                                                               [weakSelf setupBgWithImage:image];
 							  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-								  NSLog(@"fail to get imgage for album");
+								  NSLog(@"fail to get imgage for album at %@", imageData.mediumPath);
 							  }];
 						  }
 					  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
 						  NSLog(@"Fail to get album bg image: %@", [error localizedDescription]);
 					  }];
+        imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
+        if(imageSize == 0)  // We cross our fingers and retry…
+            NSLog(@"Retrying…");
+            self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
+                         ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+                             if(!imageData.mediumPath)
+                             {
+                                 albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+                             }
+                             else
+                             {
+                                 [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.mediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+                                                     placeholderImage:nil
+                                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                                  albumData.categoryImage = image;
+                                                                  [weakSelf setupBgWithImage:image];
+                                                              } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                                                  NSLog(@"Fail to get imgage for album a second time!!!");
+                                                              }];
+                             }
+                         } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                             NSLog(@"Fail to get album bg image a second time: %@", [error localizedDescription]);
+                         }];
 	}
 }
 
