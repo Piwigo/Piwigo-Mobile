@@ -40,6 +40,7 @@ typedef enum {
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;
 @property (nonatomic, assign) BOOL resizeImageOnUpload;
+@property (nonatomic, assign) BOOL stripGPSdataOnUpload;
 @property (nonatomic, assign) NSInteger photoQuality;
 @property (nonatomic, assign) NSInteger photoResize;
 @property (nonatomic, assign) NSInteger defaultImagePreviewSize;

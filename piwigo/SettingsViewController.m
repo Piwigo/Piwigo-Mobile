@@ -63,7 +63,7 @@ typedef enum {
 							   @2,
 							   @1,
 							   @3,
-							   @5,
+							   @6,
 							   @2,
 							   @1
 							   ];
@@ -110,20 +110,22 @@ typedef enum {
 
 -(void)viewWillDisappear:(BOOL)animated
 {
+    // Default Upload Settings
+    if([Model sharedInstance].resizeImageOnUpload)
+    {
+//        SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
+//        [Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
+//        SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SettingSectionImageUpload]];
+//        [Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
+        
+//        [[Model sharedInstance] saveToDisk];
+    }
+    
+    // Cache Settings
 	SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
 	[Model sharedInstance].diskCache = [diskCell getCurrentSliderValue];
 	SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
 	[Model sharedInstance].memoryCache = [memoryCell getCurrentSliderValue];
-	
-	if([Model sharedInstance].resizeImageOnUpload)
-	{
-		SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
-		[Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
-		SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
-		[Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
-		
-		[[Model sharedInstance] saveToDisk];
-	}
 	
 	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
 														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
@@ -184,7 +186,7 @@ typedef enum {
 	UITableViewCell *tableViewCell = [UITableViewCell new];
 	switch(indexPath.section)
 	{
-		case SettingSectionServer:
+		case SettingSectionServer:      // Piwigo Server
 		{
 			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
 			if(!cell)
@@ -212,7 +214,7 @@ typedef enum {
 			tableViewCell = cell;
 			break;
 		}
-		case SettingSectionLogout:
+		case SettingSectionLogout:      // Logout Button
 		{
 			ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"button"];
 			if(!cell)
@@ -230,11 +232,11 @@ typedef enum {
 			tableViewCell = cell;
 			break;
 		}
-		case SettingSectionGeneral:
+		case SettingSectionGeneral:     // General Settings
 		{
 			switch(indexPath.row)
 			{
-				case 0:
+				case 0:     // Recursive Root Album Load
 				{
 					SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchCell"];
 					if(!cell)
@@ -257,7 +259,7 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-				case 1:
+				case 1:     // Default Sort
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sort"];
 					if(!cell)
@@ -269,12 +271,12 @@ typedef enum {
 					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					cell.leftLabelWidth = 110;
+//					cell.leftLabelWidth = 110;
 					
 					tableViewCell = cell;
 					break;
 				}
-				case 2:
+				case 2:     // Default Size
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultImageSize"];
 					if(!cell) {
@@ -285,7 +287,7 @@ typedef enum {
 					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 					cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					cell.leftLabelWidth = 110;
+//					cell.leftLabelWidth = 110;
 					
 					tableViewCell = cell;
 					break;
@@ -293,11 +295,11 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingSectionImageUpload:
+		case SettingSectionImageUpload:     // Default Upload Settings
 		{
 			switch(indexPath.row)
 			{
-				case 0:
+				case 0:     // Author Name
 				{
 					TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsField"];
 					if(!cell)
@@ -314,7 +316,7 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-				case 1:
+				case 1:     // Privacy Level
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
 					if(!cell)
@@ -325,19 +327,36 @@ typedef enum {
 					cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
 					cell.rightText = [[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					cell.leftLabelWidth = 100;
+//					cell.leftLabelWidth = 100;
 					
 					tableViewCell = cell;
 					break;
 				}
-				case 2:
+                case 2:     // Strip GPS Metadata
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"gps"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata", @"Strip GPS Metadata");
+                    [cell.cellSwitch setOn:[Model sharedInstance].stripGPSdataOnUpload];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        [Model sharedInstance].stripGPSdataOnUpload = switchState;
+                        [[Model sharedInstance] saveToDisk];
+                    };
+                   
+                    tableViewCell = cell;
+                    break;
+                }
+				case 3:     // Resize Before Upload
 				{
 					SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"resize"];
 					if(!cell) {
 						cell = [SwitchTableViewCell new];
 					}
 					
-					cell.leftLabel.text = @"Resize Before Upload";
+					cell.leftLabel.text = NSLocalizedString(@"settings_photoResize", @"Resize Before Upload");
 					[cell.cellSwitch setOn:[Model sharedInstance].resizeImageOnUpload];
 					cell.cellSwitchBlock = ^(BOOL switchState) {
 						[Model sharedInstance].resizeImageOnUpload = switchState;
@@ -351,36 +370,40 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-				case 3:
+				case 4:     // Image Quality
 				{
 					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
 					if(!cell)
 					{
 						cell = [SliderTableViewCell new];
 					}
-					cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"Img Quality");
+					cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
+                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
 					cell.slider.minimumValue = 50;
 					cell.slider.maximumValue = 98;
 					cell.sliderCountFormatString = @"%";
 					cell.incrementSliderBy = 1;
 					cell.sliderValue = [Model sharedInstance].photoQuality;
+                    [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
 					
 					tableViewCell = cell;
 					break;
 				}
-				case 4:
+				case 5:     // Image Size
 				{
 					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoSize"];
 					if(!cell)
 					{
 						cell = [SliderTableViewCell new];
 					}
-					cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"Photo Size");
+					cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"> Size");
+                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
 					cell.slider.minimumValue = 1;
 					cell.slider.maximumValue = 100;
 					cell.sliderCountFormatString = @"%";
 					cell.incrementSliderBy = 1;
 					cell.sliderValue = [Model sharedInstance].photoResize;
+                    [cell.slider addTarget:self action:@selector(updateImageSize:) forControlEvents:UIControlEventValueChanged];
 					
 					tableViewCell = cell;
 					break;
@@ -388,38 +411,40 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingSectionCache:
+		case SettingSectionCache:       // Cache Settings
 		{
 			switch(indexPath.row)
 			{
-				case 0:
-				{
-					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
-					if(!cell)
-					{
-						cell = [SliderTableViewCell new];
-					}
-					cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
-					cell.sliderCountFormatString = [NSString stringWithFormat:@" %@", NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
-					cell.incrementSliderBy = 10;
-					cell.sliderValue = [Model sharedInstance].diskCache;
-					
-					
-					tableViewCell = cell;
-					break;
-				}
-				case 1:
+				case 0:     // Disk
 				{
 					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
 					if(!cell)
 					{
 						cell = [SliderTableViewCell new];
 					}
+					cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
+                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
+					cell.sliderCountFormatString = [NSString stringWithFormat:@" %@", NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
+					cell.incrementSliderBy = 10;
+					cell.sliderValue = [Model sharedInstance].diskCache;
+                    [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
+					
+					tableViewCell = cell;
+					break;
+				}
+				case 1:     // Memory
+				{
+					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
+					if(!cell)
+					{
+						cell = [SliderTableViewCell new];
+					}
 					cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
+                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
 					cell.sliderCountFormatString = [NSString stringWithFormat:@" %@", NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
 					cell.incrementSliderBy = 10;
 					cell.sliderValue = [Model sharedInstance].memoryCache;
-					
+                    [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
 					
 					tableViewCell = cell;
 					break;
@@ -427,7 +452,7 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingSectionAbout:
+		case SettingSectionAbout:       // About
 		{
 			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"about"];
 			if(!cell)
@@ -494,12 +519,12 @@ typedef enum {
 	
 	switch(indexPath.section)
 	{
-		case SettingSectionServer:
+		case SettingSectionServer:      // Piwigo Server
 			break;
-		case SettingSectionLogout:
+		case SettingSectionLogout:      // Logout
 			[self logout];
 			break;
-		case SettingSectionGeneral:
+		case SettingSectionGeneral:     // General Settings
 		{
 			switch(indexPath.row)
 			{
@@ -520,10 +545,10 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingSectionImageUpload:
+		case SettingSectionImageUpload:     // Default Upload Settings
 			switch(indexPath.row)
 			{
-				case 1:	// Privacy
+				case 1:     // Privacy
 				{
 					SelectPrivacyViewController *selectPrivacy = [SelectPrivacyViewController new];
 					selectPrivacy.delegate = self;
@@ -531,7 +556,7 @@ typedef enum {
 					[self.navigationController pushViewController:selectPrivacy animated:YES];
 					break;
 				}
-				case 3: // Photo Quality
+				case 4:     // Image Quality
 				{
 					if(self.currentPopDown)
 					{
@@ -543,7 +568,7 @@ typedef enum {
 						self.darkenView.hidden = YES;
 						if(textEntered.length > 0)
 						{
-							SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingSectionImageUpload]];
+							SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
 							
 							NSInteger valueEntered = [textEntered integerValue];
 							if(valueEntered < 50) valueEntered = 50;
@@ -559,7 +584,7 @@ typedef enum {
 					}];
 					break;
 				}
-				case 4:	// Photo Size
+				case 5:     // Image Size
 				{
 					if(self.currentPopDown)
 					{
@@ -571,7 +596,7 @@ typedef enum {
 						self.darkenView.hidden = YES;
 						if(textEntered.length > 0)
 						{
-							SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
+							SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SettingSectionImageUpload]];
 							photoSizeCell.sliderValue = [textEntered integerValue];
 							if(!photoSizeCell)
 							{
@@ -585,7 +610,7 @@ typedef enum {
 			}
 			
 			break;
-		case SettingSectionCache:
+		case SettingSectionCache:       // Cache Settings
 		{
 			switch(indexPath.row)
 			{
@@ -661,7 +686,7 @@ typedef enum {
 //			}
 			break;
 		}
-		case SettingSectionAbout:
+		case SettingSectionAbout:       // About
 		{
 			AboutViewController *aboutVC = [AboutViewController new];
 			[self.navigationController pushViewController:aboutVC animated:YES];
@@ -758,4 +783,36 @@ typedef enum {
 	[self.settingsTableView reloadData];
 }
 
+#pragma mark Sliders changed value Methods
+
+- (IBAction)updateImageQuality:(id)sender
+{
+    SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
+    [Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
+    [[Model sharedInstance] saveToDisk];
+}
+
+- (IBAction)updateImageSize:(id)sender
+{
+    SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SettingSectionImageUpload]];
+    [Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
+    [[Model sharedInstance] saveToDisk];
+}
+
+- (IBAction)updateDiskCacheSize:(id)sender
+{
+    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
+    [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
+    [[Model sharedInstance] saveToDisk];
+}
+
+- (IBAction)updateMemoryCacheSize:(id)sender
+{
+    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
+    [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
+    [[Model sharedInstance] saveToDisk];
+}
+
 @end
+
+

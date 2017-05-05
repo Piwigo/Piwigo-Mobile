@@ -28,6 +28,7 @@
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
+        instance.stripGPSdataOnUpload = "NO";
 		instance.photoQuality = 95;
 		instance.photoResize = 100;
 		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
@@ -121,7 +122,7 @@
 		self.defaultSort = modelData.defaultSort;
 		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
 		self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
-		
+        self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
 	}
 }
 
@@ -149,6 +150,7 @@
 	[saveObject addObject:@(self.defaultSort)];
 	[saveObject addObject:[ NSNumber numberWithBool:self.resizeImageOnUpload]];
 	[saveObject addObject:@(self.defaultImagePreviewSize)];
+    [saveObject addObject:[ NSNumber numberWithBool:self.stripGPSdataOnUpload]];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -185,11 +187,17 @@
 	} else {
 		self.resizeImageOnUpload = NO;
 		self.photoQuality = 95;
+        self.photoResize = 100;
 	}
 	if(savedData.count > 11) {
 		self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
 	} else {
 		self.defaultImagePreviewSize = kPiwigoImageSizeMedium;
+	}
+	if(savedData.count > 12) {
+		self.stripGPSdataOnUpload = [[savedData objectAtIndex:12] boolValue];
+	} else {
+		self.stripGPSdataOnUpload = NO;
 	}
 	
 	return self;

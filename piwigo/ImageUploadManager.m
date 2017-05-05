@@ -174,6 +174,9 @@
 	// edit the meta data for the correct size:
 	[imageMetadata setObject:@(imageResized.size.height) forKey:@"PixelHeight"];
 	[imageMetadata setObject:@(imageResized.size.width) forKey:@"PixelWidth"];
+    
+    // strip GPS data if user requested it in Settings:
+    if([Model sharedInstance].stripGPSdataOnUpload) [imageMetadata setObject:@"" forKey:@"{GPS}"];
 	
 	CGFloat compressionQuality = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoQuality / 100.0 : .95;
 	NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);

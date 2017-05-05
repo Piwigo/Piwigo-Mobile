@@ -93,8 +93,10 @@
 "settings_defaultAuthor" = "Author";
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Privacy";
-"settings_photoQuality" = "Img Quality";
-"settings_photoSize" = "Photo Size";
+"settings_stripGPSdata" = "Strip GPS Metadata";
+"settings_photoResize" = "Resize Before Upload";
+"settings_photoQuality" = "> Quality";
+"settings_photoSize" = "> Size";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Memory";
 "settings_cacheMegabytes" = "MB";
