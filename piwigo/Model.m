@@ -28,7 +28,7 @@
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
-        instance.stripGPSdataOnUpload = "NO";
+        instance.stripGPSdataOnUpload = NO;
 		instance.photoQuality = 95;
 		instance.photoResize = 100;
 		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
