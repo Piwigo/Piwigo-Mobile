@@ -110,27 +110,6 @@ typedef enum {
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    // Default Upload Settings
-    if([Model sharedInstance].resizeImageOnUpload)
-    {
-//        SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
-//        [Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
-//        SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SettingSectionImageUpload]];
-//        [Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
-        
-//        [[Model sharedInstance] saveToDisk];
-    }
-    
-    // Cache Settings
-	SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
-	[Model sharedInstance].diskCache = [diskCell getCurrentSliderValue];
-	SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
-	[Model sharedInstance].memoryCache = [memoryCell getCurrentSliderValue];
-	
-	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-															 diskPath:nil];
-	[NSURLCache setSharedURLCache:URLCache];
 	
 	[super viewWillDisappear:animated];
 }
@@ -362,6 +341,7 @@ typedef enum {
 						[Model sharedInstance].resizeImageOnUpload = switchState;
 						if(![Model sharedInstance].resizeImageOnUpload) {
 							[Model sharedInstance].photoQuality = 95;
+                            [Model sharedInstance].photoResize = 100;
 						}
 						[[Model sharedInstance] saveToDisk];
 						[self.settingsTableView reloadSections:[NSIndexSet indexSetWithIndex:SettingSectionImageUpload] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -804,6 +784,11 @@ typedef enum {
     SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
+
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+                                                         diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                                                             diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
 }
 
 - (IBAction)updateMemoryCacheSize:(id)sender
@@ -811,6 +796,11 @@ typedef enum {
     SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
+
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+                                                         diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                                                             diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
 }
 
 @end
