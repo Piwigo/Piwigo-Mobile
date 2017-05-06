@@ -526,9 +526,9 @@
 		D82B8CBE1A67820A000E47CA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D847B8341A7BFF1900231886 /* LEColorPicker */,
 				D8172DA61AB2805F00271DB0 /* MGSwipeTableCell */,
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
-				D847B8341A7BFF1900231886 /* LEColorPicker */,
 				D82B8CED1A6790A3000E47CA /* Macros */,
 				D88242831AC4F8F200315B4E /* UIImageView+DownloadProgress.h */,
 				D88242841AC4F8F200315B4E /* UIImageView+DownloadProgress.m */,

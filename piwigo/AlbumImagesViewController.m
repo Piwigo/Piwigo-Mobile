@@ -89,7 +89,10 @@
 		[AlbumService getAlbumListForCategory:self.categoryId
 								 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 									 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-								 } onFailure:nil];
+								 }
+                                    onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                        NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
+                                    }];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
@@ -131,7 +134,9 @@
 	[AlbumService getAlbumListForCategory:self.categoryId
 							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 		[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-	} onFailure:nil];
+                             } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                 NSLog(@"refresh fail");
+                             }];
 }
 
 -(void)categoriesUpdated
@@ -307,7 +312,7 @@
 						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
 							 [self saveImageToCameraRoll:image];
 						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-							 NSLog(@"download fail");
+							 NSLog(@"downloadVideo fail");
 						 }];
 	}
 	else
@@ -321,7 +326,7 @@
 							 NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:downloadingImage.fileName];
 							 UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
 						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-							 NSLog(@"download fail");
+							 NSLog(@"downloadImage fail");
 						 }];
 	}
 }

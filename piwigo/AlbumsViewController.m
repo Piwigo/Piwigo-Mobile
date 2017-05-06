@@ -59,7 +59,7 @@
 							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
 								 
 							 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-								 NSLog(@"Album list err: %@", error);
+								 NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
 							 }];
 }
 
