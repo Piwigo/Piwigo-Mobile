@@ -33,8 +33,8 @@
 		instance.photoResize = 100;
 		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
 		
-		instance.diskCache = 10;
-		instance.memoryCache = 80;
+		instance.diskCache = 80;
+		instance.memoryCache = 40;
 		
 		instance.loadAllCategoryInfo = YES;
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;

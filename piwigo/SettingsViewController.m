@@ -250,7 +250,6 @@ typedef enum {
 					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//					cell.leftLabelWidth = 110;
 					
 					tableViewCell = cell;
 					break;
@@ -266,7 +265,6 @@ typedef enum {
 					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
 					cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//					cell.leftLabelWidth = 110;
 					
 					tableViewCell = cell;
 					break;
@@ -306,7 +304,6 @@ typedef enum {
 					cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
 					cell.rightText = [[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//					cell.leftLabelWidth = 100;
 					
 					tableViewCell = cell;
 					break;
@@ -397,14 +394,19 @@ typedef enum {
 			{
 				case 0:     // Disk
 				{
-					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
+                    NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
+                    float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
+
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
 					if(!cell)
 					{
 						cell = [SliderTableViewCell new];
 					}
 					cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
                     cell.sliderName.textAlignment = NSTextAlignmentLeft;
-					cell.sliderCountFormatString = [NSString stringWithFormat:@" %@", NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
+                    cell.slider.minimumValue = 10;
+                    cell.slider.maximumValue = 200;
+					cell.sliderCountFormatString = [NSString stringWithFormat:@"/%.1f%@", currentDiskSizeInMB, NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
 					cell.incrementSliderBy = 10;
 					cell.sliderValue = [Model sharedInstance].diskCache;
                     [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
@@ -414,14 +416,19 @@ typedef enum {
 				}
 				case 1:     // Memory
 				{
-					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
+                    NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
+                    float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
+
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
 					if(!cell)
 					{
 						cell = [SliderTableViewCell new];
 					}
 					cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
                     cell.sliderName.textAlignment = NSTextAlignmentLeft;
-					cell.sliderCountFormatString = [NSString stringWithFormat:@" %@", NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
+                    cell.slider.minimumValue = 10;
+                    cell.slider.maximumValue = 200;
+					cell.sliderCountFormatString = [NSString stringWithFormat:@"/%.1f%@", currentMemSizeInMB, NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
 					cell.incrementSliderBy = 10;
 					cell.sliderValue = [Model sharedInstance].memoryCache;
                     [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
@@ -471,7 +478,7 @@ typedef enum {
 	headerLabel.textColor = [UIColor whiteColor];
 	[header addSubview:headerLabel];
 	
-	switch(section)
+    switch(section)
 	{
 		case SettingSectionServer:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
@@ -483,7 +490,7 @@ typedef enum {
 			headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
 			break;
 		case SettingSectionCache:
-			headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings");
+            headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings");
 			break;
 		case SettingSectionAbout:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"About");
@@ -796,7 +803,7 @@ typedef enum {
     SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
-
+    
     NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
                                                          diskCapacity:[Model sharedInstance].diskCache * 1024*1024
                                                              diskPath:nil];
