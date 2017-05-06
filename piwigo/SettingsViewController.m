@@ -607,7 +607,7 @@ typedef enum {
 					{
 						[self.currentPopDown removeFromSuperview];
 					}
-					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderDisk", @"Enter a Disk Cache from 10 - 500")];
+					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderDisk", @"Enter a Disk Cache from 10 - 200")];
 					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
 						self.darkenView.hidden = YES;
@@ -630,7 +630,7 @@ typedef enum {
 					{
 						[self.currentPopDown removeFromSuperview];
 					}
-					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderMemory", @"Enter a Memory Cache from 10 - 500")];
+					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderMemory", @"Enter a Memory Cache from 10 - 200")];
 					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
 						self.darkenView.hidden = YES;

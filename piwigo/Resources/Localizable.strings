@@ -83,6 +83,7 @@
 "privacyLevel_everybody" = "Everybody";
 
 "settingsHeader_server" = "Piwigo Server";
+"settingsHeader_general" = "General Settings";
 "settingsHeader_upload" = "Default Upload Settings";
 "settingsHeader_cache" = "Cache Settings";
 "settingsHeader_about" = "About";
@@ -102,10 +103,9 @@
 "settings_cacheMegabytes" = "MB";
 "settings_placeholderQuality" = "Enter a Image Quality from 50 - 98";
 "settings_placeholderSize" = "Enter a Photo Size from 1 - 100";
-"settings_placeholderDisk" = "Enter a Disk Cache from 10 - 500";
-"settings_placeholderMemory" = "Enter a Memory Cache from 10 - 500";
+"settings_placeholderDisk" = "Enter a Disk Cache from 10 - 200";
+"settings_placeholderMemory" = "Enter a Memory Cache from 10 - 200";
 "settings_about" = "Piwigo Mobile";
-"settingsHeader_general" = "General Settings";
 "settings_loadAllCategories" = "Recursive Root Album Load";
 
 "logoutConfirmation_title" = "Logout";
