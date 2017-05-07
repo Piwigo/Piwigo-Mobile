@@ -67,7 +67,7 @@
 	NSInteger newValue = value - value % self.incrementSliderBy;
 	
 	self.slider.value = newValue;
-	self.sliderCount.text = [NSString stringWithFormat:@"%@%@", @(newValue), self.sliderCountFormatString];
+	self.sliderCount.text = [NSString stringWithFormat:@"%@%@%@", self.sliderCountPrefix, @(newValue), self.sliderCountSuffix];
 }
 
 -(void)setSliderValue:(NSInteger)sliderValue

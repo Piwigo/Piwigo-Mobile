@@ -13,7 +13,8 @@
 @property (nonatomic, assign) NSInteger sliderValue;
 @property (nonatomic, strong) UILabel *sliderName;
 @property (nonatomic, strong) UISlider *slider;
-@property (nonatomic, strong) NSString *sliderCountFormatString;
+@property (nonatomic, strong) NSString *sliderCountPrefix;
+@property (nonatomic, strong) NSString *sliderCountSuffix;
 @property (nonatomic, assign) NSInteger incrementSliderBy;
 
 -(NSInteger)getCurrentSliderValue;

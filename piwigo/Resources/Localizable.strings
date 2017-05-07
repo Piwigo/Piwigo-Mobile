@@ -85,7 +85,7 @@
 "settingsHeader_server" = "Piwigo Server";
 "settingsHeader_general" = "General Settings";
 "settingsHeader_upload" = "Default Upload Settings";
-"settingsHeader_cache" = "Cache Settings";
+"settingsHeader_cache" = "Cache Settings (Used/Total)";
 "settingsHeader_about" = "About";
 "settings_server" = "Address";
 "settings_username" = "Username";

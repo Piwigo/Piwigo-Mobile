@@ -358,7 +358,8 @@ typedef enum {
                     cell.sliderName.textAlignment = NSTextAlignmentLeft;
 					cell.slider.minimumValue = 50;
 					cell.slider.maximumValue = 98;
-					cell.sliderCountFormatString = @"%";
+                    cell.sliderCountPrefix = @"";
+					cell.sliderCountSuffix = @"%";
 					cell.incrementSliderBy = 1;
 					cell.sliderValue = [Model sharedInstance].photoQuality;
                     [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
@@ -377,7 +378,8 @@ typedef enum {
                     cell.sliderName.textAlignment = NSTextAlignmentLeft;
 					cell.slider.minimumValue = 1;
 					cell.slider.maximumValue = 100;
-					cell.sliderCountFormatString = @"%";
+                    cell.sliderCountPrefix = @"";
+					cell.sliderCountSuffix = @"%";
 					cell.incrementSliderBy = 1;
 					cell.sliderValue = [Model sharedInstance].photoResize;
                     [cell.slider addTarget:self action:@selector(updateImageSize:) forControlEvents:UIControlEventValueChanged];
@@ -406,7 +408,8 @@ typedef enum {
                     cell.sliderName.textAlignment = NSTextAlignmentLeft;
                     cell.slider.minimumValue = 10;
                     cell.slider.maximumValue = 200;
-					cell.sliderCountFormatString = [NSString stringWithFormat:@"/%.1f%@", currentDiskSizeInMB, NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
+                    cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentDiskSizeInMB];
+					cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
 					cell.incrementSliderBy = 10;
 					cell.sliderValue = [Model sharedInstance].diskCache;
                     [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
@@ -428,7 +431,8 @@ typedef enum {
                     cell.sliderName.textAlignment = NSTextAlignmentLeft;
                     cell.slider.minimumValue = 10;
                     cell.slider.maximumValue = 200;
-					cell.sliderCountFormatString = [NSString stringWithFormat:@"/%.1f%@", currentMemSizeInMB, NSLocalizedString(@"settings_cacheMegabytes", @"MB")];
+                    cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentMemSizeInMB];
+					cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
 					cell.incrementSliderBy = 10;
 					cell.sliderValue = [Model sharedInstance].memoryCache;
                     [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
@@ -490,7 +494,7 @@ typedef enum {
 			headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
 			break;
 		case SettingSectionCache:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings");
+            headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
 			break;
 		case SettingSectionAbout:
 			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"About");
