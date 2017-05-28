@@ -59,7 +59,7 @@
 {
 	[self loadCategoryImageDataChunkWithSort:sort
 								 forProgress:progress
-								   OnCompletion:^(BOOL completed) {
+                                OnCompletion:^(BOOL completed) {
 		if(completed && self.lastImageBulkCount && self.imageList.count != self.numberOfImages)
 		{
 			[self loopLoadImagesForSort:sort
@@ -88,7 +88,7 @@
 									  forCategory:self.albumId
 										   onPage:self.onPage
 										  forSort:sort
-								 ListOnCompletion:^(AFHTTPRequestOperation *operation, NSInteger count) {
+								 ListOnCompletion:^(NSURLSessionTask *task, NSInteger count) {
 									 
 									 if(progress)
 									 {
@@ -105,13 +105,13 @@
 									 {
 										 completion(YES);
 									 }
-								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+								 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 									 
 									 if(error)
 									 {
 										 [UIAlertView showWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error")
 															message:[NSString stringWithFormat:@"%@\n%@", NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (You probably have a corrupt image in your album) Error:"), [error localizedDescription]]
-												  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+												  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 												  otherButtonTitles:nil
 														   tapBlock:nil];
 									 }
