@@ -28,6 +28,8 @@
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
+        instance.hasUploadedImages = NO;
+        instance.hasInstalledVideoJS = NO;
         instance.stripGPSdataOnUpload = NO;
 		instance.photoQuality = 95;
 		instance.photoResize = 100;
@@ -123,6 +125,7 @@
 		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
 		self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
         self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
+        self.hasInstalledVideoJS = modelData.hasInstalledVideoJS;
 	}
 }
 
@@ -150,7 +153,8 @@
 	[saveObject addObject:@(self.defaultSort)];
 	[saveObject addObject:[ NSNumber numberWithBool:self.resizeImageOnUpload]];
 	[saveObject addObject:@(self.defaultImagePreviewSize)];
-    [saveObject addObject:[ NSNumber numberWithBool:self.stripGPSdataOnUpload]];
+    [saveObject addObject:[NSNumber numberWithBool:self.stripGPSdataOnUpload]];
+    [saveObject addObject:[NSNumber numberWithBool:self.hasInstalledVideoJS]];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -199,6 +203,11 @@
 	} else {
 		self.stripGPSdataOnUpload = NO;
 	}
+    if(savedData.count > 13) {
+        self.hasInstalledVideoJS = [[savedData objectAtIndex:13] boolValue];
+    } else {
+        self.hasInstalledVideoJS = NO;
+    }
 	
 	return self;
 }
