@@ -12,32 +12,32 @@
 
 @interface AlbumService : NetworkHandler
 
-+(AFHTTPRequestOperation*)getAlbumListForCategory:(NSInteger)categoryId
-									 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
-										onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
+                               OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
+                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)createCategoryWithName:(NSString*)categoryName
-                                      withStatus:(NSString*)categoryStatus
-									OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL createdSuccessfully))completion
-									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)createCategoryWithName:(NSString*)categoryName
+                                withStatus:(NSString*)categoryStatus
+                              OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
+                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)renameCategory:(NSInteger)categoryId
-								 forName:(NSString*)categoryName
-							OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL renamedSuccessfully))completion
-							   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)renameCategory:(NSInteger)categoryId
+                           forName:(NSString*)categoryName
+                      OnCompletion:(void (^)(NSURLSessionTask *task, BOOL renamedSuccessfully))completion
+                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)deleteCategory:(NSInteger)categoryId
-							OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL deletedSuccessfully))completion
-							   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)deleteCategory:(NSInteger)categoryId
+                      OnCompletion:(void (^)(NSURLSessionTask *task, BOOL deletedSuccessfully))completion
+                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)moveCategory:(NSInteger)categoryId
-						  intoCategory:(NSInteger)categoryToMoveIntoId
-						  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL movedSuccessfully))completion
-							 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)moveCategory:(NSInteger)categoryId
+                    intoCategory:(NSInteger)categoryToMoveIntoId
+                    OnCompletion:(void (^)(NSURLSessionTask *task, BOOL movedSuccessfully))completion
+                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
-													forImageId:(NSInteger)imageId
-												  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL setSuccessfully))completion
-													 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
+                                              forImageId:(NSInteger)imageId
+                                            OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setSuccessfully))completion
+                                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end
