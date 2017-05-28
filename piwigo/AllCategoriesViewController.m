@@ -131,7 +131,7 @@
 {
 	[AlbumService setCategoryRepresentativeForCategory:categoryId
 											forImageId:self.imageId
-										  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL setSuccessfully) {
+										  OnCompletion:^(NSURLSessionTask *task, BOOL setSuccessfully) {
 											  if(setSuccessfully)
 											  {
 												  PiwigoAlbumData *category = [[CategoriesData sharedInstance] getCategoryById:categoryId];
@@ -148,7 +148,7 @@
 												  
 												  [UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSetSuccess_title", @"Image Set Successful")
 																	 message:NSLocalizedString(@"categoryImageSetSuccess_message", @"The image was set successfully for the album image")
-														   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+														   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 														   otherButtonTitles:nil
 																	tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 																		[self.navigationController popViewControllerAnimated:YES];
@@ -158,7 +158,7 @@
 											  {
 												  [self showSetRepresenativeError:nil];
 											  }
-										  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+										  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 											  [self showSetRepresenativeError:[error localizedDescription]];
 										  }];
 }
@@ -171,7 +171,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSetError_title", @"Image Set Error")
 					   message:bodyMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
