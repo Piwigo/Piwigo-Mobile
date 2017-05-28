@@ -10,12 +10,13 @@
 
 @implementation TagsService
 
-+(AFHTTPRequestOperation*)getTagsOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-									onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)getTagsOnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoTagsGetList
 		URLParameters:nil
-		   parameters:nil
+           parameters:nil
+             progress:nil
 			  success:completion
 			  failure:fail];
 }

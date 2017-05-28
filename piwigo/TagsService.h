@@ -10,7 +10,7 @@
 
 @interface TagsService : NetworkHandler
 
-+(AFHTTPRequestOperation*)getTagsOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-									onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)getTagsOnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end
