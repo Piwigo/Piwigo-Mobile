@@ -11,15 +11,18 @@
 
 @interface SessionService : NetworkHandler
 
-+(AFHTTPRequestOperation*)performLoginWithUser:(NSString*)user
-									 andPassword:(NSString*)password
-									onCompletion:(void (^)(BOOL result, id response))completion
-									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)performLoginWithUser:(NSString*)user
+                             andPassword:(NSString*)password
+                            onCompletion:(void (^)(BOOL result, id response))completion
+                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
-									  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
+                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)sessionLogoutOnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL sucessfulLogout))completion
-										  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)getPluginsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)sessionLogoutOnCompletion:(void (^)(NSURLSessionTask *task, BOOL sucessfulLogout))completion
+                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end
