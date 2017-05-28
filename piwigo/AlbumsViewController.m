@@ -56,9 +56,9 @@
 -(void)getAlbumData
 {
 	[AlbumService getAlbumListForCategory:0
-							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+							 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
 								 
-							 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+							 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 								 NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
 							 }];
 }
@@ -97,11 +97,12 @@
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
 	[AlbumService getAlbumListForCategory:0
-							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+							 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                  [refreshControl endRefreshing];
-	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [refreshControl endRefreshing];
-}];
+                             }  onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                 [refreshControl endRefreshing];
+                             }
+     ];
 }
 
 -(void)refreshShowingCells
@@ -125,11 +126,11 @@
 						  {
 							  [AlbumService createCategoryWithName:[alertView textFieldAtIndex:0].text
                                                         withStatus:@"public"
-													  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL createdSuccessfully) {
+													  OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
 														  if(createdSuccessfully)
 														  {
 															  [AlbumService getAlbumListForCategory:0
-																					   OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+																					   OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
 																  [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 															  } onFailure:nil];
 														  }
@@ -137,7 +138,7 @@
 														  {
 															  [self showCreateCategoryError];
 														  }
-													  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+													  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 														  
 														  [self showCreateCategoryError];
 													  }];
@@ -149,7 +150,7 @@
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error")
 					   message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album")
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
