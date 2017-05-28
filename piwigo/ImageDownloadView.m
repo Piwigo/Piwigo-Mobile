@@ -31,7 +31,7 @@
 		self.modal = [UIView new];
 		self.modal.translatesAutoresizingMaskIntoConstraints = NO;
 		self.modal.backgroundColor = [UIColor piwigoWhiteCream];
-		self.modal.layer.cornerRadius = 20;
+		self.modal.layer.cornerRadius = 10;
 		[self addSubview:self.modal];
 		[self addConstraints:[NSLayoutConstraint constraintCenterView:self.modal]];
 		[self addConstraints:[NSLayoutConstraint constraintView:self.modal toSize:CGSizeMake(200, 180)]];
@@ -43,6 +43,7 @@
 		self.statusLabel.font = [UIFont piwigoFontNormal];
 		self.statusLabel.font = [self.statusLabel.font fontWithSize:18];
 		self.statusLabel.textColor = [UIColor piwigoGray];
+        self.statusLabel.textAlignment = NSTextAlignmentCenter;
 		self.statusLabel.adjustsFontSizeToFitWidth = YES;
 		self.statusLabel.minimumScaleFactor = 0.5;
 		[self.modal addSubview:self.statusLabel];
