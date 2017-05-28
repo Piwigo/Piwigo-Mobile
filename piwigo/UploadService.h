@@ -16,19 +16,19 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 
 +(void)uploadImage:(NSData*)imageData
    withInformation:(NSDictionary*)imageInformation
-		onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
-	  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-		 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
+        onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+      OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)setImageInfoForImageWithId:(NSString*)imageId
-									 withInformation:(NSDictionary*)imageInformation
-										  onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
-										OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-										   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)setImageInfoForImageWithId:(NSString*)imageId
+                               withInformation:(NSDictionary*)imageInformation
+                                    onProgress:(void (^)(NSProgress *))progress
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)updateImageInfo:(ImageUpload*)imageInfo
-							   onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
-							 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)updateImageInfo:(ImageUpload*)imageInfo
+                         onProgress:(void (^)(NSProgress *))progress
+                       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end
