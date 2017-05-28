@@ -6,6 +6,7 @@
   Copyright (c) 2015 bakercrew. All rights reserved.
 */
 
+// Login view
 "login" = "Login";
 "login_serverPlaceholder" = "Web Address";
 "login_userPlaceholder" = "Username (optional)";
@@ -13,6 +14,7 @@
 "login_loggingIn" = "Logging In...";
 "login_protocolDescription" = "(tap to change)";
 
+// Tab bar
 "tabBar_albums" = "Albums";
 "tabBar_upload" = "Upload";
 "tabBar_preferences" = "Preferences";
@@ -26,7 +28,7 @@
 "privacyLevel" = "Privacy Level";
 "tags" = "Tags";
 
-"alertOkButton" = "Ok";
+"alertOkButton" = "OK";
 "alertYesButton" = "Yes";
 "alertNoButton" = "No";
 "alertTryAgainButton" = "Try Again";
@@ -45,6 +47,9 @@
 "imageUploadDetailsUploading_title" = "Images that are Being Uploaded";
 
 "imageUploadingTableCell_uploading" = "Uploading...";
+"imageUploadCompleted_title" = "Upload Completed";
+"imageImageUploadCompleted_message" = "1 image/video uploaded to your Piwigo server.";
+"imageImagesUploadCompleted_message" = "images/videos uploaded to your Piwigo server.";
 
 "categoryTableView_photoCount" = "photo";
 "categoryTableView_photosCount" = "photos";
@@ -211,8 +216,8 @@
 
 "error" = "Error";
 
-"serverVersionNotCompatable_title" = "Server Incompatable";
-"serverVersionNotCompatable_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?";
+"serverVersionNotCompatible_title" = "Server Incompatible";
+"serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?";
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given web address";
@@ -230,6 +235,7 @@
 "downloadImageFail_title" = "Download Fail";
 "downloadImageFail_message" = "Failed to download image!\n%@";
 "downloadVideoFail_message" = "Failed to download video!\n%@";
+"downloadVideoFail_Photos" = "Video format not accepted by Photos!";
 
 "imageSaveError_title" = "Fail Saving Image";
 "imageSaveError_message" = "Failed to save image. Error: %@";
@@ -245,7 +251,8 @@
 "imageDetailsFetchError_continueMessage" = "Fetching the image data failed\nContinue?";
 
 "videoUploadError_title" = "Video Upload Error";
-"videoUploadError_message" = "You need to add the plugin \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo";
+"videoUploadError_message" = "You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.";
+"videoUploadError_format" = "Sorry, the video file format is not compatible with the extension \"VideoJS\".";
 
 "logoutFail_title" = "Logout Failed";
 "logoutFail_message" = "Failed to logout\nTry again?";
