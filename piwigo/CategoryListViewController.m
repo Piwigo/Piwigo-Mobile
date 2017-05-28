@@ -140,7 +140,7 @@
 -(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
 {
 	[AlbumService getAlbumListForCategory:categoryTapped.albumId
-							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+							 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
 								 [self.categoriesThatHaveLoadedSubCategories setValue:@(categoryTapped.albumId) forKey:[NSString stringWithFormat:@"%@", @(categoryTapped.albumId)]];
 							 } onFailure:nil];
 	
