@@ -60,7 +60,7 @@
 		self.progressBar.tintColor = [UIColor piwigoOrange];
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
-		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:10]];
+		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:5]];
 		self.topProgressBarConstraint = [NSLayoutConstraint constraintWithItem:self.progressBar
 															  attribute:NSLayoutAttributeTop
 															  relatedBy:NSLayoutRelationEqual
@@ -87,7 +87,6 @@
 		self.automaticallyAdjustsScrollViewInsets = false;
 		self.edgesForExtendedLayout = UIRectEdgeNone;
 	}
-
 }
 
 -(void)imageOptions
@@ -125,7 +124,10 @@
 											editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
 											editImageVC.isEdit = YES;
 											UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
-											[self.navigationController presentViewController:presentNav animated:YES completion:nil];
+                                            // Added dispatch_async() to prevent view not showing up on iPad
+											dispatch_async(dispatch_get_main_queue(), ^ {
+                                                [self.navigationController presentViewController:presentNav animated:YES completion:nil];
+                                            });
 											break;
 										}
 										case 3:	// set as album image
@@ -150,13 +152,13 @@
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1) {
 							  [ImageService deleteImage:self.imageData
-										   ListOnCompletion:^(AFHTTPRequestOperation *operation) {
+										   ListOnCompletion:^(NSURLSessionTask *task) {
 											   if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
 											   {
 												   [self.imgDetailDelegate didDeleteImage:self.imageData];
 											   }
 											   [self.navigationController popViewControllerAnimated:YES];
-										   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+										   } onFailure:^(NSURLSessionTask *task, NSError *error) {
 											   [UIAlertView showWithTitle:@"Delete Fail"
 																  message:@"Failed to delete image\nRetry?"
 														cancelButtonTitle:@"No"
@@ -187,16 +189,16 @@
 	if(!self.imageData.isVideo)
 	{
 		[ImageService downloadImage:self.imageData
-						 onProgress:^(NSInteger current, NSInteger total) {
-							 CGFloat progress = (CGFloat)current / total;
-							 self.downloadView.percentDownloaded = progress;
-						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
+						 onProgress:^(NSProgress *progress) {
+                             dispatch_async(dispatch_get_main_queue(),
+                                            ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;});
+						 } ListOnCompletion:^(NSURLSessionTask *task, UIImage *image) {
 							 [self saveImageToCameraRoll:image];
-						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 							 self.downloadView.hidden = YES;
 							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
 												message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
-									  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+									  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 												   if(buttonIndex == 1) {
@@ -207,26 +209,42 @@
 	}
 	else
 	{
-		[ImageService downloadVideo:self.imageData
-						 onProgress:^(NSInteger current, NSInteger total) {
-							 CGFloat progress = (CGFloat)current / total;
-							 self.downloadView.percentDownloaded = progress;
-						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, id response) {
-							 NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-							 NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:self.imageData.fileName];
-							 UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
-						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-							 self.downloadView.hidden = YES;
-							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-												message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), [error localizedDescription]]
-									  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
-									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
-											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-												   if(buttonIndex == 1) {
-													   [self downloadImage];
-												   }
-											   }];
-						 }];
+        [ImageService downloadVideo:self.imageData
+                         onProgress:^(NSProgress *progress) {
+                             dispatch_async(dispatch_get_main_queue(),
+                                            ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;}
+                                            );
+                         }
+                  completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {                      
+                      // Any error ?
+                      if (error.code) {
+                         self.downloadView.hidden = YES;
+                         [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                            message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), [error localizedDescription]]
+                                  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
+                                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                               if(buttonIndex == 1) {
+                                                   [self downloadImage];
+                                               }
+                                           }];
+                      } else {
+                          // Try to move video in Photos.app
+                          NSLog(@"path= %@", filePath.path);
+                          if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath.path)) {
+                              UISaveVideoAtPathToSavedPhotosAlbum(filePath.path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
+                          } else {
+                              [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                                 message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
+                                       cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                       otherButtonTitles:nil
+                                                tapBlock:nil
+                               ];
+                          }
+                          self.downloadView.hidden = YES;
+                      }
+                  }
+         ];
 	}
 }
 -(void)saveImageToCameraRoll:(UIImage*)imageToSave
@@ -241,7 +259,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 	}
@@ -253,7 +271,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 	}
@@ -273,6 +291,7 @@
 		[self showTabBar:self.tabBarController];
 	}
 }
+
 -(void)hideTabBar:(UITabBarController*)tabbarcontroller
 {
 	return;
@@ -297,6 +316,7 @@
 //	}
 //	[UIView commitAnimations];
 }
+
 -(void)showTabBar:(UITabBarController*)tabbarcontroller
 {
 	return;
@@ -379,18 +399,22 @@
 -(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
 {
 	ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
-	[removedVC.scrollView.imageView cancelImageRequestOperation];
+	[removedVC.scrollView.imageView cancelImageDownloadTask];
+//    [removedVC.scrollView.imageView cancelImageRequestOperation];
 	
 	ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
 	view.imagePreviewDelegate = self;
-	self.progressBar.hidden = view.imageLoaded;
+
+    self.progressBar.hidden = view.imageLoaded;
 	[self.progressBar setProgress:0];
-	self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+
+    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+
 	if(self.imageData.isVideo)
 	{
 		self.progressBar.hidden = YES;
 	}
-	
+
 	self.imageData = [self.images objectAtIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
 	
 	self.title = self.imageData.name;
