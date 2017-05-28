@@ -55,7 +55,7 @@
 
 -(void)getTagsOnCompletion:(void (^)(NSArray *tags))completion
 {
-	[TagsService getTagsOnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+	[TagsService getTagsOnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 		if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
 		{
 			NSArray *tags = [self parseTagsJson:response];
@@ -65,7 +65,7 @@
 				completion(self.tagList);
 			}
 		}
-	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+	} onFailure:^(NSURLSessionTask *task, NSError *error) {
 		NSLog(@"Failed to get Tags: %@", [error localizedDescription]);
 	}];
 }
