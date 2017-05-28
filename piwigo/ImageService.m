@@ -25,32 +25,33 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 @implementation ImageService
 
-+(AFHTTPRequestOperation*)getImagesForAlbumId:(NSInteger)albumId
-											onPage:(NSInteger)page
-										  forOrder:(NSString*)order
-									  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albumImages))completion
-										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)getImagesForAlbumId:(NSInteger)albumId
+                                 onPage:(NSInteger)page
+                               forOrder:(NSString*)order
+                           OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albumImages))completion
+                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesGetImages
 		URLParameters:@{@"albumId" : @(albumId),
 						@"perPage" : @([Model sharedInstance].imagesPerPage),
-						@"page" : @(page),
-						@"order" : [order stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]}
-		   parameters:nil
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+						@"page"    : @(page),
+						@"order"   : [order stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]}
+           parameters:nil
+             progress:nil
+			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
 				  if(completion) {
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
 						  NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
-						  completion(operation, albumImages);
+						  completion(task, albumImages);
 					  } else {
-						  completion(operation, nil);
+						  completion(task, nil);
 					  }
 				  }
-			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			  } failure:^(NSURLSessionTask *task, NSError *error) {
 				  
 				  if(fail) {
-					  fail(operation, error);
+					  fail(task, error);
 				  }
 			  }];
 }
@@ -75,14 +76,15 @@ NSString * const kGetImageOrderDescending = @"desc";
 	return albumImages;
 }
 
-+(AFHTTPRequestOperation*)getImageInfoById:(NSInteger)imageId
-						  ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, PiwigoImageData *imageData))completion
-								 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
+                    ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
+                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoImagesGetInfo
 		URLParameters:@{@"imageId" : @(imageId)}
-		   parameters:nil
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+           parameters:nil
+             progress:nil
+			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
 				  if(completion) {
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
@@ -92,15 +94,15 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  {
 							  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] addImages:@[imageData]];
 						  }
-						  completion(operation, imageData);
+						  completion(task, imageData);
 					  } else {
-						  completion(operation, nil);
+						  completion(task, nil);
 					  }
 				  }
-			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-				  
+			  }
+              failure:^(NSURLSessionTask *task, NSError *error) {
 				  if(fail) {
-					  fail(operation, error);
+					  fail(task, error);
 				  }
 			  }];
 }
@@ -182,85 +184,103 @@ NSString * const kGetImageOrderDescending = @"desc";
 	return imageData;
 }
 
-+(AFHTTPRequestOperation*)deleteImage:(PiwigoImageData*)image
-						  ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation))completion
-								 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)deleteImage:(PiwigoImageData*)image
+               ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
+                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	if(!image) return nil;
 	return [self post:kPiwigoImageDelete
 		URLParameters:nil
 		   parameters:@{@"image_id" : @([image.imageId integerValue]),
-						@"pwg_token" : [Model sharedInstance].pwgToken}
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
-				  
+                        @"pwg_token" : [Model sharedInstance].pwgToken}
+             progress:nil
+			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion) {
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
 						  [[CategoriesData sharedInstance] removeImage:image];
-						  completion(operation);
+						  completion(task);
 					  } else {
-						  fail(operation, responseObject);
+						  fail(task, responseObject);
 					  }
 				  }
-			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-				  
+			  } failure:^(NSURLSessionTask *task, NSError *error) {
 				  if(fail) {
-					  fail(operation, error);
+					  fail(task, error);
 				  }
 			  }];
 }
 
-+(AFHTTPRequestOperation*)downloadImage:(PiwigoImageData*)image
-							 onProgress:(void (^)(NSInteger current, NSInteger total))progress
-					 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, UIImage *image))completion
-							onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)downloadImage:(PiwigoImageData*)image
+                       onProgress:(void (^)(NSProgress *))progress
+                 ListOnCompletion:(void (^)(NSURLSessionTask *task, UIImage *image))completion
+                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	if(!image) return nil;
-	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:[image.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-	AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:requst];
-	requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
-	[requestOperation setCompletionBlockWithSuccess:completion
-											failure:fail];
-	
-	[requestOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-		if(progress) {
-			progress((NSInteger)totalBytesRead, (NSInteger)totalBytesExpectedToRead);
-		}
-	}];
-	
-	[requestOperation start];
-	return requestOperation;
+    NSURL *request = [NSURL URLWithString:[image.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFImageResponseSerializer serializer];
+    
+    NSURLSessionDataTask *task = [manager GET:request.absoluteString parameters:nil
+                                     progress:progress
+                                      success:^(NSURLSessionTask *task, UIImage *image) {
+                                          if(completion) {
+                                              completion(task, image);
+                                          }
+                                          [manager invalidateSessionCancelingTasks:YES];
+                                      }
+                                      failure:^(NSURLSessionTask *task, NSError *error) {
+                                          NSLog(@"ImageService/get Error: %@", error);
+                                          if(fail) {
+                                              fail(task, error);
+                                          }
+                                          [manager invalidateSessionCancelingTasks:YES];
+                                      }
+     ];
+
+	return task;
 }
 
-+(AFHTTPRequestOperation*)downloadVideo:(PiwigoImageData*)video
-							 onProgress:(void (^)(NSInteger current, NSInteger total))progress
-					   ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, id response))completion
-							  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
+                       onProgress:(void (^)(NSProgress *))progress
+                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
 	if(!video) return nil;
-	NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:[video.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-	AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:requst];
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:video.fileName];
-	requestOperation.outputStream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
-	[requestOperation setCompletionBlockWithSuccess:completion
-											failure:fail];
-	
-	[requestOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-		if(progress) {
-			progress((NSInteger)totalBytesRead, (NSInteger)totalBytesExpectedToRead);
-		}
-	}];
-	
-	[requestOperation start];
-	return requestOperation;
+
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    
+    NSURL *URL = [NSURL URLWithString:[video.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    
+    // replace .mp4 or .mv4 with .mov for compatibility with Photos.app
+    NSString *fileName = video.fileName;
+    if (([[video.fileName pathExtension] isEqualToString:@"MP4"]) ||
+        ([[video.fileName pathExtension] isEqualToString:@"mp4"]) ||
+        ([[video.fileName pathExtension] isEqualToString:@"M4V"]) ||
+        ([[video.fileName pathExtension] isEqualToString:@"m4v"])) {
+        fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
+    }
+    
+    NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request
+                                                             progress:progress
+                                                          destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+                                                              NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                                              return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
+                                                          }
+                                                    completionHandler:completionHandler
+                                      ];
+    [task resume];
+
+    return task;
 }
 
-+(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
-											  forCategory:(NSInteger)categoryId
-												   onPage:(NSInteger)onPage
-												  forSort:(NSString*)sort
-										 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSInteger count))completion
-												onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
+                                        forCategory:(NSInteger)categoryId
+                                             onPage:(NSInteger)onPage
+                                            forSort:(NSString*)sort
+                                   ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
+                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	if([[CategoriesData sharedInstance] getCategoryById:categoryId].imageList.count == [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages)
 	{	// done. don't need anymore
@@ -271,31 +291,31 @@ NSString * const kGetImageOrderDescending = @"desc";
 		return nil;
 	}
 	
-	AFHTTPRequestOperation *request = [ImageService getImagesForAlbumId:categoryId
-																 onPage:onPage
-															   forOrder:sort
-														   OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albumImages) {
+    NSURLSessionTask *task = [ImageService getImagesForAlbumId:categoryId
+                                                        onPage:onPage
+                                                      forOrder:sort
+                                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albumImages) {
 															   
-															   if(albumImages)
-															   {
-																   PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-																   [albumData addImages:albumImages];
-															   }
-															   
-															   if(completion) {
-																   completion(operation, albumImages.count);
-															   }
-														   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-															   
-															   NSLog(@"Fail get album photos: %@", error);
-															   if(fail) {
-																   fail(nil, error);
-															   }
-														   }];
+                                                       if(albumImages)
+                                                       {
+                                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
+                                                           [albumData addImages:albumImages];
+                                                       }
+                                                       
+                                                       if(completion) {
+                                                           completion(task, albumImages.count);
+                                                       }
+                                                   } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                                       
+                                                       NSLog(@"loadImageChunkForLastChunkCount fail: %@", error);
+                                                       if(fail) {
+                                                           fail(nil, error);
+                                                       }
+                                                   }
+                              ];
 	
-	[request setQueuePriority:NSOperationQueuePriorityVeryHigh];
-	return request;
+    task.priority = NSOperationQueuePriorityVeryHigh;
+	return task;
 }
-
 
 @end
