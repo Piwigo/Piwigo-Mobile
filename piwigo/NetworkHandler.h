@@ -12,6 +12,7 @@ typedef void(^SuccessBlock)(id responseObject);
 
 FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
+FOUNDATION_EXPORT NSString * const kPiwigoSessionGetPluginsList;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionLogout;
 
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetList;
@@ -43,17 +44,18 @@ FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamTags;
 
 @interface NetworkHandler : NSObject
 
-+(AFHTTPRequestOperation*)post:(NSString*)path
-				 URLParameters:(NSDictionary*)urlParams
-					parameters:(NSDictionary*)parameters
-					   success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-					   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)post:(NSString*)path
+           URLParameters:(NSDictionary*)urlParams
+              parameters:(NSDictionary*)parameters
+                progress:(void (^)(NSProgress *))progress
+                 success:(void (^)(NSURLSessionTask *task, id responseObject))success
+                 failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)postMultiPart:(NSString*)path
-							 parameters:(NSDictionary*)parameters
-								success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-								failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
-
++(NSURLSessionTask*)postMultiPart:(NSString*)path
+                       parameters:(NSDictionary*)parameters
+                         progress:(void (^)(NSProgress *))progress
+                          success:(void (^)(NSURLSessionTask *task, id responseObject))success
+                          failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(void)showConnectionError:(NSError*)error;
 
