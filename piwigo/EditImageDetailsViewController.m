@@ -53,10 +53,10 @@ typedef enum {
 {
 	_isEdit = isEdit;
 	[ImageService getImageInfoById:self.imageDetails.imageId
-				  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+				  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 					  self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
 					  [self.editImageDetailsTableView reloadData];
-				  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+				  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 					  [UIAlertView showWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
 										 message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
 							   cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -125,13 +125,13 @@ typedef enum {
 	[loading showLoadingWithLabel:@"Setting Image Information" andProgressLabel:nil];
 	
 	[UploadService updateImageInfo:self.imageDetails
-						onProgress:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+						onProgress:^(NSProgress *progress) {
 							// progress
-						} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+						} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 							// complete
 							[loading hideLoadingWithLabel:@"Saved" showCheckMark:YES withDelay:0.3];
 							[self.navigationController dismissViewControllerAnimated:YES completion:nil];
-						} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						} onFailure:^(NSURLSessionTask *task, NSError *error) {
 							[loading hideLoadingWithLabel:@"Failed" showCheckMark:NO withDelay:0.0];
 							[UIAlertView showWithTitle:@"Failed to Update"
 											   message:@"Failed to update your changes with your server\nTry again?"

@@ -135,18 +135,13 @@
 	if(rank > totalInQueue)
 	{
 		[self.uploadProgress setProgress:0 animated:NO];
+        [UIAlertView showWithTitle:NSLocalizedString(@"imageUploadCompleted_title", @"Upload Completed")
+                           message:(self.totalUploadedImages > 1) ? [NSString stringWithFormat:@"%ld %@", self.totalUploadedImages, NSLocalizedString(@"imageImagesUploadCompleted_message", @"images/videos uploaded to your Piwigo server.")]: NSLocalizedString(@"imageImageUploadCompleted_message", @"1 image/video uploaded to your Piwigo server.")
+                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                 otherButtonTitles:nil
+                          tapBlock:nil];
 		self.totalUploadedImages = 0;
-		if(self.superview)
-		{
-			[UIView animateWithDuration:0.8
-								  delay:1.0
-								options:kNilOptions
-							 animations:^{
-								 self.alpha = 0;
-							 } completion:^(BOOL finished) {
-								 [self removeFromSuperview];
-							 }];
-		}
+        self.currentImage = 1;
 	}
 	
 	if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
@@ -157,7 +152,7 @@
 
 -(void)imagesToUploadChanged:(NSInteger)imagesLeftToUpload
 {
-	self.maxImages = imagesLeftToUpload;
+    self.maxImages = imagesLeftToUpload;
 	[self updateImageCountLabel];
 	
 	if([self.delegate respondsToSelector:@selector(imagesToUploadChanged:)])

@@ -87,10 +87,10 @@
 		self.downloadView.hidden = YES;
 		
 		[AlbumService getAlbumListForCategory:self.categoryId
-								 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
+								 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
 									 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 								 }
-                                    onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                    onFailure:^(NSURLSessionTask *task, NSError *error) {
                                         NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
                                     }];
 		
@@ -106,10 +106,19 @@
 	
 	[self loadNavButtons];
 	
-	if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0)
+	// Albums
+    if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0)
 	{
 		[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 	}
+    
+    // Photos
+    if ([Model sharedInstance].hasUploadedImages) {
+        [Model sharedInstance].hasUploadedImages = NO;
+        [self.albumData reloadAlbumOnCompletion:^{
+            [self.imagesCollection reloadData];
+        }];
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -126,15 +135,15 @@
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-	[self.albumData reloadAlbumOnCompletion:^{
-		[refreshControl endRefreshing];
-		[self.imagesCollection reloadData];
-	}];
-	
-	[AlbumService getAlbumListForCategory:self.categoryId
-							 OnCompletion:^(AFHTTPRequestOperation *operation, NSArray *albums) {
-		[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                             } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    [self.albumData reloadAlbumOnCompletion:^{
+        [refreshControl endRefreshing];
+        [self.imagesCollection reloadData];
+    }];
+
+    [AlbumService getAlbumListForCategory:self.categoryId
+                             OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+                             } onFailure:^(NSURLSessionTask *task, NSError *error) {
                                  NSLog(@"refresh fail");
                              }];
 }
@@ -219,10 +228,10 @@
     // Image data are not always available —> Load them
     [ImageService getImageInfoById:[self.selectedImageIds.lastObject integerValue]
      
-              ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+              ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
                   // Let's delete the image
-                  [ImageService deleteImage:imageData ListOnCompletion:^(AFHTTPRequestOperation *operation) {
+                  [ImageService deleteImage:imageData ListOnCompletion:^(NSURLSessionTask *task) {
                       
                       [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
                       
@@ -231,10 +240,10 @@
                       self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
                       [self.imagesCollection reloadData];
                       [self deleteSelected];
-                  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
                       [UIAlertView showWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
                                          message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
-                               cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+                               cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
                                otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
                                         tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                             if(buttonIndex == 1)
@@ -244,7 +253,7 @@
                                         }];
                   }];
 
-              } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              } onFailure:^(NSURLSessionTask *task, NSError *error) {
                   [UIAlertView showWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
                                      message:NSLocalizedString(@"imageDetailsFetchError_continueMessage", @"Fetching the image data failed\nNContinue?")
                            cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -303,31 +312,50 @@
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
 							  } failure:nil];
-	if(!downloadingImage.isVideo)
+	
+    if(!downloadingImage.isVideo)
 	{
 		[ImageService downloadImage:downloadingImage
-						 onProgress:^(NSInteger current, NSInteger total) {
-							 CGFloat progress = (CGFloat)current / total;
-							 self.downloadView.percentDownloaded = progress;
-						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, UIImage *image) {
+                         onProgress:^(NSProgress *progress) {
+                              dispatch_async(dispatch_get_main_queue(),
+                                             ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;});
+						 } ListOnCompletion:^(NSURLSessionTask *task, UIImage *image) {
 							 [self saveImageToCameraRoll:image];
-						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 							 NSLog(@"downloadVideo fail");
 						 }];
 	}
 	else
 	{
-		[ImageService downloadVideo:downloadingImage
-						 onProgress:^(NSInteger current, NSInteger total) {
-							 CGFloat progress = (CGFloat)current / total;
-							 self.downloadView.percentDownloaded = progress;
-						 } ListOnCompletion:^(AFHTTPRequestOperation *operation, id response) {
-							 NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-							 NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:downloadingImage.fileName];
-							 UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
-						 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-							 NSLog(@"downloadImage fail");
-						 }];
+        [ImageService downloadVideo:downloadingImage
+                         onProgress:^(NSProgress *progress) {
+                             dispatch_async(dispatch_get_main_queue(),
+                                            ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;}
+                                            );
+                         }
+                  completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+                      // Any error ?
+                      if (error.code) {
+                          NSLog(@"AlbumImagesViewController: downloadImage fail");
+                      } else {
+                          // Try to move video in Photos.app
+                          NSLog(@"path= %@", filePath.path);
+                          if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath.path)) {
+                              UISaveVideoAtPathToSavedPhotosAlbum(filePath.path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
+                          } else {
+                              [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                                 message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
+                                       cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                       otherButtonTitles:nil
+                                                tapBlock:nil
+                               ];
+                          }
+                      }
+                  }
+         ];
+        
+        self.downloadView.hidden = NO;
+
 	}
 }
 
@@ -343,7 +371,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 		[self cancelSelect];
@@ -361,7 +389,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 	}

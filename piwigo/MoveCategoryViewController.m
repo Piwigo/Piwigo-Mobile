@@ -109,7 +109,7 @@
 {
 	[AlbumService moveCategory:self.selectedCategory.albumId
 				  intoCategory:categoryId
-				  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL movedSuccessfully) {
+				  OnCompletion:^(NSURLSessionTask *task, BOOL movedSuccessfully) {
 					  if(movedSuccessfully)
 					  {
 						  self.selectedCategory.parentAlbumId = categoryId;
@@ -120,7 +120,7 @@
 					  {
 						  [self showMoveCategoryError:nil];
 					  }
-				  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+				  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 					  [self showMoveCategoryError:[error localizedDescription]];
 				  }];
 }
@@ -134,7 +134,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"moveCategoryError_title", @"Move Fail")
 					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }

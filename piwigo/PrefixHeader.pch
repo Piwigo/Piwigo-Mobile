@@ -25,7 +25,6 @@
 	#import "UIColor+AppSpecificColors.h"
 	#import <AFNetworking.h>
 	#import <UIImageView+AFNetworking.h>
-	#import "UIImageView+DownloadProgress.h"
 	#import "UIFont+AppFonts.h"
 	#import "UIActionSheet+Blocks.h"
 	#import "UIAlertView+Blocks.h"

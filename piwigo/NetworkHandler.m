@@ -12,6 +12,7 @@
 // URLs:
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
+NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
 NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 
 NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList&cat_id={categoryId}&recursive={recursive}";
@@ -56,88 +57,114 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
 
 // path: format={param1}
 // URLParams: {@"param1" : @"hello" }
-+(AFHTTPRequestOperation*)post:(NSString*)path
-				 URLParameters:(NSDictionary*)urlParams
-					parameters:(NSDictionary*)parameters
-					   success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-					   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)post:(NSString*)path
+           URLParameters:(NSDictionary*)urlParams
+              parameters:(NSDictionary*)parameters
+                progress:(void (^)(NSProgress *))progress
+                 success:(void (^)(NSURLSessionTask *task, id responseObject))success
+                 failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-		
-	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-	[jsonAcceptableContentTypes addObject:@"text/plain"];
-	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-	manager.responseSerializer = jsonResponseSerializer;
-	
-	AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-	[policy setAllowInvalidCertificates:YES];
-	[manager setSecurityPolicy:policy];
-	
-	AFHTTPRequestOperation *operation = [manager POST:[NetworkHandler getURLWithPath:path andURLParams:urlParams]
-			  parameters:parameters
-				 success:success
-				 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					 if(fail) {
-						 fail(operation, error);
-					 }
-				 }];
-	
-	return operation;
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
+    NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
+    [jsonAcceptableContentTypes addObject:@"text/plain"];
+    jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
+    manager.responseSerializer = jsonResponseSerializer;
+    
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [manager setSecurityPolicy:policy];
+    
+    NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path andURLParams:urlParams]
+                                parameters:parameters
+                                  progress:progress
+                                   success:^(NSURLSessionTask *task, id responseObject) {
+                                       if (success) {
+                                           success(task, responseObject);
+                                       }
+                                       [manager invalidateSessionCancelingTasks:YES];
+                                   }
+                                   failure:^(NSURLSessionTask *task, NSError *error) {
+                                       NSLog(@"NetworkHandler/post Error: %@", error);
+                                       if(fail) {
+                                           fail(task, error);
+                                       }
+                                       [manager invalidateSessionCancelingTasks:YES];
+                                  }
+                              ];
+    
+    return task;
 }
 
-+(AFHTTPRequestOperation*)postMultiPart:(NSString*)path
-							 parameters:(NSDictionary*)parameters
-							   success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-							   failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)postMultiPart:(NSString*)path
+                       parameters:(NSDictionary*)parameters
+                         progress:(void (^)(NSProgress *))progress
+                          success:(void (^)(NSURLSessionTask *task, id responseObject))success
+                          failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-	
-	AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-	NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-	[jsonAcceptableContentTypes addObject:@"text/plain"];
-	jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-	manager.responseSerializer = jsonResponseSerializer;
-	
-	AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-	[policy setAllowInvalidCertificates:YES];
-	[manager setSecurityPolicy:policy];
-	
-	return [manager POST:[NetworkHandler getURLWithPath:path andURLParams:nil]
-			  parameters:nil
-constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-	
-	NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-	[mutableHeaders setValue:[NSString stringWithFormat:@"multipart/form-data"] forKey:@"Content-Type"];
-	
-	[formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
-								name:@"file"
-							fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
-							mimeType:@"image/jpeg"];
-	
-	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
-								name:@"name"];
-	
-	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]
-								name:@"chunk"];
-	
-	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding]
-								name:@"chunks"];
-	
-	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding]
-								name:@"category"];
-	
-	[formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding]
-								name:@"level"];
-	
-	[formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
-								name:@"pwg_token"];
-	}
-				 success:success
-				 failure:fail];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
+    NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
+    [jsonAcceptableContentTypes addObject:@"text/plain"];
+    jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
+    manager.responseSerializer = jsonResponseSerializer;
+    
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [manager setSecurityPolicy:policy];
+    
+    NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path andURLParams:nil]
+                                parameters:nil
+                 constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
+    {
+    
+        NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+        [mutableHeaders setValue:[NSString stringWithFormat:@"multipart/form-data"] forKey:@"Content-Type"];
+        
+        [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
+                                    name:@"file"
+                                fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
+                                mimeType:@"image/jpeg"];
+        
+        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
+                                    name:@"name"];
+        
+        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]
+                                    name:@"chunk"];
+        
+        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding]
+                                    name:@"chunks"];
+        
+        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding]
+                                    name:@"category"];
+        
+        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding]
+                                    name:@"level"];
+        
+        [formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
+                                    name:@"pwg_token"];
+    }
+                                  progress:progress
+                                   success:^(NSURLSessionTask *task, id responseObject) {
+                                       if (success) {
+                                           success(task, responseObject);
+                                       }
+                                       [manager invalidateSessionCancelingTasks:YES];
+                                   }
+                                   failure:^(NSURLSessionTask *task, NSError *error) {
+                                       NSLog(@"NetworkHandler/post Error: %@", error);
+                                       if(fail) {
+                                           fail(task, error);
+                                       }
+                                       [manager invalidateSessionCancelingTasks:YES];
+                                   }];
+    
+    return task;
 }
-
-
 
 +(NSString*)getURLWithPath:(NSString*)path andURLParams:(NSDictionary*)params
 {
@@ -158,7 +185,7 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 	UIAlertView *connectionError = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
 															  message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
 															 delegate:nil
-													cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+													cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 													otherButtonTitles:nil];
 	[connectionError show];
 }

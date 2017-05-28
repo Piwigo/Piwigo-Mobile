@@ -22,34 +22,34 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
 
 @interface ImageService : NetworkHandler
 
-+(AFHTTPRequestOperation*)getImagesForAlbumId:(NSInteger)albumId
-											onPage:(NSInteger)page
-										  forOrder:(NSString*)order
-									  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albumImages))completion
-										 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)getImagesForAlbumId:(NSInteger)albumId
+                                 onPage:(NSInteger)page
+                               forOrder:(NSString*)order
+                           OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albumImages))completion
+                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)getImageInfoById:(NSInteger)imageId
-						  ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, PiwigoImageData *imageData))completion
-								 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
+                    ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
+                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)deleteImage:(PiwigoImageData*)image
-						 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation))completion
-								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)deleteImage:(PiwigoImageData*)image
+               ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
+                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)downloadImage:(PiwigoImageData*)image
-							 onProgress:(void (^)(NSInteger current, NSInteger total))progress
-					   ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, UIImage *image))completion
-							  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
-+(AFHTTPRequestOperation*)downloadVideo:(PiwigoImageData*)video
-							 onProgress:(void (^)(NSInteger current, NSInteger total))progress
-					   ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, id response))completion
-							  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)downloadImage:(PiwigoImageData*)image
+                       onProgress:(void (^)(NSProgress *))progress
+                 ListOnCompletion:(void (^)(NSURLSessionTask *task, UIImage *image))completion
+                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(AFHTTPRequestOperation*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
-											  forCategory:(NSInteger)categoryId
-												   onPage:(NSInteger)onPage
-												  forSort:(NSString*)sort
-										 ListOnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSInteger count))completion
-												onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail;
++(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
+                       onProgress:(void (^)(NSProgress *))progress
+                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+
++(NSURLSessionTask*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
+                                        forCategory:(NSInteger)categoryId
+                                             onPage:(NSInteger)onPage
+                                            forSort:(NSString*)sort
+                                   ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
+                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end

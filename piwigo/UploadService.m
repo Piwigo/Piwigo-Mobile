@@ -17,8 +17,8 @@
 +(void)uploadImage:(NSData*)imageData
    withInformation:(NSDictionary*)imageInformation
 			onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
-		  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-			 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+		  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+			 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	NSInteger chunkSize = 500 * 1024;
 	
@@ -27,14 +27,13 @@
 		chunks++;
 	}
 	
-	[self sendChunk:imageData
-	WithInformation:[imageInformation mutableCopy]
-						 forOffset:0
-						   onChunk:0
-					forTotalChunks:(NSInteger)chunks
-						onProgress:progress
-					  OnCompletion:completion
-						 onFailure:fail];
+	[self sendChunk:imageData WithInformation:[imageInformation mutableCopy]
+                                    forOffset:0
+                                      onChunk:0
+                               forTotalChunks:(NSInteger)chunks
+                                   onProgress:progress
+                                 OnCompletion:completion
+                                    onFailure:fail];
 }
 
 +(void)sendChunk:(NSData*)imageData
@@ -43,8 +42,8 @@
 						onChunk:(NSInteger)count
 				 forTotalChunks:(NSInteger)chunks
 					 onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
-				   OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-					  onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
+				   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+					  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	NSInteger chunkSize = 500 * 1024;
 	NSInteger length = [imageData length];
@@ -58,75 +57,71 @@
 	[imageInformation setObject:[NSString stringWithFormat:@"%@", @(count)] forKey:kPiwigoImagesUploadParamChunk];
 	[imageInformation setObject:[NSString stringWithFormat:@"%@", @(chunks)] forKey:kPiwigoImagesUploadParamChunks];
 	
-	AFHTTPRequestOperation *chunkRequest = [self postMultiPart:kPiwigoImagesUpload
-	   parameters:imageInformation
-		  success:^(AFHTTPRequestOperation *operation, id responseObject) {
-			  
-			  if(count >= chunks - 1) {
-				  // done, return
-				  if(completion) {
-					  completion(operation, responseObject);
-				  }
-			  } else {
-				  // keep going!
-				  [self sendChunk:imageData
-				  WithInformation:imageInformation
-									   forOffset:offset
-										 onChunk:nextChunkNumber
-								  forTotalChunks:chunks
-									  onProgress:progress
-									OnCompletion:completion
-									   onFailure:fail];
-			  }
-		  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-			  // failed!
-			  if(fail)
-			  {
-				  fail(operation, error);
-			  }
-		  }];
-	
-	[chunkRequest setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
-		if(progress)
-		{
-			progress((NSInteger)totalBytesWritten, (NSInteger)totalBytesExpectedToWrite, count + 1, chunks);
-		}
-	}];
+	[self postMultiPart:kPiwigoImagesUpload
+          parameters:imageInformation
+               progress:^(NSProgress *onProgress) {
+                   dispatch_async(dispatch_get_main_queue(),
+                                  ^(void){if(onProgress) progress((NSInteger)onProgress.completedUnitCount, (NSInteger)onProgress.totalUnitCount, count + 1, chunks);});
+               }
+             success:^(NSURLSessionTask *task, id responseObject) {
+                 if(count >= chunks - 1) {
+                      // done, return
+                      if(completion) {
+                          completion(task, responseObject);
+                      }
+                  } else {
+                      // keep going!
+                      [self sendChunk:imageData
+                      WithInformation:imageInformation
+                            forOffset:offset
+                              onChunk:nextChunkNumber
+                       forTotalChunks:chunks
+                           onProgress:progress
+                         OnCompletion:completion
+                            onFailure:fail];
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  // failed!
+                  if(fail)
+                  {
+                      fail(task, error);
+                  }
+              }
+  ];
 }
 
-+(AFHTTPRequestOperation*)setImageInfoForImageWithId:(NSString*)imageId
-									 withInformation:(NSDictionary*)imageInformation
-										  onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
-										OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-										   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)setImageInfoForImageWithId:(NSString*)imageId
+                               withInformation:(NSDictionary*)imageInformation
+                                    onProgress:(void (^)(NSProgress *))progress
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	
 	NSString *tagIdList = [[[imageInformation objectForKey:kPiwigoImagesUploadParamTags] valueForKey:@"description"] componentsJoinedByString:@", "];
 	
-	AFHTTPRequestOperation *request = [self post:kPiwigoImageSetInfo
-								   URLParameters:nil
-									  parameters:@{
-												   @"image_id" : imageId,
-												   @"author" : [imageInformation objectForKey:kPiwigoImagesUploadParamAuthor],
-												   @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription],
-												   @"tag_ids" : tagIdList,
-												   @"name" : [imageInformation objectForKey:kPiwigoImagesUploadParamName],
-												   @"level" : [imageInformation objectForKey:kPiwigoImagesUploadParamPrivacy],
-												   @"method" : @"pwg.images.setInfo",
-												   @"single_value_mode" : @"replace"
-												   }
-										 success:completion
-										 failure:fail];
-	
-	[request setDownloadProgressBlock:progress];
+	NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
+                             URLParameters:nil
+                                parameters:@{
+                                               @"image_id" : imageId,
+                                               @"author" : [imageInformation objectForKey:kPiwigoImagesUploadParamAuthor],
+                                               @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription],
+                                               @"tag_ids" : tagIdList,
+                                               @"name" : [imageInformation objectForKey:kPiwigoImagesUploadParamName],
+                                               @"level" : [imageInformation objectForKey:kPiwigoImagesUploadParamPrivacy],
+                                               @"method" : @"pwg.images.setInfo",
+                                               @"single_value_mode" : @"replace"
+                                               }
+                                  progress:progress
+                                   success:completion
+                                   failure:fail];
 	
 	return request;
 }
 
-+(AFHTTPRequestOperation*)updateImageInfo:(ImageUpload*)imageInfo
-							   onProgress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
-							 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSDictionary *response))completion
-								onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)updateImageInfo:(ImageUpload*)imageInfo
+                         onProgress:(void (^)(NSProgress *))progress
+                       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	NSMutableArray *tagIds = [NSMutableArray new];
 	for(PiwigoTagData *tagData in imageInfo.tags)
@@ -143,19 +138,19 @@
 									  };
 	
 	return [self setImageInfoForImageWithId:[NSString stringWithFormat:@"%@", @(imageInfo.imageId)]
-									 withInformation:imageProperties
-										  onProgress:progress
-										OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
-											
-											// update the cache
-											[[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateCacheWithImageUploadInfo:imageInfo];
-											
-											if(completion)
-											{
-												completion(operation, response);
-											}
-										}
-								  onFailure:fail];
+                            withInformation:imageProperties
+                                 onProgress:progress
+                               OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+                                   
+                                   // update the cache
+                                   [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateCacheWithImageUploadInfo:imageInfo];
+                                   
+                                   if(completion)
+                                   {
+                                       completion(task, response);
+                                   }
+                               }
+                                  onFailure:fail];
 }
 
 @end

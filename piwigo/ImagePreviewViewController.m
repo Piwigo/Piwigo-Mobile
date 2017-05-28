@@ -42,31 +42,45 @@
 		[self.scrollView setupPlayerWithURL:imageData.fullResPath];
 		return;
 	}
-	
-	UIImage *thumb = [[UIImageView sharedImageCache] cachedImageForRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]];
+    
+    UIImageView *thumb = [UIImageView new];
+    [thumb setImageWithURL:[NSURL URLWithString:[imageData.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+//	UIImage *thumb = [[UIImageView sharedImageCache] cachedImageForRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]];
 	
 	NSString *URLString = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
+    NSURL *request = [NSURL URLWithString:[URLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
 	__weak typeof(self) weakSelf = self;
-	[self.scrollView.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[URLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
-									 placeholderImage:thumb ? thumb : [UIImage imageNamed:@"placeholder"]
-							   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-								   weakSelf.scrollView.imageView.image = image;
-								   weakSelf.imageLoaded = YES;
-							   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-								   
-							   }];
 
-	[self.scrollView.imageView setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-		CGFloat percent = (CGFloat)totalBytesRead / totalBytesExpectedToRead;
-		if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
-		{
-			[weakSelf.imagePreviewDelegate downloadProgress:percent];
-		}
-		if(percent == 1)
-		{
-			weakSelf.imageLoaded = YES;
-		}
-	}];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFImageResponseSerializer serializer];
+    
+    weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholder"];
+    
+    [manager GET:request.absoluteString
+      parameters:nil
+        progress:^(NSProgress *progress) {
+            dispatch_async(dispatch_get_main_queue(),
+                           ^(void){if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
+                           {
+                               [weakSelf.imagePreviewDelegate downloadProgress:progress.fractionCompleted];
+                           }
+                               if(progress.fractionCompleted == 1)
+                               {
+                                   weakSelf.imageLoaded = YES;
+                               }
+                           });
+        }
+         success:^(NSURLSessionTask *task, UIImage *image) {
+             weakSelf.scrollView.imageView.image = image;
+             weakSelf.imageLoaded = YES;
+             [manager invalidateSessionCancelingTasks:YES];
+         }
+         failure:^(NSURLSessionTask *task, NSError *error) {
+             NSLog(@"ImageDetail/GET Error: %@", error);
+             [manager invalidateSessionCancelingTasks:YES];
+         }
+    ];
 }
 
 @end

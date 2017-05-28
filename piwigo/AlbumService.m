@@ -13,48 +13,49 @@
 
 @implementation AlbumService
 
-+(AFHTTPRequestOperation*)getAlbumListForCategory:(NSInteger)categoryId
-									 OnCompletion:(void (^)(AFHTTPRequestOperation *operation, NSArray *albums))completion
-										onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
+                               OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
+                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	if(categoryId != -1 && [Model sharedInstance].loadAllCategoryInfo && categoryId != 0) return  nil;
-	
-	NSString *recursiveString = [Model sharedInstance].loadAllCategoryInfo ? @"true" : @"false";
-	if(categoryId == -1)
-	{	// hack-ish way to force load all albums -- send a categoyId as -1
-		recursiveString = @"true";
-		categoryId = 0;
-	}
-	return [self post:kPiwigoCategoriesGetList
-		URLParameters:@{
-						@"categoryId" : @(categoryId),
-						@"recursive" : recursiveString
-						}
-		   parameters:nil
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
-				  
-				  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-				  {
-					  NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
-					  [[CategoriesData sharedInstance] addAllCategories:albums];
-					  if(completion)
-					  {
-						  completion(operation, albums);
-					  }
-				  }
-				  else
-				  {
-					  if(completion)
-					  {
-						  completion(operation, nil);
-					  }
-				  }
-			  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-				  
-				  if(fail) {
-					  fail(operation, error);
-				  }
-			  }];
+    if(categoryId != -1 && [Model sharedInstance].loadAllCategoryInfo && categoryId != 0) return  nil;
+    
+    NSString *recursiveString = [Model sharedInstance].loadAllCategoryInfo ? @"true" : @"false";
+    if(categoryId == -1)
+    {	// hack-ish way to force load all albums -- send a categoyId as -1
+        recursiveString = @"true";
+        categoryId = 0;
+    }
+    return [self post:kPiwigoCategoriesGetList
+        URLParameters:@{
+                        @"categoryId" : @(categoryId),
+                        @"recursive" : recursiveString
+                        }
+           parameters:nil
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  
+                  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                  {
+                      NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
+                      [[CategoriesData sharedInstance] addAllCategories:albums];
+                      if(completion)
+                      {
+                          completion(task, albums);
+                      }
+                  }
+                  else
+                  {
+                      if(completion)
+                      {
+                          completion(task, nil);
+                      }
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  NSLog(@"getAlbumListForCategory — Fail: %@", [error description]);
+                  if(fail) {
+                      fail(task, error);
+                  }
+              }];
 }
 
 +(NSArray*)parseAlbumJSON:(NSArray*)json
@@ -107,69 +108,72 @@
 	return albums;
 }
 
-+(AFHTTPRequestOperation*)createCategoryWithName:(NSString*)categoryName
-                                      withStatus:(NSString*)categoryStatus
-									OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL createdSuccessfully))completion
-									   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)createCategoryWithName:(NSString*)categoryName
+                                withStatus:(NSString*)categoryStatus
+                              OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
+                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesAdd
 		URLParameters:@{
                         @"name" : [categoryName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
                         @"status" : categoryStatus
                         }
-		   parameters:nil
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+           parameters:nil
+             progress:nil
+			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
 				  if(completion)
 				  {
-					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
 			  } failure:fail];
 }
 
-+(AFHTTPRequestOperation*)renameCategory:(NSInteger)categoryId
-								 forName:(NSString*)categoryName
-							OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL renamedSuccessfully))completion
-							   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)renameCategory:(NSInteger)categoryId
+                           forName:(NSString*)categoryName
+                      OnCompletion:(void (^)(NSURLSessionTask *task, BOOL renamedSuccessfully))completion
+                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesSetInfo
 		URLParameters:nil
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
 						@"name" : categoryName
-						}
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        }
+             progress:nil
+			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
 				  if(completion)
 				  {
-					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
 			  } failure:fail];
 }
 
-+(AFHTTPRequestOperation*)deleteCategory:(NSInteger)categoryId
-							OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL deletedSuccessfully))completion
-							   onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)deleteCategory:(NSInteger)categoryId
+                      OnCompletion:(void (^)(NSURLSessionTask *task, BOOL deletedSuccessfully))completion
+                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesDelete
 		URLParameters:nil
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
 						@"pwg_token" : [Model sharedInstance].pwgToken
-						}
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        }
+             progress:nil
+			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
 				  if(completion)
 				  {
-					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
 			  } failure:fail];
 }
 
-+(AFHTTPRequestOperation*)moveCategory:(NSInteger)categoryId
-						  intoCategory:(NSInteger)categoryToMoveIntoId
-						  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL movedSuccessfully))completion
-							 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)moveCategory:(NSInteger)categoryId
+                    intoCategory:(NSInteger)categoryToMoveIntoId
+                    OnCompletion:(void (^)(NSURLSessionTask *task, BOOL movedSuccessfully))completion
+                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesMove
 		URLParameters:nil
@@ -177,32 +181,34 @@
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
 						@"pwg_token" : [Model sharedInstance].pwgToken,
 						@"parent" : [NSString stringWithFormat:@"%@", @(categoryToMoveIntoId)]
-						}
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        }
+             progress:nil
+			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
 				  if(completion)
 				  {
-					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
 			  } failure:fail];
 }
 
-+(AFHTTPRequestOperation*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
-													forImageId:(NSInteger)imageId
-												  OnCompletion:(void (^)(AFHTTPRequestOperation *operation, BOOL setSuccessfully))completion
-													 onFailure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))fail
++(NSURLSessionTask*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
+                                              forImageId:(NSInteger)imageId
+                                            OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setSuccessfully))completion
+                                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesSetRepresentative
 		URLParameters:nil
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
 						@"image_id" : [NSString stringWithFormat:@"%@", @(imageId)]
-						}
-			  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        }
+             progress:nil
+			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
 				  if(completion)
 				  {
-					  completion(operation, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
 			  } failure:fail];
 }

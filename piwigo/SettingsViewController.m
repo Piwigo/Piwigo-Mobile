@@ -398,6 +398,7 @@ typedef enum {
 				{
                     NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
                     float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
+                    NSLog(@"Disk used: %ld Bytes", (long)currentDiskSize);
 
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
 					if(!cell)
@@ -421,6 +422,7 @@ typedef enum {
 				{
                     NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
                     float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
+                    NSLog(@"Memory used: %ld Bytes", (long)currentMemSize);
 
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
 					if(!cell)
@@ -708,7 +710,7 @@ typedef enum {
 						  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 							  if(buttonIndex == 1)
 							  {
-								  [SessionService sessionLogoutOnCompletion:^(AFHTTPRequestOperation *operation, BOOL sucessfulLogout) {
+								  [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
 									  if(sucessfulLogout)
 									  {
 										  [ClearCache clearAllCache];
@@ -728,7 +730,7 @@ typedef enum {
 																}
 															}];
 									  }
-								  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+								  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 									  
 								  }];
 							  }

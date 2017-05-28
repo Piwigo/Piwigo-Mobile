@@ -6,7 +6,7 @@ target 'piwigo' do
   # use_frameworks!
 
   # Pods for piwigo
-  pod 'AFNetworking', '~> 2.5'
+  pod 'AFNetworking', '~> 3.0'
   pod 'iRate', '>= 1.11.3'
 
   target 'piwigoTests' do

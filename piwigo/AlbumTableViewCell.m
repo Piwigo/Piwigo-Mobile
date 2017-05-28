@@ -24,7 +24,7 @@
 @property (nonatomic, strong) UILabel *date;
 @property (nonatomic, strong) UIView *textUnderlay;
 @property (nonatomic, strong) UIImageView *cellDisclosure;
-@property (nonatomic, strong) AFHTTPRequestOperation *cellDataRequest;
+@property (nonatomic, strong) NSURLSessionTask *cellDataRequest;
 
 @end
 
@@ -199,7 +199,7 @@
 						  {
 							  [AlbumService renameCategory:self.albumData.albumId
 												   forName:[alertView textFieldAtIndex:0].text
-											  OnCompletion:^(AFHTTPRequestOperation *operation, BOOL renamedSuccessfully) {
+											  OnCompletion:^(NSURLSessionTask *task, BOOL renamedSuccessfully) {
 												  
 												  if(renamedSuccessfully)
 												  {
@@ -209,7 +209,7 @@
 
 													  [UIAlertView showWithTitle:NSLocalizedString(@"renameCategorySuccess_title", @"Rename Success")
 																		 message:NSLocalizedString(@"renameCategorySuccess_message", @"Successfully renamed your album")
-															   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+															   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 															   otherButtonTitles:nil
 																		tapBlock:nil];
 												  }
@@ -217,7 +217,7 @@
 												  {
 													  [self showRenameErrorWithMessage:nil];
 												  }
-											  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+											  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 												  
 												  [self showRenameErrorWithMessage:[error localizedDescription]];
 											  }];
@@ -233,7 +233,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
 					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
@@ -271,14 +271,14 @@
 														}
 														if(number == self.albumData.numberOfSubAlbumImages)
 														{
-															[AlbumService deleteCategory:self.albumData.albumId OnCompletion:^(AFHTTPRequestOperation *operation, BOOL deletedSuccessfully) {
+															[AlbumService deleteCategory:self.albumData.albumId OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
 																if(deletedSuccessfully)
 																{
 																	[[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
 																	[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 																	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategorySuccess_title",  @"Delete Successful")
 																					   message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategorySuccess_message", @"Deleted \"%@\" album successfully"), self.albumData.name]
-																			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+																			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 																			 otherButtonTitles:nil
 																					  tapBlock:nil];
 																}
@@ -286,7 +286,7 @@
 																{
 																	[self deleteCategoryError:nil];
 																}
-															} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+															} onFailure:^(NSURLSessionTask *task, NSError *error) {
 																[self deleteCategoryError:[error localizedDescription]];
 															}];
 														}
@@ -294,7 +294,7 @@
 														{	// they entered the wrong amount
 															[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match")
 																			   message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album")
-																	 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+																	 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 																	 otherButtonTitles:nil
 																			  tapBlock:nil];
 														}
@@ -312,7 +312,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail")
 					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
@@ -364,7 +364,7 @@
 	{
 		__weak typeof(self) weakSelf = self;
 		self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
-					  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+					  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 						  if(!imageData.mediumPath)
 						  {
 							  albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
@@ -380,8 +380,8 @@
 								  NSLog(@"fail to get imgage for album at %@", imageData.mediumPath);
 							  }];
 						  }
-					  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
-						  NSLog(@"Fail to get album bg image: %@", [error localizedDescription]);
+					  } onFailure:^(NSURLSessionTask *task, NSError *error) {
+						  NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
 					  }];
 	}
 }
@@ -418,7 +418,7 @@
 	[super prepareForReuse];
 	
 	[self.cellDataRequest cancel];
-	[self.backgroundImage cancelImageRequestOperation];
+	[self.backgroundImage cancelImageDownloadTask];
 	self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
 	
 	self.albumName.text = @"";

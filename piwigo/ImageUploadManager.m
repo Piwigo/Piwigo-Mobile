@@ -138,17 +138,25 @@
 	CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
 	if (!destination) {
 		NSLog(@"Error: Could not create image destination");
-	}
-	// add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
-	CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
-	BOOL success = NO;
-	success = CGImageDestinationFinalize(destination);
-	if (!success) {
-		NSLog(@"Error: Could not create data from image destination");
-	}
-	CFRelease(destination);
-	CFRelease(source);
-	return dest_data;
+        CFRelease(source);
+        return imageData;
+    } else {
+        // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
+        CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
+        BOOL success = NO;
+        success = CGImageDestinationFinalize(destination);
+        if (!success) {
+            NSLog(@"Error: Could not create data from image destination");
+            CFRelease(destination);
+            CFRelease(source);
+            return imageData;
+        } else {
+            CFRelease(destination);
+            CFRelease(source);
+            return dest_data;
+        }
+    }
+    return imageData;
 }
 -(void)uploadNextImage
 {
@@ -159,36 +167,107 @@
 	}
 	
 	self.isUploading = YES;
+    [Model sharedInstance].hasUploadedImages = YES;
 	
 	ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
 	
 	NSString *imageKey = nextImageToBeUploaded.image;
 	ALAsset *imageAsset = nextImageToBeUploaded.imageAsset;
 	
-	NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
-	UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
-	CGFloat scale = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoResize / 100.0 : 1.0;
-	CGSize newImageSize = CGSizeApplyAffineTransform(originalImage.size, CGAffineTransformMakeScale(scale, scale));
-	UIImage *imageResized = [self scaleImage:originalImage toSize:newImageSize contentMode:UIViewContentModeScaleAspectFit];
-	
-	// edit the meta data for the correct size:
-	[imageMetadata setObject:@(imageResized.size.height) forKey:@"PixelHeight"];
-	[imageMetadata setObject:@(imageResized.size.width) forKey:@"PixelWidth"];
-    
+    NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
+    UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
+
     // strip GPS data if user requested it in Settings:
     if([Model sharedInstance].stripGPSdataOnUpload) [imageMetadata setObject:@"" forKey:@"{GPS}"];
-	
-	CGFloat compressionQuality = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoQuality / 100.0 : .95;
-	NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
-	NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
-	
-	
+
+    // Video or Photo ?
+    NSData *imageData = nil;
+    if ([imageAsset valueForProperty:ALAssetPropertyType] == ALAssetTypeVideo) {
+        
+        // Is VideoJS active on the Piwigo Server ?
+        if(![Model sharedInstance].hasInstalledVideoJS) {
+            [UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                               message:NSLocalizedString(@"videoUploadError_message", @"You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.")
+                     cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                     otherButtonTitles:nil
+                              tapBlock:nil];
+
+            [self.imageUploadQueue removeObjectAtIndex:0];
+            [self.imageNamesUploadQueue removeObjectForKey:imageKey];
+            if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+            {
+                [self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
+            }
+            
+            [self uploadNextImage];
+            return;
+       }
+        
+        // Video — Only webm, webmv, ogv, m4v, mp4 are compatible with piwigo-videojs extension
+        NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] uppercaseString];
+        
+        if (([fileExt isEqualToString:@"MP4"]) || ([fileExt isEqualToString:@"M4V"]) ||
+            ([fileExt isEqualToString:@"OGG"]) || ([fileExt isEqualToString:@"OGV"]) ||
+            ([fileExt isEqualToString:@"WEBM"])) {
+            // Nothing to do — right format for piwigo-videojs extension
+        } else {
+            if ([fileExt isEqualToString:@"MOV"]) {
+                // Replace file extension
+                nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
+                // Remove extension from name
+                nextImageToBeUploaded.imageUploadName = [nextImageToBeUploaded.imageUploadName stringByDeletingPathExtension];
+            } else {
+                // This file won't be compatible!
+                [UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                                   message:NSLocalizedString(@"videoUploadError_format", @"Sorry, the video file format is not compatible with the extension \"VideoJS\".")
+                         cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                         otherButtonTitles:nil
+                                  tapBlock:nil];
+                
+                [self.imageUploadQueue removeObjectAtIndex:0];
+                [self.imageNamesUploadQueue removeObjectForKey:imageKey];
+                if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+                {
+                    [self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
+                }
+                
+                [self uploadNextImage];
+                return;
+            }
+        }
+        
+        // Prepare NSData representation (w/o metadata)
+        ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
+        unsigned long repSize = (unsigned long)rep.size;
+        Byte *buffer = (Byte *)malloc(repSize);
+        NSUInteger length = [rep getBytes:buffer fromOffset:0 length:repSize error:nil];
+        imageData = [NSData dataWithBytesNoCopy:buffer length:length freeWhenDone:YES];
+        
+    } else {
+        
+        // Photo — resize image if requested in Settings
+        CGFloat scale = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoResize / 100.0 : 1.0;
+        CGSize newImageSize = CGSizeApplyAffineTransform(originalImage.size, CGAffineTransformMakeScale(scale, scale));
+        UIImage *imageResized = [self scaleImage:originalImage toSize:newImageSize contentMode:UIViewContentModeScaleAspectFit];
+        
+        // Edit the meta data for the correct size:
+        [imageMetadata setObject:@(imageResized.size.height) forKey:@"PixelHeight"];
+        [imageMetadata setObject:@(imageResized.size.width) forKey:@"PixelWidth"];
+
+        // Apply compression and append metadata
+        CGFloat compressionQuality = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoQuality / 100.0 : .95;
+        NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
+        imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
+    }
+    
+	// Append Tags
 	NSMutableArray *tagIds = [NSMutableArray new];
 	for(PiwigoTagData *tagData in nextImageToBeUploaded.tags)
 	{
 		[tagIds addObject:@(tagData.tagId)];
 	}
 	
+    // Prepare properties for upload
 	NSDictionary *imageProperties = @{
 									  kPiwigoImagesUploadParamFileName : nextImageToBeUploaded.image,
 									  kPiwigoImagesUploadParamName : nextImageToBeUploaded.imageUploadName,
@@ -199,15 +278,15 @@
 									  kPiwigoImagesUploadParamTags : [tagIds copy]
 									  };
 	
+    // Upload photo or video
 	[UploadService uploadImage:imageData
 			   withInformation:imageProperties
 					onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
-						
 						if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
 						{
 							[self.delegate imageProgress:nextImageToBeUploaded onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
 						}
-					} OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+					} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
 						[[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo] incrementImageSizeByOne];
@@ -222,14 +301,14 @@
 						}
 						
 						[self uploadNextImage];
-					} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+					} onFailure:^(NSURLSessionTask *task, NSError *error) {
 						if(error.code == -1016 &&
-						   ([nextImageToBeUploaded.image rangeOfString:@".MOV"].location != NSNotFound ||
-						   [nextImageToBeUploaded.image rangeOfString:@".mov"].location != NSNotFound))
+						   ([nextImageToBeUploaded.image rangeOfString:@".MP4"].location != NSNotFound ||
+						   [nextImageToBeUploaded.image rangeOfString:@".mp4"].location != NSNotFound))
 						{	// they need to install the VideoJS plugin
 							[UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-											   message:NSLocalizedString(@"videoUploadError_message", @"You need to add the plugin \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo")
-									 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+											   message:NSLocalizedString(@"videoUploadError_message", @"You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.")
+									 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 									 otherButtonTitles:nil
 											  tapBlock:nil];
 						}
@@ -262,7 +341,7 @@
 {
 	[UIAlertView showWithTitle:@"Upload Error"
 					   message:[NSString stringWithFormat:@"Could not upload your image. Error: %@", [error localizedDescription]]
-			 cancelButtonTitle:@"Ok"
+			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
@@ -307,11 +386,11 @@
 		
 		[UploadService setImageInfoForImageWithId:imageId
 								  withInformation:imageProperties
-									   onProgress:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+									   onProgress:^(NSProgress *progress) {
 										   // progress
-									   } OnCompletion:^(AFHTTPRequestOperation *operation, NSDictionary *response) {
+									   } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 										   // completion
-									   } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+									   } onFailure:^(NSURLSessionTask *task, NSError *error) {
 										   // fail
 									   }];
 		
@@ -323,9 +402,9 @@
 	
 	NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
 	[ImageService getImageInfoById:[[imageResponse objectForKey:@"image_id"] integerValue]
-				  ListOnCompletion:^(AFHTTPRequestOperation *operation, PiwigoImageData *imageData) {
+				  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 					  //
-				  } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+				  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 					  //
 				  }];
 }

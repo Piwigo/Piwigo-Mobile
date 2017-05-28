@@ -43,7 +43,7 @@
 			{
 				[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem reading photos")
 								   message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photos.")
-						 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+						 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 						 otherButtonTitles:nil
 								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
 									  [self.navigationController popViewControllerAnimated:YES];

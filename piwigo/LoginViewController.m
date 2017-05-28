@@ -116,7 +116,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"loginEmptyServer_title", @"Enter a Web Address")
 						   message:NSLocalizedString(@"loginEmptyServer_message", @"Please select a protocol and enter a Piwigo web address in order to proceed.")
-				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 		
@@ -139,19 +139,20 @@
 									 if(result)
 									 {
 										 [self getSessionStatus];
+                                         [self getSessionPluginsList];
 									 }
 									 else
 									 {
 										 [self hideLoading];
 										 [self showLoginFail];
 									 }
-								 } onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+								 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 									 [self hideLoading];
 
 									 NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);                                     
                                      [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
 														message:[error localizedDescription]
-											  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+											  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 											  otherButtonTitles:nil
 													   tapBlock:nil];
 								 }];
@@ -190,8 +191,8 @@
 		{
 			if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
 			{	// they need to update
-				[UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatable_title", @"Server Incompatable")
-								   message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatable_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
+				[UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
+								   message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
 						 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
 						 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -211,15 +212,24 @@
 		else
 		{
 			UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
-																message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
+                                                                message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
 															   delegate:nil
-													  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+													  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 													  otherButtonTitles:nil];
 			[failAlert show];
 		}
-	} onFailure:^(AFHTTPRequestOperation *operation, NSError *error) {
+	} onFailure:^(NSURLSessionTask *task, NSError *error) {
 		[self hideLoading];
 	}];
+}
+
+-(void)getSessionPluginsList
+{
+    [SessionService getPluginsListOnCompletion:^(NSDictionary *responseObject) {
+        [self hideLoading];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self hideLoading];
+    }];
 }
 
 -(void)showLoading
@@ -238,7 +248,7 @@
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"loginError_title", @"Login Fail")
 													message:NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")
 												   delegate:nil
-										  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"Ok")
+										  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 										  otherButtonTitles:nil];
 	[alert show];
 }
