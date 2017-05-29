@@ -131,19 +131,23 @@
 	[Model sharedInstance].serverProtocol = [self.serverTextField getProtocolString];
 	[[Model sharedInstance] saveToDisk];
 
-	if(self.userTextField.text.length > 0)
+	if(self.userTextField.text.length > 0)      // Perform Login if username exists
 	{
 		[SessionService performLoginWithUser:self.userTextField.text
 								  andPassword:self.passwordTextField.text
 								 onCompletion:^(BOOL result, id response) {
 									 if(result)
 									 {
-										 [self getSessionStatus];
-                                         [self getSessionPluginsList];
+                                         [Model sharedInstance].hadOpenedSession = YES;
+                                         [self getSessionStatus];
+                                         if([Model sharedInstance].hasAdminRights) {
+                                             [self getSessionPluginsList];      // To determine if VideoJS is active
+                                         }
 									 }
 									 else
 									 {
-										 [self hideLoading];
+										 [Model sharedInstance].hadOpenedSession = NO;
+                                         [self hideLoading];
 										 [self showLoginFail];
 									 }
 								 } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -157,9 +161,10 @@
 													   tapBlock:nil];
 								 }];
 	}
-	else
+	else     // No username, get only session status
 	{
-		[self getSessionStatus];
+		[Model sharedInstance].hadOpenedSession = NO;
+        [self getSessionStatus];
 		[KeychainAccess resetKeychain];
 	}
 }

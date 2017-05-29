@@ -713,7 +713,8 @@ typedef enum {
 								  [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
 									  if(sucessfulLogout)
 									  {
-										  [ClearCache clearAllCache];
+										  [Model sharedInstance].hadOpenedSession = NO;
+                                          [ClearCache clearAllCache];
 										  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 										  [appDelegate loadLoginView];
 									  }

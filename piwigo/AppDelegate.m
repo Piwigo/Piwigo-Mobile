@@ -15,6 +15,7 @@
 #import "Model.h"
 #import "KeychainAccess.h"
 #import "AFNetworkActivityIndicatorManager.h"
+#import "Reachability.h"
 
 #import "PhotosFetch.h"
 #import "iRate.h"
@@ -22,6 +23,7 @@
 @interface AppDelegate ()
 
 @property (nonatomic, strong) LoginViewController *loginVC;
+@property (nonatomic, strong) Reachability *internetReachability;
 
 @end
 
@@ -40,7 +42,8 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	// Override point for customization after application launch.
+	
+    // Override point for customization after application launch.
 	
 	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
 														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
@@ -70,6 +73,84 @@
 	self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
 	[self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
+    
+    // Observe the kNetworkReachabilityChangedNotification.
+    // When that notification is posted, the method reachabilityChanged will be called.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+    
+    // Monitor Internet connection reachability
+    self.internetReachability = [Reachability reachabilityForInternetConnection];
+    [self.internetReachability startNotifier];
+}
+
+// Called by Reachability whenever Internet connection changes.
+- (void) reachabilityChanged:(NSNotification *)note
+{
+    Reachability* curReach = [note object];
+    NetworkStatus netStatus = [curReach currentReachabilityStatus];
+
+    switch (netStatus)
+    {
+        case NotReachable:
+        {
+            // NSLog(@"Access Not Available");
+            break;
+        }
+        case ReachableViaWWAN:
+        {
+            // Connection changed but now reachable WWAN — Login again?
+            BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
+            NSString *server = [Model sharedInstance].serverName;
+            NSString *user = [KeychainAccess getLoginUser];
+            NSString *password = [KeychainAccess getLoginPassword];
+
+            if(hadOpenedSession && (server.length > 0) && (user.length > 0))
+            {
+                [SessionService performLoginWithUser:user
+                                         andPassword:password
+                                        onCompletion:^(BOOL result, id response) {
+                                            [Model sharedInstance].hadOpenedSession = YES;
+                                        }
+                                        onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                            [Model sharedInstance].hadOpenedSession = NO;
+                                            NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);                                     
+                                            [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                                                               message:[error localizedDescription]
+                                                     cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                                     otherButtonTitles:nil
+                                                              tapBlock:nil];
+                                        }];
+            }
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            // Connection changed but now reachable WiFi — Login again?
+            BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
+            NSString *server = [Model sharedInstance].serverName;
+            NSString *user = [KeychainAccess getLoginUser];
+            NSString *password = [KeychainAccess getLoginPassword];
+            
+            if(hadOpenedSession && (server.length > 0) && (user.length > 0))
+            {
+                [SessionService performLoginWithUser:user
+                                         andPassword:password
+                                        onCompletion:^(BOOL result, id response) {
+                                            [Model sharedInstance].hadOpenedSession = YES;
+                                        }
+                                           onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                               [Model sharedInstance].hadOpenedSession = NO;
+                                               NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
+                                               [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                                                                  message:[error localizedDescription]
+                                                        cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                                        otherButtonTitles:nil
+                                                                 tapBlock:nil];
+                                           }];
+            }
+            break;
+        }
+    }
 }
 
 -(void)loadLoginView

@@ -135,7 +135,7 @@
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-    [self.albumData reloadAlbumOnCompletion:^{
+    [self.albumData loadAllImagesOnCompletion:^{
         [refreshControl endRefreshing];
         [self.imagesCollection reloadData];
     }];
@@ -426,27 +426,28 @@
 {
 	if(indexPath.section == 1)
 	{
-		SortHeaderCollectionReusableView *header = nil;
-		
-		if(kind == UICollectionElementKindSectionHeader)
+        self.noImagesLabel = [UILabel new];
+        self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.noImagesLabel.font = [UIFont piwigoFontNormal];
+        self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
+        self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
+        self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+        self.noImagesLabel.hidden = self.albumData.images.count != 0;
+
+        SortHeaderCollectionReusableView *header = nil;
+
+        if(kind == UICollectionElementKindSectionHeader)
 		{
 			header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header" forIndexPath:indexPath];
 			header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
 			[header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+
+            [header addSubview:self.noImagesLabel];
+            [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.noImagesLabel amount:-40]];
+            [header addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
+
+            return header;
 		}
-		
-		self.noImagesLabel = [UILabel new];
-		self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.noImagesLabel.font = [UIFont piwigoFontNormal];
-		self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
-		self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
-		self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-		self.noImagesLabel.hidden = self.albumData.images.count != 0;
-		[header addSubview:self.noImagesLabel];
-		[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.noImagesLabel amount:-40]];
-		[header addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
-		
-		return header;
 	}
 	
 	UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];

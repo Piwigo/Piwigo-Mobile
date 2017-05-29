@@ -38,6 +38,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasAdminRights;
 @property (nonatomic, assign) BOOL hasInstalledVideoJS;
 @property (nonatomic, assign) BOOL hasUploadedImages;
+@property (nonatomic, assign) BOOL hadOpenedSession;
 
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;
