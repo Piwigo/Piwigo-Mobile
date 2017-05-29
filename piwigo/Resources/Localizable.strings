@@ -261,7 +261,7 @@
 "createAlbumError_message" = "Failed to create a new album";
 
 "albumPhotoError_title" = "Get Album Photos Error";
-"albumPhotoError_message" = "Failed to get album photos (You probably have a corrupt image in your album) Error:";
+"albumPhotoError_message" = "Failed to get album photos (corrupt image in your album?)";
 
 "renameCategoyError_title" = "Rename Fail";
 "renameCategoyError_message" = "Failed to rename your album";

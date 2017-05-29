@@ -93,10 +93,8 @@
               success:^(NSURLSessionTask *task, id responseObject) {
                   
                   if(completion) {
-                      // By default, the plugin is not installed/active
-                      [Model sharedInstance].hasInstalledVideoJS = NO;
                       
-                      // Did the server answer the request?
+                      // Did the server answer the request? (Yes if Admin)
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
                           // Collect the list of plugins
@@ -116,8 +114,10 @@
                           }
                           completion([responseObject objectForKey:@"result"]);
                       }
-                      else
+                      else  // Non-admin access => Cannot determine if VideoJS is installed
                       {
+                          // So we assume that VideoJS is installed and active
+                          [Model sharedInstance].hasInstalledVideoJS = YES;
                           completion(nil);
                       }
                   }
