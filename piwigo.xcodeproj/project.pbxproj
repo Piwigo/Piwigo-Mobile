@@ -835,6 +835,7 @@
 				577A7301DA17AC6D5EBDAA33 /* [CP] Check Pods Manifest.lock */,
 				D82B8CB71A67820A000E47CA /* Sources */,
 				D82B8CB81A67820A000E47CA /* Frameworks */,
+				AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */,
 				D82B8CB91A67820A000E47CA /* Resources */,
 				09F78B87DE4067CFCDEF0642 /* [CP] Embed Pods Frameworks */,
 				7A9296FADB36B3093B24E071 /* [CP] Copy Pods Resources */,
@@ -1009,6 +1010,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Auto-increment build version of release";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ $CONFIGURATION == Release ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi";
 		};
 		F9F95D7B7A77ED703DAE13C9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1272,6 +1287,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1ece3018-6d44-403a-a1be-c18dce74f489";
 				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -1297,6 +1313,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "410d031b-f259-4dc1-afbe-dc2053d985d7";
 				PROVISIONING_PROFILE_SPECIFIER = "eddy ios distribution";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
