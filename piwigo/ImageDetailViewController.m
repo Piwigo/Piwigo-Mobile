@@ -169,8 +169,10 @@
 																		 [self deleteImage];
 																	 }
 																 }];
+#if defined(DEBUG)
 											   NSLog(@"fail to delete!");
-										   }];
+#endif
+                                           }];
 						  }
 					  }];
 }
@@ -230,7 +232,9 @@
                                            }];
                       } else {
                           // Try to move video in Photos.app
+#if defined(DEBUG)
                           NSLog(@"path= %@", filePath.path);
+#endif
                           if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath.path)) {
                               UISaveVideoAtPathToSavedPhotosAlbum(filePath.path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
                           } else {

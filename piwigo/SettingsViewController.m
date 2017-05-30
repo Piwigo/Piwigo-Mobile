@@ -398,8 +398,9 @@ typedef enum {
 				{
                     NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
                     float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
+#if defined(DEBUG)
                     NSLog(@"Disk used: %ld Bytes", (long)currentDiskSize);
-
+#endif
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
 					if(!cell)
 					{
@@ -422,8 +423,9 @@ typedef enum {
 				{
                     NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
                     float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
+#if defined(DEBUG)
                     NSLog(@"Memory used: %ld Bytes", (long)currentMemSize);
-
+#endif
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
 					if(!cell)
 					{

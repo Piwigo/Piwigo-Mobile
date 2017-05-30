@@ -51,7 +51,9 @@
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
                   NSLog(@"getAlbumListForCategory — Fail: %@", [error description]);
+#endif
                   if(fail) {
                       fail(task, error);
                   }

@@ -59,8 +59,10 @@
 							 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
 								 
 							 } onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
 								 NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
-							 }];
+#endif
+                             }];
 }
 
 -(void)categoryDataUpdated

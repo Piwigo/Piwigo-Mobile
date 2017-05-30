@@ -152,8 +152,9 @@
 									 }
 								 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 									 [self hideLoading];
-
-									 NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);                                     
+#if defined(DEBUG)
+									 NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
                                      [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
 														message:[error localizedDescription]
 											  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
