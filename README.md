@@ -1,35 +1,34 @@
 # Piwigo Mobile
-Piwigo Mobile is a native iOS Application for Piwigo.
+Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
-Piwigo is a web photo gallery, built by an active community of users and developers.
+[Piwigo](http://piwigo.org) is a **free and opensource** web photo gallery, built by an active community of users and developers.
 
-##Video 
-For video upload using your iOS device, you need the plugin on your Piwigo server titled "VideoJS". After you've installed this plugin, you will need to allow for video file types to be uploaded. You can do this by adding:
+[Piwigo](http://piwigo.org) empowers you to create your own photo gallery on the web and includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.
 
-        $conf['upload_form_all_types'] = true;
-        $conf['file_ext'] =  array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF','mpg','zip','avi','mp3','ogg','mov','MOV');
+## Description
+[Piwigo Mobile](https://itunes.apple.com/fr/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.com](http://iwigo.com) and self-hosted Piwigo galleries (2.7 or higher):
 
-to your local config file using the "LocalFiles Editor" plugin (you just have to activate this).
+- Browse your albums,
+- Create new albums,
+- Delete, move and rename albums,
+- Edit, download and delete photos & videos,
+- Set a photo as album image,
+- Upload photos:
+   - of modifiable size and quality,
+   - with description, author, tags, EXIF metadata,
+   - with or without GPS metadata,
+- Upload videos.
 
-##License
+## Videos 
+For video upload using your iOS device, you need the plugin on your Piwigo server titled "[piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610)". After you have installed this plugin, you will need to allow for video file types to be uploaded by following [these instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos).
+
+## License
 The MIT License (MIT)
 
-Copyright (c) 2015 Spencer Baker
+Copyright ©2015-2017 Piwigo
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
