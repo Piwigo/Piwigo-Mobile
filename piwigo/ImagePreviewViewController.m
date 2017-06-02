@@ -77,7 +77,9 @@
              [manager invalidateSessionCancelingTasks:YES];
          }
          failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
              NSLog(@"ImageDetail/GET Error: %@", error);
+#endif
              [manager invalidateSessionCancelingTasks:YES];
          }
     ];

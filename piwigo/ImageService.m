@@ -230,7 +230,9 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           [manager invalidateSessionCancelingTasks:YES];
                                       }
                                       failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
                                           NSLog(@"ImageService/get Error: %@", error);
+#endif
                                           if(fail) {
                                               fail(task, error);
                                           }
@@ -306,8 +308,9 @@ NSString * const kGetImageOrderDescending = @"desc";
                                                            completion(task, albumImages.count);
                                                        }
                                                    } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                                       
+#if defined(DEBUG)
                                                        NSLog(@"loadImageChunkForLastChunkCount fail: %@", error);
+#endif
                                                        if(fail) {
                                                            fail(nil, error);
                                                        }

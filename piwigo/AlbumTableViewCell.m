@@ -377,12 +377,16 @@
                                                                albumData.categoryImage = image;
                                                                [weakSelf setupBgWithImage:image];
 							  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+#if defined(DEBUG)
 								  NSLog(@"fail to get imgage for album at %@", imageData.mediumPath);
-							  }];
+#endif
+                              }];
 						  }
 					  } onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
 						  NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
-					  }];
+#endif
+                      }];
 	}
 }
 

@@ -87,7 +87,9 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
                                        [manager invalidateSessionCancelingTasks:YES];
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
                                        NSLog(@"NetworkHandler/post Error: %@", error);
+#endif
                                        if(fail) {
                                            fail(task, error);
                                        }
@@ -156,7 +158,9 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
                                        [manager invalidateSessionCancelingTasks:YES];
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
                                        NSLog(@"NetworkHandler/post Error: %@", error);
+#endif
                                        if(fail) {
                                            fail(task, error);
                                        }

@@ -93,7 +93,9 @@
     {
         case NotReachable:
         {
-            // NSLog(@"Access Not Available");
+#if defined(DEBUG)
+            NSLog(@"Access Not Available");
+#endif
             break;
         }
         case ReachableViaWWAN:
@@ -113,7 +115,9 @@
                                         }
                                         onFailure:^(NSURLSessionTask *task, NSError *error) {
                                             [Model sharedInstance].hadOpenedSession = NO;
-                                            NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);                                     
+#if defined(DEBUG)
+                                            NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
                                             [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
                                                                message:[error localizedDescription]
                                                      cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
@@ -140,7 +144,9 @@
                                         }
                                            onFailure:^(NSURLSessionTask *task, NSError *error) {
                                                [Model sharedInstance].hadOpenedSession = NO;
+#if defined(DEBUG)
                                                NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
                                                [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
                                                                   message:[error localizedDescription]
                                                         cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")

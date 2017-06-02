@@ -66,8 +66,10 @@
 			}
 		}
 	} onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
 		NSLog(@"Failed to get Tags: %@", [error localizedDescription]);
-	}];
+#endif
+    }];
 }
 
 -(NSArray*)parseTagsJson:(NSDictionary*)json

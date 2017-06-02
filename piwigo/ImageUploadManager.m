@@ -137,7 +137,9 @@
 	NSMutableData *dest_data = [NSMutableData data];
 	CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
 	if (!destination) {
+#if defined(DEBUG)
 		NSLog(@"Error: Could not create image destination");
+#endif
         CFRelease(source);
         return imageData;
     } else {
@@ -146,7 +148,9 @@
         BOOL success = NO;
         success = CGImageDestinationFinalize(destination);
         if (!success) {
+#if defined(DEBUG)
             NSLog(@"Error: Could not create data from image destination");
+#endif
             CFRelease(destination);
             CFRelease(source);
             return imageData;
@@ -314,8 +318,10 @@
 						}
 						else
 						{
+#if defined(DEBUG)
 							NSLog(@"ERROR IMAGE UPLOAD: %@", error);
-							[self showUploadError:error];
+#endif
+                            [self showUploadError:error];
 						}
 						
 						[self.imageUploadQueue removeObjectAtIndex:0];

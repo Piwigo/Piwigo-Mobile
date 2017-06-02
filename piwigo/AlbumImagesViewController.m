@@ -91,7 +91,9 @@
 									 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 								 }
                                     onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
                                         NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
                                     }];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
@@ -144,7 +146,9 @@
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                  [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
                              } onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
                                  NSLog(@"refresh fail");
+#endif
                              }];
 }
 
@@ -322,8 +326,10 @@
 						 } ListOnCompletion:^(NSURLSessionTask *task, UIImage *image) {
 							 [self saveImageToCameraRoll:image];
 						 } onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
 							 NSLog(@"downloadVideo fail");
-						 }];
+#endif
+                         }];
 	}
 	else
 	{
@@ -336,10 +342,14 @@
                   completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
                       // Any error ?
                       if (error.code) {
+#if defined(DEBUG)
                           NSLog(@"AlbumImagesViewController: downloadImage fail");
+#endif
                       } else {
                           // Try to move video in Photos.app
+#if defined(DEBUG)
                           NSLog(@"path= %@", filePath.path);
+#endif
                           if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath.path)) {
                               UISaveVideoAtPathToSavedPhotosAlbum(filePath.path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
                           } else {
