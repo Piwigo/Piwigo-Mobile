@@ -199,10 +199,14 @@
 
     __block NSURLSessionDataTask *task = [self uploadTaskWithStreamedRequest:request progress:uploadProgress completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
         if (error) {
+//            NSLog(@"=======>>> %@", response);
+//            NSLog(@"=======>>> %@", responseObject);
             if (failure) {
                 failure(task, error);
             }
         } else {
+//            NSLog(@"=======>>> %@", response);
+//            NSLog(@"=======>>> %@", responseObject);
             if (success) {
                 success(task, responseObject);
             }

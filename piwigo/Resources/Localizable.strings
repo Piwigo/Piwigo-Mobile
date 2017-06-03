@@ -252,6 +252,7 @@
 
 "videoUploadError_title" = "Video Upload Error";
 "videoUploadError_message" = "You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.";
+"videoUploadConfigError_message" = "Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.";
 "videoUploadError_format" = "Sorry, the video file format is not compatible with the extension \"VideoJS\".";
 
 "logoutFail_title" = "Logout Failed";

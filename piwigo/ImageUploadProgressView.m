@@ -123,7 +123,10 @@
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-	self.totalUploadedImages++;
+    // Increment the number of downloaded media only if upload succeeded
+    if(!(response == nil)) {
+        self.totalUploadedImages++;
+    }
 	
 	self.currentImage = rank;
 	if(rank >= totalInQueue)
@@ -135,11 +138,15 @@
 	if(rank > totalInQueue)
 	{
 		[self.uploadProgress setProgress:0 animated:NO];
+        
+        // Inform user that the upload task completed
         [UIAlertView showWithTitle:NSLocalizedString(@"imageUploadCompleted_title", @"Upload Completed")
                            message:(self.totalUploadedImages > 1) ? [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageImagesUploadCompleted_message", @"images/videos uploaded to your Piwigo server.")]: NSLocalizedString(@"imageImageUploadCompleted_message", @"1 image/video uploaded to your Piwigo server.")
                  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
                  otherButtonTitles:nil
                           tapBlock:nil];
+        
+        // Tnitialise the counters for the next upload taks
 		self.totalUploadedImages = 0;
         self.currentImage = 1;
 	}
