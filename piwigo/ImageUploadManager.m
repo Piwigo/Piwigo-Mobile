@@ -311,7 +311,7 @@
 						   [nextImageToBeUploaded.image rangeOfString:@".mp4"].location != NSNotFound))
 						{	// they need to install the VideoJS plugin
 							[UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-											   message:NSLocalizedString(@"videoUploadError_message", @"You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.")
+											   message:NSLocalizedString(@"videoUploadConfigError_message", @"Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.")
 									 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 									 otherButtonTitles:nil
 											  tapBlock:nil];
@@ -328,7 +328,7 @@
 						[self.imageNamesUploadQueue removeObjectForKey:imageKey];
 						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
 						{
-							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
+                            [self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
 						}
 						
 						[self uploadNextImage];
