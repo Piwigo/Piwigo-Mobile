@@ -133,8 +133,8 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
         [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
                                     name:@"file"
                                 fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
-                                mimeType:@"video/mp4"];
-//                                mimeType:@"image/jpeg"];
+                                mimeType:@"image/jpeg"];
+//                                mimeType:@"video/mp4"];
         
         [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
                                     name:@"name"];

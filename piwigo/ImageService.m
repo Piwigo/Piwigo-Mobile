@@ -112,15 +112,12 @@ NSString * const kGetImageOrderDescending = @"desc";
 	PiwigoImageData *imageData = [PiwigoImageData new];
 	
 	imageData.imageId = [imageJson objectForKey:@"id"];
-	imageData.fileName = [imageJson objectForKey:@"file"];
-	if([imageData.fileName rangeOfString:@".mp4"].location != NSNotFound ||
-	   [imageData.fileName rangeOfString:@".MP4"].location != NSNotFound ||
-	   [imageData.fileName rangeOfString:@".MOV"].location != NSNotFound ||
-	   [imageData.fileName rangeOfString:@".mov"].location != NSNotFound ||
-	   [imageData.fileName rangeOfString:@".AVI"].location != NSNotFound ||
-	   [imageData.fileName rangeOfString:@".avi"].location != NSNotFound ||
-	   [imageData.fileName rangeOfString:@".MP3"].location != NSNotFound ||
-	   [imageData.fileName rangeOfString:@".mp3"].location != NSNotFound)
+    NSString *fileExt = [[[imageJson objectForKey:@"file"] pathExtension] uppercaseString];
+    if([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
+       [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
+       [fileExt isEqualToString:@"MOV"] || [fileExt isEqualToString:@"AVI"] ||
+       [fileExt isEqualToString:@"WEBM"] || [fileExt isEqualToString:@"WEBMV"] ||
+       [fileExt isEqualToString:@"MP3"])
 	{
 		imageData.isVideo = YES;
 	}
@@ -257,10 +254,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // replace .mp4 or .mv4 with .mov for compatibility with Photos.app
     NSString *fileName = video.fileName;
-    if (([[video.fileName pathExtension] isEqualToString:@"MP4"]) ||
-        ([[video.fileName pathExtension] isEqualToString:@"mp4"]) ||
-        ([[video.fileName pathExtension] isEqualToString:@"M4V"]) ||
-        ([[video.fileName pathExtension] isEqualToString:@"m4v"])) {
+    if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
+        ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {
         fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
     }
     

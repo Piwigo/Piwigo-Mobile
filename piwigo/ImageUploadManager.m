@@ -209,10 +209,9 @@
         
         // Video — Only webm, webmv, ogv, m4v, mp4 are compatible with piwigo-videojs extension
         NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] uppercaseString];
-        
         if (([fileExt isEqualToString:@"MP4"]) || ([fileExt isEqualToString:@"M4V"]) ||
             ([fileExt isEqualToString:@"OGG"]) || ([fileExt isEqualToString:@"OGV"]) ||
-            ([fileExt isEqualToString:@"WEBM"])) {
+            ([fileExt isEqualToString:@"WEBM"] || ([fileExt isEqualToString:@"WEBMV"]))) {
             // Nothing to do — right format for piwigo-videojs extension
         } else {
             if ([fileExt isEqualToString:@"MOV"]) {
@@ -306,10 +305,13 @@
 						
 						[self uploadNextImage];
 					} onFailure:^(NSURLSessionTask *task, NSError *error) {
-						if(error.code == -1016 &&
-						   ([nextImageToBeUploaded.image rangeOfString:@".MP4"].location != NSNotFound ||
-						   [nextImageToBeUploaded.image rangeOfString:@".mp4"].location != NSNotFound))
-						{	// they need to install the VideoJS plugin
+						NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] uppercaseString];
+                        if(error.code == -1016 &&
+						   ([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
+                            [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
+                            [fileExt isEqualToString:@"WEBM"] || [fileExt isEqualToString:@"WEBMV"])
+                           )
+						{	// They need to check the VideoJS extension installation
 							[UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
 											   message:NSLocalizedString(@"videoUploadConfigError_message", @"Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.")
 									 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
