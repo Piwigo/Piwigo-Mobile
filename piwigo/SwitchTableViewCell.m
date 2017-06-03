@@ -26,8 +26,7 @@
 		self.leftLabel.font = [UIFont piwigoFontNormal];
 		self.leftLabel.textColor = [UIColor piwigoGray];
 		self.leftLabel.textAlignment = NSTextAlignmentLeft;
-		self.leftLabel.adjustsFontSizeToFitWidth = YES;
-		self.leftLabel.minimumScaleFactor = 0.5;
+		self.leftLabel.adjustsFontSizeToFitWidth = NO;
 		self.leftLabel.numberOfLines = 2;
 		self.leftLabel.preferredMaxLayoutWidth = 150;
 		[self.contentView addSubview:self.leftLabel];

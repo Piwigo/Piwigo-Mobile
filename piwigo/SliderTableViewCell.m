@@ -26,10 +26,8 @@
 		self.sliderName = [UILabel new];
 		self.sliderName.translatesAutoresizingMaskIntoConstraints = NO;
 		self.sliderName.font = [UIFont piwigoFontNormal];
-		self.sliderName.textColor = [UIColor blackColor];
-		self.sliderName.adjustsFontSizeToFitWidth = YES;
-		self.sliderName.minimumScaleFactor = 0.5;
-		self.sliderName.textAlignment = NSTextAlignmentRight;
+		self.sliderName.textColor = [UIColor piwigoGray];
+		self.sliderName.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.sliderName];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderName]];
 		
