@@ -124,13 +124,17 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
     {
     
-        NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-        [mutableHeaders setValue:[NSString stringWithFormat:@"multipart/form-data"] forKey:@"Content-Type"];
+//        NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+//        [mutableHeaders setValue:[NSString stringWithFormat:@"multipart/form-data"] forKey:@"Content-Type"];
+//        NSString *boundary = @"YOUR_BOUNDARY_STRING";
+//        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+//        [mutableHeaders setValue:contentType forKey:@"Content-Type"];
         
         [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
                                     name:@"file"
                                 fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
                                 mimeType:@"image/jpeg"];
+//                                mimeType:@"video/mp4"];
         
         [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
                                     name:@"name"];
