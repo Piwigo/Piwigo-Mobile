@@ -97,12 +97,16 @@
 "settings_notLoggedIn" = " - Not Logged In - ";
 "settings_logout" = "Logout";
 "settings_defaultAuthor" = "Author";
+"settings_defaultAuthor>320px" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Privacy";
+"settings_defaultPrivacy>320px" = "Who Can See the Media?";
 "settings_stripGPSdata" = "Strip GPS Metadata";
+"settings_stripGPSdata>375px" = "Strip GPS Metadata Before Upload";
 "settings_photoResize" = "Resize Before Upload";
+"settings_photoResize>375px" = "Resize Image Before Upload";
 "settings_photoQuality" = "> Quality";
-"settings_photoSize" = "> Size";
+"settings_photoSize" = "> Size   ";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Memory";
 "settings_cacheMegabytes" = "MB";
@@ -111,14 +115,17 @@
 "settings_placeholderDisk" = "Enter a Disk Cache from 10 - 200";
 "settings_placeholderMemory" = "Enter a Memory Cache from 10 - 200";
 "settings_about" = "Piwigo Mobile";
-"settings_loadAllCategories" = "Recursive Root Album Load";
+"settings_loadAllCategories" = "Download all Albums at Start";
+"settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
 
 "logoutConfirmation_title" = "Logout";
 "logoutConfirmation_message" = "Are you sure you want to logout?";
 
 "localAlbums" = "Local Albums";
 
-"defaultSort" = "Default Sort";
+"defaultImageSort" = "Sort";
+"defaultImageSort>320px" = "Default Sort";
+"defaultImageSort>414px" = "Default Sort of Images";
 "localImageSort_newest" = "Newest";
 "localImageSort_oldest" = "Oldest";
 "localImageSort_notUploaded" = "Not Uploaded";
@@ -191,7 +198,9 @@
 
 "version" = "Version:";
 
-"defaultImageSize" = "Default Size";
+"defaultImageSize" = "Size";
+"defaultImageSize>320px" = "Default Size";
+"defaultImageSize>414px" = "Default Size of Images";
 "defaultImageSizeTitle" = "Default Image Size";
 "defaultImageSizeHeader" = "Only supported if Multiple Sizes are set on your Piwigo";
 "imageSizeSquare" = "Square";

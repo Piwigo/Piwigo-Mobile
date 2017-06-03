@@ -162,7 +162,18 @@ typedef enum {
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *tableViewCell = [UITableViewCell new];
+    // Adapt text to display width
+    // Adapt text to display width
+    // > 320 pixels means larger than iPhone 5 display width in portrait mode
+    // > 375 pixels means larger than iPhone 6,7 display width in portrait mode
+    // > 414 pixels means larger than iPhone 6,7 Plus display width in portrait mode
+    // > 667 pixels means larger than iPhone 6,7 Plus display width in portrait mode
+    // > 736 pixels means larger than iPhone 6,7 Plus display width in landscape mode
+#if defined(DEBUG)
+    NSLog(@"=> Device screen width = %g pixels", self.view.bounds.size.width);
+#endif
+
+    UITableViewCell *tableViewCell = [UITableViewCell new];
 	switch(indexPath.section)
 	{
 		case SettingSectionServer:      // Piwigo Server
@@ -175,7 +186,7 @@ typedef enum {
 			switch(indexPath.row)
 			{
 				case 0:
-					cell.leftText = NSLocalizedString(@"settings_server", @"Server");
+                    cell.leftText = NSLocalizedString(@"settings_server", @"Address");
 					cell.rightText = [Model sharedInstance].serverName;
 					break;
 				case 1:
@@ -215,15 +226,19 @@ typedef enum {
 		{
 			switch(indexPath.row)
 			{
-				case 0:     // Recursive Root Album Load
+				case 0:     // Download all Albums at Start
 				{
-					SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchCell"];
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchCell"];
 					if(!cell)
 					{
 						cell = [SwitchTableViewCell new];
 					}
 					
-					cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Recursive Root Album Load");
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger then iPhone 6 display width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories>320px", @"Download all Albums at Start (uncheck if troubles)");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Download all Albums at Start");
+                    }
 					[cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
 					cell.cellSwitchBlock = ^(BOOL switchState) {
 						if(![Model sharedInstance].loadAllCategoryInfo && switchState)
@@ -246,8 +261,13 @@ typedef enum {
 						cell = [LabelTableViewCell new];
 					}
 					
-					cell.leftText = NSLocalizedString(@"defaultSort", @"Default Sort");
-					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhone 6,7 display width
+                        cell.leftText = NSLocalizedString(@"defaultImageSort>414px", @"Default Sort of Images");
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 display width
+                        cell.leftText = NSLocalizedString(@"defaultImageSort>320px", @"Default Sort");
+                    } else {
+                        cell.leftText = NSLocalizedString(@"defaultImageSort", @"Sort");
+                    }
 					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					
@@ -261,8 +281,13 @@ typedef enum {
 						cell = [LabelTableViewCell new];
 					}
 					
-					cell.leftText = NSLocalizedString(@"defaultImageSize", @"Default Size");
-					cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhone 6,7 display width
+                        cell.leftText = NSLocalizedString(@"defaultImageSize>414px", @"Default Size of Images");
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 display width
+                        cell.leftText = NSLocalizedString(@"defaultImageSize>320px", @"Default Size");
+                    } else {
+                        cell.leftText = NSLocalizedString(@"defaultImageSize", @"Size");
+                    }
 					cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					
@@ -284,7 +309,11 @@ typedef enum {
 						cell = [TextFieldTableViewCell new];
 					}
 					
-					cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Author");
+                    if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 display width
+                        cell.labelText = NSLocalizedString(@"settings_defaultAuthor>320px", @"Author Name");
+                    } else {
+                        cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Author");
+                    }
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
 					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
 					cell.rightTextField.delegate = self;
@@ -301,7 +330,11 @@ typedef enum {
 						cell = [LabelTableViewCell new];
 					}
 					
-					cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger then iPhone 6,7 Plus display width
+                        cell.leftText = NSLocalizedString(@"settings_defaultPrivacy>320px", @"Who Can See the Media?");
+                    } else {
+                        cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
+                    }
 					cell.rightText = [[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel];
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					
@@ -315,7 +348,11 @@ typedef enum {
                         cell = [SwitchTableViewCell new];
                     }
                     
-                    cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata", @"Strip GPS Metadata");
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhone 6,7 display width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata>375px", @"Strip GPS Metadata Before Upload");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata", @"Strip GPS Metadata");
+                    }
                     [cell.cellSwitch setOn:[Model sharedInstance].stripGPSdataOnUpload];
                     cell.cellSwitchBlock = ^(BOOL switchState) {
                         [Model sharedInstance].stripGPSdataOnUpload = switchState;
@@ -332,7 +369,11 @@ typedef enum {
 						cell = [SwitchTableViewCell new];
 					}
 					
-					cell.leftLabel.text = NSLocalizedString(@"settings_photoResize", @"Resize Before Upload");
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhone 6,7 display width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_photoResize>375px", @"Resize Image Before Upload");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_photoResize", @"Resize Before Upload");
+                    }
 					[cell.cellSwitch setOn:[Model sharedInstance].resizeImageOnUpload];
 					cell.cellSwitchBlock = ^(BOOL switchState) {
 						[Model sharedInstance].resizeImageOnUpload = switchState;
@@ -354,8 +395,7 @@ typedef enum {
 					{
 						cell = [SliderTableViewCell new];
 					}
-					cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
-                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
+                    cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
 					cell.slider.minimumValue = 50;
 					cell.slider.maximumValue = 98;
                     cell.sliderCountPrefix = @"";
@@ -374,8 +414,7 @@ typedef enum {
 					{
 						cell = [SliderTableViewCell new];
 					}
-					cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"> Size");
-                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
+                    cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"> Size");
 					cell.slider.minimumValue = 1;
 					cell.slider.maximumValue = 100;
                     cell.sliderCountPrefix = @"";
@@ -407,7 +446,7 @@ typedef enum {
 						cell = [SliderTableViewCell new];
 					}
 					cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
-                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
+//                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
                     cell.slider.minimumValue = 10;
                     cell.slider.maximumValue = 200;
                     cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentDiskSizeInMB];
@@ -432,7 +471,7 @@ typedef enum {
 						cell = [SliderTableViewCell new];
 					}
 					cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
-                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
+//                    cell.sliderName.textAlignment = NSTextAlignmentLeft;
                     cell.slider.minimumValue = 10;
                     cell.slider.maximumValue = 200;
                     cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentMemSizeInMB];
@@ -466,6 +505,15 @@ typedef enum {
 	}
 	
 	return tableViewCell;
+}
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    //Reload the tableview on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self.settingsTableView reloadData];
+    } completion:nil];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
