@@ -40,6 +40,16 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasUploadedImages;
 @property (nonatomic, assign) BOOL hadOpenedSession;
 
+@property (nonatomic, assign) BOOL hasSquareSizeImages;
+@property (nonatomic, assign) BOOL hasThumbSizeImages;
+@property (nonatomic, assign) BOOL hasXXSmallSizeImages;
+@property (nonatomic, assign) BOOL hasXSmallSizeImages;
+@property (nonatomic, assign) BOOL hasSmallSizeImages;
+@property (nonatomic, assign) BOOL hasMediumSizeImages;
+@property (nonatomic, assign) BOOL hasLargeSizeImages;
+@property (nonatomic, assign) BOOL hasXLargeSizeImages;
+@property (nonatomic, assign) BOOL hasXXLargeSizeImages;
+
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;
 @property (nonatomic, assign) BOOL resizeImageOnUpload;

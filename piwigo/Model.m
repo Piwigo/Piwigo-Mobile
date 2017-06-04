@@ -30,8 +30,19 @@
 		instance.hasAdminRights = NO;
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
-        instance.hasInstalledVideoJS = YES;    // Will be checked if the user has admin rights
+        instance.hasInstalledVideoJS = YES;     // Will be checked if the user has admin rights
         instance.stripGPSdataOnUpload = NO;
+        
+        instance.hasSquareSizeImages = NO;      // Available image sizes
+        instance.hasThumbSizeImages = NO;
+        instance.hasXXSmallSizeImages = NO;
+        instance.hasXSmallSizeImages = NO;
+        instance.hasSmallSizeImages = NO;
+        instance.hasMediumSizeImages = NO;
+        instance.hasLargeSizeImages = NO;
+        instance.hasXLargeSizeImages = NO;
+        instance.hasXXLargeSizeImages = NO;
+        
 		instance.photoQuality = 95;
 		instance.photoResize = 100;
 		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;

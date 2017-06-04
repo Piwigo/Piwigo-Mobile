@@ -60,13 +60,25 @@
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
-                          [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result" ] objectForKey:@"pwg_token"];
-                          [Model sharedInstance].language = [[responseObject objectForKey:@"result" ] objectForKey:@"language"];
-                          [Model sharedInstance].version = [[responseObject objectForKey:@"result" ] objectForKey:@"version"];
+                          [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result"] objectForKey:@"pwg_token"];
+                          [Model sharedInstance].language = [[responseObject objectForKey:@"result"] objectForKey:@"language"];
+                          [Model sharedInstance].version = [[responseObject objectForKey:@"result"] objectForKey:@"version"];
                           
                           NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
                           [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                           
+                          // Collect the list of available sizes
+                          id availableSizesList = [[responseObject objectForKey:@"result"] objectForKey:@"available_sizes"];
+                          [Model sharedInstance].hasSquareSizeImages  = [availableSizesList containsObject:@"square"];
+                          [Model sharedInstance].hasThumbSizeImages   = [availableSizesList containsObject:@"thumb"];
+                          [Model sharedInstance].hasXXSmallSizeImages = [availableSizesList containsObject:@"xxsmall"];
+                          [Model sharedInstance].hasXSmallSizeImages  = [availableSizesList containsObject:@"xsmall"];
+                          [Model sharedInstance].hasSmallSizeImages   = [availableSizesList containsObject:@"small"];
+                          [Model sharedInstance].hasMediumSizeImages  = [availableSizesList containsObject:@"medium"];
+                          [Model sharedInstance].hasLargeSizeImages   = [availableSizesList containsObject:@"large"];
+                          [Model sharedInstance].hasXLargeSizeImages  = [availableSizesList containsObject:@"xlarge"];
+                          [Model sharedInstance].hasXXLargeSizeImages = [availableSizesList containsObject:@"xxlarge"];
+                        
                           completion([responseObject objectForKey:@"result"]);
                       }
                       else
