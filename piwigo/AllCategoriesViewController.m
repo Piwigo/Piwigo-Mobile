@@ -122,12 +122,12 @@
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1)
 						  {
-							  [self setRepresenativeForCategoryId:albumData.albumId];
+							  [self setRepresentativeForCategoryId:albumData.albumId];
 						  }
 					  }];
 }
 
--(void)setRepresenativeForCategoryId:(NSInteger)categoryId
+-(void)setRepresentativeForCategoryId:(NSInteger)categoryId
 {
 	[AlbumService setCategoryRepresentativeForCategory:categoryId
 											forImageId:self.imageId
