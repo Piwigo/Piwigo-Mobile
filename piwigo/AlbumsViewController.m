@@ -166,7 +166,7 @@
 	{
 		self.emptyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
 		
-		self.emptyLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"There appears to be no albums in your Piwigo. You may pull down to refresh");
+		self.emptyLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
 		self.emptyLabel.textColor = [UIColor piwigoWhiteCream];
 		self.emptyLabel.numberOfLines = 0;
 		self.emptyLabel.textAlignment = NSTextAlignmentCenter;
