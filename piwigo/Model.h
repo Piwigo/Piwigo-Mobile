@@ -56,6 +56,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL stripGPSdataOnUpload;
 @property (nonatomic, assign) NSInteger photoQuality;
 @property (nonatomic, assign) NSInteger photoResize;
+@property (nonatomic, assign) NSInteger defaultThumbnailSize;
 @property (nonatomic, assign) NSInteger defaultImagePreviewSize;
 
 @property (nonatomic, assign) NSInteger imagesPerPage;

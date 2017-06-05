@@ -11,13 +11,13 @@
 typedef enum {
 	kPiwigoImageSizeSquare,
 	kPiwigoImageSizeThumb,
-	kPiwigoImageSizexxSmall,
-	kPiwigoImageSizexSmall,
+	kPiwigoImageSizeXXSmall,
+	kPiwigoImageSizeXSmall,
 	kPiwigoImageSizeSmall,
 	kPiwigoImageSizeMedium,
 	kPiwigoImageSizeLarge,
-	kPiwigoImageSizexLarge,
-	kPiwigoImageSizexxLarge,
+	kPiwigoImageSizeXLarge,
+	kPiwigoImageSizeXXLarge,
 	kPiwigoImageSizeFullRes,
 	kPiwigoImageSizeEnumCount
 } kPiwigoImageSize;
@@ -38,18 +38,19 @@ typedef enum {
 @property (nonatomic, strong) NSString *fullResPath;
 
 // image sizes:
-@property (nonatomic, strong) NSString *squarePath;
-@property (nonatomic, strong) NSString *thumbPath;
-@property (nonatomic, strong) NSString *mediumPath;
-@property (nonatomic, strong) NSString *xxSmall;
-@property (nonatomic, strong) NSString *xSmall;
-@property (nonatomic, strong) NSString *small;
-@property (nonatomic, strong) NSString *large;
-@property (nonatomic, strong) NSString *xLarge;
-@property (nonatomic, strong) NSString *xxLarge;
+@property (nonatomic, strong) NSString *SquarePath;
+@property (nonatomic, strong) NSString *ThumbPath;
+@property (nonatomic, strong) NSString *XXSmallPath;
+@property (nonatomic, strong) NSString *XSmallPath;
+@property (nonatomic, strong) NSString *SmallPath;
+@property (nonatomic, strong) NSString *MediumPath;
+@property (nonatomic, strong) NSString *LargePath;
+@property (nonatomic, strong) NSString *XLargePath;
+@property (nonatomic, strong) NSString *XXLargePath;
 
 
 -(NSString*)getURLFromImageSizeType:(kPiwigoImageSize)imageSize;
++(NSString*)nameForThumbnailSizeType:(kPiwigoImageSize)imageSize;
 +(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize;
 
 @end

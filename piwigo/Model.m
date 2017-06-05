@@ -33,19 +33,36 @@
         instance.hasInstalledVideoJS = YES;     // Will be checked if the user has admin rights
         instance.stripGPSdataOnUpload = NO;
         
-        instance.hasSquareSizeImages = NO;      // Available image sizes
-        instance.hasThumbSizeImages = NO;
+        instance.hasSquareSizeImages = YES;      // Available image sizes
+        instance.hasThumbSizeImages = YES;
         instance.hasXXSmallSizeImages = NO;
         instance.hasXSmallSizeImages = NO;
         instance.hasSmallSizeImages = NO;
-        instance.hasMediumSizeImages = NO;
+        instance.hasMediumSizeImages = YES;
         instance.hasLargeSizeImages = NO;
         instance.hasXLargeSizeImages = NO;
         instance.hasXXLargeSizeImages = NO;
         
 		instance.photoQuality = 95;
 		instance.photoResize = 100;
-		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
+        CGRect screen = [[UIScreen mainScreen] bounds];
+        NSInteger points = (int)fmin(screen.size.width, screen.size.height);
+        if (points <= 324) {
+            instance.defaultImagePreviewSize = kPiwigoImageSizeXSmall;
+        } else if (points < 432) {
+            instance.defaultImagePreviewSize = kPiwigoImageSizeSmall;
+        } else if (points <= 594) {
+            instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
+        } else if (points <= 756) {
+            instance.defaultImagePreviewSize = kPiwigoImageSizeLarge;
+        } else if (points <= 918) {
+            instance.defaultImagePreviewSize = kPiwigoImageSizeXLarge;
+        } else if (points <= 1242) {
+            instance.defaultImagePreviewSize = kPiwigoImageSizeXXLarge;
+        } else {
+            instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
+        }
+        instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
 		
 		instance.diskCache = 80;
 		instance.memoryCache = 80;
@@ -88,7 +105,6 @@
 		case kPiwigoPrivacyEverybody:
 			name = NSLocalizedString(@"privacyLevel_everybody", @"Everybody");
 			break;
-			
 			
 		case kPiwigoPrivacyCount:
 			break;
@@ -137,6 +153,7 @@
 		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
 		self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
         self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
+        self.defaultThumbnailSize = modelData.defaultThumbnailSize;
 	}
 }
 
@@ -165,6 +182,7 @@
 	[saveObject addObject:[ NSNumber numberWithBool:self.resizeImageOnUpload]];
 	[saveObject addObject:@(self.defaultImagePreviewSize)];
     [saveObject addObject:[NSNumber numberWithBool:self.stripGPSdataOnUpload]];
+    [saveObject addObject:@(self.defaultThumbnailSize)];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -212,6 +230,11 @@
 		self.stripGPSdataOnUpload = [[savedData objectAtIndex:12] boolValue];
 	} else {
 		self.stripGPSdataOnUpload = NO;
+	}
+	if(savedData.count > 13) {
+		self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
+	} else {
+		self.defaultThumbnailSize = kPiwigoImageSizeThumb;
 	}
 	
 	return self;

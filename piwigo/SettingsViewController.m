@@ -23,6 +23,7 @@
 #import "CategorySortViewController.h"
 #import "PiwigoImageData.h"
 #import "DefaultImageSizeViewController.h"
+#import "DefaultThumbnailSizeViewController.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -62,7 +63,7 @@ typedef enum {
 		self.rowsInSection = @[
 							   @2,
 							   @1,
-							   @3,
+							   @4,
 							   @6,
 							   @2,
 							   @1
@@ -87,7 +88,7 @@ typedef enum {
 		self.tableViewBottomConstraint = [NSLayoutConstraint constraintViewFromBottom:self.settingsTableView amount:0];
 		[self.view addConstraint:self.tableViewBottomConstraint];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
 		
 		self.darkenView = [UIView new];
@@ -252,40 +253,58 @@ typedef enum {
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhones 6,7 screen width
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger then iPhones 6,7 Plus screen width
                         cell.leftText = NSLocalizedString(@"defaultImageSort>414px", @"Default Sort of Images");
                     } else if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 screen width
                         cell.leftText = NSLocalizedString(@"defaultImageSort>320px", @"Default Sort");
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultImageSort", @"Sort");
                     }
-					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
-					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					
-					tableViewCell = cell;
+					cell.rightText = [[CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort] stringByAppendingString:@"   >"];
+
+                    tableViewCell = cell;
 					break;
 				}
-				case 2:     // Default Size
+				case 2:     // Default Size of Thumbnails
 				{
-					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultImageSize"];
+					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailSize"];
 					if(!cell) {
 						cell = [LabelTableViewCell new];
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhones 6,7 screen width
-                        cell.leftText = NSLocalizedString(@"defaultImageSize>414px", @"Default Size of Images");
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailSize>414px", @"Default Size of Thumbnails");
                     } else if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 screen width
-                        cell.leftText = NSLocalizedString(@"defaultImageSize>320px", @"Default Size");
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailSize>320px", @"Thumbnails Size");
                     } else {
-                        cell.leftText = NSLocalizedString(@"defaultImageSize", @"Size");
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailSize", @"Thumbnails");
                     }
-					cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
-					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+					cell.rightText = [[PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize] stringByAppendingString:@"   >"];
 					
 					tableViewCell = cell;
 					break;
 				}
+                case 3:     // Default Size of Images
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultImageSize"];
+                    if(!cell) {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhones 6,7 screen width
+                        cell.leftText = NSLocalizedString(@"defaultImageSize>414px", @"Default Size of Images");
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 screen width
+                        cell.leftText = NSLocalizedString(@"defaultImageSize>320px", @"Images Size");
+                    } else {
+                        cell.leftText = NSLocalizedString(@"defaultImageSize", @"Images");
+                    }
+                    cell.rightText = [[PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize] stringByAppendingString:@"   >"];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
 			}
 			break;
 		}
@@ -329,8 +348,7 @@ typedef enum {
                     } else {
                         cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
                     }
-					cell.rightText = [[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel];
-					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+					cell.rightText = [[[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel] stringByAppendingString:@"   >"];
 					
 					tableViewCell = cell;
 					break;
@@ -496,8 +514,8 @@ typedef enum {
 			
 			cell.leftText = NSLocalizedString(@"settings_about", @"Piwigo Mobile");
 			cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			cell.leftLabelWidth = 220;
+            cell.rightText = @">";
 			
 			tableViewCell = cell;
 			break;
@@ -581,10 +599,16 @@ typedef enum {
 				}
 				case 2:
 				{
-					DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
-					[self.navigationController pushViewController:defaultImageSizeVC animated:YES];
+					DefaultThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultThumbnailSizeViewController new];
+					[self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
 					break;
 				}
+                case 3:
+                {
+                    DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
+                    [self.navigationController pushViewController:defaultImageSizeVC animated:YES];
+                    break;
+                }
 			}
 			break;
 		}
@@ -849,10 +873,7 @@ typedef enum {
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
 
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-                                                         diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                                                             diskPath:nil];
-    [NSURLCache setSharedURLCache:URLCache];
+    [NSURLCache sharedURLCache].diskCapacity = [Model sharedInstance].diskCache * 1024*1024;
 }
 
 - (IBAction)updateMemoryCacheSize:(id)sender
@@ -861,10 +882,7 @@ typedef enum {
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-                                                         diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                                                             diskPath:nil];
-    [NSURLCache setSharedURLCache:URLCache];
+    [NSURLCache sharedURLCache].memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
 }
 
 @end

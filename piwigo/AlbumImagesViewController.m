@@ -320,7 +320,7 @@ NSInteger const kBorderSpacing = 10;
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[downloadingImage.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[downloadingImage.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
 					 placeholderImage:nil
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
@@ -549,7 +549,7 @@ NSInteger const kBorderSpacing = 10;
         NSInteger imagesPerScreen = (int)ceilf(collectionView.frame.size.height / (size + kBorderSpacing)) * imagesPerRow;
 
         // Load images in advance if possible
-        if(indexPath.row >= [collectionView numberOfItemsInSection:1] - 2*imagesPerScreen && self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+        if((indexPath.row >= [collectionView numberOfItemsInSection:1] - imagesPerScreen) && (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
 		{
 			[self.albumData loadMoreImagesOnCompletion:^{
 				[self.imagesCollection reloadData];

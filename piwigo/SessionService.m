@@ -68,16 +68,38 @@
                           [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                           
                           // Collect the list of available sizes
+                          [Model sharedInstance].hasSquareSizeImages  = YES;
+                          [Model sharedInstance].hasThumbSizeImages   = YES;
+                          [Model sharedInstance].hasXXSmallSizeImages = NO;
+                          [Model sharedInstance].hasXSmallSizeImages  = NO;
+                          [Model sharedInstance].hasSmallSizeImages   = NO;
+                          [Model sharedInstance].hasMediumSizeImages  = YES;
+                          [Model sharedInstance].hasLargeSizeImages   = NO;
+                          [Model sharedInstance].hasXLargeSizeImages  = NO;
+                          [Model sharedInstance].hasXXLargeSizeImages = NO;
+                          
                           id availableSizesList = [[responseObject objectForKey:@"result"] objectForKey:@"available_sizes"];
-                          [Model sharedInstance].hasSquareSizeImages  = [availableSizesList containsObject:@"square"];
-                          [Model sharedInstance].hasThumbSizeImages   = [availableSizesList containsObject:@"thumb"];
-                          [Model sharedInstance].hasXXSmallSizeImages = [availableSizesList containsObject:@"xxsmall"];
-                          [Model sharedInstance].hasXSmallSizeImages  = [availableSizesList containsObject:@"xsmall"];
-                          [Model sharedInstance].hasSmallSizeImages   = [availableSizesList containsObject:@"small"];
-                          [Model sharedInstance].hasMediumSizeImages  = [availableSizesList containsObject:@"medium"];
-                          [Model sharedInstance].hasLargeSizeImages   = [availableSizesList containsObject:@"large"];
-                          [Model sharedInstance].hasXLargeSizeImages  = [availableSizesList containsObject:@"xlarge"];
-                          [Model sharedInstance].hasXXLargeSizeImages = [availableSizesList containsObject:@"xxlarge"];
+                          for (NSString *size in availableSizesList) {
+                              if ([size isEqualToString:@"square"]) {
+                                  [Model sharedInstance].hasSquareSizeImages = YES;
+                              } else if ([size isEqualToString:@"thumb"]) {
+                                  [Model sharedInstance].hasThumbSizeImages = YES;
+                              } else if ([size isEqualToString:@"2small"]) {
+                                  [Model sharedInstance].hasXXSmallSizeImages = YES;
+                              } else if ([size isEqualToString:@"xsmall"]) {
+                                  [Model sharedInstance].hasXSmallSizeImages = YES;
+                              } else if ([size isEqualToString:@"small"]) {
+                                  [Model sharedInstance].hasSmallSizeImages = YES;
+                              } else if ([size isEqualToString:@"medium"]) {
+                                  [Model sharedInstance].hasMediumSizeImages = YES;
+                              } else if ([size isEqualToString:@"large"]) {
+                                  [Model sharedInstance].hasLargeSizeImages = YES;
+                              } else if ([size isEqualToString:@"xlarge"]) {
+                                  [Model sharedInstance].hasXLargeSizeImages = YES;
+                              } else if ([size isEqualToString:@"xxlarge"]) {
+                                  [Model sharedInstance].hasXXLargeSizeImages = YES;
+                              }
+                          }
                         
                           completion([responseObject objectForKey:@"result"]);
                       }

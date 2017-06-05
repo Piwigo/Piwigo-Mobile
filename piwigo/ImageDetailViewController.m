@@ -183,7 +183,7 @@
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[self.imageData.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[self.imageData.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
 					 placeholderImage:nil
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
@@ -361,12 +361,12 @@
 {
 	NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
 	
-	// check to see if they've scroll beyond a certain threshold, then load more image data
+	// Check to see if they've scroll beyond a certain threshold, then load more image data
 	if(currentIndex >= self.images.count - 21 && self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
 	{
-		if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
+        if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
 		{
-			[self.imgDetailDelegate needToLoadMoreImages];
+            [self.imgDetailDelegate needToLoadMoreImages];
 		}
 	}
 	
