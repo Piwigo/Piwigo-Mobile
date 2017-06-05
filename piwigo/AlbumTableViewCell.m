@@ -365,20 +365,20 @@
 		__weak typeof(self) weakSelf = self;
 		self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
 					  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-						  if(!imageData.mediumPath)
+						  if(!imageData.MediumPath)
 						  {
 							  albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
 						  }
 						  else
 						  {
-							  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.mediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+							  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
                                                   placeholderImage:nil
                                                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                                albumData.categoryImage = image;
                                                                [weakSelf setupBgWithImage:image];
 							  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-								  NSLog(@"fail to get imgage for album at %@", imageData.mediumPath);
+								  NSLog(@"fail to get imgage for album at %@", imageData.MediumPath);
 #endif
                               }];
 						  }

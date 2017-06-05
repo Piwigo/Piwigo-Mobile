@@ -204,8 +204,9 @@
             }
             
             [self uploadNextImage];
+            imageMetadata = nil;
             return;
-       }
+        }
         
         // Video — Only webm, webmv, ogv, m4v, mp4 are compatible with piwigo-videojs extension
         NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] uppercaseString];
@@ -235,6 +236,7 @@
                 }
                 
                 [self uploadNextImage];
+                imageMetadata = nil;
                 return;
             }
         }
@@ -245,6 +247,7 @@
         Byte *buffer = (Byte *)malloc(repSize);
         NSUInteger length = [rep getBytes:buffer fromOffset:0 length:repSize error:nil];
         imageData = [NSData dataWithBytesNoCopy:buffer length:length freeWhenDone:YES];
+        imageMetadata = nil;
         
     } else {
         
@@ -261,6 +264,7 @@
         CGFloat compressionQuality = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoQuality / 100.0 : .95;
         NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
         imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
+        imageMetadata = nil;
     }
     
 	// Append Tags

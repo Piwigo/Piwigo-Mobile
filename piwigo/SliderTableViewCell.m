@@ -34,22 +34,22 @@
 		self.slider = [UISlider new];
 		self.slider.translatesAutoresizingMaskIntoConstraints = NO;
 		self.slider.minimumValue = 10;
-		self.slider.maximumValue = 500;
+		self.slider.maximumValue = 200;
 		[self.slider addTarget:self action:@selector(sliderChanged) forControlEvents:UIControlEventValueChanged];
 		[self.contentView addSubview:self.slider];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.slider]];
 		
 		self.sliderCount = [UILabel new];
 		self.sliderCount.translatesAutoresizingMaskIntoConstraints = NO;
-		self.sliderCount.textAlignment = NSTextAlignmentCenter;
+		self.sliderCount.textAlignment = NSTextAlignmentRight;
 		self.sliderCount.font = [UIFont piwigoFontNormal];
-		self.sliderCount.textColor = [UIColor piwigoGray];
+		self.sliderCount.textColor = [UIColor piwigoBrown];
 		self.sliderCount.adjustsFontSizeToFitWidth = YES;
 		self.sliderCount.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.sliderCount];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderCount]];
 		
-		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(90)]-[count(80)]-[slider]-15-|"
+		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(80)]-[count]-[slider]-15-|"
 																				 options:kNilOptions
 																				 metrics:nil
 																				   views:@{@"label" : self.sliderName,

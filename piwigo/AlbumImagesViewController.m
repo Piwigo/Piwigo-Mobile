@@ -23,6 +23,8 @@
 #import "LocalAlbumsViewController.h"
 #import "AlbumData.h"
 
+NSInteger const kBorderSpacing = 10;
+
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
@@ -115,12 +117,9 @@
 	}
     
     // Photos
-    if ([Model sharedInstance].hasUploadedImages) {
-        [Model sharedInstance].hasUploadedImages = NO;
-        [self.albumData reloadAlbumOnCompletion:^{
-            [self.imagesCollection reloadData];
-        }];
-    }
+    [self.albumData reloadAlbumOnCompletion:^{
+        [self.imagesCollection reloadData];
+    }];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -133,6 +132,16 @@
 	refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Loading All Images")];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.imagesCollection addSubview:refreshControl];
+}
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    //Reload the tableview on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self.imagesCollection reloadData];
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    } completion:nil];
 }
 
 -(void)refresh:(UIRefreshControl*)refreshControl
@@ -311,7 +320,7 @@
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[downloadingImage.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[downloadingImage.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
 					 placeholderImage:nil
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
@@ -477,7 +486,7 @@
 {
 	if(section == 1)
 	{
-		return CGSizeMake(collectionView.frame.size.width, 44.0);
+		return CGSizeMake(collectionView.frame.size.width, 34.0);
 	}
 	
 	return CGSizeZero;
@@ -504,20 +513,23 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	CGFloat size = MIN(collectionView.frame.size.width, collectionView.frame.size.height) / 3 - 14;
-	if(indexPath.section == 1)
+    if(indexPath.section == 1)
 	{
-		return CGSizeMake(size, size);
+        // Calculate the optimum image size for collection
+        NSInteger imagesPerRow = [self numberOfImagesPerRowForCollectionView:collectionView];
+        CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
+
+        return CGSizeMake(size, size);                                      // Thumbnails
 	}
 	else
 	{
-		return CGSizeMake(collectionView.frame.size.width - 20, 188);
+		return CGSizeMake(collectionView.frame.size.width - 20, 188);       // Albums
 	}
 }
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1)
+	if(indexPath.section == 1)      // Image thumbnails
 	{
 		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 		
@@ -531,7 +543,13 @@
 			}
 		}
 		
-		if(indexPath.row >= [collectionView numberOfItemsInSection:1] - 21 && self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+        // Calculate the number of thumbnails displayed on screen
+        NSInteger imagesPerRow = [self numberOfImagesPerRowForCollectionView:collectionView];
+        CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
+        NSInteger imagesPerScreen = (int)ceilf(collectionView.frame.size.height / (size + kBorderSpacing)) * imagesPerRow;
+
+        // Load images in advance if possible
+        if((indexPath.row >= [collectionView numberOfItemsInSection:1] - imagesPerScreen) && (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
 		{
 			[self.albumData loadMoreImagesOnCompletion:^{
 				[self.imagesCollection reloadData];
@@ -540,7 +558,7 @@
 		
 		return cell;
 	}
-	else
+	else        // Albums
 	{
 		CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"category" forIndexPath:indexPath];
 		cell.categoryDelegate = self;
@@ -616,6 +634,15 @@
 -(void)pushView:(UIViewController *)viewController
 {
 	[self.navigationController pushViewController:viewController animated:YES];
+}
+
+#pragma mark Determine number of images per row
+
+-(int)numberOfImagesPerRowForCollectionView:(UICollectionView *)collectionView
+{
+    // Thumbnails should always be available on server (default size of 144x144 pixels)
+    // We display at least 3 thumbnails per row whilst not exceeding thumbnails size
+    return (int)fmax(3.0, ceilf((collectionView.frame.size.width - kBorderSpacing) / (kBorderSpacing + 144.0)));
 }
 
 @end

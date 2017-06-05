@@ -60,13 +60,47 @@
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
-                          [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result" ] objectForKey:@"pwg_token"];
-                          [Model sharedInstance].language = [[responseObject objectForKey:@"result" ] objectForKey:@"language"];
-                          [Model sharedInstance].version = [[responseObject objectForKey:@"result" ] objectForKey:@"version"];
+                          [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result"] objectForKey:@"pwg_token"];
+                          [Model sharedInstance].language = [[responseObject objectForKey:@"result"] objectForKey:@"language"];
+                          [Model sharedInstance].version = [[responseObject objectForKey:@"result"] objectForKey:@"version"];
                           
                           NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
                           [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                           
+                          // Collect the list of available sizes
+                          [Model sharedInstance].hasSquareSizeImages  = YES;
+                          [Model sharedInstance].hasThumbSizeImages   = YES;
+                          [Model sharedInstance].hasXXSmallSizeImages = NO;
+                          [Model sharedInstance].hasXSmallSizeImages  = NO;
+                          [Model sharedInstance].hasSmallSizeImages   = NO;
+                          [Model sharedInstance].hasMediumSizeImages  = YES;
+                          [Model sharedInstance].hasLargeSizeImages   = NO;
+                          [Model sharedInstance].hasXLargeSizeImages  = NO;
+                          [Model sharedInstance].hasXXLargeSizeImages = NO;
+                          
+                          id availableSizesList = [[responseObject objectForKey:@"result"] objectForKey:@"available_sizes"];
+                          for (NSString *size in availableSizesList) {
+                              if ([size isEqualToString:@"square"]) {
+                                  [Model sharedInstance].hasSquareSizeImages = YES;
+                              } else if ([size isEqualToString:@"thumb"]) {
+                                  [Model sharedInstance].hasThumbSizeImages = YES;
+                              } else if ([size isEqualToString:@"2small"]) {
+                                  [Model sharedInstance].hasXXSmallSizeImages = YES;
+                              } else if ([size isEqualToString:@"xsmall"]) {
+                                  [Model sharedInstance].hasXSmallSizeImages = YES;
+                              } else if ([size isEqualToString:@"small"]) {
+                                  [Model sharedInstance].hasSmallSizeImages = YES;
+                              } else if ([size isEqualToString:@"medium"]) {
+                                  [Model sharedInstance].hasMediumSizeImages = YES;
+                              } else if ([size isEqualToString:@"large"]) {
+                                  [Model sharedInstance].hasLargeSizeImages = YES;
+                              } else if ([size isEqualToString:@"xlarge"]) {
+                                  [Model sharedInstance].hasXLargeSizeImages = YES;
+                              } else if ([size isEqualToString:@"xxlarge"]) {
+                                  [Model sharedInstance].hasXXLargeSizeImages = YES;
+                              }
+                          }
+                        
                           completion([responseObject objectForKey:@"result"]);
                       }
                       else

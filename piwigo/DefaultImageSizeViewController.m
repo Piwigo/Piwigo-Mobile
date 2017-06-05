@@ -23,7 +23,7 @@
 	self = [super init];
 	
 	self.view.backgroundColor = [UIColor whiteColor];
-	self.title = NSLocalizedString(@"defaultImageSizeTitle", @"Default Image Size");
+	self.title = NSLocalizedString(@"defaultImageSizeTitle", @"Default Size");
 	
 	self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 	self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -49,7 +49,8 @@
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	headerLabel.font = [UIFont piwigoFontNormal];
 	headerLabel.textColor = [UIColor piwigoGray];
-	headerLabel.text = NSLocalizedString(@"defaultImageSizeHeader", @"Only supported if Multiple Sizes are set on your Piwigo");
+    headerLabel.textAlignment = NSTextAlignmentCenter;
+	headerLabel.text = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
 	headerLabel.adjustsFontSizeToFitWidth = YES;
 	headerLabel.minimumScaleFactor = 0.5;
 	[header addSubview:headerLabel];
@@ -75,14 +76,110 @@
 		cell = [UITableViewCell new];
 	}
 	
-	cell.textLabel.text = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)indexPath.row];
-	
+    // Name of the image size
+    cell.textLabel.font = [UIFont piwigoFontNormal];
+    cell.textLabel.textColor = [UIColor piwigoGray];
+    cell.textLabel.adjustsFontSizeToFitWidth = NO;
+    cell.textLabel.text = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)indexPath.row];
+    
+    // Add checkmark in front of selected item
 	if([Model sharedInstance].defaultImagePreviewSize == indexPath.row) {
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	} else {
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
 	
+    // Disable unavailable sizes
+    switch (indexPath.row) {
+        case kPiwigoImageSizeSquare:
+            if ([Model sharedInstance].hasSquareSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeThumb:
+            if ([Model sharedInstance].hasThumbSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeXXSmall:
+            if ([Model sharedInstance].hasXXSmallSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeXSmall:
+            if ([Model sharedInstance].hasXSmallSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeSmall:
+            if ([Model sharedInstance].hasSmallSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeMedium:
+            if ([Model sharedInstance].hasMediumSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeLarge:
+            if ([Model sharedInstance].hasLargeSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeXLarge:
+            if ([Model sharedInstance].hasXLargeSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeXXLarge:
+            if ([Model sharedInstance].hasXXLargeSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.tintColor = [UIColor piwigoGrayLight];
+                cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultImageSize_disabled", @" (disabled on server)")];
+            }
+            break;
+        case kPiwigoImageSizeFullRes:
+            cell.userInteractionEnabled = YES;
+            break;
+            
+        default:
+            break;
+    }
+    
 	return cell;
 }
 

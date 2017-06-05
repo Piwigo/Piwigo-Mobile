@@ -167,7 +167,7 @@
 "categoryCellOption_rename" = "Rename";
 "categoryCellOption_move" = "Move";
 "categoryCellOption_delete" = "Delete";
-"categoryMainEmtpy" = "There appears to be no albums in your Piwigo. You may pull down to refresh";
+"categoryMainEmtpy" = "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.";
 
 "renameCategory_title" = "Rename Album";
 "renameCategory_message" = "Rename album";
@@ -198,20 +198,41 @@
 
 "version" = "Version:";
 
-"defaultImageSize" = "Size";
-"defaultImageSize>320px" = "Default Size";
+"defaultThumbnailSize" = "Thumbnails";
+"defaultThumbnailSize>320px" = "Thumbnails Size";
+"defaultThumbnailSize>414px" = "Default Size of Thumbnails";
+"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Please Select a Thumbnail Size";
+"defaultThumbnailSize_disabled" = " (disabled on server)";
+
+"thumbnailSizeSquare" = "Square (faster)";
+"thumbnailSizeThumbnail" = "Thumbnail (default)";
+"thumbnailSizeXXSmall" = "Tiny (better)";
+"thumbnailSizeXSmall" = "Extra Small";
+"thumbnailSizeSmall" = "Small";
+"thumbnailSizeMedium" = "Medium";
+"thumbnailSizeLarge" = "Large";
+"thumbnailSizeXLarge" = "Extra Large";
+"thumbnailSizeXXLarge" = "Huge";
+"thumbnailSizexFullRes" = "Full Resolution";
+
+"defaultImageSize" = "Images";
+"defaultImageSize>320px" = "Images Size";
 "defaultImageSize>414px" = "Default Size of Images";
-"defaultImageSizeTitle" = "Default Image Size";
-"defaultImageSizeHeader" = "Only supported if Multiple Sizes are set on your Piwigo";
+"defaultImageSizeTitle" = "Default Size";
+"defaultImageSizeHeader" = "Please Select an Image Size";
+"defaultImageSize_recommended" = " (recommended)";
+"defaultImageSize_disabled" = " (disabled on server)";
+
 "imageSizeSquare" = "Square";
 "imageSizeThumbnail" = "Thumbnail";
-"imageSizexxSmall" = "Tiny";
-"imageSizexSmall" = "Extra Small";
+"imageSizeXXSmall" = "Tiny";
+"imageSizeXSmall" = "Extra Small";
 "imageSizeSmall" = "Small";
-"imageSizeMedium" = "Medium (default)";
+"imageSizeMedium" = "Medium";
 "imageSizeLarge" = "Large";
-"imageSizexLarge" = "Extra Large";
-"imageSizexxLarge" = "Huge";
+"imageSizeXLarge" = "Extra Large";
+"imageSizeXXLarge" = "Huge";
 "imageSizexFullRes" = "Full Resolution";
 
 
