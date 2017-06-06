@@ -30,10 +30,19 @@
 		instance.hasAdminRights = NO;
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
-        instance.hasInstalledVideoJS = YES;     // Will be checked if the user has admin rights
-        instance.stripGPSdataOnUpload = NO;
+        instance.hasInstalledVideoJS = YES;         // Will be checked if the user has admin rights
         
-        instance.hasSquareSizeImages = YES;      // Available image sizes
+        // Load all albums data at start
+		instance.loadAllCategoryInfo = YES;
+        
+        // Sort images by date: old to new
+		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
+        
+        // Display images titles in collection views
+        instance.displayImageTitles = YES;
+		
+        // Default available Piwigo sizes
+        instance.hasSquareSizeImages = YES;
         instance.hasThumbSizeImages = YES;
         instance.hasXXSmallSizeImages = NO;
         instance.hasXSmallSizeImages = NO;
@@ -43,8 +52,7 @@
         instance.hasXLargeSizeImages = NO;
         instance.hasXXLargeSizeImages = NO;
         
-		instance.photoQuality = 95;
-		instance.photoResize = 100;
+        // Determine recommended image preview size for device
         CGRect screen = [[UIScreen mainScreen] bounds];
         NSInteger points = (int)fmin(screen.size.width, screen.size.height);
         if (points <= 324) {
@@ -64,11 +72,14 @@
         }
         instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
 		
+        // Default image upload setting
+        instance.stripGPSdataOnUpload = NO;         // Upload images with GPS metadata
+		instance.photoQuality = 95;                 // 95% image quality at compression
+		instance.photoResize = 100;                 // Do not resize images
+        
+        // Defaults caches sizes
 		instance.diskCache = 80;
 		instance.memoryCache = 80;
-		
-		instance.loadAllCategoryInfo = YES;
-		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
 		
 		[instance readFromDisk];
 	});
@@ -154,6 +165,7 @@
 		self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
         self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
         self.defaultThumbnailSize = modelData.defaultThumbnailSize;
+        self.displayImageTitles = modelData.displayImageTitles;
 	}
 }
 
@@ -183,6 +195,7 @@
 	[saveObject addObject:@(self.defaultImagePreviewSize)];
     [saveObject addObject:[NSNumber numberWithBool:self.stripGPSdataOnUpload]];
     [saveObject addObject:@(self.defaultThumbnailSize)];
+    [saveObject addObject:@(self.displayImageTitles)];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -235,6 +248,11 @@
 		self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
 	} else {
 		self.defaultThumbnailSize = kPiwigoImageSizeThumb;
+	}
+	if(savedData.count > 14) {
+		self.displayImageTitles = [[savedData objectAtIndex:14] boolValue];
+	} else {
+		self.displayImageTitles = YES;
 	}
 	
 	return self;

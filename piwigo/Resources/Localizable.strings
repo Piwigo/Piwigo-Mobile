@@ -117,6 +117,7 @@
 "settings_about" = "Piwigo Mobile";
 "settings_loadAllCategories" = "Download all Albums at Start";
 "settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
+"settings_displayTitles" = "Display Titles on Thumbnails";
 
 "logoutConfirmation_title" = "Logout";
 "logoutConfirmation_message" = "Are you sure you want to logout?";

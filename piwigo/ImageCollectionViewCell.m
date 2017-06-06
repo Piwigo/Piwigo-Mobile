@@ -13,6 +13,7 @@
 @interface ImageCollectionViewCell()
 
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIView *bottomLayer;
 @property (nonatomic, strong) UIImageView *selectedImage;
 @property (nonatomic, strong) UIView *darkenView;
 @property (nonatomic, strong) UIImageView *playImage;
@@ -57,13 +58,13 @@
 		[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.playImage]];
 		
         // Banners at bottom of thumbnails
-		UIView *bottomLayer = [UIView new];
-		bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
-		bottomLayer.backgroundColor = [UIColor piwigoGray];
-		bottomLayer.alpha = 0.5;
-		[self.contentView addSubview:bottomLayer];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:bottomLayer]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:bottomLayer amount:0]];
+		self.bottomLayer = [UIView new];
+		self.bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
+		self.bottomLayer.backgroundColor = [UIColor piwigoGray];
+		self.bottomLayer.alpha = 0.5;
+		[self.contentView addSubview:self.bottomLayer];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.bottomLayer amount:0]];
 		
         // Title of images shown in banners
 		self.nameLabel = [UILabel new];
@@ -90,7 +91,7 @@
 																	multiplier:1.0
 																	  constant:5]];
 		
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:bottomLayer
+		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayer
 																	 attribute:NSLayoutAttributeTop
 																	 relatedBy:NSLayoutRelationEqual
 																		toItem:self.nameLabel
@@ -229,7 +230,14 @@
             break;
     }
 
-    self.nameLabel.text = imageData.name;
+    if ([Model sharedInstance].displayImageTitles) {
+        self.bottomLayer.hidden = NO;
+        self.nameLabel.hidden = NO;
+        self.nameLabel.text = imageData.name;
+    } else {
+        self.bottomLayer.hidden = YES;
+        self.nameLabel.hidden = YES;
+    }
     
 	if(imageData.isVideo)
 	{

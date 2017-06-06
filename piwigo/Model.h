@@ -49,15 +49,16 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasLargeSizeImages;
 @property (nonatomic, assign) BOOL hasXLargeSizeImages;
 @property (nonatomic, assign) BOOL hasXXLargeSizeImages;
+@property (nonatomic, assign) NSInteger defaultThumbnailSize;
+@property (nonatomic, assign) NSInteger defaultImagePreviewSize;
+@property (nonatomic, assign) BOOL displayImageTitles;
 
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;
-@property (nonatomic, assign) BOOL resizeImageOnUpload;
 @property (nonatomic, assign) BOOL stripGPSdataOnUpload;
+@property (nonatomic, assign) BOOL resizeImageOnUpload;
 @property (nonatomic, assign) NSInteger photoQuality;
 @property (nonatomic, assign) NSInteger photoResize;
-@property (nonatomic, assign) NSInteger defaultThumbnailSize;
-@property (nonatomic, assign) NSInteger defaultImagePreviewSize;
 
 @property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;

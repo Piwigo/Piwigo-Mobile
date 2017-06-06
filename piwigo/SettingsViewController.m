@@ -63,7 +63,7 @@ typedef enum {
 		self.rowsInSection = @[
 							   @2,
 							   @1,
-							   @4,
+							   @5,
 							   @6,
 							   @2,
 							   @1
@@ -285,7 +285,25 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-                case 3:     // Default Size of Images
+                case 3:     // Display titles on thumbnails
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titles"];
+                    if(!cell)
+                    {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    cell.leftLabel.text = NSLocalizedString(@"settings_displayTitles", @"Display Titles on Thumbnails");
+                    [cell.cellSwitch setOn:[Model sharedInstance].displayImageTitles];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        [Model sharedInstance].displayImageTitles = switchState;
+                        [[Model sharedInstance] saveToDisk];
+                    };
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 4:     // Default Size of Images
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultImageSize"];
                     if(!cell) {
@@ -603,7 +621,7 @@ typedef enum {
 					[self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
 					break;
 				}
-                case 3:
+                case 4:
                 {
                     DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
                     [self.navigationController pushViewController:defaultImageSizeVC animated:YES];
