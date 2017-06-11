@@ -24,7 +24,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor whiteColor];
+		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.title = NSLocalizedString(@"sortTitle", @"Sort Type");
 		
 		self.sortSelectTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];

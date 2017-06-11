@@ -19,7 +19,7 @@
 	self = [super initWithFrame:frame];
 	if(self)
 	{
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor piwigoWhiteCream];
 		
 		UILabel *sortLabel = [UILabel new];
 		sortLabel.translatesAutoresizingMaskIntoConstraints = NO;

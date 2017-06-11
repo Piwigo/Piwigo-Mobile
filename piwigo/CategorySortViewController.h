@@ -27,6 +27,8 @@ typedef enum {
 	kPiwigoSortCategoryCount	
 } kPiwigoSortCategory;
 
+extern NSInteger const kBorderSpacing;
+
 @protocol CategorySortDelegate <NSObject>
 
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType;
@@ -39,5 +41,6 @@ typedef enum {
 @property (nonatomic, assign) kPiwigoSortCategory currentCategorySortType;
 
 +(NSString*)getNameForCategorySortType:(kPiwigoSortCategory)sortType;
++(int)numberOfImagesPerRowForCollectionView:(UICollectionView *)collectionView;
 
 @end

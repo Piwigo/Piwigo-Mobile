@@ -28,7 +28,7 @@
 	self = [super initWithFrame:frame];
 	if(self)
 	{
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor piwigoWhiteCream];
 		self.cellSelected = NO;
 		
 		self.cellImage = [UIImageView new];

@@ -51,7 +51,7 @@
 		UILabel *description = [UILabel new];
 		description.translatesAutoresizingMaskIntoConstraints = NO;
 		description.font = [UIFont piwigoFontNormal];
-		description.textColor = [UIColor piwigoGray];
+		description.textColor = [UIColor piwigoWhiteCream];
 		description.numberOfLines = 4;
 		description.textAlignment = NSTextAlignmentCenter;
 		description.text = NSLocalizedString(@"adminRights_message", @"You're not an admin.\nYou have to be an admin to be able to upload images.");
@@ -72,7 +72,7 @@
 		
 	}
 	
-	self.view.backgroundColor = [UIColor piwigoWhiteCream];
+	self.view.backgroundColor = [UIColor piwigoGray];
 	
 	return self;
 }

@@ -29,7 +29,7 @@
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if(self)
 	{
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor piwigoWhiteCream];
 		
 		self.categoryLabel = [UILabel new];
 		self.categoryLabel.translatesAutoresizingMaskIntoConstraints = NO;

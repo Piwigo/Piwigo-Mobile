@@ -273,8 +273,11 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	CGFloat size = MIN(collectionView.frame.size.width, collectionView.frame.size.height) / 3 - 14;
-	return CGSizeMake(size, size);
+    // Calculate the optimum image size for collection
+    NSInteger imagesPerRow = [CategorySortViewController numberOfImagesPerRowForCollectionView:collectionView];
+    CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
+
+    return CGSizeMake(size, size);
 }
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -361,6 +364,5 @@
 {
 	self.sortType = sortType;
 }
-
 
 @end

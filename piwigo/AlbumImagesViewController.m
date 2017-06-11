@@ -23,8 +23,6 @@
 #import "LocalAlbumsViewController.h"
 #import "AlbumData.h"
 
-NSInteger const kBorderSpacing = 10;
-
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
@@ -516,7 +514,7 @@ NSInteger const kBorderSpacing = 10;
     if(indexPath.section == 1)
 	{
         // Calculate the optimum image size for collection
-        NSInteger imagesPerRow = [self numberOfImagesPerRowForCollectionView:collectionView];
+        NSInteger imagesPerRow = [CategorySortViewController numberOfImagesPerRowForCollectionView:collectionView];
         CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
 
         return CGSizeMake(size, size);                                      // Thumbnails
@@ -544,7 +542,7 @@ NSInteger const kBorderSpacing = 10;
 		}
 		
         // Calculate the number of thumbnails displayed on screen
-        NSInteger imagesPerRow = [self numberOfImagesPerRowForCollectionView:collectionView];
+        NSInteger imagesPerRow = [CategorySortViewController numberOfImagesPerRowForCollectionView:collectionView];
         CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
         NSInteger imagesPerScreen = (int)ceilf(collectionView.frame.size.height / (size + kBorderSpacing)) * imagesPerRow;
 
@@ -634,15 +632,6 @@ NSInteger const kBorderSpacing = 10;
 -(void)pushView:(UIViewController *)viewController
 {
 	[self.navigationController pushViewController:viewController animated:YES];
-}
-
-#pragma mark Determine number of images per row
-
--(int)numberOfImagesPerRowForCollectionView:(UICollectionView *)collectionView
-{
-    // Thumbnails should always be available on server (default size of 144x144 pixels)
-    // We display at least 3 thumbnails per row whilst not exceeding thumbnails size
-    return (int)fmax(3.0, ceilf((collectionView.frame.size.width - kBorderSpacing) / (kBorderSpacing + 144.0)));
 }
 
 @end
