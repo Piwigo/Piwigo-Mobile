@@ -197,7 +197,7 @@
 
 "pullToRefresh" = "Reload Images";
 
-"version" = "Version:";
+"Version:" = "Version:";
 
 "defaultThumbnailSize" = "Thumbnails";
 "defaultThumbnailSize>320px" = "Thumbnails Size";

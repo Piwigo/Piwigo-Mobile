@@ -26,7 +26,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoWhiteCream];
+		self.view.backgroundColor = [UIColor piwigoGray];
 		self.title = NSLocalizedString(@"settingsHeader_about", @"About");
 		
 		self.piwigoTitle = [UILabel new];
@@ -40,29 +40,29 @@
 		self.byLabel1 = [UILabel new];
 		self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
 		self.byLabel1.font = [UIFont piwigoFontNormal];
-		self.byLabel1.font = [self.byLabel1.font fontWithSize:19];
-		self.byLabel1.textColor = [UIColor piwigoGrayLight];
+		self.byLabel1.font = [self.byLabel1.font fontWithSize:16];
+		self.byLabel1.textColor = [UIColor piwigoWhiteCream];
 		self.byLabel1.text = @"By Spencer Baker, Olaf Greck,";
 		[self.view addSubview:self.byLabel1];
 		
         self.byLabel2 = [UILabel new];
         self.byLabel2.translatesAutoresizingMaskIntoConstraints = NO;
         self.byLabel2.font = [UIFont piwigoFontNormal];
-        self.byLabel2.font = [self.byLabel2.font fontWithSize:19];
-        self.byLabel2.textColor = [UIColor piwigoGrayLight];
+        self.byLabel2.font = [self.byLabel2.font fontWithSize:16];
+        self.byLabel2.textColor = [UIColor piwigoWhiteCream];
         self.byLabel2.text = @"and Eddy Lelièvre-Berna";
         [self.view addSubview:self.byLabel2];
 
         self.versionLabel = [UILabel new];
 		self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.versionLabel.font = [UIFont piwigoFontNormal];
-		self.versionLabel.font = [self.versionLabel.font fontWithSize:12];
-		self.versionLabel.textColor = [UIColor piwigoGrayLight];
+		self.versionLabel.font = [self.versionLabel.font fontWithSize:10];
+		self.versionLabel.textColor = [UIColor piwigoWhiteCream];
 		[self.view addSubview:self.versionLabel];
 		
 		NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 		NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-		self.versionLabel.text = [NSString stringWithFormat:@"%@ %@ (%@)", NSLocalizedString(@"version", nil), appVersionString, appBuildString];
+		self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
 		
 		self.textView = [UITextView new];
 		self.textView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -76,28 +76,41 @@
 //		[aboutAttributedString addAttribute:NSFontAttributeName
 //									  value:[UIFont systemFontOfSize:18]
 //									  range:range];
-		NSRange afnetworkingRange = [aboutString rangeOfString:@"AFNetworking"];
-		NSRange piwigoDescriptionRange = NSMakeRange(0, afnetworkingRange.location);
+		NSRange licenseRange = [aboutString rangeOfString:@"This software contains"];
+		NSRange piwigoDescriptionRange = NSMakeRange(0, licenseRange.location);
 		[aboutAttributedString addAttribute:NSFontAttributeName
 									  value:[UIFont systemFontOfSize:18]
 									  range:piwigoDescriptionRange];
 
+        NSRange mitLicenseRange = [aboutString rangeOfString:@"The MIT License (MIT)"];
+        NSRange mitLicenseDescriptionRange = NSMakeRange(mitLicenseRange.location, [@"The MIT License (MIT)" length]);
+        [aboutAttributedString addAttribute:NSFontAttributeName
+                                      value:[UIFont boldSystemFontOfSize:14]
+                                      range:mitLicenseDescriptionRange];
+        
+        NSRange afnetworkingRange = [aboutString rangeOfString:@"AFNetworking"];
         NSRange afnetworkingDescriptionRange = NSMakeRange(afnetworkingRange.location, [@"AFNetworking" length]);
         [aboutAttributedString addAttribute:NSFontAttributeName
-                                      value:[UIFont systemFontOfSize:14]
+                                      value:[UIFont boldSystemFontOfSize:14]
                                       range:afnetworkingDescriptionRange];
 
         NSRange mgSwipeTCRange = [aboutString rangeOfString:@"MGSwipeTableCell"];
         NSRange mgSwipeTCDescriptionRange = NSMakeRange(mgSwipeTCRange.location, [@"MGSwipeTableCell" length]);
         [aboutAttributedString addAttribute:NSFontAttributeName
-                                      value:[UIFont systemFontOfSize:14]
+                                      value:[UIFont boldSystemFontOfSize:14]
                                       range:mgSwipeTCDescriptionRange];
         
         NSRange uiCountingLabelRange = [aboutString rangeOfString:@"UICountingLabel"];
         NSRange uiCountingLabelDescriptionRange = NSMakeRange(uiCountingLabelRange.location, [@"UICountingLabel" length]);
         [aboutAttributedString addAttribute:NSFontAttributeName
-                                      value:[UIFont systemFontOfSize:14]
+                                      value:[UIFont boldSystemFontOfSize:14]
                                       range:uiCountingLabelDescriptionRange];
+        
+        NSRange iRateRange = [aboutString rangeOfString:@"iRate"];
+        NSRange iRateDescriptionRange = NSMakeRange(iRateRange.location, [@"iRate" length]);
+        [aboutAttributedString addAttribute:NSFontAttributeName
+                                      value:[UIFont boldSystemFontOfSize:14]
+                                      range:iRateDescriptionRange];
         
         self.textView.attributedText = aboutAttributedString;
 		
@@ -121,12 +134,12 @@
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
 	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
 	
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-15-[by1]-[by2][usu]-20-[textView]-65-|"
+	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-65-|"
 																	  options:kNilOptions
 																	  metrics:nil
 																		views:views]];
 	
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[textView]-10-|"
+	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
 																	  options:kNilOptions
 																	  metrics:nil
 																		views:views]];
