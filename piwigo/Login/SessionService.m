@@ -138,10 +138,13 @@
                           for (id plugin in pluginsList) {
                               NSString *pluginID = [plugin objectForKey:@"id"];
                               NSString *pluginState = [plugin objectForKey:@"state"];
+                              NSString *pluginVersion = [plugin objectForKey:@"version"];
                               
                               if([pluginID isEqualToString:@"piwigo-videojs"]) {
-                                  // VideoJS is installed, but is it active ?
-                                  if([pluginState isEqualToString:@"active"]) {
+                                  // VideoJS is installed, but is it active ? and right version ?
+                                  NSInteger checkVersion = [pluginVersion compare:@"2.8.b"];
+                                  if(([pluginState isEqualToString:@"active"]) &&
+                                     (checkVersion == NSOrderedDescending || checkVersion == NSOrderedSame)) {
                                       [Model sharedInstance].hasInstalledVideoJS = YES;
                                   }
                               }
