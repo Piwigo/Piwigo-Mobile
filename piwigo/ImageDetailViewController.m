@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"
 #import "ImageService.h"
@@ -179,7 +180,19 @@
 
 -(void)downloadImage
 {
-	self.downloadView.hidden = NO;
+	// Check that user provided access to Photos.app
+    if ([ALAssetsLibrary authorizationStatus] != ALAuthorizationStatusAuthorized) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                           message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                 otherButtonTitles:nil
+                          tapBlock:nil
+         ];
+        return;
+    }
+    
+    // Display the download view
+    self.downloadView.hidden = NO;
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;

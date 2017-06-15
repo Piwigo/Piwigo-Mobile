@@ -133,13 +133,12 @@
 "localImageSort_undefined" = "Undefined";
 
 /* tell user to change settings, how */
-"localAlbums_photosNotAuthorized_msg" = "Cannot open local photo library.\nPlease go into the Settings App, Pricacy, Photos and enable access for this app";
+"localAlbums_photosNotAuthorized_msg" = "Cannot open local photo library.\nPlease go into the Settings app, Privacy, Photos and enable access for Piwigo.";
 
 /* Access not Authorized */
 "localAlbums_photosNotAuthorized_title" = "No Access";
-
-"localAlbums_photosNiltitle" = "Problem reading photos";
-"localAlbums_photosNnil_msg" = "There is a problem reading your local photos.";
+"localAlbums_photosNiltitle" = "Problem Reading Photos";
+"localAlbums_photosNnil_msg" = "There is a problem reading your local photo library.";
 
 "none" = "none";
 "selectAll" = "Select All";

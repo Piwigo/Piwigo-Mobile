@@ -41,8 +41,8 @@
 			}
 			else if(responseObject == nil)
 			{
-				[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem reading photos")
-								   message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photos.")
+				[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
+								   message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
 						 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 						 otherButtonTitles:nil
 								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
