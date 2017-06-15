@@ -10,7 +10,7 @@
 #import "LoginNavigationController.h"
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
-#import "TabBar/TabBarViewController.h"
+#import "TabBarViewController.h"
 #import "SessionService.h"
 #import "Model.h"
 #import "KeychainAccess.h"

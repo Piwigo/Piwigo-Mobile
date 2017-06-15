@@ -372,7 +372,7 @@
 				D88A685C1AC26FA4002A3259 /* SwitchTableViewCell.h */,
 				D88A685D1AC26FA4002A3259 /* SwitchTableViewCell.m */,
 			);
-			name = Cells;
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		D8083AA31A81B34C00A95605 /* Image Uploading */ = {
@@ -385,7 +385,7 @@
 				D8083AA01A81B34000A95605 /* ImageUpload.h */,
 				D8083AA11A81B34000A95605 /* ImageUpload.m */,
 			);
-			name = "Image Uploading";
+			path = "Image Uploading";
 			sourceTree = "<group>";
 		};
 		D8083AA71A82905F00A95605 /* Upload Progress */ = {
@@ -400,7 +400,7 @@
 				D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */,
 				D8F325111A875939007CBDAC /* Edit Image Details */,
 			);
-			name = "Upload Progress";
+			path = "Upload Progress";
 			sourceTree = "<group>";
 		};
 		D8172DA61AB2805F00271DB0 /* MGSwipeTableCell */ = {
@@ -420,7 +420,7 @@
 				D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */,
 				D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */,
 			);
-			name = "Album Edit";
+			path = "Album Edit";
 			sourceTree = "<group>";
 		};
 		D818E9F41A74BEFF00733991 /* Album List */ = {
@@ -432,7 +432,7 @@
 				D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */,
 				D8172E171AB7C06200271DB0 /* Album Edit */,
 			);
-			name = "Album List";
+			path = "Album List";
 			sourceTree = "<group>";
 		};
 		D818E9F51A74BF1100733991 /* Album Pictures */ = {
@@ -450,7 +450,7 @@
 				D8A94EB01AAE3C5600E4B287 /* CategoryCollectionViewCell.h */,
 				D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */,
 			);
-			name = "Album Pictures";
+			path = "Album Pictures";
 			sourceTree = "<group>";
 		};
 		D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */ = {
@@ -463,7 +463,7 @@
 				D89045AA1A94654D00A306FE /* PiwigoTagData.h */,
 				D89045AB1A94654D00A306FE /* PiwigoTagData.m */,
 			);
-			name = "Piwigo Data Wrappers";
+			path = "Piwigo Data Wrappers";
 			sourceTree = "<group>";
 		};
 		D818EA031A74D32100733991 /* Image Detail */ = {
@@ -482,7 +482,7 @@
 				D8172E1E1AB7D2EA00271DB0 /* AllCategoriesViewController.h */,
 				D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */,
 			);
-			name = "Image Detail";
+			path = "Image Detail";
 			sourceTree = "<group>";
 		};
 		D81C993E1B02DA190081C976 /* Views */ = {
@@ -493,7 +493,7 @@
 				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
 				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
 			);
-			name = Views;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		D82B8CB21A67820A000E47CA = {
@@ -530,8 +530,12 @@
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
 				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
 				D87C5A971A6F4F93001763BC /* Network */,
+				D82B8CBF1A67820A000E47CA /* Info.plist */,
+				D82B8CEE1A6790BF000E47CA /* PrefixHeader.pch */,
+				D82B8CCD1A67820A000E47CA /* LaunchScreen.xib */,
 				AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */,
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
+				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8CBE1A67820A000E47CA /* Supporting Files */,
 			);
 			path = piwigo;
@@ -542,18 +546,14 @@
 			children = (
 				D847B8341A7BFF1900231886 /* LEColorPicker */,
 				D8172DA61AB2805F00271DB0 /* MGSwipeTableCell */,
-				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8CED1A6790A3000E47CA /* Macros */,
 				D82B8D291A68832C000E47CA /* Model.h */,
 				D82B8D2A1A68832C000E47CA /* Model.m */,
-				D82B8CEE1A6790BF000E47CA /* PrefixHeader.pch */,
 				D82B8CC21A67820A000E47CA /* AppDelegate.h */,
 				D82B8CC31A67820A000E47CA /* AppDelegate.m */,
-				D82B8CCD1A67820A000E47CA /* LaunchScreen.xib */,
-				D82B8CBF1A67820A000E47CA /* Info.plist */,
 				D82B8CC01A67820A000E47CA /* main.m */,
 			);
-			name = "Supporting Files";
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		D82B8CD71A67820A000E47CA /* piwigoTests */ = {
@@ -589,7 +589,7 @@
 				D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */,
 				D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */,
 			);
-			name = Macros;
+			path = Macros;
 			sourceTree = "<group>";
 		};
 		D847B8341A7BFF1900231886 /* LEColorPicker */ = {
@@ -619,7 +619,7 @@
 				D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */,
 				D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */,
 			);
-			name = Login;
+			path = Login;
 			sourceTree = "<group>";
 		};
 		D863EEBF1A6A441400C0A6E9 /* UIComponents */ = {
@@ -632,7 +632,7 @@
 				D8E4D61C1ABD223B0057EB95 /* ServerField.h */,
 				D8E4D61D1ABD223B0057EB95 /* ServerField.m */,
 			);
-			name = UIComponents;
+			path = UIComponents;
 			sourceTree = "<group>";
 		};
 		D863EEC51A6A45E800C0A6E9 /* Resources */ = {
@@ -653,7 +653,7 @@
 				D87C5A931A6F4C43001763BC /* KeychainItemWrapper.h */,
 				D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */,
 			);
-			name = Keychain;
+			path = Keychain;
 			sourceTree = "<group>";
 		};
 		D87C5A971A6F4F93001763BC /* Network */ = {
@@ -664,7 +664,7 @@
 				AD6D203A1EDC45C4003B60E8 /* Reachability.h */,
 				AD6D203B1EDC45C4003B60E8 /* Reachability.m */,
 			);
-			name = Network;
+			path = Network;
 			sourceTree = "<group>";
 		};
 		D89045B31A9469FF00A306FE /* Tags */ = {
@@ -675,7 +675,7 @@
 				D89045BA1A9470A600A306FE /* TagsViewController.h */,
 				D89045BB1A9470A600A306FE /* TagsViewController.m */,
 			);
-			name = Tags;
+			path = Tags;
 			sourceTree = "<group>";
 		};
 		D8A5014A1A7B3D4200C04C17 /* Pick Album */ = {
@@ -688,7 +688,7 @@
 				D8EAC8C51AD773FD00D9D15E /* CategoryListViewController.h */,
 				D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */,
 			);
-			name = "Pick Album";
+			path = "Pick Album";
 			sourceTree = "<group>";
 		};
 		D8A5014E1A7B432600C04C17 /* Local Images */ = {
@@ -707,7 +707,7 @@
 				D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */,
 				D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */,
 			);
-			name = "Local Images";
+			path = "Local Images";
 			sourceTree = "<group>";
 		};
 		D8A59EF01ACE458600D2EBF0 /* Albums Data */ = {
@@ -716,7 +716,7 @@
 				D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */,
 				D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */,
 			);
-			name = "Albums Data";
+			path = "Albums Data";
 			sourceTree = "<group>";
 		};
 		D8B9BC791A95B1CE00C1B0E5 /* Not Uploaded Yet */ = {
@@ -725,7 +725,7 @@
 				D8B9BC7A1A95B1F600C1B0E5 /* NotUploadedYet.h */,
 				D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */,
 			);
-			name = "Not Uploaded Yet";
+			path = "Not Uploaded Yet";
 			sourceTree = "<group>";
 		};
 		D8B9BC831A96C4EE00C1B0E5 /* About */ = {
@@ -734,7 +734,7 @@
 				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
 				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
 			);
-			name = About;
+			path = About;
 			sourceTree = "<group>";
 		};
 		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
@@ -748,7 +748,7 @@
 				D8083A531A7D66CD00A95605 /* ImageService.h */,
 				D8083A541A7D66CD00A95605 /* ImageService.m */,
 			);
-			name = Albums;
+			path = Albums;
 			sourceTree = "<group>";
 		};
 		D8BDCB601A6F6B5000D106A8 /* Upload */ = {
@@ -759,7 +759,7 @@
 				D8083AA71A82905F00A95605 /* Upload Progress */,
 				D8083AA31A81B34C00A95605 /* Image Uploading */,
 			);
-			name = Upload;
+			path = Upload;
 			sourceTree = "<group>";
 		};
 		D8BDCB611A6F6B5400D106A8 /* Settings */ = {
@@ -775,7 +775,7 @@
 				D8172E951AB9093100271DB0 /* EditPopDownView.m */,
 				D8B9BC831A96C4EE00C1B0E5 /* About */,
 			);
-			name = Settings;
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		D8D3F7621A7AF27C00AEA7F1 /* Data Cache */ = {
@@ -788,7 +788,7 @@
 				D86044091A995C580067E5D1 /* ClearCache.h */,
 				D860440A1A995C580067E5D1 /* ClearCache.m */,
 			);
-			name = "Data Cache";
+			path = "Data Cache";
 			sourceTree = "<group>";
 		};
 		D8F113541A9E403E000EC0A6 /* Loading View */ = {
@@ -799,7 +799,7 @@
 				D8F1135B1A9E4E43000EC0A6 /* UICountingLabel.h */,
 				D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */,
 			);
-			name = "Loading View";
+			path = "Loading View";
 			sourceTree = "<group>";
 		};
 		D8F325111A875939007CBDAC /* Edit Image Details */ = {
@@ -812,7 +812,7 @@
 				D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */,
 				D8F3251B1A884E34007CBDAC /* Custom Cells */,
 			);
-			name = "Edit Image Details";
+			path = "Edit Image Details";
 			sourceTree = "<group>";
 		};
 		D8F3251B1A884E34007CBDAC /* Custom Cells */ = {
@@ -827,7 +827,7 @@
 				D89045BD1A950FF700A306FE /* TagsTableViewCell.h */,
 				D89045BE1A950FF700A306FE /* TagsTableViewCell.m */,
 			);
-			name = "Custom Cells";
+			path = "Custom Cells";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
