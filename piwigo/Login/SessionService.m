@@ -142,9 +142,8 @@
                               
                               if([pluginID isEqualToString:@"piwigo-videojs"]) {
                                   // VideoJS is installed, but is it active ? and right version ?
-                                  NSInteger checkVersion = [pluginVersion compare:@"2.8.b"];
                                   if(([pluginState isEqualToString:@"active"]) &&
-                                     (checkVersion == NSOrderedDescending || checkVersion == NSOrderedSame)) {
+                                     ([pluginVersion compare:@"2.8.b"] != NSOrderedAscending)) {
                                       [Model sharedInstance].hasInstalledVideoJS = YES;
                                   }
                               }

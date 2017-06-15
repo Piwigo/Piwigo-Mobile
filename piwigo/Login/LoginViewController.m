@@ -141,7 +141,7 @@
                                          [Model sharedInstance].hadOpenedSession = YES;
                                          [self getSessionStatus];
                                          if([Model sharedInstance].hasAdminRights) {
-                                             [self getSessionPluginsList];      // To determine if VideoJS is active
+                                             [self getSessionPluginsList];      // To determine if VideoJS is available
                                          }
 									 }
 									 else
