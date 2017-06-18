@@ -37,7 +37,7 @@
 	
 	self.uploadingOverlay = [UIView new];
 	self.uploadingOverlay.translatesAutoresizingMaskIntoConstraints = NO;
-	self.uploadingOverlay.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+    self.uploadingOverlay.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
 	self.uploadingOverlay.hidden = YES;
 	[self.contentView addSubview:self.uploadingOverlay];
 	[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.uploadingOverlay]];
@@ -54,7 +54,7 @@
 	self.uploadingProgressLabel = [UILabel new];
 	self.uploadingProgressLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	self.uploadingProgressLabel.font = [UIFont piwigoFontNormal];
-	self.uploadingProgressLabel.textColor = [UIColor whiteColor];
+	self.uploadingProgressLabel.textColor = [UIColor piwigoWhiteCream];
 	self.uploadingProgressLabel.text = @"0 %";
 	[self.uploadingOverlay addSubview:self.uploadingProgressLabel];
 	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgressLabel]];

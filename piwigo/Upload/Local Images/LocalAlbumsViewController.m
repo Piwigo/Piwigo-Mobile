@@ -28,7 +28,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoWhiteCream];
+		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = categoryId;
 		
 		self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
@@ -58,6 +58,7 @@
 		
 		self.localAlbumsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.localAlbumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.localAlbumsTableView.backgroundColor = [UIColor piwigoGray];
 		self.localAlbumsTableView.delegate = self;
 		self.localAlbumsTableView.dataSource = self;
 		[self.localAlbumsTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];

@@ -48,7 +48,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoWhiteCream];
+		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = categoryId;
 		self.groupAsset = groupAsset;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];

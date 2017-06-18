@@ -97,8 +97,9 @@
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor piwigoGray];
+	headerLabel.textColor = [UIColor piwigoOrange];
 	headerLabel.text = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
+    headerLabel.textAlignment = NSTextAlignmentCenter;
 	headerLabel.adjustsFontSizeToFitWidth = YES;
 	headerLabel.minimumScaleFactor = 0.5;
 	[header addSubview:headerLabel];
