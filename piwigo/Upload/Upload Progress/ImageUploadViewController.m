@@ -28,7 +28,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoWhiteCream];
+		self.view.backgroundColor = [UIColor piwigoGray];
 		self.imagesToEdit = [NSMutableArray new];
 		
 		self.title = @"Images";

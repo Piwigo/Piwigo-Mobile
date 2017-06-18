@@ -24,11 +24,11 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoWhiteCream];
 		self.title = NSLocalizedString(@"sortTitle", @"Sort Type");
-		
+
 		self.sortSelectTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.sortSelectTableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.sortSelectTableView.backgroundColor = [UIColor piwigoGray];
 		self.sortSelectTableView.delegate = self;
 		self.sortSelectTableView.dataSource = self;
 		[self.view addSubview:self.sortSelectTableView];
@@ -158,6 +158,8 @@
 	}
 	
 	cell.textLabel.text = [SortSelectViewController getNameForSortType:(kPiwigoSortBy)indexPath.row];
+    cell.textLabel.textColor = [UIColor piwigoGray];
+    cell.textLabel.backgroundColor = [UIColor piwigoWhiteCream];
 	
 	if(indexPath.row == self.currentSortType)
 	{

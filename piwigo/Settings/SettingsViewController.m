@@ -567,7 +567,7 @@ typedef enum {
 	
 	UILabel *headerLabel = [[UILabel alloc] initWithFrame:labelFrame];
 	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor whiteColor];
+	headerLabel.textColor = [UIColor piwigoWhiteCream];
 	[header addSubview:headerLabel];
 	
     switch(section)

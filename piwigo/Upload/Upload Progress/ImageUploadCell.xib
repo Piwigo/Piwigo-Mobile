@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F60a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16G8c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -135,7 +135,7 @@
                 <outlet property="privacyLevel" destination="EMI-PR-dcH" id="rAC-NS-yLA"/>
                 <outlet property="tags" destination="EB5-0b-2tT" id="Edv-WC-HrH"/>
             </connections>
-            <point key="canvasLocation" x="435.5" y="357.5"/>
+            <point key="canvasLocation" x="338" y="280"/>
         </tableViewCell>
     </objects>
 </document>

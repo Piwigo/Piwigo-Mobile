@@ -109,7 +109,8 @@
 	NSString *front = [@"" stringByPaddingToLength:depth-1 withString:@"-" startingAtIndex:0];
 	
 	self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", front, self.categoryData.name];
-	
+    self.categoryLabel.backgroundColor = [UIColor piwigoWhiteCream];
+
 	if(category.numberOfSubCategories <= 0 || [Model sharedInstance].loadAllCategoryInfo)
 	{
 		[self hideRightViews];
@@ -157,6 +158,7 @@
 -(void)setCellLeftLabel:(NSString*)text
 {
 	self.categoryLabel.text = text;
+    self.categoryLabel.textColor = [UIColor piwigoGray];
 	[self hideRightViews];
 }
 

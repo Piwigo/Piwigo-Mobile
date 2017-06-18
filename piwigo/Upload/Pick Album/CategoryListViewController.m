@@ -33,7 +33,7 @@
 		self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.categoriesTableView.delegate = self;
 		self.categoriesTableView.dataSource = self;
-		self.categoriesTableView.backgroundColor = [UIColor piwigoWhiteCream];
+		self.categoriesTableView.backgroundColor = [UIColor piwigoGray];
 		[self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
 		[self.view addSubview:self.categoriesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];

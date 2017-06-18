@@ -25,6 +25,7 @@
 		sortLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		sortLabel.text = NSLocalizedString(@"sortBy", @"Sort by");
 		sortLabel.font = [UIFont piwigoFontNormal];
+        sortLabel.textColor = [UIColor piwigoGray];
 		sortLabel.minimumScaleFactor = 0.5;
 		sortLabel.adjustsFontSizeToFitWidth = YES;
 		[self addSubview:sortLabel];
@@ -43,7 +44,8 @@
 		self.currentSortLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.currentSortLabel.text = NSLocalizedString(@"localImageSort_name", @"Name");
 		self.currentSortLabel.font = [UIFont piwigoFontNormal];
-		self.currentSortLabel.textColor = [UIColor piwigoGrayLight];
+		self.currentSortLabel.textColor = [UIColor piwigoBrown];
+        self.currentSortLabel.textAlignment = NSTextAlignmentRight;
 		self.currentSortLabel.adjustsFontSizeToFitWidth = YES;
 		self.currentSortLabel.minimumScaleFactor = 0.5;
 		[self addSubview:self.currentSortLabel];
