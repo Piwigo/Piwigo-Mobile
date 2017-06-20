@@ -167,7 +167,11 @@
 -(void)loadNavButtons
 {
 	if(!self.isSelect) {
-		self.navigationItem.rightBarButtonItems = @[self.selectBarButton, self.uploadBarButton];
+        if([Model sharedInstance].hasAdminRights) {
+            self.navigationItem.rightBarButtonItems = @[self.selectBarButton, self.uploadBarButton];
+        } else {
+            self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
+        }
 	} else {
 		if([Model sharedInstance].hasAdminRights)
 		{
