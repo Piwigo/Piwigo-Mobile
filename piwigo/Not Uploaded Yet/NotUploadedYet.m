@@ -26,7 +26,9 @@
 		NSMutableDictionary *onlineImageNamesLookup = [NSMutableDictionary new];
 		for(PiwigoImageData *imgData in onlineImageData)
 		{
-			[onlineImageNamesLookup setObject:imgData.fileName forKey:imgData.fileName];
+            if (imgData.fileName && [imgData.fileName length]) {
+                [onlineImageNamesLookup setObject:imgData.fileName forKey:imgData.fileName];
+            }
 		}
 		
 		NSMutableArray *localImageNamesThatNeedToBeUploaded = [NSMutableArray new];

@@ -112,7 +112,12 @@ NSString * const kGetImageOrderDescending = @"desc";
 	PiwigoImageData *imageData = [PiwigoImageData new];
 	
 	imageData.imageId = [imageJson objectForKey:@"id"];
-    NSString *fileExt = [[[imageJson objectForKey:@"file"] pathExtension] uppercaseString];
+    imageData.fileName = [imageJson objectForKey:@"file"];
+    if(!imageData.fileName || [imageData.fileName isKindOfClass:[NSNull class]])
+    {
+        imageData.fileName = @"";
+    }
+    NSString *fileExt = [[imageData.fileName pathExtension] uppercaseString];
     if([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
        [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
        [fileExt isEqualToString:@"MOV"] || [fileExt isEqualToString:@"AVI"] ||
@@ -121,12 +126,13 @@ NSString * const kGetImageOrderDescending = @"desc";
 	{
 		imageData.isVideo = YES;
 	}
-	imageData.name = [imageJson objectForKey:@"name"];
+
+    imageData.name = [imageJson objectForKey:@"name"];
 	if(!imageData.name || [imageData.name isKindOfClass:[NSNull class]])
 	{
 		imageData.name = @"";
 	}
-	imageData.fullResPath = [imageJson objectForKey:@"element_url"];
+    imageData.fullResPath = [imageJson objectForKey:@"element_url"];
 	
 	imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
 	imageData.author = [imageJson objectForKey:@"author"];
@@ -134,14 +140,14 @@ NSString * const kGetImageOrderDescending = @"desc";
 	{
 		imageData.author = @"";
 	}
-	imageData.imageDescription = [imageJson objectForKey:@"comment"];
+    imageData.imageDescription = [imageJson objectForKey:@"comment"];
 	if(!imageData.imageDescription || [imageData.imageDescription isKindOfClass:[NSNull class]])
 	{
 		imageData.imageDescription = @"";
 	}
 	
+    NSDateFormatter *dateFormat = [NSDateFormatter new];
 	NSString *dateString = [imageJson objectForKey:@"date_available"];
-	NSDateFormatter *dateFormat = [NSDateFormatter new];
 	[dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 	imageData.datePosted = [dateFormat dateFromString:dateString];
     dateString = [imageJson objectForKey:@"date_creation"];
