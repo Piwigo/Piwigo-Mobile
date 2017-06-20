@@ -134,13 +134,16 @@
 										  OnCompletion:^(NSURLSessionTask *task, BOOL setSuccessfully) {
 											  if(setSuccessfully)
 											  {
-												  PiwigoAlbumData *category = [[CategoriesData sharedInstance] getCategoryById:categoryId];
+												  // Update image Id of album
+                                                  PiwigoAlbumData *category = [[CategoriesData sharedInstance] getCategoryById:categoryId];
 												  category.albumThumbnailId = self.imageId;
-												  PiwigoImageData *imgData = [[CategoriesData sharedInstance] getImageForCategory:categoryId andId:[NSString stringWithFormat:@"%@", @(self.imageId)]];
+												  
+                                                  // Update image URL of album
+                                                  PiwigoImageData *imgData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%@", @(self.imageId)]];
 												  category.albumThumbnailUrl = imgData.ThumbPath;
 
 												  UIImageView *dummyView = [UIImageView new];
-												  [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imgData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+											 	  [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imgData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 													  category.categoryImage = image;
 													  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryImageUpdated object:nil];
 												  } failure:nil];
