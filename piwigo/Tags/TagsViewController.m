@@ -158,7 +158,9 @@
         } else { // remove if already selected
             [self.alreadySelectedTags removeObject:currentTag];
             NSIndexPath *removePath = [NSIndexPath indexPathForRow:indexOfSelection inSection:0];
-            [tableView deleteRowsAtIndexPaths:@[removePath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            if (!removePath && (removePath >= 0)) {
+                [tableView deleteRowsAtIndexPaths:@[removePath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
         }
         // update the checkmark
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
