@@ -152,7 +152,7 @@
 		return;
 	}
 	
-    // Download the image of the requested resolution (or ger it from the cache)
+    // Download the image of the requested resolution (or get it from the cache)
     switch ([Model sharedInstance].defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
             if ([Model sharedInstance].hasSquareSizeImages && (self.imageData.SquarePath) && (self.imageData.SquarePath > 0)) {
