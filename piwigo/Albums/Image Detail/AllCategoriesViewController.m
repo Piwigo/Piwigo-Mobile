@@ -142,12 +142,8 @@
                                                   PiwigoImageData *imgData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%@", @(self.imageId)]];
 												  category.albumThumbnailUrl = imgData.ThumbPath;
 
-												  UIImageView *dummyView = [UIImageView new];
-											 	  [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imgData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-													  category.categoryImage = image;
-													  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryImageUpdated object:nil];
-												  } failure:nil];
-												  
+                                                  // Image will be downloaded when displaying list of albums
+                                                  category.categoryImage = nil;
 												  
 												  [UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSetSuccess_title", @"Image Set Successful")
 																	 message:NSLocalizedString(@"categoryImageSetSuccess_message", @"The image was set successfully for the album image")
