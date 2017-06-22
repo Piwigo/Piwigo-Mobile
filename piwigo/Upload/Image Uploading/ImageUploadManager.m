@@ -130,34 +130,40 @@
 {
 	// create an imagesourceref
 	CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
-	// this is the type of image (e.g., public.jpeg)
-	CFStringRef UTI = CGImageSourceGetType(source);
-	
-	// create a new data object and write the new image into it
-	NSMutableData *dest_data = [NSMutableData data];
-	CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
-	if (!destination) {
+    if (!source) {
 #if defined(DEBUG)
-		NSLog(@"Error: Could not create image destination");
+        NSLog(@"Error: Could not create source");
 #endif
-        CFRelease(source);
-        return imageData;
     } else {
-        // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
-        CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
-        BOOL success = NO;
-        success = CGImageDestinationFinalize(destination);
-        if (!success) {
-#if defined(DEBUG)
-            NSLog(@"Error: Could not create data from image destination");
-#endif
-            CFRelease(destination);
+        // this is the type of image (e.g., public.jpeg)
+        CFStringRef UTI = CGImageSourceGetType(source);
+        
+        // create a new data object and write the new image into it
+        NSMutableData *dest_data = [NSMutableData data];
+        CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
+        if (!destination) {
+    #if defined(DEBUG)
+            NSLog(@"Error: Could not create image destination");
+    #endif
             CFRelease(source);
             return imageData;
         } else {
-            CFRelease(destination);
-            CFRelease(source);
-            return dest_data;
+            // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
+            CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
+            BOOL success = NO;
+            success = CGImageDestinationFinalize(destination);
+            if (!success) {
+    #if defined(DEBUG)
+                NSLog(@"Error: Could not create data from image destination");
+    #endif
+                CFRelease(destination);
+                CFRelease(source);
+                return imageData;
+            } else {
+                CFRelease(destination);
+                CFRelease(source);
+                return dest_data;
+            }
         }
     }
     return imageData;

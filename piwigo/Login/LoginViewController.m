@@ -238,6 +238,29 @@
     }];
 }
 
+// In case the connection was temporarily lost
+-(void)getSessionStatusAfterReachabilityChanged
+{
+    [SessionService getStatusOnCompletion:^(NSDictionary *responseObject) {
+
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                           message:[error localizedDescription]
+                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+    }];
+}
+
+-(void)getSessionPluginsListAfterReachabilityChanged
+{
+    [SessionService getPluginsListOnCompletion:^(NSDictionary *responseObject) {
+
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+
+    }];
+}
+
 -(void)showLoading
 {
 	self.loadingView.hidden = NO;

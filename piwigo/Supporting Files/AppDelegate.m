@@ -112,6 +112,10 @@
                                          andPassword:password
                                         onCompletion:^(BOOL result, id response) {
                                             [Model sharedInstance].hadOpenedSession = YES;
+                                            [self.loginVC getSessionStatusAfterReachabilityChanged];
+                                            if([Model sharedInstance].hasAdminRights) {
+                                                [self.loginVC getSessionPluginsListAfterReachabilityChanged];   // To determine if VideoJS is available
+                                            }
                                         }
                                         onFailure:^(NSURLSessionTask *task, NSError *error) {
                                             [Model sharedInstance].hadOpenedSession = NO;
@@ -141,6 +145,10 @@
                                          andPassword:password
                                         onCompletion:^(BOOL result, id response) {
                                             [Model sharedInstance].hadOpenedSession = YES;
+                                            [self.loginVC getSessionStatusAfterReachabilityChanged];
+                                            if([Model sharedInstance].hasAdminRights) {
+                                                [self.loginVC getSessionPluginsListAfterReachabilityChanged];  // To determine if VideoJS is available
+                                            }
                                         }
                                            onFailure:^(NSURLSessionTask *task, NSError *error) {
                                                [Model sharedInstance].hadOpenedSession = NO;
