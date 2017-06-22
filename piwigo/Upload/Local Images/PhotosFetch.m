@@ -51,7 +51,7 @@
 	NSMutableArray *groupAssets = [NSMutableArray new];
 	
 	ALAssetsLibrary *assetsLibrary = [Model defaultAssetsLibrary];
-	[assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
+	[assetsLibrary enumerateGroupsWithTypes:(ALAssetsGroupSavedPhotos | ALAssetsGroupAlbum | ALAssetsGroupEvent | ALAssetsGroupFaces)
 								 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
 									 if(!group)
 									 {
