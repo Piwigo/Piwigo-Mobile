@@ -66,7 +66,7 @@ typedef enum {
 							   @5,
 							   @6,
 							   @2,
-							   @1
+							   @2
 							   ];
 		self.headerHeights = @[
 							   @40.0,
@@ -225,7 +225,7 @@ typedef enum {
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 414) {     // i.e. larger then iPhones 6, 7 screen width
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
                         cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories>320px", @"Download all Albums at Start (uncheck if troubles)");
                     } else {
                         cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Download all Albums at Start");
@@ -253,9 +253,9 @@ typedef enum {
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 414) {     // i.e. larger then iPhones 6,7 Plus screen width
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 Plus screen width
                         cell.leftText = NSLocalizedString(@"defaultImageSort>414px", @"Default Sort of Images");
-                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 screen width
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
                         cell.leftText = NSLocalizedString(@"defaultImageSort>320px", @"Default Sort");
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultImageSort", @"Sort");
@@ -273,9 +273,9 @@ typedef enum {
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhones 6,7 screen width
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
                         cell.leftText = NSLocalizedString(@"defaultThumbnailSize>414px", @"Default Size of Thumbnails");
-                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 screen width
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
                         cell.leftText = NSLocalizedString(@"defaultThumbnailSize>320px", @"Thumbnails Size");
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultThumbnailSize", @"Thumbnails");
@@ -311,9 +311,9 @@ typedef enum {
                     }
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhones 6,7 screen width
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
                         cell.leftText = NSLocalizedString(@"defaultImageSize>414px", @"Default Size of Images");
-                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 screen width
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
                         cell.leftText = NSLocalizedString(@"defaultImageSize>320px", @"Images Size");
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultImageSize", @"Images");
@@ -339,7 +339,7 @@ typedef enum {
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 320) {     // i.e. larger then iPhone 5 screen width
+                    if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
                         cell.labelText = NSLocalizedString(@"settings_defaultAuthor>320px", @"Author Name");
                     } else {
                         cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Author");
@@ -361,7 +361,7 @@ typedef enum {
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 414) {     // i.e. larger then iPhones 6,7 Plus screen width
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 Plus screen width
                         cell.leftText = NSLocalizedString(@"settings_defaultPrivacy>320px", @"Who Can See the Media?");
                     } else {
                         cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
@@ -379,7 +379,7 @@ typedef enum {
                     }
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhones 6,7 screen width
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
                         cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata>375px", @"Strip GPS Metadata Before Upload");
                     } else {
                         cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata", @"Strip GPS Metadata");
@@ -401,7 +401,7 @@ typedef enum {
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhones 6,7 screen width
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
                         cell.leftLabel.text = NSLocalizedString(@"settings_photoResize>375px", @"Resize Image Before Upload");
                     } else {
                         cell.leftLabel.text = NSLocalizedString(@"settings_photoResize", @"Resize Before Upload");
@@ -479,7 +479,7 @@ typedef enum {
                     cell.slider.maximumValue = 200;
 
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhones 6,7 screen width
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentDiskSizeInMB];
                     } else {
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
@@ -506,7 +506,7 @@ typedef enum {
                     cell.slider.maximumValue = 200;
 
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger then iPhone 6,7 screen width
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentMemSizeInMB];
                     } else {
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
@@ -524,19 +524,46 @@ typedef enum {
 		}
 		case SettingSectionAbout:       // About
 		{
-			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"about"];
-			if(!cell)
-			{
-				cell = [LabelTableViewCell new];
-			}
-			
-			cell.leftText = NSLocalizedString(@"settings_about", @"Piwigo Mobile");
-			cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-			cell.leftLabelWidth = 220;
-            cell.rightText = @">";
-			
-			tableViewCell = cell;
-			break;
+            switch(indexPath.row)
+            {
+                case 0:     // Acknowledgements
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"thanks"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_acknowledgements", @"Acknowledgements");
+                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+                    cell.leftLabelWidth = 220;
+                    cell.rightText = @">";
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Support
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"support"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+                        cell.leftText = NSLocalizedString(@"settings_support>320px", @"Free Support");
+                    } else {
+                        cell.leftText = NSLocalizedString(@"settings_support", @"Support");
+                    }
+                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+                    cell.leftLabelWidth = 70;
+                    cell.rightText = @"http://piwigo.org/forum >";
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+            }
 		}
 	}
 	
@@ -585,7 +612,7 @@ typedef enum {
             headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
 			break;
 		case SettingSectionAbout:
-			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"About");
+			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"Information");
 			break;
 	}
 	
@@ -647,7 +674,7 @@ typedef enum {
 					{
 						[self.currentPopDown removeFromSuperview];
 					}
-					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter a Image Quality")];
+					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter an Image Quality")];
 					self.darkenView.hidden = NO;
 					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
 						self.darkenView.hidden = YES;
@@ -771,11 +798,21 @@ typedef enum {
 //			}
 			break;
 		}
-		case SettingSectionAbout:       // About
+		case SettingSectionAbout:       // About — Informations
 		{
-			AboutViewController *aboutVC = [AboutViewController new];
-			[self.navigationController pushViewController:aboutVC animated:YES];
-			break;
+            switch(indexPath.row)
+            {
+                case 0:
+                {
+                    AboutViewController *aboutVC = [AboutViewController new];
+                    [self.navigationController pushViewController:aboutVC animated:YES];
+                    break;
+                }
+                case 1:
+                {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"http://piwigo.org/forum"]];
+                }
+            }
 		}
 	}
 }
