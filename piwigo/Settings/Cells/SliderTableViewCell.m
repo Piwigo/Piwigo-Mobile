@@ -49,7 +49,7 @@
 		[self.contentView addSubview:self.sliderCount];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderCount]];
 		
-		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(70)]-[count]-[slider]-15-|"
+		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(80)]-[count]-[slider]-15-|"
 																				 options:kNilOptions
 																				 metrics:nil
 																				   views:@{@"label" : self.sliderName,
