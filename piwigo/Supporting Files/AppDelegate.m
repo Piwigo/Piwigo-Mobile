@@ -142,23 +142,6 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
 	// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 	// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-
-      [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
-          if(sucessfulLogout)
-          {
-          }
-          else
-          {
-              [UIAlertView showWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
-                                 message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
-                       cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-                       otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-                                tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                }];
-          }
-      } onFailure:^(NSURLSessionTask *task, NSError *error) {
-          
-      }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
