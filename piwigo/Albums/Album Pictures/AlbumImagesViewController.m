@@ -447,14 +447,6 @@
 {
 	if(indexPath.section == 1)
 	{
-        self.noImagesLabel = [UILabel new];
-        self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.noImagesLabel.font = [UIFont piwigoFontNormal];
-        self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
-        self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
-        self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-        self.noImagesLabel.hidden = self.albumData.images.count != 0;
-
         SortHeaderCollectionReusableView *header = nil;
 
         if(kind == UICollectionElementKindSectionHeader)
@@ -463,9 +455,18 @@
 			header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
 			[header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
 
-            [header addSubview:self.noImagesLabel];
-            [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.noImagesLabel amount:-40]];
-            [header addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
+            if (!self.albumData.images.count) {
+                self.noImagesLabel = [UILabel new];
+                self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                self.noImagesLabel.font = [UIFont piwigoFontNormal];
+                self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
+                self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
+                self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+
+                [header addSubview:self.noImagesLabel];
+                [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.noImagesLabel amount:-40]];
+                [header addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
+            }
 
             return header;
 		}

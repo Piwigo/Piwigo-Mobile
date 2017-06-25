@@ -12,6 +12,7 @@
 #import "KeychainAccess.h"
 #import "Model.h"
 #import "SessionService.h"
+#import "ClearCache.h"
 #import "AppDelegate.h"
 
 @interface LoginViewController () <UITextFieldDelegate>
@@ -258,6 +259,69 @@
 
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
 
+    }];
+}
+
+// Check status of session and try logging in again if needed
+-(void)checkSessionStatusAndTryRelogin
+{
+    NSString *user = [KeychainAccess getLoginUser];
+    NSString *password = [KeychainAccess getLoginPassword];
+
+    [SessionService getStatusOnCompletion:^(NSDictionary *responseObject) {
+        if(responseObject) {
+            NSString *userName = [responseObject objectForKey:@"username"];
+            if (![userName isEqualToString:[[Model sharedInstance]username]]) {
+#if defined(DEBUG)
+                NSLog(@"checkSessionStatusBeforeAppEnterForeground: username \"%@\" ≠ \"%@\". Try logging in again…", user, userName);
+#endif
+                [SessionService performLoginWithUser:user
+                                         andPassword:password
+                                        onCompletion:^(BOOL result, id response) {
+                                            [Model sharedInstance].hadOpenedSession = YES;
+                                            [self getSessionStatusAfterReachabilityChanged];
+                                            if([Model sharedInstance].hasAdminRights) {
+                                                [self getSessionPluginsListAfterReachabilityChanged];   // To determine if VideoJS is available
+                                            }
+                                        }
+                                           onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                               // Could not re-establish the session, login/pwd changed ?
+                                               [Model sharedInstance].hadOpenedSession = NO;
+                                               [ClearCache clearAllCache];
+                                               AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                                               [appDelegate loadLoginView];
+#if defined(DEBUG)
+                                               NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
+                                               [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                                                                  message:[error localizedDescription]
+                                                        cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                                        otherButtonTitles:nil
+                                                                 tapBlock:nil];
+                                           }];
+            }
+        } else {
+            // Connection lost
+            [Model sharedInstance].hadOpenedSession = NO;
+            [ClearCache clearAllCache];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate loadLoginView];
+#if defined(DEBUG)
+            NSLog(@"Error: Broken connection");
+#endif
+            [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                               message:NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")
+                     cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                     otherButtonTitles:nil
+                              tapBlock:nil];
+        }
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // No connection or server down
+        [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                           message:[error localizedDescription]
+                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                 otherButtonTitles:nil
+                          tapBlock:nil];
     }];
 }
 

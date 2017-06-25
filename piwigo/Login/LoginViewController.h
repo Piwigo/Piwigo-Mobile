@@ -29,8 +29,7 @@
 
 
 -(void)performLogin;
--(void)getSessionStatusAfterReachabilityChanged;
--(void)getSessionPluginsListAfterReachabilityChanged;
+-(void)checkSessionStatusAndTryRelogin;
 
 -(void)showLoginFail;
 -(void)showLoading;

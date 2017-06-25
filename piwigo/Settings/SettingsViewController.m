@@ -379,7 +379,7 @@ typedef enum {
                     }
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
                         cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata>375px", @"Strip GPS Metadata Before Upload");
                     } else {
                         cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata", @"Strip GPS Metadata");
@@ -550,15 +550,10 @@ typedef enum {
                         cell = [LabelTableViewCell new];
                     }
                     
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
-                        cell.leftText = NSLocalizedString(@"settings_support>320px", @"Free Support");
-                    } else {
-                        cell.leftText = NSLocalizedString(@"settings_support", @"Support");
-                    }
+                    cell.leftText = NSLocalizedString(@"settings_support", @"Free Support");
                     cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-                    cell.leftLabelWidth = 70;
-                    cell.rightText = @"http://piwigo.org/forum >";
+                    cell.leftLabelWidth = 220;
+                    cell.rightText = @">";
                     
                     tableViewCell = cell;
                     break;
