@@ -99,68 +99,16 @@
             break;
         }
         case ReachableViaWWAN:
+        case ReachableViaWiFi:
         {
-            // Connection changed but now reachable WWAN — Login again?
+            // Connection changed but again reachable — Login again?
             BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
             NSString *server = [Model sharedInstance].serverName;
             NSString *user = [KeychainAccess getLoginUser];
-            NSString *password = [KeychainAccess getLoginPassword];
 
             if(hadOpenedSession && (server.length > 0) && (user.length > 0))
             {
-                [SessionService performLoginWithUser:user
-                                         andPassword:password
-                                        onCompletion:^(BOOL result, id response) {
-                                            [Model sharedInstance].hadOpenedSession = YES;
-                                            [self.loginVC getSessionStatusAfterReachabilityChanged];
-                                            if([Model sharedInstance].hasAdminRights) {
-                                                [self.loginVC getSessionPluginsListAfterReachabilityChanged];   // To determine if VideoJS is available
-                                            }
-                                        }
-                                        onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                            [Model sharedInstance].hadOpenedSession = NO;
-#if defined(DEBUG)
-                                            NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
-#endif
-                                            [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                                                               message:[error localizedDescription]
-                                                     cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                                                     otherButtonTitles:nil
-                                                              tapBlock:nil];
-                                        }];
-            }
-            break;
-        }
-        case ReachableViaWiFi:
-        {
-            // Connection changed but now reachable WiFi — Login again?
-            BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-            NSString *server = [Model sharedInstance].serverName;
-            NSString *user = [KeychainAccess getLoginUser];
-            NSString *password = [KeychainAccess getLoginPassword];
-            
-            if(hadOpenedSession && (server.length > 0) && (user.length > 0))
-            {
-                [SessionService performLoginWithUser:user
-                                         andPassword:password
-                                        onCompletion:^(BOOL result, id response) {
-                                            [Model sharedInstance].hadOpenedSession = YES;
-                                            [self.loginVC getSessionStatusAfterReachabilityChanged];
-                                            if([Model sharedInstance].hasAdminRights) {
-                                                [self.loginVC getSessionPluginsListAfterReachabilityChanged];  // To determine if VideoJS is available
-                                            }
-                                        }
-                                           onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                               [Model sharedInstance].hadOpenedSession = NO;
-#if defined(DEBUG)
-                                               NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
-#endif
-                                               [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                                                                  message:[error localizedDescription]
-                                                        cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                                                        otherButtonTitles:nil
-                                                                 tapBlock:nil];
-                                           }];
+                [self.loginVC checkSessionStatusAndTryRelogin];
             }
             break;
         }
@@ -194,10 +142,37 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
 	// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 	// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+
+      [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
+          if(sucessfulLogout)
+          {
+          }
+          else
+          {
+              [UIAlertView showWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
+                                 message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
+                       cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+                       otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
+                                tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                }];
+          }
+      } onFailure:^(NSURLSessionTask *task, NSError *error) {
+          
+      }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+
+    // Should we reopen the session ?
+    BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
+    NSString *server = [Model sharedInstance].serverName;
+    NSString *user = [KeychainAccess getLoginUser];
+    if(hadOpenedSession && (server.length > 0) && (user.length > 0))
+    {
+        // Let's see…
+        [self.loginVC checkSessionStatusAndTryRelogin];
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

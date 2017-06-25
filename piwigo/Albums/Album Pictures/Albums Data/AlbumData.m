@@ -160,7 +160,7 @@
 
 -(void)loadImagePageUntil:(NSInteger)page onPage:(NSInteger)onPage onCompletion:(void (^)())completion
 {
-	if(onPage == page)
+	if((onPage != 0) && (onPage >= page))
 	{
 		if(completion)
 		{
