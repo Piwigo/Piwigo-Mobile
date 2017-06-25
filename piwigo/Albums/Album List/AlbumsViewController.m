@@ -47,8 +47,6 @@
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAlbumData) name:UIApplicationDidBecomeActiveNotification object:nil];
-		
-		[self getAlbumData];
 	}
 	return self;
 }
@@ -93,6 +91,7 @@
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
 	
+    [self getAlbumData];
 	[self refreshShowingCells];
 }
 
