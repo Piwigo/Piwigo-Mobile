@@ -260,6 +260,7 @@
 "sessionStatusError_message" = "Failed to authenticate with the server.\nTry logging in again.";
 
 "internetErrorGeneral_title" = "Connection Error";
+"internetErrorGeneral_broken" = "Sorry, the communication was broken.\nTry logging in again.";
 
 "deleteImageFail_title" = "Delete Failed";
 "deleteImageFail_message" = "Image could not be deleted\n%@";
