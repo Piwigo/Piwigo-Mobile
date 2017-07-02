@@ -42,7 +42,7 @@
 		self.byLabel1.font = [UIFont piwigoFontNormal];
 		self.byLabel1.font = [self.byLabel1.font fontWithSize:16];
 		self.byLabel1.textColor = [UIColor piwigoWhiteCream];
-		self.byLabel1.text = @"By Spencer Baker, Olaf Greck,";
+		self.byLabel1.text = NSLocalizedStringFromTableInBundle(@"authors1", @"About", [NSBundle mainBundle], @"By Spencer Baker, Olaf Greck,");
 		[self.view addSubview:self.byLabel1];
 		
         self.byLabel2 = [UILabel new];
@@ -50,7 +50,7 @@
         self.byLabel2.font = [UIFont piwigoFontNormal];
         self.byLabel2.font = [self.byLabel2.font fontWithSize:16];
         self.byLabel2.textColor = [UIColor piwigoWhiteCream];
-        self.byLabel2.text = @"and Eddy Lelièvre-Berna";
+        self.byLabel2.text = NSLocalizedStringFromTableInBundle(@"authors2", @"About", [NSBundle mainBundle], @"and Eddy Lelièvre-Berna");
         [self.view addSubview:self.byLabel2];
 
         self.versionLabel = [UILabel new];
@@ -72,16 +72,6 @@
 		NSString *aboutString = NSLocalizedStringFromTableInBundle(@"about_text", @"About", [NSBundle mainBundle], @"About text");
 		NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:aboutString];
 		
-//		NSRange range = NSMakeRange(0, aboutString.length);
-//		[aboutAttributedString addAttribute:NSFontAttributeName
-//									  value:[UIFont systemFontOfSize:18]
-//									  range:range];
-		NSRange licenseRange = [aboutString rangeOfString:@"This software contains"];
-		NSRange piwigoDescriptionRange = NSMakeRange(0, licenseRange.location);
-		[aboutAttributedString addAttribute:NSFontAttributeName
-									  value:[UIFont systemFontOfSize:18]
-									  range:piwigoDescriptionRange];
-
         NSRange mitLicenseRange = [aboutString rangeOfString:@"The MIT License (MIT)"];
         NSRange mitLicenseDescriptionRange = NSMakeRange(mitLicenseRange.location, [@"The MIT License (MIT)" length]);
         [aboutAttributedString addAttribute:NSFontAttributeName
