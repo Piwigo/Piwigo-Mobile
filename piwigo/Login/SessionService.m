@@ -48,7 +48,50 @@
               }];
 }
 
-+(NSURLSessionTask*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
++(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    return [self post:kReflectionGetMethodList
+        URLParameters:nil
+           parameters:nil
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  
+                  if(completion) {
+                      
+                      // Did the server answer the request? (it should have)
+                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                      {
+                          // By default, the Community extension is not installed
+                          [Model sharedInstance].hasInstalledCommunity = NO;
+                          
+                          // Loop over the methods
+                          id methodsList = [[responseObject objectForKey:@"result"] objectForKey:@"methods"];
+                          for (NSString *method in methodsList) {
+                              
+                              // Check if the Community extension is installed and active
+                              if([method isEqualToString:@"community.session.getStatus"]) {
+                                  [Model sharedInstance].hasInstalledCommunity = YES;
+                              }
+                          }
+                          
+                          completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
+                      }
+                      else  // Strange…
+                      {
+                          completion(nil);
+                      }
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  
+                  if(fail) {
+                      [SessionService showConnectionError:error];
+                      fail(task, error);
+                  }
+              }];
+}
+
++(NSURLSessionTask*)getPiwigoStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     return [self post:kPiwigoSessionGetStatus
@@ -117,6 +160,37 @@
               }];
 }
 
++(NSURLSessionTask*)getCommunityStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
+                                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    return [self post:kCommunitySessionGetStatus
+        URLParameters:nil
+           parameters:nil
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  
+                  if(completion) {
+                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                      {
+                          NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"real_user_status"];
+                          [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
+                          
+                          completion([responseObject objectForKey:@"result"]);
+                      }
+                      else
+                      {
+                          completion(nil);
+                      }
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  
+                  if(fail) {
+                      [SessionService showConnectionError:error];
+                      fail(task, error);
+                  }
+              }];
+}
+
 +(NSURLSessionTask*)getPluginsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
@@ -126,34 +200,35 @@
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
+                  // In absence of response, we assume that VideoJS is installed and active
+                  [Model sharedInstance].hasInstalledVideoJS = YES;
+
                   if(completion) {
                       
-                      // Did the server answer the request? (Yes if Admin)
+                      // Did the server answer the request?
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
-                          // Collect the list of plugins
-                          id pluginsList = [responseObject objectForKey:@"result"];
-                          
                           // Loop over the plugins
+                          id pluginsList = [responseObject objectForKey:@"result"];
                           for (id plugin in pluginsList) {
                               NSString *pluginID = [plugin objectForKey:@"id"];
                               NSString *pluginState = [plugin objectForKey:@"state"];
                               NSString *pluginVersion = [plugin objectForKey:@"version"];
                               
                               if([pluginID isEqualToString:@"piwigo-videojs"]) {
-                                  // VideoJS is installed, but is it active ? and right version ?
+                                  // VideoJS is installed, but is it active ? right version ?
                                   if(([pluginState isEqualToString:@"active"]) &&
                                      ([pluginVersion compare:@"2.8.b"] != NSOrderedAscending)) {
                                       [Model sharedInstance].hasInstalledVideoJS = YES;
+                                  } else {
+                                      [Model sharedInstance].hasInstalledVideoJS = NO;
                                   }
                               }
                           }
                           completion([responseObject objectForKey:@"result"]);
                       }
-                      else  // Non-admin access => Cannot determine if VideoJS is installed
+                      else
                       {
-                          // So we assume that VideoJS is installed and active
-                          [Model sharedInstance].hasInstalledVideoJS = YES;
                           completion(nil);
                       }
                   }

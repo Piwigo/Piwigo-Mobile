@@ -73,11 +73,14 @@
 {
 	[super viewDidLoad];
 	
-	if([Model sharedInstance].hasAdminRights)
-	{
+//	if([Model sharedInstance].hasAdminRights)
+    if ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:0] hasUploadRights])
+    {
 		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
+    self.albumsTableView.allowsMultipleSelectionDuringEditing = NO;
+
     [[iRate sharedInstance] promptIfAllCriteriaMet];
 }
 
@@ -151,7 +154,7 @@
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error")
 					   message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album")
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+			 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }

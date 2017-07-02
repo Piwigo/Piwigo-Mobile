@@ -102,29 +102,6 @@
 		
 		[self setupAutoLayout];
 		
-		if([Model sharedInstance].hasAdminRights)
-		{
-			self.rightSwipeSettings.transition = MGSwipeTransitionStatic;
-			self.rightButtons = @[[MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_rename", @"Rename")
-														  backgroundColor:[UIColor piwigoOrange]
-																 callback:^BOOL(MGSwipeTableCell *sender) {
-																	 [self renameCategory];
-																	 return YES;
-																 }],
-								  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_move", @"Move")
-												 backgroundColor:[UIColor piwigoGrayLight]
-														callback:^BOOL(MGSwipeTableCell *sender) {
-															[self moveCategory];
-															return YES;
-														}],
-								  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_delete", @"Delete")
-												 backgroundColor:[UIColor redColor]
-														callback:^BOOL(MGSwipeTableCell *sender) {
-															[self deleteCategory];
-															return YES;
-														}]];
-		}
-		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUpdated) name:kPiwigoNotificationCategoryImageUpdated object:nil];
 		
 	}
@@ -233,7 +210,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
 					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+			 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
@@ -294,7 +271,7 @@
 														{	// they entered the wrong amount
 															[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match")
 																			   message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album")
-																	 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+																	 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 																	 otherButtonTitles:nil
 																			  tapBlock:nil];
 														}
@@ -312,7 +289,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail")
 					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+			 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
@@ -323,8 +300,39 @@
 	
 	self.albumData = albumData;
 	
-	self.albumName.text = self.albumData.name;
-	
+    // Add up/down arrows in front of album name when Community extension active
+    if (![Model sharedInstance].hasInstalledCommunity || [Model sharedInstance].hasAdminRights) {
+        self.albumName.text = self.albumData.name;
+    } else if (self.albumData.hasUploadRights) {
+        self.albumName.text = [NSString stringWithFormat:@"≥≤ %@", self.albumData.name];
+    } else {
+        self.albumName.text = [NSString stringWithFormat:@"≥ %@", self.albumData.name];
+    }
+    
+    // Add renaming, moving and deleting capabilities when user has Upload rights
+    if (self.albumData.hasUploadRights) {
+        self.rightSwipeSettings.transition = MGSwipeTransitionStatic;
+        self.rightButtons = @[[MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_rename", @"Rename")
+                                             backgroundColor:[UIColor piwigoOrange]
+                                                    callback:^BOOL(MGSwipeTableCell *sender) {
+                                                        [self renameCategory];
+                                                        return YES;
+                                                    }],
+                              [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_move", @"Move")
+                                             backgroundColor:[UIColor piwigoGrayLight]
+                                                    callback:^BOOL(MGSwipeTableCell *sender) {
+                                                        [self moveCategory];
+                                                        return YES;
+                                                    }],
+                              [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_delete", @"Delete")
+                                             backgroundColor:[UIColor redColor]
+                                                    callback:^BOOL(MGSwipeTableCell *sender) {
+                                                        [self deleteCategory];
+                                                        return YES;
+                                                    }]];
+    }
+
+    // Display number of images and sub-albums
     if (self.albumData.numberOfSubCategories == 0) {
         
         // There are no sub-albums
@@ -349,11 +357,13 @@
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
     
+    // Display date/time of last edition
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.formatterBehavior = NSDateFormatterBehavior10_4;
     formatter.dateStyle = NSDateFormatterShortStyle;
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];
 	
+    // Display album image
 	NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
 	
 	if(albumData.categoryImage && imageSize > 0)
