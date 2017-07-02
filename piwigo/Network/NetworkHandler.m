@@ -10,12 +10,15 @@
 #import "Model.h"
 
 // URLs:
+NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
+NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";
 NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
 NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 
-NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList&cat_id={categoryId}&recursive={recursive}";
+NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList&cat_id={categoryId}&recursive={recursive}&faked_by_community={faked}";
+NSString * const kCommunityCategoriesGetList = @"format=json&method=community.categories.getList&cat_id={categoryId}";
 NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages&cat_id={albumId}&per_page={perPage}&page={page}&order={order}";
 NSString * const kPiwigoCategoriesAdd = @"format=json&method=pwg.categories.add&name={name}&status={status}";
 NSString * const kPiwigoCategoriesSetInfo = @"format=json&method=pwg.categories.setInfo";
