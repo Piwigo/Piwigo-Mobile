@@ -32,6 +32,7 @@
 
 // Errors
 "internetErrorGeneral_title" = "Connection Error";
+"internetErrorGeneral_broken" = "Sorry, the communication was broken.\nTry logging in again.";
 
 
 // ===========================================================================
