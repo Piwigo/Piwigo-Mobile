@@ -27,7 +27,7 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoGray];
-		self.title = NSLocalizedString(@"settingsHeader_about", @"About");
+		self.title = NSLocalizedString(@"settings_acknowledgements", @"Acknowledgements");
 		
 		self.piwigoTitle = [UILabel new];
 		self.piwigoTitle.translatesAutoresizingMaskIntoConstraints = NO;

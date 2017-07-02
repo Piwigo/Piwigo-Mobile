@@ -62,7 +62,7 @@
 		self.rightDisclosure.tintColor = [UIColor lightGrayColor];
 		[self.contentView addSubview:self.rightDisclosure];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.rightDisclosure]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.rightDisclosure toSize:CGSizeMake(20, 20)]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.rightDisclosure toSize:CGSizeMake(28, 28)]];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[label]-[select][downDisclosure]-10-|"
 																				 options:kNilOptions
 																				 metrics:nil
@@ -114,8 +114,7 @@
 	if(category.numberOfSubCategories <= 0 || [Model sharedInstance].loadAllCategoryInfo)
 	{
 		[self hideRightViews];
-	}
-	
+	}	
 }
 
 -(void)hideRightViews

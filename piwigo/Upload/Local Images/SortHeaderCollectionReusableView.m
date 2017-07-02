@@ -37,7 +37,7 @@
 		disclosure.image = disclosureImg;
 		disclosure.tintColor = [UIColor piwigoGrayLight];
 		[self addSubview:disclosure];
-		[self addConstraints:[NSLayoutConstraint constraintView:disclosure toSize:CGSizeMake(30, 30)]];
+		[self addConstraints:[NSLayoutConstraint constraintView:disclosure toSize:CGSizeMake(28, 28)]];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:disclosure]];
 		
 		self.currentSortLabel = [UILabel new];
