@@ -1,0 +1,369 @@
+/*
+ Localizable.strings
+ piwigo
+ Created by Spencer Baker on 1/17/15.
+ Copyright (c) 2015 bakercrew. All rights reserved.
+ */
+// ===========================================================================
+// ==> GENERIC
+// ===========================================================================
+// Tab bar
+
+"tabBar_albums" = "Albums";
+"tabBar_upload" = "Envoyer";
+"tabBar_preferences" = "Préférences";
+
+// Alert buttons
+"alertOkButton" = "OK";
+"alertDismissButton" = "Annuler";
+"alertYesButton" = "Oui";
+"alertNoButton" = "Non";
+"alertTryAgainButton" = "Réessayez";
+"alertCancelButton" = "Annuler";
+"alertAddButton" = "Ajouter";
+
+// Done view
+"done" = "Terminé";
+
+// Admin rights
+"adminRights_title" = "Droits admin requis";
+"adminRights_message" = "Vous n’êtes pas administrateur.\nVous devez être administrateur pour pouvoir envoyer des images.";
+
+// Errors
+"internetErrorGeneral_title" = "Erreur de Connexion";
+
+
+// ===========================================================================
+// ==> LOGIN / LOGOUT
+// ===========================================================================
+// Login
+"login" = "Connexion";
+"login_serverPlaceholder" = "Adresse Web";
+"login_userPlaceholder" = "Identifiant (optionnel)";
+"login_passwordPlaceholder" = "Mot de Passe (optionnel)";
+"login_loggingIn" = "Connexion en cours...";
+"login_protocolDescription" = "(taper > changer)";
+
+// Login — Errors
+"serverVersionNotCompatible_title" = "Serveur Incompatible";
+"serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile.\nVoulez-vous quand même continuer ?";
+
+"loginError_title" = "Échec de connexion";
+"loginError_message" = "Les nom d’utilisateur et mot de passe ne correspondent pas à l’adresse donnée";
+"loginEmptyServer_title" = "Entrez une Adresse Web";
+"loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
+
+"sessionStatusError_title" = "Echec d’Authentification";
+"sessionStatusError_message" = "N’a pas pu s’authentifier avec le serveur.\nEssayez de vous connecter à nouveau.";
+"sessionMethodsError_message" = "Impossible d’obtenir les méthodes du serveur.\nEssayez de vous connecter à nouveau.";
+"sessionCommunityError_message" = "Impossible d’obtenir les paramètres de l’extension Community.\nEssayez de vous connecter à nouveau.";
+
+// Logout
+"logoutConfirmation_title" = "Déconnexion";
+"logoutConfirmation_message" = "Êtes-vous sûr de vouloir vous déconnecter ?";
+
+// Logout — Errors
+"logoutFail_title" = "Echec de la Déconnexion";
+"logoutFail_message" = "Echec de la déconnexion.\nRé-essayer ?";
+
+
+// ===========================================================================
+// ==> ALBUMS
+// ===========================================================================
+// Albums view
+"categoryMainEmtpy" = "Pas encore d'albums dans votre Piwigo.\nVous pouvez tirer vers le bas pour actualiser ou vous reconnecter.";
+"categoryTableView_photoCount" = "photo";
+"categoryTableView_photosCount" = "photos";
+"categoryTableView_subCategoryCount" = "sous-album";
+"categoryTableView_subCategoriesCount" = "sous-albums";
+"categoryImageList_selectButton" = "Sélection";
+"categoryImageList_noDataError" = "Erreur Aucune Donnée";
+
+// Albums sort
+"categorySort_nameAscending" = "Titre de la photo, A → Z";
+"categorySort_nameDescending" = "Titre de la Photo, Z → A";
+"categorySort_fileNameAscending" = "Nom de Fichier, A → Z";
+"categorySort_fileNameDescending" = "Nom de Fichier, Z → A";
+"categorySort_dateCreatedDescending" = "Date de Création, récent → ancien";
+"categorySort_dateCreatedAscending" = "Date de Création, ancien → récent";
+"categorySort_datePostedDescending" = "Date d'Ajout, récent → ancien";
+"categorySort_datePostedAscending" = "Date d'Ajout, ancien → récent";
+"categorySort_videosOnly" = "Vidéos Uniquement";
+"categorySort_imagesOnly" = "Images Uniquement";
+
+// Album create
+"createNewAlbum_title" = "Créer Nouvel Album";
+"createNewAlbum_message" = "Nom de l’Album";
+
+// Album create — Errors
+"createAlbumError_title" = "Echec de la Création d'Album";
+"createAlbumError_message" = "Impossible de créer un nouvel album";
+
+// Album options (actions)
+"categoryCellOption_rename" = "Renomer";
+"categoryCellOption_move" = "Déplacer";
+"categoryCellOption_delete" = "Supprimer";
+
+// Album rename
+"renameCategory_title" = "Renommer l'Album";
+"renameCategory_message" = "Renommer l'album";
+"renameCategory_button" = "Renommer";
+"renameCategorySuccess_title" = "Changement de nom réussi";
+"renameCategorySuccess_message" = "Votre album a été renommé avec succès";
+
+// Album rename — Errors
+"renameCategoyError_title" = "Echec du Changement de Nom";
+"renameCategoyError_message" = "Impossible de renommer votre album";
+
+// Album delete
+"deleteCategory_title" = "EFFACER ALBUM";
+"deleteCategory_message" = "ÊTES-VOUS SÛR DE VOULOIR SUPPRIMER L’ALBUM \"%@\" ET LES %@ IMAGES ?";
+"deleteCategoryConfirm_title" = "Etes-vous sûr ?";
+"deleteCategoryConfirm_message" = "Veuillez entrer le nombre d’images afin de supprimer cet album\nNombre d’images : %@";
+"deleteCategoryConfirm_deleteButton" = "SUPPRIMER";
+"deleteCategorySuccess_title" = "Suppression réussie";
+"deleteCategorySuccess_message" = "Album \"%@\" supprimé";
+
+// Album delete — errors
+"deleteCategoryMatchError_title" = "Nombre Incorrect";
+"deleteCategoryMatchError_message" = "Le nombre d’images que vous avez entré ne correspond pas au nombre d’images dans l'album. S’il vous plaît, essayez de nouveau si vous désirez supprimer cet album";
+"deleteCategoryError_title" = "Echec de la Suppression";
+"deleteCategoryError_message" = "Impossible de supprimer votre album";
+
+// Album move
+"moveCategory" = "Déplacer Album";
+"moveCategory_selectParent" = "Sélectionnez un album pour déplacer l’album \"%@\" dans";
+"moveCategory_message" = "Êtes-vous certain de vouloir déplacer \"%@\" dans l’album \"%@\" ?";
+
+// album move — Errors
+"moveCategoryError_title" = "Echec du Déplacement";
+"moveCategoryError_message" = "Impossible de déplacer votre album";
+
+// Album set image thumbnail
+"categorySelection" = "Sélectionnez l’Album";
+"categorySelection_forImage" = "Sélectionnez un album pour cette image";
+"categoryImageSet_title" = "Affecter une Vignette";
+"categoryImageSet_message" = "Êtes-vous certain de vouloir affecter cette image à l’album \"%@\" ?";
+"categoryImageSetSuccess_title" = "Vignette Enregistrée";
+"categoryImageSetSuccess_message" = "L’image de l’album a été modifiée";
+
+// Album set image thumbnail — Errors
+"categoryImageSetError_title" = "Echec d'Affectation";
+"categoryImageSetError_message" = "Impossible de changer l’image de l’album";
+
+
+// ===========================================================================
+// ==> IMAGES
+// ===========================================================================
+"noImages" = "Pas d’Images";
+"pullToRefresh" = "Rechargement des Images";
+
+// Errors
+"albumPhotoError_title" = "Photos d'Album Non Récupérées";
+"albumPhotoError_message" = "Echec du chargement des photos de l'album (image altérée dans votre album ?)";
+
+// Image sort
+"sortTitle" = "Type de Tri";
+"sortBy" = "Trier par";
+
+// Image options (actions)
+"imageOptions_title" = "Options";
+"imageOptions_edit" = "Editer";
+"imageOptions_download" = "Télécharger";
+"imageOptions_setAlbumImage" = "Définir comme Image d’Album";
+
+// Image edit
+"editImageDetails_title" = "Titre :";
+"editImageDetails_titlePlaceholder" = "Mon Titre";
+"editImageDetails_author" = "Auteur :";
+"editImageDetails_tags" = "Tags :";
+"editImageDetails_privacyLevel" = "Qui peut voir cette photo ?";
+"editImageDetails_descriptionPlaceholder" = "Description";
+
+// Image edit — Errors
+"imageDetailsFetchError_title" = "Echec Récupération Détails";
+"imageDetailsFetchError_retryMessage" = "La récupération des données de l’image a échoué.\nEssayer à nouveau ?";
+"imageDetailsFetchError_continueMessage" = "La récupération des données de l’image a échoué.\nContinuer ?";
+
+// Image privacy levels
+"privacyLevel" = "Niveau de Confidentialité";
+"privacyLevel_admin" = "Admins";
+"privacyLevel_adminFamily" = "Admins, Famille";
+"privacyLevel_adminsFamilyFriends" = "Admins, Famille, Amis";
+"privacyLevel_adminsFamilyFriendsContacts" = "Admins, Famille, Amis, Contacts";
+"privacyLevel_everybody" = "Tout le monde";
+
+// Image tags
+"none" = "aucun";
+"tags" = "Tags";
+"tagsHeader_selected" = "Sélectionné";
+"tagsHeader_all" = "Tous";
+
+// Image delete
+"deleteImage_delete" = "Supprimer";
+"deleteImage_imageSingular" = "Image";
+"deleteImage_imagePlural" = "Images";
+"delteImage_message" = "Êtes-vous sûr de vouloir supprimer cette sélection de %@ %@ ? Opération irréversible !";
+"deleteImage_cancelButton" = "Annuler";
+"deleteImageProgress_title" = "Suppression %@%%";
+
+"deleteSingleImage_title" = "Supprimer l’Image";
+"deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ? Opération irréversible !";
+
+"deleteImageFail_title" = "Echec de la Suppression";
+"deleteImageFail_message" = "L'Image n’a pas pu être supprimée\n%@";
+
+// Image download
+"downloadImage" = "Télécharger des Images";
+"downloadImage_confirmation" = "Êtes-vous sûr de que vouloir télécharger la sélection de %@ %@ ?";
+"downloadingImage" = "Téléchargement d’Image";
+"downloadingImages" = "Téléchargement des Images";
+"downloadingImage_complete" = "Terminé";
+"downloadingImageInfo" = "Téléchargement des Infos de l'Image";
+"downloadingImageInfoForSort" = "Téléchargement des Infos de l'Image pour le Tri";
+
+// Image download — Errors
+"downloadImageFail_title" = "Echec du Téléchargement";
+"downloadImageFail_message" = "Impossible de télécharger l’image !\n%@";
+"downloadVideoFail_message" = "Impossible de télécharger la vidéo !\n%@";
+"downloadVideoFail_Photos" = "Format vidéo non accepté par Photos !";
+
+"imageSaveError_title" = "Image non Enregistrée";
+"imageSaveError_message" = "Impossible d’enregistrer l’image. Erreur : %@";
+
+"videoSaveError_title" = "Vidéo non Enregistrée";
+"videoSaveError_message" = "Impossible d’enregistrer la vidéo. Erreur : %@";
+
+// Images upload
+"categoryUpload_chooseAlbum" = "Sélectionnez l'album recevant les images";
+"categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album des images à envoyer";
+"categoyUpload_loadSubCategories" = "télécharge";
+"selectAll" = "Tout";
+
+"imageUploadDetails_title" = "Titre :";
+"imageUploadDetails_author" = "Auteur :";
+"imageUploadDetails_privacy" = "Qui :";
+"imageUploadDetails_tags" = "Tags :";
+"imageUploadDetails_description" = "Description :";
+
+"imageUploadDetailsEdit_title" = "Éditer les Images à Envoyer";
+"imageUploadDetailsUploading_title" = "Images en cours d'Envoi";
+"imageUploadDetailsCell_uploadComplete" = "Envoyée ! Vérification...";
+
+"imageUploadTableCell_uploading" = "Envoi...";
+"imageUploadProgressBar_zero" = "Envoi 0/0";
+"imageUploadProgressBar_nonZero" = "Envoi %@/%@";
+"imageUploadCompleted_title" = "Envoi Terminé";
+"imageUploadCompleted_message" = "1 image/vidéo envoyée à votre serveur Piwigo.";
+"imageUploadCompleted_message>1" = "images/vidéos envoyées à votre serveur Piwigo.";
+
+// Image upload — Errors
+"videoUploadError_title" = "Erreur Envoi Video";
+"videoUploadError_message" = "Vous devez ajouter l’extension \"VideoJS\" et modifier votre fichier de configuration local pour envoyer des vidéos à votre serveur Piwigo.";
+"videoUploadConfigError_message" = "Veuillez vérifier l’installation de \"VideoJS\" et le fichier de configuration avec LocalFiles Editor afin de pouvoir envoyer des vidéos à votre serveur Piwigo.";
+"videoUploadError_format" = "Désolé, le format du fichier vidéo n’est pas compatible avec l’extension \"VideoJS\".";
+
+
+// ===========================================================================
+// ==> LOCAL ALBUMS
+// ===========================================================================
+"localAlbums" = "Albums Locaux";
+
+"localImageSort_newest" = "Plus récentes";
+"localImageSort_oldest" = "Plus anciennes";
+"localImageSort_notUploaded" = "Pas encore envoyées";
+"localImageSort_undefined" = "Non défini";
+
+// Local albums — Access not Authorized
+"localAlbums_photosNotAuthorized_title" = "Accès Refusé";
+"localAlbums_photosNiltitle" = "Problème Lecture Photos";
+"localAlbums_photosNnil_msg" = "Un problème est rencontré pendant la lecture de votre photothèque locale.";
+
+// Local albums — Tell user to change settings, how
+"localAlbums_photosNotAuthorized_msg" = "Impossible d’ouvrir la photothèque locale.\nAllez dans l’application Réglages, Confidentialité, Photos et activez l’accès pour Piwigo.";
+
+// ===========================================================================
+// ==> SETTINGS
+// ===========================================================================
+// Settings — Piwigo Server
+"settingsHeader_server" = "Serveur Piwigo";
+"settings_server" = "Adresse";
+"settings_username" = "Identifiant";
+"settings_notLoggedIn" = " - Non Connecté - ";
+"settings_logout" = "Déconnexion";
+
+// Settings — General
+"settingsHeader_general" = "Paramètres Généraux";
+"settings_loadAllCategories" = "Télécharger Tout au Démarrage";
+"settings_loadAllCategories>320px" = "Télécharger tout au Démarrage (décochez en cas de problème)";
+"defaultImageSort" = "Tri";
+"defaultImageSort>320px" = "Tri";
+"defaultImageSort>414px" = "Tri par Défaut des Images";
+
+"defaultThumbnailSize" = "Vignettes";
+"defaultThumbnailSize>320px" = "Taille des Vignettes";
+"defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";
+"defaultThumbnailSizeTitle" = "Taille par Défaut";
+"defaultThumbnailSizeHeader" = "Veuillez Sélectionner une Taille de Vignette";
+"defaultThumbnailSize_disabled" = " (désactivé sur le serveur)";
+"settings_displayTitles" = "Afficher Titres sur Vignettes";
+
+"thumbnailSizeSquare" = "Carré (plus rapide)";
+"thumbnailSizeThumbnail" = "Miniature (par défaut)";
+"thumbnailSizeXXSmall" = "Minuscule (mieux)";
+"thumbnailSizeXSmall" = "Très Petit";
+"thumbnailSizeSmall" = "Petit";
+"thumbnailSizeMedium" = "Moyen";
+"thumbnailSizeLarge" = "Grand";
+"thumbnailSizeXLarge" = "Très Grand";
+"thumbnailSizeXXLarge" = "Énorme";
+"thumbnailSizexFullRes" = "Haute Résolution";
+
+"defaultImageSize" = "Images";
+"defaultImageSize>320px" = "Taille des Images";
+"defaultImageSize>414px" = "Taille par Défaut des Images";
+"defaultImageSizeTitle" = "Taille par Défaut";
+"defaultImageSizeHeader" = "Veuillez Sélectionner une Taille d’Image";
+"defaultImageSize_recommended" = " (recommandé)";
+"defaultImageSize_disabled" = " (désactivé sur le serveur)";
+
+"imageSizeSquare" = "Carré";
+"imageSizeThumbnail" = "Miniature";
+"imageSizeXXSmall" = "Minuscule";
+"imageSizeXSmall" = "Très Petit";
+"imageSizeSmall" = "Petit";
+"imageSizeMedium" = "Moyen";
+"imageSizeLarge" = "Grand";
+"imageSizeXLarge" = "Très Grand";
+"imageSizeXXLarge" = "Énorme";
+"imageSizexFullRes" = "Haute Résolution";
+
+// Settings — Upload
+"settingsHeader_upload" = "Paramètres d'Envoi par Défaut";
+"settings_defaultAuthor" = "Auteur";
+"settings_defaultAuthor>320px" = "Nom d'Auteur";
+"settings_defaultAuthorPlaceholder" = "Nom de l'Auteur";
+"settings_defaultPrivacy" = "Qui voit ?";
+"settings_defaultPrivacy>320px" = "Qui Peut Voir les Médias ?";
+"settings_stripGPSdata" = "Supprimer les Métadonnées GPS";
+"settings_stripGPSdata>375px" = "Supprimer les Métadonnées GPS avant Envoi";
+"settings_photoResize" = "Redimensionner avant Envoi";
+"settings_photoResize>375px" = "Redimensionner l'Image avant Envoi";
+"settings_photoSize" = "> Taille   ";
+"settings_placeholderSize" = "Entrez une Taille de Photo de 1 à 100";
+"settings_photoQuality" = "> Qualité";
+"settings_placeholderQuality" = "Entrez une Qualité d’Image entre 50 et 98";
+
+// Settings — Cache
+"settingsHeader_cache" = "Paramètres de Cache (Utilisé/Total)";
+"settings_cacheDisk" = "Disque";
+"settings_placeholderDisk" = "Entrez un Cache Disque de 10 à 200";
+"settings_cacheMemory" = "Mémoire";
+"settings_placeholderMemory" = "Entrez un Cache Mémoire de 10 à 200";
+"settings_cacheMegabytes" = "Mo";
+
+// Settings — Information
+"settingsHeader_about" = "Informations";
+"settings_acknowledgements" = "Remerciements";
+"settings_support" = "Aide en Ligne Gratuit";
+"settings_pwgForumURL" = "http://fr.piwigo.org";
