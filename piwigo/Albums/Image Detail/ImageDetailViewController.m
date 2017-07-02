@@ -94,7 +94,9 @@
 {
 	NSMutableArray *otherButtons = [NSMutableArray new];
 	[otherButtons addObject:NSLocalizedString(@"imageOptions_download", @"Download")];
-	if([Model sharedInstance].hasAdminRights)
+    
+//	Add actions capabilities if user has upload rights
+    if([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
 	{
 		[otherButtons addObject:NSLocalizedString(@"imageOptions_edit",  @"Edit")];
 		[otherButtons addObject:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")];
@@ -104,10 +106,10 @@
 								animated:YES
 							   withTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
 					   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-				  destructiveButtonTitle:[Model sharedInstance].hasAdminRights ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
+				  destructiveButtonTitle:[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights] ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
 					   otherButtonTitles:otherButtons
 								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 1;
+									buttonIndex += [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights] ? 0 : 1;
 									switch(buttonIndex)
 									{
 										case 0: // Delete
@@ -118,7 +120,7 @@
 											break;
 										case 2: // Edit
 										{
-											if(![Model sharedInstance].hasAdminRights) break;
+											if(![[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) break;
 											
 											UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
 											EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
@@ -133,7 +135,7 @@
 										}
 										case 3:	// set as album image
 										{
-											if(![Model sharedInstance].hasAdminRights) break;
+											if(![[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) break;
 											
 											AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
 											[self.navigationController pushViewController:allCategoriesPickVC animated:YES];
@@ -184,7 +186,7 @@
     if ([ALAssetsLibrary authorizationStatus] != ALAuthorizationStatusAuthorized) {
         [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
                            message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                  otherButtonTitles:nil
                           tapBlock:nil
          ];
@@ -213,7 +215,7 @@
 							 self.downloadView.hidden = YES;
 							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
 												message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
-									  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+									  cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
 											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 												   if(buttonIndex == 1) {
@@ -236,7 +238,7 @@
                          self.downloadView.hidden = YES;
                          [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
                                             message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), [error localizedDescription]]
-                                  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                  cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                                   otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
                                            tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                                if(buttonIndex == 1) {
@@ -253,7 +255,7 @@
                           } else {
                               [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
                                                  message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
-                                       cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                       cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                                        otherButtonTitles:nil
                                                 tapBlock:nil
                                ];
@@ -276,7 +278,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+				 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 	}
@@ -288,7 +290,7 @@
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
 						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+				 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 				 otherButtonTitles:nil
 						  tapBlock:nil];
 	}
