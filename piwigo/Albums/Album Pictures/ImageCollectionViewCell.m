@@ -36,11 +36,11 @@
 		self.cellImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.cellImage.contentMode = UIViewContentModeScaleAspectFill;
 		self.cellImage.clipsToBounds = YES;
-		self.cellImage.image = [UIImage imageNamed:@"placeholder"];
+		self.cellImage.image = [UIImage imageNamed:@"placeholderImage"];
 		[self.contentView addSubview:self.cellImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
-		//
+		// Selected images are darker
         self.darkenView = [UIView new];
 		self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
@@ -108,8 +108,8 @@
 		self.selectedImage.tintColor = [UIColor piwigoOrange];
 		self.selectedImage.hidden = YES;
 		[self.contentView addSubview:self.selectedImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(30, 30)]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:5]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(25, 25)]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:0]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 		
         // Without data to show
@@ -156,7 +156,7 @@
     switch ([Model sharedInstance].defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
             if ([Model sharedInstance].hasSquareSizeImages && (self.imageData.SquarePath) && (self.imageData.SquarePath > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.SquarePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.SquarePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -164,7 +164,7 @@
             break;
         case kPiwigoImageSizeXXSmall:
             if ([Model sharedInstance].hasXXSmallSizeImages && (self.imageData.XXSmallPath.length > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.XXSmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.XXSmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -172,7 +172,7 @@
             break;
         case kPiwigoImageSizeXSmall:
             if ([Model sharedInstance].hasXSmallSizeImages && (self.imageData.XSmallPath.length > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.XSmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.XSmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -180,7 +180,7 @@
             break;
         case kPiwigoImageSizeSmall:
             if ([Model sharedInstance].hasSmallSizeImages && (self.imageData.SmallPath.length > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.SmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.SmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -188,7 +188,7 @@
             break;
         case kPiwigoImageSizeMedium:
             if ([Model sharedInstance].hasMediumSizeImages && (self.imageData.MediumPath.length > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -196,7 +196,7 @@
             break;
         case kPiwigoImageSizeLarge:
             if ([Model sharedInstance].hasLargeSizeImages && (self.imageData.LargePath.length > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.LargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.LargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -204,7 +204,7 @@
             break;
         case kPiwigoImageSizeXLarge:
             if ([Model sharedInstance].hasXLargeSizeImages && (self.imageData.XLargePath.length > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.XLargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.XLargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -212,7 +212,7 @@
             break;
         case kPiwigoImageSizeXXLarge:
             if ([Model sharedInstance].hasXXLargeSizeImages && (self.imageData.XXLargePath.length > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.XXLargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.XXLargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -222,7 +222,7 @@
         case kPiwigoImageSizeFullRes:
         default:
             if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
-                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                [self.cellImage setImageWithURL:[NSURL URLWithString:[self.imageData.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -241,7 +241,7 @@
     
 	if(imageData.isVideo)
 	{
-		self.darkenView.hidden = NO;
+//		self.darkenView.hidden = NO;
 		self.playImage.hidden = NO;
 	}
 }

@@ -53,7 +53,9 @@
 {
 	NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
 	NSMutableArray *diff = [NSMutableArray new];
-	for(PiwigoAlbumData *category in allCategories)
+	
+    // Look for missing categories
+    for(PiwigoAlbumData *category in allCategories)
 	{
 		BOOL doesNotExist = YES;
 		for(PiwigoAlbumData *existingCat in self.categories)
@@ -70,6 +72,7 @@
 		}
 	}
 	
+    // Append missing categories below their parent categories
 	for(PiwigoAlbumData *category in diff)
 	{
 		if(category.upperCategories.count > 1)

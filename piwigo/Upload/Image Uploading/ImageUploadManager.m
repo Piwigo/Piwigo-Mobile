@@ -146,7 +146,6 @@
             NSLog(@"Error: Could not create image destination");
     #endif
             CFRelease(source);
-            return imageData;
         } else {
             // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
             CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
@@ -158,7 +157,6 @@
     #endif
                 CFRelease(destination);
                 CFRelease(source);
-                return imageData;
             } else {
                 CFRelease(destination);
                 CFRelease(source);

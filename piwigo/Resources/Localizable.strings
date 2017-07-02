@@ -142,7 +142,7 @@
 "localAlbums_photosNnil_msg" = "There is a problem reading your local photo library.";
 
 "none" = "none";
-"selectAll" = "Select All";
+"selectAll" = "All";
 
 "createNewAlbum_title" = "Create New Album";
 "createNewAlbum_message" = "Album name";
@@ -273,6 +273,7 @@
 "imageSaveError_message" = "Failed to save image. Error: %@";
 
 "categoryUpload_chooseAlbum" = "Select an album to upload images to";
+"categoryUpload_chooseLocalAlbum" = "Select an album to get images from";
 "categoyUpload_loadSubCategories" = "load";
 
 "videoSaveError_title" = "Fail Saving Video";
