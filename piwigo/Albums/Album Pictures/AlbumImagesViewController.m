@@ -167,19 +167,29 @@
 -(void)loadNavButtons
 {
 	if(!self.isSelect) {
+        // Selection mode not active
         if([Model sharedInstance].hasAdminRights) {
             self.navigationItem.rightBarButtonItems = @[self.selectBarButton, self.uploadBarButton];
         } else {
             self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
         }
 	} else {
+        // Selection mode active
 		if([Model sharedInstance].hasAdminRights)
 		{
-			self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton];
+            if (self.selectedImageIds.count > 0) {
+                self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton];
+            } else {
+                self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
+            }
 		}
 		else
 		{
-			self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton];
+            if (self.selectedImageIds.count > 0) {
+                self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton];
+            } else {
+                self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
+            }
 		}
 	}
 }
@@ -586,14 +596,16 @@
 		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 		if(!self.isSelect)
 		{
-			self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+			// Selection mode not active => display full screen image
+            self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
 			self.imageDetailView.hidesBottomBarWhenPushed = YES;
 			self.imageDetailView.imgDetailDelegate = self;
 			[self.navigationController pushViewController:self.imageDetailView animated:YES];
 		}
 		else
 		{
-			if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
+			// Selection mode active => add image to selection
+            if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
 				[self.selectedImageIds addObject:selectedCell.imageData.imageId];
 				selectedCell.isSelected = YES;
 			} else {
@@ -601,7 +613,10 @@
 				[self.selectedImageIds removeObject:selectedCell.imageData.imageId];
 			}
 			[collectionView reloadItemsAtIndexPaths:@[indexPath]];
-		}
+
+            // and display nav buttons
+            [self select];
+        }
 	}
 }
 
