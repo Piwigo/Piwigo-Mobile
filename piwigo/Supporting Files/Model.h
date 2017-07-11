@@ -36,6 +36,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, assign) BOOL hasAdminRights;
+@property (nonatomic, assign) BOOL hasInstalledCommunity;
 @property (nonatomic, assign) BOOL hasInstalledVideoJS;
 @property (nonatomic, assign) BOOL hasUploadedImages;
 @property (nonatomic, assign) BOOL hadOpenedSession;

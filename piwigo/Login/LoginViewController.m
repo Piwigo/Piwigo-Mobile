@@ -139,15 +139,16 @@
 								 onCompletion:^(BOOL result, id response) {
 									 if(result)
 									 {
+                                         // Session now opened
                                          [Model sharedInstance].hadOpenedSession = YES;
+                                         
+                                         // Get version, token, rights, available sizes and check Piwigo version
                                          [self getSessionStatus];
-                                         if([Model sharedInstance].hasAdminRights) {
-                                             [self getSessionPluginsList];      // To determine if VideoJS is available
-                                         }
-									 }
+                                     }
 									 else
 									 {
-										 [Model sharedInstance].hadOpenedSession = NO;
+										 // No session opened
+                                         [Model sharedInstance].hadOpenedSession = NO;
                                          [self hideLoading];
 										 [self showLoginFail];
 									 }
@@ -158,7 +159,7 @@
 #endif
                                      [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
 														message:[error localizedDescription]
-											  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+											  cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 											  otherButtonTitles:nil
 													   tapBlock:nil];
 								 }];
@@ -192,12 +193,12 @@
 
 -(void)getSessionStatus
 {
-	[SessionService getStatusOnCompletion:^(NSDictionary *responseObject) {
-		[self hideLoading];
+	[SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
 		if(responseObject)
 		{
 			if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
-			{	// they need to update
+			{	// They need to update
+                [self hideLoading];
 				[UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
 								   message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
 						 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -211,17 +212,18 @@
 								  }];
 			}
 			else
-			{	// their version is Ok
-				AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-				[appDelegate loadNavigation];
+			{	// Their version is Ok
+                // Get list of methods and determine if the Community extension is installed and active
+                [self getMethodsListAtFirstLogin:YES];
 			}
 		}
 		else
 		{
+            [self hideLoading];
 			UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
                                                                 message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
 															   delegate:nil
-													  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+													  cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 													  otherButtonTitles:nil];
 			[failAlert show];
 		}
@@ -230,10 +232,95 @@
 	}];
 }
 
--(void)getSessionPluginsList
+-(void)getMethodsListAtFirstLogin:(BOOL)isFirstLogin
 {
-    [SessionService getPluginsListOnCompletion:^(NSDictionary *responseObject) {
+    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
+
+        if(methodsList) {
+
+            // If the Community extension is installed, check 'real status'
+            if([Model sharedInstance].hasInstalledCommunity) {
+                [self getCommunityStatusAtFirstLogin:isFirstLogin];
+            
+            } else {
+                // If the user is admin/webmaster, get list of plugins and check VideoJS availability
+                if([Model sharedInstance].hasAdminRights) {
+                    [self getSessionPluginsListAtFirstLogin:isFirstLogin];
+                
+                } else {
+                    if (isFirstLogin) {
+                        // Load interface
+                        [self hideLoading];
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate loadNavigation];
+                    } else {
+                        // Do nothing and keep current view active
+                    }
+                }
+            }
+        } else {
+            [self hideLoading];
+            UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
+                                                                message:NSLocalizedString(@"sessionMethodsError_message", @"Failed to get server methods.\nTry logging in again.")
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                      otherButtonTitles:nil];
+            [failAlert show];
+        }
+
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
         [self hideLoading];
+    }];
+}
+
+-(void)getCommunityStatusAtFirstLogin:(BOOL)isFirstLogin
+{
+    [SessionService getCommunityStatusOnCompletion:^(NSDictionary *responseObject) {
+
+        if(responseObject) {
+            
+            // If the user is really admin/webmaster, get list of plugins and check VideoJS availability
+            if([Model sharedInstance].hasAdminRights) {
+                [self getSessionPluginsListAtFirstLogin:isFirstLogin];
+
+            } else {
+                if (isFirstLogin) {
+                    // Load interface
+                    [self hideLoading];
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate loadNavigation];
+                } else {
+                    // Do nothing and keep current view active
+                }
+            }
+        } else {
+            [self hideLoading];
+            UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
+                                                                message:NSLocalizedString(@"sessionCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                      otherButtonTitles:nil];
+            [failAlert show];
+        }
+       
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self hideLoading];
+    }];
+}
+
+-(void)getSessionPluginsListAtFirstLogin:(BOOL)isFirstLogin
+{
+    [SessionService getPluginsListOnCompletion:^(NSDictionary *pluginsList) {
+
+        if (isFirstLogin) {
+            // Load interface
+            [self hideLoading];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate loadNavigation];
+        } else {
+            // Do nothing and keep current view active
+        }
+        
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
         [self hideLoading];
     }];
@@ -242,7 +329,7 @@
 // In case the connection was temporarily lost
 -(void)getSessionStatusAfterReachabilityChanged
 {
-    [SessionService getStatusOnCompletion:^(NSDictionary *responseObject) {
+    [SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
 
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
         [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
@@ -268,7 +355,7 @@
     NSString *user = [KeychainAccess getLoginUser];
     NSString *password = [KeychainAccess getLoginPassword];
 
-    [SessionService getStatusOnCompletion:^(NSDictionary *responseObject) {
+    [SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
         if(responseObject) {
             NSString *userName = [responseObject objectForKey:@"username"];
             if (![userName isEqualToString:[[Model sharedInstance]username]]) {
@@ -279,10 +366,7 @@
                                          andPassword:password
                                         onCompletion:^(BOOL result, id response) {
                                             [Model sharedInstance].hadOpenedSession = YES;
-                                            [self getSessionStatusAfterReachabilityChanged];
-                                            if([Model sharedInstance].hasAdminRights) {
-                                                [self getSessionPluginsListAfterReachabilityChanged];   // To determine if VideoJS is available
-                                            }
+                                            [self getMethodsListAtFirstLogin:NO];
                                         }
                                            onFailure:^(NSURLSessionTask *task, NSError *error) {
                                                // Could not re-establish the session, login/pwd changed ?

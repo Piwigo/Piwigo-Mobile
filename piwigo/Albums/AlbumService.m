@@ -19,16 +19,23 @@
 {
     if(categoryId != -1 && [Model sharedInstance].loadAllCategoryInfo && categoryId != 0) return  nil;
     
+    // Recursive option ?
     NSString *recursiveString = [Model sharedInstance].loadAllCategoryInfo ? @"true" : @"false";
     if(categoryId == -1)
     {	// hack-ish way to force load all albums -- send a categoyId as -1
         recursiveString = @"true";
         categoryId = 0;
     }
+    
+    // Community extension active ?
+    NSString *fakedString = [Model sharedInstance].hasInstalledCommunity ? @"false" : @"true";
+    
+    // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
         URLParameters:@{
                         @"categoryId" : @(categoryId),
-                        @"recursive" : recursiveString
+                        @"recursive" : recursiveString,
+                        @"faked" : fakedString
                         }
            parameters:nil
              progress:nil
@@ -36,8 +43,18 @@
                   
                   if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                   {
+                      // Extract albums data from JSON message
                       NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
                       [[CategoriesData sharedInstance] addAllCategories:albums];
+                      
+                      // Update albums when Community extension is installed (for non-admin)
+                      if (![Model sharedInstance].hasAdminRights && [Model sharedInstance].hasInstalledCommunity) {
+                          [AlbumService setUploadRightsForCategory:categoryId];
+                      }
+
+                      // Post to the app that the category data has been updated
+                      [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+
                       if(completion)
                       {
                           completion(task, albums);
@@ -62,7 +79,7 @@
 
 +(NSArray*)parseAlbumJSON:(NSArray*)json
 {
-	NSMutableArray *albums = [NSMutableArray new];
+    NSMutableArray *albums = [NSMutableArray new];
 	for(NSDictionary *category in json)
 	{
 		PiwigoAlbumData *albumData = [PiwigoAlbumData new];
@@ -103,11 +120,58 @@
 			[dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
 			albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"date_last"]];
 		}
+        
+        if([Model sharedInstance].hasAdminRights) {
+            albumData.hasUploadRights = YES;
+        } else {
+            albumData.hasUploadRights = NO;
+        }
 		
 		[albums addObject:albumData];
 	}
 	
 	return albums;
+}
+
++(void)setUploadRightsForCategory:(NSInteger)categoryId
+{
+    [self getCommunityAlbumListForCategory:categoryId
+                              OnCompletion:^(NSURLSessionTask *task, NSArray *comAlbums) {
+                                  if (comAlbums) {
+                                      for(NSDictionary *category in comAlbums)
+                                      {
+                                          NSInteger catId = [[category valueForKey:@"id"] integerValue];
+                                          [[CategoriesData sharedInstance] getCategoryById:catId].hasUploadRights = YES;
+                                     }
+                                   }
+                              }
+     ];
+}
+
++(NSURLSessionTask*)getCommunityAlbumListForCategory:(NSInteger)categoryId
+                                        OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
+{
+    return [self post:kCommunityCategoriesGetList
+        URLParameters:@{
+                        @"categoryId" : @(categoryId)
+                        }
+           parameters:nil
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  
+                  if (completion) {
+                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+                          NSArray *albums = [[responseObject objectForKey:@"result"] objectForKey:@"categories"];
+                          completion(task, albums);
+                      } else {
+                          completion(task, nil);
+                      }
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                  NSLog(@"getCommunityAlbumListForCategory — Fail: %@", [error description]);
+#endif
+              }];
 }
 
 +(NSURLSessionTask*)createCategoryWithName:(NSString*)categoryName

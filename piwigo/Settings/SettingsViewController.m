@@ -805,7 +805,7 @@ typedef enum {
                 }
                 case 1:
                 {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"http://piwigo.org/forum"]];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: NSLocalizedString(@"settings_pwgForumURL", @"http://piwigo.org/forum")]];
                 }
             }
 		}

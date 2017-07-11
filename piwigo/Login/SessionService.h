@@ -16,8 +16,14 @@
                             onCompletion:(void (^)(BOOL result, id response))completion
                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)getStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
++(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)getPiwigoStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)getCommunityStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
+                                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)getPluginsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

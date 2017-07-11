@@ -34,6 +34,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *albumThumbnailUrl;
 @property (nonatomic, strong) NSDate *dateLast;
 @property (nonatomic, strong) UIImage *categoryImage;
+@property (nonatomic, assign) BOOL hasUploadRights;
 
 @property (nonatomic, readonly) NSArray *imageList;
 @property (nonatomic, readonly) NSInteger onPage;

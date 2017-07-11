@@ -170,7 +170,7 @@
 	}
 	[UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSetError_title", @"Image Set Error")
 					   message:bodyMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+			 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
 			 otherButtonTitles:nil
 					  tapBlock:nil];
 }
