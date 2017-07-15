@@ -24,6 +24,7 @@
 #import "PiwigoImageData.h"
 #import "DefaultImageSizeViewController.h"
 #import "DefaultThumbnailSizeViewController.h"
+#import "iRate.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -66,7 +67,7 @@ typedef enum {
 							   @5,
 							   @6,
 							   @2,
-							   @2
+							   @3
 							   ];
 		self.headerHeights = @[
 							   @40.0,
@@ -522,27 +523,11 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingSectionAbout:       // About
+		case SettingSectionAbout:       // Information
 		{
             switch(indexPath.row)
             {
-                case 0:     // Acknowledgements
-                {
-                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"thanks"];
-                    if(!cell)
-                    {
-                        cell = [LabelTableViewCell new];
-                    }
-                    
-                    cell.leftText = NSLocalizedString(@"settings_acknowledgements", @"Acknowledgements");
-                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-                    cell.leftLabelWidth = 220;
-                    cell.rightText = @">";
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-                case 1:     // Support Forum
+                case 0:     // Support Forum
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"support"];
                     if(!cell)
@@ -551,6 +536,38 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_supportForum", @"Support Forum");
+                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+                    cell.leftLabelWidth = 220;
+                    cell.rightText = @">";
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Rating page
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rate"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settings_rateInAppStore", @"Rate Piwigo Mobile"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
+                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+                    cell.leftLabelWidth = 220;
+                    cell.rightText = @">";
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 2:     // Acknowledgements
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"thanks"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_acknowledgements", @"Acknowledgements");
                     cell.leftLabel.textAlignment = NSTextAlignmentLeft;
                     cell.leftLabelWidth = 220;
                     cell.rightText = @">";
@@ -797,15 +814,21 @@ typedef enum {
 		{
             switch(indexPath.row)
             {
-                case 0:
+                case 0:     // Open Piwigo support forum webpage with default browser
+                {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"http://piwigo.org/forum"]];
+                    break;
+                }
+                case 1:     // Open Piwigo App Store page for rating
+                {
+                    [[iRate sharedInstance] openRatingsPageInAppStore];
+                    break;
+                }
+                case 2:     // Open Acknowledgements page
                 {
                     AboutViewController *aboutVC = [AboutViewController new];
                     [self.navigationController pushViewController:aboutVC animated:YES];
                     break;
-                }
-                case 1:
-                {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"http://piwigo.org/forum"]];
                 }
             }
 		}

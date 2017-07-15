@@ -116,6 +116,7 @@
 "settings_placeholderMemory" = "Enter a Memory Cache from 10 - 200";
 "settings_acknowledgements" = "Acknowledgements";
 "settings_supportForum" = "Support Forum";
+"settings_rateInAppStore" = "Rate Piwigo Mobile";
 "settings_loadAllCategories" = "Download all Albums at Start";
 "settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
 "settings_displayTitles" = "Display Titles on Thumbnails";
