@@ -542,7 +542,7 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Support
+                case 1:     // Support Forum
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"support"];
                     if(!cell)
@@ -550,7 +550,7 @@ typedef enum {
                         cell = [LabelTableViewCell new];
                     }
                     
-                    cell.leftText = NSLocalizedString(@"settings_support", @"Free Support");
+                    cell.leftText = NSLocalizedString(@"settings_supportForum", @"Support Forum");
                     cell.leftLabel.textAlignment = NSTextAlignmentLeft;
                     cell.leftLabelWidth = 220;
                     cell.rightText = @">";

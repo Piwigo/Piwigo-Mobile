@@ -115,7 +115,7 @@
 "settings_placeholderDisk" = "Enter a Disk Cache from 10 - 200";
 "settings_placeholderMemory" = "Enter a Memory Cache from 10 - 200";
 "settings_acknowledgements" = "Acknowledgements";
-"settings_support" = "Free Support";
+"settings_supportForum" = "Support Forum";
 "settings_loadAllCategories" = "Download all Albums at Start";
 "settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
 "settings_displayTitles" = "Display Titles on Thumbnails";
