@@ -12,4 +12,4 @@
 
 "v2.0.2_text" = "Version 2.0.2\n\n• Sort criteria now identical to those of the Web app\n• Fix sort issues\n• Fix a crash encountered when adding tags to a photo before upload\n• Fix situations where the deletion of a selection of images did not work\n• Fix situations where an album did not show up after move\n• Fix a compatibility issue with iOS 10 — deprecated code\n________________________________________\n\n";
 
-"v2.0.1_text" = "Version 2.0.1\n\nBug fixes and minor improvements\n________________________________________\n\n";
+"v2.0.1_text" = "Version 2.0.1\n\nBug fixes and improvements\n________________________________________\n\n";

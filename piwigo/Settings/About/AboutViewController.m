@@ -69,51 +69,68 @@
 		self.textView.layer.cornerRadius = 5;
 		[self.view addSubview:self.textView];
 		
+        // About string
 		NSString *aboutString = NSLocalizedStringFromTableInBundle(@"about_text", @"About", [NSBundle mainBundle], @"About text");
-		NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:aboutString];
+
+            // MIT Licence — Bundle string
+            NSString *mitString = NSLocalizedStringFromTableInBundle(@"licenceMIT_text", @"About", [NSBundle mainBundle], @"AFNetworking licence text");
+            aboutString = [aboutString stringByAppendingString:mitString];
+        
+            // AFNetworking Licence — Bundle string
+            NSString *afnString = NSLocalizedStringFromTableInBundle(@"licenceAFN_text", @"About", [NSBundle mainBundle], @"AFNetworking licence text");
+            aboutString = [aboutString stringByAppendingString:afnString];
+        
+            // MGSwipeTableCell Licence — Bundle string
+            NSString *mgstcString = NSLocalizedStringFromTableInBundle(@"licenceMGSTC_text", @"About", [NSBundle mainBundle], @"MGSwipeTableCell licence text");
+            aboutString = [aboutString stringByAppendingString:mgstcString];
+            
+            // UICountingLabel Licence — Bundle string
+            NSString *uiclString = NSLocalizedStringFromTableInBundle(@"licenceUICL_text", @"About", [NSBundle mainBundle], @"UICountingLabel licence text");
+            aboutString = [aboutString stringByAppendingString:uiclString];
+            
+            // iRate Licence — Bundle string
+            NSString *iRateString = NSLocalizedStringFromTableInBundle(@"licenceIRate_text", @"About", [NSBundle mainBundle], @"iRate licence text");
+            aboutString = [aboutString stringByAppendingString:iRateString];
+            
+        // Attributed strings
+        NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:aboutString];
 		
-//		NSRange range = NSMakeRange(0, aboutString.length);
-//		[aboutAttributedString addAttribute:NSFontAttributeName
-//									  value:[UIFont systemFontOfSize:18]
-//									  range:range];
-		NSRange licenseRange = [aboutString rangeOfString:@"This software contains"];
-		NSRange piwigoDescriptionRange = NSMakeRange(0, licenseRange.location);
-		[aboutAttributedString addAttribute:NSFontAttributeName
-									  value:[UIFont systemFontOfSize:18]
-									  range:piwigoDescriptionRange];
+            // MIT Licence — Attributed string
+            NSRange mitLicenseRange = [aboutString rangeOfString:@"The MIT License (MIT)"];
+            NSRange mitLicenseDescriptionRange = NSMakeRange(mitLicenseRange.location, [@"The MIT License (MIT)" length]);
+            [aboutAttributedString addAttribute:NSFontAttributeName
+                                          value:[UIFont boldSystemFontOfSize:14]
+                                          range:mitLicenseDescriptionRange];
+            
+            // MIT Licence — Attributed string
+            NSRange afnetworkingRange = [aboutString rangeOfString:@"AFNetworking"];
+            NSRange afnetworkingDescriptionRange = NSMakeRange(afnetworkingRange.location, [@"AFNetworking" length]);
+            [aboutAttributedString addAttribute:NSFontAttributeName
+                                          value:[UIFont boldSystemFontOfSize:14]
+                                          range:afnetworkingDescriptionRange];
 
-        NSRange mitLicenseRange = [aboutString rangeOfString:@"The MIT License (MIT)"];
-        NSRange mitLicenseDescriptionRange = NSMakeRange(mitLicenseRange.location, [@"The MIT License (MIT)" length]);
-        [aboutAttributedString addAttribute:NSFontAttributeName
-                                      value:[UIFont boldSystemFontOfSize:14]
-                                      range:mitLicenseDescriptionRange];
-        
-        NSRange afnetworkingRange = [aboutString rangeOfString:@"AFNetworking"];
-        NSRange afnetworkingDescriptionRange = NSMakeRange(afnetworkingRange.location, [@"AFNetworking" length]);
-        [aboutAttributedString addAttribute:NSFontAttributeName
-                                      value:[UIFont boldSystemFontOfSize:14]
-                                      range:afnetworkingDescriptionRange];
-
-        NSRange mgSwipeTCRange = [aboutString rangeOfString:@"MGSwipeTableCell"];
-        NSRange mgSwipeTCDescriptionRange = NSMakeRange(mgSwipeTCRange.location, [@"MGSwipeTableCell" length]);
-        [aboutAttributedString addAttribute:NSFontAttributeName
-                                      value:[UIFont boldSystemFontOfSize:14]
-                                      range:mgSwipeTCDescriptionRange];
-        
-        NSRange uiCountingLabelRange = [aboutString rangeOfString:@"UICountingLabel"];
-        NSRange uiCountingLabelDescriptionRange = NSMakeRange(uiCountingLabelRange.location, [@"UICountingLabel" length]);
-        [aboutAttributedString addAttribute:NSFontAttributeName
-                                      value:[UIFont boldSystemFontOfSize:14]
-                                      range:uiCountingLabelDescriptionRange];
-        
-        NSRange iRateRange = [aboutString rangeOfString:@"iRate"];
-        NSRange iRateDescriptionRange = NSMakeRange(iRateRange.location, [@"iRate" length]);
-        [aboutAttributedString addAttribute:NSFontAttributeName
-                                      value:[UIFont boldSystemFontOfSize:14]
-                                      range:iRateDescriptionRange];
+            // MIT Licence — Attributed string
+            NSRange mgSwipeTCRange = [aboutString rangeOfString:@"MGSwipeTableCell"];
+            NSRange mgSwipeTCDescriptionRange = NSMakeRange(mgSwipeTCRange.location, [@"MGSwipeTableCell" length]);
+            [aboutAttributedString addAttribute:NSFontAttributeName
+                                          value:[UIFont boldSystemFontOfSize:14]
+                                          range:mgSwipeTCDescriptionRange];
+            
+            // MIT Licence — Attributed string
+            NSRange uiCountingLabelRange = [aboutString rangeOfString:@"UICountingLabel"];
+            NSRange uiCountingLabelDescriptionRange = NSMakeRange(uiCountingLabelRange.location, [@"UICountingLabel" length]);
+            [aboutAttributedString addAttribute:NSFontAttributeName
+                                          value:[UIFont boldSystemFontOfSize:14]
+                                          range:uiCountingLabelDescriptionRange];
+            
+            // MIT Licence — Attributed string
+            NSRange iRateRange = [aboutString rangeOfString:@"iRate"];
+            NSRange iRateDescriptionRange = NSMakeRange(iRateRange.location, [@"iRate" length]);
+            [aboutAttributedString addAttribute:NSFontAttributeName
+                                          value:[UIFont boldSystemFontOfSize:14]
+                                          range:iRateDescriptionRange];
         
         self.textView.attributedText = aboutAttributedString;
-		
 		[self addConstraints];
 	}
 	return self;
