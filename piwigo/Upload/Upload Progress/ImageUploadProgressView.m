@@ -50,7 +50,6 @@
 		self.imageCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.imageCountLabel.font = [UIFont piwigoFontNormal];
 		self.imageCountLabel.textColor = [UIColor piwigoGray];
-		self.imageCountLabel.text = @"Uploading 0/0";
 		self.imageCountLabel.minimumScaleFactor = 0.5;
 		self.imageCountLabel.adjustsFontSizeToFitWidth = YES;
 		self.imageCountLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
@@ -99,7 +98,6 @@
 	}
 	else
 	{
-		self.imageCountLabel.text = [NSString stringWithFormat:@"Uploading %@/%@", @(self.currentImage), @(self.maxImages)];
 	}
 }
 
@@ -141,7 +139,6 @@
         
         // Inform user that the upload task completed
         [UIAlertView showWithTitle:NSLocalizedString(@"imageUploadCompleted_title", @"Upload Completed")
-                           message:(self.totalUploadedImages > 1) ? [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageImagesUploadCompleted_message", @"images/videos uploaded to your Piwigo server.")]: NSLocalizedString(@"imageImageUploadCompleted_message", @"1 image/video uploaded to your Piwigo server.")
                  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
                  otherButtonTitles:nil
                           tapBlock:nil];

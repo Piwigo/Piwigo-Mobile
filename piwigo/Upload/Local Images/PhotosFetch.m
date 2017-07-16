@@ -38,7 +38,6 @@
 	if (status != ALAuthorizationStatusAuthorized && status != ALAuthorizationStatusNotDetermined) {
 		[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"Access not Authorized")
 						   message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-				 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 				 otherButtonTitles:nil
 						  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
 							  if(completion)
