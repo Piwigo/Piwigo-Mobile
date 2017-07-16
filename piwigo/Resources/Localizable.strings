@@ -114,6 +114,7 @@
 "settings_placeholderSize" = "Enter a Photo Size from 1 - 100";
 "settings_placeholderDisk" = "Enter a Disk Cache from 10 - 200";
 "settings_placeholderMemory" = "Enter a Memory Cache from 10 - 200";
+"settings_releaseNotes" = "Release Notes";
 "settings_acknowledgements" = "Acknowledgements";
 "settings_supportForum" = "Support Forum";
 "settings_rateInAppStore" = "Rate Piwigo Mobile";

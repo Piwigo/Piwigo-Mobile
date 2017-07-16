@@ -25,6 +25,7 @@
 #import "DefaultImageSizeViewController.h"
 #import "DefaultThumbnailSizeViewController.h"
 #import "iRate.h"
+#import "ReleaseNotesViewController.h"
 
 typedef enum {
 	SettingSectionServer,
@@ -67,7 +68,7 @@ typedef enum {
 							   @5,
 							   @6,
 							   @2,
-							   @3
+							   @4
 							   ];
 		self.headerHeights = @[
 							   @40.0,
@@ -559,7 +560,23 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 2:     // Acknowledgements
+                case 2:     // Release Notes
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"release"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_releaseNotes", @"Release Notes");
+                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+                    cell.leftLabelWidth = 220;
+                    cell.rightText = @">";
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 3:     // Acknowledgements
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"thanks"];
                     if(!cell)
@@ -824,7 +841,13 @@ typedef enum {
                     [[iRate sharedInstance] openRatingsPageInAppStore];
                     break;
                 }
-                case 2:     // Open Acknowledgements page
+                case 2:     // Open Release Notes page
+                {
+                    ReleaseNotesViewController *releaseNotesVC = [ReleaseNotesViewController new];
+                    [self.navigationController pushViewController:releaseNotesVC animated:YES];
+                    break;
+                }
+                case 3:     // Open Acknowledgements page
                 {
                     AboutViewController *aboutVC = [AboutViewController new];
                     [self.navigationController pushViewController:aboutVC animated:YES];
