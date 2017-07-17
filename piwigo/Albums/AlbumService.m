@@ -19,6 +19,7 @@
 {
     if(categoryId != -1 && [Model sharedInstance].loadAllCategoryInfo && categoryId != 0) return  nil;
     
+    // Recursive option ?
     NSString *recursiveString = [Model sharedInstance].loadAllCategoryInfo ? @"true" : @"false";
     if(categoryId == -1)
     {	// hack-ish way to force load all albums -- send a categoyId as -1
@@ -36,6 +37,7 @@
                   
                   if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                   {
+                      // Extract albums data from JSON message
                       NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
                       [[CategoriesData sharedInstance] addAllCategories:albums];
                       if(completion)

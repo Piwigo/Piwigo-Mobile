@@ -126,6 +126,9 @@
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
+                  // In absence of response, we assume that VideoJS is installed and active
+                  [Model sharedInstance].hasInstalledVideoJS = YES;
+
                   if(completion) {
                       
                       // Did the server answer the request? (Yes if Admin)
@@ -141,10 +144,12 @@
                               NSString *pluginVersion = [plugin objectForKey:@"version"];
                               
                               if([pluginID isEqualToString:@"piwigo-videojs"]) {
-                                  // VideoJS is installed, but is it active ? and right version ?
+                                  // VideoJS is installed, but is it active ? right version ?
                                   if(([pluginState isEqualToString:@"active"]) &&
                                      ([pluginVersion compare:@"2.8.b"] != NSOrderedAscending)) {
                                       [Model sharedInstance].hasInstalledVideoJS = YES;
+                                  } else {
+                                      [Model sharedInstance].hasInstalledVideoJS = NO;
                                   }
                               }
                           }

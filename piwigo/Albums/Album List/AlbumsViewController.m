@@ -78,6 +78,8 @@
 		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
+    self.albumsTableView.allowsMultipleSelectionDuringEditing = NO;
+
     [[iRate sharedInstance] promptIfAllCriteriaMet];
 }
 

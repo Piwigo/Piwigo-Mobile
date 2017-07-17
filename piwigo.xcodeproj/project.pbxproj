@@ -3,19 +3,22 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 47;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		012561DB5152815B48FF0950 /* libPods-piwigoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */; };
 		91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */; };
 		AD0134641EBE310000F11C3F /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0134631EBE310000F11C3F /* TabBarViewController.m */; };
+		AD0392BC1F1BD99200A16940 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD0392BE1F1BD99200A16940 /* Localizable.strings */; };
+		AD0392BF1F1BD99700A16940 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD0392C11F1BD99700A16940 /* About.strings */; };
+		AD0392C21F1BD99E00A16940 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD0392C41F1BD99E00A16940 /* ReleaseNotes.strings */; };
 		AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */; };
 		AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
+		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD6D203C1EDC45C4003B60E8 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6D203B1EDC45C4003B60E8 /* Reachability.m */; };
 		ADD03B341F1A7DA6008AE44B /* ReleaseNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD03B331F1A7DA6008AE44B /* ReleaseNotesViewController.m */; };
-		ADD03B371F1A80A6008AE44B /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADD03B361F1A80A6008AE44B /* ReleaseNotes.strings */; };
 		D8083A4F1A7CB65400A95605 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A4E1A7CB65400A95605 /* UIActionSheet+Blocks.m */; };
 		D8083A521A7CB78900A95605 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A511A7CB78900A95605 /* UIAlertView+Blocks.m */; };
 		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
@@ -77,14 +80,12 @@
 		D8B9BC7F1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC7E1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m */; };
 		D8B9BC821A96ACA800C1B0E5 /* SortSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */; };
 		D8B9BC861A96C50700C1B0E5 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */; };
-		D8B9BC8E1A96DC5800C1B0E5 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8B9BC8D1A96DC5800C1B0E5 /* About.strings */; };
 		D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */; };
 		D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */; };
 		D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C71A461A8489CF0048BA33 /* ImageUploadViewController.m */; };
 		D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */; };
 		D8C71A4C1A848B070048BA33 /* ImageUploadTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */; };
-		D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8C7BE021A6A525F007C8673 /* Localizable.strings */; };
 		D8D3F7201A785DF800AEA7F1 /* AlbumImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */; };
 		D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */; };
 		D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7261A794CC900AEA7F1 /* UploadService.m */; };
@@ -125,6 +126,9 @@
 		A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD0134621EBE310000F11C3F /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
 		AD0134631EBE310000F11C3F /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
+		AD0392BD1F1BD99200A16940 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD0392C01F1BD99700A16940 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/About.strings; sourceTree = "<group>"; };
+		AD0392C31F1BD99E00A16940 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultThumbnailSizeViewController.h; sourceTree = "<group>"; };
 		AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultThumbnailSizeViewController.m; sourceTree = "<group>"; };
 		AD35CA371E9BF8A600E3B897 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "piwigo/Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -133,7 +137,6 @@
 		AD6D203B1EDC45C4003B60E8 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		ADD03B331F1A7DA6008AE44B /* ReleaseNotesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseNotesViewController.m; sourceTree = "<group>"; };
 		ADD03B351F1A7DB8008AE44B /* ReleaseNotesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReleaseNotesViewController.h; sourceTree = "<group>"; };
-		ADD03B361F1A80A6008AE44B /* ReleaseNotes.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = ReleaseNotes.strings; sourceTree = "<group>"; };
 		B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8083A4D1A7CB65400A95605 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		D8083A4E1A7CB65400A95605 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
@@ -180,7 +183,6 @@
 		D82B8CC01A67820A000E47CA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D82B8CC21A67820A000E47CA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D82B8CC31A67820A000E47CA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		D82B8CCE1A67820A000E47CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		D82B8CD41A67820A000E47CA /* piwigoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D82B8CD91A67820A000E47CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D82B8CDA1A67820A000E47CA /* piwigoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = piwigoTests.m; sourceTree = "<group>"; };
@@ -260,7 +262,6 @@
 		D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortSelectViewController.m; sourceTree = "<group>"; };
 		D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
-		D8B9BC8D1A96DC5800C1B0E5 /* About.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = About.strings; sourceTree = "<group>"; };
 		D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadViewController.h; sourceTree = "<group>"; };
@@ -272,7 +273,6 @@
 		D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageUploadCell.xib; sourceTree = "<group>"; };
 		D8C71A4A1A848B070048BA33 /* ImageUploadTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadTableViewCell.h; sourceTree = "<group>"; };
 		D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadTableViewCell.m; sourceTree = "<group>"; };
-		D8C7BE021A6A525F007C8673 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		D8D3F71E1A785DF800AEA7F1 /* AlbumImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumImagesViewController.h; sourceTree = "<group>"; };
 		D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumImagesViewController.m; sourceTree = "<group>"; };
 		D8D3F7221A785E1B00AEA7F1 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
@@ -546,7 +546,6 @@
 				D87C5A971A6F4F93001763BC /* Network */,
 				D82B8CBF1A67820A000E47CA /* Info.plist */,
 				D82B8CEE1A6790BF000E47CA /* PrefixHeader.pch */,
-				D82B8CCD1A67820A000E47CA /* LaunchScreen.xib */,
 				AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */,
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
@@ -653,9 +652,9 @@
 			isa = PBXGroup;
 			children = (
 				D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */,
-				D8C7BE021A6A525F007C8673 /* Localizable.strings */,
-				D8B9BC8D1A96DC5800C1B0E5 /* About.strings */,
-				ADD03B361F1A80A6008AE44B /* ReleaseNotes.strings */,
+				AD0392BE1F1BD99200A16940 /* Localizable.strings */,
+				AD0392C11F1BD99700A16940 /* About.strings */,
+				AD0392C41F1BD99E00A16940 /* ReleaseNotes.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -914,7 +913,7 @@
 				};
 			};
 			buildConfigurationList = D82B8CB61A67820A000E47CA /* Build configuration list for PBXProject "piwigo" */;
-			compatibilityVersion = "Xcode 6.3";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -940,10 +939,11 @@
 				D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */,
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
-				D8C7BE031A6A525F007C8673 /* Localizable.strings in Resources */,
-				D8B9BC8E1A96DC5800C1B0E5 /* About.strings in Resources */,
+				AD0392BF1F1BD99700A16940 /* About.strings in Resources */,
+				AD0392BC1F1BD99200A16940 /* Localizable.strings in Resources */,
+				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
 				D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */,
-				ADD03B371F1A80A6008AE44B /* ReleaseNotes.strings in Resources */,
+				AD0392C21F1BD99E00A16940 /* ReleaseNotes.strings in Resources */,
 				AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1178,6 +1178,30 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		AD0392BE1F1BD99200A16940 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD0392BD1F1BD99200A16940 /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		AD0392C11F1BD99700A16940 /* About.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD0392C01F1BD99700A16940 /* Base */,
+			);
+			name = About.strings;
+			sourceTree = "<group>";
+		};
+		AD0392C41F1BD99E00A16940 /* ReleaseNotes.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD0392C31F1BD99E00A16940 /* Base */,
+			);
+			name = ReleaseNotes.strings;
+			sourceTree = "<group>";
+		};
 		AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1187,12 +1211,11 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		D82B8CCD1A67820A000E47CA /* LaunchScreen.xib */ = {
+		AD6B2E781F0930CE0040EAD9 /* About.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				D82B8CCE1A67820A000E47CA /* Base */,
 			);
-			name = LaunchScreen.xib;
+			name = About.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1202,6 +1225,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1251,6 +1275,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;

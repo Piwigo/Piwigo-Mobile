@@ -139,7 +139,10 @@
 								 onCompletion:^(BOOL result, id response) {
 									 if(result)
 									 {
+                                         // Session now opened
                                          [Model sharedInstance].hadOpenedSession = YES;
+                                         
+                                         // Get version, token, rights, available sizes and check Piwigo version
                                          [self getSessionStatus];
                                          if([Model sharedInstance].hasAdminRights) {
                                              [self getSessionPluginsList];      // To determine if VideoJS is available
@@ -147,7 +150,8 @@
 									 }
 									 else
 									 {
-										 [Model sharedInstance].hadOpenedSession = NO;
+										 // No session opened
+                                         [Model sharedInstance].hadOpenedSession = NO;
                                          [self hideLoading];
 										 [self showLoginFail];
 									 }

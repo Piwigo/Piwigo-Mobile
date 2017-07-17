@@ -349,11 +349,13 @@
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
     
+    // Display date/time of last edition
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.formatterBehavior = NSDateFormatterBehavior10_4;
     formatter.dateStyle = NSDateFormatterShortStyle;
 	self.date.text = [formatter stringFromDate:self.albumData.dateLast];
 	
+    // Display album image
 	NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
 	
 	if(albumData.categoryImage && imageSize > 0)

@@ -88,9 +88,9 @@
 #pragma mark UITableView Methods
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 0) {
-        return NSLocalizedString(@"keywords_selected", @"Selected");
+        return NSLocalizedString(@"tagsHeader_selected", @"Selected");
     } else {
-        return NSLocalizedString(@"keywords_all", @"All");
+        return NSLocalizedString(@"tagsHeader_all", @"All");
     }
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

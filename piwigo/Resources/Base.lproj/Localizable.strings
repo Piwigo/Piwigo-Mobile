@@ -55,47 +55,10 @@
 "loginEmptyServer_title" = "Enter a Web Address";
 "loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
 
-<<<<<<< HEAD:piwigo/Resources/Localizable.strings
-"settingsHeader_server" = "Piwigo Server";
-"settingsHeader_general" = "General Settings";
-"settingsHeader_upload" = "Default Upload Settings";
-"settingsHeader_cache" = "Cache Settings (Used/Total)";
-"settingsHeader_about" = "Information";
-"settings_server" = "Address";
-"settings_username" = "Username";
-"settings_notLoggedIn" = " - Not Logged In - ";
-"settings_logout" = "Logout";
-"settings_defaultAuthor" = "Author";
-"settings_defaultAuthor>320px" = "Author Name";
-"settings_defaultAuthorPlaceholder" = "Author Name";
-"settings_defaultPrivacy" = "Privacy";
-"settings_defaultPrivacy>320px" = "Who Can See the Media?";
-"settings_stripGPSdata" = "Strip GPS Metadata";
-"settings_stripGPSdata>375px" = "Strip GPS Metadata Before Upload";
-"settings_photoResize" = "Resize Before Upload";
-"settings_photoResize>375px" = "Resize Image Before Upload";
-"settings_photoQuality" = "> Quality";
-"settings_photoSize" = "> Size   ";
-"settings_cacheDisk" = "Disk";
-"settings_cacheMemory" = "Memory";
-"settings_cacheMegabytes" = "MB";
-"settings_placeholderQuality" = "Enter an Image Quality from 50 - 98";
-"settings_placeholderSize" = "Enter a Photo Size from 1 - 100";
-"settings_placeholderDisk" = "Enter a Disk Cache from 10 - 200";
-"settings_placeholderMemory" = "Enter a Memory Cache from 10 - 200";
-"settings_releaseNotes" = "Release Notes";
-"settings_acknowledgements" = "Acknowledgements";
-"settings_supportForum" = "Support Forum";
-"settings_rateInAppStore" = "Rate Piwigo Mobile";
-"settings_loadAllCategories" = "Download all Albums at Start";
-"settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
-"settings_displayTitles" = "Display Titles on Thumbnails";
-=======
 "sessionStatusError_title" = "Authentication Fail";
 "sessionStatusError_message" = "Failed to authenticate with the server.\nTry logging in again.";
 "sessionMethodsError_message" = "Failed to get server methods.\nTry logging in again.";
 "sessionCommunityError_message" = "Failed to get Community extension parameters.\nTry logging in again.";
->>>>>>> origin/v2.0.4:piwigo/Resources/Base.lproj/Localizable.strings
 
 // Logout
 "logoutConfirmation_title" = "Logout";
