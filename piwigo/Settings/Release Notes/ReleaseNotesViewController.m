@@ -67,6 +67,14 @@
             NSString *v201String = NSLocalizedStringFromTableInBundle(@"v2.0.1_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.0.1 Release Notes text");
             notesString = [notesString stringByAppendingString:v201String];
             
+            // Release 2.0.0 — Bundle string
+            NSString *v200String = NSLocalizedStringFromTableInBundle(@"v2.0.0_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.0.0 Release Notes text");
+            notesString = [notesString stringByAppendingString:v200String];
+            
+            // Release 1.0.0 — Bundle string
+            NSString *v100String = NSLocalizedStringFromTableInBundle(@"v1.0.0_text", @"ReleaseNotes", [NSBundle mainBundle], @"v1.0.0 Release Notes text");
+            notesString = [notesString stringByAppendingString:v100String];
+            
         // Attributed strings
         NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:notesString];
     
@@ -78,26 +86,40 @@
                                           range:v204DescriptionRange];
             
             // Release 2.0.3 — Attributed string
-            NSRange v203Range = [notesString rangeOfString:@"Version 2.0.3"];
-            NSRange v203DescriptionRange = NSMakeRange(v203Range.location, [@"Version 2.0.3" length]);
+            NSRange v203Range = [notesString rangeOfString:@"Version 2.0.3 — May 26, 2017"];
+            NSRange v203DescriptionRange = NSMakeRange(v203Range.location, [@"Version 2.0.3 — May 26, 2017" length]);
             [notesAttributedString addAttribute:NSFontAttributeName
                                           value:[UIFont boldSystemFontOfSize:14]
                                           range:v203DescriptionRange];
 
             // Release 2.0.2 — Attributed string
-            NSRange v202Range = [notesString rangeOfString:@"Version 2.0.2"];
-            NSRange v202DescriptionRange = NSMakeRange(v202Range.location, [@"Version 2.0.2" length]);
+            NSRange v202Range = [notesString rangeOfString:@"Version 2.0.2 — May 8, 2017"];
+            NSRange v202DescriptionRange = NSMakeRange(v202Range.location, [@"Version 2.0.2 — May 8, 2017" length]);
             [notesAttributedString addAttribute:NSFontAttributeName
                                           value:[UIFont boldSystemFontOfSize:14]
                                           range:v202DescriptionRange];
 
             // Release 2.0.1 — Attributed string
-            NSRange v201Range = [notesString rangeOfString:@"Version 2.0.1"];
-            NSRange v201DescriptionRange = NSMakeRange(v201Range.location, [@"Version 2.0.1" length]);
+            NSRange v201Range = [notesString rangeOfString:@"Version 2.0.1 — June 26, 2015"];
+            NSRange v201DescriptionRange = NSMakeRange(v201Range.location, [@"Version 2.0.1 — June 26, 2015" length]);
             [notesAttributedString addAttribute:NSFontAttributeName
                                           value:[UIFont boldSystemFontOfSize:14]
                                           range:v201DescriptionRange];
 
+            // Release 2.0.0 — Attributed string
+            NSRange v200Range = [notesString rangeOfString:@"Version 2.0 — April 24, 2015"];
+            NSRange v200DescriptionRange = NSMakeRange(v200Range.location, [@"Version 2.0 — April 24, 2015" length]);
+            [notesAttributedString addAttribute:NSFontAttributeName
+                                          value:[UIFont boldSystemFontOfSize:14]
+                                          range:v200DescriptionRange];
+            
+            // Release 1.0.0 — Attributed string
+            NSRange v100Range = [notesString rangeOfString:@"Version 1.0 — October 17, 2011"];
+            NSRange v100DescriptionRange = NSMakeRange(v100Range.location, [@"Version 1.0 — October 17, 2011" length]);
+            [notesAttributedString addAttribute:NSFontAttributeName
+                                          value:[UIFont boldSystemFontOfSize:14]
+                                          range:v100DescriptionRange];
+            
         self.textView.attributedText = notesAttributedString;
         [self addConstraints];
     }

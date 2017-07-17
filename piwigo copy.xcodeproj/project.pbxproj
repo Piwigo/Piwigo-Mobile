@@ -1,0 +1,1461 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		012561DB5152815B48FF0950 /* libPods-piwigoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */; };
+		91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */; };
+		AD0134641EBE310000F11C3F /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0134631EBE310000F11C3F /* TabBarViewController.m */; };
+		AD0392BC1F1BD99200A16940 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD0392BE1F1BD99200A16940 /* Localizable.strings */; };
+		AD0392BF1F1BD99700A16940 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD0392C11F1BD99700A16940 /* About.strings */; };
+		AD0392C21F1BD99E00A16940 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD0392C41F1BD99E00A16940 /* ReleaseNotes.strings */; };
+		AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */; };
+		AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */; };
+		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
+		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
+		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
+		AD6D203C1EDC45C4003B60E8 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6D203B1EDC45C4003B60E8 /* Reachability.m */; };
+		ADD03B341F1A7DA6008AE44B /* ReleaseNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD03B331F1A7DA6008AE44B /* ReleaseNotesViewController.m */; };
+		D8083A4F1A7CB65400A95605 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A4E1A7CB65400A95605 /* UIActionSheet+Blocks.m */; };
+		D8083A521A7CB78900A95605 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A511A7CB78900A95605 /* UIAlertView+Blocks.m */; };
+		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
+		D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */; };
+		D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */; };
+		D8083A631A7FF30800A95605 /* TextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A621A7FF30800A95605 /* TextFieldTableViewCell.m */; };
+		D8083A671A7FF8F600A95605 /* ButtonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */; };
+		D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A9E1A81B03100A95605 /* ImageUploadManager.m */; };
+		D8083AA21A81B34000A95605 /* ImageUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083AA11A81B34000A95605 /* ImageUpload.m */; };
+		D8083AA61A82905B00A95605 /* ImageUploadProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */; };
+		D8172DAB1AB2805F00271DB0 /* MGSwipeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172DA81AB2805F00271DB0 /* MGSwipeButton.m */; };
+		D8172DAC1AB2805F00271DB0 /* MGSwipeTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172DAA1AB2805F00271DB0 /* MGSwipeTableCell.m */; };
+		D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */; };
+		D8172E201AB7D2EA00271DB0 /* AllCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */; };
+		D8172E961AB9093100271DB0 /* EditPopDownView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E951AB9093100271DB0 /* EditPopDownView.m */; };
+		D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D818B17F1AA4265D006FC32A /* CategorySortViewController.m */; };
+		D818E9FB1A74C18500733991 /* AlbumService.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FA1A74C18500733991 /* AlbumService.m */; };
+		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
+		D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
+		D81C99441B02DB250081C976 /* DefaultImageSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */; };
+		D82B8CC11A67820A000E47CA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC01A67820A000E47CA /* main.m */; };
+		D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC31A67820A000E47CA /* AppDelegate.m */; };
+		D82B8CDB1A67820A000E47CA /* piwigoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CDA1A67820A000E47CA /* piwigoTests.m */; };
+		D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE51A678ED2000E47CA /* NetworkHandler.m */; };
+		D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */; };
+		D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */; };
+		D82B8D2B1A68832C000E47CA /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2A1A68832C000E47CA /* Model.m */; };
+		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
+		D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */; };
+		D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D83212321A91B937009372D8 /* LabelTableViewCell.m */; };
+		D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8361A7BFF1900231886 /* LEColorPicker.m */; };
+		D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */; };
+		D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B83C1A7C06A500231886 /* OutlinedText.m */; };
+		D860440B1A995C580067E5D1 /* ClearCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D860440A1A995C580067E5D1 /* ClearCache.m */; };
+		D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */; };
+		D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D86044101A99922F0067E5D1 /* ImageScrollView.m */; };
+		D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */; };
+		D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */; };
+		D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */; };
+		D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */; };
+		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
+		D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A921A6F4C43001763BC /* KeychainAccess.m */; };
+		D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */; };
+		D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* SessionService.m */; };
+		D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */; };
+		D88A685E1AC26FA4002A3259 /* SwitchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D88A685D1AC26FA4002A3259 /* SwitchTableViewCell.m */; };
+		D89045AC1A94654D00A306FE /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
+		D89045B21A94662300A306FE /* TagsData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B11A94662300A306FE /* TagsData.m */; };
+		D89045B91A946A5B00A306FE /* TagsService.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B81A946A5B00A306FE /* TagsService.m */; };
+		D89045BC1A9470A600A306FE /* TagsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045BB1A9470A600A306FE /* TagsViewController.m */; };
+		D89045BF1A950FF700A306FE /* TagsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045BE1A950FF700A306FE /* TagsTableViewCell.m */; };
+		D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */; };
+		D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */; };
+		D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */; };
+		D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */; };
+		D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */; };
+		D8B04C641A92B1BB00695281 /* EditImageLabelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B04C631A92B1BB00695281 /* EditImageLabelTableViewCell.m */; };
+		D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */; };
+		D8B9BC7F1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC7E1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m */; };
+		D8B9BC821A96ACA800C1B0E5 /* SortSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */; };
+		D8B9BC861A96C50700C1B0E5 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */; };
+		D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
+		D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */; };
+		D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */; };
+		D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C71A461A8489CF0048BA33 /* ImageUploadViewController.m */; };
+		D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */; };
+		D8C71A4C1A848B070048BA33 /* ImageUploadTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */; };
+		D8D3F7201A785DF800AEA7F1 /* AlbumImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */; };
+		D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */; };
+		D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7261A794CC900AEA7F1 /* UploadService.m */; };
+		D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */; };
+		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
+		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
+		D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */; };
+		D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */; };
+		D8E4D61E1ABD223B0057EB95 /* ServerField.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D61D1ABD223B0057EB95 /* ServerField.m */; };
+		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
+		D8EAC8C71AD773FD00D9D15E /* CategoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */; };
+		D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F113591A9E40EF000EC0A6 /* LoadingView.m */; };
+		D8F1135D1A9E4E43000EC0A6 /* UICountingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */; };
+		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
+		D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */; };
+		D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */; };
+		D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */; };
+		D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */; };
+		ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */; };
+		ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D82B8CD51A67820A000E47CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
+			remoteInfo = piwigo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2730F70D21F7F339E7C4C5A2 /* Pods-piwigoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4638715CC0ABD46A2178FEC6 /* Pods-piwigo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-piwigo/Pods-piwigo.debug.xcconfig"; sourceTree = "<group>"; };
+		7C4B704898B5BF42D1A475AB /* Pods-piwigo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigo.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigo/Pods-piwigo.release.xcconfig"; sourceTree = "<group>"; };
+		9AEB39308966C4B773F67234 /* Pods-piwigoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests.release.xcconfig"; sourceTree = "<group>"; };
+		A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD0134621EBE310000F11C3F /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
+		AD0134631EBE310000F11C3F /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
+		AD0392BD1F1BD99200A16940 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD0392C01F1BD99700A16940 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/About.strings; sourceTree = "<group>"; };
+		AD0392C31F1BD99E00A16940 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultThumbnailSizeViewController.h; sourceTree = "<group>"; };
+		AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultThumbnailSizeViewController.m; sourceTree = "<group>"; };
+		AD35CA371E9BF8A600E3B897 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "piwigo/Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
+		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		AD6B2E741F0930B40040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD6B2E771F0930CE0040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/About.strings; sourceTree = "<group>"; };
+		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
+		AD6D203A1EDC45C4003B60E8 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		AD6D203B1EDC45C4003B60E8 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		ADD03B331F1A7DA6008AE44B /* ReleaseNotesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseNotesViewController.m; sourceTree = "<group>"; };
+		ADD03B351F1A7DB8008AE44B /* ReleaseNotesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReleaseNotesViewController.h; sourceTree = "<group>"; };
+		B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8083A4D1A7CB65400A95605 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
+		D8083A4E1A7CB65400A95605 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
+		D8083A501A7CB78900A95605 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
+		D8083A511A7CB78900A95605 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
+		D8083A531A7D66CD00A95605 /* ImageService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageService.h; sourceTree = "<group>"; };
+		D8083A541A7D66CD00A95605 /* ImageService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageService.m; sourceTree = "<group>"; };
+		D8083A591A7DBD5000A95605 /* ImageDownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloadView.h; sourceTree = "<group>"; };
+		D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadView.m; sourceTree = "<group>"; };
+		D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloadingProgressView.h; sourceTree = "<group>"; };
+		D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadingProgressView.m; sourceTree = "<group>"; };
+		D8083A611A7FF30800A95605 /* TextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFieldTableViewCell.h; sourceTree = "<group>"; };
+		D8083A621A7FF30800A95605 /* TextFieldTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFieldTableViewCell.m; sourceTree = "<group>"; };
+		D8083A651A7FF8F600A95605 /* ButtonTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonTableViewCell.h; sourceTree = "<group>"; };
+		D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonTableViewCell.m; sourceTree = "<group>"; };
+		D8083A9D1A81B03100A95605 /* ImageUploadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadManager.h; sourceTree = "<group>"; };
+		D8083A9E1A81B03100A95605 /* ImageUploadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadManager.m; sourceTree = "<group>"; };
+		D8083AA01A81B34000A95605 /* ImageUpload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUpload.h; sourceTree = "<group>"; };
+		D8083AA11A81B34000A95605 /* ImageUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUpload.m; sourceTree = "<group>"; };
+		D8083AA41A82905B00A95605 /* ImageUploadProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadProgressView.h; sourceTree = "<group>"; };
+		D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadProgressView.m; sourceTree = "<group>"; };
+		D8172DA71AB2805F00271DB0 /* MGSwipeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSwipeButton.h; sourceTree = "<group>"; };
+		D8172DA81AB2805F00271DB0 /* MGSwipeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSwipeButton.m; sourceTree = "<group>"; };
+		D8172DA91AB2805F00271DB0 /* MGSwipeTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSwipeTableCell.h; sourceTree = "<group>"; };
+		D8172DAA1AB2805F00271DB0 /* MGSwipeTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSwipeTableCell.m; sourceTree = "<group>"; };
+		D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveCategoryViewController.h; sourceTree = "<group>"; };
+		D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveCategoryViewController.m; sourceTree = "<group>"; };
+		D8172E1E1AB7D2EA00271DB0 /* AllCategoriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllCategoriesViewController.h; sourceTree = "<group>"; };
+		D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllCategoriesViewController.m; sourceTree = "<group>"; };
+		D8172E941AB9093100271DB0 /* EditPopDownView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditPopDownView.h; sourceTree = "<group>"; };
+		D8172E951AB9093100271DB0 /* EditPopDownView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditPopDownView.m; sourceTree = "<group>"; };
+		D818B17E1AA4265D006FC32A /* CategorySortViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySortViewController.h; sourceTree = "<group>"; };
+		D818B17F1AA4265D006FC32A /* CategorySortViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySortViewController.m; sourceTree = "<group>"; };
+		D818E9F91A74C18500733991 /* AlbumService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumService.h; sourceTree = "<group>"; };
+		D818E9FA1A74C18500733991 /* AlbumService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumService.m; sourceTree = "<group>"; };
+		D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoAlbumData.h; sourceTree = "<group>"; };
+		D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoAlbumData.m; sourceTree = "<group>"; };
+		D818EA001A74C7BA00733991 /* AlbumTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumTableViewCell.h; sourceTree = "<group>"; };
+		D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumTableViewCell.m; sourceTree = "<group>"; };
+		D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultImageSizeViewController.h; sourceTree = "<group>"; };
+		D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultImageSizeViewController.m; sourceTree = "<group>"; };
+		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D82B8CBF1A67820A000E47CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D82B8CC01A67820A000E47CA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D82B8CC21A67820A000E47CA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D82B8CC31A67820A000E47CA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D82B8CD41A67820A000E47CA /* piwigoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D82B8CD91A67820A000E47CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D82B8CDA1A67820A000E47CA /* piwigoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = piwigoTests.m; sourceTree = "<group>"; };
+		D82B8CE41A678ED2000E47CA /* NetworkHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkHandler.h; sourceTree = "<group>"; };
+		D82B8CE51A678ED2000E47CA /* NetworkHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkHandler.m; sourceTree = "<group>"; };
+		D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSLayoutConstraint+CommonConstraints.h"; sourceTree = "<group>"; };
+		D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLayoutConstraint+CommonConstraints.m"; sourceTree = "<group>"; };
+		D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AppSpecificColors.h"; sourceTree = "<group>"; };
+		D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AppSpecificColors.m"; sourceTree = "<group>"; };
+		D82B8CEE1A6790BF000E47CA /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		D82B8D291A68832C000E47CA /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
+		D82B8D2A1A68832C000E47CA /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
+		D82B8D2E1A688512000E47CA /* PiwigoImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoImageData.h; sourceTree = "<group>"; };
+		D82B8D2F1A688512000E47CA /* PiwigoImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoImageData.m; sourceTree = "<group>"; };
+		D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailViewController.h; sourceTree = "<group>"; };
+		D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController.m; sourceTree = "<group>"; };
+		D83212311A91B937009372D8 /* LabelTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LabelTableViewCell.h; sourceTree = "<group>"; };
+		D83212321A91B937009372D8 /* LabelTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LabelTableViewCell.m; sourceTree = "<group>"; };
+		D847B8351A7BFF1900231886 /* LEColorPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEColorPicker.h; sourceTree = "<group>"; };
+		D847B8361A7BFF1900231886 /* LEColorPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEColorPicker.m; sourceTree = "<group>"; };
+		D847B8371A7BFF1900231886 /* UIColor+YUVSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YUVSpace.h"; sourceTree = "<group>"; };
+		D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+YUVSpace.m"; sourceTree = "<group>"; };
+		D847B83B1A7C06A500231886 /* OutlinedText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlinedText.h; sourceTree = "<group>"; };
+		D847B83C1A7C06A500231886 /* OutlinedText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlinedText.m; sourceTree = "<group>"; };
+		D86044091A995C580067E5D1 /* ClearCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearCache.h; sourceTree = "<group>"; };
+		D860440A1A995C580067E5D1 /* ClearCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearCache.m; sourceTree = "<group>"; };
+		D860440C1A99894C0067E5D1 /* ImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePreviewViewController.h; sourceTree = "<group>"; };
+		D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePreviewViewController.m; sourceTree = "<group>"; };
+		D860440F1A99922F0067E5D1 /* ImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageScrollView.h; sourceTree = "<group>"; };
+		D86044101A99922F0067E5D1 /* ImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageScrollView.m; sourceTree = "<group>"; };
+		D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoButton.h; sourceTree = "<group>"; };
+		D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoButton.m; sourceTree = "<group>"; };
+		D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+AppFonts.h"; sourceTree = "<group>"; };
+		D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+AppFonts.m"; sourceTree = "<group>"; };
+		D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = LacunaRegular.TTF; sourceTree = "<group>"; };
+		D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTextField.h; sourceTree = "<group>"; };
+		D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoTextField.m; sourceTree = "<group>"; };
+		D863EECB1A6A495700C0A6E9 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		D863EECC1A6A495700C0A6E9 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		D87C5A911A6F4C43001763BC /* KeychainAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainAccess.h; sourceTree = "<group>"; };
+		D87C5A921A6F4C43001763BC /* KeychainAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainAccess.m; sourceTree = "<group>"; };
+		D87C5A931A6F4C43001763BC /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
+		D87C5A981A6F4FB0001763BC /* SessionService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionService.h; sourceTree = "<group>"; };
+		D87C5A991A6F4FB0001763BC /* SessionService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionService.m; sourceTree = "<group>"; };
+		D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryTableViewCell.h; sourceTree = "<group>"; };
+		D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryTableViewCell.m; sourceTree = "<group>"; };
+		D88A685C1AC26FA4002A3259 /* SwitchTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchTableViewCell.h; sourceTree = "<group>"; };
+		D88A685D1AC26FA4002A3259 /* SwitchTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwitchTableViewCell.m; sourceTree = "<group>"; };
+		D89045AA1A94654D00A306FE /* PiwigoTagData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTagData.h; sourceTree = "<group>"; };
+		D89045AB1A94654D00A306FE /* PiwigoTagData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoTagData.m; sourceTree = "<group>"; };
+		D89045B01A94662300A306FE /* TagsData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsData.h; sourceTree = "<group>"; };
+		D89045B11A94662300A306FE /* TagsData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsData.m; sourceTree = "<group>"; };
+		D89045B71A946A5B00A306FE /* TagsService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsService.h; sourceTree = "<group>"; };
+		D89045B81A946A5B00A306FE /* TagsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsService.m; sourceTree = "<group>"; };
+		D89045BA1A9470A600A306FE /* TagsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsViewController.h; sourceTree = "<group>"; };
+		D89045BB1A9470A600A306FE /* TagsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsViewController.m; sourceTree = "<group>"; };
+		D89045BD1A950FF700A306FE /* TagsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsTableViewCell.h; sourceTree = "<group>"; };
+		D89045BE1A950FF700A306FE /* TagsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsTableViewCell.m; sourceTree = "<group>"; };
+		D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryPickViewController.h; sourceTree = "<group>"; };
+		D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryPickViewController.m; sourceTree = "<group>"; };
+		D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumData.h; sourceTree = "<group>"; };
+		D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumData.m; sourceTree = "<group>"; };
+		D8A94EB01AAE3C5600E4B287 /* CategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCollectionViewCell.h; sourceTree = "<group>"; };
+		D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCollectionViewCell.m; sourceTree = "<group>"; };
+		D8A94EB31AAE650800E4B287 /* SliderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliderTableViewCell.h; sourceTree = "<group>"; };
+		D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SliderTableViewCell.m; sourceTree = "<group>"; };
+		D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectPrivacyViewController.h; sourceTree = "<group>"; };
+		D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectPrivacyViewController.m; sourceTree = "<group>"; };
+		D8B04C621A92B1BB00695281 /* EditImageLabelTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageLabelTableViewCell.h; sourceTree = "<group>"; };
+		D8B04C631A92B1BB00695281 /* EditImageLabelTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageLabelTableViewCell.m; sourceTree = "<group>"; };
+		D8B9BC7A1A95B1F600C1B0E5 /* NotUploadedYet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotUploadedYet.h; sourceTree = "<group>"; };
+		D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotUploadedYet.m; sourceTree = "<group>"; };
+		D8B9BC7D1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortHeaderCollectionReusableView.h; sourceTree = "<group>"; };
+		D8B9BC7E1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortHeaderCollectionReusableView.m; sourceTree = "<group>"; };
+		D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortSelectViewController.h; sourceTree = "<group>"; };
+		D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortSelectViewController.m; sourceTree = "<group>"; };
+		D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadViewController.h; sourceTree = "<group>"; };
+		D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadViewController.m; sourceTree = "<group>"; };
+		D8BDCB681A6F6C2D00D106A8 /* AlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsViewController.h; sourceTree = "<group>"; };
+		D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsViewController.m; sourceTree = "<group>"; };
+		D8C71A451A8489CF0048BA33 /* ImageUploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadViewController.h; sourceTree = "<group>"; };
+		D8C71A461A8489CF0048BA33 /* ImageUploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadViewController.m; sourceTree = "<group>"; };
+		D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageUploadCell.xib; sourceTree = "<group>"; };
+		D8C71A4A1A848B070048BA33 /* ImageUploadTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadTableViewCell.h; sourceTree = "<group>"; };
+		D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadTableViewCell.m; sourceTree = "<group>"; };
+		D8D3F71E1A785DF800AEA7F1 /* AlbumImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumImagesViewController.h; sourceTree = "<group>"; };
+		D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumImagesViewController.m; sourceTree = "<group>"; };
+		D8D3F7221A785E1B00AEA7F1 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
+		D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionViewCell.m; sourceTree = "<group>"; };
+		D8D3F7251A794CC900AEA7F1 /* UploadService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadService.h; sourceTree = "<group>"; };
+		D8D3F7261A794CC900AEA7F1 /* UploadService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadService.m; sourceTree = "<group>"; };
+		D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosFetch.h; sourceTree = "<group>"; };
+		D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosFetch.m; sourceTree = "<group>"; };
+		D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalImageCollectionViewCell.h; sourceTree = "<group>"; };
+		D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImageCollectionViewCell.m; sourceTree = "<group>"; };
+		D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesData.h; sourceTree = "<group>"; };
+		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
+		D8D63B9D1AA69E0000F0ED39 /* CategoryImageSort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryImageSort.h; sourceTree = "<group>"; };
+		D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryImageSort.m; sourceTree = "<group>"; };
+		D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalAlbumsViewController.h; sourceTree = "<group>"; };
+		D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalAlbumsViewController.m; sourceTree = "<group>"; };
+		D8E4D61C1ABD223B0057EB95 /* ServerField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerField.h; sourceTree = "<group>"; };
+		D8E4D61D1ABD223B0057EB95 /* ServerField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerField.m; sourceTree = "<group>"; };
+		D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
+		D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
+		D8EAC8C51AD773FD00D9D15E /* CategoryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListViewController.h; sourceTree = "<group>"; };
+		D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListViewController.m; sourceTree = "<group>"; };
+		D8F113581A9E40EF000EC0A6 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
+		D8F113591A9E40EF000EC0A6 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
+		D8F1135B1A9E4E43000EC0A6 /* UICountingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICountingLabel.h; sourceTree = "<group>"; };
+		D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICountingLabel.m; sourceTree = "<group>"; };
+		D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageDetailsViewController.h; sourceTree = "<group>"; };
+		D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageDetailsViewController.m; sourceTree = "<group>"; };
+		D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageDetails.storyboard; sourceTree = "<group>"; };
+		D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextFieldTableViewCell.h; sourceTree = "<group>"; };
+		D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextFieldTableViewCell.m; sourceTree = "<group>"; };
+		D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextViewTableViewCell.h; sourceTree = "<group>"; };
+		D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextViewTableViewCell.m; sourceTree = "<group>"; };
+		D8F325181A87F624007CBDAC /* UIPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPlaceHolderTextView.h; sourceTree = "<group>"; };
+		D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPlaceHolderTextView.m; sourceTree = "<group>"; };
+		ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPhone.h; sourceTree = "<group>"; };
+		ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPhone.m; sourceTree = "<group>"; };
+		ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPad.h; sourceTree = "<group>"; };
+		ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPad.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D82B8CB81A67820A000E47CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82B8CD11A67820A000E47CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				012561DB5152815B48FF0950 /* libPods-piwigoTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1F042DC0C96A55B227088605 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */,
+				B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9BE2F03E92BB4BD667BAA1F0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4638715CC0ABD46A2178FEC6 /* Pods-piwigo.debug.xcconfig */,
+				7C4B704898B5BF42D1A475AB /* Pods-piwigo.release.xcconfig */,
+				2730F70D21F7F339E7C4C5A2 /* Pods-piwigoTests.debug.xcconfig */,
+				9AEB39308966C4B773F67234 /* Pods-piwigoTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		AD0134611EBE310000F11C3F /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				AD0134621EBE310000F11C3F /* TabBarViewController.h */,
+				AD0134631EBE310000F11C3F /* TabBarViewController.m */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
+		ADD03B321F1A7D49008AE44B /* Release Notes */ = {
+			isa = PBXGroup;
+			children = (
+				ADD03B351F1A7DB8008AE44B /* ReleaseNotesViewController.h */,
+				ADD03B331F1A7DA6008AE44B /* ReleaseNotesViewController.m */,
+			);
+			path = "Release Notes";
+			sourceTree = "<group>";
+		};
+		D8083A641A7FF30B00A95605 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				D8083A611A7FF30800A95605 /* TextFieldTableViewCell.h */,
+				D8083A621A7FF30800A95605 /* TextFieldTableViewCell.m */,
+				D8083A651A7FF8F600A95605 /* ButtonTableViewCell.h */,
+				D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */,
+				D83212311A91B937009372D8 /* LabelTableViewCell.h */,
+				D83212321A91B937009372D8 /* LabelTableViewCell.m */,
+				D8A94EB31AAE650800E4B287 /* SliderTableViewCell.h */,
+				D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */,
+				D88A685C1AC26FA4002A3259 /* SwitchTableViewCell.h */,
+				D88A685D1AC26FA4002A3259 /* SwitchTableViewCell.m */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		D8083AA31A81B34C00A95605 /* Image Uploading */ = {
+			isa = PBXGroup;
+			children = (
+				D8D3F7251A794CC900AEA7F1 /* UploadService.h */,
+				D8D3F7261A794CC900AEA7F1 /* UploadService.m */,
+				D8083A9D1A81B03100A95605 /* ImageUploadManager.h */,
+				D8083A9E1A81B03100A95605 /* ImageUploadManager.m */,
+				D8083AA01A81B34000A95605 /* ImageUpload.h */,
+				D8083AA11A81B34000A95605 /* ImageUpload.m */,
+			);
+			path = "Image Uploading";
+			sourceTree = "<group>";
+		};
+		D8083AA71A82905F00A95605 /* Upload Progress */ = {
+			isa = PBXGroup;
+			children = (
+				D8083AA41A82905B00A95605 /* ImageUploadProgressView.h */,
+				D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */,
+				D8C71A451A8489CF0048BA33 /* ImageUploadViewController.h */,
+				D8C71A461A8489CF0048BA33 /* ImageUploadViewController.m */,
+				D8C71A4A1A848B070048BA33 /* ImageUploadTableViewCell.h */,
+				D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */,
+				D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */,
+				D8F325111A875939007CBDAC /* Edit Image Details */,
+			);
+			path = "Upload Progress";
+			sourceTree = "<group>";
+		};
+		D8172DA61AB2805F00271DB0 /* MGSwipeTableCell */ = {
+			isa = PBXGroup;
+			children = (
+				D8172DA71AB2805F00271DB0 /* MGSwipeButton.h */,
+				D8172DA81AB2805F00271DB0 /* MGSwipeButton.m */,
+				D8172DA91AB2805F00271DB0 /* MGSwipeTableCell.h */,
+				D8172DAA1AB2805F00271DB0 /* MGSwipeTableCell.m */,
+			);
+			path = MGSwipeTableCell;
+			sourceTree = "<group>";
+		};
+		D8172E171AB7C06200271DB0 /* Album Edit */ = {
+			isa = PBXGroup;
+			children = (
+				D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */,
+				D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */,
+			);
+			path = "Album Edit";
+			sourceTree = "<group>";
+		};
+		D818E9F41A74BEFF00733991 /* Album List */ = {
+			isa = PBXGroup;
+			children = (
+				D8BDCB681A6F6C2D00D106A8 /* AlbumsViewController.h */,
+				D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */,
+				D818EA001A74C7BA00733991 /* AlbumTableViewCell.h */,
+				D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */,
+				D8172E171AB7C06200271DB0 /* Album Edit */,
+			);
+			path = "Album List";
+			sourceTree = "<group>";
+		};
+		D818E9F51A74BF1100733991 /* Album Pictures */ = {
+			isa = PBXGroup;
+			children = (
+				D8D3F71E1A785DF800AEA7F1 /* AlbumImagesViewController.h */,
+				D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */,
+				D8D3F7221A785E1B00AEA7F1 /* ImageCollectionViewCell.h */,
+				D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */,
+				D8A59EF01ACE458600D2EBF0 /* Albums Data */,
+				D818B17E1AA4265D006FC32A /* CategorySortViewController.h */,
+				D818B17F1AA4265D006FC32A /* CategorySortViewController.m */,
+				D8D63B9D1AA69E0000F0ED39 /* CategoryImageSort.h */,
+				D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */,
+				D8A94EB01AAE3C5600E4B287 /* CategoryCollectionViewCell.h */,
+				D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */,
+			);
+			path = "Album Pictures";
+			sourceTree = "<group>";
+		};
+		D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8D2E1A688512000E47CA /* PiwigoImageData.h */,
+				D82B8D2F1A688512000E47CA /* PiwigoImageData.m */,
+				D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */,
+				D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */,
+				D89045AA1A94654D00A306FE /* PiwigoTagData.h */,
+				D89045AB1A94654D00A306FE /* PiwigoTagData.m */,
+			);
+			path = "Piwigo Data Wrappers";
+			sourceTree = "<group>";
+		};
+		D818EA031A74D32100733991 /* Image Detail */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */,
+				D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */,
+				D860440C1A99894C0067E5D1 /* ImagePreviewViewController.h */,
+				D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */,
+				D860440F1A99922F0067E5D1 /* ImageScrollView.h */,
+				D86044101A99922F0067E5D1 /* ImageScrollView.m */,
+				D8083A591A7DBD5000A95605 /* ImageDownloadView.h */,
+				D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */,
+				D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */,
+				D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */,
+				D8172E1E1AB7D2EA00271DB0 /* AllCategoriesViewController.h */,
+				D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */,
+			);
+			path = "Image Detail";
+			sourceTree = "<group>";
+		};
+		D81C993E1B02DA190081C976 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */,
+				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
+				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
+				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D82B8CB21A67820A000E47CA = {
+			isa = PBXGroup;
+			children = (
+				D82B8CBD1A67820A000E47CA /* piwigo */,
+				D82B8CD71A67820A000E47CA /* piwigoTests */,
+				D82B8CBC1A67820A000E47CA /* Products */,
+				9BE2F03E92BB4BD667BAA1F0 /* Pods */,
+				1F042DC0C96A55B227088605 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D82B8CBC1A67820A000E47CA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CBB1A67820A000E47CA /* piwigo.app */,
+				D82B8CD41A67820A000E47CA /* piwigoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D82B8CBD1A67820A000E47CA /* piwigo */ = {
+			isa = PBXGroup;
+			children = (
+				AD0134611EBE310000F11C3F /* TabBar */,
+				D863EEBE1A6A440D00C0A6E9 /* Login */,
+				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
+				D8BDCB601A6F6B5000D106A8 /* Upload */,
+				D89045B31A9469FF00A306FE /* Tags */,
+				D8F113541A9E403E000EC0A6 /* Loading View */,
+				D8B9BC791A95B1CE00C1B0E5 /* Not Uploaded Yet */,
+				D8BDCB611A6F6B5400D106A8 /* Settings */,
+				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
+				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
+				D87C5A971A6F4F93001763BC /* Network */,
+				D82B8CBF1A67820A000E47CA /* Info.plist */,
+				D82B8CEE1A6790BF000E47CA /* PrefixHeader.pch */,
+				AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */,
+				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
+				D863EEC51A6A45E800C0A6E9 /* Resources */,
+				D82B8CBE1A67820A000E47CA /* Supporting Files */,
+			);
+			path = piwigo;
+			sourceTree = SOURCE_ROOT;
+		};
+		D82B8CBE1A67820A000E47CA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D847B8341A7BFF1900231886 /* LEColorPicker */,
+				D8172DA61AB2805F00271DB0 /* MGSwipeTableCell */,
+				D82B8CED1A6790A3000E47CA /* Macros */,
+				D82B8D291A68832C000E47CA /* Model.h */,
+				D82B8D2A1A68832C000E47CA /* Model.m */,
+				D82B8CC21A67820A000E47CA /* AppDelegate.h */,
+				D82B8CC31A67820A000E47CA /* AppDelegate.m */,
+				D82B8CC01A67820A000E47CA /* main.m */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D82B8CD71A67820A000E47CA /* piwigoTests */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CDA1A67820A000E47CA /* piwigoTests.m */,
+				D82B8CD81A67820A000E47CA /* Supporting Files */,
+			);
+			path = piwigoTests;
+			sourceTree = "<group>";
+		};
+		D82B8CD81A67820A000E47CA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CD91A67820A000E47CA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D82B8CED1A6790A3000E47CA /* Macros */ = {
+			isa = PBXGroup;
+			children = (
+				D8083A501A7CB78900A95605 /* UIAlertView+Blocks.h */,
+				D8083A511A7CB78900A95605 /* UIAlertView+Blocks.m */,
+				D8083A4D1A7CB65400A95605 /* UIActionSheet+Blocks.h */,
+				D8083A4E1A7CB65400A95605 /* UIActionSheet+Blocks.m */,
+				D847B83B1A7C06A500231886 /* OutlinedText.h */,
+				D847B83C1A7C06A500231886 /* OutlinedText.m */,
+				D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */,
+				D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */,
+				D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */,
+				D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */,
+				D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */,
+				D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */,
+			);
+			path = Macros;
+			sourceTree = "<group>";
+		};
+		D847B8341A7BFF1900231886 /* LEColorPicker */ = {
+			isa = PBXGroup;
+			children = (
+				D847B8351A7BFF1900231886 /* LEColorPicker.h */,
+				D847B8361A7BFF1900231886 /* LEColorPicker.m */,
+				D847B8371A7BFF1900231886 /* UIColor+YUVSpace.h */,
+				D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */,
+			);
+			path = LEColorPicker;
+			sourceTree = "<group>";
+		};
+		D863EEBE1A6A440D00C0A6E9 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				D863EECB1A6A495700C0A6E9 /* LoginViewController.h */,
+				D863EECC1A6A495700C0A6E9 /* LoginViewController.m */,
+				ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */,
+				ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */,
+				ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */,
+				ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */,
+				D87C5A981A6F4FB0001763BC /* SessionService.h */,
+				D87C5A991A6F4FB0001763BC /* SessionService.m */,
+				D863EEBF1A6A441400C0A6E9 /* UIComponents */,
+				D87C5A901A6F4C2E001763BC /* Keychain */,
+				D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */,
+				D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		D863EEBF1A6A441400C0A6E9 /* UIComponents */ = {
+			isa = PBXGroup;
+			children = (
+				D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */,
+				D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */,
+				D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */,
+				D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */,
+				D8E4D61C1ABD223B0057EB95 /* ServerField.h */,
+				D8E4D61D1ABD223B0057EB95 /* ServerField.m */,
+			);
+			path = UIComponents;
+			sourceTree = "<group>";
+		};
+		D863EEC51A6A45E800C0A6E9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */,
+				AD0392BE1F1BD99200A16940 /* Localizable.strings */,
+				AD0392C11F1BD99700A16940 /* About.strings */,
+				AD0392C41F1BD99E00A16940 /* ReleaseNotes.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		D87C5A901A6F4C2E001763BC /* Keychain */ = {
+			isa = PBXGroup;
+			children = (
+				D87C5A911A6F4C43001763BC /* KeychainAccess.h */,
+				D87C5A921A6F4C43001763BC /* KeychainAccess.m */,
+				D87C5A931A6F4C43001763BC /* KeychainItemWrapper.h */,
+				D87C5A941A6F4C43001763BC /* KeychainItemWrapper.m */,
+			);
+			path = Keychain;
+			sourceTree = "<group>";
+		};
+		D87C5A971A6F4F93001763BC /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				D82B8CE41A678ED2000E47CA /* NetworkHandler.h */,
+				D82B8CE51A678ED2000E47CA /* NetworkHandler.m */,
+				AD6D203A1EDC45C4003B60E8 /* Reachability.h */,
+				AD6D203B1EDC45C4003B60E8 /* Reachability.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		D89045B31A9469FF00A306FE /* Tags */ = {
+			isa = PBXGroup;
+			children = (
+				D89045B71A946A5B00A306FE /* TagsService.h */,
+				D89045B81A946A5B00A306FE /* TagsService.m */,
+				D89045BA1A9470A600A306FE /* TagsViewController.h */,
+				D89045BB1A9470A600A306FE /* TagsViewController.m */,
+			);
+			path = Tags;
+			sourceTree = "<group>";
+		};
+		D8A5014A1A7B3D4200C04C17 /* Pick Album */ = {
+			isa = PBXGroup;
+			children = (
+				D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */,
+				D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */,
+				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
+				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
+				D8EAC8C51AD773FD00D9D15E /* CategoryListViewController.h */,
+				D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */,
+			);
+			path = "Pick Album";
+			sourceTree = "<group>";
+		};
+		D8A5014E1A7B432600C04C17 /* Local Images */ = {
+			isa = PBXGroup;
+			children = (
+				D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */,
+				D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */,
+				D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */,
+				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
+				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
+				D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */,
+				D8B9BC7D1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.h */,
+				D8B9BC7E1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m */,
+				D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */,
+				D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */,
+				D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */,
+				D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */,
+			);
+			path = "Local Images";
+			sourceTree = "<group>";
+		};
+		D8A59EF01ACE458600D2EBF0 /* Albums Data */ = {
+			isa = PBXGroup;
+			children = (
+				D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */,
+				D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */,
+			);
+			path = "Albums Data";
+			sourceTree = "<group>";
+		};
+		D8B9BC791A95B1CE00C1B0E5 /* Not Uploaded Yet */ = {
+			isa = PBXGroup;
+			children = (
+				D8B9BC7A1A95B1F600C1B0E5 /* NotUploadedYet.h */,
+				D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */,
+			);
+			path = "Not Uploaded Yet";
+			sourceTree = "<group>";
+		};
+		D8B9BC831A96C4EE00C1B0E5 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
+				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
+			);
+			path = About;
+			sourceTree = "<group>";
+		};
+		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
+			isa = PBXGroup;
+			children = (
+				D818E9F41A74BEFF00733991 /* Album List */,
+				D818E9F51A74BF1100733991 /* Album Pictures */,
+				D818EA031A74D32100733991 /* Image Detail */,
+				D818E9F91A74C18500733991 /* AlbumService.h */,
+				D818E9FA1A74C18500733991 /* AlbumService.m */,
+				D8083A531A7D66CD00A95605 /* ImageService.h */,
+				D8083A541A7D66CD00A95605 /* ImageService.m */,
+			);
+			path = Albums;
+			sourceTree = "<group>";
+		};
+		D8BDCB601A6F6B5000D106A8 /* Upload */ = {
+			isa = PBXGroup;
+			children = (
+				D8A5014A1A7B3D4200C04C17 /* Pick Album */,
+				D8A5014E1A7B432600C04C17 /* Local Images */,
+				D8083AA71A82905F00A95605 /* Upload Progress */,
+				D8083AA31A81B34C00A95605 /* Image Uploading */,
+			);
+			path = Upload;
+			sourceTree = "<group>";
+		};
+		D8BDCB611A6F6B5400D106A8 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */,
+				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
+				D8083A641A7FF30B00A95605 /* Cells */,
+				D81C993E1B02DA190081C976 /* Views */,
+				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
+				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
+				D8172E941AB9093100271DB0 /* EditPopDownView.h */,
+				D8172E951AB9093100271DB0 /* EditPopDownView.m */,
+				D8B9BC831A96C4EE00C1B0E5 /* About */,
+				ADD03B321F1A7D49008AE44B /* Release Notes */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		D8D3F7621A7AF27C00AEA7F1 /* Data Cache */ = {
+			isa = PBXGroup;
+			children = (
+				D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */,
+				D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */,
+				D89045B01A94662300A306FE /* TagsData.h */,
+				D89045B11A94662300A306FE /* TagsData.m */,
+				D86044091A995C580067E5D1 /* ClearCache.h */,
+				D860440A1A995C580067E5D1 /* ClearCache.m */,
+			);
+			path = "Data Cache";
+			sourceTree = "<group>";
+		};
+		D8F113541A9E403E000EC0A6 /* Loading View */ = {
+			isa = PBXGroup;
+			children = (
+				D8F113581A9E40EF000EC0A6 /* LoadingView.h */,
+				D8F113591A9E40EF000EC0A6 /* LoadingView.m */,
+				D8F1135B1A9E4E43000EC0A6 /* UICountingLabel.h */,
+				D8F1135C1A9E4E43000EC0A6 /* UICountingLabel.m */,
+			);
+			path = "Loading View";
+			sourceTree = "<group>";
+		};
+		D8F325111A875939007CBDAC /* Edit Image Details */ = {
+			isa = PBXGroup;
+			children = (
+				D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */,
+				D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */,
+				D8F325181A87F624007CBDAC /* UIPlaceHolderTextView.h */,
+				D8F325191A87F624007CBDAC /* UIPlaceHolderTextView.m */,
+				D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */,
+				D8F3251B1A884E34007CBDAC /* Custom Cells */,
+			);
+			path = "Edit Image Details";
+			sourceTree = "<group>";
+		};
+		D8F3251B1A884E34007CBDAC /* Custom Cells */ = {
+			isa = PBXGroup;
+			children = (
+				D8B04C621A92B1BB00695281 /* EditImageLabelTableViewCell.h */,
+				D8B04C631A92B1BB00695281 /* EditImageLabelTableViewCell.m */,
+				D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */,
+				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
+				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
+				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
+				D89045BD1A950FF700A306FE /* TagsTableViewCell.h */,
+				D89045BE1A950FF700A306FE /* TagsTableViewCell.m */,
+			);
+			path = "Custom Cells";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D82B8CBA1A67820A000E47CA /* piwigo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D82B8CDE1A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigo" */;
+			buildPhases = (
+				577A7301DA17AC6D5EBDAA33 /* [CP] Check Pods Manifest.lock */,
+				D82B8CB71A67820A000E47CA /* Sources */,
+				D82B8CB81A67820A000E47CA /* Frameworks */,
+				AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */,
+				D82B8CB91A67820A000E47CA /* Resources */,
+				09F78B87DE4067CFCDEF0642 /* [CP] Embed Pods Frameworks */,
+				7A9296FADB36B3093B24E071 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = piwigo;
+			productName = piwigo;
+			productReference = D82B8CBB1A67820A000E47CA /* piwigo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D82B8CD31A67820A000E47CA /* piwigoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D82B8CE11A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigoTests" */;
+			buildPhases = (
+				56D414D00BB0598CDED578D9 /* [CP] Check Pods Manifest.lock */,
+				D82B8CD01A67820A000E47CA /* Sources */,
+				D82B8CD11A67820A000E47CA /* Frameworks */,
+				D82B8CD21A67820A000E47CA /* Resources */,
+				F9F95D7B7A77ED703DAE13C9 /* [CP] Embed Pods Frameworks */,
+				9D3BD667166CF12BBE23B08D /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D82B8CD61A67820A000E47CA /* PBXTargetDependency */,
+			);
+			name = piwigoTests;
+			productName = piwigoTests;
+			productReference = D82B8CD41A67820A000E47CA /* piwigoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D82B8CB31A67820A000E47CA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = Piwigo.org;
+				TargetAttributes = {
+					D82B8CBA1A67820A000E47CA = {
+						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = ZEC3W885H6;
+						ProvisioningStyle = Manual;
+					};
+					D82B8CD31A67820A000E47CA = {
+						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = ZEC3W885H6;
+						ProvisioningStyle = Manual;
+						TestTargetID = D82B8CBA1A67820A000E47CA;
+					};
+				};
+			};
+			buildConfigurationList = D82B8CB61A67820A000E47CA /* Build configuration list for PBXProject "piwigo" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D82B8CB21A67820A000E47CA;
+			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D82B8CBA1A67820A000E47CA /* piwigo */,
+				D82B8CD31A67820A000E47CA /* piwigoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D82B8CB91A67820A000E47CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */,
+				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
+				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
+				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
+				AD0392BF1F1BD99700A16940 /* About.strings in Resources */,
+				AD0392BC1F1BD99200A16940 /* Localizable.strings in Resources */,
+				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
+				D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */,
+				AD0392C21F1BD99E00A16940 /* ReleaseNotes.strings in Resources */,
+				AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82B8CD21A67820A000E47CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		09F78B87DE4067CFCDEF0642 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		56D414D00BB0598CDED578D9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		577A7301DA17AC6D5EBDAA33 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		7A9296FADB36B3093B24E071 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9D3BD667166CF12BBE23B08D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Auto-increment build version of release";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ $CONFIGURATION == Release ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi";
+		};
+		F9F95D7B7A77ED703DAE13C9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D82B8CB71A67820A000E47CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8EAC8C71AD773FD00D9D15E /* CategoryListViewController.m in Sources */,
+				D8172DAB1AB2805F00271DB0 /* MGSwipeButton.m in Sources */,
+				D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */,
+				ADD03B341F1A7DA6008AE44B /* ReleaseNotesViewController.m in Sources */,
+				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
+				D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */,
+				D8083A521A7CB78900A95605 /* UIAlertView+Blocks.m in Sources */,
+				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
+				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
+				D8F1135D1A9E4E43000EC0A6 /* UICountingLabel.m in Sources */,
+				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
+				D8BDCB641A6F6B8A00D106A8 /* SettingsViewController.m in Sources */,
+				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
+				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
+				D8C71A4C1A848B070048BA33 /* ImageUploadTableViewCell.m in Sources */,
+				D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */,
+				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
+				D8BDCB6A1A6F6C2D00D106A8 /* AlbumsViewController.m in Sources */,
+				D89045BF1A950FF700A306FE /* TagsTableViewCell.m in Sources */,
+				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
+				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
+				AD0134641EBE310000F11C3F /* TabBarViewController.m in Sources */,
+				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,
+				D8F3251A1A87F624007CBDAC /* UIPlaceHolderTextView.m in Sources */,
+				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
+				D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */,
+				D8172DAC1AB2805F00271DB0 /* MGSwipeTableCell.m in Sources */,
+				D8B9BC821A96ACA800C1B0E5 /* SortSelectViewController.m in Sources */,
+				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
+				AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */,
+				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
+				D89045B21A94662300A306FE /* TagsData.m in Sources */,
+				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
+				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
+				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
+				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
+				D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */,
+				D8083AA61A82905B00A95605 /* ImageUploadProgressView.m in Sources */,
+				D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */,
+				D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */,
+				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
+				D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */,
+				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
+				D81C99441B02DB250081C976 /* DefaultImageSizeViewController.m in Sources */,
+				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
+				D82B8CC11A67820A000E47CA /* main.m in Sources */,
+				D8083A671A7FF8F600A95605 /* ButtonTableViewCell.m in Sources */,
+				D8D3F7201A785DF800AEA7F1 /* AlbumImagesViewController.m in Sources */,
+				D8BDCB671A6F6BEA00D106A8 /* UploadViewController.m in Sources */,
+				D8B04C641A92B1BB00695281 /* EditImageLabelTableViewCell.m in Sources */,
+				D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */,
+				D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */,
+				D8083AA21A81B34000A95605 /* ImageUpload.m in Sources */,
+				D89045AC1A94654D00A306FE /* PiwigoTagData.m in Sources */,
+				D88A685E1AC26FA4002A3259 /* SwitchTableViewCell.m in Sources */,
+				D8083A631A7FF30800A95605 /* TextFieldTableViewCell.m in Sources */,
+				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
+				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
+				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
+				D8172E961AB9093100271DB0 /* EditPopDownView.m in Sources */,
+				D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */,
+				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
+				D8083A4F1A7CB65400A95605 /* UIActionSheet+Blocks.m in Sources */,
+				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
+				D89045BC1A9470A600A306FE /* TagsViewController.m in Sources */,
+				D8B9BC7F1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m in Sources */,
+				D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */,
+				D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */,
+				D8B9BC861A96C50700C1B0E5 /* AboutViewController.m in Sources */,
+				D860440B1A995C580067E5D1 /* ClearCache.m in Sources */,
+				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
+				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
+				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
+				D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */,
+				D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */,
+				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,
+				D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */,
+				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
+				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
+				D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */,
+				D8172E201AB7D2EA00271DB0 /* AllCategoriesViewController.m in Sources */,
+				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
+				D8E4D61E1ABD223B0057EB95 /* ServerField.m in Sources */,
+				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
+				D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */,
+				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
+				AD6D203C1EDC45C4003B60E8 /* Reachability.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82B8CD01A67820A000E47CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D82B8CDB1A67820A000E47CA /* piwigoTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D82B8CD61A67820A000E47CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D82B8CBA1A67820A000E47CA /* piwigo */;
+			targetProxy = D82B8CD51A67820A000E47CA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AD0392BE1F1BD99200A16940 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD0392BD1F1BD99200A16940 /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		AD0392C11F1BD99700A16940 /* About.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD0392C01F1BD99700A16940 /* Base */,
+			);
+			name = About.strings;
+			sourceTree = "<group>";
+		};
+		AD0392C41F1BD99E00A16940 /* ReleaseNotes.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD0392C31F1BD99E00A16940 /* Base */,
+			);
+			name = ReleaseNotes.strings;
+			sourceTree = "<group>";
+		};
+		AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD35CA371E9BF8A600E3B897 /* Base */,
+			);
+			name = "Launch Screen.storyboard";
+			path = ..;
+			sourceTree = "<group>";
+		};
+		AD6B2E751F0930B40040EAD9 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD6B2E741F0930B40040EAD9 /* Base */,
+				AD6B2E791F0930FD0040EAD9 /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		AD6B2E781F0930CE0040EAD9 /* About.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD6B2E771F0930CE0040EAD9 /* Base */,
+				AD6B2E7A1F0930FD0040EAD9 /* fr */,
+			);
+			name = About.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D82B8CDC1A67820A000E47CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = ZU5THW8T5W;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D82B8CDD1A67820A000E47CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = ZU5THW8T5W;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D82B8CDF1A67820A000E47CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4638715CC0ABD46A2178FEC6 /* Pods-piwigo.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon (lens alone)";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				DEVELOPMENT_TEAM = ZEC3W885H6;
+				GCC_PREFIX_HEADER = piwigo/PrefixHeader.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+				);
+				INFOPLIST_FILE = piwigo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "1ece3018-6d44-403a-a1be-c18dce74f489";
+				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		D82B8CE01A67820A000E47CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7C4B704898B5BF42D1A475AB /* Pods-piwigo.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon (lens alone)";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				DEVELOPMENT_TEAM = ZU5THW8T5W;
+				GCC_PREFIX_HEADER = piwigo/PrefixHeader.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+				);
+				INFOPLIST_FILE = piwigo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "410d031b-f259-4dc1-afbe-dc2053d985d7";
+				PROVISIONING_PROFILE_SPECIFIER = "eddy ios distribution";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		D82B8CE21A67820A000E47CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2730F70D21F7F339E7C4C5A2 /* Pods-piwigoTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = ZEC3W885H6;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = piwigoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bakercrew.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/piwigo.app/piwigo";
+			};
+			name = Debug;
+		};
+		D82B8CE31A67820A000E47CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9AEB39308966C4B773F67234 /* Pods-piwigoTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = ZEC3W885H6;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = piwigoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bakercrew.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/piwigo.app/piwigo";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D82B8CB61A67820A000E47CA /* Build configuration list for PBXProject "piwigo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D82B8CDC1A67820A000E47CA /* Debug */,
+				D82B8CDD1A67820A000E47CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D82B8CDE1A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D82B8CDF1A67820A000E47CA /* Debug */,
+				D82B8CE01A67820A000E47CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D82B8CE11A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D82B8CE21A67820A000E47CA /* Debug */,
+				D82B8CE31A67820A000E47CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D82B8CB31A67820A000E47CA /* Project object */;
+}
