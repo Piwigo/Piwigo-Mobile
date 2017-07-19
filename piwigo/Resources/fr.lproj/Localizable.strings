@@ -1,6 +1,7 @@
 /*
  Localizable.strings
  piwigo
+ 
  Created by Spencer Baker on 1/17/15.
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
@@ -31,6 +32,7 @@
 
 // Errors
 "internetErrorGeneral_title" = "Erreur de Connexion";
+"internetErrorGeneral_broken" = "Désolé, la communication a été interrompue. Essayez de vous connecter à nouveau.";
 
 
 // ===========================================================================
@@ -345,7 +347,7 @@
 "settings_defaultAuthorPlaceholder" = "Nom de l'Auteur";
 "settings_defaultPrivacy" = "Qui voit ?";
 "settings_defaultPrivacy>320px" = "Qui Peut Voir les Médias ?";
-"settings_stripGPSdata" = "Supprimer les Métadonnées GPS";
+"settings_stripGPSdata" = "Supprimer Métadonnées GPS";
 "settings_stripGPSdata>375px" = "Supprimer les Métadonnées GPS avant Envoi";
 "settings_photoResize" = "Redimensionner avant Envoi";
 "settings_photoResize>375px" = "Redimensionner l'Image avant Envoi";
@@ -364,6 +366,8 @@
 
 // Settings — Information
 "settingsHeader_about" = "Informations";
-"settings_acknowledgements" = "Remerciements";
-"settings_support" = "Aide en Ligne Gratuit";
+"settings_supportForum" = "Forum d'Aide";
+"settings_releaseNotes" = "Notes de Versions";
+"settings_rateInAppStore" = "Noter Piwigo Mobile";
 "settings_pwgForumURL" = "http://fr.piwigo.org";
+"settings_acknowledgements" = "Remerciements";

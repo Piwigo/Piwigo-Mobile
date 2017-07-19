@@ -366,6 +366,8 @@
 
 // Settings — Information
 "settingsHeader_about" = "Information";
-"settings_acknowledgements" = "Acknowledgements";
-"settings_support" = "Free Support";
+"settings_supportForum" = "Support Forum";
+"settings_releaseNotes" = "Release Notes";
+"settings_rateInAppStore" = "Rate Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
+"settings_acknowledgements" = "Acknowledgements";

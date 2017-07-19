@@ -208,8 +208,10 @@
                       // Did the server answer the request?
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
-                          // Loop over the plugins
+                          // Collect the list of plugins
                           id pluginsList = [responseObject objectForKey:@"result"];
+                          
+                          // Loop over the plugins
                           for (id plugin in pluginsList) {
                               NSString *pluginID = [plugin objectForKey:@"id"];
                               NSString *pluginState = [plugin objectForKey:@"state"];
