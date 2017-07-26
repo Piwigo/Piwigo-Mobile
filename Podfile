@@ -6,8 +6,8 @@ target 'piwigo' do
   # use_frameworks!
 
   # Pods for piwigo
-  pod 'AFNetworking', '~> 3.0'
-  pod 'iRate', '>= 1.11.3'
+  pod 'AFNetworking', '~> 3.1'
+  pod 'iRate', '~> 1.12.1'
 
   target 'piwigoTests' do
     inherit! :search_paths

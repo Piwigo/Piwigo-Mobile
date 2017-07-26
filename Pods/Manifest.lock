@@ -14,16 +14,16 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - iRate (1.11.3)
+  - iRate (1.12.1)
 
 DEPENDENCIES:
-  - AFNetworking (~> 3.0)
-  - iRate (>= 1.11.3)
+  - AFNetworking (~> 3.1)
+  - iRate (~> 1.12.1)
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  iRate: 09ef501c74ade02013348bc33225ea48f7aa4e55
+  iRate: 59c63a290d4988f365d4338e58eca192ae92b552
 
-PODFILE CHECKSUM: f9d5fc6528d74ef0174f0890a75e9082de2cc334
+PODFILE CHECKSUM: ba97814c37958ec46c7250a567fa0439d5cc435a
 
 COCOAPODS: 1.2.0

@@ -144,18 +144,26 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 + (instancetype)manager
 {
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 90000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 101100)
-    struct sockaddr_in6 address;
-    bzero(&address, sizeof(address));
-    address.sin6_len = sizeof(address);
-    address.sin6_family = AF_INET6;
-#else
-    struct sockaddr_in address;
-    bzero(&address, sizeof(address));
-    address.sin_len = sizeof(address);
-    address.sin_family = AF_INET;
-#endif
-    return [self managerForAddress:&address];
+    // Code modified following app rejected by Apple
+    //#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 90000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 101100)
+    if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_9_0) {
+        struct sockaddr_in6 address;
+        bzero(&address, sizeof(address));
+        address.sin6_len = sizeof(address);
+        address.sin6_family = AF_INET6;
+
+        return [self managerForAddress:&address];
+    } else {
+        //#else
+        struct sockaddr_in address;
+        bzero(&address, sizeof(address));
+        address.sin_len = sizeof(address);
+        address.sin_family = AF_INET;
+
+        return [self managerForAddress:&address];
+    }
+    //#endif
+//    return [self managerForAddress:&address];
 }
 
 - (instancetype)initWithReachability:(SCNetworkReachabilityRef)reachability {
