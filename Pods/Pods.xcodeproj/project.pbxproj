@@ -15,6 +15,7 @@
 		2EBAA518CB8B2DAF89A63637091D4615 /* UIButton+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 12F4EE019EB0BE27E98EE557A73A1DDE /* UIButton+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		31ED9BD97AF9E62874AF3CDF2F8090CF /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FCAA706A04D25DCB377D2E92507738 /* AFNetworkActivityIndicatorManager.m */; };
 		37E7FB95547A60724D1F0F5E76C426F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F921D275AC6AA48C031BF91FD4592584 /* Foundation.framework */; };
+		43EA0453A79CADD4F299861FFE9B194C /* iRate.m in Sources */ = {isa = PBXBuildFile; fileRef = C441B954ED266BFE222368C4D027948C /* iRate.m */; };
 		46401F3C7FF0B0CFE2E9B14914780835 /* AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 337417029524F2F0553BABCA351540E2 /* AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5719F06B809080CDEF7E6BC75DEA1A3C /* UIKit+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = DBD145F862BC40615577DDAD6E444BE1 /* UIKit+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5945033488F9995134DBB7014DE2412F /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 62BE78D489150EE861E74CB2CBCBF54F /* AFURLRequestSerialization.m */; };
@@ -27,9 +28,9 @@
 		707E818332E5033501DF2D7826C639DF /* AFImageDownloader.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B11ED7C99B5EE826EEF67271EF7B655 /* AFImageDownloader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		73811DA312BCB537D44D62EC6AD15766 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF852F0E4C736D6E574E6678A322AE9C /* AFHTTPSessionManager.m */; };
 		775CE7A8107457BDE59F113D40020839 /* AFAutoPurgingImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B37AD819D4DB61E950F065B24B0EF7C /* AFAutoPurgingImageCache.m */; };
+		80B58F2D8FEC9C93B4DA721A614A34AC /* iRate-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E05332F307C84F4C892D57163EA3E88F /* iRate-dummy.m */; };
 		85D30678FF4F0AB306399A368EAA46B2 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD40779B7877AEC27E3EE41438B51BC /* AFURLResponseSerialization.m */; };
 		8958F2453EEBAF71BFEBD78FB48986EC /* UIWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 3273EE20F8536405486A8C90163CAB55 /* UIWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C6232F0DDF1C10C59C5EB7553DD91F4 /* iRate.m in Sources */ = {isa = PBXBuildFile; fileRef = C441B954ED266BFE222368C4D027948C /* iRate.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		903158692A045396106CA22C0DD13BA6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC8A7C0B6179467051ED95E59DB2AF9F /* SystemConfiguration.framework */; };
 		97A86FAAD4B1AD9B3292FF6AF1D8F82B /* AFNetworking-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F417B0CB7DCA2F5716E098C8C7BD3652 /* AFNetworking-dummy.m */; };
 		9F5BB6B4995BA4A3B2C6AEBA6C31A6DB /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B1A07508147537521ACD81D2D5513C2 /* AFURLSessionManager.m */; };
@@ -42,7 +43,6 @@
 		CBCCEAD402645565401CA93924736979 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A64716173FC0305057230E14CDCC7A77 /* CoreGraphics.framework */; };
 		D00A03104BEB019F0072BCE512371A5C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F921D275AC6AA48C031BF91FD4592584 /* Foundation.framework */; };
 		D10CC46035F7A0C868C0955664A34609 /* UIButton+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 378B2AF378D0EEF3C6833F024845A61E /* UIButton+AFNetworking.m */; };
-		D41CC975469B508B5FF168E52DF66CED /* iRate-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E05332F307C84F4C892D57163EA3E88F /* iRate-dummy.m */; };
 		D4AA4704CA7863CC86E22AAF88635836 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D30566E110F0692A71B8C5F3CA21AC /* UIProgressView+AFNetworking.m */; };
 		D59FC98A74E440C4725B6FDC28F5951E /* AFSecurityPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = C68A6E3D5F4FB90522878CB79832BD53 /* AFSecurityPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D5CB999FB5FC80FC126A38AB4DF12227 /* UIImageView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 9651910BB2395AB02BFD774DFFD90EFC /* UIImageView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -488,7 +488,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8CC328DC9DA97BC0212B538E7B752E59 /* Build configuration list for PBXNativeTarget "iRate" */;
 			buildPhases = (
-				13ED1BA241080F63E8F681A91142F3C4 /* Sources */,
+				530AD3C5FF8E149B83C0C273DBB03D7E /* Sources */,
 				CD37824879228B121F3B3DD0E9CD8C75 /* Frameworks */,
 				E2DB1F9E9DB835A54F0D8BE0FF5A8326 /* Headers */,
 			);
@@ -508,7 +508,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0900;
 			};
 			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -554,12 +554,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		13ED1BA241080F63E8F681A91142F3C4 /* Sources */ = {
+		530AD3C5FF8E149B83C0C273DBB03D7E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D41CC975469B508B5FF168E52DF66CED /* iRate-dummy.m in Sources */,
-				8C6232F0DDF1C10C59C5EB7553DD91F4 /* iRate.m in Sources */,
+				80B58F2D8FEC9C93B4DA721A614A34AC /* iRate-dummy.m in Sources */,
+				43EA0453A79CADD4F299861FFE9B194C /* iRate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,6 +597,29 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		044BBE40A071859C8058D2D35C9C7287 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94722F83392F93926CB90AA012DDAF0A /* iRate.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/iRate/iRate-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		34FE9531DA9AF2820790339988D5FF41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -607,7 +630,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -615,7 +640,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -642,29 +671,6 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
-		};
-		6DED1CE6F39233BD639397AEFD075E69 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 94722F83392F93926CB90AA012DDAF0A /* iRate.xcconfig */;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/iRate/iRate-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
 		};
 		72D1B831316303C2E356BBAC53FEF78A /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -735,6 +741,29 @@
 			};
 			name = Release;
 		};
+		AD1E14BFD98A178825EDF4A417C99B29 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94722F83392F93926CB90AA012DDAF0A /* iRate.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/iRate/iRate-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
 		C104F7F091290C3D1E248192F07FE689 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -745,7 +774,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -753,7 +784,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -784,29 +819,6 @@
 				SYMROOT = "${SRCROOT}/../build";
 			};
 			name = Debug;
-		};
-		E51C3A67E2243F3CBD5FD380A33F2067 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 94722F83392F93926CB90AA012DDAF0A /* iRate.xcconfig */;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/iRate/iRate-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
 		};
 		F533A3C90A03A0A44099B26E61ACE36B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -910,8 +922,8 @@
 		8CC328DC9DA97BC0212B538E7B752E59 /* Build configuration list for PBXNativeTarget "iRate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6DED1CE6F39233BD639397AEFD075E69 /* Debug */,
-				E51C3A67E2243F3CBD5FD380A33F2067 /* Release */,
+				AD1E14BFD98A178825EDF4A417C99B29 /* Debug */,
+				044BBE40A071859C8058D2D35C9C7287 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -7,9 +7,9 @@ iRate is a library to help you promote your iPhone and Mac App Store apps by pro
 Supported OS & SDK Versions
 -----------------------------
 
-* Supported build target - iOS 8.1 / Mac OS 10.10 (Xcode 6.1, Apple LLVM compiler 6.0)
-* Earliest supported deployment target - iOS 5.0 / Mac OS 10.7
-* Earliest compatible deployment target - iOS 4.3 / Mac OS 10.6
+* Supported build target - iOS 10.3 / Mac OS 10.12 (Xcode 8.3)
+* Earliest supported deployment target - iOS 8.0 / Mac OS 10.11
+* Earliest compatible deployment target - iOS 7.0 / Mac OS 10.9
 
 NOTE: 'Supported' means that the library has been tested with this version. 'Compatible' means that the library should work on this OS version (i.e. it doesn't rely on any unavailable SDK features) but is no longer being tested for compatibility and may require tweaking or bug fixes to run correctly.
 
@@ -37,16 +37,19 @@ iRate typically requires no configuration at all and will simply run automatical
 
 **Note:** If you have apps with matching bundle IDs on both the Mac and iOS app stores (even if they use different capitalisation), the lookup mechanism won't work, so you'll need to manually set the appStoreID property, which is a numeric ID that can be found in iTunes Connect after you set up an app. Also, if you are creating a sandboxed Mac app and your app does not request the network access permission then you will need to set the appStoreID because it cannot be retrieved from the iTunes service. 
 
-If you do wish to customise iRate, the best time to do this is *before* the app has finished launching. The easiest way to do this is to add the iRate configuration code in your AppDelegate's `initialize` method, like this:
+If you do wish to customise iRate, the best time to do this is in your AppDelegate's `-[application:didFinishLaunchingWithOptions:]` method. Applying the configuration any later may not work, as the prompt may already have been shown by that point:
+
 
     #import "iRate.h"
 
-	+ (void)initialize
-	{
-		//configure iRate
-		[iRate sharedInstance].daysUntilPrompt = 5;
-		[iRate sharedInstance].usesUntilPrompt = 15;
-	}
+    - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+    {
+        //configure iRate
+        [iRate sharedInstance].daysUntilPrompt = 5;
+        [iRate sharedInstance].usesUntilPrompt = 15;
+        
+        return YES;
+    }
 
 
 Configuration
@@ -148,7 +151,11 @@ If set to YES, iRate will always display the rating prompt on launch, regardless
 
     @property (nonatomic, assign) BOOL useUIAlertControllerIfAvailable;
 
-By default, iRate will use UIAlertView on iOS to display the rating prompt. UIAlertView was deprecated in iOS8 and replaced by UIAlertController. Unfortunately, unlike UIAlertView, presenting an alert with UIAlertController interferes with the ability of the app to display other controllers, and since iRate could theoretically display an alert at any point during the app's lifetime, it might clash with the app attempting to present another view controller. For this reason, use of UIAlertController is disabled by default. Uou should only set thus property to YES if you are certain that it won't clash with your app logic (e.g, if you have disabled automatic rating prompts, or if your app doesn't use any modal view controllers).
+By default, iRate will use UIAlertView on iOS to display the rating prompt. UIAlertView was deprecated in iOS8 and replaced by UIAlertController. Unfortunately, unlike UIAlertView, presenting an alert with UIAlertController interferes with the ability of the app to display other controllers, and since iRate could theoretically display an alert at any point during the app's lifetime, it might clash with the app attempting to present another view controller. For this reason, use of UIAlertController is disabled by default. You should only set this property to YES if you are certain that it won't clash with your app logic (e.g, if you have disabled automatic rating prompts, or if your app doesn't use any modal view controllers).
+
+    @property (nonatomic, assign) BOOL useSKStoreReviewControllerIfAvailable;
+    
+By default, iRate will use the SKStoreReviewController to request reviews on iOS 10.3 and above. To disable this, set `useSKStoreReviewControllerIfAvailable` to `NO`.
 
 
 Advanced properties
@@ -206,10 +213,6 @@ Methods
 
 Besides configuration, iRate has the following methods:
 
-    - (void)logEvent:(BOOL)deferPrompt;
-
-This method can be called from anywhere in your app (after iRate has been configured) and increments the iRate significant event count. When the predefined number of events is reached, the rating prompt will be shown. The optional deferPrompt parameter is used to determine if the prompt will be shown immediately (NO) or if the app will wait until the next launch (YES).
-
     - (BOOL)shouldPromptForRating;
 
 Returns YES if the prompt criteria have been met, and NO if they have not. You can use this to decide when to display a rating prompt if you have disabled the automatic display at app launch. Calling this method will not call the `iRateShouldPromptForRating` delegate method.
@@ -229,6 +232,14 @@ This method will check if all prompting criteria have been met, and if the app s
     - (void)openRatingsPageInAppStore;
 
 This method skips the user alert and opens the application ratings page in the Mac or iPhone app store, depending on which platform iRate is running on. This method does not perform any checks to verify that the machine has network access or that the app store is available. It also does not call the `-iRateShouldOpenAppStore` delegate method. You should use this method to open the ratings page instead of the ratingsURL property, as the process for launching the app store is more complex than merely opening the URL in many cases. Note that this method depends on the `appStoreID` which is only retrieved after polling the iTunes server. If you call this method without first doing an update check, you will either need to set the `appStoreID` property yourself beforehand, or risk that the method may take some time to make a network call, or fail entirely. On success, this method will call the `-iRateDidOpenAppStore` delegate method. On Failure it will call the `-iRateCouldNotConnectToAppStore:` delegate method.
+
+    - (void)logEvent:(BOOL)deferPrompt;
+
+This method can be called from anywhere in your app (after iRate has been configured) and increments the iRate significant event count. When the predefined number of events is reached, the rating prompt will be shown. The optional deferPrompt parameter is used to determine if the prompt will be shown immediately (NO) or if the app will wait until the next launch (YES).
+
+    - (void)remindLater;
+
+This method resets the reminder period.
 
 
 Delegate methods
@@ -292,7 +303,7 @@ It is not recommended that you modify the strings files in the iRate.bundle, as 
 
 If you want to add an additional language for iRate in your app without submitting them back to the github project, you can add these strings directly to the appropriate Localizable.strings file in your project folder. If you wish to replace some or all of the default iRate strings, the simplest option is to copy just those strings into your own Localizable.strings file and then modify them. iRate will automatically use strings in the main application bundle in preference to the ones in the iRate bundle so you can override any string in this way.
 
-If you do not want to use *any* of the default localisations, you can omit the iRate.bundle altogether. Note that if you only want to support a subset of languages that iRate supports, it is not neccesary to delete the other strings files from iRate.bundle - just set `useAllAvailableLanguages` to NO, and iRate will only use the languages that your app already supports.
+If you do not want to use *any* of the default localisations, you can omit the iRate.bundle altogether. Note that if you only want to support a subset of languages that iRate supports, it is not necessary to delete the other strings files from iRate.bundle - just set `useAllAvailableLanguages` to NO, and iRate will only use the languages that your app already supports.
 
 The old method of overriding iRate's default strings by using individual setter methods (see below) is still supported, however the recommended approach is now to add those strings to your project's Localizable.strings file, which will be detected automatically by iRate.
 
@@ -327,6 +338,44 @@ The example is for Mac OS, but the same principle can be applied on iOS.
 
 Release Notes
 -----------------
+
+Version 1.12.1
+
+- Fixed problems compiling on older Xcode versions due to SKStoreReviewController
+
+Version 1.12
+
+- Added support for SKStoreReviewController on iOS 10.3+ (thanks @EpicDraws!)
+- Added Catalan, Hungarian, Croatian and Bosnian localizations
+- Fixed random crash due to misconfigured NSURLRequest
+
+Version 1.11.7
+
+- Updated for iOS 10 and Xcode 8
+- Fixed checkForConnectivity crash
+- Added Finnish language support
+- Lowered Carthage deployment target to 8.0
+
+Version 1.11.6
+
+- Fixed compatibility with iOS 7
+
+Version 1.11.5
+
+- Now uses https URLs to avoid issues with App Transport Security
+- Fixed Swift crashes due to nonstandard delegate implementation
+- Added special case for Gibraltar
+- Fixed warnings on latest Xcode
+- Added Carthage support
+- Added Taiwan Chinese (zh-TW) localization
+- Better Italian localisation
+- Exposed remindLater method
+
+Version 1.11.4
+
+- Added fix for possible Apple rejection issue to do with `canOpenURL:`
+- Added fix for nil locale issue
+- Added Macedonian translation
 
 Version 1.11.3
 
@@ -455,7 +504,7 @@ Version 1.7.1
 - Fixed deprecation warning when targeting iOS6 as the base target
 - Added iRateDidPresentStoreKitModal and iRateDidDismissStoreKitModal delegate methods
 - Added additional error logging if StoreKit fails to load product info
-- Added Ukranian translation
+- Added Ukrainian translation
 
 Version 1.7
 
