@@ -28,7 +28,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *comment;
 @property (nonatomic, assign) CGFloat globalRank;
 @property (nonatomic, assign) NSInteger numberOfImages;
-@property (nonatomic, assign) NSInteger numberOfSubAlbumImages;
+@property (nonatomic, assign) NSInteger totalNumberOfImages;
 @property (nonatomic, assign) NSInteger numberOfSubCategories;
 @property (nonatomic, assign) NSInteger albumThumbnailId;
 @property (nonatomic, strong) NSString *albumThumbnailUrl;

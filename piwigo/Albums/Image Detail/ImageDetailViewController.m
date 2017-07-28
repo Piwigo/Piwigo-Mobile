@@ -95,7 +95,7 @@
 	NSMutableArray *otherButtons = [NSMutableArray new];
 	[otherButtons addObject:NSLocalizedString(@"imageOptions_download", @"Download")];
     
-//	Add actions capabilities if user has admin rights
+    // Add actions capabilities if user has admin rights
     if([Model sharedInstance].hasAdminRights)
 	{
 		[otherButtons addObject:NSLocalizedString(@"imageOptions_edit",  @"Edit")];

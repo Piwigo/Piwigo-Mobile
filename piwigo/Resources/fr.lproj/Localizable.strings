@@ -203,21 +203,24 @@
 
 // Image delete
 "deleteImage_delete" = "Supprimer";
-"deleteImage_imageSingular" = "Image";
 "deleteImage_imagePlural" = "Images";
-"delteImage_message" = "Êtes-vous sûr de vouloir supprimer cette sélection de %@ %@ ? Opération irréversible !";
 "deleteImage_cancelButton" = "Annuler";
 "deleteImageProgress_title" = "Suppression %@%%";
 
-"deleteSingleImage_title" = "Supprimer l’Image";
-"deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ? Opération irréversible !";
+"deleteSingleImage_title" = "Supprimer l’image";
+"deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ?\nOpération irréversible !";
+"deleteSeveralImages_title" = "Supprimer Images";
+"deleteSeveralImages_message" = "Êtes-vous sûr de vouloir supprimer la sélection de %@ images ?\nOpération irréversible !";
 
 "deleteImageFail_title" = "Echec de la Suppression";
 "deleteImageFail_message" = "L'Image n’a pas pu être supprimée\n%@";
 
 // Image download
-"downloadImage" = "Télécharger des Images";
-"downloadImage_confirmation" = "Êtes-vous sûr de que vouloir télécharger la sélection de %@ %@ ?";
+"downloadSingleImage_title" = "Télécharger Image";
+"downloadSingleImage_confirmation" = "Êtes-vous sûr de vouloir télécharger la sélection de %@ images ?";
+"downloadSeveralImages_title" = "Télécharger Images";
+"downloadSeveralImage_confirmation" = "Êtes-vous sûr de vouloir télécharger la sélection de %@ images ?";
+
 "downloadingImage" = "Téléchargement d’Image";
 "downloadingImages" = "Téléchargement des Images";
 "downloadingImage_complete" = "Terminé";

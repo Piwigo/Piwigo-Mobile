@@ -222,7 +222,7 @@
     self.numberOfImages++;
 	for(NSString *category in self.upperCategories)
 	{
-		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].numberOfSubAlbumImages++;
+		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages++;
 	}
 }
 
@@ -232,7 +232,7 @@
     self.numberOfImages--;
 	for(NSString *category in self.upperCategories)
 	{
-		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].numberOfSubAlbumImages--;
+		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages--;
 	}
 }
 
@@ -251,7 +251,7 @@
     [descriptionArray addObject:[NSString stringWithFormat:@"nearestUpperCategory   = %ld", (long)self.nearestUpperCategory]];
     [descriptionArray addObject:[NSString stringWithFormat:@"upperCategories [%ld]  = %@", (long)self.upperCategories.count, self.upperCategories]];
     [descriptionArray addObject:[NSString stringWithFormat:@"numberOfImages         = %ld", (long)self.numberOfImages]];
-    [descriptionArray addObject:[NSString stringWithFormat:@"numberOfSubAlbumImages = %ld", (long)self.numberOfSubAlbumImages]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"totalNumberOfImages = %ld", (long)self.totalNumberOfImages]];
     [descriptionArray addObject:[NSString stringWithFormat:@"numberOfSubCategories  = %ld", (long)self.numberOfSubCategories]];
     [descriptionArray addObject:[NSString stringWithFormat:@"albumThumbnailId       = %ld", (long)self.albumThumbnailId]];
     [descriptionArray addObject:[NSString stringWithFormat:@"albumThumbnailUrl      = %@", (nil == self.albumThumbnailUrl ? objectIsNil :(0 == self.albumThumbnailUrl.length ? @"''" : self.albumThumbnailUrl))]];

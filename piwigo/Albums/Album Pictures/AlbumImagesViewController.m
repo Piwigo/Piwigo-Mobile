@@ -222,8 +222,15 @@
 {
 	if(self.selectedImageIds.count <= 0) return;
 	
-	NSString *titleString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"deleteImage_delete", @"Delete"), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_imagePlural", @"Images") : NSLocalizedString(@"deleteImage_imageSingular", @"Image")];
-	NSString *messageString = [NSString stringWithFormat:NSLocalizedString(@"delteImage_message", @"Are you sure you want to delete the selected %@ %@ This cannot be undone!"), @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_imagePlural", @"Images") : NSLocalizedString(@"deleteImage_imageSingular", @"Image")];
+    NSString *titleString, *messageString;
+    if (self.selectedImageIds.count > 1) {
+        titleString = NSLocalizedString(@"deleteSeveralImages_title", @"Delete Images");
+        messageString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImageIds.count)];
+    } else {
+        titleString = NSLocalizedString(@"deleteSingleImage_title", @"Delete Image");
+        messageString = NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?");
+    }
+    
 	[UIAlertView showWithTitle:titleString
 					   message:messageString
 			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Cancel")
@@ -299,8 +306,17 @@
 {
 	if(self.selectedImageIds.count <= 0) return;
 	
-	[UIAlertView showWithTitle:NSLocalizedString(@"downloadImage", @"Download Images")
-					   message:[NSString stringWithFormat:NSLocalizedString(@"downloadImage_confirmation", @"Are you sure you want to downlaod the selected %@ %@?"), @(self.selectedImageIds.count), self.selectedImageIds.count > 1 ? NSLocalizedString(@"deleteImage_imagePlural", @"Images") : NSLocalizedString(@"deleteImage_imageSingular", @"Image")]
+    NSString *titleString, *messageString;
+    if (self.selectedImageIds.count > 1) {
+        titleString = NSLocalizedString(@"downloadSeveralImages_title", @"Download Images");
+        messageString = [NSString stringWithFormat:NSLocalizedString(@"downloadSeveralImage_confirmation", @"Are you sure you want to download the selected %@ images?"), @(self.selectedImageIds.count)];
+    } else {
+        titleString = NSLocalizedString(@"downloadSingleImage_title", @"Download Image");
+        messageString = NSLocalizedString(@"downloadSingleImage_confirmation", @"Are you sure you want to download the selected image?");
+    }
+    
+	[UIAlertView showWithTitle:titleString
+					   message:messageString
 			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {

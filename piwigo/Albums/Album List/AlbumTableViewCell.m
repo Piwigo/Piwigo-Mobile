@@ -251,7 +251,7 @@
 -(void)deleteCategory
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategory_title", @"DELETE ALBUM")
-					   message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_message", @"ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), self.albumData.name, @(self.albumData.numberOfSubAlbumImages)]
+					   message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_message", @"ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), self.albumData.name, @(self.albumData.totalNumberOfImages)]
 			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -270,7 +270,7 @@
 														{
 															number = [[alertView textFieldAtIndex:0].text integerValue];
 														}
-														if(number == self.albumData.numberOfSubAlbumImages)
+														if(number == self.albumData.totalNumberOfImages)
 														{
 															[AlbumService deleteCategory:self.albumData.albumId OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
 																if(deletedSuccessfully)
@@ -341,7 +341,7 @@
                                     (long)self.albumData.numberOfImages,
                                     self.albumData.numberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
         
-    } else if (self.albumData.numberOfImages + self.albumData.numberOfSubAlbumImages == 0) {
+    } else if (self.albumData.totalNumberOfImages == 0) {
             
         // There are no images but sub-albums
         self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@",
@@ -352,8 +352,8 @@
         
         // There are images and sub-albums
         self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@, %ld %@",
-                                    (long)self.albumData.numberOfImages + self.albumData.numberOfSubAlbumImages,
-                                    self.albumData.numberOfImages  + self.albumData.numberOfSubAlbumImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo"),
+                                    (long)self.albumData.totalNumberOfImages,
+                                    self.albumData.totalNumberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo"),
                                     (long)self.albumData.numberOfSubCategories,
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }

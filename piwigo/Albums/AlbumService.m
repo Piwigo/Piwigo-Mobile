@@ -102,7 +102,7 @@
 		albumData.comment = [category objectForKey:@"comment"];
 		albumData.globalRank = [[category objectForKey:@"global_rank"] floatValue];
 		albumData.numberOfImages = [[category objectForKey:@"nb_images"] integerValue];
-		albumData.numberOfSubAlbumImages = [[category objectForKey:@"total_nb_images"] integerValue];
+		albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];
 		albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
 		
 		id thumbId = [category objectForKey:@"representative_picture_id"];
