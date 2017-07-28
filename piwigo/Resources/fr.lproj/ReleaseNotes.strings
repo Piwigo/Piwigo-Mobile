@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.0.4_text" = "Version 2.0.4\n\n• iPad — Règle le problème de vignettes floues et l'impossibilité d'éditer les photos\n• Vidéos — Règle des problèmes de téléchargement et d'envoi (extension VideoJS requise sur le serveur)\n• Réglages — Ajoute des options pour retirer les titres et changer la résolution des vignettes\n• Améliore la fiabilité de la connexion et informe quand l'envoi d'images/vidéos est terminé\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
+"v2.1.0_text" = "Version 2.1\n\n• Compatibilité avec l'extension Community\n• Traduction en Français\n________________________________________\n\n";
+
+"v2.0.4_text" = "Version 2.0.4\n28 juillet 2017\n\n• iPad — Règle le problème de vignettes floues et l'impossibilité d'éditer les photos\n• Vidéos — Règle des problèmes de téléchargement et d'envoi (extension VideoJS requise sur le serveur)\n• Réglages — Ajoute des options pour retirer les titres et changer la résolution des vignettes\n• Améliore la fiabilité de la connexion et informe quand l'envoi d'images/vidéos est terminé\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
 
 "v2.0.3_text" = "Version 2.0.3\n26 Mai 2017\n\n• Propose une nouvelle option permettant d'effacer les métadonnées GPS des images envoyées au serveur\n• Affiche désormais les volumes de cache utilisés dans la page Settings\n• Règle les situations où les réglages de cache étaient perdus ou modifiés\n• Règle les situations où les réglages des images envoyées étaient perdus ou réinitialisés\n________________________________________\n\n";
 
@@ -14,6 +16,6 @@
 
 "v2.0.1_text" = "Version 2.0.1\n26 Juin 2015\n\nNouveaux réglages:\n - Option pour redimensionner les images avant envoi au serveur\n  + Qualité d'image entre 50 et 98%\n - Possibilité de fixer une taille par défaut des images affichées\n________________________________________\n\n";
 
-"v2.0.0_text" = "Version 2.0\n24 Avril 2015\n\nApplication entièrement réécrite :\n\n - Naviguez dans votre Piwigo, avec affichage des photos\n - Gérez vos albums (création, édition, déplacement)\n - Sélectionnez vos photos par lot\n - Ajout de vidéos (le plugin VideoJS doit être activé sur votre Piwigo)\n________________________________________\n\n";
+"v2.0.0_text" = "Version 2.0\n24 Avril 2015\n\nApplication entièrement réécrite :\n - Naviguez dans votre Piwigo, avec affichage des photos\n - Gérez vos albums (création, édition, déplacement)\n - Sélectionnez vos photos par lot\n - Ajout de vidéos (le plugin VideoJS doit être activé sur votre Piwigo)\n________________________________________\n\n";
 
 "v1.0.0_text" = "Version 1.0\n17 Octobre 2011";
