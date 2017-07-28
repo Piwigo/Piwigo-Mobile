@@ -59,13 +59,15 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 	for(PiwigoAlbumData *categoryData in categories)
 	{
 		NSInteger index = -1;
+		NSInteger curr = 0;
 		for(PiwigoAlbumData *existingCategory in self.allCategories)
 		{
-            index++;
-            if(existingCategory.albumId == categoryData.albumId)
+			if(existingCategory.albumId == categoryData.albumId)
 			{
+				index = curr;
 				break;
 			}
+			curr++;
 		}
 		
 		if(index != -1)
