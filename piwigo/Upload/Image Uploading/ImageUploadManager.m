@@ -300,10 +300,25 @@
 					} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 						self.onCurrentImageUpload++;
 						
-						[[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo] incrementImageSizeByOne];
-						[self addImageDataToCategoryCache:response];
-						[self setImageResponse:response withInfo:imageProperties];
-						
+                        // Set properties of uploaded image/video on Piwigo server
+                        [self setImageResponse:response withInfo:imageProperties];
+                        
+						// The image must not be appended to the cache if it is moderated
+                        if ([Model sharedInstance].hasInstalledCommunity) {
+
+                            // Append image to cache only if it is not moderated
+                            [self isUploadedImageModerated:response inCategory:nextImageToBeUploaded.categoryToUploadTo];
+                            
+                        } else {
+                            
+                            // Increment number of images in category
+                            [[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo] incrementImageSizeByOne];
+                            
+                            // Read image/video information and update cache
+                            [self addImageDataToCategoryCache:response];
+                        }
+                        
+                        // Remove image from queue and upload next image
 						[self.imageUploadQueue removeObjectAtIndex:0];
 						[self.imageNamesUploadQueue removeObjectForKey:imageKey];
 						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
@@ -400,6 +415,7 @@
 		NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
 		NSString *imageId = [imageResponse objectForKey:@"image_id"];
 		
+        // Set properties of image on Piwigo server
 		[UploadService setImageInfoForImageWithId:imageId
 								  withInformation:imageProperties
 									   onProgress:^(NSProgress *progress) {
@@ -413,17 +429,74 @@
 	}
 }
 
--(void)addImageDataToCategoryCache:(NSDictionary*)jsonResponse
+-(void)isUploadedImageModerated:(NSDictionary*)jsonResponse inCategory:(NSInteger)categoryId
 {
-	
-	NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
-	[ImageService getImageInfoById:[[imageResponse objectForKey:@"image_id"] integerValue]
-				  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-					  //
-				  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-					  //
-				  }];
+    if([[jsonResponse objectForKey:@"stat"] isEqualToString:@"ok"])
+    {
+        NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
+        NSString *imageId = [imageResponse objectForKey:@"image_id"];
+        
+        // Determine if the uploaded image is moderated
+        [UploadService getUploadedImageStatusById:imageId
+                                       inCategory:categoryId
+                                       onProgress:^(NSProgress *progress) {
+                                           // progress
+                                       }
+                                    OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+
+                                        if ([[response objectForKey:@"stat"] isEqualToString:@"ok"]) {
+                                            
+                                            // When admin trusts user, pending answer is empty
+                                            id pendingStatus = [[response objectForKey:@"result"] objectForKey:@"pending"];
+                                            if (pendingStatus && [pendingStatus count]) {
+                                                
+                                                id pendingState = [pendingStatus objectAtIndex:0];
+                                                if ([[pendingState objectForKey:@"state"] isEqualToString:@"moderation_pending"]) {
+                                                    
+                                                    // Moderation pending => Don't add this uploaded image/video to cache now
+                                                
+                                                } else {    // No moderation pending
+                                                    
+                                                    // Increment number of images in category
+                                                    [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
+
+                                                    // Read image/video information and update cache
+                                                    [self addImageDataToCategoryCache:jsonResponse];
+                                                }
+                                            } else {        // No pending status response ! Trusted user
+
+                                                // Increment number of images in category
+                                                [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
+                                                
+                                                // Read image/video information and update cache
+                                                [self addImageDataToCategoryCache:jsonResponse];
+                                            }
+                                         }
+                                    }
+                                        onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                                            NSLog(@"isUploadedImageModerated error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
+                                        }
+         ];
+    }
 }
 
+-(void)addImageDataToCategoryCache:(NSDictionary*)jsonResponse
+{
+    if([[jsonResponse objectForKey:@"stat"] isEqualToString:@"ok"])
+    {
+        NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
+        NSString *imageId = [imageResponse objectForKey:@"image_id"];
+    
+        // Read image information and update cache
+        [ImageService getImageInfoById:[imageId integerValue]
+                      ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                          //
+                      } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                          //
+                      }];
+    }
+}
 
 @end

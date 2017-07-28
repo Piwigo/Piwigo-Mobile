@@ -118,6 +118,26 @@
 	return request;
 }
 
++(NSURLSessionTask*)getUploadedImageStatusById:(NSString*)imageId
+                                    inCategory:(NSInteger)categoryId
+                                    onProgress:(void (^)(NSProgress *))progress
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+	NSURLSessionTask *request = [self post:kCommunityImagesUploadCompleted
+                             URLParameters:nil
+                                parameters:@{
+                                             @"pwg_token"   : [Model sharedInstance].pwgToken,
+                                             @"image_id"    : imageId,
+                                             @"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
+                                            }
+                                  progress:progress
+                                   success:completion
+                                   failure:fail];
+	
+	return request;
+}
+
 +(NSURLSessionTask*)updateImageInfo:(ImageUpload*)imageInfo
                          onProgress:(void (^)(NSProgress *))progress
                        OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion

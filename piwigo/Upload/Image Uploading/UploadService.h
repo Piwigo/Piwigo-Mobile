@@ -26,6 +26,12 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
                                   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
++(NSURLSessionTask*)getUploadedImageStatusById:(NSString*)imageId
+                                    inCategory:(NSInteger)categoryId
+                                    onProgress:(void (^)(NSProgress *))progress
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
 +(NSURLSessionTask*)updateImageInfo:(ImageUpload*)imageInfo
                          onProgress:(void (^)(NSProgress *))progress
                        OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion

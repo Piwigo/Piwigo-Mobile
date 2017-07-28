@@ -218,7 +218,8 @@
 
 -(void)incrementImageSizeByOne
 {
-	self.numberOfImages++;
+	// Increment number of images in category
+    self.numberOfImages++;
 	for(NSString *category in self.upperCategories)
 	{
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].numberOfSubAlbumImages++;
@@ -227,7 +228,8 @@
 
 -(void)deincrementImageSizeByOne
 {
-	self.numberOfImages--;
+	// Decrement number of images in category
+    self.numberOfImages--;
 	for(NSString *category in self.upperCategories)
 	{
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].numberOfSubAlbumImages--;

@@ -27,6 +27,7 @@ NSString * const kPiwigoCategoriesMove = @"format=json&method=pwg.categories.mov
 NSString * const kPiwigoCategoriesSetRepresentative = @"format=json&method=pwg.categories.setRepresentative";
 
 NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
+NSString * const kCommunityImagesUploadCompleted = @"format=json&method=community.images.uploadCompleted";
 NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo&image_id={imageId}";
 NSString * const kPiwigoImageSetInfo = @"format=json&method=pwg.images.setInfo";
 NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
@@ -126,13 +127,6 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
                                 parameters:nil
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
     {
-    
-//        NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-//        [mutableHeaders setValue:[NSString stringWithFormat:@"multipart/form-data"] forKey:@"Content-Type"];
-//        NSString *boundary = @"YOUR_BOUNDARY_STRING";
-//        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-//        [mutableHeaders setValue:contentType forKey:@"Content-Type"];
-        
         [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
                                     name:@"file"
                                 fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
