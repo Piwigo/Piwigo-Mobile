@@ -168,14 +168,14 @@
 {
 	if(!self.isSelect) {
         // Selection mode not active
-        if([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) {
+        if([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) {
             self.navigationItem.rightBarButtonItems = @[self.selectBarButton, self.uploadBarButton];
         } else {
             self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
         }
 	} else {
-        // Selection mode active
-        if([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        // Selection mode active (only amdins have delete rights)
+        if([Model sharedInstance].hasAdminRights)
 		{
             if (self.selectedImageIds.count > 0) {
                 self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton];

@@ -47,7 +47,7 @@
                       NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
                       [[CategoriesData sharedInstance] addAllCategories:albums];
                       
-                      // Update albums when Community extension is installed (for non-admin)
+                      // Update albums when Community extension is installed (reserved to non-admin)
                       if (![Model sharedInstance].hasAdminRights && [Model sharedInstance].hasInstalledCommunity) {
                           [AlbumService setUploadRightsForCategory:categoryId];
                       }
@@ -121,11 +121,8 @@
 			albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"date_last"]];
 		}
         
-        if([Model sharedInstance].hasAdminRights) {
-            albumData.hasUploadRights = YES;
-        } else {
-            albumData.hasUploadRights = NO;
-        }
+        // By default, users do not have upload rights
+        albumData.hasUploadRights = NO;
 		
 		[albums addObject:albumData];
 	}

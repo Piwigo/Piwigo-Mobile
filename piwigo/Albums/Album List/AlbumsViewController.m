@@ -73,7 +73,7 @@
 {
 	[super viewDidLoad];
 	
-//	if([Model sharedInstance].hasAdminRights)
+    // Only admins and Community users can upload images/videos in selected albums
     if ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:0] hasUploadRights])
     {
 		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];

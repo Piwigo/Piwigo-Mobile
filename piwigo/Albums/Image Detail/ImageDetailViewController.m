@@ -95,8 +95,8 @@
 	NSMutableArray *otherButtons = [NSMutableArray new];
 	[otherButtons addObject:NSLocalizedString(@"imageOptions_download", @"Download")];
     
-//	Add actions capabilities if user has upload rights
-    if([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+//	Add actions capabilities if user has admin rights
+    if([Model sharedInstance].hasAdminRights)
 	{
 		[otherButtons addObject:NSLocalizedString(@"imageOptions_edit",  @"Edit")];
 		[otherButtons addObject:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")];
@@ -106,10 +106,10 @@
 								animated:YES
 							   withTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
 					   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-				  destructiveButtonTitle:[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights] ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
+				  destructiveButtonTitle:[Model sharedInstance].hasAdminRights ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
 					   otherButtonTitles:otherButtons
 								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-									buttonIndex += [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights] ? 0 : 1;
+									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 1;
 									switch(buttonIndex)
 									{
 										case 0: // Delete
@@ -120,7 +120,7 @@
 											break;
 										case 2: // Edit
 										{
-											if(![[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) break;
+											if(![Model sharedInstance].hasAdminRights) break;
 											
 											UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
 											EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
@@ -135,7 +135,7 @@
 										}
 										case 3:	// set as album image
 										{
-											if(![[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) break;
+											if(![Model sharedInstance].hasAdminRights) break;
 											
 											AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
 											[self.navigationController pushViewController:allCategoriesPickVC animated:YES];
