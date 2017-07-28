@@ -102,6 +102,30 @@
 		
 		[self setupAutoLayout];
 		
+        // Add renaming, moving and deleting capabilities when user has admin rights
+		if([Model sharedInstance].hasAdminRights)
+		{
+			self.rightSwipeSettings.transition = MGSwipeTransitionStatic;
+			self.rightButtons = @[[MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_rename", @"Rename")
+														  backgroundColor:[UIColor piwigoOrange]
+																 callback:^BOOL(MGSwipeTableCell *sender) {
+																	 [self renameCategory];
+																	 return YES;
+																 }],
+								  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_move", @"Move")
+												 backgroundColor:[UIColor piwigoGrayLight]
+														callback:^BOOL(MGSwipeTableCell *sender) {
+															[self moveCategory];
+															return YES;
+														}],
+								  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_delete", @"Delete")
+												 backgroundColor:[UIColor redColor]
+														callback:^BOOL(MGSwipeTableCell *sender) {
+															[self deleteCategory];
+															return YES;
+														}]];
+		}
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUpdated) name:kPiwigoNotificationCategoryImageUpdated object:nil];
 		
 	}
@@ -309,30 +333,7 @@
         self.albumName.text = [NSString stringWithFormat:@"≥ %@", self.albumData.name];
     }
     
-    // Add renaming, moving and deleting capabilities when user has Upload rights
-    if (self.albumData.hasUploadRights) {
-        self.rightSwipeSettings.transition = MGSwipeTransitionStatic;
-        self.rightButtons = @[[MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_rename", @"Rename")
-                                             backgroundColor:[UIColor piwigoOrange]
-                                                    callback:^BOOL(MGSwipeTableCell *sender) {
-                                                        [self renameCategory];
-                                                        return YES;
-                                                    }],
-                              [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_move", @"Move")
-                                             backgroundColor:[UIColor piwigoGrayLight]
-                                                    callback:^BOOL(MGSwipeTableCell *sender) {
-                                                        [self moveCategory];
-                                                        return YES;
-                                                    }],
-                              [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_delete", @"Delete")
-                                             backgroundColor:[UIColor redColor]
-                                                    callback:^BOOL(MGSwipeTableCell *sender) {
-                                                        [self deleteCategory];
-                                                        return YES;
-                                                    }]];
-    }
-
-    // Display number of images and sub-albums
+     // Display number of images and sub-albums
     if (self.albumData.numberOfSubCategories == 0) {
         
         // There are no sub-albums
