@@ -45,15 +45,14 @@
                   {
                       // Extract albums data from JSON message
                       NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
+
+                      // Update CategoriesData cache
                       [[CategoriesData sharedInstance] addAllCategories:albums];
                       
-                      // Update albums when Community extension is installed (reserved to non-admin)
+                      // Update albums if Community extension installed (not for admins)
                       if (![Model sharedInstance].hasAdminRights && [Model sharedInstance].hasInstalledCommunity) {
-                          [AlbumService setUploadRightsForCategory:categoryId];
+                          [AlbumService setUploadRightsForCategory:categoryId inRecursiveMode:recursiveString];
                       }
-
-                      // Post to the app that the category data has been updated
-                      [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 
                       if(completion)
                       {
@@ -121,36 +120,42 @@
 			albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"date_last"]];
 		}
         
-        // By default, users do not have upload rights
+        // By default, Community users have no upload rights
         albumData.hasUploadRights = NO;
-		
-		[albums addObject:albumData];
+        
+        [albums addObject:albumData];
 	}
 	
 	return albums;
 }
 
-+(void)setUploadRightsForCategory:(NSInteger)categoryId
++(void)setUploadRightsForCategory:(NSInteger)categoryId inRecursiveMode:(NSString *)recursive
 {
     [self getCommunityAlbumListForCategory:categoryId
-                              OnCompletion:^(NSURLSessionTask *task, NSArray *comAlbums) {
-                                  if (comAlbums) {
-                                      for(NSDictionary *category in comAlbums)
+                           inRecursiveMode:recursive
+                              OnCompletion:^(NSURLSessionTask *task, NSArray *communityAlbums) {
+                                  if (communityAlbums) {
+                                      // Loop over Community albums
+                                      for(NSDictionary *category in communityAlbums)
                                       {
                                           NSInteger catId = [[category valueForKey:@"id"] integerValue];
-                                          [[CategoriesData sharedInstance] getCategoryById:catId].hasUploadRights = YES;
+                                          [[CategoriesData sharedInstance] setCategoryWithId:catId hasUploadRight:YES];
                                      }
                                    }
                               }
+                                 onFailure:nil
      ];
 }
 
 +(NSURLSessionTask*)getCommunityAlbumListForCategory:(NSInteger)categoryId
+                                     inRecursiveMode:(NSString *)recursive
                                         OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
+                                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     return [self post:kCommunityCategoriesGetList
         URLParameters:@{
-                        @"categoryId" : @(categoryId)
+                        @"categoryId" : @(categoryId),
+                        @"recursive"  : recursive
                         }
            parameters:nil
              progress:nil

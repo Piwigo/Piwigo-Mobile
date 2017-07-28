@@ -59,15 +59,13 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 	for(PiwigoAlbumData *categoryData in categories)
 	{
 		NSInteger index = -1;
-		NSInteger curr = 0;
 		for(PiwigoAlbumData *existingCategory in self.allCategories)
 		{
-			if(existingCategory.albumId == categoryData.albumId)
+            index++;
+            if(existingCategory.albumId == categoryData.albumId)
 			{
-				index = curr;
 				break;
 			}
-			curr++;
 		}
 		
 		if(index != -1)
@@ -76,6 +74,7 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 			if(existingData.albumThumbnailId == categoryData.albumThumbnailId)
 			{
 				categoryData.categoryImage = existingData.categoryImage;
+                categoryData.hasUploadRights = existingData.hasUploadRights;
 			}
 			
 			[newCategories setObject:categoryData atIndexedSubscript:index];
@@ -88,9 +87,34 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 	
 	self.allCategories = newCategories;
 	
-	
-	// post to the app that the category data has been updated
+	// Post to the app that the category data has been updated
 	[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+}
+
+-(void)setCategoryWithId:(NSInteger)categoryId hasUploadRight:(BOOL)canUpload
+{
+    NSMutableArray *existingCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+    NSInteger index = -1;
+    for(PiwigoAlbumData *existingCategory in existingCategories)
+    {
+        index++;
+        if(existingCategory.albumId == categoryId)
+        {
+            break;
+        }
+    }
+    
+    if(index != -1)
+    {
+        PiwigoAlbumData *categoryData = [existingCategories objectAtIndex:index];
+        categoryData.hasUploadRights = canUpload;
+        [existingCategories setObject:categoryData atIndexedSubscript:index];
+    }
+    
+    self.allCategories = existingCategories;
+
+    // Post to the app that the category data has been updated
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId

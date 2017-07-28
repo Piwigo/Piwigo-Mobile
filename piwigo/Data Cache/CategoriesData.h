@@ -19,6 +19,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryImageUpdated;
 @property (nonatomic, readonly) NSArray *allCategories;
 
 -(void)addAllCategories:(NSArray*)categories;
+-(void)setCategoryWithId:(NSInteger)categoryId hasUploadRight:(BOOL)canUpload;
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId;
