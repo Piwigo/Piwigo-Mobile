@@ -12,6 +12,48 @@
 
 @implementation SessionService
 
+// Get Piwigo server methods
+// and determine if the Community extension is installed and active
++(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    return [self post:kReflectionGetMethodList
+        URLParameters:nil
+           parameters:nil
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  
+                  if(completion) {
+                      
+                      // Did the server answer the request? (it should have)
+                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                      {
+                          // Loop over the methods
+                          id methodsList = [[responseObject objectForKey:@"result"] objectForKey:@"methods"];
+                          for (NSString *method in methodsList) {
+                              
+                              // Check if the Community extension is installed and active (> 2.9a)
+                              if([method isEqualToString:@"community.session.getStatus"]) {
+                                  [Model sharedInstance].hasInstalledCommunity = YES;
+                              }
+                          }
+                          
+                          completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
+                      }
+                      else  // Strange…
+                      {
+                          completion(nil);
+                      }
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  
+                  if(fail) {
+                      [SessionService showConnectionError:error];
+                      fail(task, error);
+                  }
+              }];
+}
+
 +(NSURLSessionTask*)performLoginWithUser:(NSString*)user
                              andPassword:(NSString*)password
                             onCompletion:(void (^)(BOOL result, id response))completion
@@ -48,49 +90,6 @@
               }];
 }
 
-+(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
-                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    return [self post:kReflectionGetMethodList
-        URLParameters:nil
-           parameters:nil
-             progress:nil
-              success:^(NSURLSessionTask *task, id responseObject) {
-                  
-                  if(completion) {
-                      
-                      // Did the server answer the request? (it should have)
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                      {
-                          // By default, the Community extension is not installed
-                          [Model sharedInstance].hasInstalledCommunity = NO;
-                          
-                          // Loop over the methods
-                          id methodsList = [[responseObject objectForKey:@"result"] objectForKey:@"methods"];
-                          for (NSString *method in methodsList) {
-                              
-                              // Check if the Community extension is installed and active
-                              if([method isEqualToString:@"community.session.getStatus"]) {
-                                  [Model sharedInstance].hasInstalledCommunity = YES;
-                              }
-                          }
-                          
-                          completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
-                      }
-                      else  // Strange…
-                      {
-                          completion(nil);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
-                  
-                  if(fail) {
-                      [SessionService showConnectionError:error];
-                      fail(task, error);
-                  }
-              }];
-}
-
 +(NSURLSessionTask*)getPiwigoStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
@@ -107,8 +106,11 @@
                           [Model sharedInstance].language = [[responseObject objectForKey:@"result"] objectForKey:@"language"];
                           [Model sharedInstance].version = [[responseObject objectForKey:@"result"] objectForKey:@"version"];
                           
-                          NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
-                          [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
+                          // User rights are determine by Community (if installed)
+                          if(![Model sharedInstance].hasInstalledCommunity) {
+                              NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
+                              [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
+                          }
                           
                           // Collect the list of available sizes
                           [Model sharedInstance].hasSquareSizeImages  = YES;

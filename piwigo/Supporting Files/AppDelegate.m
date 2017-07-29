@@ -45,12 +45,14 @@
 	
     // Override point for customization after application launch.
 	
+    // Chache settings
 	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
 														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
 															 diskPath:nil];
 	[NSURLCache setSharedURLCache:URLCache];
 	
-	NSString *server = [Model sharedInstance].serverName;
+    // Login ?
+    NSString *server = [Model sharedInstance].serverName;
 	NSString *user = [KeychainAccess getLoginUser];
 	NSString *password = [KeychainAccess getLoginPassword];
 	if(server.length > 0 || (user.length > 0 && password.length > 0))
@@ -58,10 +60,12 @@
 		[self.loginVC performLogin];
 	}
 	
-	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    // No login
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
 	[self loadLoginView];
 	
+    // Enable network activity indicator
 	[AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
 	
 	return YES;

@@ -108,15 +108,35 @@
 	[self.view endEditing:YES];
 }
 
+-(void)getMethodsList
+{
+    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
+        
+        if(methodsList) {
+            
+        } else {
+
+            UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
+                                                                message:NSLocalizedString(@"sessionMethodsError_message", @"Failed to get server methods.\nTry logging in again.")
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                      otherButtonTitles:nil];
+            [failAlert show];
+        }
+        
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self hideLoading];
+    }];
+}
+
 -(void)performLogin
 {
-#if defined(DEBUG)
-    NSLog(@"=> performLogin…");
-#endif
-
     [self.view endEditing:YES];
 	[self showLoading];
 	
+    // Get available methods and determine if Community extension is installed
+    [self getMethodsList];
+    
 	if(self.serverTextField.textField.text.length <= 0)
 	{
 		[UIAlertView showWithTitle:NSLocalizedString(@"loginEmptyServer_title", @"Enter a Web Address")
@@ -146,7 +166,12 @@
                                          // Session now opened
                                          [Model sharedInstance].hadOpenedSession = YES;
                                          
-                                         // Get version, token, rights, available sizes and check Piwigo version
+                                         // First determine user rights if Community is installed
+                                         if([Model sharedInstance].hasInstalledCommunity) {
+                                             [self getCommunityStatusAtFirstLogin:YES];
+                                         }
+                                         
+                                         // Check Piwigo version, get token, available sizes, etc.
                                          [self getSessionStatus];
                                      }
 									 else
@@ -170,10 +195,15 @@
 	}
 	else     // No username, get only session status
 	{
-		[Model sharedInstance].hadOpenedSession = NO;
+		// Session closed
+        [Model sharedInstance].hadOpenedSession = NO;
+
+        // Check Piwigo version, get token, available sizes, etc.
         [self getSessionStatus];
-		[KeychainAccess resetKeychain];
-	}
+
+        // Reset keychain
+        [KeychainAccess resetKeychain];
+    }
 }
 
 -(NSString*)cleanServerString:(NSString*)serverString
@@ -197,14 +227,12 @@
 
 -(void)getSessionStatus
 {
-#if defined(DEBUG)
-    NSLog(@"=> getSessionStatus…");
-#endif
 	[SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
 		if(responseObject)
 		{
 			if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
-			{	// They need to update
+			{
+                // They need to update
                 [self hideLoading];
 				[UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
 								   message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
@@ -219,10 +247,19 @@
 								  }];
 			}
 			else
-			{	// Their version is Ok
-                // Get list of methods and determine if the Community extension is installed and active
-                [self getMethodsListAtFirstLogin:YES];
-			}
+			{
+                // Their version is Ok
+
+                // If admin, get list of plugins and check VideoJS availability
+                if([Model sharedInstance].hasAdminRights) {
+                    [self getPluginsListAtFirstLogin:YES];
+                }
+
+                // Load interface
+                [self hideLoading];
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate loadNavigation];
+            }
 		}
 		else
 		{
@@ -239,73 +276,20 @@
 	}];
 }
 
--(void)getMethodsListAtFirstLogin:(BOOL)isFirstLogin
-{
-#if defined(DEBUG)
-    NSLog(@"=> getMethodsListAtFirstLogin:%@…", (isFirstLogin ? @"YES" : @"NO"));
-#endif
-    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
-
-        if(methodsList) {
-
-            // If the Community extension is installed, check 'real status'
-            if([Model sharedInstance].hasInstalledCommunity) {
-                [self getCommunityStatusAtFirstLogin:isFirstLogin];
-            
-            } else {
-                // If the user is admin/webmaster, get list of plugins and check VideoJS availability
-                if([Model sharedInstance].hasAdminRights) {
-                    [self getSessionPluginsListAtFirstLogin:isFirstLogin];
-                
-                } else {
-                    if (isFirstLogin) {
-                        // Load interface
-                        [self hideLoading];
-                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate loadNavigation];
-                    } else {
-                        // Do nothing and keep current view active
-                    }
-                }
-            }
-        } else {
-            [self hideLoading];
-            UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
-                                                                message:NSLocalizedString(@"sessionMethodsError_message", @"Failed to get server methods.\nTry logging in again.")
-                                                               delegate:nil
-                                                      cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                                      otherButtonTitles:nil];
-            [failAlert show];
-        }
-
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        [self hideLoading];
-    }];
-}
-
 -(void)getCommunityStatusAtFirstLogin:(BOOL)isFirstLogin
 {
-#if defined(DEBUG)
-    NSLog(@"=> getCommunityStatusAtFirstLogin:%@…", (isFirstLogin ? @"YES" : @"NO"));
-#endif
     [SessionService getCommunityStatusOnCompletion:^(NSDictionary *responseObject) {
 
         if(responseObject) {
             
-            // If the user is really admin/webmaster, get list of plugins and check VideoJS availability
-            if([Model sharedInstance].hasAdminRights) {
-                [self getSessionPluginsListAtFirstLogin:isFirstLogin];
-
+            if (isFirstLogin) {
+                // return to performLogin
+                return;
+            
             } else {
-                if (isFirstLogin) {
-                    // Load interface
-                    [self hideLoading];
-                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate loadNavigation];
-                } else {
-                    // Do nothing and keep current view active
-                }
+                // Do nothing and keep current view
             }
+
         } else {
             [self hideLoading];
             UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
@@ -321,18 +305,13 @@
     }];
 }
 
--(void)getSessionPluginsListAtFirstLogin:(BOOL)isFirstLogin
+-(void)getPluginsListAtFirstLogin:(BOOL)isFirstLogin
 {
-#if defined(DEBUG)
-    NSLog(@"=> getSessionPluginsListAtFirstLogin:%@…", (isFirstLogin ? @"YES" : @"NO"));
-#endif
     [SessionService getPluginsListOnCompletion:^(NSDictionary *pluginsList) {
 
         if (isFirstLogin) {
-            // Load interface
-            [self hideLoading];
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate loadNavigation];
+            // return to performLogin
+            return;
         } else {
             // Do nothing and keep current view active
         }
@@ -342,60 +321,38 @@
     }];
 }
 
-// In case the connection was temporarily lost
--(void)getSessionStatusAfterReachabilityChanged
-{
-#if defined(DEBUG)
-    NSLog(@"=> getSessionStatusAfterReachabilityChanged…");
-#endif
-    [SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
-
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                           message:[error localizedDescription]
-                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                 otherButtonTitles:nil
-                          tapBlock:nil];
-    }];
-}
-
--(void)getSessionPluginsListAfterReachabilityChanged
-{
-#if defined(DEBUG)
-    NSLog(@"=> getSessionStatusAfterReachabilityChanged…");
-#endif
-    [SessionService getPluginsListOnCompletion:^(NSDictionary *responseObject) {
-
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
-
-    }];
-}
-
 // Check status of session and try logging in again if needed
 -(void)checkSessionStatusAndTryRelogin
 {
-#if defined(DEBUG)
-    NSLog(@"=> checkSessionStatusAndTryRelogin…");
-#endif
     NSString *user = [KeychainAccess getLoginUser];
     NSString *password = [KeychainAccess getLoginPassword];
 
+    // Get available methods and determine if Community extension is installed
+    [self getMethodsList];
+
+    // Check whether session is still active
     [SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
         if(responseObject) {
+            
+            // When the session is closed, user becomes guest
             NSString *userName = [responseObject objectForKey:@"username"];
             if (![userName isEqualToString:[[Model sharedInstance]username]]) {
-#if defined(DEBUG)
-                NSLog(@"checkSessionStatusBeforeAppEnterForeground: username \"%@\" ≠ \"%@\". Try logging in again…", user, userName);
-#endif
                 [SessionService performLoginWithUser:user
                                          andPassword:password
                                         onCompletion:^(BOOL result, id response) {
 
-                                            // Session now opened
+                                            // Session now re-opened
                                             [Model sharedInstance].hadOpenedSession = YES;
                                             
-                                            // Get list of methods and determine if the Community extension is installed and active
-                                            [self getMethodsListAtFirstLogin:NO];
+                                            // Update user rights if Community is installed
+                                            if([Model sharedInstance].hasInstalledCommunity) {
+                                                [self getCommunityStatusAtFirstLogin:NO];
+                                            }
+                                            
+                                            // If admin, update list of plugins and check VideoJS availability
+                                            if([Model sharedInstance].hasAdminRights) {
+                                                [self getPluginsListAtFirstLogin:NO];
+                                            }
                                         }
                                            onFailure:^(NSURLSessionTask *task, NSError *error) {
                                                // Could not re-establish the session, login/pwd changed ?
@@ -414,10 +371,12 @@
                                            }];
             } else {
 #if defined(DEBUG)
-                NSLog(@"checkSessionStatusBeforeAppEnterForeground: Connection still alive…");
+                NSLog(@"=> checkSessionStatusBeforeAppEnterForeground: Connection still alive…");
+                NSLog(@"=> with: hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+                      ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+                      ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+                      ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
 #endif
-                // Get list of methods and determine if the Community extension is installed and active
-                [self getMethodsListAtFirstLogin:NO];
             }
         } else {
             // Connection lost

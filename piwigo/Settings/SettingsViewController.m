@@ -884,6 +884,9 @@ typedef enum {
 									  if(sucessfulLogout)
 									  {
 										  [Model sharedInstance].hadOpenedSession = NO;
+                                          [Model sharedInstance].hasInstalledCommunity = NO;
+                                          [Model sharedInstance].hasInstalledVideoJS = NO;
+                                          [Model sharedInstance].hasAdminRights = NO;
                                           [ClearCache clearAllCache];
 										  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 										  [appDelegate loadLoginView];
