@@ -114,7 +114,9 @@
 
 -(void)prepareForReuse
 {
-	self.image.image = nil;
+    [super prepareForReuse];
+    
+    self.image.image = nil;
 	self.imageTitle.text = @"";
     self.privacyLevel.text = @"";
 	self.author.text = @"";
