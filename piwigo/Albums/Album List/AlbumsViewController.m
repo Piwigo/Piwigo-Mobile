@@ -26,6 +26,10 @@
 
 @implementation AlbumsViewController
 
+static SEL extracted() {
+    return @selector(categoryDataUpdated);
+}
+
 -(instancetype)init
 {
 	self = [super init];
@@ -45,7 +49,7 @@
 		[self.view addSubview:self.albumsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:extracted() name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAlbumData) name:UIApplicationDidBecomeActiveNotification object:nil];
 	}
 	return self;

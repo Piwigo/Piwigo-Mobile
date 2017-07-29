@@ -110,7 +110,11 @@
 
 -(void)performLogin
 {
-	[self.view endEditing:YES];
+#if defined(DEBUG)
+    NSLog(@"=> performLogin…");
+#endif
+
+    [self.view endEditing:YES];
 	[self showLoading];
 	
 	if(self.serverTextField.textField.text.length <= 0)
@@ -193,6 +197,9 @@
 
 -(void)getSessionStatus
 {
+#if defined(DEBUG)
+    NSLog(@"=> getSessionStatus…");
+#endif
 	[SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
 		if(responseObject)
 		{
@@ -234,6 +241,9 @@
 
 -(void)getMethodsListAtFirstLogin:(BOOL)isFirstLogin
 {
+#if defined(DEBUG)
+    NSLog(@"=> getMethodsListAtFirstLogin:%@…", (isFirstLogin ? @"YES" : @"NO"));
+#endif
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
 
         if(methodsList) {
@@ -275,6 +285,9 @@
 
 -(void)getCommunityStatusAtFirstLogin:(BOOL)isFirstLogin
 {
+#if defined(DEBUG)
+    NSLog(@"=> getCommunityStatusAtFirstLogin:%@…", (isFirstLogin ? @"YES" : @"NO"));
+#endif
     [SessionService getCommunityStatusOnCompletion:^(NSDictionary *responseObject) {
 
         if(responseObject) {
@@ -310,6 +323,9 @@
 
 -(void)getSessionPluginsListAtFirstLogin:(BOOL)isFirstLogin
 {
+#if defined(DEBUG)
+    NSLog(@"=> getSessionPluginsListAtFirstLogin:%@…", (isFirstLogin ? @"YES" : @"NO"));
+#endif
     [SessionService getPluginsListOnCompletion:^(NSDictionary *pluginsList) {
 
         if (isFirstLogin) {
@@ -329,6 +345,9 @@
 // In case the connection was temporarily lost
 -(void)getSessionStatusAfterReachabilityChanged
 {
+#if defined(DEBUG)
+    NSLog(@"=> getSessionStatusAfterReachabilityChanged…");
+#endif
     [SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
 
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -342,6 +361,9 @@
 
 -(void)getSessionPluginsListAfterReachabilityChanged
 {
+#if defined(DEBUG)
+    NSLog(@"=> getSessionStatusAfterReachabilityChanged…");
+#endif
     [SessionService getPluginsListOnCompletion:^(NSDictionary *responseObject) {
 
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -352,6 +374,9 @@
 // Check status of session and try logging in again if needed
 -(void)checkSessionStatusAndTryRelogin
 {
+#if defined(DEBUG)
+    NSLog(@"=> checkSessionStatusAndTryRelogin…");
+#endif
     NSString *user = [KeychainAccess getLoginUser];
     NSString *password = [KeychainAccess getLoginPassword];
 
@@ -365,7 +390,11 @@
                 [SessionService performLoginWithUser:user
                                          andPassword:password
                                         onCompletion:^(BOOL result, id response) {
+
+                                            // Session now opened
                                             [Model sharedInstance].hadOpenedSession = YES;
+                                            
+                                            // Get list of methods and determine if the Community extension is installed and active
                                             [self getMethodsListAtFirstLogin:NO];
                                         }
                                            onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -383,6 +412,12 @@
                                                         otherButtonTitles:nil
                                                                  tapBlock:nil];
                                            }];
+            } else {
+#if defined(DEBUG)
+                NSLog(@"checkSessionStatusBeforeAppEnterForeground: Connection still alive…");
+#endif
+                // Get list of methods and determine if the Community extension is installed and active
+                [self getMethodsListAtFirstLogin:NO];
             }
         } else {
             // Connection lost

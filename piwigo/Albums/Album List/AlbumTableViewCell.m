@@ -325,6 +325,11 @@
 	self.albumData = albumData;
 	
     // Add up/down arrows in front of album name when Community extension active
+//#if defined(DEBUG)
+//    NSLog(@"setupWithAlbumData: hasInstalledCommunity=%@, hasAdminRights=%@",
+//          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+//          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+//#endif
     if (![Model sharedInstance].hasInstalledCommunity || [Model sharedInstance].hasAdminRights) {
         self.albumName.text = self.albumData.name;
     } else if (self.albumData.hasUploadRights) {
