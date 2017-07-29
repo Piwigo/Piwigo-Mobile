@@ -204,7 +204,6 @@
 // Image delete
 "deleteImage_delete" = "Supprimer";
 "deleteImage_imagePlural" = "Images";
-"deleteImage_cancelButton" = "Annuler";
 "deleteImageProgress_title" = "Suppression %@%%";
 
 "deleteSingleImage_title" = "Supprimer l’image";

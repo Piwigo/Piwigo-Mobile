@@ -110,7 +110,7 @@
 "renameCategory_title" = "Rename Album";
 "renameCategory_message" = "Rename album";
 "renameCategory_button" = "Rename";
-"renameCategorySuccess_title" = "Rename Success";
+"renameCategorySuccess_title" = "Rename Successful";
 "renameCategorySuccess_message" = "Successfully renamed your album";
 
 // Album rename — Errors
@@ -204,7 +204,6 @@
 // Image delete
 "deleteImage_delete" = "Delete";
 "deleteImage_imagePlural" = "Images";
-"deleteImage_cancelButton" = "Cancel";
 "deleteImageProgress_title" = "Deleting %@%% Done";
 
 "deleteSingleImage_title" = "Delete Image";

@@ -233,7 +233,7 @@
     
 	[UIAlertView showWithTitle:titleString
 					   message:messageString
-			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Cancel")
+			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1) {

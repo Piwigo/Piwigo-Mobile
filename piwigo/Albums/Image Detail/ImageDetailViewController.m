@@ -150,7 +150,7 @@
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
 					   message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
-			 cancelButtonTitle:NSLocalizedString(@"deleteImage_cancelButton", @"Cancel")
+			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 						  if(buttonIndex == 1) {
@@ -164,8 +164,8 @@
 										   } onFailure:^(NSURLSessionTask *task, NSError *error) {
 											   [UIAlertView showWithTitle:@"Delete Fail"
 																  message:@"Failed to delete image\nRetry?"
-														cancelButtonTitle:@"No"
-														otherButtonTitles:@[@"Yes"]
+														cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+														otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 																 tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 																	 if(buttonIndex == 1)
 																	 {

@@ -135,8 +135,8 @@ typedef enum {
 							[loading hideLoadingWithLabel:@"Failed" showCheckMark:NO withDelay:0.0];
 							[UIAlertView showWithTitle:@"Failed to Update"
 											   message:@"Failed to update your changes with your server\nTry again?"
-									 cancelButtonTitle:@"No"
-									 otherButtonTitles:@[@"Yes"]
+									 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+									 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
 											  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 												  if(buttonIndex == 1)
 												  {

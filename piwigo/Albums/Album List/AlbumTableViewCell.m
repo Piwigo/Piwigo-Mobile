@@ -191,7 +191,7 @@
 -(void)renameCategory
 {
 	[UIAlertView showWithTitle:NSLocalizedString(@"renameCategory_title", @"Rename Album")
-					   message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"renameCategory_message", @"Rename album"), self.albumData.name]
+					   message:[NSString stringWithFormat:@"%@ \"%@\"?", NSLocalizedString(@"renameCategory_message", @"Rename album"), self.albumData.name]
 						 style:UIAlertViewStylePlainTextInput
 			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
 			 otherButtonTitles:@[NSLocalizedString(@"renameCategory_button", @"Rename")]
@@ -208,7 +208,7 @@
 													  
 													  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 
-													  [UIAlertView showWithTitle:NSLocalizedString(@"renameCategorySuccess_title", @"Rename Success")
+													  [UIAlertView showWithTitle:NSLocalizedString(@"renameCategorySuccess_title", @"Rename Successful")
 																		 message:NSLocalizedString(@"renameCategorySuccess_message", @"Successfully renamed your album")
 															   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 															   otherButtonTitles:nil
