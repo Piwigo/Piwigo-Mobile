@@ -21,7 +21,7 @@
 
 -(instancetype)init
 {
-	if([Model sharedInstance].hasAdminRights)
+	if(([Model sharedInstance].hasAdminRights) || ([Model sharedInstance].hasInstalledCommunity))
 	{
 		self = [super init];
 		self.categoryListDelegate = self;

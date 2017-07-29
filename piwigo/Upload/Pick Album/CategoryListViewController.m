@@ -10,6 +10,7 @@
 #import "CategoriesData.h"
 #import "CategoryTableViewCell.h"
 #import "AlbumService.h"
+#import "Model.h"
 
 @interface CategoryListViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
@@ -51,13 +52,22 @@
 
 -(void)buildCategoryArray
 {
-	NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
-	NSMutableArray *diff = [NSMutableArray new];
+	// Build list of categories from complete known list
+    NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
+    
+    // Proposed list is collected in diff
+    NSMutableArray *diff = [NSMutableArray new];
 	
     // Look for missing categories
     for(PiwigoAlbumData *category in allCategories)
 	{
-		BOOL doesNotExist = YES;
+        // Non-admin Community users can only upload in specific albums
+        if (![Model sharedInstance].hasAdminRights && !category.hasUploadRights) {
+            continue;
+        }
+
+        // Is this
+        BOOL doesNotExist = YES;
 		for(PiwigoAlbumData *existingCat in self.categories)
 		{
 			if(category.albumId == existingCat.albumId)
