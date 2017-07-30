@@ -131,6 +131,10 @@
 		AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultThumbnailSizeViewController.m; sourceTree = "<group>"; };
 		AD35CA371E9BF8A600E3B897 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "piwigo/Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		AD3FDDE81F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD3FDDE91F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/About.strings; sourceTree = "<group>"; };
+		AD3FDDEA1F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		AD3FDDEB1F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD6B2E741F0930B40040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E771F0930CE0040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/About.strings; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -925,6 +929,7 @@
 				en,
 				Base,
 				fr,
+				da,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -1188,6 +1193,7 @@
 			children = (
 				AD294B281F2CE87200CD3769 /* Base */,
 				AD294B2A1F2CE87400CD3769 /* fr */,
+				AD3FDDEB1F2E23F700F71C81 /* da */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -1206,6 +1212,7 @@
 			children = (
 				AD6B2E741F0930B40040EAD9 /* Base */,
 				AD6B2E791F0930FD0040EAD9 /* fr */,
+				AD3FDDE81F2E23F700F71C81 /* da */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1215,6 +1222,7 @@
 			children = (
 				AD6B2E771F0930CE0040EAD9 /* Base */,
 				AD6B2E7A1F0930FD0040EAD9 /* fr */,
+				AD3FDDE91F2E23F700F71C81 /* da */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -1224,6 +1232,7 @@
 			children = (
 				AD92B8FF1F200083006E5B63 /* Base */,
 				AD92B9011F200092006E5B63 /* fr */,
+				AD3FDDEA1F2E23F700F71C81 /* da */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";

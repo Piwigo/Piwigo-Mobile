@@ -1,0 +1,21 @@
+/*
+ ReleaseNotes.strings
+ piwigo
+ 
+ Created by Eddy Lelièvre-Berna on 15/07/2017.
+ Copyright © 2017 Piwigo.org. All rights reserved.
+ */
+
+"v2.1.0_text" = "Version 2.1\n\n• Community extension compatibilitet\n• Fransk og Dansk oversættelse\n________________________________________\n\n";
+
+"v2.0.4_text" = "Version 2.0.4\n28 juli 2017 \n\n• iPad-Fix fuzzy miniaturer og er manglende muligheden for at redigere billeder på iPad \n• videoer — Fix af upload og download spørgsmål (VideoJS extension kræves på serveren) \n• indstillinger — Tilføjet mulighed for at fjerne titler & ændre miniaturer opløsning \n• forbedret forbindelsesstabilitet og information når upload er afsluttet \n• mindre fejlrettelser og forbedringer af brugergrænsefladen\n________________________________________\n\n";
+
+"v2.0.3_text" = "Version 2.0.3\n26 maj, 2017 \n\n• Tilføjet mulighed for at strippe GPS-metadata i indstillingerne \n• tilføje aktuelle cache brug i indstillingerne \n• Fix af at cache indstillinger undertiden blev reset \n• Fix af at indstillinger for billedupliad undertiden blev reset\n________________________________________\n\n";
+
+"v2.0.2_text" = "Version 2.0.2\n8 maj 2017 \n\n• Sorteringskriterier nu identiske med dem i Web app \n• Lave sorteringsemner \n• Fix af nedbrud når du tilføjer tags til et foto før upload \n• Fix af situationer hvor sletningen af et udvalg af billeder ikke virkede \n• Fix af situationer hvor et album ikke dukker op efter flytning\n• Løst et kompatibilitetsproblem med iOS 10 — deprecieret kode\n________________________________________\n\n";
+
+"v2.0.1_text" = "Version 2.0.1\n26 juni 2015 \n\nNye indstillinger: \n- Mulighed for at ændre størrelsen på billederne på upload \n  + billedkvaliteten er fra en vifte af 50-98%\n- Mulighed for at sætte en standard billede preview størrelse\n-Fejlrettelser\n________________________________________\n\n";
+
+"v2.0.0_text" = "Version 2.0\n24 April 2015 \n\nNye indbyggede funktioner:\n - Mulighed for at håndtere album\n - Se dine billeder \n - Bulk billedupload \n - Video upload og afspilning (VideoJS plugin skal være installeret)\n________________________________________\n\n";
+
+"v1.0.0_text" = "Version 1.0\noktober 17, 2011";
