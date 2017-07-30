@@ -14,7 +14,7 @@
 
 // Get Piwigo server methods
 // and determine if the Community extension is installed and active
-+(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
++(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *methodsList))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     return [self post:kReflectionGetMethodList
@@ -24,6 +24,11 @@
               success:^(NSURLSessionTask *task, id responseObject) {
                   
                   if(completion) {
+                      
+                      // Default settings
+                      [Model sharedInstance].hasInstalledCommunity = NO;
+                      [Model sharedInstance].hasInstalledVideoJS = YES;
+                      [Model sharedInstance].hasAdminRights = NO;
                       
                       // Did the server answer the request? (it should have)
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
@@ -73,10 +78,12 @@
                       {
                           [KeychainAccess storeLoginInKeychainForUser:user andPassword:password];
                           [Model sharedInstance].username = user;
+                          [Model sharedInstance].hadOpenedSession = YES;
                           completion(YES, [responseObject objectForKey:@"result"]);
                       }
                       else
                       {
+                          [Model sharedInstance].hadOpenedSession = NO;
                           completion(NO, nil);
                       }
                   }
@@ -106,7 +113,7 @@
                           [Model sharedInstance].language = [[responseObject objectForKey:@"result"] objectForKey:@"language"];
                           [Model sharedInstance].version = [[responseObject objectForKey:@"result"] objectForKey:@"version"];
                           
-                          // User rights are determine by Community (if installed)
+                          // User rights are determined by Community extension (if installed)
                           if(![Model sharedInstance].hasInstalledCommunity) {
                               NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
                               [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);

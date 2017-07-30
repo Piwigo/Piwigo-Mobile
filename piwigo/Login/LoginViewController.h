@@ -28,7 +28,7 @@
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 
--(void)performLogin;
+-(void)launchLogin;
 -(void)checkSessionStatusAndTryRelogin;
 
 -(void)showLoginFail;

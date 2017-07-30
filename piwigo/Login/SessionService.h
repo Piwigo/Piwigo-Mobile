@@ -16,7 +16,7 @@
                             onCompletion:(void (^)(BOOL result, id response))completion
                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
++(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *methodsList))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)getPiwigoStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
