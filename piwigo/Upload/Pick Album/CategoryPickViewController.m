@@ -21,7 +21,11 @@
 
 -(instancetype)init
 {
-	if(([Model sharedInstance].hasAdminRights) || ([Model sharedInstance].hasInstalledCommunity))
+	// User can upload images/videos if he/she has:
+    // — admin rights
+    // — opened a session on a server having Community extension installed
+    if(([Model sharedInstance].hasAdminRights) ||
+       ([Model sharedInstance].hasInstalledCommunity && [Model sharedInstance].hadOpenedSession))
 	{
 		self = [super init];
 		self.categoryListDelegate = self;
@@ -37,7 +41,7 @@
 		adminLabel.font = [UIFont piwigoFontNormal];
 		adminLabel.font = [adminLabel.font fontWithSize:20];
 		adminLabel.textColor = [UIColor piwigoOrange];
-		adminLabel.text = NSLocalizedString(@"adminRights_title", @"Admin Rights Needed");
+		adminLabel.text = NSLocalizedString(@"uploadRights_title", @"Upload Rights Needed");
 		adminLabel.minimumScaleFactor = 0.5;
 		adminLabel.adjustsFontSizeToFitWidth = YES;
 		adminLabel.textAlignment = NSTextAlignmentCenter;
@@ -54,7 +58,7 @@
 		description.textColor = [UIColor piwigoWhiteCream];
 		description.numberOfLines = 4;
 		description.textAlignment = NSTextAlignmentCenter;
-		description.text = NSLocalizedString(@"adminRights_message", @"You're not an admin.\nYou have to be an admin to be able to upload images.");
+		description.text = NSLocalizedString(@"uploadRights_message", @"You must have upload rights to be able to upload images or videos.");
 		description.adjustsFontSizeToFitWidth = YES;
 		description.minimumScaleFactor = 0.5;
 		[self.view addSubview:description];

@@ -26,9 +26,9 @@
 // Done view
 "done" = "Done";
 
-// Admin rights
-"adminRights_title" = "Admin Rights Needed";
-"adminRights_message" = "You're not an admin.\nYou have to be an admin to be able to upload images.";
+// Upload rights
+"uploadRights_title" = "Upload Rights Needed";
+"uploadRights_message" = "You must have upload rights to be able to upload images or videos.";
 
 // Errors
 "internetErrorGeneral_title" = "Connection Error";
@@ -47,18 +47,22 @@
 "login_protocolDescription" = "(tap to change)";
 
 // Login — Errors
-"serverVersionNotCompatible_title" = "Server Incompatible";
-"serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?";
+"serverMethodsError_title" = "Unknown Methods";
+"serverMethodsError_message" = "Failed to get server methods.\nProblem with Piwigo server?";
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given web address";
 "loginEmptyServer_title" = "Enter a Web Address";
 "loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
 
+"serverVersionNotCompatible_title" = "Server Incompatible";
+"serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?";
+
 "sessionStatusError_title" = "Authentication Fail";
 "sessionStatusError_message" = "Failed to authenticate with the server.\nTry logging in again.";
-"sessionMethodsError_message" = "Failed to get server methods.\nTry logging in again.";
-"sessionCommunityError_message" = "Failed to get Community extension parameters.\nTry logging in again.";
+
+"serverCommunityError_title" = "Community Error";
+"serverCommunityError_message" = "Failed to get Community extension parameters.\nTry logging in again.";
 
 // Logout
 "logoutConfirmation_title" = "Logout";
