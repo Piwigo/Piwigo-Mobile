@@ -26,9 +26,9 @@
 // Done view
 "done" = "Terminé";
 
-// Admin rights
-"adminRights_title" = "Droits admin requis";
-"adminRights_message" = "Vous n’êtes pas administrateur.\nVous devez être administrateur pour pouvoir envoyer des images.";
+// Upload rights
+"uploadRights_title" = "Droits Requis";
+"uploadRights_message" = "Vous devez avoir des droits de téléversement pour pouvoir envoyer des images ou des vidéos.";
 
 // Errors
 "internetErrorGeneral_title" = "Erreur de Connexion";
@@ -47,18 +47,22 @@
 "login_protocolDescription" = "(taper > changer)";
 
 // Login — Errors
-"serverVersionNotCompatible_title" = "Serveur Incompatible";
-"serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile.\nVoulez-vous quand même continuer ?";
+"serverMethodsError_title" = "Méthodes Inconnues";
+"serverMethodsError_message" = "Impossible d’obtenir les méthodes du serveur.\nProblème avec le serveur Piwigo ?";
 
 "loginError_title" = "Échec de connexion";
 "loginError_message" = "Les nom d’utilisateur et mot de passe ne correspondent pas à l’adresse donnée";
 "loginEmptyServer_title" = "Entrez une Adresse Web";
 "loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
 
+"serverVersionNotCompatible_title" = "Serveur Incompatible";
+"serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile.\nVoulez-vous quand même continuer ?";
+
 "sessionStatusError_title" = "Echec d’Authentification";
 "sessionStatusError_message" = "N’a pas pu s’authentifier avec le serveur.\nEssayez de vous connecter à nouveau.";
-"sessionMethodsError_message" = "Impossible d’obtenir les méthodes du serveur.\nEssayez de vous connecter à nouveau.";
-"sessionCommunityError_message" = "Impossible d’obtenir les paramètres de l’extension Community.\nEssayez de vous connecter à nouveau.";
+
+"serverCommunityError_title" = "Erreur avec Community";
+"serverCommunityError_message" = "Impossible d’obtenir les réglages de l’extension Community.\nEssayez de vous connecter à nouveau.";
 
 // Logout
 "logoutConfirmation_title" = "Déconnexion";
