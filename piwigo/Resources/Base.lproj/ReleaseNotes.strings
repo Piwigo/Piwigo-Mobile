@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.0_text" = "Version 2.1\n\n• Community extension compatibility\n• French translation\n________________________________________\n\n";
+"v2.1.0_text" = "Version 2.1\n\n• Community extension compatibility\n• Danish, Dutch, French, Polish translations\n________________________________________\n\n";
 
 "v2.0.4_text" = "Version 2.0.4\nJuly 28, 2017\n\n• iPad — Fix fuzzy thumbnails and the impossibility to edit photos on iPad\n• Videos — Fix upload and download issues (VideoJS extension required on server)\n• Settings — Add options to remove titles & change thumbnails resolution\n• Improve connection reliability and inform when upload completed\n• Minor bug fixes and improvement of the interface\n________________________________________\n\n";
 

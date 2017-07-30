@@ -69,8 +69,16 @@
 		self.textView.layer.cornerRadius = 5;
 		[self.view addSubview:self.textView];
 		
+        // Release notes string
+        NSString *aboutString = @"";
+        
+        // Translators
+        NSString *translatorsString = NSLocalizedStringFromTableInBundle(@"translators_text", @"About", [NSBundle mainBundle], @"Translators text");
+        aboutString = [aboutString stringByAppendingString:translatorsString];
+        
         // About string
-		NSString *aboutString = NSLocalizedStringFromTableInBundle(@"about_text", @"About", [NSBundle mainBundle], @"About text");
+		NSString *introString = NSLocalizedStringFromTableInBundle(@"about_text", @"About", [NSBundle mainBundle], @"Introduction text");
+        aboutString = [aboutString stringByAppendingString:introString];
 
             // MIT Licence — Bundle string
             NSString *mitString = NSLocalizedStringFromTableInBundle(@"licenceMIT_text", @"About", [NSBundle mainBundle], @"AFNetworking licence text");
