@@ -22,6 +22,7 @@
 #import "AlbumService.h"
 #import "LocalAlbumsViewController.h"
 #import "AlbumData.h"
+#import "NetworkHandler.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
@@ -348,7 +349,8 @@
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[downloadingImage.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+    NSString *URLRequest = [NetworkHandler getURLWithPath:[downloadingImage.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
 					 placeholderImage:nil
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;

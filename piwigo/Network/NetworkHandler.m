@@ -81,7 +81,7 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
     
-    NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path andURLParams:urlParams]
+    NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
                                 parameters:parameters
                                   progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
@@ -123,7 +123,7 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
     
-    NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path andURLParams:nil]
+    NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:nil]
                                 parameters:nil
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
     {
@@ -171,9 +171,15 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
     return task;
 }
 
-+(NSString*)getURLWithPath:(NSString*)path andURLParams:(NSDictionary*)params
++(NSString*)getURLWithPath:(NSString*)path asPiwigoRequest:(BOOL)piwigo withURLParams:(NSDictionary*)params
 {
-	NSString *url = [NSString stringWithFormat:@"%@%@/ws.php?%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, path];
+    NSString *cleanPath = [path stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
+    
+    NSString *url = [NSString stringWithFormat:@"%@%@%@%@",
+                     [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName,
+                     piwigo ? @"/ws.php?" : @"", cleanPath];
 
 	for(NSString *parameter in params)
 	{

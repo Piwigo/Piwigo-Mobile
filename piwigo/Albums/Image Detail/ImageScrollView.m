@@ -7,6 +7,7 @@
 //
 
 #import "ImageScrollView.h"
+#import "NetworkHandler.h"
 
 @interface ImageScrollView() <UIScrollViewDelegate>
 
@@ -47,7 +48,8 @@
 	self.maximumZoomScale = 1.0;
 	self.minimumZoomScale = 1.0;
 	
-	self.player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:[videoURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    NSString *URLRequest = [NetworkHandler getURLWithPath:[videoURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    self.player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:URLRequest]];
 	[self.player setControlStyle:MPMovieControlStyleDefault];
 	self.player.scalingMode = MPMovieScalingModeAspectFit;
 	self.player.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;

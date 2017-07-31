@@ -219,7 +219,8 @@ NSString * const kGetImageOrderDescending = @"desc";
                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	if(!image) return nil;
-    NSURL *request = [NSURL URLWithString:[image.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *URLRequest = [NetworkHandler getURLWithPath:[image.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    NSURL *request = [NSURL URLWithString:URLRequest];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFImageResponseSerializer serializer];
@@ -255,8 +256,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
-    NSURL *URL = [NSURL URLWithString:[video.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    NSString *URLRequest = [NetworkHandler getURLWithPath:[video.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
     
     // replace .mp4 or .mv4 with .mov for compatibility with Photos.app
     NSString *fileName = video.fileName;

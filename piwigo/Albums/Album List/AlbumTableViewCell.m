@@ -15,6 +15,7 @@
 #import "AlbumService.h"
 #import "CategoriesData.h"
 #import "MoveCategoryViewController.h"
+#import "NetworkHandler.h"
 
 @interface AlbumTableViewCell()
 
@@ -387,7 +388,8 @@
 						  }
 						  else
 						  {
-							  [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+                              NSString *URLRequest = [NetworkHandler getURLWithPath:[imageData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+                              [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
                                                   placeholderImage:nil
                                                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                                albumData.categoryImage = image;

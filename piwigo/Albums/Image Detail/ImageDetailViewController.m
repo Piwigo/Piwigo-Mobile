@@ -198,7 +198,8 @@
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[self.imageData.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+    NSString *URLRequest = [NetworkHandler getURLWithPath:[self.imageData.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
 					 placeholderImage:nil
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;

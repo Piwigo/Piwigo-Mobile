@@ -61,6 +61,8 @@ FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamTags;
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
++(NSString*)getURLWithPath:(NSString*)path asPiwigoRequest:(BOOL)piwigo withURLParams:(NSDictionary*)params;
+
 +(void)showConnectionError:(NSError*)error;
 
 @end
