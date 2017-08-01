@@ -219,7 +219,29 @@ NSString * const kGetImageOrderDescending = @"desc";
                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	if(!image) return nil;
-    NSString *URLRequest = [NetworkHandler getURLWithPath:[image.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    
+    // Download image with highest resolution possible (fullResPath image is not always available)
+    NSString *URLRequest = @"";
+    if ([image.fullResPath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    } else if ([image.XXLargePath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.XXLargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    } else if ([image.XLargePath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.XLargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    } else if ([image.LargePath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.LargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    } else if ([image.MediumPath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    } else if ([image.SmallPath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.SmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    } else if ([image.XSmallPath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.XSmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    } else if ([image.XXSmallPath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.XXSmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    } else if ([image.ThumbPath length] > 0) {
+        URLRequest = [NetworkHandler getURLWithPath:[image.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    }
+    
     NSURL *request = [NSURL URLWithString:URLRequest];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
