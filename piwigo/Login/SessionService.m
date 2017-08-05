@@ -25,11 +25,6 @@
                   
                   if(completion) {
                       
-                      // Default settings
-                      [Model sharedInstance].hasInstalledCommunity = NO;
-                      [Model sharedInstance].hasInstalledVideoJS = YES;
-                      [Model sharedInstance].hasAdminRights = NO;
-                      
                       // Did the server answer the request? (it should have)
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {

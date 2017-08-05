@@ -100,17 +100,22 @@
 
 -(void)launchLogin
 {
-#if defined(DEBUG_SESSION)
-    NSLog(@"=> launchLogin: starting with…");
-    NSLog(@"=> hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
-#endif
     // User pressed "Login"
     [self.view endEditing:YES];
     [self showLoading];
     
+    // Default settings
+    [Model sharedInstance].hasAdminRights = NO;
+    [Model sharedInstance].hasInstalledCommunity = NO;
+    [Model sharedInstance].hasInstalledVideoJS = YES;
+#if defined(DEBUG_SESSION)
+    NSLog(@"=> launchLogin: starting with…");
+    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
+#endif
+
     // Check server address and cancel login if address not provided
     if(self.serverTextField.textField.text.length <= 0)
     {
@@ -132,12 +137,12 @@
     [Model sharedInstance].serverProtocol = [self.serverTextField getProtocolString];
     [[Model sharedInstance] saveToDisk];
     
-    // Collect list of methods suplied by Piwigo server
+    // Collect list of methods supplied by Piwigo server
     // => Determine if Community extension 2.9a or later is installed and active
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
         
         if(methodsList) {
-            // Known methods, pursuing logging in…
+            // Known methods, pursue logging in…
             [self performLogin];
         
         } else {
@@ -160,7 +165,7 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> performLogin: starting with…");
-    NSLog(@"=> hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
           ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
@@ -212,7 +217,7 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> getCommunityStatusAtFirstLogin: starting with…");
-    NSLog(@"=> hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
           ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
@@ -235,11 +240,12 @@
             } else {
                 
                 [self hideLoading];
-                UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"serverCommunityError_title", @"Community Error")
-                                                                    message:NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")
-                                                                   delegate:nil
-                                                          cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                                          otherButtonTitles:nil];
+                UIAlertView *failAlert = [[UIAlertView alloc]
+                                          initWithTitle:NSLocalizedString(@"serverCommunityError_title", @"Community Error")
+                                          message:NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")
+                                          delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                          otherButtonTitles:nil];
                 [failAlert show];
             }
             
@@ -259,7 +265,7 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> getSessionStatus: starting with…");
-    NSLog(@"=> hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
           ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
@@ -310,7 +316,7 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> getPluginsListAtFirstLogin: starting with…");
-    NSLog(@"=> hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
           ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
@@ -355,7 +361,7 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> checkSessionStatusAndTryRelogin: starting with…");
-    NSLog(@"=> hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
           ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
@@ -366,16 +372,17 @@
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
         
         if(methodsList) {
-            // Known methods, pursuing logging in…
+            // Connection still alive and known methods, pursuing…
             [self tryReloginIfNeeded];
             
         } else {
             // Methods unknown, so we cannot reach the server
-            UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"serverMethodsError_title", @"Unknown Methods")
-                                                                message:NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")
-                                                               delegate:nil
-                                                      cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                                      otherButtonTitles:nil];
+            UIAlertView *failAlert = [[UIAlertView alloc]
+                                      initWithTitle:NSLocalizedString(@"serverMethodsError_title", @"Unknown Methods")
+                                      message:NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")
+                                      delegate:nil
+                                      cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                      otherButtonTitles:nil];
             [failAlert show];
         }
         
@@ -391,9 +398,6 @@
 
 -(void)tryReloginIfNeeded
 {
-    NSString *user = [KeychainAccess getLoginUser];
-    NSString *password = [KeychainAccess getLoginPassword];
-
     // Check whether session is still active
     [SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
         if(responseObject) {
@@ -404,60 +408,23 @@
 
                 // Session was closed, try relogging in
                 [Model sharedInstance].hadOpenedSession = NO;
-                [SessionService performLoginWithUser:user
-                                         andPassword:password
-                                        onCompletion:^(BOOL result, id response) {
+                [self performRelogin];
 
-                                            if(result)
-                                            {
-                                                // Session now re-opened
-                                                [Model sharedInstance].hadOpenedSession = YES;
-                                                
-                                                // First determine user rights if Community extension installed
-                                                [self getCommunityStatusAtFirstLogin:NO];
-                                            }
-                                            else
-                                            {
-                                                // Session could not be re-opened
-                                                [Model sharedInstance].hadOpenedSession = NO;
-                                                [self showLoginFail];
-                                            }
-
-                                            // Session now re-opened
-                                            [Model sharedInstance].hadOpenedSession = YES;
-                                            
-                                        }
-                                           onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                               // Could not re-establish the session, login/pwd changed ?
-                                               [Model sharedInstance].hadOpenedSession = NO;
-                                               [ClearCache clearAllCache];
-                                               AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                                               [appDelegate loadLoginView];
-#if defined(DEBUG)
-                                               NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
-#endif
-                                               [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                                                                  message:[error localizedDescription]
-                                                        cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                                                        otherButtonTitles:nil
-                                                                 tapBlock:nil];
-                                           }];
             } else {
                 // Connection still alive
 #if defined(DEBUG_SESSION)
-                NSLog(@"=> checkSessionStatusBeforeAppEnterForeground: Connection still alive…");
-                NSLog(@"=> with: hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+                NSLog(@"=> tryReloginIfNeeded: Connection still alive…");
+                NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
                       ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
                       ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
                       ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
 #endif
+                // Re-check user rights if Community extension installed
+                [self getCommunityStatusAtFirstLogin:NO];
             }
         } else {
             // Connection really lost
             [Model sharedInstance].hadOpenedSession = NO;
-            [ClearCache clearAllCache];
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate loadLoginView];
 #if defined(DEBUG)
             NSLog(@"Error: Broken connection");
 #endif
@@ -469,12 +436,57 @@
         }
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
         // No connection or server down
+        [Model sharedInstance].hadOpenedSession = NO;
         [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
                            message:[error localizedDescription]
                  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
                  otherButtonTitles:nil
                           tapBlock:nil];
     }];
+}
+
+-(void)performRelogin
+{
+#if defined(DEBUG_SESSION)
+    NSLog(@"=> performRelogin: starting with…");
+    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
+          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
+#endif
+    
+    NSString *user = [KeychainAccess getLoginUser];
+    NSString *password = [KeychainAccess getLoginPassword];
+    [SessionService performLoginWithUser:user
+                             andPassword:password
+                            onCompletion:^(BOOL result, id response) {
+                                if(result)
+                                {
+                                    // Session now re-opened
+                                    [Model sharedInstance].hadOpenedSession = YES;
+                                    
+                                    // First determine user rights if Community extension installed
+                                    [self getCommunityStatusAtFirstLogin:NO];
+                                }
+                                else
+                                {
+                                    // Session could not be re-opened
+                                    [Model sharedInstance].hadOpenedSession = NO;
+                                    [self showLoginFail];
+                                }
+
+                            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                // Could not re-establish the session, login/pwd changed, something else ?
+                                [Model sharedInstance].hadOpenedSession = NO;
+#if defined(DEBUG)
+                                NSLog(@"Error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
+                                [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                                                   message:[error localizedDescription]
+                                         cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                                         otherButtonTitles:nil
+                                                  tapBlock:nil];
+                            }];
 }
 
 -(void)showLoading
