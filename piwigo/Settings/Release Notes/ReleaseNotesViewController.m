@@ -83,50 +83,85 @@
         NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:notesString];
         
         // Release 2.1.0 — Attributed string
-        NSRange v210Range = [notesString rangeOfString:@"Version 2.1\n"];
-        NSRange v210DescriptionRange = NSMakeRange(v210Range.location, [@"Version 2.1" length]);
+        NSRange v210Range = [v210String rangeOfString:@" 2.1\n"];
+        v210Range.location += [@" 2.1\n" length];
+        NSRange v210DescriptionRange = NSMakeRange(v210Range.location, [v210String length] - v210Range.location);
+        v210String = [v210String stringByReplacingCharactersInRange:v210DescriptionRange withString:@""];
+
+        v210Range = [notesString rangeOfString:v210String];
+        v210DescriptionRange = NSMakeRange(v210Range.location, [v210String length]);
         [notesAttributedString addAttribute:NSFontAttributeName
                                       value:[UIFont boldSystemFontOfSize:14]
                                       range:v210DescriptionRange];
         
         // Release 2.0.4 — Attributed string
-        NSRange v204Range = [notesString rangeOfString:@"Version 2.0.4"];
-        NSRange v204DescriptionRange = NSMakeRange(v204Range.location, [@"Version 2.0.4" length]);
+        NSRange v204Range = [v204String rangeOfString:@" 2.0.4\n"];
+        v204Range.location += [@" 2.0.4\n" length];
+        NSRange v204DescriptionRange = NSMakeRange(v204Range.location, [v204String length] - v204Range.location);
+        v204String = [v204String stringByReplacingCharactersInRange:v204DescriptionRange withString:@""];
+        
+        v204Range = [notesString rangeOfString:v204String];
+        v204DescriptionRange = NSMakeRange(v204Range.location, [v204String length]);
         [notesAttributedString addAttribute:NSFontAttributeName
                                       value:[UIFont boldSystemFontOfSize:14]
                                       range:v204DescriptionRange];
         
         // Release 2.0.3 — Attributed string
-        NSRange v203Range = [notesString rangeOfString:@"Version 2.0.3"];
-        NSRange v203DescriptionRange = NSMakeRange(v203Range.location, [@"Version 2.0.3" length]);
+        NSRange v203Range = [v203String rangeOfString:@" 2.0.3\n"];
+        v203Range.location += [@" 2.0.3\n" length];
+        NSRange v203DescriptionRange = NSMakeRange(v203Range.location, [v203String length] - v203Range.location);
+        v203String = [v203String stringByReplacingCharactersInRange:v203DescriptionRange withString:@""];
+        
+        v203Range = [notesString rangeOfString:v203String];
+        v203DescriptionRange = NSMakeRange(v203Range.location, [v203String length]);
         [notesAttributedString addAttribute:NSFontAttributeName
                                       value:[UIFont boldSystemFontOfSize:14]
                                       range:v203DescriptionRange];
         
         // Release 2.0.2 — Attributed string
-        NSRange v202Range = [notesString rangeOfString:@"Version 2.0.2"];
-        NSRange v202DescriptionRange = NSMakeRange(v202Range.location, [@"Version 2.0.2" length]);
+        NSRange v202Range = [v202String rangeOfString:@" 2.0.2\n"];
+        v202Range.location += [@" 2.0.2\n" length];
+        NSRange v202DescriptionRange = NSMakeRange(v202Range.location, [v202String length] - v202Range.location);
+        v202String = [v202String stringByReplacingCharactersInRange:v202DescriptionRange withString:@""];
+        
+        v202Range = [notesString rangeOfString:v202String];
+        v202DescriptionRange = NSMakeRange(v202Range.location, [v202String length]);
         [notesAttributedString addAttribute:NSFontAttributeName
                                       value:[UIFont boldSystemFontOfSize:14]
                                       range:v202DescriptionRange];
         
         // Release 2.0.1 — Attributed string
-        NSRange v201Range = [notesString rangeOfString:@"Version 2.0.1"];
-        NSRange v201DescriptionRange = NSMakeRange(v201Range.location, [@"Version 2.0.1" length]);
+        NSRange v201Range = [v201String rangeOfString:@" 2.0.1\n"];
+        v201Range.location += [@" 2.0.1\n" length];
+        NSRange v201DescriptionRange = NSMakeRange(v201Range.location, [v201String length] - v201Range.location);
+        v201String = [v201String stringByReplacingCharactersInRange:v201DescriptionRange withString:@""];
+        
+        v201Range = [notesString rangeOfString:v201String];
+        v201DescriptionRange = NSMakeRange(v201Range.location, [v201String length]);
         [notesAttributedString addAttribute:NSFontAttributeName
                                       value:[UIFont boldSystemFontOfSize:14]
                                       range:v201DescriptionRange];
         
         // Release 2.0.0 — Attributed string
-        NSRange v200Range = [notesString rangeOfString:@"Version 2.0\n"];
-        NSRange v200DescriptionRange = NSMakeRange(v200Range.location, [@"Version 2.0" length]);
+        NSRange v200Range = [v200String rangeOfString:@" 2.0\n"];
+        v200Range.location += [@" 2.0\n" length];
+        NSRange v200DescriptionRange = NSMakeRange(v200Range.location, [v200String length] - v200Range.location);
+        v200String = [v200String stringByReplacingCharactersInRange:v200DescriptionRange withString:@""];
+        
+        v200Range = [notesString rangeOfString:v200String];
+        v200DescriptionRange = NSMakeRange(v200Range.location, [v200String length]);
         [notesAttributedString addAttribute:NSFontAttributeName
                                       value:[UIFont boldSystemFontOfSize:14]
                                       range:v200DescriptionRange];
         
         // Release 1.0.0 — Attributed string
-        NSRange v100Range = [notesString rangeOfString:@"Version 1.0"];
-        NSRange v100DescriptionRange = NSMakeRange(v100Range.location, [@"Version 1.0" length]);
+        NSRange v100Range = [v100String rangeOfString:@" 1.0\n"];
+        v100Range.location += [@" 1.0\n" length];
+        NSRange v100DescriptionRange = NSMakeRange(v100Range.location, [v100String length] - v100Range.location);
+        v100String = [v100String stringByReplacingCharactersInRange:v100DescriptionRange withString:@""];
+        
+        v100Range = [notesString rangeOfString:v100String];
+        v100DescriptionRange = NSMakeRange(v100Range.location, [v100String length]);
         [notesAttributedString addAttribute:NSFontAttributeName
                                       value:[UIFont boldSystemFontOfSize:14]
                                       range:v100DescriptionRange];
