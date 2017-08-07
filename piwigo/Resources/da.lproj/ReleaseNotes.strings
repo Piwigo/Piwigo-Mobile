@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.0_text" = "Version 2.1\n\n• Community extension compatibilitet\n• Fransk og Dansk oversættelse\n________________________________________\n\n";
+"v2.1.0_text" = "Version 2.1\n\n• Community extension compatibilitet\n• Dansk, Fransk, Hollandsk og Polsk oversættelse\n________________________________________\n\n";
 
 "v2.0.4_text" = "Version 2.0.4\n28 juli 2017 \n\n• iPad-Fix fuzzy miniaturer og er manglende muligheden for at redigere billeder på iPad \n• videoer — Fix af upload og download spørgsmål (VideoJS extension kræves på serveren) \n• indstillinger — Tilføjet mulighed for at fjerne titler & ændre miniaturer opløsning \n• forbedret forbindelsesstabilitet og information når upload er afsluttet \n• mindre fejlrettelser og forbedringer af brugergrænsefladen\n________________________________________\n\n";
 

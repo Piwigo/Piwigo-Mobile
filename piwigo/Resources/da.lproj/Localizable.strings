@@ -27,8 +27,8 @@
 "done" = "Afslut";
 
 // Upload rights
-"uploadRights_title" = "Upload Rights Needed";
-"uploadRights_message" = "You must have upload rights to be able to upload images or videos.";
+"uploadRights_title" = "Rettigheder til upload påkrævet";
+"uploadRights_message" = "Du skal have upload rettigheder for at uploade billeder eller videoer.";
 
 // Errors
 "internetErrorGeneral_title" = "Forbindelsesfejl";
@@ -47,8 +47,8 @@
 "login_protocolDescription" = "(Tryk for at ændre)";
 
 // Login — Errors
-"serverMethodsError_title" = "Unknown Methods";
-"serverMethodsError_message" = "Failed to get server methods.\nProblem with Piwigo server?";
+"serverMethodsError_title" = "Ukendt protokol";
+"serverMethodsError_message" = "Kunne ikke hente server protokol. \nPrøv at logge ind igen?";
 
 "loginError_title" = "Log ind mislykkedes";
 "loginError_message" = "Brugernavnet og adgangskoden er ikke korrekt";
@@ -61,8 +61,8 @@
 "sessionStatusError_title" = "Godkendelse mislykkedes";
 "sessionStatusError_message" = "Log ind ikke godkendt af serveren. Prøv at logge ind igen.";
 
-"serverCommunityError_title" = "Community Error";
-"serverCommunityError_message" = "Failed to get Community extension parameters.\nTry logging in again.";
+"serverCommunityError_title" = "Community fejl";
+"serverCommunityError_message" = "Kunne ikke hente Community udvidelsens parametre.\nPrøv at logge ind igen.";
 
 // Logout
 "logoutConfirmation_title" = "Log ud";
@@ -86,10 +86,10 @@
 "categoryImageList_noDataError" = "Fejl ingen Data";
 
 // Albums sort
-"categorySort_nameAscending" = "Billedtitel, A-Z";
-"categorySort_nameDescending" = "Billedtitel, Z-A";
-"categorySort_fileNameAscending" = "Filnavn, A-Z";
-"categorySort_fileNameDescending" = "Filnavn, Z-A";
+"categorySort_nameAscending" = "Billedtitel, A → Z";
+"categorySort_nameDescending" = "Billedtitel, Z → A";
+"categorySort_fileNameAscending" = "Filnavn, A → Z";
+"categorySort_fileNameDescending" = "Filnavn, Z → A";
 "categorySort_dateCreatedDescending" = "Oprettelsdato, ny → gammel";
 "categorySort_dateCreatedAscending" = "Oprettelsdato, gammel → ny";
 "categorySort_datePostedDescending" = "Oprettelsdato, ny → gammel";
@@ -301,7 +301,7 @@
 "settings_logout" = "Log ud";
 
 // Settings — General
-"settingsHeader_general" = "Generelle indstillinger";
+"settingsHeader_general" = "Generelle Indstillinger";
 "settings_loadAllCategories" = "Hent alle album ved start";
 "settings_loadAllCategories>320px" = "Hent alle album ved Start (Fjern markeringen hvis problemer)";
 "defaultImageSort" = "Sorter";
@@ -363,17 +363,17 @@
 "settings_placeholderQuality" = "Angiv en billedkvalitet fra 50-98";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cacheindstillinger (brugt/Total)";
+"settingsHeader_cache" = "Cacheindstillinger (Brugt/Total)";
 "settings_cacheDisk" = "Disk";
-"settings_placeholderDisk" = "Angiv en diskcache fra 10-200";
+"settings_placeholderDisk" = "Angiv en Diskcache fra 10-200";
 "settings_cacheMemory" = "Hukommelse";
-"settings_placeholderMemory" = "Angiv en hukommelsescache fra 10-200";
+"settings_placeholderMemory" = "Angiv en Hukommelsescache fra 10-200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Information
 "settingsHeader_about" = "Oplysninger";
 "settings_supportForum" = "Supportforum";
 "settings_releaseNotes" = "Udgivelsesnoter";
-"settings_rateInAppStore" = "Vurder Piwigo mobil";
-"settings_pwgForumURL" = "http://piwigo.org/forum";
+"settings_rateInAppStore" = "Vurder Piwigo Mobile";
+"settings_pwgForumURL" = "http://da.piwigo.org/forum/";
 "settings_acknowledgements" = "Tak til";
