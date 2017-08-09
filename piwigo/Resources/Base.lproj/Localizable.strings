@@ -314,7 +314,8 @@
 "defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Please Select a Thumbnail Size";
 "defaultThumbnailSize_disabled" = " (disabled on server)";
-"settings_displayTitles" = "Display Titles on Thumbnails";
+"settings_displayTitles" = "Titles on Thumbnails";
+"settings_displayTitles>320px" = "Display Titles on Thumbnails";
 
 "thumbnailSizeSquare" = "Square (faster)";
 "thumbnailSizeThumbnail" = "Thumbnail (default)";

@@ -295,7 +295,12 @@ typedef enum {
                         cell = [SwitchTableViewCell new];
                     }
                     
-                    cell.leftLabel.text = NSLocalizedString(@"settings_displayTitles", @"Display Titles on Thumbnails");
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 320) {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_displayTitles>320px", @"Display Titles on Thumbnails");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_displayTitles", @"Titles on Thumbnails");
+                    }
                     [cell.cellSwitch setOn:[Model sharedInstance].displayImageTitles];
                     cell.cellSwitchBlock = ^(BOOL switchState) {
                         [Model sharedInstance].displayImageTitles = switchState;

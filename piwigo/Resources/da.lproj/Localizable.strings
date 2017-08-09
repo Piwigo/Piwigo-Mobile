@@ -315,6 +315,7 @@
 "defaultThumbnailSizeHeader" = "Vælg en Miniaturestørrelse";
 "defaultThumbnailSize_disabled" = " (deaktiveret på serveren)";
 "settings_displayTitles" = "Vis Titler på Miniaturer";
+"settings_displayTitles>320px" = "Vis Titler på Miniaturer";
 
 "thumbnailSizeSquare" = "Firkant (hurtigere)";
 "thumbnailSizeThumbnail" = "Miniaturer (standard)";

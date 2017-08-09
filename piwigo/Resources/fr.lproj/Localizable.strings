@@ -315,6 +315,7 @@
 "defaultThumbnailSizeHeader" = "Veuillez Sélectionner une Taille de Vignette";
 "defaultThumbnailSize_disabled" = " (désactivé sur le serveur)";
 "settings_displayTitles" = "Afficher Titres sur Vignettes";
+"settings_displayTitles>320px" = "Afficher les Titres sur les Vignettes";
 
 "thumbnailSizeSquare" = "Carré (plus rapide)";
 "thumbnailSizeThumbnail" = "Miniature (par défaut)";
