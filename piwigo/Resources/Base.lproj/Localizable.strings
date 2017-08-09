@@ -352,7 +352,7 @@
 "settings_defaultAuthor>320px" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Privacy";
-"settings_defaultPrivacy>320px" = "Who Can See the Media?";
+"settings_defaultPrivacy>414px" = "Who Can See the Media?";
 "settings_stripGPSdata" = "Strip GPS Metadata";
 "settings_stripGPSdata>375px" = "Strip GPS Metadata Before Upload";
 "settings_photoResize" = "Resize Before Upload";

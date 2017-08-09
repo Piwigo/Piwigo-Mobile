@@ -364,7 +364,7 @@ typedef enum {
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 Plus screen width
-                        cell.leftText = NSLocalizedString(@"settings_defaultPrivacy>320px", @"Who Can See the Media?");
+                        cell.leftText = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
                     } else {
                         cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
                     }
