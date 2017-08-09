@@ -6,8 +6,8 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"description" = "Piwigo for iPhone/iPad/iPod supplements the photo gallery software in the cloud Piwigo (v2.7 or higher):\n\n• Browse your albums,\n• Create new albums,\n• Delete, move and rename albums,\n• Edit, download and delete photos & videos,\n• Set a photo as album image,\n• Upload photos:\n - of modifiable size and quality,\n - with description, author, tags, EXIF metadata,\n - with or without GPS metadata.\n• Upload videos.\n\nPiwigo empowers you to create your own photo gallery on the web. It includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.\n\nPiwigo is free and opensource.";
+"description" = "Piwigo dla urządzeń iPhone/iPad/iPod obsługuje oprogramowanie galerii zdjęć w chmurze Piwigo (w wersji 2.0 lub wyższej). Aplikacja pozwala na:\n\n• Przeglądanie albumów,\n• Tworzenie nowych albumów,\n• Usuwanie, przenoszenie i zmianę nazw albumów,\n• Edycję, pobieranie i usuwanie zdjęć i filmów,\n• Ustawianie zdjęcia jako zdjęcia albumu,\n• Przesyłanie zdjęć:\n  - z automatyczną modyfikacją rozmiaru i jakości,\n  - z opisem, autorem, znacznikami, metadanymi EXIF,\n  - z metadanymi GPS lub bez nich.\n• Przesyłanie plików wideo.\n\nPiwigo umożliwia Ci tworzenie własnej galerii zdjęć w internecie. Zawiera wiele potężnych funkcji, takich jak albumy, znaczniki, geolokalizacja, wiele poziomów personalizacji, przesyłanie przez gości, prywatność, kalendarz lub statystyki.\n\nPiwigo jest oprogramowanie bezpłatnym i otwartym.";
 
-"feedback" = "Feedback or questions ?\nPiwigo offers free support at %@ and we'd love to hear from you.";
+"feedback" = "Opinie lub pytania? \nPiwigo oferuje bezpłatną pomoc w %@ i chcielibyśmy poznać Twoje zdanie.";
 
-"promotional_text" = "Your Piwigo cloud photo library at hand!";
+"promotional_text" = "Twoja biblioteki zdjęć w chmurze Piwigo pod ręką!";
