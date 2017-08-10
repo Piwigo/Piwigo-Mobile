@@ -19,8 +19,9 @@
 +(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *methodsList))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)getPiwigoStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
-                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
++(NSURLSessionTask*)getPiwigoStatusAtLogin:(BOOL)isLogginIn
+                              OnCompletion:(void (^)(NSDictionary *responseObject))completion
+                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)getCommunityStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

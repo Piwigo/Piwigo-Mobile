@@ -204,7 +204,7 @@
 	else     // No username, get only server status
 	{
         // Reset keychain and credentials
-        [Model sharedInstance].username = @"";
+//        [Model sharedInstance].username = @"";
         [KeychainAccess resetKeychain];
 
         // Check Piwigo version, get token, available sizes, etc.
@@ -216,30 +216,27 @@
 -(void)getCommunityStatusAtFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"=> getCommunityStatusAtFirstLogin: starting with…");
+    NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting with…", isFirstLogin ? @"YES" : @"NO");
     NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
           ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
 #endif
     if([Model sharedInstance].hasInstalledCommunity) {
-        
+
+        // Community extension installed
         [SessionService getCommunityStatusOnCompletion:^(NSDictionary *responseObject) {
             
             if(responseObject)
             {
-                if (isFirstLogin)
-                {
-                    // Check Piwigo version, get token, available sizes, etc.
-                    [self getSessionStatus];
-                    
-                } else {
-                    // Do nothing and keep current view
-                }
+                // Check Piwigo version, get token, available sizes, etc.
+                [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin];
             
             } else {
+                if (isFirstLogin) {
+                    [self hideLoading];
+                }
                 
-                [self hideLoading];
                 UIAlertView *failAlert = [[UIAlertView alloc]
                                           initWithTitle:NSLocalizedString(@"serverCommunityError_title", @"Community Error")
                                           message:NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")
@@ -250,33 +247,39 @@
             }
             
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            [self hideLoading];
+            if (isFirstLogin) {
+                [self hideLoading];
+            }
         }];
 
     } else {
         // Community extension not installed
         // Check Piwigo version, get token, available sizes, etc.
-        [self getSessionStatus];
+        [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin];
     }
 }
 
 // Check Piwigo version, get token, available sizes, etc.
--(void)getSessionStatus
+-(void)getSessionStatusAtLogin:(BOOL)isLoggingIn andFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"=> getSessionStatus: starting with…");
+    NSLog(@"=> getSessionStatusAtLogin:%@ andFirstLogin:%@ starting with…",
+          isLoggingIn ? @"YES" : @"NO", isFirstLogin ? @"YES" : @"NO");
     NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
           ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
 #endif
-	[SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
+    [SessionService getPiwigoStatusAtLogin:isLoggingIn
+                              OnCompletion:^(NSDictionary *responseObject) {
 		if(responseObject)
 		{
 			if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
 			{
                 // They need to update
-                [self hideLoading];
+                if (isFirstLogin) {
+                    [self hideLoading];
+                }
 				[UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
 								   message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
 						 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -284,20 +287,23 @@
 								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
 									  if(buttonIndex == 1)
 									  {	// proceed at their own risk
-										  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-										  [appDelegate loadNavigation];
+                                          if (isFirstLogin) {
+                                              AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                                              [appDelegate loadNavigation];
+                                          }
 									  }
 								  }];
 			} else {
                 
                 // Their version is Ok
                 // Get list of plugins and check VideoJS availability
-                [self getPluginsListAtFirstLogin:YES];
+                [self getPluginsListAtFirstLogin:isFirstLogin];
             }
             
 		} else {
-            
-            [self hideLoading];
+            if (isFirstLogin) {
+                [self hideLoading];
+            }
 			UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
                                                                 message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
 															   delegate:nil
@@ -306,7 +312,9 @@
 			[failAlert show];
 		}
 	} onFailure:^(NSURLSessionTask *task, NSError *error) {
-		[self hideLoading];
+        if (isFirstLogin) {
+            [self hideLoading];
+        }
 	}];
 }
 
@@ -356,71 +364,33 @@
     }
 }
 
-// Check status of session and try logging in again if needed
 -(void)checkSessionStatusAndTryRelogin
 {
-#if defined(DEBUG_SESSION)
-    NSLog(@"=> checkSessionStatusAndTryRelogin: starting with…");
-    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
-#endif
-
-    // Collect list of methods suplied by Piwigo server
-    // => Determine if Community extension 2.9a or later is installed and active
-    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
-        
-        if(methodsList) {
-            // Connection still alive and known methods, pursuing…
-            [self tryReloginIfNeeded];
-            
-        } else {
-            // Methods unknown, so we cannot reach the server
-            UIAlertView *failAlert = [[UIAlertView alloc]
-                                      initWithTitle:NSLocalizedString(@"serverMethodsError_title", @"Unknown Methods")
-                                      message:NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")
-                                      delegate:nil
-                                      cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                      otherButtonTitles:nil];
-            [failAlert show];
-        }
-        
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        // No connection or server down
-        [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                           message:[error localizedDescription]
-                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                 otherButtonTitles:nil
-                          tapBlock:nil];
-    }];
-}
-
--(void)tryReloginIfNeeded
-{
     // Check whether session is still active
-    [SessionService getPiwigoStatusOnCompletion:^(NSDictionary *responseObject) {
+    [SessionService getPiwigoStatusAtLogin:NO
+                                   OnCompletion:^(NSDictionary *responseObject) {
         if(responseObject) {
             
             // When the session is closed, user becomes guest
             NSString *userName = [responseObject objectForKey:@"username"];
-            if (![userName isEqualToString:[[Model sharedInstance]username]]) {
+#if defined(DEBUG_SESSION)
+            NSLog(@"=> checkSessionStatusAndTryRelogin: username=%@", userName);
+#endif
+            if (![userName isEqualToString:[Model sharedInstance].username]) {
 
-                // Session was closed, try relogging in
+                // Session was closed, try relogging in assuming server did not change for speed
                 [Model sharedInstance].hadOpenedSession = NO;
                 [self performRelogin];
 
             } else {
-                // Connection still alive
+                // Connection still alive… do nothing!
 #if defined(DEBUG_SESSION)
-                NSLog(@"=> tryReloginIfNeeded: Connection still alive…");
+                NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
                 NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
                       ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
                       ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
                       ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
 #endif
-                // Re-check user rights if Community extension installed
-                [self getCommunityStatusAtFirstLogin:NO];
             }
         } else {
             // Connection really lost
