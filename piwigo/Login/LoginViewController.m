@@ -14,14 +14,18 @@
 #import "SessionService.h"
 #import "ClearCache.h"
 #import "AppDelegate.h"
+#import "MBProgressHUD.h"
 
-@interface LoginViewController () <UITextFieldDelegate>
-
-@end
+//static NSInteger const loginViewTag = 898;
+static NSInteger const reloginViewTag = 899;
 
 #ifndef DEBUG_SESSION
 #define DEBUG_SESSION
 #endif
+
+@interface LoginViewController () <UITextFieldDelegate>
+
+@end
 
 @implementation LoginViewController
 
@@ -76,22 +80,22 @@
 		
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)]];
 		
-		self.loadingView = [UIView new];
-		self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.loadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
-		self.loadingView.hidden = YES;
-		[self.view addSubview:self.loadingView];
-		
-		self.loggingInLabel = [UILabel new];
-		self.loggingInLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.loggingInLabel.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
-		self.loggingInLabel.font = [UIFont piwigoFontNormal];
-		self.loggingInLabel.textColor = [UIColor whiteColor];
-		[self.loadingView addSubview:self.loggingInLabel];
-		
-		self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-		self.spinner.translatesAutoresizingMaskIntoConstraints = NO;
-		[self.loadingView addSubview:self.spinner];
+        self.loadingView = [UIView new];
+        self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.loadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+        self.loadingView.hidden = YES;
+        [self.view addSubview:self.loadingView];
+
+        self.loggingInLabel = [UILabel new];
+        self.loggingInLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.loggingInLabel.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
+        self.loggingInLabel.font = [UIFont piwigoFontNormal];
+        self.loggingInLabel.textColor = [UIColor whiteColor];
+        [self.loadingView addSubview:self.loggingInLabel];
+
+        self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        self.spinner.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.loadingView addSubview:self.spinner];
 		
 		[self performSelector:@selector(setupAutoLayout) withObject:nil]; // now located in child VC, thus import .h files
 	}
@@ -342,7 +346,11 @@
                 [appDelegate loadNavigation];
             
             } else {
-                // Do nothing and keep current view active
+                
+                // Disable blur effect and keep current view active
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self hideReloginViewAttempt];
+                });
             }
             
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -425,6 +433,12 @@
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
 #endif
     
+    // Apply blur effect during relogin
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showReloginViewAttempt];
+    });
+
+    // Perform login
     NSString *user = [KeychainAccess getLoginUser];
     NSString *password = [KeychainAccess getLoginPassword];
     [SessionService performLoginWithUser:user
@@ -461,13 +475,35 @@
 
 -(void)showLoading
 {
-	self.loadingView.hidden = NO;
-	[self.spinner startAnimating];
+    self.loadingView.hidden = NO;
+    [self.spinner startAnimating];
+    
+//    // Determine the present view controller
+//    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+//    while (topViewController.presentedViewController) {
+//        topViewController = topViewController.presentedViewController;
+//    }
+//
+//    // Create the popup window
+//    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+//
+//    // Change the background view style and color.
+//    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+//    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+//
+//    // Define the text
+//    hud.label.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
+//    [hud setTag:loginViewTag];
 }
+
 -(void)hideLoading
 {
-	[self.spinner stopAnimating];
-	self.loadingView.hidden = YES;
+    [self.spinner stopAnimating];
+    self.loadingView.hidden = YES;
+
+//    // Remove the re-login window
+//    MBProgressHUD *hud = [self.navigationController.view viewWithTag:loginViewTag];
+//    [hud hideAnimated:YES];
 }
 
 -(void)showLoginFail
@@ -478,6 +514,40 @@
 										  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 										  otherButtonTitles:nil];
 	[alert show];
+}
+
+-(void)showReloginViewAttempt
+{
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    
+    // Create the re-login view
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:topViewController.view animated:YES];
+
+    // Change the background view style and color.
+    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+
+    // Define the text
+    hud.label.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
+    hud.detailsLabel.text = @"Connection Changed!";
+    [hud setTag:reloginViewTag];
+}
+
+-(void)hideReloginViewAttempt
+{
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    
+    // Remove the re-login window
+    MBProgressHUD *hud = [topViewController.view viewWithTag:reloginViewTag];
+    [hud hideAnimated:YES];
 }
 
 
