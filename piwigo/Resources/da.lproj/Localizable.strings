@@ -295,7 +295,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
-"settings_server" = "Adresse";
+"settings_server" = "Server";
 "settings_username" = "Brugernavn";
 "settings_notLoggedIn" = " - Ikke logget ind - ";
 "settings_logout" = "Log ud";
@@ -353,7 +353,7 @@
 "settings_defaultAuthor>320px" = "Forfatternavn";
 "settings_defaultAuthorPlaceholder" = "Forfatternavn";
 "settings_defaultPrivacy" = "Fortrolighed";
-"settings_defaultPrivacy>414px" = "Beskyttelse af personlige oplysninger?";
+"settings_defaultPrivacy>414px" = "Hvem kan se dette billede?";
 "settings_stripGPSdata" = "Strip GPS-Metadata";
 "settings_stripGPSdata>375px" = "Strip GPS Metadata før Upload";
 "settings_photoResize" = "Ændr størrelse før Upload";
