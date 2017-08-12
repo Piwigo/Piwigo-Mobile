@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.0_text" = "Wersja 2.1\n\n• Dodanie kompatybilności z rozszerzeniem Community (Społeczność)\n• Dodanie duńskiego, holenderskiego, francuskiego i polskiego tłumaczenia\n• Poprawki\n________________________________________\n\n";
+"v2.1.0_text" = "Wersja 2.1\n\n• Dodanie kompatybilności z rozszerzeniem Community (Społeczność)\n• Dodanie duńskiego, francuskiego i polskiego tłumaczenia\n• Poprawki\n________________________________________\n\n";
 
 "v2.0.4_text" = "Wersja 2.0.4\n28 lipca 2017 \n\n• iPad — naprawić rozmyte miniatury i niemożliwość edycji zdjęć na iPadzie \n• Filmy — poprawka wysyłania i pobierania problemy (wymagane na serwerze rozszerzenia VideoJS) \n• Ustawień — Dodaj opcje aby usunąć tytuły & zmiana miniatury rozdzielczość \n• Poprawić niezawodność połączeń i informuje, kiedy przesyłanie zakończone \n• Poprawki błędów i usprawnienia interfejsu\n________________________________________\n\n";
 

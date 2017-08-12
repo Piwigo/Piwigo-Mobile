@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.0_text" = "Version 2.1\n\n• Compatibilité avec l'extension Community\n• Traductions en Danois, Hollandais, Français et Polonais\n• Corrections de bugs\n________________________________________\n\n";
+"v2.1.0_text" = "Version 2.1\n\n• Compatibilité avec l'extension Community\n• Traductions en Danois, Français et Polonais\n• Corrections de bugs\n________________________________________\n\n";
 
 "v2.0.4_text" = "Version 2.0.4\n28 juillet 2017\n\n• iPad — Règle le problème de vignettes floues et l'impossibilité d'éditer les photos\n• Vidéos — Règle des problèmes de téléchargement et d'envoi (extension VideoJS requise sur le serveur)\n• Réglages — Ajoute des options pour retirer les titres et changer la résolution des vignettes\n• Améliore la fiabilité de la connexion et informe quand l'envoi d'images/vidéos est terminé\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
 
