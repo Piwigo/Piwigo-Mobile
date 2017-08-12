@@ -237,9 +237,8 @@ static NSInteger const reloginViewTag = 899;
                 [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin];
             
             } else {
-                if (isFirstLogin) {
-                    [self hideLoading];
-                }
+                // Close loading or re-login view
+                isFirstLogin ? [self hideLoading] : [self hideReLoggingIn];
                 
                 UIAlertView *failAlert = [[UIAlertView alloc]
                                           initWithTitle:NSLocalizedString(@"serverCommunityError_title", @"Community Error")
@@ -251,9 +250,9 @@ static NSInteger const reloginViewTag = 899;
             }
             
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            if (isFirstLogin) {
-                [self hideLoading];
-            }
+
+            // Close loading or re-login view
+            isFirstLogin ? [self hideLoading] : [self hideReLoggingIn];
         }];
 
     } else {
@@ -281,10 +280,10 @@ static NSInteger const reloginViewTag = 899;
 			if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
 			{
                 // They need to update
-                if (isFirstLogin) {
-                    [self hideLoading];
-                }
-				[UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
+                // Close loading or re-login view
+                isFirstLogin ? [self hideLoading] : [self hideReLoggingIn];
+
+                [UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
 								   message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
 						 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
 						 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
@@ -298,17 +297,16 @@ static NSInteger const reloginViewTag = 899;
 									  }
 								  }];
 			} else {
-                
                 // Their version is Ok
                 // Get list of plugins and check VideoJS availability
                 [self getPluginsListAtFirstLogin:isFirstLogin];
             }
             
 		} else {
-            if (isFirstLogin) {
-                [self hideLoading];
-            }
-			UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
+            // Close loading or re-login view
+            isFirstLogin ? [self hideLoading] : [self hideReLoggingIn];
+
+            UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
                                                                 message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
 															   delegate:nil
 													  cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
@@ -316,9 +314,9 @@ static NSInteger const reloginViewTag = 899;
 			[failAlert show];
 		}
 	} onFailure:^(NSURLSessionTask *task, NSError *error) {
-        if (isFirstLogin) {
-            [self hideLoading];
-        }
+
+        // Close loading or re-login view
+        isFirstLogin ? [self hideLoading] : [self hideReLoggingIn];
 	}];
 }
 
@@ -346,15 +344,14 @@ static NSInteger const reloginViewTag = 899;
                 [appDelegate loadNavigation];
             
             } else {
-                
-                // Disable blur effect and keep current view active
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self hideReloginViewAttempt];
-                });
+                // Close HUD and keep current view active
+                [self hideReLoggingIn];
             }
             
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            [self hideLoading];
+
+            // Close loading or re-login view
+            isFirstLogin ? [self hideLoading] : [self hideReLoggingIn];
         }];
 
     } else {
@@ -367,7 +364,8 @@ static NSInteger const reloginViewTag = 899;
             [appDelegate loadNavigation];
             
         } else {
-            // Do nothing and keep current view active
+            // Disable HUD and keep current view active
+            [self hideReLoggingIn];
         }
     }
 }
@@ -433,9 +431,9 @@ static NSInteger const reloginViewTag = 899;
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
 #endif
     
-    // Apply blur effect during relogin
+    // Display HUD during re-login
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showReloginViewAttempt];
+        [self showReLoggingIn];
     });
 
     // Perform login
@@ -516,7 +514,7 @@ static NSInteger const reloginViewTag = 899;
 	[alert show];
 }
 
--(void)showReloginViewAttempt
+-(void)showReLoggingIn
 {
     // Determine the present view controller
     UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
@@ -537,7 +535,7 @@ static NSInteger const reloginViewTag = 899;
     [hud setTag:reloginViewTag];
 }
 
--(void)hideReloginViewAttempt
+-(void)hideReLoggingIn
 {
     // Determine the present view controller
     UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
