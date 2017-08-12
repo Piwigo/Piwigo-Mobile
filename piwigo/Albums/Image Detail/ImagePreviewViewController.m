@@ -36,6 +36,16 @@
 	self.navigationBarHidden = YES;
 }
 
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Stop playing video if needed
+    if ([self.scrollView.player playbackState]) {
+        [self.scrollView.player stop];
+    }
+}
+
 -(void)setImageWithImageData:(PiwigoImageData*)imageData
 {
 	if(imageData.isVideo)
