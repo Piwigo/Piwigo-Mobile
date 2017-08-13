@@ -28,7 +28,7 @@
 		<true/>
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>so that it will be able to download images to Photos and upload images to your galleries.</string>
+	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>LacunaRegular.TTF</string>
