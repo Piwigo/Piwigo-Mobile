@@ -45,6 +45,7 @@
 "login_passwordPlaceholder" = "Password (optional)";
 "login_loggingIn" = "Logging In...";
 "login_protocolDescription" = "(tap to change)";
+"login_connectionChanged" = "Connection Changed!";
 
 // Login — Errors
 "serverMethodsError_title" = "Unknown Methods";

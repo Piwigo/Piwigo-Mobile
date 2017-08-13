@@ -536,7 +536,7 @@ static NSInteger const reloginViewTag = 899;
 
     // Define the text
     hud.label.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
-    hud.detailsLabel.text = @"Connection Changed!";
+    hud.detailsLabel.text = NSLocalizedString(@"login_connectionChanged", @"Connection Changed!");
     [hud setTag:reloginViewTag];
 }
 

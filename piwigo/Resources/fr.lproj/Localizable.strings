@@ -45,12 +45,13 @@
 "login_passwordPlaceholder" = "Mot de Passe (optionnel)";
 "login_loggingIn" = "Connexion en cours...";
 "login_protocolDescription" = "(taper > changer)";
+"login_connectionChanged" = "Connexion Modifiée !";
 
 // Login — Errors
 "serverMethodsError_title" = "Méthodes Inconnues";
 "serverMethodsError_message" = "Impossible d’obtenir les méthodes du serveur.\nProblème avec le serveur Piwigo ?";
 
-"loginError_title" = "Échec de connexion";
+"loginError_title" = "Échec de Connexion";
 "loginError_message" = "Les nom d’utilisateur et mot de passe ne correspondent pas à l’adresse donnée";
 "loginEmptyServer_title" = "Entrez une Adresse Web";
 "loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
@@ -58,7 +59,7 @@
 "serverVersionNotCompatible_title" = "Serveur Incompatible";
 "serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile.\nVoulez-vous quand même continuer ?";
 
-"sessionStatusError_title" = "Echec d’Authentification";
+"sessionStatusError_title" = "Échec d'Authentification";
 "sessionStatusError_message" = "N’a pas pu s’authentifier avec le serveur.\nEssayez de vous connecter à nouveau.";
 
 "serverCommunityError_title" = "Erreur avec Community";
@@ -108,21 +109,21 @@
 // Album options (actions)
 "categoryCellOption_rename" = "Renomer";
 "categoryCellOption_move" = "Déplacer";
-"categoryCellOption_delete" = "Supprimer";
+"categoryCellOption_delete" = "Effacer";
 
 // Album rename
 "renameCategory_title" = "Renommer l'Album";
 "renameCategory_message" = "Renommer l'album";
 "renameCategory_button" = "Renommer";
-"renameCategorySuccess_title" = "Changement de nom réussi";
+"renameCategorySuccess_title" = "Nom Modifié";
 "renameCategorySuccess_message" = "Votre album a été renommé avec succès";
 
 // Album rename — Errors
-"renameCategoyError_title" = "Echec du Changement de Nom";
+"renameCategoyError_title" = "Echec du Changement";
 "renameCategoyError_message" = "Impossible de renommer votre album";
 
 // Album delete
-"deleteCategory_title" = "EFFACER ALBUM";
+"deleteCategory_title" = "EFFACER L'ALBUM";
 "deleteCategory_message" = "ÊTES-VOUS SÛR DE VOULOIR SUPPRIMER L’ALBUM \"%@\" ET LES %@ IMAGES ?";
 "deleteCategoryConfirm_title" = "Etes-vous sûr ?";
 "deleteCategoryConfirm_message" = "Veuillez entrer le nombre d’images afin de supprimer cet album\nNombre d’images : %@";
@@ -133,16 +134,16 @@
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Nombre Incorrect";
 "deleteCategoryMatchError_message" = "Le nombre d’images que vous avez entré ne correspond pas au nombre d’images dans l'album. S’il vous plaît, essayez de nouveau si vous désirez supprimer cet album";
-"deleteCategoryError_title" = "Echec de la Suppression";
+"deleteCategoryError_title" = "Echec";
 "deleteCategoryError_message" = "Impossible de supprimer votre album";
 
 // Album move
-"moveCategory" = "Déplacer Album";
+"moveCategory" = "Déplacer l'Album";
 "moveCategory_selectParent" = "Sélectionnez un album pour déplacer l’album \"%@\" dans";
 "moveCategory_message" = "Êtes-vous certain de vouloir déplacer \"%@\" dans l’album \"%@\" ?";
 
 // album move — Errors
-"moveCategoryError_title" = "Echec du Déplacement";
+"moveCategoryError_title" = "Echec";
 "moveCategoryError_message" = "Impossible de déplacer votre album";
 
 // Album set image thumbnail
@@ -197,7 +198,7 @@
 "privacyLevel_adminFamily" = "Admins, Famille";
 "privacyLevel_adminsFamilyFriends" = "Admins, Famille, Amis";
 "privacyLevel_adminsFamilyFriendsContacts" = "Admins, Famille, Amis, Contacts";
-"privacyLevel_everybody" = "Tout le monde";
+"privacyLevel_everybody" = "Tout le Monde";
 
 // Image tags
 "none" = "aucun";
@@ -210,9 +211,9 @@
 "deleteImage_imagePlural" = "Images";
 "deleteImageProgress_title" = "Suppression %@%%";
 
-"deleteSingleImage_title" = "Supprimer l’image";
+"deleteSingleImage_title" = "Supprimer l’Image";
 "deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ?\nOpération irréversible !";
-"deleteSeveralImages_title" = "Supprimer Images";
+"deleteSeveralImages_title" = "Supprimer les Images";
 "deleteSeveralImages_message" = "Êtes-vous sûr de vouloir supprimer la sélection de %@ images ?\nOpération irréversible !";
 
 "deleteImageFail_title" = "Echec de la Suppression";
@@ -277,10 +278,10 @@
 // ===========================================================================
 "localAlbums" = "Albums Locaux";
 
-"localImageSort_newest" = "Plus récentes";
-"localImageSort_oldest" = "Plus anciennes";
-"localImageSort_notUploaded" = "Pas encore envoyées";
-"localImageSort_undefined" = "Non défini";
+"localImageSort_newest" = "Plus Récentes";
+"localImageSort_oldest" = "Plus Anciennes";
+"localImageSort_notUploaded" = "Pas Encore Envoyées";
+"localImageSort_undefined" = "Non Défini";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Accès Refusé";
@@ -303,7 +304,7 @@
 // Settings — General
 "settingsHeader_general" = "Paramètres Généraux";
 "settings_loadAllCategories" = "Télécharger Tout au Démarrage";
-"settings_loadAllCategories>320px" = "Télécharger tout au Démarrage (décochez en cas de problème)";
+"settings_loadAllCategories>320px" = "Télécharger Tout au Démarrage (décochez en cas de problème)";
 "defaultImageSort" = "Tri";
 "defaultImageSort>320px" = "Tri";
 "defaultImageSort>414px" = "Tri par Défaut des Images";
