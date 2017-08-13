@@ -108,7 +108,7 @@
 	
 	if(indexPath.section == 1)
 	{
-		albumData = [[CategoriesData sharedInstance].allCategories objectAtIndex:indexPath.row];
+        albumData = [super.categories objectAtIndex:indexPath.row];
 	}
 	else
 	{
