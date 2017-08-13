@@ -19,9 +19,9 @@
 //static NSInteger const loginViewTag = 898;
 static NSInteger const reloginViewTag = 899;
 
-#ifndef DEBUG_SESSION
-#define DEBUG_SESSION
-#endif
+//#ifndef DEBUG_SESSION
+//#define DEBUG_SESSION
+//#endif
 
 @interface LoginViewController () <UITextFieldDelegate>
 
@@ -521,11 +521,16 @@ static NSInteger const reloginViewTag = 899;
     while (topViewController.presentedViewController) {
         topViewController = topViewController.presentedViewController;
     }
-    
-    // Create the re-login view
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:topViewController.view animated:YES];
 
-    // Change the background view style and color.
+    // Create the re-login HUD if needed (the reachability methods may send several notifications)
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:topViewController.view];
+    if (!hud) {
+        hud = [MBProgressHUD showHUDAddedTo:topViewController.view animated:YES];
+    }
+
+    // Change the background view shape, style and color.
+    hud.square = NO;
+    hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
 
@@ -543,9 +548,11 @@ static NSInteger const reloginViewTag = 899;
         topViewController = topViewController.presentedViewController;
     }
     
-    // Remove the re-login window
-    MBProgressHUD *hud = [topViewController.view viewWithTag:reloginViewTag];
-    [hud hideAnimated:YES];
+    // Hide and remove the actual re-login HUD
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:topViewController.view];
+    if (hud) {
+        [MBProgressHUD hideHUDForView:topViewController.view animated:YES];
+    }
 }
 
 
