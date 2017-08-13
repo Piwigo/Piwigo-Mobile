@@ -302,7 +302,7 @@
 
 // Settings — General
 "settingsHeader_general" = "Ustawienia Ogólne";
-"settings_loadAllCategories" = "Pobierz wszystkie Albumy przy Uruchomieniu";
+"settings_loadAllCategories" = "Pobierz wszystkie Albumy na Start";
 "settings_loadAllCategories>320px" = "Pobierz wszystkie albumy przy uruchomieniu (odznacz w razie problemów)";
 "defaultImageSort" = "Sortowanie";
 "defaultImageSort>320px" = "Sortowanie";
