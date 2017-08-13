@@ -95,7 +95,7 @@
 "categorySort_datePostedDescending" = "Data Wysłania, nowe → stare";
 "categorySort_datePostedAscending" = "Data Wysłania, stare → nowe";
 "categorySort_videosOnly" = "Tylko Filmy";
-"categorySort_imagesOnly" = "Tylko Obrazy";
+"categorySort_imagesOnly" = "Tylko Zdjęcia";
 
 // Album create
 "createNewAlbum_title" = "Utwórz Nowy Album";
@@ -123,9 +123,9 @@
 
 // Album delete
 "deleteCategory_title" = "USUŃ ALBUM";
-"deleteCategory_message" = "CZY NA PEWNO CHCESZ USUNĄĆ ALBUM \"%@\" I %@ WSZYSTKIE OBRAZY?";
+"deleteCategory_message" = "CZY NA PEWNO CHCESZ USUNĄĆ ALBUM \"%@\" I %@ WSZYSTKIE ZDJĘCIA?";
 "deleteCategoryConfirm_title" = "Czy na pewno?";
-"deleteCategoryConfirm_message" = "Proszę wpisać liczbę obrazów w celu usunięcia tego albumu.\nLiczba zdjęć: %@";
+"deleteCategoryConfirm_message" = "Proszę wpisać liczbę zdjęć w celu usunięcia tego albumu.\nLiczba zdjęć: %@";
 "deleteCategoryConfirm_deleteButton" = "USUŃ";
 "deleteCategorySuccess_title" = "Usuń Sukces";
 "deleteCategorySuccess_message" = "Usuwanie albumu \"%@\" zakończyło się powodzeniem";
@@ -133,7 +133,7 @@
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Numer nie jest zgodny";
 "deleteCategoryMatchError_message" = "Liczba zdjęć, które wprowadziłeś nie odpowiada liczbie zdjęć w kategorii. Spróbuj ponownie, jeśli chcesz usunąć ten album";
-"deleteCategoryError_title" = "Błąd Usunięcia";
+"deleteCategoryError_title" = "Usuwanie nie Powiodło się";
 "deleteCategoryError_message" = "Nie można usunąć Twojego albumu";
 
 // Album move
@@ -148,35 +148,35 @@
 // Album set image thumbnail
 "categorySelection" = "Wybierz Album";
 "categorySelection_forImage" = "Wybierz album dla tego zdjęcia";
-"categoryImageSet_title" = "Ustaw Miniaturę Obrazu";
+"categoryImageSet_title" = "Ustaw Miniaturę Zdjęcia";
 "categoryImageSet_message" = "Czy na pewno chcesz ustawić to zdjęcie dla albumu \"%@\"?";
 "categoryImageSetSuccess_title" = "Udało Ustawić Zdjęcie";
 "categoryImageSetSuccess_message" = "Zdjęcie zostało ustawione pomyślnie jako zdjęcie albumu";
 
 // Album set image thumbnail — Errors
-"categoryImageSetError_title" = "Błąd Ustawiania Obrazu";
-"categoryImageSetError_message" = "Nie można ustawić obrazu albumu";
+"categoryImageSetError_title" = "Błąd ustawiania zdjęcia";
+"categoryImageSetError_message" = "Nie można ustawić zdjęcia albumu";
 
 
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
 "noImages" = "Brak Zdjęć";
-"pullToRefresh" = "Przeładuj Obrazy";
+"pullToRefresh" = "Przeładuj Zdjęcia";
 
 // Errors
 "albumPhotoError_title" = "Błąd Pobierania Zdjęć Albumu";
-"albumPhotoError_message" = "Nie udało się pobrać zdjęć z albumu (jakiś uszkodzony obraz w Twoim albumie?)";
+"albumPhotoError_message" = "Nie udało się pobrać zdjęć z albumu (jakieś uszkodzone zdjęcie w Twoim albumie?)";
 
 // Image sort
 "sortTitle" = "Typ Sortowania";
 "sortBy" = "Sortuj wg";
 
 // Image options (actions)
-"imageOptions_title" = "Opcje Obrazu";
+"imageOptions_title" = "Opcje Zdjęcia";
 "imageOptions_edit" = "Edytuj";
 "imageOptions_download" = "Pobierz";
-"imageOptions_setAlbumImage" = "Ustaw Jako Obraz Albumu";
+"imageOptions_setAlbumImage" = "Ustaw Jako Zdjęcie Albumu";
 
 // Image edit
 "editImageDetails_title" = "Tytuł:";
@@ -193,10 +193,10 @@
 
 // Image privacy levels
 "privacyLevel" = "Poziom Prywatności";
-"privacyLevel_admin" = "Admin.";
-"privacyLevel_adminFamily" = "Admin., Rodzina";
-"privacyLevel_adminsFamilyFriends" = "Admin., Rodzina, Przyjaciele";
-"privacyLevel_adminsFamilyFriendsContacts" = "Admin., Rodzina, Przyjaciele, Kontakty";
+"privacyLevel_admin" = "Admin";
+"privacyLevel_adminFamily" = "Admin, Rodzina";
+"privacyLevel_adminsFamilyFriends" = "Admin, Rodzina, Przyjaciele";
+"privacyLevel_adminsFamilyFriendsContacts" = "Admin, Rodzina, Przyjaciele, Kontakty";
 "privacyLevel_everybody" = "Każdy";
 
 // Image tags
@@ -207,43 +207,43 @@
 
 // Image delete
 "deleteImage_delete" = "Usuń";
-"deleteImage_imagePlural" = "Obrazy";
+"deleteImage_imagePlural" = "Zdjęcia";
 "deleteImageProgress_title" = "Usuwanie %@%% zakończone";
 
-"deleteSingleImage_title" = "Usuń Obraz";
+"deleteSingleImage_title" = "Usuń Zdjęcie";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
 "deleteSeveralImages_title" = "Usuwanie Zdjęć";
 "deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia %@? \nNie można tego cofnąć!";
 
 "deleteImageFail_title" = "Błąd Usunięcia";
-"deleteImageFail_message" = "Obraz nie może zostać usunięty\n%@";
+"deleteImageFail_message" = "Zdjęcie nie może zostać usunięte\n%@";
 
 // Image download
-"downloadSingleImage_title" = "Pobierz Obraz";
+"downloadSingleImage_title" = "Pobierz Zdjęcie";
 "downloadSingleImage_confirmation" = "Czy na pewno chcesz pobrać wybrane zdjęcie?";
-"downloadSeveralImages_title" = "Pobierz Obrazy";
+"downloadSeveralImages_title" = "Pobierz Zdjęcia";
 "downloadSeveralImage_confirmation" = "Czy na pewno chcesz pobrać wybrane %@ zdjęcia?";
 
-"downloadingImage" = "Pobieranie Obrazu";
-"downloadingImages" = "Pobieranie Obrazów";
+"downloadingImage" = "Pobieranie Zdjęcia";
+"downloadingImages" = "Pobieranie Zdjęć";
 "downloadingImage_complete" = "Zakończono";
-"downloadingImageInfo" = "Pobieranie Informacji Obrazu";
-"downloadingImageInfoForSort" = "Pobieranie obrazu informacji do sortowania";
+"downloadingImageInfo" = "Pobieranie Informacji Zdjęcia";
+"downloadingImageInfoForSort" = "Pobieranie informacji zdjęć do sortowania";
 
 // Image download — Errors
 "downloadImageFail_title" = "Błąd Pobierania";
-"downloadImageFail_message" = "Nie można pobrać obrazu!\n%@";
+"downloadImageFail_message" = "Nie można pobrać zdjęcia!\n%@";
 "downloadVideoFail_message" = "Nie można pobrać filmu!\n%@";
 "downloadVideoFail_Photos" = "Format wideo nie jest akceptowany przez aplikację Zdjęcia!";
 
-"imageSaveError_title" = "Nie udało się zapisać Obrazu";
-"imageSaveError_message" = "Nie można zapisać obrazu. Błąd: %@";
+"imageSaveError_title" = "Nie udało się zapisać Zdjęcia";
+"imageSaveError_message" = "Nie można zapisać zdjęcia. Błąd: %@";
 
 "videoSaveError_title" = "Nie udało się zapisać Filmu";
 "videoSaveError_message" = "Nie można zapisać filmu. Błąd: %@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "Wybierz album, do którego przesyłać obrazy";
+"categoryUpload_chooseAlbum" = "Wybierz album, do którego przesyłać zdjęcia";
 "categoryUpload_chooseLocalAlbum" = "Wybierz album z którego chcesz pobrać zdjęcia";
 "categoyUpload_loadSubCategories" = "ładowanie";
 "selectAll" = "Wszystkie";
@@ -254,16 +254,16 @@
 "imageUploadDetails_tags" = "Tagi:";
 "imageUploadDetails_description" = "Opis:";
 
-"imageUploadDetailsEdit_title" = "Edycja obrazów do przesłania";
-"imageUploadDetailsUploading_title" = "Obrazy, które są przesyłane";
+"imageUploadDetailsEdit_title" = "Edycja zdjęć do przesłania";
+"imageUploadDetailsUploading_title" = "Zdjęcia, które są przesyłane";
 "imageUploadDetailsCell_uploadComplete" = "Zakończone! Finalizowanie...";
 
 "imageUploadTableCell_uploading" = "Przesyłanie...";
 "imageUploadProgressBar_zero" = "Przesyłanie 0/0";
 "imageUploadProgressBar_nonZero" = "Przesyłanie %@/%@";
 "imageUploadCompleted_title" = "Przesyłanie Zakończone";
-"imageUploadCompleted_message" = "1 obraz/wideo przesłany do Twojego serwera Piwigo.";
-"imageUploadCompleted_message>1" = "obrazy/filmy zostały przesłane do Twojego serwera Piwigo.";
+"imageUploadCompleted_message" = "1 zdjęcie/wideo zostało przesłane do Twojego serwera Piwigo.";
+"imageUploadCompleted_message>1" = "zdjęcia/filmy zostały przesłane do Twojego serwera Piwigo.";
 
 // Image upload — Errors
 "videoUploadError_title" = "Błąd Przesyłania Wideo";
@@ -302,11 +302,11 @@
 
 // Settings — General
 "settingsHeader_general" = "Ustawienia Ogólne";
-"settings_loadAllCategories" = "Pobierz wszystkie Albumy w Start";
-"settings_loadAllCategories>320px" = "Pobierz wszystkie Albumy w Start (odznacz w razie problemów)";
+"settings_loadAllCategories" = "Pobierz wszystkie Albumy przy Uruchomieniu";
+"settings_loadAllCategories>320px" = "Pobierz wszystkie albumy przy uruchomieniu (odznacz w razie problemów)";
 "defaultImageSort" = "Sortowanie";
 "defaultImageSort>320px" = "Sortowanie";
-"defaultImageSort>414px" = "Domyślne Sortowanie Obrazów";
+"defaultImageSort>414px" = "Domyślne Sortowanie Zdjęć";
 
 "defaultThumbnailSize" = "Miniatury";
 "defaultThumbnailSize>320px" = "Rozmiar Miniatur";
@@ -328,11 +328,11 @@
 "thumbnailSizeXXLarge" = "Ogromne";
 "thumbnailSizexFullRes" = "Pełna Rozdzielczość";
 
-"defaultImageSize" = "Obrazy";
-"defaultImageSize>320px" = "Rozmiar Obrazów";
-"defaultImageSize>414px" = "Domyślny Rozmiar Obrazów";
+"defaultImageSize" = "Zdjęcia";
+"defaultImageSize>320px" = "Rozmiar Zdjęć";
+"defaultImageSize>414px" = "Domyślny Rozmiar Zdjęć";
 "defaultImageSizeTitle" = "Domyślny Rozmiar";
-"defaultImageSizeHeader" = "Proszę Wybrać Rozmiar Obrazu";
+"defaultImageSizeHeader" = "Proszę Wybrać Rozmiar Zdjęcia";
 "defaultImageSize_recommended" = " (zalecane)";
 "defaultImageSize_disabled" = " (wyłączone na serwerze)";
 
@@ -357,11 +357,11 @@
 "settings_stripGPSdata" = "Usuń Metadane GPS";
 "settings_stripGPSdata>375px" = "Usuń Metadane GPS Przed Przesłaniem";
 "settings_photoResize" = "Zmień Rozmiar Przed Przesłaniem";
-"settings_photoResize>375px" = "Zmień Rozmiar Obrazu Przed Przesłaniem";
+"settings_photoResize>375px" = "Zmień Rozmiar Zdjęcia Przed Przesłaniem";
 "settings_photoSize" = "> Rozmiar   ";
 "settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 1 - 100";
 "settings_photoQuality" = "> Jakość";
-"settings_placeholderQuality" = "Wprowadź Jakość Obrazu z Zakresu 50 - 98";
+"settings_placeholderQuality" = "Wprowadź Jakość Zdjęcia z Zakresu 50 - 98";
 
 // Settings — Cache
 "settingsHeader_cache" = "Podręczna (Używany/Całkowity)";
