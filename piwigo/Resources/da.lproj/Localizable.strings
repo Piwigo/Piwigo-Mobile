@@ -45,7 +45,7 @@
 "login_passwordPlaceholder" = "Adgangskode (valgfrit)";
 "login_loggingIn" = "Logger ind...";
 "login_protocolDescription" = "(tryk for at ændre)";
-"login_connectionChanged" = "Forbindelse ændret!";
+"login_connectionChanged" = "Forbindelsen ændret!";
 
 // Login — Errors
 "serverMethodsError_title" = "Ukendt Protokol";
