@@ -25,7 +25,7 @@ For video upload using your iOS device, you need the plugin on your Piwigo serve
 ## Translations
 Piwigo Mobile is available in the following languages since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/milestone/5?closed=1): [Danish](https://itunes.apple.com/dk/app/piwigo/id472225196?mt=8), [English (U.S.)](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8), [French](https://itunes.apple.com/fr/app/piwigo/id472225196?mt=8) and [Polish](https://itunes.apple.com/pl/app/piwigo/id472225196?mt=8).
 
-Help us translating Piwigo Mobile on [Crowdin](https://crowdin.com/project/piwigo-mobile)!
+Help us to translate Piwigo Mobile on [Crowdin](https://crowdin.com/project/piwigo-mobile)!
 
 ## License
 The MIT License (MIT)
