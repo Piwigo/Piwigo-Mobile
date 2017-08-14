@@ -6,7 +6,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 [Piwigo](http://piwigo.org) empowers you to create your own photo gallery on the web and includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.
 
 ## Description
-[Piwigo Mobile](https://itunes.apple.com/fr/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.com](http://iwigo.com) and self-hosted Piwigo galleries (2.7 or higher):
+[Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.com](http://iwigo.com) and self-hosted Piwigo galleries (2.7 or higher):
 
 - Browse your albums,
 - Create new albums,
@@ -21,6 +21,16 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
 ## Videos 
 For video upload using your iOS device, you need the plugin on your Piwigo server titled "[piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610)". After you have installed this plugin, you will need to allow for video file types to be uploaded by following [these instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos).
+
+## Translations
+Piwigo Mobile is available in the following languages since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/milestone/5?closed=1):
+
+- English (U.S.) — [App Store](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8)
+- Danish — [App Store](https://itunes.apple.com/dk/app/piwigo/id472225196?mt=8)
+- French — [App Store](https://itunes.apple.com/fr/app/piwigo/id472225196?mt=8)
+- Polish — [App Store](https://itunes.apple.com/pl/app/piwigo/id472225196?mt=8)
+
+Help us translating Piwigo Mobile on [Crowdin](https://crowdin.com/project/piwigo-mobile)!
 
 ## License
 The MIT License (MIT)
