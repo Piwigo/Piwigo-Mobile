@@ -45,7 +45,7 @@
 "login_passwordPlaceholder" = "Hasło (opcjonalne)";
 "login_loggingIn" = "Logowanie...";
 "login_protocolDescription" = "(dotknij by zmienić)";
-"login_connectionChanged" = "Połączenia uległy zmianie!";
+"login_connectionChanged" = "Połączenie uległo zmianie!";
 
 // Login — Errors
 "serverMethodsError_title" = "Metody nieznany";
