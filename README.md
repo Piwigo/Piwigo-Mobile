@@ -23,10 +23,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 For video upload using your iOS device, you need the plugin on your Piwigo server titled "[piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610)". After you have installed this plugin, you will need to allow for video file types to be uploaded by following [these instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos).
 
 ## Translations
-Piwigo Mobile is available in the following languages since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/milestone/5?closed=1):
-
-[Danish](https://itunes.apple.com/dk/app/piwigo/id472225196?mt=8) | [English (U.S.)](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) |
-[French](https://itunes.apple.com/fr/app/piwigo/id472225196?mt=8) | [Polish](https://itunes.apple.com/pl/app/piwigo/id472225196?mt=8) |
+Piwigo Mobile is available in the following languages since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/milestone/5?closed=1): [Danish](https://itunes.apple.com/dk/app/piwigo/id472225196?mt=8), [English (U.S.)](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8), [French](https://itunes.apple.com/fr/app/piwigo/id472225196?mt=8) and [Polish](https://itunes.apple.com/pl/app/piwigo/id472225196?mt=8).
 
 Help us translating Piwigo Mobile on [Crowdin](https://crowdin.com/project/piwigo-mobile)!
 
