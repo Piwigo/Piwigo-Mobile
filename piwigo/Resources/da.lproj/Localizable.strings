@@ -193,7 +193,7 @@
 "imageDetailsFetchError_continueMessage" = "Hentning af billeddata mislykkedes \nFortsæt?";
 
 // Image privacy levels
-"privacyLevel" = "Sikkerhedsniveau";
+"privacyLevel" = "Tilladelsesniveau";
 "privacyLevel_admin" = "Admins";
 "privacyLevel_adminFamily" = "Admins, Familie";
 "privacyLevel_adminsFamilyFriends" = "Admins, Familie, Venner";
@@ -251,7 +251,7 @@
 
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Forfatter:";
-"imageUploadDetails_privacy" = "Sikkerhed:";
+"imageUploadDetails_privacy" = "Tilladelse:";
 "imageUploadDetails_tags" = "Etiketter:";
 "imageUploadDetails_description" = "Beskrivelse:";
 
@@ -353,7 +353,7 @@
 "settings_defaultAuthor" = "Forfatter";
 "settings_defaultAuthor>320px" = "Forfatternavn";
 "settings_defaultAuthorPlaceholder" = "Forfatternavn";
-"settings_defaultPrivacy" = "Fortrolighed";
+"settings_defaultPrivacy" = "Tilladelse";
 "settings_defaultPrivacy>414px" = "Hvem kan se dette billede?";
 "settings_stripGPSdata" = "Strip GPS-Metadata";
 "settings_stripGPSdata>375px" = "Strip GPS Metadata før Upload";
