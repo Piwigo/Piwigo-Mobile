@@ -247,6 +247,11 @@ NSString * const kGetImageOrderDescending = @"desc";
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFImageResponseSerializer serializer];
     
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [manager setSecurityPolicy:policy];
+
     NSURLSessionDataTask *task = [manager GET:request.absoluteString parameters:nil
                                      progress:progress
                                       success:^(NSURLSessionTask *task, UIImage *image) {
@@ -278,6 +283,11 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [manager setSecurityPolicy:policy];
+
     NSString *URLRequest = [NetworkHandler getURLWithPath:[video.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
     
