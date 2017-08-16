@@ -68,6 +68,11 @@
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFImageResponseSerializer serializer];
     
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [manager setSecurityPolicy:policy];
+    
     weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
     
     [manager GET:request.absoluteString
