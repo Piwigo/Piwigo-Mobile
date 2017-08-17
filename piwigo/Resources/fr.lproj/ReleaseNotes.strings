@@ -6,9 +6,13 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.0_text" = "Version 2.1\n\n• Compatibilité avec l'extension Community\n• Traductions en Danois, Français et Polonais\n• Corrections de bugs\n________________________________________\n\n";
+"v2.1.1_text" = "Version 2.1.1\n\n• Fix bug encountered with non-valid SSL certificates\n• Improve Danish translation\n________________________________________\n\n";
 
-"v2.0.4_text" = "Version 2.0.4\n28 juillet 2017\n\n• iPad — Règle le problème de vignettes floues et l'impossibilité d'éditer les photos\n• Vidéos — Règle des problèmes de téléchargement et d'envoi (extension VideoJS requise sur le serveur)\n• Réglages — Ajoute des options pour retirer les titres et changer la résolution des vignettes\n• Améliore la fiabilité de la connexion et informe quand l'envoi d'images/vidéos est terminé\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
+"v2.1.1_text" = "Version 2.1.1\n\n• Correction d’un bug rencontré avec les certificats SSL non valides\n• Amélioration de la traduction en Danois\n________________________________________\n\n";
+
+"v2.1.0_text" = "Version 2.1\n14 Août 2017\n\n• Compatibilité avec l'extension Community\n• Traductions en Danois, Français et Polonais\n• Corrections de bugs\n________________________________________\n\n";
+
+"v2.0.4_text" = "Version 2.0.4\n28 Juillet 2017\n\n• iPad — Règle le problème de vignettes floues et l'impossibilité d'éditer les photos\n• Vidéos — Règle des problèmes de téléchargement et d'envoi (extension VideoJS requise sur le serveur)\n• Réglages — Ajoute des options pour retirer les titres et changer la résolution des vignettes\n• Améliore la fiabilité de la connexion et informe quand l'envoi d'images/vidéos est terminé\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
 
 "v2.0.3_text" = "Version 2.0.3\n26 Mai 2017\n\n• Propose une nouvelle option permettant d'effacer les métadonnées GPS des images envoyées au serveur\n• Affiche désormais les volumes de cache utilisés dans la page Settings\n• Règle les situations où les réglages de cache étaient perdus ou modifiés\n• Règle les situations où les réglages des images envoyées étaient perdus ou réinitialisés\n________________________________________\n\n";
 
