@@ -76,6 +76,7 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
     jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
     manager.responseSerializer = jsonResponseSerializer;
     
+    // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
@@ -118,6 +119,7 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
     jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
     manager.responseSerializer = jsonResponseSerializer;
     
+    // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];

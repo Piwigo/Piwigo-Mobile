@@ -23,6 +23,8 @@
 #import "LocalAlbumsViewController.h"
 #import "AlbumData.h"
 #import "NetworkHandler.h"
+#import <AFNetworking/AFImageDownloader.h>
+
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
@@ -350,8 +352,17 @@
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
     NSString *URLRequest = [NetworkHandler getURLWithPath:[downloadingImage.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
-	[dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
-					 placeholderImage:nil
+
+    // Ensure that SSL certificates won't be rejected
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    
+    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+    [dow.sessionManager setSecurityPolicy:policy];
+
+    [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
+					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
 							  } failure:nil];

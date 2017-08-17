@@ -247,6 +247,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFImageResponseSerializer serializer];
     
+    // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
@@ -283,6 +284,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
+    // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
@@ -291,7 +293,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSString *URLRequest = [NetworkHandler getURLWithPath:[video.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
     
-    // replace .mp4 or .mv4 with .mov for compatibility with Photos.app
+    // Replace .mp4 or .mv4 with .mov for compatibility with Photos.app
     NSString *fileName = video.fileName;
     if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
         ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {

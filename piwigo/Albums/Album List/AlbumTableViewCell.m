@@ -16,6 +16,7 @@
 #import "CategoriesData.h"
 #import "MoveCategoryViewController.h"
 #import "NetworkHandler.h"
+#import <AFNetworking/AFImageDownloader.h>
 
 @interface AlbumTableViewCell()
 
@@ -389,8 +390,17 @@
 						  else
 						  {
                               NSString *URLRequest = [NetworkHandler getURLWithPath:[imageData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+
+                              // Ensure that SSL certificates won't be rejected
+                              AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+                              [policy setAllowInvalidCertificates:YES];
+                              [policy setValidatesDomainName:NO];
+                              
+                              AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+                              [dow.sessionManager setSecurityPolicy:policy];
+                              
                               [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
-                                                  placeholderImage:nil
+                                                  placeholderImage:[UIImage imageNamed:@"placeholder"]
                                                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                                albumData.categoryImage = image;
                                                                [weakSelf setupBgWithImage:image];

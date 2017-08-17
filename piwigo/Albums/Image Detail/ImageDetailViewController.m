@@ -17,6 +17,7 @@
 #import "ImageUpload.h"
 #import "ImageScrollView.h"
 #import "AllCategoriesViewController.h"
+#import <AFNetworking/AFImageDownloader.h>
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 
@@ -199,12 +200,22 @@
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
     NSString *URLRequest = [NetworkHandler getURLWithPath:[self.imageData.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+
+    // Ensure that SSL certificates won't be rejected
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    
+    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+    [dow.sessionManager setSecurityPolicy:policy];
+    
     [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
-					 placeholderImage:nil
+					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
 							  } failure:nil];
-	if(!self.imageData.isVideo)
+
+    if(!self.imageData.isVideo)
 	{
 		[ImageService downloadImage:self.imageData
 						 onProgress:^(NSProgress *progress) {

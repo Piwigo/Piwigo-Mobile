@@ -10,6 +10,7 @@
 #import "PiwigoImageData.h"
 #import "Model.h"
 #import "NetworkHandler.h"
+#import <AFNetworking/AFImageDownloader.h>
 
 @interface ImageCollectionViewCell()
 
@@ -153,6 +154,14 @@
 		return;
 	}
 	
+    // Ensure that any SSL certificate won't be rejected
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    
+    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+    [dow.sessionManager setSecurityPolicy:policy];
+    
     // Download the image of the requested resolution (or get it from the cache)
     switch ([Model sharedInstance].defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
