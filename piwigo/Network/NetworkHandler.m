@@ -190,7 +190,7 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
 		url = [url stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
 	}
 	
-	return url;
+	return [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 +(void)showConnectionError:(NSError*)error

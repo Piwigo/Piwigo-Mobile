@@ -351,7 +351,7 @@
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-    NSString *URLRequest = [NetworkHandler getURLWithPath:[downloadingImage.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    NSString *URLRequest = [NetworkHandler getURLWithPath:downloadingImage.ThumbPath asPiwigoRequest:NO withURLParams:nil];
 
     // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];

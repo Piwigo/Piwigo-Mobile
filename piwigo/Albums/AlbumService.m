@@ -183,7 +183,7 @@
 {
 	return [self post:kPiwigoCategoriesAdd
 		URLParameters:@{
-                        @"name" : [categoryName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+                        @"name" : [categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]],
                         @"status" : categoryStatus
                         }
            parameters:nil

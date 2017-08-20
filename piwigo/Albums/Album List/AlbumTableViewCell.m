@@ -389,7 +389,7 @@
 						  }
 						  else
 						  {
-                              NSString *URLRequest = [NetworkHandler getURLWithPath:[imageData.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+                              NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
 
                               // Ensure that SSL certificates won't be rejected
                               AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
