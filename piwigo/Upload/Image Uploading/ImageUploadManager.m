@@ -370,8 +370,8 @@
 
 -(void)showUploadError:(NSError*)error
 {
-	[UIAlertView showWithTitle:@"Upload Error"
-					   message:[NSString stringWithFormat:@"Could not upload your image. Error: %@", [error localizedDescription]]
+    [UIAlertView showWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+					   message:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
 			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 			 otherButtonTitles:nil
 					  tapBlock:nil];

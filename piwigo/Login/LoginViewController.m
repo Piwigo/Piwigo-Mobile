@@ -320,8 +320,10 @@ static NSInteger const reloginViewTag = 899;
 	}];
 }
 
-// Get list of plugins
-// => Check VideoJS availability
+// Get list of plugins — Only for Admins
+// => Check VideoJS availability — but only if the user is really an admin
+// and the only way to know this is when Community >= 2.9a is installed
+// because a user is a 'fake' admin with Community <= 2.8a
 -(void)getPluginsListAtFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
@@ -331,7 +333,7 @@ static NSInteger const reloginViewTag = 899;
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
 #endif
-    if([Model sharedInstance].hasAdminRights) {
+    if([Model sharedInstance].hasAdminRights && [Model sharedInstance].hasInstalledCommunity) {
         
         // User has admin rights, we can collect the plugins list
         [SessionService getPluginsListOnCompletion:^(NSDictionary *pluginsList) {
