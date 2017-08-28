@@ -20,6 +20,7 @@
 #import "SortSelectViewController.h"
 #import "LoadingView.h"
 #import "UICountingLabel.h"
+#import "ImagesCollection.h"
 
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate, SortSelectViewControllerDelegate>
 
@@ -273,9 +274,8 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Calculate the optimum image size for collection
-    NSInteger imagesPerRow = [CategorySortViewController numberOfImagesPerRowForCollectionView:collectionView];
-    CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
+    // Calculate the optimum image size
+    CGFloat size = [ImagesCollection imageSizeForCollectionView:collectionView];
 
     return CGSizeMake(size, size);
 }

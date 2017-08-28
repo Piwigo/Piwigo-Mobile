@@ -14,7 +14,6 @@
 
 @end
 
-NSInteger const kBorderSpacing = 10;                // Spacing between collection items
 
 @implementation CategorySortViewController
 
@@ -128,15 +127,6 @@ NSInteger const kBorderSpacing = 10;                // Spacing between collectio
 			break;
 	}
 	return name;
-}
-
-#pragma mark Determine number of images per row
-
-+(int)numberOfImagesPerRowForCollectionView:(UICollectionView *)collectionView
-{
-    // Thumbnails should always be available on server (default size of 144x144 pixels)
-    // We display at least 3 thumbnails per row whilst not exceeding thumbnails size
-    return (int)fmax(3.0, ceilf((collectionView.frame.size.width - kBorderSpacing) / (kBorderSpacing + 144.0)));
 }
 
 @end

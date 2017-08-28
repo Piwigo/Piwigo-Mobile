@@ -24,6 +24,7 @@
 #import "AlbumData.h"
 #import "NetworkHandler.h"
 #import <AFNetworking/AFImageDownloader.h>
+#import "ImagesCollection.h"
 
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
@@ -553,14 +554,27 @@
 	}
 }
 
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(10, kMarginsSpacing, 40, kMarginsSpacing);
+}
+
+-(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
+{
+    return (CGFloat)kCellSpacing;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
+{
+    return (CGFloat)kCellSpacing;
+}
+
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.section == 1)
 	{
-        // Calculate the optimum image size for collection
-        NSInteger imagesPerRow = [CategorySortViewController numberOfImagesPerRowForCollectionView:collectionView];
-        CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
-
+        // Calculate the optimum image size
+        CGFloat size = [ImagesCollection imageSizeForCollectionView:collectionView];
         return CGSizeMake(size, size);                                      // Thumbnails
 	}
 	else
@@ -586,9 +600,7 @@
 		}
 		
         // Calculate the number of thumbnails displayed on screen
-        NSInteger imagesPerRow = [CategorySortViewController numberOfImagesPerRowForCollectionView:collectionView];
-        CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
-        NSInteger imagesPerScreen = (int)ceilf(collectionView.frame.size.height / (size + kBorderSpacing)) * imagesPerRow;
+        NSInteger imagesPerScreen = [ImagesCollection numberOfImagesPerScreenForCollectionView:collectionView];
 
         // Load images in advance if possible
         if((indexPath.row >= [collectionView numberOfItemsInSection:1] - imagesPerScreen) && (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
@@ -611,11 +623,6 @@
 		
 		return cell;
 	}
-}
-
--(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
-{
-	return UIEdgeInsetsMake(10, 10, 40, 10);
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
