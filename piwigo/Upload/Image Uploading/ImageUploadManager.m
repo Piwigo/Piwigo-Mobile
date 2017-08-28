@@ -227,7 +227,7 @@
             // Prepare MIME type
             mimeType = @"video/webm";
         } else {
-            if ([fileExt isEqualToString:@"MOV"]) {
+            if ([fileExt isEqualToString:@"mov"]) {
                 // Prepare MIME type
                 mimeType = @"video/mp4";
                 // Replace file extension
