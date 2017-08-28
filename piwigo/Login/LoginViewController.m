@@ -110,14 +110,14 @@ static NSInteger const reloginViewTag = 899;
     
     // Default settings
     [Model sharedInstance].hasAdminRights = NO;
-    [Model sharedInstance].hasInstalledCommunity = NO;
-    [Model sharedInstance].hasInstalledVideoJS = YES;
+    [Model sharedInstance].usesCommunityPluginV29 = NO;
+    [Model sharedInstance].canUploadVideos = YES;
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin: starting with…");
-    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
+          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
 #endif
 
     // Check server address and cancel login if address not provided
@@ -169,10 +169,10 @@ static NSInteger const reloginViewTag = 899;
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> performLogin: starting with…");
-    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
+          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
 #endif
     
     // Perform Login if username exists
@@ -221,12 +221,12 @@ static NSInteger const reloginViewTag = 899;
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting with…", isFirstLogin ? @"YES" : @"NO");
-    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
+          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
 #endif
-    if([Model sharedInstance].hasInstalledCommunity) {
+    if([Model sharedInstance].usesCommunityPluginV29) {
 
         // Community extension installed
         [SessionService getCommunityStatusOnCompletion:^(NSDictionary *responseObject) {
@@ -268,10 +268,10 @@ static NSInteger const reloginViewTag = 899;
 #if defined(DEBUG_SESSION)
     NSLog(@"=> getSessionStatusAtLogin:%@ andFirstLogin:%@ starting with…",
           isLoggingIn ? @"YES" : @"NO", isFirstLogin ? @"YES" : @"NO");
-    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
+          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
 #endif
     [SessionService getPiwigoStatusAtLogin:isLoggingIn
                               OnCompletion:^(NSDictionary *responseObject) {
@@ -298,8 +298,17 @@ static NSInteger const reloginViewTag = 899;
 								  }];
 			} else {
                 // Their version is Ok
-                // Get list of plugins and check VideoJS availability
-                [self getPluginsListAtFirstLogin:isFirstLogin];
+                if (isFirstLogin)
+                {
+                    // Load interface
+                    [self hideLoading];
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate loadNavigation];
+                    
+                } else {
+                    // Close HUD and keep current view active
+                    [self hideReLoggingIn];
+                }
             }
             
 		} else {
@@ -318,58 +327,6 @@ static NSInteger const reloginViewTag = 899;
         // Close loading or re-login view
         isFirstLogin ? [self hideLoading] : [self hideReLoggingIn];
 	}];
-}
-
-// Get list of plugins — Only for Admins
-// => Check VideoJS availability — but only if the user is really an admin
-// and the only way to know this is when Community >= 2.9a is installed
-// because a user is a 'fake' admin with Community <= 2.8a
--(void)getPluginsListAtFirstLogin:(BOOL)isFirstLogin
-{
-#if defined(DEBUG_SESSION)
-    NSLog(@"=> getPluginsListAtFirstLogin: starting with…");
-    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
-#endif
-    if([Model sharedInstance].hasAdminRights && [Model sharedInstance].hasInstalledCommunity) {
-        
-        // User has admin rights, we can collect the plugins list
-        [SessionService getPluginsListOnCompletion:^(NSDictionary *pluginsList) {
-
-            if (isFirstLogin)
-            {
-                // Load interface
-                [self hideLoading];
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate loadNavigation];
-            
-            } else {
-                // Close HUD and keep current view active
-                [self hideReLoggingIn];
-            }
-            
-        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-
-            // Close loading or re-login view
-            isFirstLogin ? [self hideLoading] : [self hideReLoggingIn];
-        }];
-
-    } else {
-        // User does not have admin rights, we assume that VideoJS is installed
-        if (isFirstLogin)
-        {
-            // Load interface
-            [self hideLoading];
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate loadNavigation];
-            
-        } else {
-            // Disable HUD and keep current view active
-            [self hideReLoggingIn];
-        }
-    }
 }
 
 -(void)checkSessionStatusAndTryRelogin
@@ -394,10 +351,10 @@ static NSInteger const reloginViewTag = 899;
                 // Connection still alive… do nothing!
 #if defined(DEBUG_SESSION)
                 NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
-                NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-                      ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+                NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+                      ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
                       ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-                      ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
+                      ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
 #endif
             }
         } else {
@@ -427,10 +384,10 @@ static NSInteger const reloginViewTag = 899;
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> performRelogin: starting with…");
-    NSLog(@"   hasInstalledCommunity=%@, hasAdminRights=%@, hasInstalledVideoJS=%@",
-          ([Model sharedInstance].hasInstalledCommunity ? @"YES" : @"NO"),
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasInstalledVideoJS ? @"YES" : @"NO"));
+          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
 #endif
     
     // Display HUD during re-login

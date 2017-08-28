@@ -45,6 +45,7 @@ NSString * const kPiwigoImagesUploadParamPrivacy = @"privacyLevel";
 NSString * const kPiwigoImagesUploadParamAuthor = @"author";
 NSString * const kPiwigoImagesUploadParamDescription = @"description";
 NSString * const kPiwigoImagesUploadParamTags = @"tags";
+NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 
 @interface NetworkHandler()
 
@@ -132,8 +133,7 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
         [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
                                     name:@"file"
                                 fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
-                                mimeType:@"image/jpeg"];
-//                                mimeType:@"video/mp4"];
+                                mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];
         
         [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
                                     name:@"name"];

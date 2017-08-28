@@ -293,7 +293,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSString *URLRequest = [NetworkHandler getURLWithPath:video.fullResPath asPiwigoRequest:NO withURLParams:nil];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
     
-    // Replace .mp4 or .mv4 with .mov for compatibility with Photos.app
+    // Replace .mp4 or .m4v with .mov for compatibility with Photos.app
     NSString *fileName = video.fileName;
     if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
         ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {

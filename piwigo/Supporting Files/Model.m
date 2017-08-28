@@ -30,8 +30,8 @@
 		instance.hasAdminRights = NO;
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
-        instance.hasInstalledVideoJS = YES;         // Will be checked if the user has admin rights
-        instance.hasInstalledCommunity = NO;        // Will be checked at each new session
+        instance.canUploadVideos = NO;          // Will be checked at each new session
+        instance.usesCommunityPluginV29 = NO;    // Will be checked at each new session
         
         // Load all albums data at start
 		instance.loadAllCategoryInfo = YES;

@@ -891,8 +891,8 @@ typedef enum {
 										  [Model sharedInstance].hadOpenedSession = NO;
                                           
                                           // Back to default values
-                                          [Model sharedInstance].hasInstalledCommunity = NO;
-                                          [Model sharedInstance].hasInstalledVideoJS = YES;
+                                          [Model sharedInstance].usesCommunityPluginV29 = NO;
+                                          [Model sharedInstance].canUploadVideos = NO;
                                           [Model sharedInstance].hasAdminRights = NO;
                                           
                                           // Erase cache

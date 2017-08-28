@@ -28,7 +28,7 @@
     }
     
     // Community extension active ?
-    NSString *fakedString = [Model sharedInstance].hasInstalledCommunity ? @"false" : @"true";
+    NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
     // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
@@ -50,7 +50,7 @@
                       [[CategoriesData sharedInstance] addAllCategories:albums];
                       
                       // Update albums if Community extension installed (not for admins)
-                      if (![Model sharedInstance].hasAdminRights && [Model sharedInstance].hasInstalledCommunity) {
+                      if (![Model sharedInstance].hasAdminRights && [Model sharedInstance].usesCommunityPluginV29) {
                           [AlbumService setUploadRightsForCategory:categoryId inRecursiveMode:recursiveString];
                       }
 
