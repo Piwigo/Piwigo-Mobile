@@ -68,7 +68,7 @@ typedef enum {
 							   @5,
 							   @6,
 							   @2,
-							   @4
+							   @5
 							   ];
 		self.headerHeights = @[
 							   @40.0,
@@ -139,17 +139,54 @@ typedef enum {
 	}
 }
 
-#pragma mark -- UITableView Methods
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	return 44.0;
-}
+#pragma mark -- UITableView Methods, headers
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
 	return SettingSectionCount;
 }
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return [self.headerHeights[section] floatValue];
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, [self.headerHeights[section] floatValue])];
+    header.backgroundColor = [UIColor clearColor];
+    
+    CGRect labelFrame = header.frame;
+    labelFrame.origin.x += 15;
+    
+    UILabel *headerLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.textColor = [UIColor piwigoWhiteCream];
+    [header addSubview:headerLabel];
+    
+    switch(section)
+    {
+        case SettingSectionServer:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+            break;
+        case SettingSectionGeneral:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_general", @"General Settings");
+            break;
+        case SettingSectionImageUpload:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
+            break;
+        case SettingSectionCache:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
+            break;
+        case SettingSectionAbout:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"Information");
+            break;
+    }
+    
+    return header;
+}
+
+#pragma mark -- UITableView Methods, rows
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -161,6 +198,11 @@ typedef enum {
 		}
 	}
 	return [self.rowsInSection[section] integerValue];
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 44.0;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -549,7 +591,7 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Rating page
+                case 1:     // Rate Piwigo Mobile
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rate"];
                     if(!cell)
@@ -565,7 +607,23 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 2:     // Release Notes
+                case 2:     // Translate Piwigo Mobile
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"translate"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_translateWithCrowdin", @"Translate Piwigo Mobile");
+                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+                    cell.leftLabelWidth = 220;
+                    cell.rightText = @">";
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 3:     // Release Notes
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"release"];
                     if(!cell)
@@ -581,7 +639,7 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 3:     // Acknowledgements
+                case 4:     // Acknowledgements
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"thanks"];
                     if(!cell)
@@ -613,45 +671,8 @@ typedef enum {
     } completion:nil];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-	return [self.headerHeights[section] floatValue];
-}
+#pragma mark -- UITableView Methods, actions
 
--(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, [self.headerHeights[section] floatValue])];
-	header.backgroundColor = [UIColor clearColor];
-	
-	CGRect labelFrame = header.frame;
-	labelFrame.origin.x += 15;
-	
-	UILabel *headerLabel = [[UILabel alloc] initWithFrame:labelFrame];
-	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor piwigoWhiteCream];
-	[header addSubview:headerLabel];
-	
-    switch(section)
-	{
-		case SettingSectionServer:
-			headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
-			break;
-		case SettingSectionGeneral:
-			headerLabel.text = NSLocalizedString(@"settingsHeader_general", @"General Settings");
-			break;
-		case SettingSectionImageUpload:
-			headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
-			break;
-		case SettingSectionCache:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
-			break;
-		case SettingSectionAbout:
-			headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"Information");
-			break;
-	}
-	
-	return header;
-}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -838,7 +859,7 @@ typedef enum {
             {
                 case 0:     // Open Piwigo support forum webpage with default browser
                 {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: NSLocalizedString(@"settings_pwgForumURL", @"http://piwigo.org/forum")]];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:NSLocalizedString(@"settings_pwgForumURL", @"http://piwigo.org/forum")]];
                     break;
                 }
                 case 1:     // Open Piwigo App Store page for rating
@@ -846,13 +867,18 @@ typedef enum {
                     [[iRate sharedInstance] openRatingsPageInAppStore];
                     break;
                 }
-                case 2:     // Open Release Notes page
+                case 2:     // Open Piwigo Crowdin page for translating
+                {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
+                    break;
+                }
+                case 3:     // Open Release Notes page
                 {
                     ReleaseNotesViewController *releaseNotesVC = [ReleaseNotesViewController new];
                     [self.navigationController pushViewController:releaseNotesVC animated:YES];
                     break;
                 }
-                case 3:     // Open Acknowledgements page
+                case 4:     // Open Acknowledgements page
                 {
                     AboutViewController *aboutVC = [AboutViewController new];
                     [self.navigationController pushViewController:aboutVC animated:YES];

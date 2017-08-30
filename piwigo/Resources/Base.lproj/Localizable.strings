@@ -380,5 +380,6 @@
 "settings_supportForum" = "Support Forum";
 "settings_releaseNotes" = "Release Notes";
 "settings_rateInAppStore" = "Rate Piwigo Mobile";
+"settings_translateWithCrowdin" = "Translate Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Acknowledgements";

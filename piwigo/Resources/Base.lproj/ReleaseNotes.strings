@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.2_text" = "Version 2.1.2\n\n• Fix refused login with Community versions <2.9\n• Improve translations\n• Maintenance work\n________________________________________\n\n";
+"v2.1.2_text" = "Version 2.1.2\n\n• Fix refused login with Community plugin versions <2.9\n• Improve translations\n• Maintenance work\n________________________________________\n\n";
 
 "v2.1.1_text" = "Version 2.1.1\nAugust 20, 2017\n\n• Fix bug encountered with non-valid SSL certificates\n• Improve Danish translation\n________________________________________\n\n";
 
