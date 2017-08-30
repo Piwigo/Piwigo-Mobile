@@ -175,22 +175,25 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 
 +(NSString*)getURLWithPath:(NSString*)path asPiwigoRequest:(BOOL)piwigo withURLParams:(NSDictionary*)params
 {
+    // Servers sometimes return http://… instead of https://…
     NSString *cleanPath = [path stringByReplacingOccurrencesOfString:@"http://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
     
+    // Copy parameters in URL
+    for(NSString *parameter in params)
+    {
+        NSString *replaceMe = [NSString stringWithFormat:@"{%@}", parameter];
+        NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
+        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
+    }
+
+    // Compile final URL
     NSString *url = [NSString stringWithFormat:@"%@%@%@%@",
                      [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName,
                      piwigo ? @"/ws.php?" : @"", cleanPath];
 
-	for(NSString *parameter in params)
-	{
-		NSString *replaceMe = [NSString stringWithFormat:@"{%@}", parameter];
-		NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
-		url = [url stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
-	}
-	
-	return [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+	return url;
 }
 
 +(void)showConnectionError:(NSError*)error

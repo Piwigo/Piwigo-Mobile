@@ -181,9 +181,9 @@
                               OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	return [self post:kPiwigoCategoriesAdd
+    return [self post:kPiwigoCategoriesAdd
 		URLParameters:@{
-                        @"name" : [categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]],
+                        @"name" : [[categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"],
                         @"status" : categoryStatus
                         }
            parameters:nil
@@ -206,7 +206,7 @@
 		URLParameters:nil
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-						@"name" : categoryName
+						@"name" : [[categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"]
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
