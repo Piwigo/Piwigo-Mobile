@@ -268,8 +268,8 @@
 "imageUploadCompleted_message>1" = "billeder/videoer uploadet til Piwigo server.";
 
 // Image upload — Errors
-"uploadError_title" = "Upload Error";
-"uploadError_message" = "Could not upload your image. Error: %@";
+"uploadError_title" = "Fejl under upload";
+"uploadError_message" = "Kunne ikke uploade dit billede. Fejl: %@";
 "videoUploadError_title" = "Video Upload fejl";
 "videoUploadError_message" = "Du skal tilføje udvidelsen \"VideoJS\" og redigere din lokale configfil til at tillade upload af videoer til din Piwigo.";
 "videoUploadConfigError_message" = "Kontroller installationen af \"VideoJS\" og den configfilen med LocalFiles Editor for at tillade upload af videoer til din Piwigo.";
@@ -380,6 +380,6 @@
 "settings_supportForum" = "Supportforum";
 "settings_releaseNotes" = "Udgivelsesnoter";
 "settings_rateInAppStore" = "Vurder Piwigo Mobile";
-"settings_translateWithCrowdin" = "Translate Piwigo Mobile";
+"settings_translateWithCrowdin" = "Oversæt Piwigo Mobile";
 "settings_pwgForumURL" = "http://da.piwigo.org/forum/";
 "settings_acknowledgements" = "Tak Til";
