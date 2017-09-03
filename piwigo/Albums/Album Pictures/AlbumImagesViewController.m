@@ -630,7 +630,15 @@
 	if(indexPath.section == 1)
 	{
 		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
-		if(!self.isSelect)
+        
+        // Avoid rare crashes…
+        if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
+            // forget this call!
+            return;
+        }
+		
+        // Action depends on mode
+        if(!self.isSelect)
 		{
 			// Selection mode not active => display full screen image
             self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
