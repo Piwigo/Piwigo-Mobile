@@ -574,7 +574,7 @@
     if(indexPath.section == 1)
 	{
         // Calculate the optimum image size
-        CGFloat size = [ImagesCollection imageSizeForCollectionView:collectionView];
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView];
         return CGSizeMake(size, size);                                      // Thumbnails
 	}
 	else

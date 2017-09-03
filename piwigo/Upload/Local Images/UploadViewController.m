@@ -300,7 +300,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Calculate the optimum image size
-    CGFloat size = [ImagesCollection imageSizeForCollectionView:collectionView];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView];
 
     return CGSizeMake(size, size);
 }
