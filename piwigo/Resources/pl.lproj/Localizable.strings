@@ -268,8 +268,8 @@
 "imageUploadCompleted_message>1" = "zdjęcia/filmy zostały przesłane do Twojego serwera Piwigo.";
 
 // Image upload — Errors
-"uploadError_title" = "Upload Error";
-"uploadError_message" = "Could not upload your image. Error: %@";
+"uploadError_title" = "Błąd przesyłania";
+"uploadError_message" = "Nie można przesłać zdjęcia. Błąd: %@";
 "videoUploadError_title" = "Błąd Przesyłania Wideo";
 "videoUploadError_message" = "Musisz dodać rozszerzenie \"VideoJS\" i edytować lokalny plik konfiguracyjny, aby umożliwić przesyłanie plików wideo do Twojego Piwigo.";
 "videoUploadConfigError_message" = "Sprawdź instalację rozszerzenia \"VideoJS\" i plik konfiguracyjny edytorem LocalFiles aby umożliwić przesyłanie wideo do Twojego Piwigo.";
@@ -380,6 +380,6 @@
 "settings_supportForum" = "Forum Wsparcia";
 "settings_releaseNotes" = "Lista Zmian";
 "settings_rateInAppStore" = "Oceń Piwigo Mobile";
-"settings_translateWithCrowdin" = "Translate Piwigo Mobile";
+"settings_translateWithCrowdin" = "Przetłumacz Piwigo Mobile";
 "settings_pwgForumURL" = "http://pl.piwigo.org/forum";
 "settings_acknowledgements" = "Podziękowania";
