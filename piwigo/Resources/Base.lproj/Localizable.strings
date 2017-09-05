@@ -255,6 +255,7 @@
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Description:";
 
+"imageUploadDetailsButton_title" = "Upload";
 "imageUploadDetailsEdit_title" = "Edit Images to Upload";
 "imageUploadDetailsUploading_title" = "Images that are Being Uploaded";
 "imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
@@ -267,6 +268,8 @@
 "imageUploadCompleted_message>1" = "images/videos uploaded to your Piwigo server.";
 
 // Image upload — Errors
+"uploadError_title" = "Upload Error";
+"uploadError_message" = "Could not upload your image. Error: %@";
 "videoUploadError_title" = "Video Upload Error";
 "videoUploadError_message" = "You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.";
 "videoUploadConfigError_message" = "Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.";
@@ -377,5 +380,6 @@
 "settings_supportForum" = "Support Forum";
 "settings_releaseNotes" = "Release Notes";
 "settings_rateInAppStore" = "Rate Piwigo Mobile";
+"settings_translateWithCrowdin" = "Translate Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Acknowledgements";

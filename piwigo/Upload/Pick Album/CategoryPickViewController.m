@@ -25,7 +25,7 @@
     // — admin rights
     // — opened a session on a server having Community extension installed
     if(([Model sharedInstance].hasAdminRights) ||
-       ([Model sharedInstance].hasInstalledCommunity && [Model sharedInstance].hadOpenedSession))
+       ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
 	{
 		self = [super init];
 		self.categoryListDelegate = self;

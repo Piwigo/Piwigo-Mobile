@@ -34,7 +34,7 @@
                               
                               // Check if the Community extension is installed and active (> 2.9a)
                               if([method isEqualToString:@"community.session.getStatus"]) {
-                                  [Model sharedInstance].hasInstalledCommunity = YES;
+                                  [Model sharedInstance].usesCommunityPluginV29 = YES;
                               }
                           }
                           
@@ -109,14 +109,26 @@
                               [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result"] objectForKey:@"pwg_token"];
                               [Model sharedInstance].language = [[responseObject objectForKey:@"result"] objectForKey:@"language"];
                               [Model sharedInstance].version = [[responseObject objectForKey:@"result"] objectForKey:@"version"];
+                              NSString *uploadFileTypes = [[responseObject objectForKey:@"result"] objectForKey:@"upload_file_types"];
+
+                              // Videos can be uploaded if video file types are authorized
+                              // The iPhone creates mov type files that are uploaded as mp4
+                              // Types managed by VideoJS are ogg, ogv, mp4, m4v, webm, webmv
+                              [Model sharedInstance].uploadFileTypes = uploadFileTypes;
+                              [Model sharedInstance].canUploadVideos = ([uploadFileTypes containsString:@"mp4"] ||
+                                                                        [uploadFileTypes containsString:@"m4v"] ||
+                                                                        [uploadFileTypes containsString:@"ogg"] ||
+                                                                        [uploadFileTypes containsString:@"ogv"] ||
+                                                                        [uploadFileTypes containsString:@"webm"] ||
+                                                                        [uploadFileTypes containsString:@"webmv"] );
                               
                               // User rights are determined by Community extension (if installed)
-                              if(![Model sharedInstance].hasInstalledCommunity) {
+                              if(![Model sharedInstance].usesCommunityPluginV29) {
                                   NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
                                   [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                               }
                               
-                              // Collect the list of available sizes
+                              // Collect the list of available sizes — Starting with default values
                               [Model sharedInstance].hasSquareSizeImages  = YES;
                               [Model sharedInstance].hasThumbSizeImages   = YES;
                               [Model sharedInstance].hasXXSmallSizeImages = NO;
@@ -135,7 +147,7 @@
                                       [Model sharedInstance].hasThumbSizeImages = YES;
                                   } else if ([size isEqualToString:@"2small"]) {
                                       [Model sharedInstance].hasXXSmallSizeImages = YES;
-                                  } else if ([size isEqualToString:@"xsmall"]) {
+                                  } else if ([size isEqualToString:@" "]) {
                                       [Model sharedInstance].hasXSmallSizeImages = YES;
                                   } else if ([size isEqualToString:@"small"]) {
                                       [Model sharedInstance].hasSmallSizeImages = YES;
@@ -179,58 +191,6 @@
                           NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"real_user_status"];
                           [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                           
-                          completion([responseObject objectForKey:@"result"]);
-                      }
-                      else
-                      {
-                          completion(nil);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
-                  
-                  if(fail) {
-                      [SessionService showConnectionError:error];
-                      fail(task, error);
-                  }
-              }];
-}
-
-+(NSURLSessionTask*)getPluginsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
-                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    return [self post:kPiwigoSessionGetPluginsList
-        URLParameters:nil
-           parameters:nil
-             progress:nil
-              success:^(NSURLSessionTask *task, id responseObject) {
-                  
-                  // In absence of response, we assume that VideoJS is installed and active
-                  [Model sharedInstance].hasInstalledVideoJS = YES;
-
-                  if(completion) {
-                      
-                      // Did the server answer the request?
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                      {
-                          // Collect the list of plugins
-                          id pluginsList = [responseObject objectForKey:@"result"];
-                          
-                          // Loop over the plugins
-                          for (id plugin in pluginsList) {
-                              NSString *pluginID = [plugin objectForKey:@"id"];
-                              NSString *pluginState = [plugin objectForKey:@"state"];
-                              NSString *pluginVersion = [plugin objectForKey:@"version"];
-                              
-                              if([pluginID isEqualToString:@"piwigo-videojs"]) {
-                                  // VideoJS is installed, but is it active ? right version ?
-                                  if(([pluginState isEqualToString:@"active"]) &&
-                                     ([pluginVersion compare:@"2.8.b"] != NSOrderedAscending)) {
-                                      [Model sharedInstance].hasInstalledVideoJS = YES;
-                                  } else {
-                                      [Model sharedInstance].hasInstalledVideoJS = NO;
-                                  }
-                              }
-                          }
                           completion([responseObject objectForKey:@"result"]);
                       }
                       else

@@ -24,6 +24,7 @@
 #import "AlbumData.h"
 #import "NetworkHandler.h"
 #import <AFNetworking/AFImageDownloader.h>
+#import "ImagesCollection.h"
 
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
@@ -351,7 +352,7 @@
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-    NSString *URLRequest = [NetworkHandler getURLWithPath:[downloadingImage.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    NSString *URLRequest = [NetworkHandler getURLWithPath:downloadingImage.ThumbPath asPiwigoRequest:NO withURLParams:nil];
 
     // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
@@ -553,14 +554,27 @@
 	}
 }
 
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(10, kMarginsSpacing, 40, kMarginsSpacing);
+}
+
+-(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
+{
+    return (CGFloat)kCellSpacing;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
+{
+    return (CGFloat)kCellSpacing;
+}
+
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.section == 1)
 	{
-        // Calculate the optimum image size for collection
-        NSInteger imagesPerRow = [CategorySortViewController numberOfImagesPerRowForCollectionView:collectionView];
-        CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
-
+        // Calculate the optimum image size
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView];
         return CGSizeMake(size, size);                                      // Thumbnails
 	}
 	else
@@ -586,9 +600,7 @@
 		}
 		
         // Calculate the number of thumbnails displayed on screen
-        NSInteger imagesPerRow = [CategorySortViewController numberOfImagesPerRowForCollectionView:collectionView];
-        CGFloat size = floorf((collectionView.frame.size.width - (imagesPerRow + 1) * kBorderSpacing) / imagesPerRow);
-        NSInteger imagesPerScreen = (int)ceilf(collectionView.frame.size.height / (size + kBorderSpacing)) * imagesPerRow;
+        NSInteger imagesPerScreen = [ImagesCollection numberOfImagesPerScreenForCollectionView:collectionView];
 
         // Load images in advance if possible
         if((indexPath.row >= [collectionView numberOfItemsInSection:1] - imagesPerScreen) && (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
@@ -613,17 +625,20 @@
 	}
 }
 
--(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
-{
-	return UIEdgeInsetsMake(10, 10, 40, 10);
-}
-
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 	if(indexPath.section == 1)
 	{
 		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
-		if(!self.isSelect)
+        
+        // Avoid rare crashes…
+        if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
+            // forget this call!
+            return;
+        }
+		
+        // Action depends on mode
+        if(!self.isSelect)
 		{
 			// Selection mode not active => display full screen image
             self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];

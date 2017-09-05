@@ -199,7 +199,7 @@
 	
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-    NSString *URLRequest = [NetworkHandler getURLWithPath:[self.imageData.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    NSString *URLRequest = [NetworkHandler getURLWithPath:self.imageData.ThumbPath asPiwigoRequest:NO withURLParams:nil];
 
     // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
@@ -432,7 +432,7 @@
 
 -(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
 {
-	ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
+    ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
 	[removedVC.scrollView.imageView cancelImageDownloadTask];
 //    [removedVC.scrollView.imageView cancelImageRequestOperation];
 	
@@ -442,14 +442,23 @@
     self.progressBar.hidden = view.imageLoaded;
 	[self.progressBar setProgress:0];
 
-    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+    NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
+    
+    if(currentIndex < 0)
+    {
+        // Crash reported by AppStore here on August 26th, 2017
+        // Will see if that fixes the issue…
+        currentIndex = 0;
+    }
+
+    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex];
 
 	if(self.imageData.isVideo)
 	{
 		self.progressBar.hidden = YES;
 	}
 
-	self.imageData = [self.images objectAtIndex:[[[pageViewController viewControllers] firstObject] imageIndex]];
+	self.imageData = [self.images objectAtIndex:currentIndex];
 	
 	self.title = self.imageData.name;
 }

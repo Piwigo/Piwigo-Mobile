@@ -27,7 +27,6 @@
 @property (nonatomic, strong) UILabel *loggingInLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
-
 -(void)launchLogin;
 -(void)checkSessionStatusAndTryRelogin;
 

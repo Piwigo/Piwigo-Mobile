@@ -28,7 +28,7 @@
     }
     
     // Community extension active ?
-    NSString *fakedString = [Model sharedInstance].hasInstalledCommunity ? @"false" : @"true";
+    NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
     // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
@@ -50,7 +50,7 @@
                       [[CategoriesData sharedInstance] addAllCategories:albums];
                       
                       // Update albums if Community extension installed (not for admins)
-                      if (![Model sharedInstance].hasAdminRights && [Model sharedInstance].hasInstalledCommunity) {
+                      if (![Model sharedInstance].hasAdminRights && [Model sharedInstance].usesCommunityPluginV29) {
                           [AlbumService setUploadRightsForCategory:categoryId inRecursiveMode:recursiveString];
                       }
 
@@ -84,7 +84,9 @@
 		PiwigoAlbumData *albumData = [PiwigoAlbumData new];
 		albumData.albumId = [[category objectForKey:@"id"] integerValue];
 		
-		if([category objectForKey:@"id_uppercat"] == [NSNull null])
+        // When "id_uppercat" is null or not supplied: album at the root
+        if(([category objectForKey:@"id_uppercat"] == [NSNull null]) ||
+           ([category objectForKey:@"id_uppercat"] == nil))
 		{
 			albumData.parentAlbumId = 0;
 		}
@@ -105,14 +107,17 @@
 		albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];
 		albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
 		
-		id thumbId = [category objectForKey:@"representative_picture_id"];
-		if(thumbId != [NSNull null])
+        // When "representative_picture_id" is null of not supplied: no album image
+        if (([category objectForKey:@"representative_picture_id"] != nil) &&
+            ([category objectForKey:@"representative_picture_id"] != [NSNull null]))
 		{
 			albumData.albumThumbnailId = [[category objectForKey:@"representative_picture_id"] integerValue];
 			albumData.albumThumbnailUrl = [category objectForKey:@"tn_url"];
 		}
 		
-		if([category objectForKey:@"date_last"] != [NSNull null])
+        // When "date_last" is null or not supplied: no date
+		if(([category objectForKey:@"date_last"] != nil) &&
+           ([category objectForKey:@"date_last"] != [NSNull null]))
 		{
 			NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -181,9 +186,9 @@
                               OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	return [self post:kPiwigoCategoriesAdd
+    return [self post:kPiwigoCategoriesAdd
 		URLParameters:@{
-                        @"name" : [categoryName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+                        @"name" : [[categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"],
                         @"status" : categoryStatus
                         }
            parameters:nil
@@ -206,7 +211,7 @@
 		URLParameters:nil
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-						@"name" : categoryName
+						@"name" : [[categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"]
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {

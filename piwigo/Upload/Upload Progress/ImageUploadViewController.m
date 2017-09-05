@@ -59,7 +59,7 @@
 	UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(cancel)];
 	self.navigationItem.leftBarButtonItem = back;
 	
-	UIBarButtonItem *upload = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"tabBar_upload", @"Upload")
+	UIBarButtonItem *upload = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"imageUploadDetailsButton_title", @"Upload")
 															   style:UIBarButtonItemStylePlain
 															  target:self
 															  action:@selector(startUpload)];

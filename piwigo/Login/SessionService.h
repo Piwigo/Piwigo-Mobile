@@ -26,9 +26,6 @@
 +(NSURLSessionTask*)getCommunityStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)getPluginsListOnCompletion:(void (^)(NSDictionary *responseObject))completion
-                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 +(NSURLSessionTask*)sessionLogoutOnCompletion:(void (^)(NSURLSessionTask *task, BOOL sucessfulLogout))completion
                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 

@@ -189,11 +189,11 @@
     if([Model sharedInstance].stripGPSdataOnUpload) [imageMetadata setObject:@"" forKey:@"{GPS}"];
 
     // Video or Photo ?
-    NSData *imageData = nil;
+    NSData *imageData = nil; NSString *mimeType = @"";
     if ([imageAsset valueForProperty:ALAssetPropertyType] == ALAssetTypeVideo) {
         
-        // Is VideoJS active on the Piwigo Server ?
-        if(![Model sharedInstance].hasInstalledVideoJS) {
+        // Can we upload videos to the Piwigo Server ?
+        if(![Model sharedInstance].canUploadVideos) {
             [UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
                                message:NSLocalizedString(@"videoUploadError_message", @"You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.")
                      cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
@@ -212,14 +212,24 @@
             return;
         }
         
-        // Video — Only webm, webmv, ogv, m4v, mp4 are compatible with piwigo-videojs extension
-        NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] uppercaseString];
-        if (([fileExt isEqualToString:@"MP4"]) || ([fileExt isEqualToString:@"M4V"]) ||
-            ([fileExt isEqualToString:@"OGG"]) || ([fileExt isEqualToString:@"OGV"]) ||
-            ([fileExt isEqualToString:@"WEBM"] || ([fileExt isEqualToString:@"WEBMV"]))) {
-            // Nothing to do — right format for piwigo-videojs extension
+        // Only webm, webmv, ogv, m4v, mp4 are compatible with piwigo-videojs extension
+        NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] lowercaseString];
+        if ((([fileExt isEqualToString:@"mp4"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"mp4"])) ||
+            (([fileExt isEqualToString:@"m4v"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"m4v"])) ) {
+            // Prepare MIME type
+            mimeType = @"video/mp4";
+        } else if ((([fileExt isEqualToString:@"ogg"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"ogg"])) ||
+                   (([fileExt isEqualToString:@"ogv"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"ogv"])) ) {
+            // Prepare MIME type
+            mimeType = @"video/ogg";
+        } else if ((([fileExt isEqualToString:@"webm"])  && ([[Model sharedInstance].uploadFileTypes containsString:@"webm"] )) ||
+                   (([fileExt isEqualToString:@"webmv"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"webmv"])) ) {
+            // Prepare MIME type
+            mimeType = @"video/webm";
         } else {
-            if ([fileExt isEqualToString:@"MOV"]) {
+            if ([fileExt isEqualToString:@"mov"]) {
+                // Prepare MIME type
+                mimeType = @"video/mp4";
                 // Replace file extension
                 nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
                 // Remove extension from name
@@ -269,6 +279,9 @@
         NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
         imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
         imageMetadata = nil;
+        
+        // Prepare MIME type
+        mimeType = @"image/jpeg";
     }
     
 	// Append Tags
@@ -286,7 +299,8 @@
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.privacyLevel)],
 									  kPiwigoImagesUploadParamAuthor : nextImageToBeUploaded.author,
 									  kPiwigoImagesUploadParamDescription : nextImageToBeUploaded.imageDescription,
-									  kPiwigoImagesUploadParamTags : [tagIds copy]
+									  kPiwigoImagesUploadParamTags : [tagIds copy],
+                                      kPiwigoImagesUploadParamMimeType : mimeType
 									  };
 	
     // Upload photo or video
@@ -304,7 +318,7 @@
                         [self setImageResponse:response withInfo:imageProperties];
                         
 						// The image must not be appended to the cache if it is moderated
-                        if ([Model sharedInstance].hasInstalledCommunity) {
+                        if ([Model sharedInstance].usesCommunityPluginV29) {
 
                             // Append image to cache only if it is not moderated
                             [self isUploadedImageModerated:response inCategory:nextImageToBeUploaded.categoryToUploadTo];
@@ -370,8 +384,8 @@
 
 -(void)showUploadError:(NSError*)error
 {
-	[UIAlertView showWithTitle:@"Upload Error"
-					   message:[NSString stringWithFormat:@"Could not upload your image. Error: %@", [error localizedDescription]]
+    [UIAlertView showWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+					   message:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
 			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
 			 otherButtonTitles:nil
 					  tapBlock:nil];

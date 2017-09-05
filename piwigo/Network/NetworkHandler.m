@@ -45,6 +45,7 @@ NSString * const kPiwigoImagesUploadParamPrivacy = @"privacyLevel";
 NSString * const kPiwigoImagesUploadParamAuthor = @"author";
 NSString * const kPiwigoImagesUploadParamDescription = @"description";
 NSString * const kPiwigoImagesUploadParamTags = @"tags";
+NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 
 @interface NetworkHandler()
 
@@ -132,8 +133,7 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
         [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
                                     name:@"file"
                                 fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
-                                mimeType:@"image/jpeg"];
-//                                mimeType:@"video/mp4"];
+                                mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];
         
         [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
                                     name:@"name"];
@@ -175,21 +175,24 @@ NSString * const kPiwigoImagesUploadParamTags = @"tags";
 
 +(NSString*)getURLWithPath:(NSString*)path asPiwigoRequest:(BOOL)piwigo withURLParams:(NSDictionary*)params
 {
+    // Servers sometimes return http://… instead of https://…
     NSString *cleanPath = [path stringByReplacingOccurrencesOfString:@"http://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
     
+    // Copy parameters in URL
+    for(NSString *parameter in params)
+    {
+        NSString *replaceMe = [NSString stringWithFormat:@"{%@}", parameter];
+        NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
+        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
+    }
+
+    // Compile final URL
     NSString *url = [NSString stringWithFormat:@"%@%@%@%@",
                      [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName,
                      piwigo ? @"/ws.php?" : @"", cleanPath];
 
-	for(NSString *parameter in params)
-	{
-		NSString *replaceMe = [NSString stringWithFormat:@"{%@}", parameter];
-		NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
-		url = [url stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
-	}
-	
 	return url;
 }
 

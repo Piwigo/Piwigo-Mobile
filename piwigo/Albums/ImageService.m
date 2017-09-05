@@ -35,7 +35,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 		URLParameters:@{@"albumId" : @(albumId),
 						@"perPage" : @([Model sharedInstance].imagesPerPage),
 						@"page"    : @(page),
-						@"order"   : [order stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]}
+						@"order"   : [order stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]}
            parameters:nil
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
@@ -223,23 +223,23 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Download image with highest resolution possible (fullResPath image is not always available)
     NSString *URLRequest = @"";
     if ([image.fullResPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.fullResPath asPiwigoRequest:NO withURLParams:nil];
     } else if ([image.XXLargePath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.XXLargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.XXLargePath asPiwigoRequest:NO withURLParams:nil];
     } else if ([image.XLargePath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.XLargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.XLargePath asPiwigoRequest:NO withURLParams:nil];
     } else if ([image.LargePath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.LargePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.LargePath asPiwigoRequest:NO withURLParams:nil];
     } else if ([image.MediumPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.MediumPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.MediumPath asPiwigoRequest:NO withURLParams:nil];
     } else if ([image.SmallPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.SmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.SmallPath asPiwigoRequest:NO withURLParams:nil];
     } else if ([image.XSmallPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.XSmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.XSmallPath asPiwigoRequest:NO withURLParams:nil];
     } else if ([image.XXSmallPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.XXSmallPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.XXSmallPath asPiwigoRequest:NO withURLParams:nil];
     } else if ([image.ThumbPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:[image.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = [NetworkHandler getURLWithPath:image.ThumbPath asPiwigoRequest:NO withURLParams:nil];
     }
     
     NSURL *request = [NSURL URLWithString:URLRequest];
@@ -290,10 +290,10 @@ NSString * const kGetImageOrderDescending = @"desc";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
 
-    NSString *URLRequest = [NetworkHandler getURLWithPath:[video.fullResPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    NSString *URLRequest = [NetworkHandler getURLWithPath:video.fullResPath asPiwigoRequest:NO withURLParams:nil];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
     
-    // Replace .mp4 or .mv4 with .mov for compatibility with Photos.app
+    // Replace .mp4 or .m4v with .mov for compatibility with Photos.app
     NSString *fileName = video.fileName;
     if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
         ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {

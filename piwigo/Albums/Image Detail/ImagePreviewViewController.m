@@ -55,13 +55,12 @@
 	}
     
     UIImageView *thumb = [UIImageView new];
-    NSString *URLRequest = [NetworkHandler getURLWithPath:[imageData.ThumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] asPiwigoRequest:NO withURLParams:nil];
+    NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.ThumbPath asPiwigoRequest:NO withURLParams:nil];
     [thumb setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-//	UIImage *thumb = [[UIImageView sharedImageCache] cachedImageForRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[imageData.thumbPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]];
-	
+
 	NSString *URLString = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
     URLRequest = [NetworkHandler getURLWithPath:URLString asPiwigoRequest:NO withURLParams:nil];
-    NSURL *request = [NSURL URLWithString:[URLRequest stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSURL *request = [NSURL URLWithString:URLRequest];
     
 	__weak typeof(self) weakSelf = self;
 

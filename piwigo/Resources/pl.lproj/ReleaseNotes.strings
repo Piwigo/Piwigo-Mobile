@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.1_text" = "Version 2.1.1\n\n• Fix bug encountered with non-valid SSL certificates\n• Improve Danish translation\n________________________________________\n\n";
+"v2.1.2_text" = "Wersja 2.1.2\n\n• Poprawka odmowy logowania z wtyczką społeczność w wersji wtyczki < 2.9 \n• Poprawy tłumaczenia \n• Drobne poprawki\n________________________________________\n\n";
+
+"v2.1.1_text" = "Wersja 2.1.1\n20 sierpnia 2017\n\n• Poprawki błędów napotkanych przy nieważnych certyfikatach SSL \n• Poprawa duńskiego tłumaczenia \n________________________________________\n\n";
 
 "v2.1.0_text" = "Wersja 2.1\n14 sierpnia 2017\n\n• Dodanie kompatybilności z rozszerzeniem Community (Społeczność)\n• Dodanie duńskiego, francuskiego i polskiego tłumaczenia\n• Poprawki\n________________________________________\n\n";
 
