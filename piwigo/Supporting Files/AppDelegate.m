@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "AppDelegate.h"
 #import "LoginNavigationController.h"
 #import "LoginViewController_iPhone.h"
@@ -45,7 +47,7 @@
 	
     // Override point for customization after application launch.
 	
-    // Chache settings
+    // Cache settings
 	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
 														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
 															 diskPath:nil];
@@ -167,6 +169,24 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
+    // Check access to photos — Required as system does not always ask
+    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusNotDetermined) {
+        // Request authorization to access photos
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            // Nothing to do…
+        }];
+    }
+    else if(([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusDenied) ||
+            ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusRestricted)) {
+        // Inform user that he denied or restricted access to photos
+        [UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"Access not Authorized")
+                           message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                 otherButtonTitles:nil
+                          tapBlock:nil
+         ];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
