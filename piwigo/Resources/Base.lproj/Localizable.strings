@@ -179,7 +179,8 @@
 "imageOptions_download" = "Download";
 "imageOptions_setAlbumImage" = "Set as Album Image";
 
-// Image edit
+// Image details
+"imageDetailsView_title" = "Image Details";
 "editImageDetails_title" = "Title:";
 "editImageDetails_titlePlaceholder" = "Title";
 "editImageDetails_author" = "Author:";
@@ -187,7 +188,7 @@
 "editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
 
-// Image edit — Errors
+// Image details — Errors
 "imageDetailsFetchError_title" = "Image Details Fetch Failed";
 "imageDetailsFetchError_retryMessage" = "Fetching the image data failed\nTry again?";
 "imageDetailsFetchError_continueMessage" = "Fetching the image data failed\nContinue?";
@@ -263,6 +264,7 @@
 "imageUploadTableCell_uploading" = "Uploading...";
 "imageUploadProgressBar_zero" = "Uploading 0/0";
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";
+"imageUploadProgressBar_completed" = "Completed";
 "imageUploadCompleted_title" = "Upload Completed";
 "imageUploadCompleted_message" = "1 image/video uploaded to your Piwigo server.";
 "imageUploadCompleted_message>1" = "images/videos uploaded to your Piwigo server.";
@@ -376,10 +378,11 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Information
+"settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
 "settings_supportForum" = "Support Forum";
 "settings_releaseNotes" = "Release Notes";
 "settings_rateInAppStore" = "Rate Piwigo Mobile";
 "settings_translateWithCrowdin" = "Translate Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
-"settings_acknowledgements" = "Acknowledgements";
+"settings_acknowledgements_subtitle" = "Acknowledgements";

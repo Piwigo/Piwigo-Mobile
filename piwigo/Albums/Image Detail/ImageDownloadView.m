@@ -55,7 +55,7 @@
 		
 		self.percentLabel = [UILabel new];
 		self.percentLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.percentLabel.text = @"0 %";
+		self.percentLabel.text = [NSString stringWithFormat:@"%@ %%", @(0)];
 		self.percentLabel.font = [UIFont piwigoFontNormal];
 		self.percentLabel.font = [self.percentLabel.font fontWithSize:15];
 		self.percentLabel.textColor = [UIColor piwigoGrayLight];

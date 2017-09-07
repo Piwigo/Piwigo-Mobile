@@ -32,7 +32,7 @@
         self.piwigoTitle.font = [UIFont piwigoFontNormal];
         self.piwigoTitle.font = [self.piwigoTitle.font fontWithSize:30];
         self.piwigoTitle.textColor = [UIColor piwigoOrange];
-        self.piwigoTitle.text = @"Piwigo Mobile";
+        self.piwigoTitle.text = NSLocalizedString(@"settings_appName", @"Piwigo Mobile");
         [self.view addSubview:self.piwigoTitle];
         
         self.releaseNotes = [UILabel new];

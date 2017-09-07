@@ -95,7 +95,7 @@
 {
 	if(self.maxImages == 0)
 	{
-		self.imageCountLabel.text = @"Completed";
+		self.imageCountLabel.text = NSLocalizedString(@"imageUploadProgressBar_completed", @"Completed");
 	}
 	else
 	{

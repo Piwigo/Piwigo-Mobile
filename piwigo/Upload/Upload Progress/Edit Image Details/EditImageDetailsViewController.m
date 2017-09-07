@@ -42,7 +42,7 @@ typedef enum {
 {
 	[super awakeFromNib];
 	
-	self.title = @"Edit Image Details";
+	self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];

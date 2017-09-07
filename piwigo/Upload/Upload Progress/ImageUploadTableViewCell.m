@@ -55,7 +55,7 @@
 	self.uploadingProgressLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	self.uploadingProgressLabel.font = [UIFont piwigoFontNormal];
 	self.uploadingProgressLabel.textColor = [UIColor piwigoWhiteCream];
-	self.uploadingProgressLabel.text = @"0 %";
+	self.uploadingProgressLabel.text = [NSString stringWithFormat:@"%@ %%", @(0)];
 	[self.uploadingOverlay addSubview:self.uploadingProgressLabel];
 	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgressLabel]];
 	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadingProgressLabel
@@ -125,7 +125,7 @@
 	
 	self.isInQueueForUpload = NO;
 	[self.uploadingProgressBar setProgress:0];
-	self.uploadingProgressLabel.text = @"0 %";
+	self.uploadingProgressLabel.text = [NSString stringWithFormat:@"%@ %%", @(0)];
 }
 
 @end
