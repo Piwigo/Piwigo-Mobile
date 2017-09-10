@@ -191,11 +191,7 @@ NSInteger const loadingViewTag = 899;
         [formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
                                     name:@"pwg_token"];
     }
-                                  progress:^(NSProgress *progress) {
-                                      if ([Model sharedInstance].userCancelledCommunication) {
-                                          [manager invalidateSessionCancelingTasks:YES];
-                                      }
-                                  }
+                                  progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
                                        if (success) {
                                            success(task, responseObject);
