@@ -41,6 +41,8 @@ typedef enum {
 @property (nonatomic, assign) BOOL canUploadVideos;
 @property (nonatomic, assign) BOOL hasUploadedImages;
 @property (nonatomic, assign) BOOL hadOpenedSession;
+@property (nonatomic, assign) BOOL performedHTTPauthentication;
+@property (nonatomic, assign) BOOL userCancelledCommunication;
 
 @property (nonatomic, assign) BOOL hasSquareSizeImages;
 @property (nonatomic, assign) BOOL hasThumbSizeImages;

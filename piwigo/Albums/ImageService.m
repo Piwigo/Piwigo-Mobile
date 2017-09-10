@@ -12,6 +12,7 @@
 #import "PiwigoAlbumData.h"
 #import "CategoriesData.h"
 #import "PiwigoTagData.h"
+#import "KeychainAccess.h"
 
 NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
@@ -253,6 +254,19 @@ NSString * const kGetImageOrderDescending = @"desc";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
 
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // Supply requested credentials
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
+    
     NSURLSessionDataTask *task = [manager GET:request.absoluteString parameters:nil
                                      progress:progress
                                       success:^(NSURLSessionTask *task, UIImage *image) {
@@ -290,6 +304,19 @@ NSString * const kGetImageOrderDescending = @"desc";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
 
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // Supply requested credentials
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
+    
     NSString *URLRequest = [NetworkHandler getURLWithPath:video.fullResPath asPiwigoRequest:NO withURLParams:nil];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
     

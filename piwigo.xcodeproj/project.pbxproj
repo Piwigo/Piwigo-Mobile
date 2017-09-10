@@ -432,7 +432,6 @@
 				D8C71A4A1A848B070048BA33 /* ImageUploadTableViewCell.h */,
 				D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */,
 				D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */,
-				D8F325111A875939007CBDAC /* Edit Image Details */,
 			);
 			path = "Upload Progress";
 			sourceTree = "<group>";
@@ -559,7 +558,6 @@
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D89045B31A9469FF00A306FE /* Tags */,
 				D8F113541A9E403E000EC0A6 /* Loading View */,
-				D8B9BC791A95B1CE00C1B0E5 /* Not Uploaded Yet */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
 				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
@@ -794,6 +792,8 @@
 			children = (
 				D8A5014A1A7B3D4200C04C17 /* Pick Album */,
 				D8A5014E1A7B432600C04C17 /* Local Images */,
+				D8F325111A875939007CBDAC /* Edit Image Details */,
+				D8B9BC791A95B1CE00C1B0E5 /* Not Uploaded Yet */,
 				D8083AA71A82905F00A95605 /* Upload Progress */,
 				D8083AA31A81B34C00A95605 /* Image Uploading */,
 			);

@@ -10,6 +10,7 @@
 
 typedef void(^SuccessBlock)(id responseObject);
 
+// Piwigo URLs:
 FOUNDATION_EXPORT NSString * const kReflectionGetMethodList;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
@@ -34,7 +35,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoImageDelete;
 
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetList;
 
-// parameter keys:
+// Parameter keys:
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamData;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamFileName;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamName;
@@ -46,6 +47,9 @@ FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamAuthor;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamDescription;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamTags;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamMimeType;
+
+// HUD tag:
+FOUNDATION_EXPORT NSInteger const loadingViewTag;
 
 @interface NetworkHandler : NSObject
 

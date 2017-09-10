@@ -17,7 +17,7 @@
 #import "TagsViewController.h"
 #import "ImageService.h"
 #import "UploadService.h"
-#import "LoadingView.h"
+#import "MBProgressHUD.h"
 
 typedef enum {
 	EditImageDetailsOrderImageName,
@@ -117,34 +117,84 @@ typedef enum {
 
 -(void)doneEdit
 {
-	[self prepareImageForChanges];
+	// Update image details
+    [self prepareImageForChanges];
 	
-	LoadingView *loading = [LoadingView new];
-	[self.view addSubview:loading];
-	[self.view addConstraints:[NSLayoutConstraint constraintCenterView:loading]];
-	[loading showLoadingWithLabel:@"Setting Image Information" andProgressLabel:nil];
-	
+    // Display HUD during the update
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showUpdatingHUD];
+    });
+    
+    // Update image info
 	[UploadService updateImageInfo:self.imageDetails
 						onProgress:^(NSProgress *progress) {
 							// progress
 						} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 							// complete
-							[loading hideLoadingWithLabel:@"Saved" showCheckMark:YES withDelay:0.3];
-							[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                            [self hideUpdatingHUDwithSuccess:YES completion:^{
+                                dispatch_async(dispatch_get_main_queue(),^{
+                                    sleep(0.7);
+                                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                                });
+                            }];
 						} onFailure:^(NSURLSessionTask *task, NSError *error) {
-							[loading hideLoadingWithLabel:@"Failed" showCheckMark:NO withDelay:0.0];
-							[UIAlertView showWithTitle:@"Failed to Update"
-											   message:@"Failed to update your changes with your server\nTry again?"
-									 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-									 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-											  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-												  if(buttonIndex == 1)
-												  {
-													  [self doneEdit];
-												  }
-											  }];
+							// Failed
+                            [self hideUpdatingHUDwithSuccess:NO completion:^{
+                                [UIAlertView showWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update")
+                                                   message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server\nTry again?")
+                                         cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                         otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
+                                                  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                                      if(buttonIndex == 1)
+                                                      {
+                                                          [self doneEdit];
+                                                      }
+                                                  }];
+                            }];
 						}];
 }
+
+#pragma mark -- HUD methods
+
+-(void)showUpdatingHUD
+{
+    // Create the loading HUD if needed
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+    if (!hud) {
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+    
+    // Change the background view shape, style and color.
+    hud.square = NO;
+    hud.animationType = MBProgressHUDAnimationFade;
+    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+    
+    // Define the text
+    hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating...");
+}
+
+-(void)hideUpdatingHUDwithSuccess:(BOOL)success completion:(void (^ __nullable)(void))completion
+{
+    // Hide and remove the HUD
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+    if (hud) {
+        if (success) {
+            UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+            hud.customView = imageView;
+            hud.mode = MBProgressHUDModeCustomView;
+            hud.label.text = NSLocalizedString(@"editImageDetailsHUD_completed", @"Completed");
+            [hud hideAnimated:YES afterDelay:3.f];
+        } else {
+            [hud hideAnimated:YES];
+        }
+    }
+    completion();
+}
+
+
+#pragma mark -- Keyboard Methods
 
 -(void)updateImageDetails
 {

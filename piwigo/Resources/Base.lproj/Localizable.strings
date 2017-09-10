@@ -33,7 +33,9 @@
 // Errors
 "internetErrorGeneral_title" = "Connection Error";
 "internetErrorGeneral_broken" = "Sorry, the communication was broken.\nTry logging in again.";
-
+"internetCancellingConnection_button" = "Cancelling Connection…";
+"internetCancelledConnection_button" = "Cancel Connection";
+"internetCancelledConnection_title" = "Connection Cancelled";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -45,6 +47,10 @@
 "login_passwordPlaceholder" = "Password (optional)";
 "login_loggingIn" = "Logging In...";
 "login_protocolDescription" = "(tap to change)";
+"login_connecting" = "Connecting";
+"login_newSession" = "Opening Session";
+"login_communityParameters" = "Community Parameters";
+"login_serverParameters" = "Piwigo Parameters";
 "login_connectionChanged" = "Connection Changed!";
 
 // Login — Errors
@@ -126,7 +132,7 @@
 "deleteCategory_title" = "DELETE ALBUM";
 "deleteCategory_message" = "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?";
 "deleteCategoryConfirm_title" = "Are you sure?";
-"deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album\nNumber of images: %@";
+"deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album.\nNumber of images: %@";
 "deleteCategoryConfirm_deleteButton" = "DELETE";
 "deleteCategorySuccess_title" = "Delete Successful";
 "deleteCategorySuccess_message" = "Deleted \"%@\" album successfull";
@@ -187,11 +193,15 @@
 "editImageDetails_tags" = "Tags:";
 "editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
+"editImageDetailsHUD_updating" = "Updating...";
+"editImageDetailsHUD_completed" = "Completed";
 
 // Image details — Errors
+"editImageDetailsError_title" = "Failed to Update";
+"editImageDetailsError_message" = "Failed to update your changes with your server.\nTry again?";
 "imageDetailsFetchError_title" = "Image Details Fetch Failed";
-"imageDetailsFetchError_retryMessage" = "Fetching the image data failed\nTry again?";
-"imageDetailsFetchError_continueMessage" = "Fetching the image data failed\nContinue?";
+"imageDetailsFetchError_retryMessage" = "Fetching the image data failed.\nTry again?";
+"imageDetailsFetchError_continueMessage" = "Fetching the image data failed.\nContinue?";
 
 // Image privacy levels
 "privacyLevel" = "Privacy Level";
@@ -256,6 +266,7 @@
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Description:";
 
+"imageUploadDetailsView_title" = "Images";
 "imageUploadDetailsButton_title" = "Upload";
 "imageUploadDetailsEdit_title" = "Edit Images to Upload";
 "imageUploadDetailsUploading_title" = "Images that are Being Uploaded";
@@ -385,4 +396,4 @@
 "settings_rateInAppStore" = "Rate Piwigo Mobile";
 "settings_translateWithCrowdin" = "Translate Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
-"settings_acknowledgements_subtitle" = "Acknowledgements";
+"settings_acknowledgements" = "Acknowledgements";

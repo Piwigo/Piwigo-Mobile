@@ -8,8 +8,10 @@
 
 #import "NetworkHandler.h"
 #import "Model.h"
+#import "KeychainAccess.h"
+#import "MBProgressHUD.h"
 
-// URLs:
+// Piwigo URLs:
 NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
@@ -34,7 +36,7 @@ NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
 
 NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
 
-// parameter keys:
+// Parameter keys:
 NSString * const kPiwigoImagesUploadParamData = @"data";
 NSString * const kPiwigoImagesUploadParamFileName = @"fileName";
 NSString * const kPiwigoImagesUploadParamName = @"name";
@@ -47,6 +49,9 @@ NSString * const kPiwigoImagesUploadParamDescription = @"description";
 NSString * const kPiwigoImagesUploadParamTags = @"tags";
 NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 
+// HUD tag:
+NSInteger const loadingViewTag = 899;
+
 @interface NetworkHandler()
 
 @property (nonatomic, retain) NSMutableData *responseData;
@@ -58,7 +63,6 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 @end
 
 @implementation NetworkHandler
-
 
 // path: format={param1}
 // URLParams: {@"param1" : @"hello" }
@@ -83,9 +87,28 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
     
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // To remember app recieved anthentication challenge
+            [Model sharedInstance].performedHTTPauthentication = YES;
+            // Supply requested credentials
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
+    
     NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
                                 parameters:parameters
-                                  progress:progress
+                                  progress:^(NSProgress *progress) {
+                                      if ([Model sharedInstance].userCancelledCommunication) {
+                                          [manager invalidateSessionCancelingTasks:YES];
+                                      }
+                                  }
                                    success:^(NSURLSessionTask *task, id responseObject) {
                                        if (success) {
                                            success(task, responseObject);
@@ -126,6 +149,21 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
     
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // To remember app recieved anthentication challenge
+            [Model sharedInstance].performedHTTPauthentication = YES;
+            // Supply requested credentials
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
+    
     NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:nil]
                                 parameters:nil
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
@@ -153,7 +191,11 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
         [formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
                                     name:@"pwg_token"];
     }
-                                  progress:progress
+                                  progress:^(NSProgress *progress) {
+                                      if ([Model sharedInstance].userCancelledCommunication) {
+                                          [manager invalidateSessionCancelingTasks:YES];
+                                      }
+                                  }
                                    success:^(NSURLSessionTask *task, id responseObject) {
                                        if (success) {
                                            success(task, responseObject);
@@ -198,11 +240,12 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 
 +(void)showConnectionError:(NSError*)error
 {
-	UIAlertView *connectionError = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-															  message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
-															 delegate:nil
-													cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-													otherButtonTitles:nil];
+	UIAlertView *connectionError = [[UIAlertView alloc]
+                                    initWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                                    message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
+                                    delegate:nil
+                                    cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    otherButtonTitles:nil];
 	[connectionError show];
 }
 

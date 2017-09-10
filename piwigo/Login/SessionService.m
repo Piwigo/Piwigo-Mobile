@@ -7,7 +7,6 @@
 //
 
 #import "SessionService.h"
-#import "KeychainAccess.h"
 #import "Model.h"
 
 @implementation SessionService
@@ -48,7 +47,6 @@
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   
                   if(fail) {
-                      [SessionService showConnectionError:error];
                       fail(task, error);
                   }
               }];
@@ -71,15 +69,21 @@
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"] && [[responseObject objectForKey:@"result"] boolValue])
                       {
-                          [KeychainAccess storeLoginInKeychainForUser:user andPassword:password];
                           [Model sharedInstance].username = user;
                           [Model sharedInstance].hadOpenedSession = YES;
                           completion(YES, [responseObject objectForKey:@"result"]);
                       }
                       else
                       {
-                          [Model sharedInstance].hadOpenedSession = NO;
-                          completion(NO, nil);
+                          // May be this server only uses HTTP authentication
+                          if ([Model sharedInstance].performedHTTPauthentication) {
+                              [Model sharedInstance].username = user;
+                              [Model sharedInstance].hadOpenedSession = YES;
+                              completion(YES, nil);
+                          } else {
+                              [Model sharedInstance].hadOpenedSession = NO;
+                              completion(NO, nil);
+                          }
                       }
                   }
               }
@@ -170,7 +174,6 @@
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   
                   if(fail) {
-                      [SessionService showConnectionError:error];
                       fail(task, error);
                   }
               }];
@@ -201,7 +204,6 @@
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   
                   if(fail) {
-                      [SessionService showConnectionError:error];
                       fail(task, error);
                   }
               }];
@@ -229,7 +231,7 @@
 			  } failure:^(NSURLSessionTask *task, NSError *error) {
 				  
 				  if(fail) {
-					  [SessionService showConnectionError:error];
+                      [SessionService showConnectionError:error];
 					  fail(task, error);
 				  }
 			  }];

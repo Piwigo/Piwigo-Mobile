@@ -51,6 +51,10 @@
         // Release notes string
         NSString *notesString = @"";
         
+        // Release 2.1.3 — Bundle string
+        NSString *v213String = NSLocalizedStringFromTableInBundle(@"v2.1.3_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.3 Release Notes text");
+        notesString = [notesString stringByAppendingString:v213String];
+        
         // Release 2.1.2 — Bundle string
         NSString *v212String = NSLocalizedStringFromTableInBundle(@"v2.1.2_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.2 Release Notes text");
         notesString = [notesString stringByAppendingString:v212String];
@@ -89,6 +93,18 @@
         
         // Attributed strings
         NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:notesString];
+        
+        // Release 2.1.3 — Attributed string
+        NSRange v213Range = [v213String rangeOfString:@" 2.1.3\n"];
+        v213Range.location += [@" 2.1.3\n" length];
+        NSRange v213DescriptionRange = NSMakeRange(v213Range.location, [v213String length] - v213Range.location);
+        v213String = [v213String stringByReplacingCharactersInRange:v213DescriptionRange withString:@""];
+        
+        v213Range = [notesString rangeOfString:v213String];
+        v213DescriptionRange = NSMakeRange(v213Range.location, [v213String length]);
+        [notesAttributedString addAttribute:NSFontAttributeName
+                                      value:[UIFont boldSystemFontOfSize:14]
+                                      range:v213DescriptionRange];
         
         // Release 2.1.2 — Attributed string
         NSRange v212Range = [v212String rangeOfString:@" 2.1.2\n"];
