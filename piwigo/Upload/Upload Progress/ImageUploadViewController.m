@@ -31,7 +31,7 @@
 		self.view.backgroundColor = [UIColor piwigoGray];
 		self.imagesToEdit = [NSMutableArray new];
 		
-		self.title = @"Images";
+		self.title = NSLocalizedString(@"imageUploadDetailsView_title", @"Images");
 		
 		self.uploadImagesTableView = [UITableView new];
 		self.uploadImagesTableView.translatesAutoresizingMaskIntoConstraints = NO;
