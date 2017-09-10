@@ -395,6 +395,10 @@
 		ADE535901F65C01000372CBD /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				D8083A531A7D66CD00A95605 /* ImageService.h */,
+				D8083A541A7D66CD00A95605 /* ImageService.m */,
+				D818EA031A74D32100733991 /* Image Detail */,
+				ADE535921F65C2B000372CBD /* Image Download */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -406,6 +410,17 @@
 				D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */,
 			);
 			path = "Album Thumbnail";
+			sourceTree = "<group>";
+		};
+		ADE535921F65C2B000372CBD /* Image Download */ = {
+			isa = PBXGroup;
+			children = (
+				D8083A591A7DBD5000A95605 /* ImageDownloadView.h */,
+				D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */,
+				D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */,
+				D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */,
+			);
+			path = "Image Download";
 			sourceTree = "<group>";
 		};
 		D8083A641A7FF30B00A95605 /* Cells */ = {
@@ -524,10 +539,6 @@
 				D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */,
 				D860440F1A99922F0067E5D1 /* ImageScrollView.h */,
 				D86044101A99922F0067E5D1 /* ImageScrollView.m */,
-				D8083A591A7DBD5000A95605 /* ImageDownloadView.h */,
-				D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */,
-				D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */,
-				D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */,
 			);
 			path = "Image Detail";
 			sourceTree = "<group>";
@@ -789,14 +800,11 @@
 		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
 			isa = PBXGroup;
 			children = (
+				D818E9F91A74C18500733991 /* AlbumService.h */,
+				D818E9FA1A74C18500733991 /* AlbumService.m */,
 				D818E9F41A74BEFF00733991 /* Album List */,
 				D818E9F51A74BF1100733991 /* Album Pictures */,
 				ADE535911F65C17E00372CBD /* Album Thumbnail */,
-				D818EA031A74D32100733991 /* Image Detail */,
-				D818E9F91A74C18500733991 /* AlbumService.h */,
-				D818E9FA1A74C18500733991 /* AlbumService.m */,
-				D8083A531A7D66CD00A95605 /* ImageService.h */,
-				D8083A541A7D66CD00A95605 /* ImageService.m */,
 				AD870CD81F54AE230015BFA1 /* ImagesCollection.h */,
 				AD870CD61F54AE110015BFA1 /* ImagesCollection.m */,
 			);
