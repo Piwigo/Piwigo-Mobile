@@ -11,6 +11,7 @@
 #import "ImageScrollView.h"
 #import "Model.h"
 #import "NetworkHandler.h"
+#import "KeychainAccess.h"
 
 @interface ImagePreviewViewController ()
 
@@ -71,6 +72,19 @@
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
+    
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // Supply requested credentials
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
     
     weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
     
