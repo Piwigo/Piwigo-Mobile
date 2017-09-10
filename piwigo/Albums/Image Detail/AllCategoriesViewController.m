@@ -115,7 +115,7 @@
 		albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
 	}
 	
-	[UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Set Image Represenative")
+	[UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Set Image Thumbnail")
 					   message:[NSString stringWithFormat:NSLocalizedString(@"categoryImageSet_message", @"Are you sure you want to set this image for the album \"%@\"?"), albumData.name]
 			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
 			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
