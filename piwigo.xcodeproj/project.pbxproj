@@ -392,6 +392,22 @@
 			path = "Release Notes";
 			sourceTree = "<group>";
 		};
+		ADE535901F65C01000372CBD /* Images */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		ADE535911F65C17E00372CBD /* Album Thumbnail */ = {
+			isa = PBXGroup;
+			children = (
+				D8172E1E1AB7D2EA00271DB0 /* AllCategoriesViewController.h */,
+				D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */,
+			);
+			path = "Album Thumbnail";
+			sourceTree = "<group>";
+		};
 		D8083A641A7FF30B00A95605 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -512,8 +528,6 @@
 				D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */,
 				D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */,
 				D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */,
-				D8172E1E1AB7D2EA00271DB0 /* AllCategoriesViewController.h */,
-				D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */,
 			);
 			path = "Image Detail";
 			sourceTree = "<group>";
@@ -555,6 +569,7 @@
 				AD0134611EBE310000F11C3F /* TabBar */,
 				D863EEBE1A6A440D00C0A6E9 /* Login */,
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
+				ADE535901F65C01000372CBD /* Images */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D89045B31A9469FF00A306FE /* Tags */,
 				D8F113541A9E403E000EC0A6 /* Loading View */,
@@ -776,6 +791,7 @@
 			children = (
 				D818E9F41A74BEFF00733991 /* Album List */,
 				D818E9F51A74BF1100733991 /* Album Pictures */,
+				ADE535911F65C17E00372CBD /* Album Thumbnail */,
 				D818EA031A74D32100733991 /* Image Detail */,
 				D818E9F91A74C18500733991 /* AlbumService.h */,
 				D818E9FA1A74C18500733991 /* AlbumService.m */,
