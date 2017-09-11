@@ -104,11 +104,7 @@ NSInteger const loadingViewTag = 899;
     
     NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
                                 parameters:parameters
-                                  progress:^(NSProgress *progress) {
-                                      if ([Model sharedInstance].userCancelledCommunication) {
-                                          [manager invalidateSessionCancelingTasks:YES];
-                                      }
-                                  }
+                                  progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
                                        if (success) {
                                            success(task, responseObject);

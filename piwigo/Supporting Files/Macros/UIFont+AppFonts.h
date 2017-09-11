@@ -12,5 +12,6 @@
 
 +(UIFont*)piwigoFontNormal;
 +(UIFont*)piwigoFontButton;
++(UIFont*)piwigoFontSmall;
 
 @end

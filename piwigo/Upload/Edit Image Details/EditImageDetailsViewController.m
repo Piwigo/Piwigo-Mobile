@@ -167,11 +167,14 @@ typedef enum {
     // Change the background view shape, style and color.
     hud.square = NO;
     hud.animationType = MBProgressHUDAnimationFade;
+    hud.contentColor = [UIColor piwigoOrange];
+    hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
     
     // Define the text
     hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating...");
+    hud.label.font = [UIFont piwigoFontNormal];
 }
 
 -(void)hideUpdatingHUDwithSuccess:(BOOL)success completion:(void (^ __nullable)(void))completion

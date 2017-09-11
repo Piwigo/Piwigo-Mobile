@@ -14,9 +14,15 @@
 {
 	return [UIFont fontWithName:@"LacunaRegular" size:21.0];
 }
+
 +(UIFont*)piwigoFontNormal
 {
 	return [UIFont fontWithName:@"LacunaRegular" size:17.0];
+}
+
++(UIFont*)piwigoFontSmall
+{
+    return [UIFont fontWithName:@"LacunaRegular" size:13.0];
 }
 
 @end
