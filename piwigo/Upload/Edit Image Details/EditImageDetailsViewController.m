@@ -167,7 +167,7 @@ typedef enum {
     // Change the background view shape, style and color.
     hud.square = NO;
     hud.animationType = MBProgressHUDAnimationFade;
-    hud.contentColor = [UIColor piwigoOrange];
+    hud.contentColor = [UIColor piwigoWhiteCream];
     hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
