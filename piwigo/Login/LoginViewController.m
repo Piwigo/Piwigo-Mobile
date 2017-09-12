@@ -139,21 +139,13 @@
             [self performLogin];
         
         } else {
-            // Methods unknown, so we cannot reach the server. Close HUD.
-            [self hideLoading];
-
-            // Inform user
-            UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"serverMethodsError_title", @"Unknown Methods")
-                                                                message:NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")
-                                                               delegate:nil
-                                                      cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                                      otherButtonTitles:nil];
-            [failAlert show];
+            // Methods unknown, so we cannot reach the server, inform user
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?"))];
         }
         
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        // Display message
-        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+        // Display error message
+        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
     }];
 }
 
@@ -187,16 +179,15 @@
                                       }
 									 else
 									 {
-										 // No session opened, Close HUD.
-                                         [self hideLoading];
-
-                                         // Inform user
+                                         // Don't keep credentials
                                          [KeychainAccess resetKeychain];
-                                         [self showLoginFail];
+
+                                         // Session could not be re-opened
+                                         [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server"))];
 									 }
 								 } onFailure:^(NSURLSessionTask *task, NSError *error) {
                                      // Display message
-                                     [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                                     [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
                                  }];
 	}
 	else     // No username, get only server status
@@ -236,22 +227,13 @@
                 [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin];
             
             } else {
-                // Close HUD
-                [self hideLoading];
-
-                // Inform user
-                UIAlertView *failAlert = [[UIAlertView alloc]
-                                          initWithTitle:NSLocalizedString(@"serverCommunityError_title", @"Community Error")
-                                          message:NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")
-                                          delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                          otherButtonTitles:nil];
-                [failAlert show];
+                // Inform user that server failed to retrieve Community parameters
+                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again."))];
             }
             
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // Display message
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+            // Display error message
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
         }];
 
     } else {
@@ -284,50 +266,41 @@
             {
                 if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
                 {
-                    // They need to update
-                    // Close loading or re-login view
-                    [self hideLoading];
-
-                    // Ask user what to do
-                    [UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
-                                       message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
-                             cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-                             otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-                                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                          if(buttonIndex == 1)
-                                          {    // Proceed at their own risk
-                                              if (isFirstLogin) {
-                                                  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                                                  [appDelegate loadNavigation];
+                    // They need to update, ask user what to do
+                    // Close loading or re-login view and ask what to do
+                    [self hideLoadingWithCompletion:^{
+                        [UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
+                                           message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
+                                 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
+                                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                              // Load navigation if user wants to
+                                              if(buttonIndex == 1)
+                                              {    // Proceed at their own risk
+                                                  if (isFirstLogin) {
+                                                      AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                                                      [appDelegate loadNavigation];
+                                                  }
                                               }
-                                          }
-                                      }];
+                                          }];
+                    }];
                 } else {
                     // Their version is Ok. Close HUD.
-                    [self hideLoading];
-                    
-                    // Load navigation if needed
-                    if (isFirstLogin) {
-                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate loadNavigation];
-                    }
+                    [self hideLoadingWithCompletion:^{
+                        // Load navigation if needed
+                        if (isFirstLogin) {
+                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                            [appDelegate loadNavigation];
+                        }
+                    }];
                 }
             } else {
-                // Close HUD
-                [self hideLoading];
-
-                // Inform user
-                UIAlertView *failAlert = [[UIAlertView alloc]
-                                          initWithTitle:NSLocalizedString(@"sessionStatusError_title", @"Authentication Fail")
-                                          message:NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")
-                                          delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                          otherButtonTitles:nil];
-                [failAlert show];
+                // Inform user that we could not authenticate with server
+                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again."))];
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // Display message
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+            // Display error message
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
         }];
     } else {
         [self loggingInConnectionError:nil];
@@ -359,7 +332,8 @@
 
             } else {
                 // Connection still alive. Close HUD and do nothing.
-                [self hideLoading];
+                [self hideLoadingWithCompletion:^{
+                }];
 #if defined(DEBUG_SESSION)
                 NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
                 NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
@@ -369,26 +343,15 @@
 #endif
             }
         } else {
-            // Connection really lost
-            [self hideLoading];
-
-            // Inform user
-            [Model sharedInstance].hadOpenedSession = NO;
-#if defined(DEBUG)
-            NSLog(@"Error: Broken connection");
-#endif
-            [UIAlertView showWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                               message:NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")
-                     cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                     otherButtonTitles:nil
-                              tapBlock:nil];
+            // Connection really lost, inform user
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again."))];
         }
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
         // No connection or server down
         [Model sharedInstance].hadOpenedSession = NO;
         
         // Display message
-        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
     }];
 }
 
@@ -423,20 +386,16 @@
                                 }
                                 else
                                 {
-                                    // Session could not be re-opened
-                                    [Model sharedInstance].hadOpenedSession = NO;
-                                    [self hideLoading];
-
-                                    // Inform user
-                                    [self showLoginFail];
+                                    // Session could not be re-opened, inform user
+                                    [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server"))];
                                 }
 
                             } onFailure:^(NSURLSessionTask *task, NSError *error) {
                                 // Could not re-establish the session, login/pwd changed, something else ?
                                 [Model sharedInstance].hadOpenedSession = NO;
                                 
-                                // Display message
-                                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                                // Display error message
+                                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
                             }];
 }
 
@@ -502,12 +461,12 @@
             
             // Reconfigure the button
             [hud.button isSelected];
-            [hud.button removeTarget:self action:@selector(hideLoading) forControlEvents:UIControlEventTouchUpInside];
+            [hud.button removeTarget:self action:@selector(hideLoadingWithCompletion:) forControlEvents:UIControlEventTouchUpInside];
         }
     });
 }
 
-- (void)loggingInConnectionError:(NSError*)error
+- (void)loggingInConnectionError:(NSString *)error
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         // Determine the present view controller
@@ -524,7 +483,7 @@
             
             // Reconfigure the button
             [hud.button setTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") forState:UIControlStateNormal];
-            [hud.button addTarget:self action:@selector(hideLoading) forControlEvents:UIControlEventTouchUpInside];
+            [hud.button addTarget:self action:@selector(hideLoadingWithCompletion:) forControlEvents:UIControlEventTouchUpInside];
 
             // Update text
             if (error == nil) {
@@ -532,13 +491,13 @@
                 hud.detailsLabel.text = @" ";
             } else {
                 hud.label.text = NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error");
-                hud.detailsLabel.text = [NSString stringWithFormat:@"%@", [error localizedDescription]];
+                hud.detailsLabel.text = [NSString stringWithFormat:@"%@", error];
             }
         }
     });
 }
 
--(void)hideLoading
+-(void)hideLoadingWithCompletion:(void (^ __nullable)(void))completion
 {
     // Reinitialise flag
     [Model sharedInstance].userCancelledCommunication = NO;
@@ -555,6 +514,7 @@
         if (hud) {
             [hud hideAnimated:YES];
         }
+        completion();
     });
 }
 

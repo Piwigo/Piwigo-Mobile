@@ -122,7 +122,7 @@ typedef enum {
 	
     // Display HUD during the update
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showUpdatingHUD];
+        [self showUpdatingImageInfoHUD];
     });
     
     // Update image info
@@ -131,7 +131,7 @@ typedef enum {
 							// progress
 						} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 							// complete
-                            [self hideUpdatingHUDwithSuccess:YES completion:^{
+                            [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
                                 dispatch_async(dispatch_get_main_queue(),^{
                                     sleep(0.7);
                                     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
@@ -139,7 +139,7 @@ typedef enum {
                             }];
 						} onFailure:^(NSURLSessionTask *task, NSError *error) {
 							// Failed
-                            [self hideUpdatingHUDwithSuccess:NO completion:^{
+                            [self hideUpdatingImageInfoHUDwithSuccess:NO completion:^{
                                 [UIAlertView showWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update")
                                                    message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server\nTry again?")
                                          cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -156,7 +156,7 @@ typedef enum {
 
 #pragma mark -- HUD methods
 
--(void)showUpdatingHUD
+-(void)showUpdatingImageInfoHUD
 {
     // Create the loading HUD if needed
     MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
@@ -177,23 +177,25 @@ typedef enum {
     hud.label.font = [UIFont piwigoFontNormal];
 }
 
--(void)hideUpdatingHUDwithSuccess:(BOOL)success completion:(void (^ __nullable)(void))completion
+-(void)hideUpdatingImageInfoHUDwithSuccess:(BOOL)success completion:(void (^ __nullable)(void))completion
 {
-    // Hide and remove the HUD
-    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
-    if (hud) {
-        if (success) {
-            UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-            hud.customView = imageView;
-            hud.mode = MBProgressHUDModeCustomView;
-            hud.label.text = NSLocalizedString(@"editImageDetailsHUD_completed", @"Completed");
-            [hud hideAnimated:YES afterDelay:3.f];
-        } else {
-            [hud hideAnimated:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Hide and remove the HUD
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+        if (hud) {
+            if (success) {
+                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"editImageDetailsHUD_completed", @"Completed");
+                [hud hideAnimated:YES afterDelay:3.f];
+            } else {
+                [hud hideAnimated:YES];
+            }
         }
-    }
-    completion();
+        completion();
+    });
 }
 
 

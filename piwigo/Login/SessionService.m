@@ -40,7 +40,6 @@
                                   [Model sharedInstance].usesCommunityPluginV29 = YES;
                               }
                           }
-                          
                           completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
                       }
                       else  // Strange…
