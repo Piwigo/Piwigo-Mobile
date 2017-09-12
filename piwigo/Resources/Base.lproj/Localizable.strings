@@ -193,7 +193,7 @@
 "editImageDetails_tags" = "Tags:";
 "editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
-"editImageDetailsHUD_updating" = "Updating...";
+"editImageDetailsHUD_updating" = "Updating Image...";
 "editImageDetailsHUD_completed" = "Completed";
 
 // Image details — Errors

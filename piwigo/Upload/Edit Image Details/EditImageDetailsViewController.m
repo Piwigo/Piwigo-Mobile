@@ -173,7 +173,7 @@ typedef enum {
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
     
     // Define the text
-    hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating...");
+    hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating Image...");
     hud.label.font = [UIFont piwigoFontNormal];
 }
 
