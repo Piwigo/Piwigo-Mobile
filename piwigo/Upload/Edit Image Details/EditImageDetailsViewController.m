@@ -194,7 +194,9 @@ typedef enum {
                 [hud hideAnimated:YES];
             }
         }
-        completion();
+        if (completion) {
+            completion();
+        }
     });
 }
 
