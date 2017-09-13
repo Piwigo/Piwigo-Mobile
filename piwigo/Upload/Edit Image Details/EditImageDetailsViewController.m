@@ -177,7 +177,7 @@ typedef enum {
     hud.label.font = [UIFont piwigoFontNormal];
 }
 
--(void)hideUpdatingImageInfoHUDwithSuccess:(BOOL)success completion:(void (^ __nullable)(void))completion
+-(void)hideUpdatingImageInfoHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         // Hide and remove the HUD

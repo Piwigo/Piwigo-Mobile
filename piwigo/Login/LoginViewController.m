@@ -269,20 +269,21 @@
                     // They need to update, ask user what to do
                     // Close loading or re-login view and ask what to do
                     [self hideLoadingWithCompletion:^{
+                        dispatch_async(dispatch_get_main_queue(), ^{
                         [UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
                                            message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
                                  cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
                                  otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
                                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                               // Load navigation if user wants to
-                                              if(buttonIndex == 1)
-                                              {    // Proceed at their own risk
+                                              if(buttonIndex == 1) {    // Proceed at their own risk
                                                   if (isFirstLogin) {
                                                       AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                                                       [appDelegate loadNavigation];
                                                   }
                                               }
                                           }];
+                        });
                     }];
                 } else {
                     // Their version is Ok. Close HUD.
@@ -332,8 +333,7 @@
 
             } else {
                 // Connection still alive. Close HUD and do nothing.
-                [self hideLoadingWithCompletion:^{
-                }];
+                [self hideLoading];
 #if defined(DEBUG_SESSION)
                 NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
                 NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
@@ -461,7 +461,7 @@
             
             // Reconfigure the button
             [hud.button isSelected];
-            [hud.button removeTarget:self action:@selector(hideLoadingWithCompletion:) forControlEvents:UIControlEventTouchUpInside];
+            [hud.button removeTarget:self action:@selector(hideLoading) forControlEvents:UIControlEventTouchUpInside];
         }
     });
 }
@@ -483,7 +483,7 @@
             
             // Reconfigure the button
             [hud.button setTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") forState:UIControlStateNormal];
-            [hud.button addTarget:self action:@selector(hideLoadingWithCompletion:) forControlEvents:UIControlEventTouchUpInside];
+            [hud.button addTarget:self action:@selector(hideLoading) forControlEvents:UIControlEventTouchUpInside];
 
             // Update text
             if (error == nil) {
@@ -497,24 +497,38 @@
     });
 }
 
--(void)hideLoadingWithCompletion:(void (^ __nullable)(void))completion
+-(void)hideLoading
 {
     // Reinitialise flag
     [Model sharedInstance].userCancelledCommunication = NO;
 
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    
+    // Hide and remove login HUD
+    MBProgressHUD *hud = [topViewController.view viewWithTag:loadingViewTag];
+    if (hud) {
+        [hud hideAnimated:YES];
+    }
+}
+
+-(void)hideLoadingWithCompletion:(void (^ __nullable)(void))completion
+{
+    // Reinitialise flag
+    [Model sharedInstance].userCancelledCommunication = NO;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Determine the present view controller
-        UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (topViewController.presentedViewController) {
-            topViewController = topViewController.presentedViewController;
-        }
         
-        // Hide and remove login HUD
-        MBProgressHUD *hud = [topViewController.view viewWithTag:loadingViewTag];
-        if (hud) {
-            [hud hideAnimated:YES];
+        // Hide and remove the HUD
+        [self hideLoading];
+        
+        // Execute block
+        if (completion) {
+            completion();
         }
-        completion();
     });
 }
 
