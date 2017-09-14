@@ -21,21 +21,34 @@
 {
 	[[[CategoriesData sharedInstance] getCategoryById:categoryId] loadAllCategoryImageDataForProgress:progress
 																						 OnCompletion:^(BOOL completed) {
-		NSArray *onlineImageData = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList;
+
+        // Collect list of Piwigo images
+        NSArray *onlineImageData = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList;
 		
-		NSMutableDictionary *onlineImageNamesLookup = [NSMutableDictionary new];
-		for(PiwigoImageData *imgData in onlineImageData)
-		{
+        NSMutableDictionary *onlineImageNamesLookup = [NSMutableDictionary new];
+        for(PiwigoImageData *imgData in onlineImageData)
+        {
+            // Filename must not be empty!
             if (imgData.fileName && [imgData.fileName length]) {
+                
+                // Don't forget to replace the extension of video files (.mov in iOS device, .mp4 in Piwigo server)
+                if([[[imgData.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) {
+                    
+                    // Replace file extension
+                    imgData.fileName = [[imgData.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"MOV"];
+                }
+                // Append to list of Piwigo images
                 [onlineImageNamesLookup setObject:imgData.fileName forKey:imgData.fileName];
             }
-		}
+        }
 		
+        // Collect list of local images
 		NSMutableArray *localImageNamesThatNeedToBeUploaded = [NSMutableArray new];
 
 		for(ALAsset *imageAsset in images)
 		{
-			NSString *imageAssetKey = [[imageAsset defaultRepresentation] filename];
+			// Compare filenames
+            NSString *imageAssetKey = [[imageAsset defaultRepresentation] filename];
 			if(imageAssetKey && ![imageAssetKey isEqualToString:@""] && ![onlineImageNamesLookup objectForKey:imageAssetKey])
 			{	// this image doesn't exist in this online category
 				[localImageNamesThatNeedToBeUploaded addObject:imageAsset];
