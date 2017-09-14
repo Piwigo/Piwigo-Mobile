@@ -16,7 +16,7 @@
 
 @property (nonatomic, strong) ALAsset *imageAsset;
 @property (nonatomic, strong) NSString *image;
-@property (nonatomic, strong) NSString *imageUploadName;
+@property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) NSInteger categoryToUploadTo;
 @property (nonatomic, assign) kPiwigoPrivacy privacyLevel;
 @property (nonatomic, strong) NSString *author;

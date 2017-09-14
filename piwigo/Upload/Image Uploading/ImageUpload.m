@@ -19,7 +19,7 @@
 	{
 		self.imageAsset = imageAsset;
 		self.image = [[imageAsset defaultRepresentation] filename];
-		self.imageUploadName = [[[imageAsset defaultRepresentation] filename] stringByDeletingPathExtension];
+		self.title = [[[imageAsset defaultRepresentation] filename] stringByDeletingPathExtension];
 		self.categoryToUploadTo = category;
 		self.privacyLevel = privacy;
 	}
@@ -51,7 +51,7 @@
 {
 	self = [self initWithImageAsset:nil forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
 	self.image = imageData.fileName;
-	self.imageUploadName = imageData.name;
+	self.title = imageData.name;
 	if(self)
 	{
 		self.imageId = [imageData.imageId integerValue];
@@ -73,11 +73,11 @@
     return _imageDescription;
 }
 
--(NSString *)imageUploadName {
-    if (nil == _imageUploadName) {
-        _imageUploadName = @"";
+-(NSString *)title {
+    if (nil == _title) {
+        _title = @"";
     }
-    return _imageUploadName;
+    return _title;
 }
 
 #pragma mark - debugging support -
@@ -90,7 +90,7 @@
     [descriptionArray addObject:[NSString stringWithFormat:@"imageAsset         = %@", self.imageAsset.defaultRepresentation.url]];
 
     [descriptionArray addObject:[NSString stringWithFormat:@"image              = %@", (nil == self.image ? objectIsNil :(0 == self.image.length ? @"''" : self.image))]];
-    [descriptionArray addObject:[NSString stringWithFormat:@"imageUploadName    = %@", (nil == self.imageUploadName ? objectIsNil : (0 == self.imageUploadName.length ? @"''" : self.imageUploadName))]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"title    = %@", (nil == self.title ? objectIsNil : (0 == self.title.length ? @"''" : self.title))]];
     
     [descriptionArray addObject:[NSString stringWithFormat:@"categoryToUploadTo = %ld", (long)self.categoryToUploadTo]];
     [descriptionArray addObject:[NSString stringWithFormat:@"privacyLevel       = %@", kPiwigoPrivacyString(self.privacyLevel)]];

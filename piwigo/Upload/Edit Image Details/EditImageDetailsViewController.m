@@ -104,9 +104,10 @@ typedef enum {
 {
 	[self updateImageDetails];
 	
-	if(self.imageDetails.imageUploadName.length == 0)
+    // Set image title to filename without extension if not defined
+	if(self.imageDetails.title.length == 0)
 	{
-		self.imageDetails.imageUploadName = [self.imageDetails.image stringByDeletingPathExtension];
+		self.imageDetails.title = [self.imageDetails.image stringByDeletingPathExtension];
 	}
 }
 
@@ -206,7 +207,7 @@ typedef enum {
 -(void)updateImageDetails
 {
 	EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-	self.imageDetails.imageUploadName = textFieldCell.getTextFieldText;
+	self.imageDetails.title = textFieldCell.getTextFieldText;
 	
 	textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
 	self.imageDetails.author = textFieldCell.getTextFieldText;
@@ -256,7 +257,7 @@ typedef enum {
 		case EditImageDetailsOrderImageName:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"textField"];
-			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_title", @"Title:") andTextField:self.imageDetails.imageUploadName withPlaceholder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")];
+			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_title", @"Title:") andTextField:self.imageDetails.title withPlaceholder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")];
 			break;
 		}
 		case EditImageDetailsOrderAuthor:

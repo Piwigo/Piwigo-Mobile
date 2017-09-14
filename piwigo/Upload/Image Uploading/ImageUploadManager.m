@@ -232,8 +232,6 @@
                 mimeType = @"video/mp4";
                 // Replace file extension
                 nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
-                // Remove extension from name
-                nextImageToBeUploaded.imageUploadName = [nextImageToBeUploaded.imageUploadName stringByDeletingPathExtension];
             } else {
                 // This file won't be compatible!
                 [UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
@@ -294,7 +292,7 @@
     // Prepare properties for upload
 	NSDictionary *imageProperties = @{
 									  kPiwigoImagesUploadParamFileName : nextImageToBeUploaded.image,
-									  kPiwigoImagesUploadParamName : nextImageToBeUploaded.imageUploadName,
+									  kPiwigoImagesUploadParamTitle : nextImageToBeUploaded.title,
 									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.categoryToUploadTo)],
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.privacyLevel)],
 									  kPiwigoImagesUploadParamAuthor : nextImageToBeUploaded.author,

@@ -39,7 +39,7 @@ NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
 // Parameter keys:
 NSString * const kPiwigoImagesUploadParamData = @"data";
 NSString * const kPiwigoImagesUploadParamFileName = @"fileName";
-NSString * const kPiwigoImagesUploadParamName = @"name";
+NSString * const kPiwigoImagesUploadParamTitle = @"name";
 NSString * const kPiwigoImagesUploadParamChunk = @"chunk";
 NSString * const kPiwigoImagesUploadParamChunks = @"chunks";
 NSString * const kPiwigoImagesUploadParamCategory = @"category";
@@ -169,7 +169,7 @@ NSInteger const loadingViewTag = 899;
                                 fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
                                 mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];
         
-        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
+        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamTitle] dataUsingEncoding:NSUTF8StringEncoding]
                                     name:@"name"];
         
         [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]

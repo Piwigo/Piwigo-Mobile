@@ -105,7 +105,8 @@
                                 parameters:@{
                                              @"method" : @"pwg.images.setInfo",
                                              @"image_id" : imageId,
-                                             @"name" : [imageInformation objectForKey:kPiwigoImagesUploadParamName],
+                                             @"file" : [imageInformation objectForKey:kPiwigoImagesUploadParamFileName],
+                                             @"name" : [imageInformation objectForKey:kPiwigoImagesUploadParamTitle],
                                              @"author" : [imageInformation objectForKey:kPiwigoImagesUploadParamAuthor],
                                              @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription],
                                              @"tag_ids" : tagIdList,
@@ -151,7 +152,7 @@
 	}
 	
 	NSDictionary *imageProperties = @{
-									  kPiwigoImagesUploadParamName : imageInfo.imageUploadName,
+									  kPiwigoImagesUploadParamTitle : imageInfo.title,
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(imageInfo.privacyLevel)],
 									  kPiwigoImagesUploadParamAuthor : imageInfo.author,
 									  kPiwigoImagesUploadParamDescription : imageInfo.imageDescription,
