@@ -106,7 +106,7 @@ typedef enum {
 	
 	if(self.imageDetails.imageUploadName.length == 0)
 	{
-		self.imageDetails.imageUploadName = self.imageDetails.image;
+		self.imageDetails.imageUploadName = [self.imageDetails.image stringByDeletingPathExtension];
 	}
 }
 

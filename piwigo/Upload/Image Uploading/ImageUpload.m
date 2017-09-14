@@ -19,7 +19,7 @@
 	{
 		self.imageAsset = imageAsset;
 		self.image = [[imageAsset defaultRepresentation] filename];
-		self.imageUploadName = [[imageAsset defaultRepresentation] filename];
+		self.imageUploadName = [[[imageAsset defaultRepresentation] filename] stringByDeletingPathExtension];
 		self.categoryToUploadTo = category;
 		self.privacyLevel = privacy;
 	}
