@@ -152,7 +152,8 @@
 	}
 	
 	NSDictionary *imageProperties = @{
-									  kPiwigoImagesUploadParamTitle : imageInfo.title,
+                                      kPiwigoImagesUploadParamFileName : imageInfo.image,
+                                      kPiwigoImagesUploadParamTitle : imageInfo.title,
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(imageInfo.privacyLevel)],
 									  kPiwigoImagesUploadParamAuthor : imageInfo.author,
 									  kPiwigoImagesUploadParamDescription : imageInfo.imageDescription,

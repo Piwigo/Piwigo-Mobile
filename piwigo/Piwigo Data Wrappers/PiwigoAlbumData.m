@@ -188,7 +188,8 @@
 {
 	PiwigoImageData *newImageData = [[CategoriesData sharedInstance] getImageForCategory:imageUpload.categoryToUploadTo andId:[NSString stringWithFormat:@"%@", @(imageUpload.imageId)]];
 	
-	newImageData.name = imageUpload.title;
+    newImageData.fileName = imageUpload.image;
+    newImageData.name = imageUpload.title;
 	newImageData.privacyLevel = imageUpload.privacyLevel;
 	newImageData.author = imageUpload.author;
 	newImageData.imageDescription = imageUpload.imageDescription;
