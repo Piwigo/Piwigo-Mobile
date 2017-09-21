@@ -38,6 +38,7 @@
     [iRate sharedInstance].usesUntilPrompt  = 5;
     [iRate sharedInstance].promptForNewVersionIfUserRated = YES;
     [iRate sharedInstance].promptAtLaunch   = NO;
+    [iRate sharedInstance].ratingsURL       = [NSURL URLWithString:[NSString stringWithFormat:@"itms-apps://itunes.apple.com/us/app/piwigo/id%lu?action=write-review", (unsigned long)[iRate sharedInstance].appStoreID]];
 //#warning Preview mode
 //    [iRate sharedInstance].previewMode      = YES;
 }
