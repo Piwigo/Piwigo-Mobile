@@ -93,58 +93,66 @@
 
 -(void)imageOptions
 {
-	NSMutableArray *otherButtons = [NSMutableArray new];
-	[otherButtons addObject:NSLocalizedString(@"imageOptions_download", @"Download")];
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
+                                message:NSLocalizedString(@"imageOptions_message", @"Choose an action to apply.")
+                                preferredStyle:UIAlertControllerStyleActionSheet];
     
-    // Add actions capabilities if user has admin rights
-    if([Model sharedInstance].hasAdminRights)
-	{
-		[otherButtons addObject:NSLocalizedString(@"imageOptions_edit",  @"Edit")];
-		[otherButtons addObject:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")];
-	}
-	
-	[UIActionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem
-								animated:YES
-							   withTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
-					   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-				  destructiveButtonTitle:[Model sharedInstance].hasAdminRights ? NSLocalizedString(@"deleteImage_delete", @"Delete") : nil
-					   otherButtonTitles:otherButtons
-								tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-									buttonIndex += [Model sharedInstance].hasAdminRights ? 0 : 1;
-									switch(buttonIndex)
-									{
-										case 0: // Delete
-											[self deleteImage];
-											break;
-										case 1: // Download
-											[self downloadImage];
-											break;
-										case 2: // Edit
-										{
-											if(![Model sharedInstance].hasAdminRights) break;
-											
-											UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
-											EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-											editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
-											editImageVC.isEdit = YES;
-											UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
-                                            // Added dispatch_async() to prevent view not showing up on iPad
-											dispatch_async(dispatch_get_main_queue(), ^ {
-                                                [self.navigationController presentViewController:presentNav animated:YES completion:nil];
-                                            });
-											break;
-										}
-										case 3:	// set as album image
-										{
-											if(![Model sharedInstance].hasAdminRights) break;
-											
-											AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
-											[self.navigationController pushViewController:allCategoriesPickVC animated:YES];
-											
-											break;
-										}
-									}
-								}];
+    UIAlertAction* cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* deleteAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"deleteImage_delete", @"Delete")
+                                   style:UIAlertActionStyleDestructive
+                                   handler:^(UIAlertAction * action) {
+                                       [self deleteImage];
+                                   }];
+    
+    UIAlertAction* downloadAction = [UIAlertAction
+                                     actionWithTitle:NSLocalizedString(@"imageOptions_download", @"Download")
+                                     style:UIAlertActionStyleDefault
+                                     handler:^(UIAlertAction * action) {
+                                         [self downloadImage];
+                                     }];
+
+    UIAlertAction* editAction = [UIAlertAction
+                                 actionWithTitle:NSLocalizedString(@"imageOptions_edit",  @"Edit")
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * action) {
+                                     // Present EditImageDetails view
+                                     UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
+                                     EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
+                                     editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
+                                     editImageVC.isEdit = YES;
+                                     UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
+                                     [self.navigationController presentViewController:presentNav animated:YES completion:nil];
+                                 }];
+
+    UIAlertAction* setAsAlbumImageAction = [UIAlertAction
+                                            actionWithTitle:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                // Present CategoriesSelector view
+                                                AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+                                                [self.navigationController pushViewController:allCategoriesPickVC animated:YES];
+                                            }];
+
+    // Add default actions
+    [alert addAction:cancelAction];
+    [alert addAction:deleteAction];
+    [alert addAction:downloadAction];
+    
+    // Add Edit and Set As Album Image actions if user has admin rights
+    if ([Model sharedInstance].hasAdminRights) {
+        [alert addAction:editAction];
+        [alert addAction:setAsAlbumImageAction];
+    }
+    
+    // Present list of actions
+    alert.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)deleteImage

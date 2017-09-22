@@ -181,6 +181,7 @@
 
 // Image options (actions)
 "imageOptions_title" = "Image Options";
+"imageOptions_message" = "Choose an action to apply.";
 "imageOptions_edit" = "Edit";
 "imageOptions_download" = "Download";
 "imageOptions_setAlbumImage" = "Set as Album Image";
