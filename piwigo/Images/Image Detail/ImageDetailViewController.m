@@ -95,7 +95,7 @@
 {
     UIAlertController* alert = [UIAlertController
                                 alertControllerWithTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
-                                message:NSLocalizedString(@"imageOptions_message", @"Choose an action to perform.")
+                                message:nil
                                 preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
