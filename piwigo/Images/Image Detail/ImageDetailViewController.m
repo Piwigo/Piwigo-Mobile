@@ -95,7 +95,7 @@
 {
     UIAlertController* alert = [UIAlertController
                                 alertControllerWithTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
-                                message:NSLocalizedString(@"imageOptions_message", @"Choose an action to apply.")
+                                message:NSLocalizedString(@"imageOptions_message", @"Choose an action to perform.")
                                 preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
@@ -157,36 +157,51 @@
 
 -(void)deleteImage
 {
-	[UIAlertView showWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
-					   message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
-			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  if(buttonIndex == 1) {
-							  [ImageService deleteImage:self.imageData
-										   ListOnCompletion:^(NSURLSessionTask *task) {
-											   if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
-											   {
-												   [self.imgDetailDelegate didDeleteImage:self.imageData];
-											   }
-											   [self.navigationController popViewControllerAnimated:YES];
-										   } onFailure:^(NSURLSessionTask *task, NSError *error) {
-											   [UIAlertView showWithTitle:@"Delete Fail"
-																  message:@"Failed to delete image\nRetry?"
-														cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-														otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-																 tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-																	 if(buttonIndex == 1)
-																	 {
-																		 [self deleteImage];
-																	 }
-																 }];
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
+                                message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
+                                preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* deleteAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                   style:UIAlertActionStyleDestructive
+                                   handler:^(UIAlertAction * action) {
+                                       [ImageService deleteImage:self.imageData
+                                                ListOnCompletion:^(NSURLSessionTask *task) {
+                                                    if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
+                                                    {
+                                                        [self.imgDetailDelegate didDeleteImage:self.imageData];
+                                                    }
+                                                    [self.navigationController popViewControllerAnimated:YES];
+                                                } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                                    [UIAlertView showWithTitle:@"Delete Fail"
+                                                                       message:@"Failed to delete image\nRetry?"
+                                                             cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                                             otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
+                                                                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                                                          if(buttonIndex == 1)
+                                                                          {
+                                                                              [self deleteImage];
+                                                                          }
+                                                                      }];
 #if defined(DEBUG)
-											   NSLog(@"fail to delete!");
+                                                    NSLog(@"fail to delete!");
 #endif
-                                           }];
-						  }
-					  }];
+                                                }];
+                                   }];
+
+    // Add actions
+    [alert addAction:cancelAction];
+    [alert addAction:deleteAction];
+
+    // Present list of actions
+    alert.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)downloadImage
