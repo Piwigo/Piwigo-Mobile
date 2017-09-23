@@ -157,7 +157,7 @@
 "categorySelection_forImage" = "Select an album for this image";
 "categoryImageSet_title" = "Set Image Thumbnail";
 "categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";
-"categoryImageSetHUD_updating" = "Updating Album…";
+"categoryImageSetHUD_updating" = "Updating Album Thumbnail…";
 
 // Album set image thumbnail — Errors
 "categoryImageSetError_title" = "Image Set Error";
@@ -192,7 +192,7 @@
 "editImageDetails_tags" = "Tags:";
 "editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
-"editImageDetailsHUD_updating" = "Updating Image…";
+"editImageDetailsHUD_updating" = "Updating Image Info…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Failed to Update";
