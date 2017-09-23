@@ -904,46 +904,69 @@ typedef enum {
 {
 	if([Model sharedInstance].username.length > 0)
 	{
-		[UIAlertView showWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
-						   message:NSLocalizedString(@"logoutConfirmation_message", @"Are you sure you want to logout?")
-				 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-				 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-						  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-							  if(buttonIndex == 1)
-							  {
-								  [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
-									  if(sucessfulLogout)
-									  {
-										  [Model sharedInstance].hadOpenedSession = NO;
-                                          
-                                          // Back to default values
-                                          [Model sharedInstance].usesCommunityPluginV29 = NO;
-                                          [Model sharedInstance].canUploadVideos = NO;
-                                          [Model sharedInstance].hasAdminRights = NO;
-                                          
-                                          // Erase cache
-                                          [ClearCache clearAllCache];
-										  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-										  [appDelegate loadLoginView];
-									  }
-									  else
-									  {
-										  [UIAlertView showWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
-															 message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
-												   cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-												   otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-															tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-																if(buttonIndex == 1)
-																{
-																	[self logout];
-																}
-															}];
-									  }
-								  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-									  
-								  }];
-							  }
-						  }];
+        // Ask user for confirmation
+        UIAlertController* alert = [UIAlertController
+                    alertControllerWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
+                    message:NSLocalizedString(@"logoutConfirmation_message", @"Are you sure you want to logout?")
+                    preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* cancelAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                    style:UIAlertActionStyleCancel
+                    handler:^(UIAlertAction * action) {}];
+        
+        UIAlertAction* logoutAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                    style:UIAlertActionStyleDestructive
+                    handler:^(UIAlertAction * action) {
+                       [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
+                           if(sucessfulLogout)
+                           {
+                               // Session closed
+                               [Model sharedInstance].hadOpenedSession = NO;
+                               
+                               // Back to default values
+                               [Model sharedInstance].usesCommunityPluginV29 = NO;
+                               [Model sharedInstance].canUploadVideos = NO;
+                               [Model sharedInstance].hasAdminRights = NO;
+                               
+                               // Erase cache
+                               [ClearCache clearAllCache];
+                               AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                               [appDelegate loadLoginView];
+                           }
+                           else
+                           {
+                               // Failed, retry ?
+                               UIAlertController* alert = [UIAlertController
+                                                           alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
+                                                           message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
+                                                           preferredStyle:UIAlertControllerStyleAlert];
+                               
+                               UIAlertAction* dismissAction = [UIAlertAction
+                                                               actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                                               style:UIAlertActionStyleCancel
+                                                               handler:^(UIAlertAction * action) {}];
+                               
+                               UIAlertAction* retryAction = [UIAlertAction
+                                                               actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                                               style:UIAlertActionStyleDestructive
+                                                               handler:^(UIAlertAction * action) {
+                                                                   [self logout];
+                                                               }];
+                               
+                               [alert addAction:dismissAction];
+                               [alert addAction:retryAction];
+                               [self presentViewController:alert animated:YES completion:nil];
+                           }
+                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                           // Error message already presented
+                       }];
+                    }];
+        
+        [alert addAction:cancelAction];
+        [alert addAction:logoutAction];
+        [self presentViewController:alert animated:YES completion:nil];
 	}
 	else
 	{
