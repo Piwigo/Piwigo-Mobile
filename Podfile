@@ -9,6 +9,7 @@ target 'piwigo' do
   pod 'AFNetworking', '~> 3.1'
   pod 'iRate', '~> 1.12.1'
   pod 'MBProgressHUD', '~> 1.0.0'
+  pod 'MGSwipeTableCell'
 
   target 'piwigoTests' do
     inherit! :search_paths

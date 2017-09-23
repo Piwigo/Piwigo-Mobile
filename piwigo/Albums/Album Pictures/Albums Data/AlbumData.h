@@ -16,11 +16,11 @@
 @property (nonatomic, readonly) NSArray *images;
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId;
--(void)loadMoreImagesOnCompletion:(void (^)())completion;
--(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)())completion;
--(void)loadAllImagesOnCompletion:(void (^)())completion;
+-(void)loadMoreImagesOnCompletion:(void (^)(void))completion;
+-(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)(void))completion;
+-(void)loadAllImagesOnCompletion:(void (^)(void))completion;
 -(void)removeImage:(PiwigoImageData*)image;
 -(void)removeImageWithId:(NSInteger)imageId;
--(void)reloadAlbumOnCompletion:(void (^)())completion;
+-(void)reloadAlbumOnCompletion:(void (^)(void))completion;
 
 @end
