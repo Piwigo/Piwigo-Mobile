@@ -23,8 +23,8 @@
 "alertCancelButton" = "Cancel";
 "alertAddButton" = "Add";
 
-// Done view
-"done" = "Done";
+// Complete views
+"Complete" = "Complete";
 
 // Upload rights
 "uploadRights_title" = "Upload Rights Needed";
@@ -157,8 +157,7 @@
 "categorySelection_forImage" = "Select an album for this image";
 "categoryImageSet_title" = "Set Image Thumbnail";
 "categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";
-"categoryImageSetSuccess_title" = "Image Set Successful";
-"categoryImageSetSuccess_message" = "The image was set successfully for the album image";
+"categoryImageSetHUD_updating" = "Updating Album…";
 
 // Album set image thumbnail — Errors
 "categoryImageSetError_title" = "Image Set Error";
@@ -193,8 +192,7 @@
 "editImageDetails_tags" = "Tags:";
 "editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
-"editImageDetailsHUD_updating" = "Updating Image...";
-"editImageDetailsHUD_completed" = "Completed";
+"editImageDetailsHUD_updating" = "Updating Image…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Failed to Update";
@@ -238,7 +236,6 @@
 
 "downloadingImage" = "Downloading Image";
 "downloadingImages" = "Downloading Images";
-"downloadingImage_complete" = "Complete";
 "downloadingImageInfo" = "Downloading Image Info";
 "downloadingImageInfoForSort" = "Downloading Image Info for Sort";
 

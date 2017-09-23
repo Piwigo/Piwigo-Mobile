@@ -105,7 +105,7 @@
 	self.imageProgress.percent = percentDownloaded;
 	NSInteger percent = percentDownloaded * 100;
 	if(percent == 100) {
-		self.percentLabel.text = NSLocalizedString(@"downloadingImage_complete", @"Complete");
+		self.percentLabel.text = NSLocalizedString(@"Complete", nil);
 	} else {
 		self.percentLabel.text = [NSString stringWithFormat:@"%@ %%", @(percent)];
 	}
