@@ -10,6 +10,7 @@
 #import "CategoriesData.h"
 #import "AlbumService.h"
 #import "CategoryTableViewCell.h"
+#import "MBProgressHUD.h"
 
 @interface AllCategoriesViewController ()
 
@@ -115,20 +116,34 @@
 		albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
 	}
 	
-	[UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Set Image Thumbnail")
-					   message:[NSString stringWithFormat:NSLocalizedString(@"categoryImageSet_message", @"Are you sure you want to set this image for the album \"%@\"?"), albumData.name]
-			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  if(buttonIndex == 1)
-						  {
-							  [self setRepresentativeForCategoryId:albumData.albumId];
-						  }
-					  }];
+    UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Set Image Thumbnail")
+                message:[NSString stringWithFormat:NSLocalizedString(@"categoryImageSet_message", @"Are you sure you want to set this image for the album \"%@\"?"), albumData.name]
+                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* setImageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) {
+                                                             [self setRepresentativeForCategoryId:albumData.albumId];
+                                                         }];
+    
+    [alert addAction:cancelAction];
+    [alert addAction:setImageAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)setRepresentativeForCategoryId:(NSInteger)categoryId
 {
+    // Display HUD during the update
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showSettingRepresentativeHUD];
+    });
+    
+    // Set image as representative
 	[AlbumService setCategoryRepresentativeForCategory:categoryId
 											forImageId:self.imageId
 										  OnCompletion:^(NSURLSessionTask *task, BOOL setSuccessfully) {
@@ -145,22 +160,32 @@
                                                   // Image will be downloaded when displaying list of albums
                                                   category.categoryImage = nil;
 												  
-												  [UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSetSuccess_title", @"Image Set Successful")
-																	 message:NSLocalizedString(@"categoryImageSetSuccess_message", @"The image was set successfully for the album image")
-														   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-														   otherButtonTitles:nil
-																	tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-																		[self.navigationController popViewControllerAnimated:YES];
-																	}];
+                                                  // Close HUD
+                                                  [self hideSettingRepresentativeHUDwithSuccess:YES completion:^{
+                                                      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                                                          [self.navigationController popViewControllerAnimated:YES];
+                                                      });
+                                                  }];
 											  }
 											  else
 											  {
-												  [self showSetRepresentativeError:nil];
+                                                  // Close HUD and inform user
+                                                  [self hideSettingRepresentativeHUDwithSuccess:NO completion:^{
+                                                      dispatch_async(dispatch_get_main_queue(),^{
+                                                          [self showSetRepresentativeError:nil];
+                                                      });
+                                                  }];
 											  }
 										  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-											  [self showSetRepresentativeError:[error localizedDescription]];
+                                              // Close HUD and display error
+                                              [self hideSettingRepresentativeHUDwithSuccess:NO completion:^{
+                                                  dispatch_async(dispatch_get_main_queue(),^{
+                                                      [self showSetRepresentativeError:[error localizedDescription]];
+                                                  });
+                                              }];
 										  }];
 }
+
 -(void)showSetRepresentativeError:(NSString*)message
 {
 	NSString *bodyMessage = NSLocalizedString(@"categoryImageSetError_message", @"Failed to set the album image");
@@ -168,11 +193,62 @@
 	{
 		bodyMessage = [NSString stringWithFormat:@"%@\n%@", bodyMessage, message];
 	}
-	[UIAlertView showWithTitle:NSLocalizedString(@"categoryImageSetError_title", @"Image Set Error")
-					   message:bodyMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-			 otherButtonTitles:nil
-					  tapBlock:nil];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"categoryImageSetError_title", @"Image Set Error")
+                                                                   message:bodyMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                            style:UIAlertActionStyleCancel
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark -- HUD methods
+
+-(void)showSettingRepresentativeHUD
+{
+    // Create the loading HUD if needed
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+    if (!hud) {
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+    
+    // Change the background view shape, style and color.
+    hud.square = NO;
+    hud.animationType = MBProgressHUDAnimationFade;
+    hud.contentColor = [UIColor piwigoWhiteCream];
+    hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
+    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+    
+    // Define the text
+    hud.label.text = NSLocalizedString(@"categoryImageSetHUD_updating", @"Updating Album Thumbnail…");
+    hud.label.font = [UIFont piwigoFontNormal];
+}
+
+-(void)hideSettingRepresentativeHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Hide and remove the HUD
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+        if (hud) {
+            if (success) {
+                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"Complete", nil);
+                [hud hideAnimated:YES afterDelay:3.f];
+            } else {
+                [hud hideAnimated:YES];
+            }
+        }
+        if (completion) {
+            completion();
+        }
+    });
 }
 
 @end
