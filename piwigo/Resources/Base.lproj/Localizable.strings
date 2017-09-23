@@ -105,8 +105,10 @@
 "categorySort_imagesOnly" = "Images Only";
 
 // Album create
-"createNewAlbum_title" = "Create New Album";
-"createNewAlbum_message" = "Album name";
+"createNewAlbum_title" = "New Album";
+"createNewAlbum_message" = "Enter a name for this album.";
+"createNewAlbum_placeholder" = "Album Name";
+"createNewAlbumHUD_creating" = "Creating Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Create Album Error";
