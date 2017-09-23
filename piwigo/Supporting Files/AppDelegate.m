@@ -181,12 +181,17 @@
     else if(([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusDenied) ||
             ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusRestricted)) {
         // Inform user that he denied or restricted access to photos
-        [UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"Access not Authorized")
-                           message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                 otherButtonTitles:nil
-                          tapBlock:nil
-         ];
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"Access not Authorized")
+                message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* dismissAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") style:UIAlertActionStyleDefault
+                handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:dismissAction];
+        [self.loginVC presentViewController:alert animated:YES completion:nil];
     }
 }
 
