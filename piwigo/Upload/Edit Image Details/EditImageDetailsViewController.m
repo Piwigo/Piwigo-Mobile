@@ -48,28 +48,6 @@ typedef enum {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
 }
 
-// NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
--(void)setIsEdit:(BOOL)isEdit
-{
-	_isEdit = isEdit;
-	[ImageService getImageInfoById:self.imageDetails.imageId
-				  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-					  self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
-					  [self.editImageDetailsTableView reloadData];
-				  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-					  [UIAlertView showWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-										 message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-							   cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-							   otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-										tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-											if(buttonIndex == 1)
-											{
-												self.isEdit = _isEdit;
-											}
-										}];
-				  }];
-}
-
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
@@ -111,6 +89,39 @@ typedef enum {
 	}
 }
 
+// NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
+-(void)setIsEdit:(BOOL)isEdit
+{
+    _isEdit = isEdit;
+    [ImageService getImageInfoById:self.imageDetails.imageId
+                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
+                      [self.editImageDetailsTableView reloadData];
+                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                      // Failed — Ask user if he/she wishes to retry
+                      UIAlertController* alert = [UIAlertController
+                                                  alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+                                                  message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+                                                  preferredStyle:UIAlertControllerStyleAlert];
+                      
+                      UIAlertAction* dismissAction = [UIAlertAction
+                                                      actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                                      style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction * action) {}];
+                      
+                      UIAlertAction* retryAction = [UIAlertAction
+                                                      actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                                      style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * action) {
+                                                          self.isEdit = _isEdit;
+                                                      }];
+
+                      [alert addAction:dismissAction];
+                      [alert addAction:retryAction];
+                      [self presentViewController:alert animated:YES completion:nil];
+                  }];
+}
+
 -(void)cancelEdit
 {
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
@@ -133,25 +144,33 @@ typedef enum {
 						} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 							// complete
                             [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
-                                dispatch_async(dispatch_get_main_queue(),^{
-                                    sleep(0.7);
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                                     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                                 });
                             }];
 						} onFailure:^(NSURLSessionTask *task, NSError *error) {
 							// Failed
                             [self hideUpdatingImageInfoHUDwithSuccess:NO completion:^{
-                                [UIAlertView showWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update")
-                                                   message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server\nTry again?")
-                                         cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                         otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-                                                  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                                      if(buttonIndex == 1)
-                                                      {
-                                                          [self doneEdit];
-                                                      }
-                                                  }];
-                            }];
+                                UIAlertController* alert = [UIAlertController
+                                        alertControllerWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update")
+                                        message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server\nTry again?")
+                                        preferredStyle:UIAlertControllerStyleAlert];
+                                
+                                UIAlertAction* dismissAction = [UIAlertAction
+                                                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No") style:UIAlertActionStyleCancel
+                                                handler:^(UIAlertAction * action) {}];
+
+                                UIAlertAction* retryAction = [UIAlertAction
+                                                actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                                style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction * action) {
+                                                    [self doneEdit];
+                                                }];
+
+                                [alert addAction:dismissAction];
+                                [alert addAction:retryAction];
+                                [self presentViewController:alert animated:YES completion:nil];
+                             }];
 						}];
 }
 
@@ -174,7 +193,7 @@ typedef enum {
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
     
     // Define the text
-    hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating Image...");
+    hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating Image Info…");
     hud.label.font = [UIFont piwigoFontNormal];
 }
 
@@ -189,7 +208,7 @@ typedef enum {
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"editImageDetailsHUD_completed", @"Completed");
+                hud.label.text = NSLocalizedString(@"Complete", nil);
                 [hud hideAnimated:YES afterDelay:3.f];
             } else {
                 [hud hideAnimated:YES];
