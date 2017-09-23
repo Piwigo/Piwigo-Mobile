@@ -155,13 +155,13 @@
 											  }
 											  else
 											  {
-												  [self showSetRepresenativeError:nil];
+												  [self showSetRepresentativeError:nil];
 											  }
 										  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-											  [self showSetRepresenativeError:[error localizedDescription]];
+											  [self showSetRepresentativeError:[error localizedDescription]];
 										  }];
 }
--(void)showSetRepresenativeError:(NSString*)message
+-(void)showSetRepresentativeError:(NSString*)message
 {
 	NSString *bodyMessage = NSLocalizedString(@"categoryImageSetError_message", @"Failed to set the album image");
 	if(message)
