@@ -144,7 +144,7 @@ typedef enum {
 						} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 							// complete
                             [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
                                     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                                 });
                             }];

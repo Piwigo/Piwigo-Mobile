@@ -153,7 +153,6 @@ static SEL extracted() {
     
     [alert addAction:cancelAction];
     [alert addAction:self.createAlbumAction];
-    [self.createAlbumAction setEnabled:NO];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -172,7 +171,7 @@ static SEL extracted() {
                                   [AlbumService getAlbumListForCategory:0
                                                            OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                                                [self hideCreateCategoryHUDwithSuccess:YES completion:^{
-                                                                   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                                                                   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
                                                                        [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
                                                                    });
                                                                }];
@@ -263,6 +262,13 @@ static SEL extracted() {
 
 #pragma mark -- UITextField Delegate Methods
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    // Disable Add Category action
+    [self.createAlbumAction setEnabled:NO];
+    return YES;
+}
+
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     // Enable Add Category action if album name is non null
@@ -274,7 +280,7 @@ static SEL extracted() {
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
     // Disable Add Category action
-    self.createAlbumAction.enabled = NO;
+    [self.createAlbumAction setEnabled:NO];
     return YES;
 }
 
