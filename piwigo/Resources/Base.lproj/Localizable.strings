@@ -22,6 +22,8 @@
 "alertTryAgainButton" = "Try Again";
 "alertCancelButton" = "Cancel";
 "alertAddButton" = "Add";
+"alertRetryButton" = "Retry";
+"alertNextButton" = "Next";
 
 // Complete views
 "Complete" = "Complete";
@@ -276,7 +278,7 @@
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";
 "imageUploadProgressBar_completed" = "Completed";
 "imageUploadCompleted_title" = "Upload Completed";
-"imageUploadCompleted_message" = "1 image/video uploaded to your Piwigo server.";
+"imageUploadCompleted_message" = "image/video uploaded to your Piwigo server.";
 "imageUploadCompleted_message>1" = "images/videos uploaded to your Piwigo server.";
 
 // Image upload — Errors

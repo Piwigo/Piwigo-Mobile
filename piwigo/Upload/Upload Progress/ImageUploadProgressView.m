@@ -141,12 +141,12 @@
         
         // Inform user that the upload task completed
         [UIAlertView showWithTitle:NSLocalizedString(@"imageUploadCompleted_title", @"Upload Completed")
-                           message:(self.totalUploadedImages > 1) ? [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageUploadCompleted_message>1", @"images/videos uploaded to your Piwigo server.")]: NSLocalizedString(@"imageUploadCompleted_message", @"1 image/video uploaded to your Piwigo server.")
+                           message:(self.totalUploadedImages > 1) ? [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageUploadCompleted_message>1", @"images/videos uploaded to your Piwigo server.")] : [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageUploadCompleted_message", @"image/video uploaded to your Piwigo server.")]
                  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
                  otherButtonTitles:nil
                           tapBlock:nil];
         
-        // Tnitialise the counters for the next upload taks
+        // Initialise the counters for the next upload taks
 		self.totalUploadedImages = 0;
         self.currentImage = 1;
 	}
