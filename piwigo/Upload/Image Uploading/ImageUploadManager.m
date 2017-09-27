@@ -193,7 +193,7 @@
     if ([imageAsset valueForProperty:ALAssetPropertyType] == ALAssetTypeVideo) {
         
         // Can we upload videos to the Piwigo Server ?
-        if([Model sharedInstance].canUploadVideos) {
+        if(![Model sharedInstance].canUploadVideos) {
 
             // Release dictionary
             imageMetadata = nil;
