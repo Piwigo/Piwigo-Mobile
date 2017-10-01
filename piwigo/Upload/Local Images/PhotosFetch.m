@@ -36,16 +36,30 @@
 {
 	ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
 	if (status != ALAuthorizationStatusAuthorized && status != ALAuthorizationStatusNotDetermined) {
-		[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"Access not Authorized")
-						   message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-				 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-				 otherButtonTitles:nil
-						  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
-							  if(completion)
-							  {
-								  completion(@(-1));
-							  }
-						  }];
+
+        // Determine the present view controller
+        UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (topViewController.presentedViewController) {
+            topViewController = topViewController.presentedViewController;
+        }
+        
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
+                message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                style:UIAlertActionStyleCancel
+                handler:^(UIAlertAction * action) {
+                    if(completion)
+                    {
+                        completion(@(-1));
+                    }
+                }];
+        
+        [alert addAction:defaultAction];
+        [topViewController presentViewController:alert animated:YES completion:nil];        
 	}
 	
 	NSMutableArray *groupAssets = [NSMutableArray new];
