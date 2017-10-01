@@ -50,7 +50,7 @@
         
         UIAlertAction* defaultAction = [UIAlertAction
                 actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
+                style:UIAlertActionStyleDefault
                 handler:^(UIAlertAction * action) {
                     if(completion)
                     {
