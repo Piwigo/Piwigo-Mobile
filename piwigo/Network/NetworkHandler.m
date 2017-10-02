@@ -232,13 +232,23 @@ NSInteger const loadingViewTag = 899;
 
 +(void)showConnectionError:(NSError*)error
 {
-	UIAlertView *connectionError = [[UIAlertView alloc]
-                                    initWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                                    message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
-                                    delegate:nil
-                                    cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                    otherButtonTitles:nil];
-	[connectionError show];
+    UIAlertController* alert = [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+            message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
+            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
 @end
