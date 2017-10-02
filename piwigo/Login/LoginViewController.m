@@ -102,11 +102,19 @@
     // Check server address and cancel login if address not provided
     if(self.serverTextField.textField.text.length <= 0)
     {
-        [UIAlertView showWithTitle:NSLocalizedString(@"loginEmptyServer_title", @"Enter a Web Address")
-                           message:NSLocalizedString(@"loginEmptyServer_message", @"Please select a protocol and enter a Piwigo web address in order to proceed.")
-                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                 otherButtonTitles:nil
-                          tapBlock:nil];
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"loginEmptyServer_title", @"Enter a Web Address")
+                message:NSLocalizedString(@"loginEmptyServer_message", @"Please select a protocol and enter a Piwigo web address in order to proceed.")
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                style:UIAlertActionStyleCancel
+                handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        
         return;
     }
 
@@ -270,19 +278,30 @@
                     // Close loading or re-login view and ask what to do
                     [self hideLoadingWithCompletion:^{
                         dispatch_async(dispatch_get_main_queue(), ^{
-                        [UIAlertView showWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
-                                           message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
-                                 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-                                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                              // Load navigation if user wants to
-                                              if(buttonIndex == 1) {    // Proceed at their own risk
-                                                  if (isFirstLogin) {
-                                                      AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                                                      [appDelegate loadNavigation];
-                                                  }
-                                              }
-                                          }];
+                            UIAlertController* alert = [UIAlertController
+                                    alertControllerWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
+                                    message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
+                                    preferredStyle:UIAlertControllerStyleAlert];
+                            
+                            UIAlertAction* defaultAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+                            
+                            UIAlertAction* continueAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                    style:UIAlertActionStyleDestructive
+                                    handler:^(UIAlertAction * action) {
+                                        // Proceed at their own risk
+                                        if (isFirstLogin) {
+                                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                                            [appDelegate loadNavigation];
+                                        }
+                                    }];
+                            
+                            [alert addAction:defaultAction];
+                            [alert addAction:continueAction];
+                            [self presentViewController:alert animated:YES completion:nil];                            
                         });
                     }];
                 } else {
@@ -403,17 +422,22 @@
 
 -(void)showLoadingWithSubtitle:(NSString *)subtitle
 {
-    // Determine the present view controller (not necessarily self.view)
-    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (topViewController.presentedViewController) {
-        topViewController = topViewController.presentedViewController;
+    // Determine the present view controller if needed (not necessarily self.view)
+    if (!self.hudViewController) {
+        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (self.hudViewController.presentedViewController) {
+            self.hudViewController = self.hudViewController.presentedViewController;
+        }
     }
     
     // Create the login HUD if needed
-    MBProgressHUD *hud = [MBProgressHUD HUDForView:topViewController.view];
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
     if (!hud) {
+        // Set flag used to inform methods
+        [Model sharedInstance].hudBeingPresentedToUser = YES;
+        
         // Create the HUD
-        hud = [MBProgressHUD showHUDAddedTo:topViewController.view animated:YES];
+        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
         [hud setTag:loadingViewTag];
 
         // Change the background view shape, style and color.
@@ -447,14 +471,8 @@
     [Model sharedInstance].userCancelledCommunication = YES;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Determine the present view controller
-        UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (topViewController.presentedViewController) {
-            topViewController = topViewController.presentedViewController;
-        }
-
         // Update login HUD
-        MBProgressHUD *hud = [topViewController.view viewWithTag:loadingViewTag];
+        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
         if (hud) {
             // Update text
             hud.detailsLabel.text = NSLocalizedString(@"internetCancellingConnection_button", @"Cancelling Connection…");;
@@ -469,14 +487,8 @@
 - (void)loggingInConnectionError:(NSString *)error
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Determine the present view controller
-        UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (topViewController.presentedViewController) {
-            topViewController = topViewController.presentedViewController;
-        }
-        
         // Update login HUD
-        MBProgressHUD *hud = [topViewController.view viewWithTag:loadingViewTag];
+        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
         if (hud) {
             // Show only text
             hud.mode = MBProgressHUDModeText;
@@ -502,16 +514,14 @@
     // Reinitialise flag
     [Model sharedInstance].userCancelledCommunication = NO;
 
-    // Determine the present view controller
-    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (topViewController.presentedViewController) {
-        topViewController = topViewController.presentedViewController;
-    }
-    
     // Hide and remove login HUD
-    MBProgressHUD *hud = [topViewController.view viewWithTag:loadingViewTag];
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
     if (hud) {
         [hud hideAnimated:YES];
+        self.hudViewController = nil;
+        
+        // Set flag used to inform methods
+        [Model sharedInstance].hudBeingPresentedToUser = NO;
     }
 }
 
@@ -530,16 +540,6 @@
             completion();
         }
     });
-}
-
--(void)showLoginFail
-{
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"loginError_title", @"Login Fail")
-													message:NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")
-												   delegate:nil
-										  cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-										  otherButtonTitles:nil];
-	[alert show];
 }
 
 
