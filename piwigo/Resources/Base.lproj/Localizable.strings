@@ -110,7 +110,7 @@
 "createNewAlbum_title" = "New Album";
 "createNewAlbum_message" = "Enter a name for this album.";
 "createNewAlbum_placeholder" = "Album Name";
-"createNewAlbumHUD_creating" = "Creating Album…";
+"createNewAlbumHUD_label" = "Creating Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Create Album Error";
@@ -123,10 +123,9 @@
 
 // Album rename
 "renameCategory_title" = "Rename Album";
-"renameCategory_message" = "Rename album";
+"renameCategory_message" = "Enter a new name for this album";
 "renameCategory_button" = "Rename";
-"renameCategorySuccess_title" = "Rename Successful";
-"renameCategorySuccess_message" = "Successfully renamed your album";
+"renameCategoryHUD_label" = "Renaming Album…";
 
 // Album rename — Errors
 "renameCategoyError_title" = "Rename Fail";
@@ -138,8 +137,7 @@
 "deleteCategoryConfirm_title" = "Are you sure?";
 "deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album.\nNumber of images: %@";
 "deleteCategoryConfirm_deleteButton" = "DELETE";
-"deleteCategorySuccess_title" = "Delete Successful";
-"deleteCategorySuccess_message" = "Deleted \"%@\" album successfull";
+"deleteCategoryHUD_label" = "Deleting Album…";
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Number Doesn't Match";
@@ -151,6 +149,7 @@
 "moveCategory" = "Move Album";
 "moveCategory_selectParent" = "Select an album to move album \"%@\" into";
 "moveCategory_message" = "Are you sure you want to move \"%@\" into the album \"%@\"?";
+"moveCategoryHUD_moving" = "Moving Album…";
 
 // album move — Errors
 "moveCategoryError_title" = "Move Fail";
