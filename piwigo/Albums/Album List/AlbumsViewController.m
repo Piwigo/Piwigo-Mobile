@@ -163,20 +163,21 @@ static SEL extracted() {
         [self showCreateCategoryHUD];
     });
     
+    // Create album
     [AlbumService createCategoryWithName:albumName
                             withStatus:@"public"
                           OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
                               if(createdSuccessfully)
                               {
                                   [AlbumService getAlbumListForCategory:0
-                                                           OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-                                                               [self hideCreateCategoryHUDwithSuccess:YES completion:^{
-                                                                   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                                                                       [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-                                                                   });
-                                                               }];
-                                                           }
-                                                              onFailure:nil
+                                       OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                           [self hideCreateCategoryHUDwithSuccess:YES completion:^{
+                                               dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                                   [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                                               });
+                                           }];
+                                       }
+                                          onFailure:nil
                                    ];
                               }
                               else
@@ -232,7 +233,7 @@ static SEL extracted() {
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
     
     // Define the text
-    hud.label.text = NSLocalizedString(@"createNewAlbumHUD_creating", @"Creating Album…");
+    hud.label.text = NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…");
     hud.label.font = [UIFont piwigoFontNormal];
 }
 
