@@ -158,42 +158,55 @@
 -(void)deleteImage
 {
     UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
-                                message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
-                                preferredStyle:UIAlertControllerStyleActionSheet];
+            alertControllerWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
+            message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
+            preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                                   style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {}];
+           actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+           style:UIAlertActionStyleCancel
+           handler:^(UIAlertAction * action) {}];
     
     UIAlertAction* deleteAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                   style:UIAlertActionStyleDestructive
-                                   handler:^(UIAlertAction * action) {
-                                       [ImageService deleteImage:self.imageData
-                                                ListOnCompletion:^(NSURLSessionTask *task) {
-                                                    if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
-                                                    {
-                                                        [self.imgDetailDelegate didDeleteImage:self.imageData];
-                                                    }
-                                                    [self.navigationController popViewControllerAnimated:YES];
-                                                } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                                    [UIAlertView showWithTitle:@"Delete Fail"
-                                                                       message:@"Failed to delete image\nRetry?"
-                                                             cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                                             otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-                                                                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                                                          if(buttonIndex == 1)
-                                                                          {
-                                                                              [self deleteImage];
-                                                                          }
-                                                                      }];
+           actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+           style:UIAlertActionStyleDestructive
+           handler:^(UIAlertAction * action) {
+               [ImageService deleteImage:self.imageData
+                        ListOnCompletion:^(NSURLSessionTask *task) {
+                            // Successful deletion
+                            if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
+                            {
+                                [self.imgDetailDelegate didDeleteImage:self.imageData];
+                            }
+                            [self.navigationController popViewControllerAnimated:YES];
+                            
+                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                            // Error — Try again ?
+                            UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                                message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                                preferredStyle:UIAlertControllerStyleAlert];
+                            
+                            UIAlertAction* dismissAction = [UIAlertAction
+                                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                style:UIAlertActionStyleCancel
+                                handler:^(UIAlertAction * action) {}];
+                            
+                            UIAlertAction* retryAction = [UIAlertAction
+                                actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                style:UIAlertActionStyleDestructive
+                                handler:^(UIAlertAction * action) {
+                                    [self deleteImage];
+                                }];
+                            
+                            [alert addAction:dismissAction];
+                            [alert addAction:retryAction];
+                            [self presentViewController:alert animated:YES completion:nil];
 #if defined(DEBUG)
-                                                    NSLog(@"fail to delete!");
+                            NSLog(@"Fail to delete!");
 #endif
-                                                }];
-                                   }];
+                        }];
+           }];
 
     // Add actions
     [alert addAction:cancelAction];
@@ -208,12 +221,18 @@
 {
 	// Check that user provided access to Photos.app
     if ([ALAssetsLibrary authorizationStatus] != ALAuthorizationStatusAuthorized) {
-        [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                           message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                 otherButtonTitles:nil
-                          tapBlock:nil
-         ];
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                style:UIAlertActionStyleCancel
+                handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -244,19 +263,33 @@
 						 onProgress:^(NSProgress *progress) {
                              dispatch_async(dispatch_get_main_queue(),
                                             ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;});
-						 } ListOnCompletion:^(NSURLSessionTask *task, UIImage *image) {
+						 
+                         } ListOnCompletion:^(NSURLSessionTask *task, UIImage *image) {
 							 [self saveImageToCameraRoll:image];
-						 } onFailure:^(NSURLSessionTask *task, NSError *error) {
+						 
+                         } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                             // Failed — Inform user
 							 self.downloadView.hidden = YES;
-							 [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-												message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
-									  cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-									  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
-											   tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-												   if(buttonIndex == 1) {
-													   [self downloadImage];
-												   }
-											   }];
+                             UIAlertController* alert = [UIAlertController
+                                 alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                 message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
+                                 preferredStyle:UIAlertControllerStyleAlert];
+                             
+                             UIAlertAction* defaultAction = [UIAlertAction
+                                 actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                 style:UIAlertActionStyleCancel
+                                 handler:^(UIAlertAction * action) {}];
+                             
+                             UIAlertAction* retryAction = [UIAlertAction
+                                 actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                 style:UIAlertActionStyleCancel
+                                 handler:^(UIAlertAction * action) {
+                                     [self downloadImage];
+                                 }];
+                             
+                             [alert addAction:defaultAction];
+                             [alert addAction:retryAction];
+                             [self presentViewController:alert animated:YES completion:nil];
 						 }];
 	}
 	else
@@ -270,16 +303,29 @@
                   completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {                      
                       // Any error ?
                       if (error.code) {
-                         self.downloadView.hidden = YES;
-                         [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                                            message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), [error localizedDescription]]
-                                  cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                  otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
-                                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                               if(buttonIndex == 1) {
-                                                   [self downloadImage];
-                                               }
-                                           }];
+                          // Failed — Inform user
+                          self.downloadView.hidden = YES;
+                          UIAlertController* alert = [UIAlertController
+                                                      alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                                      message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), [error localizedDescription]]
+                                                      preferredStyle:UIAlertControllerStyleAlert];
+                          
+                          UIAlertAction* defaultAction = [UIAlertAction
+                                                          actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                          style:UIAlertActionStyleCancel
+                                                          handler:^(UIAlertAction * action) {}];
+                          
+                          UIAlertAction* retryAction = [UIAlertAction
+                                                        actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                                        style:UIAlertActionStyleCancel
+                                                        handler:^(UIAlertAction * action) {
+                                                            [self downloadImage];
+                                                        }];
+                          
+                          [alert addAction:defaultAction];
+                          [alert addAction:retryAction];
+                          [self presentViewController:alert animated:YES completion:nil];
+                          
                       } else {
                           // Try to move video in Photos.app
 #if defined(DEBUG)
@@ -288,12 +334,19 @@
                           if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath.path)) {
                               UISaveVideoAtPathToSavedPhotosAlbum(filePath.path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
                           } else {
-                              [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                                                 message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
-                                       cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                       otherButtonTitles:nil
-                                                tapBlock:nil
-                               ];
+                              // Failed — Inform user
+                              UIAlertController* alert = [UIAlertController
+                                                          alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                                          message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
+                                                          preferredStyle:UIAlertControllerStyleAlert];
+                              
+                              UIAlertAction* defaultAction = [UIAlertAction
+                                                              actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                              style:UIAlertActionStyleCancel
+                                                              handler:^(UIAlertAction * action) {}];
+                              
+                              [alert addAction:defaultAction];
+                              [self presentViewController:alert animated:YES completion:nil];
                           }
                           self.downloadView.hidden = YES;
                       }
@@ -311,11 +364,19 @@
 {
 	if(error)
 	{
-		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
-						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-				 otherButtonTitles:nil
-						  tapBlock:nil];
+        // Failed — Inform user
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
+                message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                style:UIAlertActionStyleCancel
+                handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
 	}
 	self.downloadView.hidden = YES;
 }
@@ -323,11 +384,19 @@
 {
 	if(error)
 	{
-		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
-						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-				 otherButtonTitles:nil
-						  tapBlock:nil];
+        // Failed — Inform user
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
+                message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                style:UIAlertActionStyleCancel
+                handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
 	}
 	self.downloadView.hidden = YES;
 }
