@@ -26,7 +26,6 @@
 	#import <AFNetworking.h>
 	#import <UIImageView+AFNetworking.h>
 	#import "UIFont+AppFonts.h"
-	#import "UIAlertView+Blocks.h"
 	#import "MGSwipeTableCell.h"
 	#import "MGSwipeButton.h"
 #endif
