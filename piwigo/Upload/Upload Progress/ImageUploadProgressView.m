@@ -137,23 +137,35 @@
 	
 	if(rank > totalInQueue)
 	{
-		[self.uploadProgress setProgress:0 animated:NO];
-        
+        // Determine the present view controller
+        UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (topViewController.presentedViewController) {
+            topViewController = topViewController.presentedViewController;
+        }
+
         // Inform user that the upload task completed
-        [UIAlertView showWithTitle:NSLocalizedString(@"imageUploadCompleted_title", @"Upload Completed")
-                           message:(self.totalUploadedImages > 1) ? [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageUploadCompleted_message>1", @"images/videos uploaded to your Piwigo server.")] : [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageUploadCompleted_message", @"image/video uploaded to your Piwigo server.")]
-                 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                 otherButtonTitles:nil
-                          tapBlock:nil];
+        UIAlertController* alert = [UIAlertController
+                    alertControllerWithTitle:NSLocalizedString(@"imageUploadCompleted_title", @"Upload Completed")
+                    message:(self.totalUploadedImages > 1) ? [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageUploadCompleted_message>1", @"images/videos uploaded to your Piwigo server.")] : [NSString stringWithFormat:@"%ld %@", (long)self.totalUploadedImages, NSLocalizedString(@"imageUploadCompleted_message", @"image/video uploaded to your Piwigo server.")]
+                    preferredStyle:UIAlertControllerStyleAlert];
         
-        // Initialise the counters for the next upload taks
-		self.totalUploadedImages = 0;
-        self.currentImage = 1;
-	}
-	
-	if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-	{
-		[self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
+        UIAlertAction* defaultAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                    style:UIAlertActionStyleCancel
+                    handler:^(UIAlertAction * action) {
+                        // Initialise counters for the next upload taks
+                        [self.uploadProgress setProgress:0 animated:NO];
+                        self.totalUploadedImages = 0;
+                        self.currentImage = 1;
+                        
+                        if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+                        {
+                            [self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
+                        }
+                    }];
+        
+        [alert addAction:defaultAction];
+        [topViewController presentViewController:alert animated:YES completion:nil];
 	}
 }
 
