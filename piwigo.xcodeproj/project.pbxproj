@@ -20,7 +20,6 @@
 		AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
-		D8083A521A7CB78900A95605 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A511A7CB78900A95605 /* UIAlertView+Blocks.m */; };
 		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
 		D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */; };
 		D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */; };
@@ -155,8 +154,6 @@
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8083A501A7CB78900A95605 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
-		D8083A511A7CB78900A95605 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
 		D8083A531A7D66CD00A95605 /* ImageService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageService.h; sourceTree = "<group>"; };
 		D8083A541A7D66CD00A95605 /* ImageService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageService.m; sourceTree = "<group>"; };
 		D8083A591A7DBD5000A95605 /* ImageDownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloadView.h; sourceTree = "<group>"; };
@@ -612,8 +609,6 @@
 		D82B8CED1A6790A3000E47CA /* Macros */ = {
 			isa = PBXGroup;
 			children = (
-				D8083A501A7CB78900A95605 /* UIAlertView+Blocks.h */,
-				D8083A511A7CB78900A95605 /* UIAlertView+Blocks.m */,
 				D847B83B1A7C06A500231886 /* OutlinedText.h */,
 				D847B83C1A7C06A500231886 /* OutlinedText.m */,
 				D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */,
@@ -1102,7 +1097,6 @@
 				AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */,
 				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
 				D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */,
-				D8083A521A7CB78900A95605 /* UIAlertView+Blocks.m in Sources */,
 				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
 				D8F1135D1A9E4E43000EC0A6 /* UICountingLabel.m in Sources */,
@@ -1392,7 +1386,7 @@
 					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
 				);
 				INFOPLIST_FILE = piwigo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1418,7 +1412,7 @@
 					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
 				);
 				INFOPLIST_FILE = piwigo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
