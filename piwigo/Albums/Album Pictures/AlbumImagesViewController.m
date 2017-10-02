@@ -230,18 +230,9 @@
 	if(self.selectedImageIds.count <= 0) return;
 	
     // Do we really want to delete these images?
-    NSString *titleString, *messageString;
-    if (self.selectedImageIds.count > 1) {
-        titleString = NSLocalizedString(@"deleteSeveralImages_title", @"Delete Images");
-        messageString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImageIds.count)];
-    } else {
-        titleString = NSLocalizedString(@"deleteSingleImage_title", @"Delete Image");
-        messageString = NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?");
-    }
-    
     UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:titleString
-                                message:messageString
+                                alertControllerWithTitle:(self.selectedImageIds.count > 1) ? NSLocalizedString(@"deleteSeveralImages_title", @"Delete Images") : NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
+                                message:(self.selectedImageIds.count > 1) ? [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImageIds.count)] : NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?")
                                 preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* cancelAction = [UIAlertAction
@@ -274,42 +265,43 @@
     
     // Image data are not always available —> Load them
     [ImageService getImageInfoById:[self.selectedImageIds.lastObject integerValue]
-     
               ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
                   // Let's delete the image
-                  [ImageService deleteImage:imageData ListOnCompletion:^(NSURLSessionTask *task) {
-                      
-                      [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
-                      
-                      [self.selectedImageIds removeLastObject];
-                      NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
-                      self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
-                      [self.imagesCollection reloadData];
-                      [self deleteSelected];
-                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                      // Error — Try again ?
-                      UIAlertController* alert = [UIAlertController
-                                  alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-                                  message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
-                                  preferredStyle:UIAlertControllerStyleAlert];
-                      
-                      UIAlertAction* dismissAction = [UIAlertAction
-                                  actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                  style:UIAlertActionStyleDefault
-                                  handler:^(UIAlertAction * action) {}];
-                      
-                      UIAlertAction* retryAction = [UIAlertAction
-                                  actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
-                                  style:UIAlertActionStyleDestructive
-                                  handler:^(UIAlertAction * action) {
-                                      [self deleteSelected];
-                                  }];
-                      
-                      [alert addAction:dismissAction];
-                      [alert addAction:retryAction];
-                      [self presentViewController:alert animated:YES completion:nil];
-                  }];
+                  [ImageService deleteImage:imageData
+                           ListOnCompletion:^(NSURLSessionTask *task) {
+                              // Image deleted
+                              [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
+                              
+                              [self.selectedImageIds removeLastObject];
+                              NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
+                              self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
+                              [self.imagesCollection reloadData];
+                              [self deleteSelected];
+                           }
+                           onFailure:^(NSURLSessionTask *task, NSError *error) {
+                              // Error — Try again ?
+                              UIAlertController* alert = [UIAlertController
+                                          alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                                          message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                                          preferredStyle:UIAlertControllerStyleAlert];
+                              
+                              UIAlertAction* dismissAction = [UIAlertAction
+                                          actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                          style:UIAlertActionStyleCancel
+                                          handler:^(UIAlertAction * action) {}];
+                              
+                              UIAlertAction* retryAction = [UIAlertAction
+                                          actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                          style:UIAlertActionStyleDestructive
+                                          handler:^(UIAlertAction * action) {
+                                              [self deleteSelected];
+                                          }];
+                              
+                              [alert addAction:dismissAction];
+                              [alert addAction:retryAction];
+                              [self presentViewController:alert animated:YES completion:nil];
+                           }];
 
               } onFailure:^(NSURLSessionTask *task, NSError *error) {
                   // Error encountered when retrieving image infos
