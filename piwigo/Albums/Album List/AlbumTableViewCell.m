@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "AlbumTableViewCell.h"
 #import "PiwigoAlbumData.h"
 #import "ImageService.h"
@@ -16,9 +18,10 @@
 #import "CategoriesData.h"
 #import "MoveCategoryViewController.h"
 #import "NetworkHandler.h"
-#import <AFNetworking/AFImageDownloader.h>
+#import "MBProgressHUD.h"
 
-@interface AlbumTableViewCell()
+
+@interface AlbumTableViewCell() <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundImage;
 @property (nonatomic, strong) OutlinedText *albumName;
@@ -27,6 +30,7 @@
 @property (nonatomic, strong) UIView *textUnderlay;
 @property (nonatomic, strong) UIImageView *cellDisclosure;
 @property (nonatomic, strong) NSURLSessionTask *cellDataRequest;
+@property (nonatomic, strong) UIAlertAction *categoryAction;
 
 @end
 
@@ -190,150 +194,20 @@
 	[self setupBgWithImage:self.albumData.categoryImage];
 }
 
--(void)renameCategory
-{
-	[UIAlertView showWithTitle:NSLocalizedString(@"renameCategory_title", @"Rename Album")
-					   message:[NSString stringWithFormat:@"%@ \"%@\"?", NSLocalizedString(@"renameCategory_message", @"Rename album"), self.albumData.name]
-						 style:UIAlertViewStylePlainTextInput
-			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-			 otherButtonTitles:@[NSLocalizedString(@"renameCategory_button", @"Rename")]
-					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  if(buttonIndex == 1)
-						  {
-							  [AlbumService renameCategory:self.albumData.albumId
-												   forName:[alertView textFieldAtIndex:0].text
-											  OnCompletion:^(NSURLSessionTask *task, BOOL renamedSuccessfully) {
-												  
-												  if(renamedSuccessfully)
-												  {
-													  self.albumData.name = [alertView textFieldAtIndex:0].text;
-													  
-													  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
-
-													  [UIAlertView showWithTitle:NSLocalizedString(@"renameCategorySuccess_title", @"Rename Successful")
-																		 message:NSLocalizedString(@"renameCategorySuccess_message", @"Successfully renamed your album")
-															   cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-															   otherButtonTitles:nil
-																		tapBlock:nil];
-												  }
-												  else
-												  {
-													  [self showRenameErrorWithMessage:nil];
-												  }
-											  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-												  
-												  [self showRenameErrorWithMessage:[error localizedDescription]];
-											  }];
-						  }
-					  }];
-}
--(void)showRenameErrorWithMessage:(NSString*)message
-{
-	NSString *errorMessage = NSLocalizedString(@"renameCategoyError_message", @"Failed to rename your album");
-	if(message)
-	{
-		errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
-	}
-	[UIAlertView showWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
-					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-			 otherButtonTitles:nil
-					  tapBlock:nil];
-}
-
--(void)moveCategory
-{
-	MoveCategoryViewController *moveCategoryVC = [[MoveCategoryViewController alloc] initWithSelectedCategory:self.albumData];
-	if([self.cellDelegate respondsToSelector:@selector(pushView:)])
-	{
-		[self.cellDelegate pushView:moveCategoryVC];
-	}
-}
-
--(void)deleteCategory
-{
-	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategory_title", @"DELETE ALBUM")
-					   message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_message", @"ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), self.albumData.name, @(self.albumData.totalNumberOfImages)]
-			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  if(buttonIndex == 1)
-						  {
-							  [UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryConfirm_title", @"Are you sure?")
-												 message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategoryConfirm_message", @"Please enter the number of images in order to delete this album\nNumber of images: %@"), @(self.albumData.numberOfImages)]
-												   style:UIAlertViewStylePlainTextInput
-									   cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-									   otherButtonTitles:@[NSLocalizedString(@"deleteCategoryConfirm_deleteButton", @"DELETE")]
-												tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-													if(buttonIndex == 1)
-													{
-														NSInteger number = -1;
-														if([alertView textFieldAtIndex:0].text.length > 0)
-														{
-															number = [[alertView textFieldAtIndex:0].text integerValue];
-														}
-														if(number == self.albumData.totalNumberOfImages)
-														{
-															[AlbumService deleteCategory:self.albumData.albumId OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
-																if(deletedSuccessfully)
-																{
-																	[[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
-																	[[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
-																	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategorySuccess_title",  @"Delete Successful")
-																					   message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategorySuccess_message", @"Deleted \"%@\" album successfully"), self.albumData.name]
-																			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-																			 otherButtonTitles:nil
-																					  tapBlock:nil];
-																}
-																else
-																{
-																	[self deleteCategoryError:nil];
-																}
-															} onFailure:^(NSURLSessionTask *task, NSError *error) {
-																[self deleteCategoryError:[error localizedDescription]];
-															}];
-														}
-														else
-														{	// they entered the wrong amount
-															[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match")
-																			   message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album")
-																	 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-																	 otherButtonTitles:nil
-																			  tapBlock:nil];
-														}
-													}
-												}];
-						  }
-					  }];
-}
--(void)deleteCategoryError:(NSString*)message
-{
-	NSString *errorMessage = NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album");
-	if(message)
-	{
-		errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
-	}
-	[UIAlertView showWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail")
-					   message:errorMessage
-			 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-			 otherButtonTitles:nil
-					  tapBlock:nil];
-}
-
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
 {
-	if(!albumData) return;
-	
-	self.albumData = albumData;
-	
+    if(!albumData) return;
+    
+    self.albumData = albumData;
+    
     // Add up/down arrows in front of album name when Community extension active
-//#if defined(DEBUG)
-//    NSLog(@"setupWithAlbumData: usesCommunityPluginV29=%@, hasAdminRights=%@",
-//          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-//          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
-//#endif
+    //#if defined(DEBUG)
+    //    NSLog(@"setupWithAlbumData: usesCommunityPluginV29=%@, hasAdminRights=%@",
+    //          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
+    //          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+    //#endif
     if (![Model sharedInstance].usesCommunityPluginV29 ||
-         [Model sharedInstance].hasAdminRights ||
+        [Model sharedInstance].hasAdminRights ||
         ![Model sharedInstance].hadOpenedSession) {
         self.albumName.text = self.albumData.name;
     } else if (self.albumData.hasUploadRights) {
@@ -342,7 +216,7 @@
         self.albumName.text = [NSString stringWithFormat:@"≥ %@", self.albumData.name];
     }
     
-     // Display number of images and sub-albums
+    // Display number of images and sub-albums
     if (self.albumData.numberOfSubCategories == 0) {
         
         // There are no sub-albums
@@ -351,12 +225,12 @@
                                     self.albumData.numberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
         
     } else if (self.albumData.totalNumberOfImages == 0) {
-            
+        
         // There are no images but sub-albums
         self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@",
                                     (long)self.albumData.numberOfSubCategories,
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
-
+        
     } else {
         
         // There are images and sub-albums
@@ -368,101 +242,426 @@
     }
     
     // Display date/time of last edition
-	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.formatterBehavior = NSDateFormatterBehavior10_4;
     formatter.dateStyle = NSDateFormatterShortStyle;
-	self.date.text = [formatter stringFromDate:self.albumData.dateLast];
-	
+    self.date.text = [formatter stringFromDate:self.albumData.dateLast];
+    
     // Display album image
-	NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
-	
-	if(albumData.categoryImage && imageSize > 0)
-	{
-		[self setupBgWithImage:albumData.categoryImage];
-	}
-	else if(albumData.albumThumbnailId > 0)
-	{
-		__weak typeof(self) weakSelf = self;
-		self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
-					  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-						  if(!imageData.MediumPath)
-						  {
-							  albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
-						  }
-						  else
-						  {
-                              NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
-
-                              // Ensure that SSL certificates won't be rejected
-                              AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-                              [policy setAllowInvalidCertificates:YES];
-                              [policy setValidatesDomainName:NO];
-                              
-                              AFImageDownloader *dow = [AFImageDownloader defaultInstance];
-                              [dow.sessionManager setSecurityPolicy:policy];
-                              
-                              [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
-                                                  placeholderImage:[UIImage imageNamed:@"placeholder"]
-                                                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                               albumData.categoryImage = image;
-                                                               [weakSelf setupBgWithImage:image];
-							  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+    NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
+    
+    if(albumData.categoryImage && imageSize > 0)
+    {
+        [self setupBgWithImage:albumData.categoryImage];
+    }
+    else if(albumData.albumThumbnailId > 0)
+    {
+        __weak typeof(self) weakSelf = self;
+        self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
+                                             ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                                                 if(!imageData.MediumPath)
+                                                 {
+                                                     albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+                                                 }
+                                                 else
+                                                 {
+                                                     NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
+                                                     
+                                                     // Ensure that SSL certificates won't be rejected
+                                                     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+                                                     [policy setAllowInvalidCertificates:YES];
+                                                     [policy setValidatesDomainName:NO];
+                                                     
+                                                     AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+                                                     [dow.sessionManager setSecurityPolicy:policy];
+                                                     
+                                                     [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
+                                                                                 placeholderImage:[UIImage imageNamed:@"placeholder"]
+                                                                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                                                              albumData.categoryImage = image;
+                                                                                              [weakSelf setupBgWithImage:image];
+                                                                                          } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-								  NSLog(@"fail to get imgage for album at %@", imageData.MediumPath);
+                                                                                              NSLog(@"fail to get imgage for album at %@", imageData.MediumPath);
 #endif
-                              }];
-						  }
-					  } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                                                                          }];
+                                                 }
+                                             } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-						  NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
+                                                 NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
 #endif
-                      }];
-	}
+                                             }];
+    }
 }
 
 -(void)setupBgWithImage:(UIImage*)image
 {
-	self.backgroundImage.image = image;
-	
-	if(!IS_OS_8_OR_LATER)
-	{
-		LEColorPicker *colorPicker = [LEColorPicker new];
-		LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
-		UIColor *backgroundColor = colorScheme.backgroundColor;
-	//	UIColor *primaryColor = colorScheme.primaryTextColor;
-	//	UIColor *secondaryColor = colorScheme.secondaryTextColor;
-
-		CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
-		CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
-		CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
-
-
-		int threshold = 105;
-		int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
-		UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
-		self.textUnderlay.backgroundColor = bgColor;
-		self.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
-		self.date.textColor = self.numberOfImages.textColor;
-		self.cellDisclosure.tintColor = self.numberOfImages.textColor;
-	}
+    self.backgroundImage.image = image;
+    
+    if(!IS_OS_8_OR_LATER)
+    {
+        LEColorPicker *colorPicker = [LEColorPicker new];
+        LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
+        UIColor *backgroundColor = colorScheme.backgroundColor;
+        //    UIColor *primaryColor = colorScheme.primaryTextColor;
+        //    UIColor *secondaryColor = colorScheme.secondaryTextColor;
+        
+        CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
+        CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
+        CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
+        
+        
+        int threshold = 105;
+        int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
+        UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
+        self.textUnderlay.backgroundColor = bgColor;
+        self.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
+        self.date.textColor = self.numberOfImages.textColor;
+        self.cellDisclosure.tintColor = self.numberOfImages.textColor;
+    }
 }
 
 -(void)prepareForReuse
 {
-	[super prepareForReuse];
-	
-	[self.cellDataRequest cancel];
-	[self.backgroundImage cancelImageDownloadTask];
-	self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
-	
-	self.albumName.text = @"";
-	self.numberOfImages.text = @"";
+    [super prepareForReuse];
+    
+    [self.cellDataRequest cancel];
+    [self.backgroundImage cancelImageDownloadTask];
+    self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
+    
+    self.albumName.text = @"";
+    self.numberOfImages.text = @"";
 }
 
 -(void)setFrame:(CGRect)frame
 {
-	frame.size.height -= 8.0;
-	[super setFrame:frame];
+    frame.size.height -= 8.0;
+    [super setFrame:frame];
+}
+
+
+#pragma mark -- Move Category
+
+-(void)moveCategory
+{
+    MoveCategoryViewController *moveCategoryVC = [[MoveCategoryViewController alloc] initWithSelectedCategory:self.albumData];
+    if([self.cellDelegate respondsToSelector:@selector(pushView:)])
+    {
+        [self.cellDelegate pushView:moveCategoryVC];
+    }
+}
+
+
+#pragma mark -- Rename Category
+
+-(void)renameCategory
+{
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"renameCategory_title", @"Rename Album")
+        message:[NSString stringWithFormat:@"%@ \"%@\"?", NSLocalizedString(@"renameCategory_message", @"Enter a new name for this album"), self.albumData.name]
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
+        textField.clearButtonMode = UITextFieldViewModeAlways;
+        textField.keyboardType = UIKeyboardTypeDefault;
+        textField.delegate = self;
+    }];
+
+    UIAlertAction* cancelAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {}];
+    
+    self.categoryAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"renameCategory_button", @"Rename")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            // Rename album
+            [self renameCategoryWithName:alert.textFields.firstObject.text andViewController:topViewController];
+        }];
+    
+    [alert addAction:cancelAction];
+    [alert addAction:self.categoryAction];
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)renameCategoryWithName:(NSString *)albumName andViewController:(UIViewController *)topViewController
+{
+    // Display HUD during the update
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showCreateCategoryHUDwithLabel:NSLocalizedString(@"renameCategoryHUD_label", @"Renaming Album…") inView:topViewController.view];
+    });
+    
+    // Rename album
+    [AlbumService renameCategory:self.albumData.albumId
+                         forName:albumName
+                    OnCompletion:^(NSURLSessionTask *task, BOOL renamedSuccessfully) {
+                        
+                        if(renamedSuccessfully)
+                        {
+                            [self hideCreateCategoryHUDwithSuccess:YES inView:topViewController.view completion:^{
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                    self.albumData.name = albumName;
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                                });
+                            }];
+                        }
+                        else
+                        {
+                            [self hideCreateCategoryHUDwithSuccess:NO inView:topViewController.view completion:^{
+                                [self showRenameErrorWithMessage:nil andViewController:topViewController];
+                            }];
+                        }
+                    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                        [self hideCreateCategoryHUDwithSuccess:NO inView:topViewController.view completion:^{
+                            [self showRenameErrorWithMessage:[error localizedDescription] andViewController:topViewController];
+                        }];
+                    }];
+}
+    
+-(void)showRenameErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
+{
+	NSString *errorMessage = NSLocalizedString(@"renameCategoyError_message", @"Failed to rename your album");
+	if(message)
+	{
+		errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+	}
+    UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
+                message:errorMessage
+                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                style:UIAlertActionStyleCancel
+                handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark -- Delete Category
+
+-(void)deleteCategory
+{
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"deleteCategory_title", @"DELETE ALBUM")
+        message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_message", @"ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), self.albumData.name, @(self.albumData.totalNumberOfImages)]
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* nextAlertAction = [UIAlertAction
+         actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+         style:UIAlertActionStyleDestructive
+         handler:^(UIAlertAction * action) {
+             // Are you sure?
+             UIAlertController* alert = [UIAlertController
+                 alertControllerWithTitle:NSLocalizedString(@"deleteCategoryConfirm_title", @"Are you sure?")
+                 message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategoryConfirm_message", @"Please enter the number of images in order to delete this album\nNumber of images: %@"), @(self.albumData.numberOfImages)]
+                 preferredStyle:UIAlertControllerStyleAlert];
+             
+             [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+                 textField.placeholder = [NSString stringWithFormat:@"%@", @(self.albumData.numberOfImages)];
+                 textField.clearButtonMode = UITextFieldViewModeAlways;
+                 textField.keyboardType = UIKeyboardTypeNumberPad;
+                 textField.delegate = self;
+             }];
+             
+             UIAlertAction* defaultAction = [UIAlertAction
+                        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                        style:UIAlertActionStyleCancel
+                        handler:^(UIAlertAction * action) {}];
+             
+             UIAlertAction* deleteAction = [UIAlertAction
+                        actionWithTitle:NSLocalizedString(@"deleteCategoryConfirm_deleteButton", @"DELETE")
+                        style:UIAlertActionStyleDestructive
+                        handler:^(UIAlertAction * action) {
+                            NSInteger number = -1;
+                            if(alert.textFields.firstObject.text.length > 0)
+                            {
+                                number = [alert.textFields.firstObject.text integerValue];
+                            }
+                            [self deleteCategoryWithNumberOfImages:number andViewController:topViewController];
+                        }];
+             
+             [alert addAction:defaultAction];
+             [alert addAction:deleteAction];
+             [topViewController presentViewController:alert animated:YES completion:nil];
+    }];
+    
+    [alert addAction:defaultAction];
+    [alert addAction:nextAlertAction];
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)deleteCategoryWithNumberOfImages:(NSInteger)number andViewController:(UIViewController *)topViewController
+{
+    // Display HUD during the update
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showCreateCategoryHUDwithLabel:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") inView:topViewController.view];
+    });
+    
+    // Delete album?
+    if(number == self.albumData.totalNumberOfImages)
+    {
+        [AlbumService deleteCategory:self.albumData.albumId
+                OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
+                        if(deletedSuccessfully)
+                        {
+                            [self hideCreateCategoryHUDwithSuccess:YES inView:topViewController.view completion:^{
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                    [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                                });
+                            }];
+                        }
+                        else
+                        {
+                            [self hideCreateCategoryHUDwithSuccess:NO inView:topViewController.view completion:^{
+                                [self showDeleteCategoryErrorWithMessage:nil andViewController:topViewController];
+                            }];
+                        }
+                }  onFailure:^(NSURLSessionTask *task, NSError *error) {
+                    [self hideCreateCategoryHUDwithSuccess:NO inView:topViewController.view completion:^{
+                        [self showDeleteCategoryErrorWithMessage:[error localizedDescription] andViewController:topViewController];
+                    }];
+                }];
+    }
+    else
+    {    // User entered the wrong amount
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match")
+                message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album")
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                style:UIAlertActionStyleDefault
+                handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [topViewController presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+-(void)showDeleteCategoryErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
+{
+	NSString *errorMessage = NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album");
+	if(message)
+	{
+		errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+	}
+
+    UIAlertController* alert = [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail")
+            message:errorMessage
+            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+            style:UIAlertActionStyleCancel
+            handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark -- HUD methods
+
+-(void)showCreateCategoryHUDwithLabel:(NSString *)label inView:(UIView *)topView
+{
+    // Create the loading HUD if needed
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
+    if (!hud) {
+        hud = [MBProgressHUD showHUDAddedTo:topView animated:YES];
+    }
+    
+    // Change the background view shape, style and color.
+    hud.square = NO;
+    hud.animationType = MBProgressHUDAnimationFade;
+    hud.contentColor = [UIColor piwigoWhiteCream];
+    hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
+    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+    
+    // Define the text
+    hud.label.text = label;
+    hud.label.font = [UIFont piwigoFontNormal];
+}
+
+-(void)hideCreateCategoryHUDwithSuccess:(BOOL)success inView:(UIView *)topView completion:(void (^)(void))completion
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Hide and remove the HUD
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
+        if (hud) {
+            if (success) {
+                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"Complete", nil);
+                [hud hideAnimated:YES afterDelay:3.f];
+            } else {
+                [hud hideAnimated:YES];
+            }
+        }
+        if (completion) {
+            completion();
+        }
+    });
+}
+
+
+#pragma mark -- UITextField Delegate Methods
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    // Disable Add Category action
+    [self.categoryAction setEnabled:NO];
+    return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    // Enable action if text field not empty
+    NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    [self.categoryAction setEnabled:(finalString.length >= 1)];
+    return YES;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    // Disable Add Category action
+    [self.categoryAction setEnabled:NO];
+    return YES;
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    // User pressed Return: Add category if album name not null
+    if (textField.text.length > 0) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 @end
