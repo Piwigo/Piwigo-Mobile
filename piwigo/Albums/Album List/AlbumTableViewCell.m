@@ -364,7 +364,7 @@
     
     UIAlertController* alert = [UIAlertController
         alertControllerWithTitle:NSLocalizedString(@"renameCategory_title", @"Rename Album")
-        message:[NSString stringWithFormat:@"%@ \"%@\"?", NSLocalizedString(@"renameCategory_message", @"Enter a new name for this album"), self.albumData.name]
+                                message:[NSString stringWithFormat:@"%@ \"%@\":", NSLocalizedString(@"renameCategory_message", @"Enter a new name for this album"), self.albumData.name]
         preferredStyle:UIAlertControllerStyleAlert];
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {

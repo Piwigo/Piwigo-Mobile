@@ -23,7 +23,7 @@
 "alertCancelButton" = "Cancel";
 "alertAddButton" = "Add";
 "alertRetryButton" = "Retry";
-"alertNextButton" = "Next";
+"alertNextButton" = "Next Image";
 
 // Complete views
 "Complete" = "Complete";
@@ -108,7 +108,7 @@
 
 // Album create
 "createNewAlbum_title" = "New Album";
-"createNewAlbum_message" = "Enter a name for this album.";
+"createNewAlbum_message" = "Enter a name for this album:";
 "createNewAlbum_placeholder" = "Album Name";
 "createNewAlbumHUD_label" = "Creating Album…";
 

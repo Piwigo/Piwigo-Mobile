@@ -432,10 +432,7 @@
     
     // Create the login HUD if needed
     MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-    if (!hud) {
-        // Set flag used to inform methods
-        [Model sharedInstance].hudBeingPresentedToUser = YES;
-        
+    if (!hud) {        
         // Create the HUD
         hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
         [hud setTag:loadingViewTag];
@@ -519,9 +516,6 @@
     if (hud) {
         [hud hideAnimated:YES];
         self.hudViewController = nil;
-        
-        // Set flag used to inform methods
-        [Model sharedInstance].hudBeingPresentedToUser = NO;
     }
 }
 

@@ -405,7 +405,7 @@
     } else {
         // Upload next image
         UIAlertAction* nextAction = [UIAlertAction
-                                     actionWithTitle:NSLocalizedString(@"alertNextButton", @"Next")
+                                     actionWithTitle:NSLocalizedString(@"alertNextButton", @"Next Image")
                                      style:UIAlertActionStyleDefault
                                      handler:^(UIAlertAction * action) {
                                          // Consider image job done

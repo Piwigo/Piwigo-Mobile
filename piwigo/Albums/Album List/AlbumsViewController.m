@@ -128,7 +128,7 @@ static SEL extracted() {
 {
     UIAlertController* alert = [UIAlertController
                                 alertControllerWithTitle:NSLocalizedString(@"createNewAlbum_title", @"New Album")
-                                message:NSLocalizedString(@"createNewAlbum_message", @"Enter a name for this album.")
+                                message:NSLocalizedString(@"createNewAlbum_message", @"Enter a name for this album:")
                                 preferredStyle:UIAlertControllerStyleAlert];
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
