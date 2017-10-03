@@ -124,6 +124,8 @@ static SEL extracted() {
 	}
 }
 
+#pragma mark -- Add album in root
+
 -(void)showCreateCategoryDialog
 {
     UIAlertController* alert = [UIAlertController

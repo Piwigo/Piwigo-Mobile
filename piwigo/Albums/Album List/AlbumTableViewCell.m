@@ -201,11 +201,11 @@
     self.albumData = albumData;
     
     // Add up/down arrows in front of album name when Community extension active
-    //#if defined(DEBUG)
-    //    NSLog(@"setupWithAlbumData: usesCommunityPluginV29=%@, hasAdminRights=%@",
-    //          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-    //          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
-    //#endif
+//#if defined(DEBUG)
+//    NSLog(@"setupWithAlbumData: usesCommunityPluginV29=%@, hasAdminRights=%@",
+//          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
+//          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+//#endif
     if (![Model sharedInstance].usesCommunityPluginV29 ||
         [Model sharedInstance].hasAdminRights ||
         ![Model sharedInstance].hadOpenedSession) {
