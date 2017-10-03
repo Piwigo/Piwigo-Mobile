@@ -155,6 +155,8 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+#pragma mark -- Delete image
+
 -(void)deleteImage
 {
     UIAlertController* alert = [UIAlertController
@@ -216,6 +218,8 @@
     alert.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
     [self presentViewController:alert animated:YES completion:nil];
 }
+
+#pragma mark -- Download image
 
 -(void)downloadImage
 {
@@ -354,6 +358,7 @@
          ];
 	}
 }
+
 -(void)saveImageToCameraRoll:(UIImage*)imageToSave
 {
 	UIImageWriteToSavedPhotosAlbum(imageToSave, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
@@ -380,6 +385,7 @@
 	}
 	self.downloadView.hidden = YES;
 }
+
 -(void)movie:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
 	if(error)

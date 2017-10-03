@@ -225,6 +225,8 @@
 	[self.navigationController pushViewController:localAlbums animated:YES];
 }
 
+#pragma mark -- Delete images
+
 -(void)deleteImages
 {
 	if(self.selectedImageIds.count <= 0) return;
@@ -328,6 +330,8 @@
               }
      ];
 }
+
+#pragma mark -- Download images
 
 -(void)downloadImages
 {
@@ -516,6 +520,7 @@
 		[self downloadImage];
 	}
 }
+
 -(void)movie:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
 	if(error)
