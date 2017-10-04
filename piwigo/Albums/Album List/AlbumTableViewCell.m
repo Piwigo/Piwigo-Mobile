@@ -379,13 +379,15 @@
         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
         style:UIAlertActionStyleCancel
         handler:^(UIAlertAction * action) {}];
-    
+
     self.categoryAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"renameCategory_button", @"Rename")
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
-            // Rename album
-            [self renameCategoryWithName:alert.textFields.firstObject.text andViewController:topViewController];
+            // Rename album if possible
+            if(alert.textFields.firstObject.text.length > 0) {
+                [self renameCategoryWithName:alert.textFields.firstObject.text andViewController:topViewController];
+            }
         }];
     
     [alert addAction:cancelAction];
@@ -494,12 +496,10 @@
                         actionWithTitle:NSLocalizedString(@"deleteCategoryConfirm_deleteButton", @"DELETE")
                         style:UIAlertActionStyleDestructive
                         handler:^(UIAlertAction * action) {
-                            NSInteger number = -1;
                             if(alert.textFields.firstObject.text.length > 0)
                             {
-                                number = [alert.textFields.firstObject.text integerValue];
+                                [self deleteCategoryWithNumberOfImages:[alert.textFields.firstObject.text integerValue] andViewController:topViewController];
                             }
-                            [self deleteCategoryWithNumberOfImages:number andViewController:topViewController];
                         }];
              
              [alert addAction:defaultAction];
@@ -514,14 +514,14 @@
 
 -(void)deleteCategoryWithNumberOfImages:(NSInteger)number andViewController:(UIViewController *)topViewController
 {
-    // Display HUD during the update
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showCreateCategoryHUDwithLabel:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") inView:topViewController.view];
-    });
-    
     // Delete album?
     if(number == self.albumData.totalNumberOfImages)
     {
+        // Display HUD during the update
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showCreateCategoryHUDwithLabel:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") inView:topViewController.view];
+        });
+        
         [AlbumService deleteCategory:self.albumData.albumId
                 OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
                         if(deletedSuccessfully)
@@ -657,12 +657,18 @@
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
+    return YES;
     // User pressed Return: Add category if album name not null
-    if (textField.text.length > 0) {
-        return YES;
-    } else {
-        return NO;
-    }
+//    if (textField.text.length > 0) {
+//        return YES;
+//    } else {
+//        return NO;
+//    }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self resignFirstResponder];
+    return YES;
 }
 
 @end
