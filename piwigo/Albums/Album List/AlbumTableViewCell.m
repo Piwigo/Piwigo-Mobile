@@ -111,20 +111,20 @@
         // Add renaming, moving and deleting capabilities when user has admin rights
 		if([Model sharedInstance].hasAdminRights)
 		{
-			self.rightSwipeSettings.transition = MGSwipeTransitionStatic;
-			self.rightButtons = @[[MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_rename", @"Rename")
-														  backgroundColor:[UIColor piwigoOrange]
-																 callback:^BOOL(MGSwipeTableCell *sender) {
-																	 [self renameCategory];
-																	 return YES;
-																 }],
-								  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_move", @"Move")
+			self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
+            self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeRename.png"]
+                                                 backgroundColor:[UIColor piwigoOrange]
+                                                        callback:^BOOL(MGSwipeTableCell *sender) {
+                                                            [self renameCategory];
+                                                            return YES;
+                                                        }],
+								  [MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeMove.png"]
 												 backgroundColor:[UIColor piwigoGrayLight]
 														callback:^BOOL(MGSwipeTableCell *sender) {
 															[self moveCategory];
 															return YES;
 														}],
-								  [MGSwipeButton buttonWithTitle:NSLocalizedString(@"categoryCellOption_delete", @"Delete")
+                                   [MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeTrash.png"]
 												 backgroundColor:[UIColor redColor]
 														callback:^BOOL(MGSwipeTableCell *sender) {
 															[self deleteCategory];
