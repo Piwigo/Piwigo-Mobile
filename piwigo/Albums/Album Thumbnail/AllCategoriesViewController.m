@@ -136,6 +136,8 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+#pragma mark -- Set category thumbnail
+
 -(void)setRepresentativeForCategoryId:(NSInteger)categoryId
 {
     // Display HUD during the update
