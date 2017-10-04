@@ -211,7 +211,7 @@
 		URLParameters:nil       // This method requires HTTP POST
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-						@"name" : [categoryName stringByReplacingOccurrencesOfString:@"&" withString:@"%26"]
+						@"name" : categoryName
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
