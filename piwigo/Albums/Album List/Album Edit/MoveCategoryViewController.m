@@ -102,7 +102,9 @@
     UIAlertAction* cancelAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
                                    style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {}];
+                                   handler:^(UIAlertAction * action) {
+                                       [self.navigationController popViewControllerAnimated:YES];
+                                   }];
     
     UIAlertAction* moveAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
@@ -167,6 +169,8 @@
     
     [alert addAction:dismissAction];
     [self presentViewController:alert animated:YES completion:nil];
+
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark -- HUD methods
