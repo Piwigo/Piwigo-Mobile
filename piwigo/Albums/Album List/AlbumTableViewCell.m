@@ -658,16 +658,10 @@
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     return YES;
-    // User pressed Return: Add category if album name not null
-//    if (textField.text.length > 0) {
-//        return YES;
-//    } else {
-//        return NO;
-//    }
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self resignFirstResponder];
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
     return YES;
 }
 

@@ -266,14 +266,14 @@ static SEL extracted() {
 
 #pragma mark -- UITextField Delegate Methods
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     // Disable Add Category action
     [self.createAlbumAction setEnabled:NO];
     return YES;
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     // Enable Add Category action if album name is non null
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
@@ -281,7 +281,7 @@ static SEL extracted() {
     return YES;
 }
 
-- (BOOL)textFieldShouldClear:(UITextField *)textField
+-(BOOL)textFieldShouldClear:(UITextField *)textField
 {
     // Disable Add Category action
     [self.createAlbumAction setEnabled:NO];
@@ -290,12 +290,12 @@ static SEL extracted() {
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
-    // User pressed Return: Add category if album name not null
-    if (textField.text.length > 0) {
-        return YES;
-    } else {
-        return NO;
-    }
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    return YES;
 }
 
 
@@ -349,6 +349,7 @@ static SEL extracted() {
 	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
 	[self.navigationController pushViewController:album animated:YES];
 }
+
 
 #pragma mark AlbumTableViewCellDelegate Methods
 
