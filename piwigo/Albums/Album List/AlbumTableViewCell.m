@@ -31,6 +31,7 @@
 @property (nonatomic, strong) UIImageView *cellDisclosure;
 @property (nonatomic, strong) NSURLSessionTask *cellDataRequest;
 @property (nonatomic, strong) UIAlertAction *categoryAction;
+@property (nonatomic, strong) UIAlertAction *deleteAction;
 
 @end
 
@@ -492,7 +493,7 @@
                         style:UIAlertActionStyleCancel
                         handler:^(UIAlertAction * action) {}];
              
-             UIAlertAction* deleteAction = [UIAlertAction
+             self.deleteAction = [UIAlertAction
                         actionWithTitle:NSLocalizedString(@"deleteCategoryConfirm_deleteButton", @"DELETE")
                         style:UIAlertActionStyleDestructive
                         handler:^(UIAlertAction * action) {
@@ -503,7 +504,7 @@
                         }];
              
              [alert addAction:defaultAction];
-             [alert addAction:deleteAction];
+             [alert addAction:self.deleteAction];
              [topViewController presentViewController:alert animated:YES completion:nil];
     }];
     
@@ -635,23 +636,26 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    // Disable Add Category action
+    // Disable Add/Delete Category action
     [self.categoryAction setEnabled:NO];
+    [self.deleteAction setEnabled:NO];
     return YES;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    // Enable action if text field not empty
+    // Enable Add/Delete Category action if text field not empty
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     [self.categoryAction setEnabled:(finalString.length >= 1)];
+    [self.deleteAction setEnabled:(finalString.length >= 1)];
     return YES;
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    // Disable Add Category action
+    // Disable Add/Delete Category action
     [self.categoryAction setEnabled:NO];
+    [self.deleteAction setEnabled:NO];
     return YES;
 }
 
