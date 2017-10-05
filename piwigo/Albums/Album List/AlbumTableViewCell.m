@@ -411,7 +411,7 @@
                         if(renamedSuccessfully)
                         {
                             [self hideCreateCategoryHUDwithSuccess:YES inView:topViewController.view completion:^{
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                dispatch_async(dispatch_get_main_queue(), ^{
                                     self.albumData.name = albumName;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
                                 });
@@ -528,7 +528,7 @@
                         if(deletedSuccessfully)
                         {
                             [self hideCreateCategoryHUDwithSuccess:YES inView:topViewController.view completion:^{
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                dispatch_async(dispatch_get_main_queue(), ^{
                                     [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
                                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
                                 });

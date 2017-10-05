@@ -175,7 +175,7 @@ static SEL extracted() {
                                   [AlbumService getAlbumListForCategory:0
                                        OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                            [self hideCreateCategoryHUDwithSuccess:YES completion:^{
-                                               dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                               dispatch_async(dispatch_get_main_queue(), ^{
                                                    [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
                                                });
                                            }];

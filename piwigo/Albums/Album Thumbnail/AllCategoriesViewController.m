@@ -164,7 +164,7 @@
 												  
                                                   // Close HUD
                                                   [self hideSettingRepresentativeHUDwithSuccess:YES completion:^{
-                                                      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 600 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                                      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 700 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
                                                           [self.navigationController popViewControllerAnimated:YES];
                                                       });
                                                   }];
