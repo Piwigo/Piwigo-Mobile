@@ -22,9 +22,11 @@
 "alertTryAgainButton" = "Try Again";
 "alertCancelButton" = "Cancel";
 "alertAddButton" = "Add";
+"alertRetryButton" = "Retry";
+"alertNextButton" = "Next Image";
 
-// Done view
-"done" = "Done";
+// Complete views
+"Complete" = "Complete";
 
 // Upload rights
 "uploadRights_title" = "Upload Rights Needed";
@@ -33,7 +35,9 @@
 // Errors
 "internetErrorGeneral_title" = "Connection Error";
 "internetErrorGeneral_broken" = "Sorry, the communication was broken.\nTry logging in again.";
-
+"internetCancellingConnection_button" = "Cancelling Connection…";
+"internetCancelledConnection_button" = "Cancel Connection";
+"internetCancelledConnection_title" = "Connection Cancelled";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -45,6 +49,10 @@
 "login_passwordPlaceholder" = "Password (optional)";
 "login_loggingIn" = "Logging In...";
 "login_protocolDescription" = "(tap to change)";
+"login_connecting" = "Connecting";
+"login_newSession" = "Opening Session";
+"login_communityParameters" = "Community Parameters";
+"login_serverParameters" = "Piwigo Parameters";
 "login_connectionChanged" = "Connection Changed!";
 
 // Login — Errors
@@ -99,8 +107,10 @@
 "categorySort_imagesOnly" = "Images Only";
 
 // Album create
-"createNewAlbum_title" = "Create New Album";
-"createNewAlbum_message" = "Album name";
+"createNewAlbum_title" = "New Album";
+"createNewAlbum_message" = "Enter a name for this album:";
+"createNewAlbum_placeholder" = "Album Name";
+"createNewAlbumHUD_label" = "Creating Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Create Album Error";
@@ -113,10 +123,9 @@
 
 // Album rename
 "renameCategory_title" = "Rename Album";
-"renameCategory_message" = "Rename album";
+"renameCategory_message" = "Enter a new name for this album";
 "renameCategory_button" = "Rename";
-"renameCategorySuccess_title" = "Rename Successful";
-"renameCategorySuccess_message" = "Successfully renamed your album";
+"renameCategoryHUD_label" = "Renaming Album…";
 
 // Album rename — Errors
 "renameCategoyError_title" = "Rename Fail";
@@ -126,10 +135,9 @@
 "deleteCategory_title" = "DELETE ALBUM";
 "deleteCategory_message" = "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?";
 "deleteCategoryConfirm_title" = "Are you sure?";
-"deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album\nNumber of images: %@";
+"deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album.\nNumber of images: %@";
 "deleteCategoryConfirm_deleteButton" = "DELETE";
-"deleteCategorySuccess_title" = "Delete Successful";
-"deleteCategorySuccess_message" = "Deleted \"%@\" album successfull";
+"deleteCategoryHUD_label" = "Deleting Album…";
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Number Doesn't Match";
@@ -141,6 +149,7 @@
 "moveCategory" = "Move Album";
 "moveCategory_selectParent" = "Select an album to move album \"%@\" into";
 "moveCategory_message" = "Are you sure you want to move \"%@\" into the album \"%@\"?";
+"moveCategoryHUD_moving" = "Moving Album…";
 
 // album move — Errors
 "moveCategoryError_title" = "Move Fail";
@@ -151,8 +160,7 @@
 "categorySelection_forImage" = "Select an album for this image";
 "categoryImageSet_title" = "Set Image Thumbnail";
 "categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";
-"categoryImageSetSuccess_title" = "Image Set Successful";
-"categoryImageSetSuccess_message" = "The image was set successfully for the album image";
+"categoryImageSetHUD_updating" = "Updating Album Thumbnail…";
 
 // Album set image thumbnail — Errors
 "categoryImageSetError_title" = "Image Set Error";
@@ -179,18 +187,22 @@
 "imageOptions_download" = "Download";
 "imageOptions_setAlbumImage" = "Set as Album Image";
 
-// Image edit
+// Image details
+"imageDetailsView_title" = "Image Details";
 "editImageDetails_title" = "Title:";
 "editImageDetails_titlePlaceholder" = "Title";
 "editImageDetails_author" = "Author:";
 "editImageDetails_tags" = "Tags:";
 "editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
+"editImageDetailsHUD_updating" = "Updating Image Info…";
 
-// Image edit — Errors
+// Image details — Errors
+"editImageDetailsError_title" = "Failed to Update";
+"editImageDetailsError_message" = "Failed to update your changes with your server.\nTry again?";
 "imageDetailsFetchError_title" = "Image Details Fetch Failed";
-"imageDetailsFetchError_retryMessage" = "Fetching the image data failed\nTry again?";
-"imageDetailsFetchError_continueMessage" = "Fetching the image data failed\nContinue?";
+"imageDetailsFetchError_retryMessage" = "Fetching the image data failed.\nTry again?";
+"imageDetailsFetchError_continueMessage" = "Fetching the image data failed.\nContinue?";
 
 // Image privacy levels
 "privacyLevel" = "Privacy Level";
@@ -227,7 +239,6 @@
 
 "downloadingImage" = "Downloading Image";
 "downloadingImages" = "Downloading Images";
-"downloadingImage_complete" = "Complete";
 "downloadingImageInfo" = "Downloading Image Info";
 "downloadingImageInfoForSort" = "Downloading Image Info for Sort";
 
@@ -255,6 +266,7 @@
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Description:";
 
+"imageUploadDetailsView_title" = "Images";
 "imageUploadDetailsButton_title" = "Upload";
 "imageUploadDetailsEdit_title" = "Edit Images to Upload";
 "imageUploadDetailsUploading_title" = "Images that are Being Uploaded";
@@ -263,8 +275,9 @@
 "imageUploadTableCell_uploading" = "Uploading...";
 "imageUploadProgressBar_zero" = "Uploading 0/0";
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";
+"imageUploadProgressBar_completed" = "Completed";
 "imageUploadCompleted_title" = "Upload Completed";
-"imageUploadCompleted_message" = "1 image/video uploaded to your Piwigo server.";
+"imageUploadCompleted_message" = "image/video uploaded to your Piwigo server.";
 "imageUploadCompleted_message>1" = "images/videos uploaded to your Piwigo server.";
 
 // Image upload — Errors
@@ -376,6 +389,7 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Information
+"settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
 "settings_supportForum" = "Support Forum";
 "settings_releaseNotes" = "Release Notes";

@@ -158,7 +158,7 @@
         } else { // remove if already selected
             [self.alreadySelectedTags removeObject:currentTag];
             NSIndexPath *removePath = [NSIndexPath indexPathForRow:indexOfSelection inSection:0];
-            if (!removePath && (removePath >= 0)) {
+            if (!removePath && (removePath != nil) && (removePath >= 0)) {
                 [tableView deleteRowsAtIndexPaths:@[removePath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
         }

@@ -2,8 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "piwigoLogoTransparent.png"
+      "filename" : "piwigoLogoTransparent.png",
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",

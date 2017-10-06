@@ -41,14 +41,22 @@
 			}
 			else if(responseObject == nil)
 			{
-				[UIAlertView showWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
-								   message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
-						 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-						 otherButtonTitles:nil
-								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) { // make view disappear
-									  [self.navigationController popViewControllerAnimated:YES];
-								  }];
-			}
+                UIAlertController* alert = [UIAlertController
+                            alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
+                            message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
+                            preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* dismissAction = [UIAlertAction
+                                                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                style:UIAlertActionStyleCancel
+                                                handler:^(UIAlertAction * action) {
+                                                    // make view disappear
+                                                    [self.navigationController popViewControllerAnimated:YES];
+                                                }];
+                
+                [alert addAction:dismissAction];
+                [self presentViewController:alert animated:YES completion:nil];
+            }
 			else
 			{
 				self.groups = responseObject;

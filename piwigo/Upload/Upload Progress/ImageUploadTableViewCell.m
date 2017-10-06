@@ -55,7 +55,7 @@
 	self.uploadingProgressLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	self.uploadingProgressLabel.font = [UIFont piwigoFontNormal];
 	self.uploadingProgressLabel.textColor = [UIColor piwigoWhiteCream];
-	self.uploadingProgressLabel.text = @"0 %";
+	self.uploadingProgressLabel.text = [NSString stringWithFormat:@"%@ %%", @(0)];
 	[self.uploadingOverlay addSubview:self.uploadingProgressLabel];
 	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgressLabel]];
 	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadingProgressLabel
@@ -81,7 +81,7 @@
 	ALAsset *imageAsset = self.imageUploadInfo.imageAsset;
 	self.image.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
 	
-	self.imageTitle.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_title", @"Title:")], [imageInfo.imageUploadName stringByDeletingPathExtension]];
+	self.imageTitle.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_title", @"Title:")], imageInfo.title];
 	self.author.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_author", @"Author:")], imageInfo.author];
 	self.privacyLevel.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_privacy", @"Privacy:")], [[Model sharedInstance] getNameForPrivacyLevel:imageInfo.privacyLevel]];
 	self.tags.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_tags", @"Tags:")], [TagsData getTagsStringFromList:imageInfo.tags]];
@@ -125,7 +125,7 @@
 	
 	self.isInQueueForUpload = NO;
 	[self.uploadingProgressBar setProgress:0];
-	self.uploadingProgressLabel.text = @"0 %";
+	self.uploadingProgressLabel.text = [NSString stringWithFormat:@"%@ %%", @(0)];
 }
 
 @end

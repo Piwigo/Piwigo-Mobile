@@ -22,16 +22,9 @@
 
 @property (nonatomic, strong) NSLayoutConstraint *logoTopConstraint;
 @property (nonatomic, assign) NSInteger topConstraintAmount;
-
-@property (nonatomic, strong) UIView *loadingView;
-@property (nonatomic, strong) UILabel *loggingInLabel;
-@property (nonatomic, strong) UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) UIViewController *hudViewController;
 
 -(void)launchLogin;
 -(void)checkSessionStatusAndTryRelogin;
-
--(void)showLoginFail;
--(void)showLoading;
--(void)hideLoading;
 
 @end

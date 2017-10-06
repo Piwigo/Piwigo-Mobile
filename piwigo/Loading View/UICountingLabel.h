@@ -26,7 +26,7 @@ typedef NSAttributedString* (^UICountingLabelAttributedFormatBlock)(float value)
 
 @property (nonatomic, copy) UICountingLabelFormatBlock formatBlock;
 @property (nonatomic, copy) UICountingLabelAttributedFormatBlock attributedFormatBlock;
-@property (nonatomic, copy) void (^completionBlock)();
+@property (nonatomic, copy) void (^completionBlock)(void);
 
 
 -(void)countFrom:(float)startValue to:(float)endValue;

@@ -7,7 +7,6 @@
 //
 
 #import "SessionService.h"
-#import "KeychainAccess.h"
 #import "Model.h"
 
 @implementation SessionService
@@ -20,7 +19,11 @@
     return [self post:kReflectionGetMethodList
         URLParameters:nil
            parameters:nil
-             progress:nil
+             progress:^(NSProgress * progress) {
+                 if ([Model sharedInstance].userCancelledCommunication) {
+                     [progress cancel];
+                 }
+             }
               success:^(NSURLSessionTask *task, id responseObject) {
                   
                   if(completion) {
@@ -37,7 +40,6 @@
                                   [Model sharedInstance].usesCommunityPluginV29 = YES;
                               }
                           }
-                          
                           completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
                       }
                       else  // Strange…
@@ -48,7 +50,6 @@
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   
                   if(fail) {
-                      [SessionService showConnectionError:error];
                       fail(task, error);
                   }
               }];
@@ -65,21 +66,31 @@
         URLParameters:nil
            parameters:@{@"username" : user,
                         @"password" : password}
-             progress:nil
+             progress:^(NSProgress * progress) {
+                 if ([Model sharedInstance].userCancelledCommunication) {
+                     [progress cancel];
+                 }
+             }
               success:^(NSURLSessionTask *task, id responseObject) {
                   
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"] && [[responseObject objectForKey:@"result"] boolValue])
                       {
-                          [KeychainAccess storeLoginInKeychainForUser:user andPassword:password];
                           [Model sharedInstance].username = user;
                           [Model sharedInstance].hadOpenedSession = YES;
                           completion(YES, [responseObject objectForKey:@"result"]);
                       }
                       else
                       {
-                          [Model sharedInstance].hadOpenedSession = NO;
-                          completion(NO, nil);
+                          // May be this server only uses HTTP authentication
+                          if ([Model sharedInstance].performedHTTPauthentication) {
+                              [Model sharedInstance].username = user;
+                              [Model sharedInstance].hadOpenedSession = YES;
+                              completion(YES, nil);
+                          } else {
+                              [Model sharedInstance].hadOpenedSession = NO;
+                              completion(NO, nil);
+                          }
                       }
                   }
               }
@@ -99,7 +110,11 @@
     return [self post:kPiwigoSessionGetStatus
         URLParameters:nil
            parameters:nil
-             progress:nil
+             progress:^(NSProgress * progress) {
+                 if ([Model sharedInstance].userCancelledCommunication) {
+                     [progress cancel];
+                 }
+             }
               success:^(NSURLSessionTask *task, id responseObject) {
                   
                   if(completion) {
@@ -170,7 +185,6 @@
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   
                   if(fail) {
-                      [SessionService showConnectionError:error];
                       fail(task, error);
                   }
               }];
@@ -182,7 +196,11 @@
     return [self post:kCommunitySessionGetStatus
         URLParameters:nil
            parameters:nil
-             progress:nil
+             progress:^(NSProgress * progress) {
+                 if ([Model sharedInstance].userCancelledCommunication) {
+                     [progress cancel];
+                 }
+             }
               success:^(NSURLSessionTask *task, id responseObject) {
                   
                   if(completion) {
@@ -201,7 +219,6 @@
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   
                   if(fail) {
-                      [SessionService showConnectionError:error];
                       fail(task, error);
                   }
               }];
@@ -229,7 +246,7 @@
 			  } failure:^(NSURLSessionTask *task, NSError *error) {
 				  
 				  if(fail) {
-					  [SessionService showConnectionError:error];
+                      [SessionService showConnectionError:error];
 					  fail(task, error);
 				  }
 			  }];

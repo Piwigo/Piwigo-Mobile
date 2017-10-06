@@ -128,7 +128,7 @@
 
 -(NSData*)writeMetadataIntoImageData:(NSData *)imageData metadata:(NSDictionary*)metadata
 {
-	// create an imagesourceref
+	// Create an imagesourceref
 	CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
     if (!source) {
 #if defined(DEBUG)
@@ -166,49 +166,43 @@
     }
     return imageData;
 }
+
 -(void)uploadNextImage
 {
-	if(self.imageUploadQueue.count <= 0)
+	// Another image to upload?
+    if(self.imageUploadQueue.count <= 0)
 	{
 		self.isUploading = NO;
 		return;
 	}
 	
-	self.isUploading = YES;
+    self.isUploading = YES;
     [Model sharedInstance].hasUploadedImages = YES;
 	
+    // Image to be uploaded
 	ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
-	
-	NSString *imageKey = nextImageToBeUploaded.image;
 	ALAsset *imageAsset = nextImageToBeUploaded.imageAsset;
-	
     NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
     UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
 
     // strip GPS data if user requested it in Settings:
     if([Model sharedInstance].stripGPSdataOnUpload) [imageMetadata setObject:@"" forKey:@"{GPS}"];
-
+    
     // Video or Photo ?
     NSData *imageData = nil; NSString *mimeType = @"";
     if ([imageAsset valueForProperty:ALAssetPropertyType] == ALAssetTypeVideo) {
         
         // Can we upload videos to the Piwigo Server ?
         if(![Model sharedInstance].canUploadVideos) {
-            [UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                               message:NSLocalizedString(@"videoUploadError_message", @"You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.")
-                     cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                     otherButtonTitles:nil
-                              tapBlock:nil];
 
-            [self.imageUploadQueue removeObjectAtIndex:0];
-            [self.imageNamesUploadQueue removeObjectForKey:imageKey];
-            if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-            {
-                [self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
-            }
-            
-            [self uploadNextImage];
+            // Release dictionary
             imageMetadata = nil;
+            
+            // Inform user that he/she cannot upload videos
+            [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                          andMessage:NSLocalizedString(@"videoUploadError_message", @"You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.")
+                         forRetrying:NO
+                           withImage:nextImageToBeUploaded];
             return;
         }
         
@@ -232,25 +226,15 @@
                 mimeType = @"video/mp4";
                 // Replace file extension
                 nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
-                // Remove extension from name
-                nextImageToBeUploaded.imageUploadName = [nextImageToBeUploaded.imageUploadName stringByDeletingPathExtension];
             } else {
-                // This file won't be compatible!
-                [UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                                   message:NSLocalizedString(@"videoUploadError_format", @"Sorry, the video file format is not compatible with the extension \"VideoJS\".")
-                         cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-                         otherButtonTitles:nil
-                                  tapBlock:nil];
-                
-                [self.imageUploadQueue removeObjectAtIndex:0];
-                [self.imageNamesUploadQueue removeObjectForKey:imageKey];
-                if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-                {
-                    [self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
-                }
-                
-                [self uploadNextImage];
+                // Release dictionary
                 imageMetadata = nil;
+                
+                // This file won't be compatible!
+                [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                              andMessage:NSLocalizedString(@"videoUploadError_format", @"Sorry, the video file format is not compatible with the extension \"VideoJS\".")
+                             forRetrying:NO
+                               withImage:nextImageToBeUploaded];
                 return;
             }
         }
@@ -294,7 +278,7 @@
     // Prepare properties for upload
 	NSDictionary *imageProperties = @{
 									  kPiwigoImagesUploadParamFileName : nextImageToBeUploaded.image,
-									  kPiwigoImagesUploadParamName : nextImageToBeUploaded.imageUploadName,
+									  kPiwigoImagesUploadParamTitle : nextImageToBeUploaded.title,
 									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.categoryToUploadTo)],
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.privacyLevel)],
 									  kPiwigoImagesUploadParamAuthor : nextImageToBeUploaded.author,
@@ -312,7 +296,8 @@
 							[self.delegate imageProgress:nextImageToBeUploaded onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
 						}
 					} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-						self.onCurrentImageUpload++;
+                        // Consider image job done
+                        self.onCurrentImageUpload++;
 						
                         // Set properties of uploaded image/video on Piwigo server
                         [self setImageResponse:response withInfo:imageProperties];
@@ -332,15 +317,9 @@
                             [self addImageDataToCategoryCache:response];
                         }
                         
-                        // Remove image from queue and upload next image
-						[self.imageUploadQueue removeObjectAtIndex:0];
-						[self.imageNamesUploadQueue removeObjectForKey:imageKey];
-						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-						{
-							[self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
-						}
-						
-						[self uploadNextImage];
+                        // Remove image from queue and upload next one
+                        [self uploadNextImageAndRemoveImageFromQueue:nextImageToBeUploaded withResponse:response];
+
 					} onFailure:^(NSURLSessionTask *task, NSError *error) {
 						NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] uppercaseString];
                         if(error.code == -1016 &&
@@ -349,28 +328,22 @@
                             [fileExt isEqualToString:@"WEBM"] || [fileExt isEqualToString:@"WEBMV"])
                            )
 						{	// They need to check the VideoJS extension installation
-							[UIAlertView showWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-											   message:NSLocalizedString(@"videoUploadConfigError_message", @"Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.")
-									 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-									 otherButtonTitles:nil
-											  tapBlock:nil];
+                            [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                                          andMessage:NSLocalizedString(@"videoUploadConfigError_message", @"Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.")
+                                         forRetrying:NO
+                                           withImage:nextImageToBeUploaded];
 						}
 						else
 						{
 #if defined(DEBUG)
 							NSLog(@"ERROR IMAGE UPLOAD: %@", error);
 #endif
-                            [self showUploadError:error];
+                            // Inform user and propose to cancel or continue
+                            [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
+                                         forRetrying:YES
+                                           withImage:nextImageToBeUploaded];
 						}
-						
-						[self.imageUploadQueue removeObjectAtIndex:0];
-						[self.imageNamesUploadQueue removeObjectForKey:imageKey];
-						if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-						{
-                            [self.delegate imageUploaded:nextImageToBeUploaded placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
-						}
-						
-						[self uploadNextImage];
 					}];
 }
 
@@ -382,13 +355,84 @@
 	}
 }
 
--(void)showUploadError:(NSError*)error
+-(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message forRetrying:(BOOL)retry withImage:(ImageUpload *)image
 {
-    [UIAlertView showWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
-					   message:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
-			 cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-			 otherButtonTitles:nil
-					  tapBlock:nil];
+    // Determine present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    
+    // Present alert
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:title
+                                message:message
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {
+                                        // Consider image job done
+                                        self.onCurrentImageUpload++;
+
+                                        // Empty queue
+                                        while (self.imageUploadQueue.count > 0) {
+                                            self.onCurrentImageUpload++;
+                                            ImageUpload *nextImage = [self.imageUploadQueue firstObject];
+                                            [self.imageUploadQueue removeObjectAtIndex:0];
+                                            [self.imageNamesUploadQueue removeObjectForKey:nextImage.image];
+                                        }
+                                        // Tell user how many images have been downloaded
+                                        if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+                                        {
+                                            [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
+                                        }
+                                        // Stop uploading
+                                        self.isUploading = NO;
+                                    }];
+    
+    if (retry) {
+        // Retry to upload the image
+        UIAlertAction* retryAction = [UIAlertAction
+                                     actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                                     style:UIAlertActionStyleDefault
+                                     handler:^(UIAlertAction * action) {
+                                         // Upload image
+                                         [self uploadNextImage];
+                                     }];
+        [alert addAction:retryAction];
+    } else {
+        // Upload next image
+        UIAlertAction* nextAction = [UIAlertAction
+                                     actionWithTitle:NSLocalizedString(@"alertNextButton", @"Next Image")
+                                     style:UIAlertActionStyleDefault
+                                     handler:^(UIAlertAction * action) {
+                                         // Consider image job done
+                                         self.onCurrentImageUpload++;
+
+                                         // Remove image from queue and upload next one
+                                         [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
+                                     }];
+        [alert addAction:nextAction];
+    }
+    
+    [alert addAction:dismissAction];
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)uploadNextImageAndRemoveImageFromQueue:(ImageUpload *)image withResponse:(NSDictionary *)response
+{
+    // Remove image from queue
+    [self.imageUploadQueue removeObjectAtIndex:0];
+    [self.imageNamesUploadQueue removeObjectForKey:image.image];
+    if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+    {
+        [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
+    }
+
+    // Upload next image
+    [self uploadNextImage];
 }
 
 -(void)setIsUploading:(BOOL)isUploading

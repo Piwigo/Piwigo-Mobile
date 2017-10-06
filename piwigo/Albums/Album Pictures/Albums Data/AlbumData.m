@@ -36,7 +36,7 @@
 	return self;
 }
 
--(void)loadMoreImagesOnCompletion:(void (^)())completion
+-(void)loadMoreImagesOnCompletion:(void (^)(void))completion
 {
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
@@ -113,7 +113,7 @@
 	self.sortString = sort;
 }
 
--(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)())completion
+-(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)(void))completion
 {
 	if(imageSort == self.sortType)
 	{	// nothing changed, return
@@ -139,7 +139,7 @@
 	[self loadMoreImagesOnCompletion:completion];
 }
 
--(void)loadAllImagesOnCompletion:(void (^)())completion
+-(void)loadAllImagesOnCompletion:(void (^)(void))completion
 {
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
 		self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
@@ -150,7 +150,7 @@
 	}];
 }
 
--(void)reloadAlbumOnCompletion:(void (^)())completion
+-(void)reloadAlbumOnCompletion:(void (^)(void))completion
 {
 	NSInteger currentPage = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].onPage;
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
@@ -158,7 +158,7 @@
 	[self loadImagePageUntil:currentPage onPage:0 onCompletion:completion];
 }
 
--(void)loadImagePageUntil:(NSInteger)page onPage:(NSInteger)onPage onCompletion:(void (^)())completion
+-(void)loadImagePageUntil:(NSInteger)page onPage:(NSInteger)onPage onCompletion:(void (^)(void))completion
 {
 	if((onPage != 0) && (onPage >= page))
 	{

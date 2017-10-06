@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.2_text" = "Version 2.1.2\n\n• Fix refused login with Community plugin versions <2.9\n• Improve translations\n• Maintenance work\n________________________________________\n\n";
+"v2.1.3_text" = "Version 2.1.3\n\n• Add basic access authentication\n• Allow cancelling auto-connection\n• Improve interface and upload management\n• Improve translations and iOS 11 compatibility\n• Fix bug encountered with \"Not uploaded\" filter\n• Code modernization\n________________________________________\n\n";
+
+"v2.1.2_text" = "Version 2.1.2\nSeptember 7, 2017\n\n• Fix refused login with Community plugin versions <2.9\n• Improve translations\n• Maintenance work\n________________________________________\n\n";
 
 "v2.1.1_text" = "Version 2.1.1\nAugust 20, 2017\n\n• Fix bug encountered with non-valid SSL certificates\n• Improve Danish translation\n________________________________________\n\n";
 

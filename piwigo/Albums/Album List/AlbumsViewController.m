@@ -15,12 +15,14 @@
 #import "CategoriesData.h"
 #import "Model.h"
 #import "iRate.h"
+#import "MBProgressHUD.h"
 
-@interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, AlbumTableViewCellDelegate>
+@interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, AlbumTableViewCellDelegate>
 
 @property (nonatomic, strong) UITableView *albumsTableView;
 @property (nonatomic, strong) NSArray *categories;
 @property (nonatomic, strong) UILabel *emptyLabel;
+@property (nonatomic, strong) UIAlertAction *createAlbumAction;
 
 @end
 
@@ -80,7 +82,7 @@ static SEL extracted() {
     // Only admins and Community users can upload images/videos in selected albums
     if ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:0] hasUploadRights])
     {
-		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCategory)];
+		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showCreateCategoryDialog)];
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
     self.albumsTableView.allowsMultipleSelectionDuringEditing = NO;
@@ -122,45 +124,178 @@ static SEL extracted() {
 	}
 }
 
--(void)addCategory
+#pragma mark -- Add album in root
+
+-(void)showCreateCategoryDialog
 {
-	[UIAlertView showWithTitle:NSLocalizedString(@"createNewAlbum_title", @"Create New Album")
-					   message:NSLocalizedString(@"createNewAlbum_message", @"Album name")
-						 style:UIAlertViewStylePlainTextInput
-			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-			 otherButtonTitles:@[NSLocalizedString(@"alertAddButton", @"Add")]
-					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  if(buttonIndex == 1)
-						  {
-							  [AlbumService createCategoryWithName:[alertView textFieldAtIndex:0].text
-                                                        withStatus:@"public"
-													  OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
-														  if(createdSuccessfully)
-														  {
-															  [AlbumService getAlbumListForCategory:0
-																					   OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-																  [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-															  } onFailure:nil];
-														  }
-														  else
-														  {
-															  [self showCreateCategoryError];
-														  }
-													  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-														  
-														  [self showCreateCategoryError];
-													  }];
-						  }
-					  }];
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"createNewAlbum_title", @"New Album")
+                                message:NSLocalizedString(@"createNewAlbum_message", @"Enter a name for this album:")
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
+        textField.clearButtonMode = UITextFieldViewModeAlways;
+        textField.keyboardType = UIKeyboardTypeDefault;
+        textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        textField.delegate = self;
+    }];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {}];
+    
+    self.createAlbumAction = [UIAlertAction
+                              actionWithTitle:NSLocalizedString(@"alertAddButton", @"Add")
+                              style:UIAlertActionStyleDefault
+                              handler:^(UIAlertAction * action) {
+                                  // Create album
+                                  [self addCategoryWithName:alert.textFields.firstObject.text];
+                              }];
+    
+    [alert addAction:cancelAction];
+    [alert addAction:self.createAlbumAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
--(void)showCreateCategoryError
+-(void)addCategoryWithName:(NSString *)albumName
 {
-	[UIAlertView showWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error")
-					   message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album")
-			 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-			 otherButtonTitles:nil
-					  tapBlock:nil];
+    // Display HUD during the update
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showCreateCategoryHUD];
+    });
+    
+    // Create album
+    [AlbumService createCategoryWithName:albumName
+                            withStatus:@"public"
+                          OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
+                              if(createdSuccessfully)
+                              {
+                                  [AlbumService getAlbumListForCategory:0
+                                       OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                           [self hideCreateCategoryHUDwithSuccess:YES completion:^{
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                                               });
+                                           }];
+                                       }
+                                          onFailure:nil
+                                   ];
+                              }
+                              else
+                              {
+                                  [self hideCreateCategoryHUDwithSuccess:NO completion:^{
+                                      [self showCreateCategoryErrorWithMessage:nil];
+                                  }];
+                              }
+                          } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                              [self hideCreateCategoryHUDwithSuccess:NO completion:^{
+                                  [self showCreateCategoryErrorWithMessage:[error localizedDescription]];
+                              }];
+                          }];
+}
+
+-(void)showCreateCategoryErrorWithMessage:(NSString*)message
+{
+    NSString *errorMessage = NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album");
+    if(message)
+    {
+        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+    }
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error")
+                                message:errorMessage
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:dismissAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+
+#pragma mark -- HUD methods
+
+-(void)showCreateCategoryHUD
+{
+    // Create the loading HUD if needed
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+    if (!hud) {
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+    
+    // Change the background view shape, style and color.
+    hud.square = NO;
+    hud.animationType = MBProgressHUDAnimationFade;
+    hud.contentColor = [UIColor piwigoWhiteCream];
+    hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
+    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+    
+    // Define the text
+    hud.label.text = NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…");
+    hud.label.font = [UIFont piwigoFontNormal];
+}
+
+-(void)hideCreateCategoryHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Hide and remove the HUD
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+        if (hud) {
+            if (success) {
+                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"Complete", nil);
+                [hud hideAnimated:YES afterDelay:3.f];
+            } else {
+                [hud hideAnimated:YES];
+            }
+        }
+        if (completion) {
+            completion();
+        }
+    });
+}
+
+
+#pragma mark -- UITextField Delegate Methods
+
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    // Disable Add Category action
+    [self.createAlbumAction setEnabled:NO];
+    return YES;
+}
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    // Enable Add Category action if album name is non null
+    NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    [self.createAlbumAction setEnabled:(finalString.length >= 1)];
+    return YES;
+}
+
+-(BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    // Disable Add Category action
+    [self.createAlbumAction setEnabled:NO];
+    return YES;
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    return YES;
 }
 
 
@@ -214,6 +349,7 @@ static SEL extracted() {
 	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
 	[self.navigationController pushViewController:album animated:YES];
 }
+
 
 #pragma mark AlbumTableViewCellDelegate Methods
 

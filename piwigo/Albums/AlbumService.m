@@ -208,10 +208,10 @@
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesSetInfo
-		URLParameters:nil
+		URLParameters:nil       // This method requires HTTP POST
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-						@"name" : [[categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"]
+						@"name" : categoryName
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {

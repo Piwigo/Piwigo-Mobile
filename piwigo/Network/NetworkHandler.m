@@ -8,8 +8,10 @@
 
 #import "NetworkHandler.h"
 #import "Model.h"
+#import "KeychainAccess.h"
+#import "MBProgressHUD.h"
 
-// URLs:
+// Piwigo URLs:
 NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
@@ -34,10 +36,10 @@ NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
 
 NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
 
-// parameter keys:
+// Parameter keys:
 NSString * const kPiwigoImagesUploadParamData = @"data";
 NSString * const kPiwigoImagesUploadParamFileName = @"fileName";
-NSString * const kPiwigoImagesUploadParamName = @"name";
+NSString * const kPiwigoImagesUploadParamTitle = @"name";
 NSString * const kPiwigoImagesUploadParamChunk = @"chunk";
 NSString * const kPiwigoImagesUploadParamChunks = @"chunks";
 NSString * const kPiwigoImagesUploadParamCategory = @"category";
@@ -46,6 +48,9 @@ NSString * const kPiwigoImagesUploadParamAuthor = @"author";
 NSString * const kPiwigoImagesUploadParamDescription = @"description";
 NSString * const kPiwigoImagesUploadParamTags = @"tags";
 NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
+
+// HUD tag:
+NSInteger const loadingViewTag = 899;
 
 @interface NetworkHandler()
 
@@ -58,7 +63,6 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 @end
 
 @implementation NetworkHandler
-
 
 // path: format={param1}
 // URLParams: {@"param1" : @"hello" }
@@ -82,6 +86,21 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
+    
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // To remember app recieved anthentication challenge
+            [Model sharedInstance].performedHTTPauthentication = YES;
+            // Supply requested credentials
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
     
     NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
                                 parameters:parameters
@@ -126,6 +145,21 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
     
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // To remember app recieved anthentication challenge
+            [Model sharedInstance].performedHTTPauthentication = YES;
+            // Supply requested credentials
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
+    
     NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:nil]
                                 parameters:nil
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
@@ -135,7 +169,7 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
                                 fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
                                 mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];
         
-        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamName] dataUsingEncoding:NSUTF8StringEncoding]
+        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamTitle] dataUsingEncoding:NSUTF8StringEncoding]
                                     name:@"name"];
         
         [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]
@@ -198,12 +232,23 @@ NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 
 +(void)showConnectionError:(NSError*)error
 {
-	UIAlertView *connectionError = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-															  message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
-															 delegate:nil
-													cancelButtonTitle:NSLocalizedString(@"alertOkButton", @"OK")
-													otherButtonTitles:nil];
-	[connectionError show];
+    UIAlertController* alert = [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+            message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
+            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
 @end

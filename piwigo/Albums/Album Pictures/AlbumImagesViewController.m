@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "AlbumImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageService.h"
@@ -23,7 +26,6 @@
 #import "LocalAlbumsViewController.h"
 #import "AlbumData.h"
 #import "NetworkHandler.h"
-#import <AFNetworking/AFImageDownloader.h>
 #import "ImagesCollection.h"
 
 
@@ -133,7 +135,7 @@
 	refreshControl.tintColor = [UIColor piwigoGray];
 	refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Loading All Images")];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-	[self.imagesCollection addSubview:refreshControl];
+    self.imagesCollection.refreshControl = refreshControl;
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -173,26 +175,26 @@
 	if(!self.isSelect) {
         // Selection mode not active
         if([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) {
-            self.navigationItem.rightBarButtonItems = @[self.selectBarButton, self.uploadBarButton];
+            [self.navigationItem setRightBarButtonItems:@[self.selectBarButton, self.uploadBarButton] animated:YES];
         } else {
-            self.navigationItem.rightBarButtonItems = @[self.selectBarButton];
+            [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
         }
 	} else {
         // Selection mode active (only amdins have delete rights)
         if([Model sharedInstance].hasAdminRights)
 		{
             if (self.selectedImageIds.count > 0) {
-                self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton];
+                [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton] animated:YES];
             } else {
-                self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
+                [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
             }
 		}
 		else
 		{
             if (self.selectedImageIds.count > 0) {
-                self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.downloadBarButton];
+                [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton, self.downloadBarButton] animated:YES];
             } else {
-                self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
+                [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
             }
 		}
 	}
@@ -203,6 +205,7 @@
 	self.isSelect = YES;
 	[self loadNavButtons];
 }
+
 -(void)cancelSelect
 {
 	self.isSelect = NO;
@@ -222,30 +225,34 @@
 	[self.navigationController pushViewController:localAlbums animated:YES];
 }
 
+#pragma mark -- Delete images
+
 -(void)deleteImages
 {
 	if(self.selectedImageIds.count <= 0) return;
 	
-    NSString *titleString, *messageString;
-    if (self.selectedImageIds.count > 1) {
-        titleString = NSLocalizedString(@"deleteSeveralImages_title", @"Delete Images");
-        messageString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImageIds.count)];
-    } else {
-        titleString = NSLocalizedString(@"deleteSingleImage_title", @"Delete Image");
-        messageString = NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?");
-    }
+    // Do we really want to delete these images?
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:(self.selectedImageIds.count > 1) ? NSLocalizedString(@"deleteSeveralImages_title", @"Delete Images") : NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
+                                message:(self.selectedImageIds.count > 1) ? [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImageIds.count)] : NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?")
+                                preferredStyle:UIAlertControllerStyleAlert];
     
-	[UIAlertView showWithTitle:titleString
-					   message:messageString
-			 cancelButtonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  if(buttonIndex == 1) {
-							  self.startDeleteTotalImages = self.selectedImageIds.count;
-							  [self deleteSelected];
-						  }
-					  }
-     ];
+    UIAlertAction* cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* deleteAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                   style:UIAlertActionStyleDestructive
+                                   handler:^(UIAlertAction * action) {
+                                       self.startDeleteTotalImages = self.selectedImageIds.count;
+                                       [self deleteSelected];
+                                   }];
+    
+    [alert addAction:cancelAction];
+    [alert addAction:deleteAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)deleteSelected
@@ -256,60 +263,105 @@
 		return;
 	}
 	
-//	NSString *imageId = [NSString stringWithFormat:@"%@", @([self.selectedImageIds.lastObject integerValue])];
-	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
+    [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
     
-//    PiwigoImageData* imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:imageId];
-//    if (imageData == nil) {
     // Image data are not always available —> Load them
     [ImageService getImageInfoById:[self.selectedImageIds.lastObject integerValue]
-     
               ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
                   // Let's delete the image
-                  [ImageService deleteImage:imageData ListOnCompletion:^(NSURLSessionTask *task) {
-                      
-                      [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
-                      
-                      [self.selectedImageIds removeLastObject];
-                      NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
-                      self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
-                      [self.imagesCollection reloadData];
-                      [self deleteSelected];
-                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                      [UIAlertView showWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-                                         message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
-                               cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                               otherButtonTitles:@[NSLocalizedString(@"alertTryAgainButton", @"Try Again")]
-                                        tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                            if(buttonIndex == 1)
-                                            {
-                                                [self deleteSelected];
-                                            }
-                                        }];
-                  }];
+                  [ImageService deleteImage:imageData
+                           ListOnCompletion:^(NSURLSessionTask *task) {
+                              // Image deleted
+                              [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
+                              
+                              [self.selectedImageIds removeLastObject];
+                              NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
+                              self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
+                              [self.imagesCollection reloadData];
+                              [self deleteSelected];
+                           }
+                           onFailure:^(NSURLSessionTask *task, NSError *error) {
+                              // Error — Try again ?
+                              UIAlertController* alert = [UIAlertController
+                                          alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                                          message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                                          preferredStyle:UIAlertControllerStyleAlert];
+                              
+                              UIAlertAction* dismissAction = [UIAlertAction
+                                          actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                          style:UIAlertActionStyleCancel
+                                          handler:^(UIAlertAction * action) {}];
+                              
+                              UIAlertAction* retryAction = [UIAlertAction
+                                          actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                          style:UIAlertActionStyleDestructive
+                                          handler:^(UIAlertAction * action) {
+                                              [self deleteSelected];
+                                          }];
+                              
+                              [alert addAction:dismissAction];
+                              [alert addAction:retryAction];
+                              [self presentViewController:alert animated:YES completion:nil];
+                           }];
 
               } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                  [UIAlertView showWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                                     message:NSLocalizedString(@"imageDetailsFetchError_continueMessage", @"Fetching the image data failed\nNContinue?")
-                           cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-                           otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-                                    tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                        if(buttonIndex == 1)
-                                        {
-                                            [self deleteSelected];
-                                        }
-                                    }];
+                  // Error encountered when retrieving image infos
+                  UIAlertController* alert = [UIAlertController
+                              alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+                              message:NSLocalizedString(@"imageDetailsFetchError_continueMessage", @"Fetching the image data failed\nNContinue?")
+                              preferredStyle:UIAlertControllerStyleAlert];
+                  
+                  UIAlertAction* cancelAction = [UIAlertAction
+                              actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                              style:UIAlertActionStyleCancel
+                              handler:^(UIAlertAction * action) {}];
+                  
+                  UIAlertAction* continueAction = [UIAlertAction
+                              actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                              style:UIAlertActionStyleDestructive
+                              handler:^(UIAlertAction * action) {
+                                  [self deleteSelected];
+                              }];
+                  
+                  [alert addAction:cancelAction];
+                  [alert addAction:continueAction];
+                  [self presentViewController:alert animated:YES completion:nil];
               }
      ];
-//    }
-
 }
+
+#pragma mark -- Download images
 
 -(void)downloadImages
 {
 	if(self.selectedImageIds.count <= 0) return;
 	
+    // Check access to Photos — Required as system does not always ask
+    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusNotDetermined) {
+        // Request authorization to access photos
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            // Nothing to do…
+        }];
+    }
+    else if(([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusDenied) ||
+            ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusRestricted)) {
+        // Inform user that he/she denied or restricted access to photos
+        UIAlertController* alert = [UIAlertController
+                                    alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
+                                    message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                                    preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* dismissAction = [UIAlertAction
+                                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") style:UIAlertActionStyleCancel
+                                        handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:dismissAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
+    }
+    
+    // Do we really want to download these images?
     NSString *titleString, *messageString;
     if (self.selectedImageIds.count > 1) {
         titleString = NSLocalizedString(@"downloadSeveralImages_title", @"Download Images");
@@ -319,17 +371,27 @@
         messageString = NSLocalizedString(@"downloadSingleImage_confirmation", @"Are you sure you want to download the selected image?");
     }
     
-	[UIAlertView showWithTitle:titleString
-					   message:messageString
-			 cancelButtonTitle:NSLocalizedString(@"alertNoButton", @"No")
-			 otherButtonTitles:@[NSLocalizedString(@"alertYesButton", @"Yes")]
-					  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-						  if(buttonIndex == 1)
-						  {
-							  self.totalImagesToDownload = self.selectedImageIds.count;
-							  [self downloadImage];
-						  }
-					  }];
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:titleString
+                                message:messageString
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* deleteAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action) {
+                                       self.totalImagesToDownload = self.selectedImageIds.count;
+                                       [self downloadImage];
+                                   }];
+    
+    [alert addAction:cancelAction];
+    [alert addAction:deleteAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)downloadImage
@@ -346,7 +408,7 @@
 	self.downloadView.imageDownloadCount = self.totalImagesToDownload - self.selectedImageIds.count + 1;
 	
 	self.downloadView.hidden = NO;
-	self.navigationItem.rightBarButtonItems = @[self.cancelBarButton];
+    [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
 	
 	PiwigoImageData *downloadingImage = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject];
 	
@@ -392,7 +454,7 @@
                          }
                   completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
                       // Any error ?
-                      if (error.code) {
+                      if (!error.code) {
 #if defined(DEBUG)
                           NSLog(@"AlbumImagesViewController: downloadImage fail");
 #endif
@@ -404,12 +466,18 @@
                           if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath.path)) {
                               UISaveVideoAtPathToSavedPhotosAlbum(filePath.path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
                           } else {
-                              [UIAlertView showWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                                                 message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
-                                       cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                       otherButtonTitles:nil
-                                                tapBlock:nil
-                               ];
+                              UIAlertController* alert = [UIAlertController
+                                      alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                      message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
+                                      preferredStyle:UIAlertControllerStyleAlert];
+                              
+                              UIAlertAction* dismissAction = [UIAlertAction
+                                      actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                      style:UIAlertActionStyleDefault
+                                      handler:^(UIAlertAction * action) {}];
+                              
+                              [alert addAction:dismissAction];
+                              [self presentViewController:alert animated:YES completion:nil];
                           }
                       }
                   }
@@ -430,12 +498,20 @@
 {
 	if(error)
 	{
-		[UIAlertView showWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
-						   message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-				 otherButtonTitles:nil
-						  tapBlock:nil];
-		[self cancelSelect];
+        UIAlertController* alert = [UIAlertController
+                    alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
+                    message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+                    preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* dismissAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                    style:UIAlertActionStyleDefault
+                    handler:^(UIAlertAction * action) {
+                        [self cancelSelect];
+                    }];
+        
+        [alert addAction:dismissAction];
+        [self presentViewController:alert animated:YES completion:nil];
 	}
 	else
 	{
@@ -444,15 +520,25 @@
 		[self downloadImage];
 	}
 }
+
 -(void)movie:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
 	if(error)
 	{
-		[UIAlertView showWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
-						   message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-				 cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-				 otherButtonTitles:nil
-						  tapBlock:nil];
+        UIAlertController* alert = [UIAlertController
+                    alertControllerWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
+                    message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
+                    preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* dismissAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                    style:UIAlertActionStyleDefault
+                    handler:^(UIAlertAction * action) {
+                        [self cancelSelect];
+                    }];
+        
+        [alert addAction:dismissAction];
+        [self presentViewController:alert animated:YES completion:nil];
 	}
 	else
 	{

@@ -109,11 +109,24 @@
 									 
 									 if(error)
 									 {
-										 [UIAlertView showWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error")
-															message:[NSString stringWithFormat:@"%@\n%@", NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)"), [error localizedDescription]]
-												  cancelButtonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-												  otherButtonTitles:nil
-														   tapBlock:nil];
+                                         // Determine the present view controller
+                                         UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                                         while (topViewController.presentedViewController) {
+                                             topViewController = topViewController.presentedViewController;
+                                         }
+                                         
+                                         UIAlertController* alert = [UIAlertController
+                                             alertControllerWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error")
+                                             message:[NSString stringWithFormat:@"%@\n%@", NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)"), [error localizedDescription]]
+                                             preferredStyle:UIAlertControllerStyleAlert];
+                                         
+                                         UIAlertAction* defaultAction = [UIAlertAction
+                                             actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                             style:UIAlertActionStyleDefault
+                                             handler:^(UIAlertAction * action) {}];
+                                         
+                                         [alert addAction:defaultAction];
+                                         [topViewController presentViewController:alert animated:YES completion:nil];
 									 }
 									 self.isLoadingMoreImages = NO;
 									 if(completion)
@@ -188,7 +201,8 @@
 {
 	PiwigoImageData *newImageData = [[CategoriesData sharedInstance] getImageForCategory:imageUpload.categoryToUploadTo andId:[NSString stringWithFormat:@"%@", @(imageUpload.imageId)]];
 	
-	newImageData.name = imageUpload.imageUploadName;
+    newImageData.fileName = imageUpload.image;
+    newImageData.name = imageUpload.title;
 	newImageData.privacyLevel = imageUpload.privacyLevel;
 	newImageData.author = imageUpload.author;
 	newImageData.imageDescription = imageUpload.imageDescription;

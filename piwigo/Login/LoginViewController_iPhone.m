@@ -87,16 +87,6 @@
                                                                       options:kNilOptions
                                                                       metrics:metrics
                                                                         views:views]];
-    
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.loadingView]];
-    [self.loadingView addConstraints:[NSLayoutConstraint constraintCenterView:self.spinner]];
-    [self.loadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.loggingInLabel]];
-    [self.loadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-[spinner]"
-                                                                             options:kNilOptions
-                                                                             metrics:nil
-                                                                               views:@{@"spinner" : self.spinner,
-                                                                                       @"label" : self.loggingInLabel}]];
 }
 
 @end
