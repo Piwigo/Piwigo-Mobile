@@ -6,11 +6,12 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "NotUploadedYet.h"
 #import "CategoriesData.h"
 #import "PiwigoAlbumData.h"
 #import "PhotosFetch.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 
 @implementation NotUploadedYet
 

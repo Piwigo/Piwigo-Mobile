@@ -6,9 +6,10 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "LocalAlbumsViewController.h"
 #import "CategoryTableViewCell.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "Model.h"
 #import "PhotosFetch.h"
 #import "UploadViewController.h"

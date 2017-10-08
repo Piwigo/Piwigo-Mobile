@@ -6,9 +6,10 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "ImageUploadManager.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
+
+#import "ImageUploadManager.h"
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "PiwigoTagData.h"

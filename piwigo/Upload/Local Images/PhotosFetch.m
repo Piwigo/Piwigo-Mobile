@@ -6,9 +6,10 @@
 //  Copyright (c) 2014 BakerCrew. All rights reserved.
 //
 
-#import "PhotosFetch.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <UIKit/UIKit.h>
+
+#import "PhotosFetch.h"
 #import "Model.h"
 
 @interface PhotosFetch()

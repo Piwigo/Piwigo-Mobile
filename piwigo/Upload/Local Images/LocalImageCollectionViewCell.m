@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "LocalImageCollectionViewCell.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+
+#import "LocalImageCollectionViewCell.h"
 
 @interface LocalImageCollectionViewCell()
 
