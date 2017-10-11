@@ -158,7 +158,8 @@ typedef enum {
                                         preferredStyle:UIAlertControllerStyleAlert];
                                 
                                 UIAlertAction* dismissAction = [UIAlertAction
-                                                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No") style:UIAlertActionStyleCancel
+                                                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                                style:UIAlertActionStyleCancel
                                                 handler:^(UIAlertAction * action) {}];
 
                                 UIAlertAction* retryAction = [UIAlertAction

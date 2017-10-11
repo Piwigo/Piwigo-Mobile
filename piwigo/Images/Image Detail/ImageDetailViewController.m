@@ -287,7 +287,7 @@
                              
                              UIAlertAction* retryAction = [UIAlertAction
                                  actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
-                                 style:UIAlertActionStyleCancel
+                                 style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * action) {
                                      [self downloadImage];
                                  }];
@@ -322,7 +322,7 @@
                           
                           UIAlertAction* retryAction = [UIAlertAction
                                                         actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
-                                                        style:UIAlertActionStyleCancel
+                                                        style:UIAlertActionStyleDefault
                                                         handler:^(UIAlertAction * action) {
                                                             [self downloadImage];
                                                         }];

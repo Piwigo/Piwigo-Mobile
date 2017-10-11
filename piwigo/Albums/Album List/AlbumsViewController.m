@@ -209,7 +209,8 @@ static SEL extracted() {
                                 preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* dismissAction = [UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") style:UIAlertActionStyleCancel
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    style:UIAlertActionStyleCancel
                                     handler:^(UIAlertAction * action) {}];
     
     [alert addAction:dismissAction];
