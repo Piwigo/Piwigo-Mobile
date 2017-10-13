@@ -99,6 +99,7 @@ static SEL extracted() {
 	refreshControl.tintColor = [UIColor piwigoGray];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
+    self.albumsTableView.alwaysBounceVertical = YES;
 	
     [self getAlbumData];
 	[self refreshShowingCells];
