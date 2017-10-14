@@ -23,7 +23,7 @@
 "alertCancelButton" = "Annuler";
 "alertAddButton" = "Ajouter";
 "alertRetryButton" = "Réessayer";
-"alertNextButton" = "Image suivante";
+"alertNextButton" = "Image Suivante";
 
 // Complete views
 "Complete" = "Terminé";
@@ -35,7 +35,7 @@
 // Errors
 "internetErrorGeneral_title" = "Erreur de Connexion";
 "internetErrorGeneral_broken" = "Désolé, la communication a été interrompue. Essayez de vous connecter à nouveau.";
-"internetCancellingConnection_button" = "Annulation de la connexion…";
+"internetCancellingConnection_button" = "Annulation de la Connexion…";
 "internetCancelledConnection_button" = "Annuler la Connexion";
 "internetCancelledConnection_title" = "Connexion Annulée";
 
@@ -50,7 +50,7 @@
 "login_loggingIn" = "Connexion en cours...";
 "login_protocolDescription" = "(taper > changer)";
 "login_connecting" = "Connexion en cours";
-"login_newSession" = "Ouverture de la Connexion";
+"login_newSession" = "Ouverture de la Session";
 "login_communityParameters" = "Paramètres Community";
 "login_serverParameters" = "Paramètres Piwigo";
 "login_connectionChanged" = "Connexion Modifiée !";
@@ -107,10 +107,10 @@
 "categorySort_imagesOnly" = "Images Uniquement";
 
 // Album create
-"createNewAlbum_title" = "Nouvel album";
+"createNewAlbum_title" = "Nouvel Album";
 "createNewAlbum_message" = "Entrez un nom pour cet album.";
 "createNewAlbum_placeholder" = "Nom de l’Album";
-"createNewAlbumHUD_label" = "Création en cours…";
+"createNewAlbumHUD_label" = "Création de l'Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Echec de la Création d'Album";
@@ -125,7 +125,7 @@
 "renameCategory_title" = "Renommer l'Album";
 "renameCategory_message" = "Entrez un nouveau nom pour cet album";
 "renameCategory_button" = "Renommer";
-"renameCategoryHUD_label" = "Changement de nom en cours…";
+"renameCategoryHUD_label" = "Changement du Nom…";
 
 // Album rename — Errors
 "renameCategoyError_title" = "Echec du Changement";
@@ -137,7 +137,7 @@
 "deleteCategoryConfirm_title" = "Etes-vous sûr ?";
 "deleteCategoryConfirm_message" = "Veuillez entrer le nombre d’images afin de supprimer cet album.\nNombre d’images : %@";
 "deleteCategoryConfirm_deleteButton" = "SUPPRIMER";
-"deleteCategoryHUD_label" = "Suppression en cours…";
+"deleteCategoryHUD_label" = "Suppression de l'Album…";
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Nombre Incorrect";
@@ -149,7 +149,7 @@
 "moveCategory" = "Déplacer l'Album";
 "moveCategory_selectParent" = "Sélectionnez un album pour déplacer l’album \"%@\" dans";
 "moveCategory_message" = "Êtes-vous certain de vouloir déplacer \"%@\" dans l’album \"%@\" ?";
-"moveCategoryHUD_moving" = "Déplacement en cours…";
+"moveCategoryHUD_moving" = "Déplacement de l'Album…";
 
 // album move — Errors
 "moveCategoryError_title" = "Echec";
@@ -160,7 +160,7 @@
 "categorySelection_forImage" = "Sélectionnez un album pour cette image";
 "categoryImageSet_title" = "Affecter une Vignette";
 "categoryImageSet_message" = "Êtes-vous certain de vouloir affecter cette image à l’album \"%@\" ?";
-"categoryImageSetHUD_updating" = "Modification de la vignette…";
+"categoryImageSetHUD_updating" = "Modification de la Vignette…";
 
 // Album set image thumbnail — Errors
 "categoryImageSetError_title" = "Echec d'Affectation";
@@ -201,7 +201,7 @@
 "editImageDetailsError_title" = "Échec de la Modification";
 "editImageDetailsError_message" = "Echec de l'enregistrement des modifications sur votre serveur. Réessayez ?";
 "imageDetailsFetchError_title" = "Echec Récupération Détails";
-"imageDetailsFetchError_retryMessage" = "La récupération des données de l’image a échoué.\nEssayer à nouveau ?";
+"imageDetailsFetchError_retryMessage" = "La récupération des données de l’image a échoué.\nRéessayer ?";
 "imageDetailsFetchError_continueMessage" = "La récupération des données de l’image a échoué.\nContinuer ?";
 
 // Image privacy levels
