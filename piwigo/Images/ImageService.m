@@ -133,7 +133,9 @@ NSString * const kGetImageOrderDescending = @"desc";
 	{
 		imageData.name = @"";
 	}
-    imageData.fullResPath = [imageJson objectForKey:@"element_url"];
+    // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
+    // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
+    imageData.fullResPath = [[imageJson objectForKey:@"element_url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
 	
 	imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
 	imageData.author = [imageJson objectForKey:@"author"];
@@ -154,16 +156,18 @@ NSString * const kGetImageOrderDescending = @"desc";
     dateString = [imageJson objectForKey:@"date_creation"];
     if (![dateString isKindOfClass:[NSNull class]]) imageData.dateCreated = [dateFormat dateFromString:dateString];
     
+    // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
+    // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
-	imageData.SquarePath = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
-	imageData.ThumbPath = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
-	imageData.MediumPath = [[imageSizes objectForKey:@"medium"] objectForKey:@"url"];
-	imageData.XXSmallPath = [imageSizes valueForKeyPath:@"2small.url"];
-	imageData.XSmallPath = [imageSizes valueForKeyPath:@"xsmall.url"];
-	imageData.SmallPath = [imageSizes valueForKeyPath:@"small.url"];
-	imageData.LargePath = [imageSizes valueForKeyPath:@"large.url"];
-	imageData.XLargePath = [imageSizes valueForKeyPath:@"xlarge.url"];
-	imageData.XXLargePath = [imageSizes valueForKeyPath:@"xxlarge.url"];
+	imageData.SquarePath = [[[imageSizes objectForKey:@"square"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.ThumbPath = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.MediumPath = [[[imageSizes objectForKey:@"medium"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.XXSmallPath = [[imageSizes valueForKeyPath:@"2small.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.XSmallPath = [[imageSizes valueForKeyPath:@"xsmall.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.SmallPath = [[imageSizes valueForKeyPath:@"small.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.LargePath = [[imageSizes valueForKeyPath:@"large.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.XLargePath = [[imageSizes valueForKeyPath:@"xlarge.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.XXLargePath = [[imageSizes valueForKeyPath:@"xxlarge.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
 	
 	NSArray *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];
