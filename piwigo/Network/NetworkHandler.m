@@ -94,10 +94,12 @@ NSInteger const loadingViewTag = 899;
         [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
             // To remember app recieved anthentication challenge
             [Model sharedInstance].performedHTTPauthentication = YES;
-            // Supply requested credentials
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
+            // Supply requested credentials if not provided yet
+            if (challenge.previousFailureCount == 0) {
+                *credential = [NSURLCredential credentialWithUser:user
+                                                         password:password
+                                                      persistence:NSURLCredentialPersistenceForSession];
+            }
             return NSURLSessionAuthChallengeUseCredential;
         }];
     }
@@ -152,10 +154,12 @@ NSInteger const loadingViewTag = 899;
         [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
             // To remember app recieved anthentication challenge
             [Model sharedInstance].performedHTTPauthentication = YES;
-            // Supply requested credentials
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
+            // Supply requested credentials if not provided yet
+            if (challenge.previousFailureCount == 0) {
+                *credential = [NSURLCredential credentialWithUser:user
+                                                         password:password
+                                                      persistence:NSURLCredentialPersistenceForSession];
+            }
             return NSURLSessionAuthChallengeUseCredential;
         }];
     }

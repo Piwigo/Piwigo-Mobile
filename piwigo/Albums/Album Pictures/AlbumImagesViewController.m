@@ -135,7 +135,8 @@
 	refreshControl.tintColor = [UIColor piwigoGray];
 	refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Loading All Images")];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    self.imagesCollection.refreshControl = refreshControl;
+    [self.imagesCollection addSubview:refreshControl];
+    self.imagesCollection.alwaysBounceVertical = YES;
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -353,7 +354,8 @@
                                     preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction* dismissAction = [UIAlertAction
-                                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") style:UIAlertActionStyleCancel
+                                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                        style:UIAlertActionStyleCancel
                                         handler:^(UIAlertAction * action) {}];
         
         [alert addAction:dismissAction];
@@ -454,7 +456,7 @@
                          }
                   completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
                       // Any error ?
-                      if (!error.code) {
+                      if (error.code) {
 #if defined(DEBUG)
                           NSLog(@"AlbumImagesViewController: downloadImage fail");
 #endif

@@ -99,6 +99,7 @@ static SEL extracted() {
 	refreshControl.tintColor = [UIColor piwigoGray];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
+    self.albumsTableView.alwaysBounceVertical = YES;
 	
     [self getAlbumData];
 	[self refreshShowingCells];
@@ -209,7 +210,8 @@ static SEL extracted() {
                                 preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* dismissAction = [UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") style:UIAlertActionStyleCancel
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    style:UIAlertActionStyleCancel
                                     handler:^(UIAlertAction * action) {}];
     
     [alert addAction:dismissAction];
@@ -230,11 +232,16 @@ static SEL extracted() {
     // Change the background view shape, style and color.
     hud.square = NO;
     hud.animationType = MBProgressHUDAnimationFade;
-    hud.contentColor = [UIColor piwigoWhiteCream];
-    hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_9_x_Max) {
+        hud.contentColor = [UIColor piwigoWhiteCream];
+        hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
+    } else {
+        hud.contentColor = [UIColor piwigoGray];
+        hud.bezelView.color = [UIColor piwigoGrayLight];
+    }
+
     // Define the text
     hud.label.text = NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…");
     hud.label.font = [UIFont piwigoFontNormal];
