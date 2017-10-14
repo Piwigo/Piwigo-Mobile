@@ -23,7 +23,7 @@
 "alertCancelButton" = "Fortryd";
 "alertAddButton" = "Tilføj";
 "alertRetryButton" = "Retry";
-"alertNextButton" = "Next Image";
+"alertNextButton" = "Næste billede";
 
 // Complete views
 "Complete" = "Udført";
@@ -35,9 +35,9 @@
 // Errors
 "internetErrorGeneral_title" = "Forbindelsesfejl";
 "internetErrorGeneral_broken" = "Forbindelsen blev afbrudt. \nPrøv at logge ind igen.";
-"internetCancellingConnection_button" = "Cancelling Connection…";
-"internetCancelledConnection_button" = "Cancel Connection";
-"internetCancelledConnection_title" = "Connection Cancelled";
+"internetCancellingConnection_button" = "Annullerer forbindelsen…";
+"internetCancelledConnection_button" = "Annuller forbindelsen";
+"internetCancelledConnection_title" = "Forbindelsen afbrudt";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -49,10 +49,10 @@
 "login_passwordPlaceholder" = "Adgangskode (valgfrit)";
 "login_loggingIn" = "Logger ind...";
 "login_protocolDescription" = "(tryk for at ændre)";
-"login_connecting" = "Connecting";
-"login_newSession" = "Opening Session";
+"login_connecting" = "Forbinder";
+"login_newSession" = "Åbner session";
 "login_communityParameters" = "Community parametre";
-"login_serverParameters" = "Piwigo parametre";
+"login_serverParameters" = "Piwigo Parametre";
 "login_connectionChanged" = "Forbindelsen ændret!";
 
 // Login — Errors
@@ -107,10 +107,10 @@
 "categorySort_imagesOnly" = "Kun Billeder";
 
 // Album create
-"createNewAlbum_title" = "New Album";
-"createNewAlbum_message" = "Enter a name for this album.";
+"createNewAlbum_title" = "Nyt Album";
+"createNewAlbum_message" = "Indtast navm for dette album.";
 "createNewAlbum_placeholder" = "Navn på album";
-"createNewAlbumHUD_label" = "Creating Album…";
+"createNewAlbumHUD_label" = "Opretter album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Opret Album Fejl";
@@ -123,9 +123,9 @@
 
 // Album rename
 "renameCategory_title" = "Omdøb Album";
-"renameCategory_message" = "Enter a new name for this album";
+"renameCategory_message" = "Indtast navn for dette album";
 "renameCategory_button" = "Omdøb";
-"renameCategoryHUD_label" = "Renaming Album…";
+"renameCategoryHUD_label" = "Omdøber Album…";
 
 // Album rename — Errors
 "renameCategoyError_title" = "Kunne ikke omdøbe album";
@@ -137,7 +137,7 @@
 "deleteCategoryConfirm_title" = "Er du sikker?";
 "deleteCategoryConfirm_message" = "Angiv antallet af billeder for at slette dette album\nAntal billeder: %@";
 "deleteCategoryConfirm_deleteButton" = "SLET";
-"deleteCategoryHUD_label" = "Deleting Album…";
+"deleteCategoryHUD_label" = "Sletter album…";
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Antal stemmer ikke overens";
@@ -149,7 +149,7 @@
 "moveCategory" = "Flyt Album";
 "moveCategory_selectParent" = "Vælg et album at flytte albummet \"%@\" ind i";
 "moveCategory_message" = "Er du sikker på du vil flytte \"%@\" til albummet \"%@\"?";
-"moveCategoryHUD_moving" = "Moving Album…";
+"moveCategoryHUD_moving" = "Flytter album…";
 
 // album move — Errors
 "moveCategoryError_title" = "Kunne ikke flytte album";
@@ -160,7 +160,7 @@
 "categorySelection_forImage" = "Vælg et album for dette billede";
 "categoryImageSet_title" = "Vælg Miniaturebilledet";
 "categoryImageSet_message" = "Er du sikker på, at du vil bruge dette billede som miniaturebillede for albummet \"%@\"?";
-"categoryImageSetHUD_updating" = "Updating Album Thumbnail…";
+"categoryImageSetHUD_updating" = "Opdaterer Album miniature…";
 
 // Album set image thumbnail — Errors
 "categoryImageSetError_title" = "Billede Set fejl";
@@ -188,18 +188,18 @@
 "imageOptions_setAlbumImage" = "Angiv som Albumbillede";
 
 // Image details
-"imageDetailsView_title" = "Image Details";
+"imageDetailsView_title" = "Billeddetaljer";
 "editImageDetails_title" = "Titel:";
 "editImageDetails_titlePlaceholder" = "Titel";
 "editImageDetails_author" = "Forfatter:";
 "editImageDetails_tags" = "Etiketter:";
 "editImageDetails_privacyLevel" = "Hvem kan se dette billede?";
 "editImageDetails_descriptionPlaceholder" = "Beskrivelse";
-"editImageDetailsHUD_updating" = "Updating Image Info…";
+"editImageDetailsHUD_updating" = "Opdaterer billedinfo...";
 
 // Image details — Errors
-"editImageDetailsError_title" = "Failed to Update";
-"editImageDetailsError_message" = "Failed to update your changes with your server.\nTry again?";
+"editImageDetailsError_title" = "Kunne ikke opdatere";
+"editImageDetailsError_message" = "Kunne ikke opdatere dine ændringer på din server. \nPrøv igen?";
 "imageDetailsFetchError_title" = "Kan ikke læse billeddetajler";
 "imageDetailsFetchError_retryMessage" = "Hentning af billeddata mislykkedes, prøv igen?";
 "imageDetailsFetchError_continueMessage" = "Hentning af billeddata mislykkedes.\nFortsæt?";
@@ -275,7 +275,7 @@
 "imageUploadTableCell_uploading" = "Uploader...";
 "imageUploadProgressBar_zero" = "Uploader 0/0";
 "imageUploadProgressBar_nonZero" = "Uploader %@/%@";
-"imageUploadProgressBar_completed" = "Completed";
+"imageUploadProgressBar_completed" = "Fuldført";
 "imageUploadCompleted_title" = "Upload Fuldført";
 "imageUploadCompleted_message" = "billede/video uploadet til Piwigo server.";
 "imageUploadCompleted_message>1" = "billeder/videoer uploadet til Piwigo server.";
