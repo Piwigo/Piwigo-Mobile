@@ -187,7 +187,9 @@
     UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
 
     // strip GPS data if user requested it in Settings:
+#if defined(DEBUG)
     NSLog(@"%@",imageMetadata);
+#endif
     if([Model sharedInstance].stripGPSdataOnUpload) [imageMetadata setObject:@"" forKey:(NSString *)kCGImagePropertyGPSDictionary];
 
     // Video or Photo ?
