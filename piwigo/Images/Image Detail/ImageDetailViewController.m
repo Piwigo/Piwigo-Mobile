@@ -7,6 +7,8 @@
 //
 
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"
 #import "ImageService.h"
@@ -17,7 +19,6 @@
 #import "ImageUpload.h"
 #import "ImageScrollView.h"
 #import "AllCategoriesViewController.h"
-#import <AFNetworking/AFImageDownloader.h>
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 

@@ -6,8 +6,10 @@
 //  Copyright (c) 2014 CS 3450. All rights reserved.
 //
 
-#import "Model.h"
+#import <Photos/Photos.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+
+#import "Model.h"
 #import "PiwigoImageData.h"
 
 @interface Model()

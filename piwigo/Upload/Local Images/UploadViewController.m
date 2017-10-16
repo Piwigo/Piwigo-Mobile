@@ -6,12 +6,13 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "UploadViewController.h"
 #import "ImageUploadManager.h"
 #import "PhotosFetch.h"
 #import "LocalImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "CategoriesData.h"
 #import "ImageUpload.h"
 #import "ImageUploadProgressView.h"

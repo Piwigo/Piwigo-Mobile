@@ -6,9 +6,10 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "ImageUpload.h"
 #import "PiwigoImageData.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 
 @implementation ImageUpload
 

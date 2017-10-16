@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "ImageUploadTableViewCell.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+
+#import "ImageUploadTableViewCell.h"
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "Model.h"
