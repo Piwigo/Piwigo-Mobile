@@ -22,7 +22,7 @@
 "alertTryAgainButton" = "Erneut versuchen";
 "alertCancelButton" = "Abbrechen";
 "alertAddButton" = "Hinzufügen";
-"alertRetryButton" = "Erneut versuchen";
+"alertRetryButton" = "Wiederholen";
 "alertNextButton" = "Nächstes Bild";
 
 // Complete views
