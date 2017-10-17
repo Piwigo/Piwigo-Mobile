@@ -372,6 +372,7 @@
         textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
+        textField.returnKeyType = UIReturnKeyGo;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.delegate = self;
     }];
