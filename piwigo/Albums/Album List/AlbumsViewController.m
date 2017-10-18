@@ -138,7 +138,7 @@ static SEL extracted() {
         textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
-        textField.returnKeyType = UIReturnKeyGo;
+        textField.returnKeyType = UIReturnKeyDone;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.delegate = self;
     }];
