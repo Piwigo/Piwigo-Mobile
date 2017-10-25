@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.3_text" = "Version 2.1.2\n\n• Tilføjet grundlæggende adgangskontrol\n• Tilføjet afbrydelse af autoforbindelse\n• Forbedring af brugergrænseflade og upload\n• Forbedret oversættelse og iOS 11 kompabilitet\n• Rettet fejl ved \"ikke overført\" filter\n• Modernisering af kode\n________________________________________\n\n";
+"v2.1.4_text" = "Version 2.1.4\n\n• Svensk oversættelse\n________________________________________\n\n";
+
+"v2.1.3_text" = "Version 2.1.3\n19 oktober 2017\n\n• Tilføjet grundlæggende adgangskontrol\n• Tilføjet afbrydelse af autoforbindelse\n• Forbedring af brugergrænseflade og upload\n• Forbedret oversættelse og iOS 11 kompabilitet\n• Rettet fejl ved \"ikke overført\" filter\n• Modernisering af kode\n________________________________________\n\n";
 
 "v2.1.2_text" = "Version 2.1.2\n7 september 2017\n\n• Rettelse af fejl i forbindelse med login ved Community versioner < 2,9 \n• Forbedrede oversættelser \n• Vedligeholdelses arbejde\n________________________________________\n\n";
 

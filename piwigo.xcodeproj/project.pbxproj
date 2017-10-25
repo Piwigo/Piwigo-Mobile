@@ -123,6 +123,11 @@
 		A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD0134621EBE310000F11C3F /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
 		AD0134631EBE310000F11C3F /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
+		AD0822711FA06B090005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD0822721FA06B090005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/About.strings; sourceTree = "<group>"; };
+		AD0822731FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		AD0822741FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/AppStore.strings; sourceTree = "<group>"; };
+		AD0822751FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD294B281F2CE87200CD3769 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD294B2A1F2CE87400CD3769 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultThumbnailSizeViewController.h; sourceTree = "<group>"; };
@@ -948,6 +953,7 @@
 				da,
 				pl,
 				de,
+				sv,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -1212,6 +1218,7 @@
 				AD3FDDEB1F2E23F700F71C81 /* da */,
 				AD45949E1F36765200CF9438 /* pl */,
 				AD591A3C1F9116FA008D02B6 /* de */,
+				AD0822741FA06B0A0005AA12 /* sv */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -1233,6 +1240,7 @@
 				AD3FDDE81F2E23F700F71C81 /* da */,
 				AD45949B1F36765200CF9438 /* pl */,
 				AD591A391F9116F9008D02B6 /* de */,
+				AD0822711FA06B090005AA12 /* sv */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1245,6 +1253,7 @@
 				AD3FDDE91F2E23F700F71C81 /* da */,
 				AD45949C1F36765200CF9438 /* pl */,
 				AD591A3A1F9116FA008D02B6 /* de */,
+				AD0822721FA06B090005AA12 /* sv */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -1257,6 +1266,7 @@
 				AD3FDDEA1F2E23F700F71C81 /* da */,
 				AD45949D1F36765200CF9438 /* pl */,
 				AD591A3B1F9116FA008D02B6 /* de */,
+				AD0822731FA06B0A0005AA12 /* sv */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
@@ -1269,6 +1279,7 @@
 				ADC06AE31F40B2BB0081B4FA /* da */,
 				ADC06AE41F40B2BC0081B4FA /* pl */,
 				AD591A3D1F9116FA008D02B6 /* de */,
+				AD0822751FA06B0A0005AA12 /* sv */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

@@ -70,7 +70,7 @@
 		[self.view addSubview:self.textView];
 		
         // Release notes string
-        NSString *aboutString = @"";
+        NSString *aboutString = @"\n\n\n\n";
         
         // Translators
         NSString *translatorsString = NSLocalizedStringFromTableInBundle(@"translators_text", @"About", [NSBundle mainBundle], @"Translators text");
@@ -150,7 +150,10 @@
                                           range:uiCountingLabelDescriptionRange];
             
         self.textView.attributedText = aboutAttributedString;
-		[self addConstraints];
+        self.textView.editable = NO;
+        self.textView.allowsEditingTextAttributes = NO;
+        self.textView.selectable = YES;
+        [self addConstraints];
 	}
 	return self;
 }
@@ -170,7 +173,7 @@
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
 	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
 	
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-65-|"
+	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
 																	  options:kNilOptions
 																	  metrics:nil
 																		views:views]];

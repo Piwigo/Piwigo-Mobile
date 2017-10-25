@@ -382,7 +382,7 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-Einstellungen (Verwendet/Total)";
-"settings_cacheDisk" = "Datenträger";
+"settings_cacheDisk" = "Festplatte";
 "settings_placeholderDisk" = "Gib einen Disk-Cache von 10-200 an";
 "settings_cacheMemory" = "Speicher";
 "settings_placeholderMemory" = "Gib einen Speicher-Cache von 10-200 an";
@@ -395,5 +395,5 @@
 "settings_releaseNotes" = "Versionshinweise";
 "settings_rateInAppStore" = "Piwigo Mobile bewerten";
 "settings_translateWithCrowdin" = "Piwigo Mobile übersetzen";
-"settings_pwgForumURL" = "http://de.piwigo.org/forum/";
+"settings_pwgForumURL" = "http://piwigo.org/forum/";
 "settings_acknowledgements" = "Danksagungen";

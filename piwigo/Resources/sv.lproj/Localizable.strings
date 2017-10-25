@@ -1,0 +1,399 @@
+/*
+ Localizable.strings
+ piwigo
+ 
+ Created by Spencer Baker on 1/17/15.
+ Copyright (c) 2015 bakercrew. All rights reserved.
+ */
+// ===========================================================================
+// ==> GENERIC
+// ===========================================================================
+// Tab bar
+
+"tabBar_albums" = "Album";
+"tabBar_upload" = "Ladda Upp";
+"tabBar_preferences" = "Inställningar";
+
+// Alert buttons
+"alertOkButton" = "Ok";
+"alertDismissButton" = "Avfärda";
+"alertYesButton" = "Ja";
+"alertNoButton" = "Nej";
+"alertTryAgainButton" = "Försök igen";
+"alertCancelButton" = "Avbryt";
+"alertAddButton" = "Lägg till";
+"alertRetryButton" = "Försök igen";
+"alertNextButton" = "Nästa bild";
+
+// Complete views
+"Complete" = "Klart";
+
+// Upload rights
+"uploadRights_title" = "Behörighet för uppladdning krävs";
+"uploadRights_message" = "Du måste ha uppladdningsrättigheter för att ladda upp bilder eller filmer.";
+
+// Errors
+"internetErrorGeneral_title" = "Anslutningsfel";
+"internetErrorGeneral_broken" = "Tyvärr, kommunikationen bröts.\nFörsök logga in igen.";
+"internetCancellingConnection_button" = "Avbryter anslutningen…";
+"internetCancelledConnection_button" = "Avbryt anslutningen";
+"internetCancelledConnection_title" = "Anslutningen avbrutet";
+
+// ===========================================================================
+// ==> LOGIN / LOGOUT
+// ===========================================================================
+// Login
+"login" = "Logga in";
+"login_serverPlaceholder" = "Webbadress";
+"login_userPlaceholder" = "Användarnamn (frivilligt)";
+"login_passwordPlaceholder" = "Lösenord (frivilligt)";
+"login_loggingIn" = "Loggar In...";
+"login_protocolDescription" = "(tryck för att ändra)";
+"login_connecting" = "Ansluter";
+"login_newSession" = "Öppnar session";
+"login_communityParameters" = "Communityparametrar";
+"login_serverParameters" = "Piwigoparametrar";
+"login_connectionChanged" = "Anslutningen ändrad!";
+
+// Login — Errors
+"serverMethodsError_title" = "Okända metoder";
+"serverMethodsError_message" = "Det gick inte att få servermetoder.\nProblem med Piwigo servern?";
+
+"loginError_title" = "Inloggning Misslyckades";
+"loginError_message" = "Användarnamnet och lösenordet matchar inte den angivna webbadressen";
+"loginEmptyServer_title" = "Ange en webbadress";
+"loginEmptyServer_message" = "Välj ett protokoll och ange en Piwigo webbadress för att gå vidare.";
+
+"serverVersionNotCompatible_title" = "Servern är inkompatibel";
+"serverVersionNotCompatible_message" = "Din Piwigo serverversion är %@. Piwigo Mobile stöder endast en version av minst 2,7. Uppdatera din server för att använda Piwigo Mobile\nVill du ändå fortsätta?";
+
+"sessionStatusError_title" = "Autentisering misslyckades";
+"sessionStatusError_message" = "Det gick inte att autentisera med servern.\nFörsök logga in igen.";
+
+"serverCommunityError_title" = "Kommunikationsfel";
+"serverCommunityError_message" = "Kunde inte hämta utökade parametrar för Community.\nProva med att logga in igen.";
+
+// Logout
+"logoutConfirmation_title" = "Logga ut";
+"logoutConfirmation_message" = "Är du säker på att du vill logga ut?";
+
+// Logout — Errors
+"logoutFail_title" = "Utloggning misslyckades";
+"logoutFail_message" = "Kunde inte logga ut\nFörsök igen?";
+
+
+// ===========================================================================
+// ==> ALBUMS
+// ===========================================================================
+// Albums view
+"categoryMainEmtpy" = "Inga album i din Piwigo ännu.\nProva med att dra ner för att uppdatera, eller logga in igen.";
+"categoryTableView_photoCount" = "bild";
+"categoryTableView_photosCount" = "bilder";
+"categoryTableView_subCategoryCount" = "underalbum";
+"categoryTableView_subCategoriesCount" = "underalbum";
+"categoryImageList_selectButton" = "Välj";
+"categoryImageList_noDataError" = "Fel inga Data";
+
+// Albums sort
+"categorySort_nameAscending" = "Bildtitel, A → Z";
+"categorySort_nameDescending" = "Bildtitel, Z → A";
+"categorySort_fileNameAscending" = "Filnamn, A → Z";
+"categorySort_fileNameDescending" = "Filnamn, Z → A";
+"categorySort_dateCreatedDescending" = "Skapelsedatum, ny → gammal";
+"categorySort_dateCreatedAscending" = "Skapelsedatum, gammal → ny";
+"categorySort_datePostedDescending" = "Skapelsedatum, ny → gammal";
+"categorySort_datePostedAscending" = "Skapelsedatum, gammal → ny";
+"categorySort_videosOnly" = "Endast filmer";
+"categorySort_imagesOnly" = "Endast bilder";
+
+// Album create
+"createNewAlbum_title" = "Nytt Album";
+"createNewAlbum_message" = "Ange ett namn för albumet.";
+"createNewAlbum_placeholder" = "Albumnamn";
+"createNewAlbumHUD_label" = "Skapar Album…";
+
+// Album create — Errors
+"createAlbumError_title" = "Fel vid albumskapande";
+"createAlbumError_message" = "Kunde inte skapa nytt album";
+
+// Album options (actions)
+"categoryCellOption_rename" = "Byt namn";
+"categoryCellOption_move" = "Flytta";
+"categoryCellOption_delete" = "Radera";
+
+// Album rename
+"renameCategory_title" = "Byt namn på Album";
+"renameCategory_message" = "Ange ett namn för albumet";
+"renameCategory_button" = "Byt namn";
+"renameCategoryHUD_label" = "Döper om Album…";
+
+// Album rename — Errors
+"renameCategoyError_title" = "Misslyckat namnbyte";
+"renameCategoyError_message" = "Kunde inte byta namn på ditt album";
+
+// Album delete
+"deleteCategory_title" = "RADERA ALBUM";
+"deleteCategory_message" = "VILL DU VERKLIGEN TA BORT ALBUMET ”%@” OCH ALLA %@ BILDERNA?";
+"deleteCategoryConfirm_title" = "Är du säker?";
+"deleteCategoryConfirm_message" = "Ange antalet bilder för att kunna radera detta album\nAntal bilder: %@";
+"deleteCategoryConfirm_deleteButton" = "RADERA";
+"deleteCategoryHUD_label" = "Raderar Album…";
+
+// Album delete — errors
+"deleteCategoryMatchError_title" = "Antalen stämmer inte överens";
+"deleteCategoryMatchError_message" = "Antalet bilder som du angivit matchar inte antalet bilder i kategorin. Försök igen om du vill radera detta album";
+"deleteCategoryError_title" = "Raderingen misslyckades";
+"deleteCategoryError_message" = "Kunde inte radera ditt album";
+
+// Album move
+"moveCategory" = "Flytta Album";
+"moveCategory_selectParent" = "Välj ett album att flytta album ”%@” till";
+"moveCategory_message" = "Är du säker du vill flytta ”%@” in i album ”%@”?";
+"moveCategoryHUD_moving" = "Flyttar Album…";
+
+// album move — Errors
+"moveCategoryError_title" = "Flytt misslyckades";
+"moveCategoryError_message" = "Kunde inte flytta ditt album";
+
+// Album set image thumbnail
+"categorySelection" = "Välj ett album";
+"categorySelection_forImage" = "Välj ett album för denna bild";
+"categoryImageSet_title" = "Sätt miniatyrbild";
+"categoryImageSet_message" = "Är du säker du vill använda denna bild miniatyrbild för albumet ”%@”?";
+"categoryImageSetHUD_updating" = "Uppdaterar albumets miniatyrbilder…";
+
+// Album set image thumbnail — Errors
+"categoryImageSetError_title" = "Fel vid skapande av miniatyrbild";
+"categoryImageSetError_message" = "Kunde inte sätta miniatyrbild för albumet";
+
+
+// ===========================================================================
+// ==> IMAGES
+// ===========================================================================
+"noImages" = "Inga bilder";
+"pullToRefresh" = "Ladda om bilderna";
+
+// Errors
+"albumPhotoError_title" = "Hämta albumets bildfel";
+"albumPhotoError_message" = "Kunde inte hämta albumbilder (korrupt bild i ditt album?)";
+
+// Image sort
+"sortTitle" = "Sorteringstyp";
+"sortBy" = "Sortera efter";
+
+// Image options (actions)
+"imageOptions_title" = "Bildalternativ";
+"imageOptions_edit" = "Redigera";
+"imageOptions_download" = "Hämta";
+"imageOptions_setAlbumImage" = "Ange som albumbild";
+
+// Image details
+"imageDetailsView_title" = "Bilddetaljer";
+"editImageDetails_title" = "Titel:";
+"editImageDetails_titlePlaceholder" = "Titel";
+"editImageDetails_author" = "Författare:";
+"editImageDetails_tags" = "Etiketter:";
+"editImageDetails_privacyLevel" = "Vem kan se bilden?";
+"editImageDetails_descriptionPlaceholder" = "Beskrivning";
+"editImageDetailsHUD_updating" = "Uppdaterar bildinfo…";
+
+// Image details — Errors
+"editImageDetailsError_title" = "Uppdateringen misslyckades";
+"editImageDetailsError_message" = "Det gick inte att uppdatera ändringarna med din server. Försök igen?";
+"imageDetailsFetchError_title" = "Kunde inte hämta bilddetaljer";
+"imageDetailsFetchError_retryMessage" = "Hämtning av bilddata misslyckades.\nFörsök igen?";
+"imageDetailsFetchError_continueMessage" = "Hämtning av bilddata misslyckats\nFortsätt?";
+
+// Image privacy levels
+"privacyLevel" = "Behörighetsnivå";
+"privacyLevel_admin" = "Admins";
+"privacyLevel_adminFamily" = "Admins, Familj";
+"privacyLevel_adminsFamilyFriends" = "Admins, Familj, Vänner";
+"privacyLevel_adminsFamilyFriendsContacts" = "Admins, Familj, Vänner, Kontakter";
+"privacyLevel_everybody" = "Alla";
+
+// Image tags
+"none" = "ingen";
+"tags" = "Etiketter";
+"tagsHeader_selected" = "Valda";
+"tagsHeader_all" = "Alla";
+
+// Image delete
+"deleteImage_delete" = "Radera";
+"deleteImage_imagePlural" = "Bilder";
+"deleteImageProgress_title" = "Radering av %@%% utförd";
+
+"deleteSingleImage_title" = "Radera bild";
+"deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden?\nÅtgärden kan inte ångras!";
+"deleteSeveralImages_title" = "Radera bilder";
+"deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna?\nÅtgärden kan inte ångras!";
+
+"deleteImageFail_title" = "Raderingen misslyckades";
+"deleteImageFail_message" = "Bild kunde inte raderas\n%@";
+
+// Image download
+"downloadSingleImage_title" = "Hämta bild";
+"downloadSingleImage_confirmation" = "Är du säker att du vill hämta den markerade bilden?";
+"downloadSeveralImages_title" = "Hämta bild";
+"downloadSeveralImage_confirmation" = "Är du säker att du vill hämta de valda %@ bilderna?";
+
+"downloadingImage" = "Hämtar bild";
+"downloadingImages" = "Hämtar bilder";
+"downloadingImageInfo" = "Hämtar bildinformation";
+"downloadingImageInfoForSort" = "Hämtar bildinformation för sortering";
+
+// Image download — Errors
+"downloadImageFail_title" = "Hämtning misslyckades";
+"downloadImageFail_message" = "Det gick inte att hämta bilden!\n%@";
+"downloadVideoFail_message" = "Det gick inte att hämta videon!\n%@";
+"downloadVideoFail_Photos" = "Videoformat accepteras inte av appen Bilder!";
+
+"imageSaveError_title" = "Kunde inte spara bild";
+"imageSaveError_message" = "Kunde inte spara bilden. Fel: %@";
+
+"videoSaveError_title" = "Kunde inte spara video";
+"videoSaveError_message" = "Kunde inte spara videon. Fel: %@";
+
+// Images upload
+"categoryUpload_chooseAlbum" = "Välj ett album att ladda upp bilder till";
+"categoryUpload_chooseLocalAlbum" = "Välj ett album att hämta bilder från";
+"categoyUpload_loadSubCategories" = "ladda";
+"selectAll" = "Alla";
+
+"imageUploadDetails_title" = "Titel:";
+"imageUploadDetails_author" = "Författare:";
+"imageUploadDetails_privacy" = "Behörighet:";
+"imageUploadDetails_tags" = "Taggar:";
+"imageUploadDetails_description" = "Beskrivning:";
+
+"imageUploadDetailsView_title" = "Bilder";
+"imageUploadDetailsButton_title" = "Ladda upp";
+"imageUploadDetailsEdit_title" = "Bearbeta bilder för uppladdning";
+"imageUploadDetailsUploading_title" = "Bilder som laddas upp";
+"imageUploadDetailsCell_uploadComplete" = "Klart! Färdigställer...";
+
+"imageUploadTableCell_uploading" = "Laddar upp...";
+"imageUploadProgressBar_zero" = "Laddar upp 0/0";
+"imageUploadProgressBar_nonZero" = "Ladda upp %@/%@";
+"imageUploadProgressBar_completed" = "Klart";
+"imageUploadCompleted_title" = "Uppladdning Slutförd";
+"imageUploadCompleted_message" = "bilder/videor laddades upp till din Piwigoserver.";
+"imageUploadCompleted_message>1" = "bilder/videor laddades upp till din Piwigoserver.";
+
+// Image upload — Errors
+"uploadError_title" = "Uppladdningsfel";
+"uploadError_message" = "Kunde inte ladda upp din bild. Fel: %@";
+"videoUploadError_title" = "Fel vid videouppladdning";
+"videoUploadError_message" = "Du behöver lägga till tillägget ”VideoJS” och redigera din lokala config-fil för att tillåta video att överföras till din Piwigo.";
+"videoUploadConfigError_message" = "Kontrollera installationen av ”VideoJS” och config-filen med LocalFiles-editorn för att tillåta videofiler att laddas upp till din Piwigo.";
+"videoUploadError_format" = "Tyvärr, är videofilens format är inte kompatibelt med tillägget ”VideoJS”.";
+
+
+// ===========================================================================
+// ==> LOCAL ALBUMS
+// ===========================================================================
+"localAlbums" = "Lokala album";
+
+"localImageSort_newest" = "Nyaste";
+"localImageSort_oldest" = "Äldst";
+"localImageSort_notUploaded" = "Inte uppladdat";
+"localImageSort_undefined" = "Odefinierad";
+
+// Local albums — Access not Authorized
+"localAlbums_photosNotAuthorized_title" = "Ingen behörighet";
+"localAlbums_photosNiltitle" = "Problem att läsa Bilder";
+"localAlbums_photosNnil_msg" = "Det finns ett problem med att läsa ditt lokala bildbibliotek.";
+
+// Local albums — Tell user to change settings, how
+"localAlbums_photosNotAuthorized_msg" = "Kan inte öppna det lokala bildbiblioteket.\nGå in på appen Inställningar, Behörighet, Bilder och aktivera åtkomst för Piwigo.";
+
+// ===========================================================================
+// ==> SETTINGS
+// ===========================================================================
+// Settings — Piwigo Server
+"settingsHeader_server" = "Piwigo Server";
+"settings_server" = "Adress";
+"settings_username" = "Användarnamn";
+"settings_notLoggedIn" = " -Inte inloggad- ";
+"settings_logout" = "Logga ut";
+
+// Settings — General
+"settingsHeader_general" = "Allmänna inställningar";
+"settings_loadAllCategories" = "Ladda ner alla album vid Start";
+"settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
+"defaultImageSort" = "Sortera";
+"defaultImageSort>320px" = "Standardsortering";
+"defaultImageSort>414px" = "Standardsortering av bilder";
+
+"defaultThumbnailSize" = "Miniatyrbilder";
+"defaultThumbnailSize>320px" = "Miniatyrbildsstorlek";
+"defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
+"defaultThumbnailSizeTitle" = "Standardstorlek";
+"defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
+"defaultThumbnailSize_disabled" = " (inaktiverad på servern)";
+"settings_displayTitles" = "Visa titlar på miniatyrbilder";
+"settings_displayTitles>320px" = "Visa titlar på miniatyrbilder";
+
+"thumbnailSizeSquare" = "Kvadrat (snabbare)";
+"thumbnailSizeThumbnail" = "Miniatyrbild (standard)";
+"thumbnailSizeXXSmall" = "Mini (bättre)";
+"thumbnailSizeXSmall" = "Extra liten";
+"thumbnailSizeSmall" = "Liten";
+"thumbnailSizeMedium" = "Medium";
+"thumbnailSizeLarge" = "Stor";
+"thumbnailSizeXLarge" = "Extra stor";
+"thumbnailSizeXXLarge" = "Enorm";
+"thumbnailSizexFullRes" = "Full upplösning";
+
+"defaultImageSize" = "Bilder";
+"defaultImageSize>320px" = "Bildstorlek";
+"defaultImageSize>414px" = "Standardstorlek för bilder";
+"defaultImageSizeTitle" = "Standardstorlek";
+"defaultImageSizeHeader" = "Välj en bildstorlek";
+"defaultImageSize_recommended" = " (rekommenderas)";
+"defaultImageSize_disabled" = " (inaktiverad på servern)";
+
+"imageSizeSquare" = "Kvadrat";
+"imageSizeThumbnail" = "Miniatyrbild";
+"imageSizeXXSmall" = "Mini";
+"imageSizeXSmall" = "Extra liten";
+"imageSizeSmall" = "Liten";
+"imageSizeMedium" = "Medium";
+"imageSizeLarge" = "Stor";
+"imageSizeXLarge" = "Extra stor";
+"imageSizeXXLarge" = "Enorm";
+"imageSizexFullRes" = "Full upplösning";
+
+// Settings — Upload
+"settingsHeader_upload" = "Standardinställningarna för uppladdning";
+"settings_defaultAuthor" = "Författare";
+"settings_defaultAuthor>320px" = "Författarens namn";
+"settings_defaultAuthorPlaceholder" = "Författarens namn";
+"settings_defaultPrivacy" = "Behörighet";
+"settings_defaultPrivacy>414px" = "Vem kan se dessa media?";
+"settings_stripGPSdata" = "Rensa GPS-metadata";
+"settings_stripGPSdata>375px" = "Rensa GPS-metadata innan uppladdning";
+"settings_photoResize" = "Ändra storlek på innan uppladdning";
+"settings_photoResize>375px" = "Ändra bildstorlek innan uppladdning";
+"settings_photoSize" = "> Storlek   ";
+"settings_placeholderSize" = "Ange en bildstorlek från 1-100";
+"settings_photoQuality" = ">Kvalitet";
+"settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
+
+// Settings — Cache
+"settingsHeader_cache" = "Cache-inställningar (använd/totalt)";
+"settings_cacheDisk" = "Disk";
+"settings_placeholderDisk" = "Ange en Disk-Cache från 10-200";
+"settings_cacheMemory" = "Minne";
+"settings_placeholderMemory" = "Ange en Minnes-Cache från 10-200";
+"settings_cacheMegabytes" = "MB";
+
+// Settings — Information
+"settings_appName" = "Piwigo Mobile";
+"settingsHeader_about" = "Information";
+"settings_supportForum" = "Supportforum";
+"settings_releaseNotes" = "Ändringslogg";
+"settings_rateInAppStore" = "Betygsätt Piwigo Mobile";
+"settings_translateWithCrowdin" = "Översätt Piwigo Mobile";
+"settings_pwgForumURL" = "http://Piwigo.org/forum";
+"settings_acknowledgements" = "Tack till och erkännanden";

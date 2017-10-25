@@ -1,0 +1,13 @@
+/* 
+  AppStore.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 29/07/2017.
+  Copyright © 2017 Piwigo.org. All rights reserved.
+*/
+
+"description" = "Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo (v2.7 eller högre):\n\n• Bläddra bland dina album,\n• Skapa nya album,\n• Radera, flytta och byt namn på album,\n• Redigera, ladda ner och ta bort bilder och videoklipp,\n• Ställ in en bild som albumbild,\n• Ladda upp bilder:\n  - av modifierbar storlek och kvalitet\n  - med beskrivning, författare, taggar, EXIF-metadata,\n  - med eller utan GPS-metadata\n• Ladda upp videoklipp.\n\nPiwigo ger dig möjlighet att skapa ditt eget bildgalleri på webben. Den innehåller många kraftfulla funktioner som album, taggar, geolocation, många nivåer av anpassning, uppladdning av besökare, integritet, kalender eller statistik.\n\nPiwigo är gratis och opensource.";
+
+"feedback" = "Återkoppling eller frågor?\nPiwigo erbjuder gratis support på %@ och vi vill gärna höra från dig.";
+
+"promotional_text" = "Ditt fria Piwigo bildbibliotek i molnet till hands!";

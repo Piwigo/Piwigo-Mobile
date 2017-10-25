@@ -49,7 +49,11 @@
         [self.view addSubview:self.textView];
         
         // Release notes string
-        NSString *notesString = @"";
+        NSString *notesString = @"\n\n\n\n";
+        
+        // Release 2.1.4 — Bundle string
+        NSString *v214String = NSLocalizedStringFromTableInBundle(@"v2.1.4_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.4 Release Notes text");
+        notesString = [notesString stringByAppendingString:v214String];
         
         // Release 2.1.3 — Bundle string
         NSString *v213String = NSLocalizedStringFromTableInBundle(@"v2.1.3_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.3 Release Notes text");
@@ -93,6 +97,18 @@
         
         // Attributed strings
         NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:notesString];
+        
+        // Release 2.1.4 — Attributed string
+        NSRange v214Range = [v214String rangeOfString:@" 2.1.4\n"];
+        v214Range.location += [@" 2.1.4\n" length];
+        NSRange v214DescriptionRange = NSMakeRange(v214Range.location, [v214String length] - v214Range.location);
+        v214String = [v214String stringByReplacingCharactersInRange:v214DescriptionRange withString:@""];
+        
+        v214Range = [notesString rangeOfString:v214String];
+        v214DescriptionRange = NSMakeRange(v214Range.location, [v214String length]);
+        [notesAttributedString addAttribute:NSFontAttributeName
+                                      value:[UIFont boldSystemFontOfSize:14]
+                                      range:v214DescriptionRange];
         
         // Release 2.1.3 — Attributed string
         NSRange v213Range = [v213String rangeOfString:@" 2.1.3\n"];
@@ -215,6 +231,10 @@
                                       range:v100DescriptionRange];
         
         self.textView.attributedText = notesAttributedString;
+        self.textView.editable = NO;
+        self.textView.allowsEditingTextAttributes = NO;
+        self.textView.selectable = YES;
+
         [self addConstraints];
     }
     return self;
