@@ -6,8 +6,9 @@
 //  Copyright (c) 2014 CS 3450. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "Model.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "PiwigoImageData.h"
 
 @interface Model()
@@ -89,14 +90,14 @@
 	return instance;
 }
 
-+ (ALAssetsLibrary *)defaultAssetsLibrary
++ (PHPhotoLibrary *)defaultAssetsLibrary
 {
-	static dispatch_once_t pred = 0;
-	static ALAssetsLibrary *library = nil;
-	dispatch_once(&pred, ^{
-		library = [[ALAssetsLibrary alloc] init];
-	});
-	return library;
+    static dispatch_once_t pred = 0;
+    static PHPhotoLibrary *library = nil;
+    dispatch_once(&pred, ^{
+        library = [[PHPhotoLibrary alloc] init];
+    });
+    return library;
 }
 
 -(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel

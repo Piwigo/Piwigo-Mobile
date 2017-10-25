@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 typedef void(^CompletionBlock)(id responseObject);
-@class ALAsset;
-@class ALAssetsGroup;
+
+@class PHAsset;
+@class PHAssetCollection;
 
 @interface PhotosFetch : NSObject
 
@@ -19,6 +20,6 @@ typedef void(^CompletionBlock)(id responseObject);
 
 +(PhotosFetch*)sharedInstance;
 -(void)getLocalGroupsOnCompletion:(CompletionBlock)completion;
--(NSArray*)getImagesForAssetGroup:(ALAssetsGroup*)assetGroup;
+-(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup;
 
 @end

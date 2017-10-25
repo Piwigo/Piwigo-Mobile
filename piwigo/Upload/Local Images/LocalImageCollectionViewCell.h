@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class ALAsset;
+@class PHAsset;
 
 @interface LocalImageCollectionViewCell : UICollectionViewCell
 
@@ -16,6 +16,7 @@
 @property (nonatomic, assign) BOOL cellUploading;
 @property (nonatomic, assign) CGFloat progress;
 @property (nonatomic, strong) UIImageView *cellImage;
--(void)setupWithImageAsset:(ALAsset*)imageAsset;
+
+-(void)setupWithImageAsset:(PHAsset*)imageAsset andThumbnailSize:(CGFloat)size;
 
 @end

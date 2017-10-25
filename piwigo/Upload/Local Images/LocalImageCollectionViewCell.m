@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "LocalImageCollectionViewCell.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface LocalImageCollectionViewCell()
 
@@ -100,12 +101,32 @@
 	return self;
 }
 
--(void)setupWithImageAsset:(ALAsset*)imageAsset
+-(void)setupWithImageAsset:(PHAsset*)imageAsset andThumbnailSize:(CGFloat)size
 {
-	self.cellImage.image = [UIImage imageWithCGImage:[imageAsset thumbnail]];
-	
-	if ([[imageAsset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo])
-	{
+    NSInteger retinaScale = [UIScreen mainScreen].scale;
+    CGSize retinaSquare = CGSizeMake(size*retinaScale, size*retinaScale);
+    
+    PHImageRequestOptions *cropToSquare = [[PHImageRequestOptions alloc] init];
+    cropToSquare.resizeMode = PHImageRequestOptionsResizeModeExact;
+    
+    CGFloat cropSideLength = MIN(imageAsset.pixelWidth, imageAsset.pixelHeight);
+    CGRect square = CGRectMake(0, 0, cropSideLength, cropSideLength);
+    CGRect cropRect = CGRectApplyAffineTransform(square,
+                                                 CGAffineTransformMakeScale(1.0 / imageAsset.pixelWidth,
+                                                                            1.0 / imageAsset.pixelHeight));
+    cropToSquare.normalizedCropRect = cropRect;
+    
+    [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)imageAsset
+                                               targetSize:retinaSquare
+                                              contentMode:PHImageContentModeAspectFit
+                                                  options:cropToSquare
+                                            resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                self.cellImage.image = result;
+                                            }
+     ];
+
+	if(imageAsset.mediaType == PHAssetMediaTypeVideo)
+    {
 		self.playImage.hidden = NO;
 	}
 }

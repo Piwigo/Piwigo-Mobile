@@ -6,27 +6,29 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "ImageUpload.h"
 #import "PiwigoImageData.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 
 @implementation ImageUpload
 
--(instancetype)initWithImageAsset:(ALAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy
+-(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy
 {
 	self = [super init];
 	if(self)
 	{
 		self.imageAsset = imageAsset;
-		self.image = [[imageAsset defaultRepresentation] filename];
-		self.title = [[[imageAsset defaultRepresentation] filename] stringByDeletingPathExtension];
+        NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
+        self.image = ((PHAssetResource*)resources[0]).originalFilename;
+		self.title = [((PHAssetResource*)resources[0]).originalFilename stringByDeletingPathExtension];
 		self.categoryToUploadTo = category;
 		self.privacyLevel = privacy;
 	}
 	return self;
 }
 
--(instancetype)initWithImageAsset:(ALAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags
+-(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags
 {
 	self = [self initWithImageAsset:imageAsset forCategory:category forPrivacyLevel:privacy];
 	if(self)
@@ -87,7 +89,19 @@
     
     NSMutableArray * descriptionArray = [[NSMutableArray alloc] init];
     [descriptionArray addObject:[NSString stringWithFormat:@"<%@: 0x%lx> = {", [self class], (unsigned long)self]];
-    [descriptionArray addObject:[NSString stringWithFormat:@"imageAsset         = %@", self.imageAsset.defaultRepresentation.url]];
+    PHImageRequestOptions * imageRequestOptions = [[PHImageRequestOptions alloc] init];
+    [[PHImageManager defaultManager] requestImageDataForAsset:self.imageAsset
+                                                      options:imageRequestOptions
+                                                resultHandler:^(NSData *imageData, NSString *dataUTI,
+                                                                UIImageOrientation orientation,NSDictionary *info)
+                     {
+                         NSLog(@"info = %@", info);
+                         if ([info objectForKey:@"PHImageFileURLKey"]) {
+                             NSURL *url = [info objectForKey:@"PHImageFileURLKey"];
+                             [descriptionArray addObject:[NSString stringWithFormat:@"imageAsset         = %@", url]];
+                         }
+                     }
+    ];
 
     [descriptionArray addObject:[NSString stringWithFormat:@"image              = %@", (nil == self.image ? objectIsNil :(0 == self.image.length ? @"''" : self.image))]];
     [descriptionArray addObject:[NSString stringWithFormat:@"title    = %@", (nil == self.title ? objectIsNil : (0 == self.title.length ? @"''" : self.title))]];

@@ -6,9 +6,10 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "LocalAlbumsViewController.h"
 #import "CategoryTableViewCell.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "Model.h"
 #import "PhotosFetch.h"
 #import "UploadViewController.h"
@@ -121,9 +122,10 @@
 {
 	CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
 	
-	ALAssetsGroup *groupAsset = [self.groups objectAtIndex:indexPath.row];
-	NSString *name = [groupAsset valueForProperty:ALAssetsGroupPropertyName];
-	[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(groupAsset.numberOfAssets), NSLocalizedString(@"deleteImage_imagePlural", @"Images")]];
+	PHAssetCollection *groupAsset = [self.groups objectAtIndex:indexPath.row];
+    NSString *name = [groupAsset localizedTitle];
+    NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
+	[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), NSLocalizedString(@"deleteImage_imagePlural", @"Images")]];
 	
 	return cell;
 }

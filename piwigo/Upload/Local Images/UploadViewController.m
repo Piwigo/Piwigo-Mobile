@@ -6,12 +6,13 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "UploadViewController.h"
 #import "ImageUploadManager.h"
 #import "PhotosFetch.h"
 #import "LocalImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "CategoriesData.h"
 #import "ImageUpload.h"
 #import "ImageUploadProgressView.h"
@@ -27,7 +28,7 @@
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSArray *images;
-@property (nonatomic, strong) ALAssetsGroup *groupAsset;
+@property (nonatomic, strong) PHAssetCollection *groupAsset;
 
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
@@ -44,7 +45,7 @@
 
 @implementation UploadViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId andGroupAsset:(ALAssetsGroup*)groupAsset
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andGroupAsset:(PHAssetCollection*)groupAsset
 {
 	self = [super init];
 	if(self)
@@ -218,7 +219,7 @@
 
 -(void)cancelSelect
 {
-	for(ALAsset *selectedImageAsset in self.selectedImages)
+	for(PHAsset *selectedImageAsset in self.selectedImages)
 	{
 		NSInteger row = [self.images indexOfObject:selectedImageAsset];
 		if(row != NSNotFound)
@@ -309,18 +310,20 @@
 {
 	LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 	
-	ALAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
-	[cell setupWithImageAsset:imageAsset];
+	PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
+    [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView]];
 	
-	if([self.selectedImages containsObject:imageAsset])
+    NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
+    NSString *originalFilename = ((PHAssetResource*)resources[0]).originalFilename;
+    if([self.selectedImages containsObject:imageAsset])
 	{
 		cell.cellSelected = YES;
 	}
-	else if([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:[[imageAsset defaultRepresentation] filename]])
-	{
-		cell.cellUploading = YES;
-	}
-	
+    else if([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:originalFilename])
+    {
+        cell.cellUploading = YES;
+    }
+    
 	return cell;
 }
 
@@ -328,7 +331,7 @@
 {
 	LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 	
-	ALAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
+	PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
 	
 	if(selectedCell.cellSelected)
 	{	// the cell is selected, remove it

@@ -92,9 +92,13 @@
 
 -(void)setUpImageInfo
 {
-	for(ALAsset *imageAsset in self.imagesSelected)
+	for(PHAsset *imageAsset in self.imagesSelected)
 	{
-		ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset forCategory:self.selectedCategory forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel author:[Model sharedInstance].defaultAuthor description:@"" andTags:nil];
+		ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset
+                                                         forCategory:self.selectedCategory
+                                                     forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel
+                                                              author:[Model sharedInstance].defaultAuthor
+                                                         description:@"" andTags:nil];
 		[self.imagesToEdit addObject:image];
 	}
 }

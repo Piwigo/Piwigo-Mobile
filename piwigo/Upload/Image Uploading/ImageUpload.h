@@ -10,11 +10,11 @@
 #import "Model.h"
 
 @class PiwigoImageData;
-@class ALAsset;
+@class PHAsset;
 
 @interface ImageUpload : NSObject
 
-@property (nonatomic, strong) ALAsset *imageAsset;
+@property (nonatomic, strong) PHAsset *imageAsset;
 @property (nonatomic, strong) NSString *image;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) NSInteger categoryToUploadTo;
@@ -24,8 +24,8 @@
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, assign) NSInteger imageId;
 
--(instancetype)initWithImageAsset:(ALAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;
--(instancetype)initWithImageAsset:(ALAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags;
+-(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;
+-(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags;
 -(instancetype)initWithImageData:(PiwigoImageData*)imageData;
 
 @end
