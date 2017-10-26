@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <sys/utsname.h>                    // For determining iOS device model
 #import "AboutViewController.h"
 
 @interface AboutViewController ()
@@ -173,10 +174,21 @@
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
 	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
 	
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
-																	  options:kNilOptions
-																	  metrics:nil
-																		views:views]];
+    // iPhone X ?
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    NSString* deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+    
+    if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
+        // Add 25px for iPhone X (not great in landscape mode but temporary solution)
+        [self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"V:|-105-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
+                                   options:kNilOptions metrics:nil views:views]];
+    } else {
+        [self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
+                                   options:kNilOptions metrics:nil views:views]];
+    }
 	
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
 																	  options:kNilOptions

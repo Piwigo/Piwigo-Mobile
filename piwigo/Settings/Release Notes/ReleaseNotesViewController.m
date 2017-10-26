@@ -6,6 +6,7 @@
 //  Copyright © 2017 Piwigo.org. All rights reserved.
 //
 
+#import <sys/utsname.h>                    // For determining iOS device model
 #import "ReleaseNotesViewController.h"
 
 @interface ReleaseNotesViewController ()
@@ -251,10 +252,21 @@
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoTitle]];
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.releaseNotes]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[title]-[subTitle]-10-[textView]-65-|"
-                                                                      options:kNilOptions
-                                                                      metrics:nil
-                                                                        views:views]];
+    // iPhone X ?
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    NSString* deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+    
+    if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
+        // Add 25px for iPhone X (not great in landscape mode but temporary solution)
+        [self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"V:|-105-[title]-[subTitle]-10-[textView]-65-|"
+                                   options:kNilOptions metrics:nil views:views]];
+    } else {
+        [self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"V:|-80-[title]-[subTitle]-10-[textView]-65-|"
+                                   options:kNilOptions metrics:nil views:views]];
+    }
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
                                                                       options:kNilOptions

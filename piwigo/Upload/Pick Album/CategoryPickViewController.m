@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <sys/utsname.h>                    // For determining iOS device model
+
 #import "CategoryPickViewController.h"
 #import "CategoriesData.h"
 #import "LocalAlbumsViewController.h"
@@ -63,16 +65,28 @@
 		description.minimumScaleFactor = 0.5;
 		[self.view addSubview:description];
 		[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:description]];
-		[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[description]-|"
-																		  options:kNilOptions
-																		  metrics:nil
-																			views:@{@"description" : description}]];
+		[self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"|-[description]-|"
+                                   options:kNilOptions metrics:nil
+                                   views:@{@"description" : description}]];
 		
-		[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[admin]-[description]"
-																		  options:kNilOptions
-																		  metrics:nil
-																			views:@{@"admin" : adminLabel,
-																					@"description" : description}]];
+        // iPhone X ?
+        struct utsname systemInfo;
+        uname(&systemInfo);
+        NSString* deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+        
+        if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
+            // Add 25px for iPhone X (not great in landscape mode but temporary solution)
+            [self.view addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"V:|-105-[admin]-[description]"
+                                       options:kNilOptions metrics:nil
+                                       views:@{@"admin" : adminLabel, @"description" : description}]];
+        } else {
+            [self.view addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"V:|-80-[admin]-[description]"
+                                       options:kNilOptions metrics:nil
+                                       views:@{@"admin" : adminLabel, @"description" : description}]];
+        }
 		
 	}
 	

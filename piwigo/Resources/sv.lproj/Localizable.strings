@@ -322,11 +322,11 @@
 "settings_loadAllCategories" = "Ladda ner alla album vid Start";
 "settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
 "defaultImageSort" = "Sortera";
-"defaultImageSort>320px" = "Standardsortering";
+"defaultImageSort>320px" = "Sortera";
 "defaultImageSort>414px" = "Standardsortering av bilder";
 
 "defaultThumbnailSize" = "Miniatyrbilder";
-"defaultThumbnailSize>320px" = "Miniatyrbildsstorlek";
+"defaultThumbnailSize>320px" = "Miniatyrbilder";
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
 "defaultThumbnailSizeTitle" = "Standardstorlek";
 "defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
