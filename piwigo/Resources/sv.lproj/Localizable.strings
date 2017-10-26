@@ -22,9 +22,11 @@
 "alertTryAgainButton" = "Försök igen";
 "alertCancelButton" = "Avbryt";
 "alertAddButton" = "Lägg till";
+"alertRetryButton" = "Försök igen";
+"alertNextButton" = "Nästa bild";
 
-// Done view
-"done" = "Klart";
+// Complete views
+"Complete" = "Klart";
 
 // Upload rights
 "uploadRights_title" = "Behörighet för uppladdning krävs";
@@ -33,7 +35,9 @@
 // Errors
 "internetErrorGeneral_title" = "Anslutningsfel";
 "internetErrorGeneral_broken" = "Tyvärr, kommunikationen bröts.\nFörsök logga in igen.";
-
+"internetCancellingConnection_button" = "Avbryter anslutningen…";
+"internetCancelledConnection_button" = "Avbryt anslutningen";
+"internetCancelledConnection_title" = "Anslutningen avbrutet";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -45,6 +49,10 @@
 "login_passwordPlaceholder" = "Lösenord (frivilligt)";
 "login_loggingIn" = "Loggar In...";
 "login_protocolDescription" = "(tryck för att ändra)";
+"login_connecting" = "Ansluter";
+"login_newSession" = "Öppnar session";
+"login_communityParameters" = "Communityparametrar";
+"login_serverParameters" = "Piwigoparametrar";
 "login_connectionChanged" = "Anslutningen ändrad!";
 
 // Login — Errors
@@ -99,8 +107,10 @@
 "categorySort_imagesOnly" = "Endast bilder";
 
 // Album create
-"createNewAlbum_title" = "Skapa nytt Album";
-"createNewAlbum_message" = "Albumnamn";
+"createNewAlbum_title" = "Nytt Album";
+"createNewAlbum_message" = "Ange ett namn för albumet.";
+"createNewAlbum_placeholder" = "Albumnamn";
+"createNewAlbumHUD_label" = "Skapar Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Fel vid albumskapande";
@@ -113,10 +123,9 @@
 
 // Album rename
 "renameCategory_title" = "Byt namn på Album";
-"renameCategory_message" = "Byt namn på album";
+"renameCategory_message" = "Ange ett namn för albumet";
 "renameCategory_button" = "Byt namn";
-"renameCategorySuccess_title" = "Namnbyte klart";
-"renameCategorySuccess_message" = "Namnbyte av ditt album klart";
+"renameCategoryHUD_label" = "Döper om Album…";
 
 // Album rename — Errors
 "renameCategoyError_title" = "Misslyckat namnbyte";
@@ -128,8 +137,7 @@
 "deleteCategoryConfirm_title" = "Är du säker?";
 "deleteCategoryConfirm_message" = "Ange antalet bilder för att kunna radera detta album\nAntal bilder: %@";
 "deleteCategoryConfirm_deleteButton" = "RADERA";
-"deleteCategorySuccess_title" = "Radering genomförd";
-"deleteCategorySuccess_message" = "Album \"%@\" raderat";
+"deleteCategoryHUD_label" = "Raderar Album…";
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Antalen stämmer inte överens";
@@ -141,6 +149,7 @@
 "moveCategory" = "Flytta Album";
 "moveCategory_selectParent" = "Välj ett album att flytta album ”%@” till";
 "moveCategory_message" = "Är du säker du vill flytta ”%@” in i album ”%@”?";
+"moveCategoryHUD_moving" = "Flyttar Album…";
 
 // album move — Errors
 "moveCategoryError_title" = "Flytt misslyckades";
@@ -151,8 +160,7 @@
 "categorySelection_forImage" = "Välj ett album för denna bild";
 "categoryImageSet_title" = "Sätt miniatyrbild";
 "categoryImageSet_message" = "Är du säker du vill använda denna bild miniatyrbild för albumet ”%@”?";
-"categoryImageSetSuccess_title" = "Miniatyrbild inställd";
-"categoryImageSetSuccess_message" = "Bilden har satts som albumbild";
+"categoryImageSetHUD_updating" = "Uppdaterar albumets miniatyrbilder…";
 
 // Album set image thumbnail — Errors
 "categoryImageSetError_title" = "Fel vid skapande av miniatyrbild";
@@ -179,17 +187,21 @@
 "imageOptions_download" = "Hämta";
 "imageOptions_setAlbumImage" = "Ange som albumbild";
 
-// Image edit
+// Image details
+"imageDetailsView_title" = "Bilddetaljer";
 "editImageDetails_title" = "Titel:";
 "editImageDetails_titlePlaceholder" = "Titel";
 "editImageDetails_author" = "Författare:";
 "editImageDetails_tags" = "Etiketter:";
 "editImageDetails_privacyLevel" = "Vem kan se bilden?";
 "editImageDetails_descriptionPlaceholder" = "Beskrivning";
+"editImageDetailsHUD_updating" = "Uppdaterar bildinfo…";
 
-// Image edit — Errors
+// Image details — Errors
+"editImageDetailsError_title" = "Uppdateringen misslyckades";
+"editImageDetailsError_message" = "Det gick inte att uppdatera ändringarna med din server. Försök igen?";
 "imageDetailsFetchError_title" = "Kunde inte hämta bilddetaljer";
-"imageDetailsFetchError_retryMessage" = "Hämtning av bilddata misslyckats\nFörsök igen?";
+"imageDetailsFetchError_retryMessage" = "Hämtning av bilddata misslyckades.\nFörsök igen?";
 "imageDetailsFetchError_continueMessage" = "Hämtning av bilddata misslyckats\nFortsätt?";
 
 // Image privacy levels
@@ -227,7 +239,6 @@
 
 "downloadingImage" = "Hämtar bild";
 "downloadingImages" = "Hämtar bilder";
-"downloadingImage_complete" = "Klart";
 "downloadingImageInfo" = "Hämtar bildinformation";
 "downloadingImageInfoForSort" = "Hämtar bildinformation för sortering";
 
@@ -255,6 +266,7 @@
 "imageUploadDetails_tags" = "Taggar:";
 "imageUploadDetails_description" = "Beskrivning:";
 
+"imageUploadDetailsView_title" = "Bilder";
 "imageUploadDetailsButton_title" = "Ladda upp";
 "imageUploadDetailsEdit_title" = "Bearbeta bilder för uppladdning";
 "imageUploadDetailsUploading_title" = "Bilder som laddas upp";
@@ -263,8 +275,9 @@
 "imageUploadTableCell_uploading" = "Laddar upp...";
 "imageUploadProgressBar_zero" = "Laddar upp 0/0";
 "imageUploadProgressBar_nonZero" = "Ladda upp %@/%@";
+"imageUploadProgressBar_completed" = "Klart";
 "imageUploadCompleted_title" = "Uppladdning Slutförd";
-"imageUploadCompleted_message" = "1 bild/video laddades upp till din Piwigo server.";
+"imageUploadCompleted_message" = "bilder/videor laddades upp till din Piwigoserver.";
 "imageUploadCompleted_message>1" = "bilder/videor laddades upp till din Piwigoserver.";
 
 // Image upload — Errors
@@ -364,7 +377,7 @@
 "settings_photoResize>375px" = "Ändra bildstorlek innan uppladdning";
 "settings_photoSize" = "> Storlek   ";
 "settings_placeholderSize" = "Ange en bildstorlek från 1-100";
-"settings_photoQuality" = ">Kvalitet";
+"settings_photoQuality" = "> Kvalitet";
 "settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
 
 // Settings — Cache
@@ -376,6 +389,7 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Information
+"settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
 "settings_supportForum" = "Supportforum";
 "settings_releaseNotes" = "Ändringslogg";
