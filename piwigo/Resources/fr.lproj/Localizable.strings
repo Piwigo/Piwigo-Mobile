@@ -108,7 +108,7 @@
 
 // Album create
 "createNewAlbum_title" = "Nouvel Album";
-"createNewAlbum_message" = "Entrez un nom pour cet album.";
+"createNewAlbum_message" = "Entrez un nom pour cet album :";
 "createNewAlbum_placeholder" = "Nom de l’Album";
 "createNewAlbumHUD_label" = "Création de l'Album…";
 

@@ -95,10 +95,10 @@
 "categoryImageList_noDataError" = "Fel inga Data";
 
 // Albums sort
-"categorySort_nameAscending" = "Bildtitel, A → Z";
+"categorySort_nameAscending" = "Bildtitel, A → Ö";
 "categorySort_nameDescending" = "Bildtitel, Z → A";
-"categorySort_fileNameAscending" = "Filnamn, A → Z";
-"categorySort_fileNameDescending" = "Filnamn, Z → A";
+"categorySort_fileNameAscending" = "Filnamn, A → Ö";
+"categorySort_fileNameDescending" = "Filnamn, Ö → A";
 "categorySort_dateCreatedDescending" = "Skapelsedatum, ny → gammal";
 "categorySort_dateCreatedAscending" = "Skapelsedatum, gammal → ny";
 "categorySort_datePostedDescending" = "Skapelsedatum, ny → gammal";
@@ -108,7 +108,7 @@
 
 // Album create
 "createNewAlbum_title" = "Nytt Album";
-"createNewAlbum_message" = "Ange ett namn för albumet.";
+"createNewAlbum_message" = "Ange ett namn för albumet:";
 "createNewAlbum_placeholder" = "Albumnamn";
 "createNewAlbumHUD_label" = "Skapar Album…";
 
@@ -322,11 +322,11 @@
 "settings_loadAllCategories" = "Ladda ner alla album vid Start";
 "settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
 "defaultImageSort" = "Sortera";
-"defaultImageSort>320px" = "Sortera";
+"defaultImageSort>320px" = "Standardsortering";
 "defaultImageSort>414px" = "Standardsortering av bilder";
 
 "defaultThumbnailSize" = "Miniatyrbilder";
-"defaultThumbnailSize>320px" = "Miniatyrbilder";
+"defaultThumbnailSize>320px" = "Miniatyrbildsstorlek";
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
 "defaultThumbnailSizeTitle" = "Standardstorlek";
 "defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
@@ -367,17 +367,17 @@
 // Settings — Upload
 "settingsHeader_upload" = "Förinställn. uppladdning";
 "settings_defaultAuthor" = "Författare";
-"settings_defaultAuthor>320px" = "Författarens namn";
-"settings_defaultAuthorPlaceholder" = "Författarens namn";
+"settings_defaultAuthor>320px" = "Författarnamn";
+"settings_defaultAuthorPlaceholder" = "Författarnamn";
 "settings_defaultPrivacy" = "Behörighet";
 "settings_defaultPrivacy>414px" = "Vem kan se dessa media?";
 "settings_stripGPSdata" = "Rensa GPS-metadata";
 "settings_stripGPSdata>375px" = "Rensa GPS-metadata innan uppladdning";
 "settings_photoResize" = "Skala om före uppladdning";
-"settings_photoResize>375px" = "Ändra bildstorlek innan uppladdning";
+"settings_photoResize>375px" = "Ändra bildstorlek före uppladdning";
 "settings_photoSize" = "> Storlek   ";
 "settings_placeholderSize" = "Ange en bildstorlek från 1-100";
-"settings_photoQuality" = "> Kvalitet";
+"settings_photoQuality" = ">Kvalitet";
 "settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
 
 // Settings — Cache
