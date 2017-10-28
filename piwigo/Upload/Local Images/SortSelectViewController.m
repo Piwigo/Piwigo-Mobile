@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "SortSelectViewController.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
 
@@ -109,8 +110,8 @@
 
 +(void)organizeImages:(NSArray*)images byNewestFirstOnCompletion:(void (^)(NSArray *images))completion
 {
-	NSArray *sortedImages = [images sortedArrayUsingComparator:^NSComparisonResult(ALAsset *obj1, ALAsset *obj2) {
-		return [[obj1 valueForProperty:ALAssetPropertyDate] compare:[obj2 valueForProperty:ALAssetPropertyDate]] != NSOrderedDescending;
+	NSArray *sortedImages = [images sortedArrayUsingComparator:^NSComparisonResult(PHAsset *obj1, PHAsset *obj2) {
+		return [obj1.creationDate compare:obj2.creationDate] != NSOrderedDescending;
 	}];
 	
 	if(completion)
@@ -121,8 +122,8 @@
 
 +(void)organizeImages:(NSArray*)images byOldestFirstOnCompletion:(void (^)(NSArray *images))completion
 {
-	NSArray *sortedImages = [images sortedArrayUsingComparator:^NSComparisonResult(ALAsset *obj1, ALAsset *obj2) {
-		return [[obj1 valueForProperty:ALAssetPropertyDate] compare:[obj2 valueForProperty:ALAssetPropertyDate]] != NSOrderedAscending;
+	NSArray *sortedImages = [images sortedArrayUsingComparator:^NSComparisonResult(PHAsset *obj1, PHAsset *obj2) {
+		return [obj1.creationDate compare:obj2.creationDate] != NSOrderedAscending;
 	}];
 	
 	if(completion)

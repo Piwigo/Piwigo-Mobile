@@ -6,11 +6,12 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "NotUploadedYet.h"
 #import "CategoriesData.h"
 #import "PiwigoAlbumData.h"
 #import "PhotosFetch.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 
 @implementation NotUploadedYet
 
@@ -45,10 +46,12 @@
         // Collect list of local images
 		NSMutableArray *localImageNamesThatNeedToBeUploaded = [NSMutableArray new];
 
-		for(ALAsset *imageAsset in images)
+        // Build list of images which have not already been uploaded to the Piwigo server
+		for(PHAsset *imageAsset in images)
 		{
 			// Compare filenames
-            NSString *imageAssetKey = [[imageAsset defaultRepresentation] filename];
+            NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
+            NSString *imageAssetKey = ((PHAssetResource*)resources[0]).originalFilename;
 			if(imageAssetKey && ![imageAssetKey isEqualToString:@""] && ![onlineImageNamesLookup objectForKey:imageAssetKey])
 			{	// this image doesn't exist in this online category
 				[localImageNamesThatNeedToBeUploaded addObject:imageAsset];
