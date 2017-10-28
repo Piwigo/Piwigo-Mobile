@@ -57,7 +57,7 @@
 
 // Login — Errors
 "serverMethodsError_title" = "Méthodes Inconnues";
-"serverMethodsError_message" = "Impossible d’obtenir les méthodes du serveur.\nProblème avec le serveur Piwigo ?";
+"serverMethodsError_message" = "Impossible d’obtenir les méthodes du serveur. Problème avec le serveur Piwigo ?";
 
 "loginError_title" = "Échec de Connexion";
 "loginError_message" = "Les nom d’utilisateur et mot de passe ne correspondent pas à l’adresse donnée";
@@ -65,13 +65,13 @@
 "loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
 
 "serverVersionNotCompatible_title" = "Serveur Incompatible";
-"serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile.\nVoulez-vous quand même continuer ?";
+"serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile. Voulez-vous quand même continuer ?";
 
 "sessionStatusError_title" = "Échec d'Authentification";
-"sessionStatusError_message" = "N’a pas pu s’authentifier avec le serveur.\nEssayez de vous connecter à nouveau.";
+"sessionStatusError_message" = "L’authentification avec le serveur a échoué. Essayez de vous connecter à nouveau.";
 
 "serverCommunityError_title" = "Erreur avec Community";
-"serverCommunityError_message" = "Impossible d’obtenir les réglages de l’extension Community.\nEssayez de vous connecter à nouveau.";
+"serverCommunityError_message" = "Impossible d’obtenir les réglages de l’extension Community. Essayez de vous connecter à nouveau.";
 
 // Logout
 "logoutConfirmation_title" = "Déconnexion";
@@ -79,7 +79,7 @@
 
 // Logout — Errors
 "logoutFail_title" = "Echec de la Déconnexion";
-"logoutFail_message" = "Echec de la déconnexion.\nRé-essayer ?";
+"logoutFail_message" = "Echec de la déconnexion. Ré-essayer ?";
 
 
 // ===========================================================================
@@ -135,7 +135,7 @@
 "deleteCategory_title" = "EFFACER L'ALBUM";
 "deleteCategory_message" = "ÊTES-VOUS SÛR DE VOULOIR SUPPRIMER L’ALBUM \"%@\" ET LES %@ IMAGES ?";
 "deleteCategoryConfirm_title" = "Etes-vous sûr ?";
-"deleteCategoryConfirm_message" = "Veuillez entrer le nombre d’images afin de supprimer cet album.\nNombre d’images : %@";
+"deleteCategoryConfirm_message" = "Veuillez entrer le nombre d’images afin de supprimer cet album. Nombre d’images : %@";
 "deleteCategoryConfirm_deleteButton" = "SUPPRIMER";
 "deleteCategoryHUD_label" = "Suppression de l'Album…";
 
@@ -199,10 +199,10 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Échec de la Modification";
-"editImageDetailsError_message" = "Echec de l'enregistrement des modifications sur votre serveur. Réessayez ?";
+"editImageDetailsError_message" = "Echec de l'enregistrement des modifications sur votre serveur. Ré-essayez ?";
 "imageDetailsFetchError_title" = "Echec Récupération Détails";
-"imageDetailsFetchError_retryMessage" = "La récupération des données de l’image a échoué.\nRéessayer ?";
-"imageDetailsFetchError_continueMessage" = "La récupération des données de l’image a échoué.\nContinuer ?";
+"imageDetailsFetchError_retryMessage" = "La récupération des données de l’image a échoué. Ré-essayer ?";
+"imageDetailsFetchError_continueMessage" = "La récupération des données de l’image a échoué. Continuer ?";
 
 // Image privacy levels
 "privacyLevel" = "Niveau de Confidentialité";
@@ -224,9 +224,9 @@
 "deleteImageProgress_title" = "Suppression %@%%";
 
 "deleteSingleImage_title" = "Supprimer l’Image";
-"deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ?\nOpération irréversible !";
+"deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ? Opération irréversible !";
 "deleteSeveralImages_title" = "Supprimer les Images";
-"deleteSeveralImages_message" = "Êtes-vous sûr de vouloir supprimer la sélection de %@ images ?\nOpération irréversible !";
+"deleteSeveralImages_message" = "Êtes-vous sûr de vouloir supprimer la sélection de %@ images ? Opération irréversible !";
 
 "deleteImageFail_title" = "Echec de la Suppression";
 "deleteImageFail_message" = "L'Image n’a pas pu être supprimée\n%@";

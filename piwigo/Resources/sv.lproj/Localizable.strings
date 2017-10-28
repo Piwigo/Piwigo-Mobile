@@ -15,7 +15,7 @@
 "tabBar_preferences" = "Inställningar";
 
 // Alert buttons
-"alertOkButton" = "Ok";
+"alertOkButton" = "OK";
 "alertDismissButton" = "Avfärda";
 "alertYesButton" = "Ja";
 "alertNoButton" = "Nej";
@@ -34,7 +34,7 @@
 
 // Errors
 "internetErrorGeneral_title" = "Anslutningsfel";
-"internetErrorGeneral_broken" = "Tyvärr, kommunikationen bröts.\nFörsök logga in igen.";
+"internetErrorGeneral_broken" = "Tyvärr, kommunikationen bröts. Försök logga in igen.";
 "internetCancellingConnection_button" = "Avbryter anslutningen…";
 "internetCancelledConnection_button" = "Avbryt anslutningen";
 "internetCancelledConnection_title" = "Anslutningen avbrutet";
@@ -57,7 +57,7 @@
 
 // Login — Errors
 "serverMethodsError_title" = "Okända metoder";
-"serverMethodsError_message" = "Det gick inte att få servermetoder.\nProblem med Piwigo servern?";
+"serverMethodsError_message" = "Det gick inte att få servermetoder. Problem med Piwigo servern?";
 
 "loginError_title" = "Inloggning Misslyckades";
 "loginError_message" = "Användarnamnet och lösenordet matchar inte den angivna webbadressen";
@@ -65,13 +65,13 @@
 "loginEmptyServer_message" = "Välj ett protokoll och ange en Piwigo webbadress för att gå vidare.";
 
 "serverVersionNotCompatible_title" = "Servern är inkompatibel";
-"serverVersionNotCompatible_message" = "Din Piwigo serverversion är %@. Piwigo Mobile stöder endast en version av minst 2,7. Uppdatera din server för att använda Piwigo Mobile\nVill du ändå fortsätta?";
+"serverVersionNotCompatible_message" = "Din Piwigo serverversion är %@. Piwigo Mobile stöder endast en version av minst 2,7. Uppdatera din server för att använda Piwigo Mobile. Vill du ändå fortsätta?";
 
 "sessionStatusError_title" = "Autentisering misslyckades";
-"sessionStatusError_message" = "Det gick inte att autentisera med servern.\nFörsök logga in igen.";
+"sessionStatusError_message" = "Det gick inte att autentisera med servern. Försök logga in igen.";
 
 "serverCommunityError_title" = "Kommunikationsfel";
-"serverCommunityError_message" = "Kunde inte hämta utökade parametrar för Community.\nProva med att logga in igen.";
+"serverCommunityError_message" = "Kunde inte hämta utökade parametrar för Community. Prova med att logga in igen.";
 
 // Logout
 "logoutConfirmation_title" = "Logga ut";
@@ -79,7 +79,7 @@
 
 // Logout — Errors
 "logoutFail_title" = "Utloggning misslyckades";
-"logoutFail_message" = "Kunde inte logga ut\nFörsök igen?";
+"logoutFail_message" = "Kunde inte logga ut. Försök igen?";
 
 
 // ===========================================================================
@@ -135,7 +135,7 @@
 "deleteCategory_title" = "RADERA ALBUM";
 "deleteCategory_message" = "VILL DU VERKLIGEN TA BORT ALBUMET ”%@” OCH ALLA %@ BILDERNA?";
 "deleteCategoryConfirm_title" = "Är du säker?";
-"deleteCategoryConfirm_message" = "Ange antalet bilder för att kunna radera detta album\nAntal bilder: %@";
+"deleteCategoryConfirm_message" = "Ange antalet bilder för att kunna radera detta album. Antal bilder: %@";
 "deleteCategoryConfirm_deleteButton" = "RADERA";
 "deleteCategoryHUD_label" = "Raderar Album…";
 
@@ -201,8 +201,8 @@
 "editImageDetailsError_title" = "Uppdateringen misslyckades";
 "editImageDetailsError_message" = "Det gick inte att uppdatera ändringarna med din server. Försök igen?";
 "imageDetailsFetchError_title" = "Kunde inte hämta bilddetaljer";
-"imageDetailsFetchError_retryMessage" = "Hämtning av bilddata misslyckades.\nFörsök igen?";
-"imageDetailsFetchError_continueMessage" = "Hämtning av bilddata misslyckats\nFortsätt?";
+"imageDetailsFetchError_retryMessage" = "Hämtning av bilddata misslyckades. Försök igen?";
+"imageDetailsFetchError_continueMessage" = "Hämtning av bilddata misslyckats. Fortsätt?";
 
 // Image privacy levels
 "privacyLevel" = "Behörighetsnivå";
@@ -224,9 +224,9 @@
 "deleteImageProgress_title" = "Radering av %@%% utförd";
 
 "deleteSingleImage_title" = "Radera bild";
-"deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden?\nÅtgärden kan inte ångras!";
+"deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";
 "deleteSeveralImages_title" = "Radera bilder";
-"deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna?\nÅtgärden kan inte ångras!";
+"deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna? Åtgärden kan inte ångras!";
 
 "deleteImageFail_title" = "Raderingen misslyckades";
 "deleteImageFail_message" = "Bild kunde inte raderas\n%@";
@@ -305,7 +305,7 @@
 "localAlbums_photosNnil_msg" = "Det finns ett problem med att läsa ditt lokala bildbibliotek.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Kan inte öppna det lokala bildbiblioteket.\nGå in på appen Inställningar, Behörighet, Bilder och aktivera åtkomst för Piwigo.";
+"localAlbums_photosNotAuthorized_msg" = "Kan inte öppna det lokala bildbiblioteket. Gå in på appen Inställningar, Behörighet, Bilder och aktivera åtkomst för Piwigo.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -322,11 +322,11 @@
 "settings_loadAllCategories" = "Ladda ner alla album vid Start";
 "settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
 "defaultImageSort" = "Sortera";
-"defaultImageSort>320px" = "Standardsortering";
+"defaultImageSort>320px" = "Sortera";
 "defaultImageSort>414px" = "Standardsortering av bilder";
 
 "defaultThumbnailSize" = "Miniatyrbilder";
-"defaultThumbnailSize>320px" = "Miniatyrbildsstorlek";
+"defaultThumbnailSize>320px" = "Miniatyrbilder";
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
 "defaultThumbnailSizeTitle" = "Standardstorlek";
 "defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";

@@ -34,7 +34,7 @@
 
 // Errors
 "internetErrorGeneral_title" = "Forbindelsesfejl";
-"internetErrorGeneral_broken" = "Forbindelsen blev afbrudt. \nPrøv at logge ind igen.";
+"internetErrorGeneral_broken" = "Forbindelsen blev afbrudt. Prøv at logge ind igen.";
 "internetCancellingConnection_button" = "Annullerer forbindelsen…";
 "internetCancelledConnection_button" = "Annuller forbindelsen";
 "internetCancelledConnection_title" = "Forbindelsen afbrudt";
@@ -57,7 +57,7 @@
 
 // Login — Errors
 "serverMethodsError_title" = "Ukendt Protokol";
-"serverMethodsError_message" = "Kunne ikke hente server protokol. \nPrøv at logge ind igen?";
+"serverMethodsError_message" = "Kunne ikke hente server protokol. Prøv at logge ind igen?";
 
 "loginError_title" = "Log ind Mislykkedes";
 "loginError_message" = "Brugernavnet og adgangskoden er ikke korrekt";
@@ -65,13 +65,13 @@
 "loginEmptyServer_message" = "Venligst Vælg en protokol og indtast en Piwigo web-adresse for at fortsætte.";
 
 "serverVersionNotCompatible_title" = "Server Inkompatibel";
-"serverVersionNotCompatible_message" = "Din Piwigo serverversion er %@. Piwigo mobil kræver mindst version 2.7. Opdater venligst din server hvis du vil bruge Piwigo mobil. \nØnsker du at fortsætte?";
+"serverVersionNotCompatible_message" = "Din Piwigo serverversion er %@. Piwigo Mobile kræver mindst version 2.7. Opdater venligst din server hvis du vil bruge Piwigo Mobile. Ønsker du at fortsætte?";
 
 "sessionStatusError_title" = "Godkendelse Mislykkedes";
-"sessionStatusError_message" = "Log ind ikke godkendt af serveren.\nPrøv at logge ind igen.";
+"sessionStatusError_message" = "Log ind ikke godkendt af serveren. Prøv at logge ind igen.";
 
 "serverCommunityError_title" = "Community Fejl";
-"serverCommunityError_message" = "Kunne ikke hente Community udvidelsens parametre.\nPrøv at logge ind igen.";
+"serverCommunityError_message" = "Kunne ikke hente Community udvidelsens parametre. Prøv at logge ind igen.";
 
 // Logout
 "logoutConfirmation_title" = "Log ud";
@@ -79,7 +79,7 @@
 
 // Logout — Errors
 "logoutFail_title" = "Logout Mislykkedes";
-"logoutFail_message" = "Kunne ikke logge ud.\nPrøv igen?";
+"logoutFail_message" = "Kunne ikke logge ud. Prøv igen?";
 
 
 // ===========================================================================
@@ -135,7 +135,7 @@
 "deleteCategory_title" = "SLET ALBUM";
 "deleteCategory_message" = "ER DU SIKKER PÅ DU VIL SLETTE ALBUM \"%@\" OG ALLE %@ BILLEDER?";
 "deleteCategoryConfirm_title" = "Er du sikker?";
-"deleteCategoryConfirm_message" = "Angiv antallet af billeder for at slette dette album\nAntal billeder: %@";
+"deleteCategoryConfirm_message" = "Angiv antallet af billeder for at slette dette album. Antal billeder: %@";
 "deleteCategoryConfirm_deleteButton" = "SLET";
 "deleteCategoryHUD_label" = "Sletter album…";
 
@@ -199,10 +199,10 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Kunne ikke opdatere";
-"editImageDetailsError_message" = "Kunne ikke opdatere dine ændringer på din server. \nPrøv igen?";
+"editImageDetailsError_message" = "Kunne ikke opdatere dine ændringer på din server. Prøv igen?";
 "imageDetailsFetchError_title" = "Kan ikke læse billeddetajler";
-"imageDetailsFetchError_retryMessage" = "Hentning af billeddata mislykkedes, prøv igen?";
-"imageDetailsFetchError_continueMessage" = "Hentning af billeddata mislykkedes.\nFortsæt?";
+"imageDetailsFetchError_retryMessage" = "Hentning af billeddata mislykkedes. Prøv igen?";
+"imageDetailsFetchError_continueMessage" = "Hentning af billeddata mislykkedes. Fortsæt?";
 
 // Image privacy levels
 "privacyLevel" = "Tilladelsesniveau";
@@ -224,9 +224,9 @@
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";
 
 "deleteSingleImage_title" = "Slet Billede";
-"deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede?\nDette kan ikke fortrydes!";
+"deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede? Dette kan ikke fortrydes!";
 "deleteSeveralImages_title" = "Slet Billeder";
-"deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder? \nDette kan ikke fortrydes!";
+"deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder? Dette kan ikke fortrydes!";
 
 "deleteImageFail_title" = "Sletning Mislykkedes";
 "deleteImageFail_message" = "Billede kunne ikke slettes\n%@";
@@ -305,7 +305,7 @@
 "localAlbums_photosNnil_msg" = "Der er et problem med at læse dit lokale fotobibliotek.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Kan ikke åbne det lokale fotobibliotek.\nGå venligst ind i indstillinger, Anonymitet, Fotos og aktiver adgang for Piwigo.";
+"localAlbums_photosNotAuthorized_msg" = "Kan ikke åbne det lokale fotobibliotek. Gå venligst ind i indstillinger, Anonymitet, Fotos og aktiver adgang for Piwigo.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -395,5 +395,5 @@
 "settings_releaseNotes" = "Udgivelsesnoter";
 "settings_rateInAppStore" = "Vurder Piwigo Mobile";
 "settings_translateWithCrowdin" = "Oversæt Piwigo Mobile";
-"settings_pwgForumURL" = "http://da.piwigo.org/forum/";
+"settings_pwgForumURL" = "http://piwigo.org/forum/";
 "settings_acknowledgements" = "Tak Til";
