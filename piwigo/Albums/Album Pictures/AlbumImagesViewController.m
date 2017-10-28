@@ -630,8 +630,14 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	self.noImagesLabel.hidden = self.albumData.images.count != 0;
+    // Displays "No Images" if needed
+    if(self.albumData.images.count > 0) {
+        self.noImagesLabel.hidden = YES;
+    } else {
+        self.noImagesLabel.hidden = NO;
+    }
 	
+    // Returns number of images or albums
 	if(section == 1)
 	{
 		return self.albumData.images.count;
