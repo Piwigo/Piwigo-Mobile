@@ -226,13 +226,20 @@
 	{
 		if(indexPath.section == 0)
 		{
-			[self.imagesToEdit removeObjectAtIndex:indexPath.row];
+			// Remove image not in upload queue
+            [self.imagesToEdit removeObjectAtIndex:indexPath.row];
 		}
 		else if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
 		{
-			[[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
-		}
-		[tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+			// Remove image in upload queue (in both tables)
+            ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
+            [[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
+            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObjectForKey:image.image];
+            [ImageUploadManager sharedInstance].maximumImagesForBatch--;
+        }
+		
+        // Update tables
+        [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
 	}
 }
 

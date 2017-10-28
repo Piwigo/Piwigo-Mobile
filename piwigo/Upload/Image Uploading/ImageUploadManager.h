@@ -35,7 +35,7 @@ typedef enum {
 
 @property (nonatomic, strong) NSMutableArray *imageUploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *imageNamesUploadQueue;
-@property (nonatomic, readonly) NSInteger maximumImagesForBatch;
+@property (nonatomic, assign) NSInteger maximumImagesForBatch;
 @property (nonatomic, weak) id<ImageUploadDelegate> delegate;
 
 -(void)addImage:(ImageUpload*)image;

@@ -617,7 +617,7 @@
 {
 	if(section == 1)
 	{
-		return CGSizeMake(collectionView.frame.size.width, 34.0);
+		return CGSizeMake(collectionView.frame.size.width, 44.0);
 	}
 	
 	return CGSizeZero;
