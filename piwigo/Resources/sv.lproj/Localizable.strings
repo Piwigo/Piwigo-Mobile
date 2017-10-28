@@ -377,7 +377,7 @@
 "settings_photoResize>375px" = "Ändra bildstorlek före uppladdning";
 "settings_photoSize" = "> Storlek   ";
 "settings_placeholderSize" = "Ange en bildstorlek från 1-100";
-"settings_photoQuality" = ">Kvalitet";
+"settings_photoQuality" = "> Kvalitet";
 "settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
 
 // Settings — Cache
