@@ -34,7 +34,7 @@
 
 // Errors
 "internetErrorGeneral_title" = "Błąd połączenia";
-"internetErrorGeneral_broken" = "Przepraszamy komunikacja została przerwana. \nSpróbuj zalogować się ponownie.";
+"internetErrorGeneral_broken" = "Przepraszamy komunikacja została przerwana. Spróbuj zalogować się ponownie.";
 "internetCancellingConnection_button" = "Anulowanie połączenia…";
 "internetCancelledConnection_button" = "Połączenie Anulowane";
 "internetCancelledConnection_title" = "Połączenie anulowane";
@@ -57,7 +57,7 @@
 
 // Login — Errors
 "serverMethodsError_title" = "Metody nieznany";
-"serverMethodsError_message" = "Nie udało się uzyskać metod serwera. \nProblem z serwerem Piwigo?";
+"serverMethodsError_message" = "Nie udało się uzyskać metod serwera. Problem z serwerem Piwigo?";
 
 "loginError_title" = "Logowanie nieudane";
 "loginError_message" = "Nazwa użytkownika i hasło nie pasują do podanego serwera";
@@ -65,13 +65,13 @@
 "loginEmptyServer_message" = "Proszę wybrać protokół i wprowadź adres internetowy Piwigo, aby kontynuować.";
 
 "serverVersionNotCompatible_title" = "Serwera Nie Kompatybilna";
-"serverVersionNotCompatible_message" = "Wersja serwera Twojej Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2,7. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile.\nCzy nadal chcesz kontynuować?";
+"serverVersionNotCompatible_message" = "Wersja serwera Twojej Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2,7. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile. Czy nadal chcesz kontynuować?";
 
 "sessionStatusError_title" = "Niepowodzenie Uwierzytelniania";
-"sessionStatusError_message" = "Nie można uwierzytelnić z serwerem. \nSpróbuj zalogować się ponownie.";
+"sessionStatusError_message" = "Nie można uwierzytelnić z serwerem. Spróbuj zalogować się ponownie.";
 
 "serverCommunityError_title" = "Błąd rozszerzenia Community";
-"serverCommunityError_message" = "Nie udało się ustalić parametrów rozszerzenia Community. \nSpróbuj zalogować się ponownie.";
+"serverCommunityError_message" = "Nie udało się ustalić parametrów rozszerzenia Community. Spróbuj zalogować się ponownie.";
 
 // Logout
 "logoutConfirmation_title" = "Wyloguj";
@@ -79,7 +79,7 @@
 
 // Logout — Errors
 "logoutFail_title" = "Wylogowanie nie powiodło się";
-"logoutFail_message" = "Nie udało się wylogować.\nSpróbować ponownie?";
+"logoutFail_message" = "Nie udało się wylogować. Spróbować ponownie?";
 
 
 // ===========================================================================
@@ -108,7 +108,7 @@
 
 // Album create
 "createNewAlbum_title" = "Nowy Album";
-"createNewAlbum_message" = "Wprowadź nazwę albumu.";
+"createNewAlbum_message" = "Wprowadź nazwę albumu:";
 "createNewAlbum_placeholder" = "Nazwa Albumu";
 "createNewAlbumHUD_label" = "Tworzenie albumu…";
 
@@ -135,7 +135,7 @@
 "deleteCategory_title" = "USUŃ ALBUM";
 "deleteCategory_message" = "CZY NA PEWNO CHCESZ USUNĄĆ ALBUM \"%@\" I %@ WSZYSTKIE ZDJĘCIA?";
 "deleteCategoryConfirm_title" = "Czy na pewno?";
-"deleteCategoryConfirm_message" = "Proszę wpisać liczbę zdjęć w celu usunięcia tego albumu.\nLiczba zdjęć: %@";
+"deleteCategoryConfirm_message" = "Proszę wpisać liczbę zdjęć w celu usunięcia tego albumu. Liczba zdjęć: %@";
 "deleteCategoryConfirm_deleteButton" = "USUŃ";
 "deleteCategoryHUD_label" = "Usuwanie albumu…";
 
@@ -201,8 +201,8 @@
 "editImageDetailsError_title" = "Aktualizacja nieudana";
 "editImageDetailsError_message" = "Nie można zaktualizować zmian na serwerze. Spróbować ponownie?";
 "imageDetailsFetchError_title" = "Pobrania szczegółów zdjęcia nie powiodło się";
-"imageDetailsFetchError_retryMessage" = "Pobieranie danych zdjęcia nie powiodło się.\nSpróbować jeszcze raz?";
-"imageDetailsFetchError_continueMessage" = "Pobieranie danych zdjęcia nie powiodło się.\nKontynuować?";
+"imageDetailsFetchError_retryMessage" = "Pobieranie danych zdjęcia nie powiodło się. Spróbować jeszcze raz?";
+"imageDetailsFetchError_continueMessage" = "Pobieranie danych zdjęcia nie powiodło się. Kontynuować?";
 
 // Image privacy levels
 "privacyLevel" = "Poziom Prywatności";
@@ -226,7 +226,7 @@
 "deleteSingleImage_title" = "Usuń Zdjęcie";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
 "deleteSeveralImages_title" = "Usuwanie Zdjęć";
-"deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia %@? \nNie można tego cofnąć!";
+"deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia %@? Nie można tego cofnąć!";
 
 "deleteImageFail_title" = "Błąd Usunięcia";
 "deleteImageFail_message" = "Zdjęcie nie może zostać usunięte\n%@";
@@ -305,7 +305,7 @@
 "localAlbums_photosNnil_msg" = "Istnieje problem z odczytem biblioteki zdjęć lokalnych.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Nie można otworzyć lokalnej biblioteki zdjęć.\nPrzejdź do aplikacji Ustawienia, Prywatności, Zdjęcia i włącz dostęp dla Piwigo.";
+"localAlbums_photosNotAuthorized_msg" = "Nie można otworzyć lokalnej biblioteki zdjęć. Przejdź do aplikacji Ustawienia, Prywatności, Zdjęcia i włącz dostęp dla Piwigo.";
 
 // ===========================================================================
 // ==> SETTINGS

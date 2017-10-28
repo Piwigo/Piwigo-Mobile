@@ -108,7 +108,7 @@
 
 // Album create
 "createNewAlbum_title" = "Neues Album";
-"createNewAlbum_message" = "Gib einen Namen für dieses Album ein.";
+"createNewAlbum_message" = "Gib einen Namen für dieses Album ein:";
 "createNewAlbum_placeholder" = "Albumname";
 "createNewAlbumHUD_label" = "Erstelle Album…";
 
@@ -135,7 +135,7 @@
 "deleteCategory_title" = "ALBUM LÖSCHEN";
 "deleteCategory_message" = "BIST DU SICHER, DASS DU DAS ALBUM \"%@\" UND DESSEN %@ BILDER LÖSCHEN MÖCHTEST?";
 "deleteCategoryConfirm_title" = "Bist du sicher?";
-"deleteCategoryConfirm_message" = "Gib bitte die Anzahl der Bilder an um dieses Album zu löschen.\nAnzahl der Bilder: %@";
+"deleteCategoryConfirm_message" = "Gib bitte die Anzahl der Bilder an um dieses Album zu löschen. Anzahl der Bilder: %@";
 "deleteCategoryConfirm_deleteButton" = "LÖSCHEN";
 "deleteCategoryHUD_label" = "Album wird gelöscht…";
 
@@ -199,10 +199,10 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Fehler bei der Aktualisierung";
-"editImageDetailsError_message" = "Übertragen der Änderungen auf Deinen Server fehlgeschlagen.\nErneut versuchen?";
+"editImageDetailsError_message" = "Übertragen der Änderungen auf Deinen Server fehlgeschlagen. Erneut versuchen?";
 "imageDetailsFetchError_title" = "Abrufen der Bilddetails fehlgeschlagen";
-"imageDetailsFetchError_retryMessage" = "Abrufen der Bildinformationen fehlgeschlagen.\nErneut versuchen?";
-"imageDetailsFetchError_continueMessage" = "Abrufen der Bildinformationen fehlgeschlagen.\nFortsetzen?";
+"imageDetailsFetchError_retryMessage" = "Abrufen der Bildinformationen fehlgeschlagen. Erneut versuchen?";
+"imageDetailsFetchError_continueMessage" = "Abrufen der Bildinformationen fehlgeschlagen. Fortsetzen?";
 
 // Image privacy levels
 "privacyLevel" = "Sicherheitsstufe";
@@ -305,7 +305,7 @@
 "localAlbums_photosNnil_msg" = "Es gibt ein Problem beim Lesen der lokalen Foto Bibliothek.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Konnte die lokale Foto Bibliothek nicht öffnen.\nBitte gehe in die Einstellungen, Privatsphäre, Fotos und ermögliche den Zugriff für Piwigo-Mobile.";
+"localAlbums_photosNotAuthorized_msg" = "Konnte die lokale Foto Bibliothek nicht öffnen. Bitte gehe in die Einstellungen, Privatsphäre, Fotos und ermögliche den Zugriff für Piwigo.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -382,7 +382,7 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-Einstellungen (Verwendet/Total)";
-"settings_cacheDisk" = "Datenträger";
+"settings_cacheDisk" = "Festplatte";
 "settings_placeholderDisk" = "Gib einen Disk-Cache von 10-200 an";
 "settings_cacheMemory" = "Speicher";
 "settings_placeholderMemory" = "Gib einen Speicher-Cache von 10-200 an";
@@ -395,5 +395,5 @@
 "settings_releaseNotes" = "Versionshinweise";
 "settings_rateInAppStore" = "Piwigo Mobile bewerten";
 "settings_translateWithCrowdin" = "Piwigo Mobile übersetzen";
-"settings_pwgForumURL" = "http://de.piwigo.org/forum/";
+"settings_pwgForumURL" = "http://piwigo.org/forum/";
 "settings_acknowledgements" = "Danksagungen";

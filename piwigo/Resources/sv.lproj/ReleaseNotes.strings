@@ -1,0 +1,29 @@
+/*
+ ReleaseNotes.strings
+ piwigo
+ 
+ Created by Eddy Lelièvre-Berna on 15/07/2017.
+ Copyright © 2017 Piwigo.org. All rights reserved.
+ */
+
+"v2.1.4_text" = "Version 2.1.4\n\n• Svensk översättning\n• Bug fixar\n________________________________________\n\n";
+
+"v2.1.3_text" = "Version 2.1.3\n19 oktober 2017\n\n• Lagt till grundläggande behörighetskontroll\n• Lagt till tillåtelse att avbryta automatisk anslutning\n• Förbättrat gränssnitt och uppladdningshantering\n• Förbättrade översättningar och kompatibilitet med iOS 11\n• Rättat fel med \"Ej uppladdat\" filter\n• Kod modernisering\n________________________________________\n\n";
+
+"v2.1.2_text" = "Version 2.1.2\n7 september 2017\n\n• Fixat nekad inloggning med Community plugin <2.9\n• Förbättrade översättningar\n• Underhållsarbete\n________________________________________\n\n";
+
+"v2.1.1_text" = "Version 2.1.1\n20 augusti 2017\n\n• Fixat bugg med icke-giltiga SSL-certifikat\n• Förbättrad dansk översättning\n________________________________________\n\n";
+
+"v2.1.0_text" = "Version 2.1\n14 augusti 2017\n\n• Kompatibilitet för Communitytillägg\n• Danska, franska, polska översättningar\n• Bug fixar\n________________________________________\n\n";
+
+"v2.0.4_text" = "Version 2.0.4\n28 juli 2017\n\n• iPad - Fixat suddiga miniatyrbilder och omöjligheten att redigera bilder på iPad\n• Videor - Fixat uppladdning och nedladdning (VideoJS-tillägg krävs på servern)\n• Inställningar - Lagt till alternativ för att ta bort titlar & ändra miniatyrbildsupplösning\n• Förbättrad anslutningsäkerhet och informerar när uppladdningen är klar\n• Mindre buggfixar och förbättring av gränssnittet\n________________________________________\n\n";
+
+"v2.0.3_text" = "Version 2.0.3\n26 maj 2017\n\n• Lagt till alternativ för att ta bort GPS-metadata på inställningssidan\n• Lagt till aktuell cache-användning på inställningssidan\n• Fixat cache-inställningar som ibland var glömda/återställda\n• Fixat uppladdning av bildinställningar som ibland blev förlorade/återställda\n________________________________________\n\n";
+
+"v2.0.2_text" = "Version 2.0.2\n8 maj 2017\n\n• Sorteringskriterier som nu är identiska med webapplikation\n• Fixat sorteringsproblem\n• Fixat en krasch som uppstod när du lägger till taggar i en bild före uppladdning\n• Fixat situationer där radering av ett urval bilder inte fungerade\n• Fixat situationer där ett album inte visades efter flyttning\n• Fixat ett kompatibilitetsproblem med IOS 10 - utfasad kod\n________________________________________\n\n";
+
+"v2.0.1_text" = "Version 2.0.1\n26 juni 2015\n\nNya inställningar:\n  - Alternativ för att ändra storlek på bilder vid uppladdning\n    + Bildkvaliteten är från ett område på 50 - 98%\n  - Möjlighet att ställa in en standardbildsförhandsgranskningstorlek\nBug fixar\n________________________________________\n\n";
+
+"v2.0.0_text" = "Version 2.0\n24 april 2015\n\nNya inbyggda funktioner:\n  - Möjlighet att hantera album\n  - Visa dina bilder\n  - Massuppladdning av bilder\n  - Video uppladdning och uppspelning (VideoJS-plugin måste installeras)\n________________________________________\n\n";
+
+"v1.0.0_text" = "Version 1.0\n17 oktober 2011";

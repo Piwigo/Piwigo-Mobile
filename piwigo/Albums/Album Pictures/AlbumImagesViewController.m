@@ -617,7 +617,7 @@
 {
 	if(section == 1)
 	{
-		return CGSizeMake(collectionView.frame.size.width, 34.0);
+		return CGSizeMake(collectionView.frame.size.width, 44.0);
 	}
 	
 	return CGSizeZero;
@@ -630,8 +630,14 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	self.noImagesLabel.hidden = self.albumData.images.count != 0;
+    // Displays "No Images" if needed
+    if(self.albumData.images.count > 0) {
+        self.noImagesLabel.hidden = YES;
+    } else {
+        self.noImagesLabel.hidden = NO;
+    }
 	
+    // Returns number of images or albums
 	if(section == 1)
 	{
 		return self.albumData.images.count;

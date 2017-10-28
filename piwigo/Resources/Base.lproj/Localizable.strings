@@ -34,7 +34,7 @@
 
 // Errors
 "internetErrorGeneral_title" = "Connection Error";
-"internetErrorGeneral_broken" = "Sorry, the communication was broken.\nTry logging in again.";
+"internetErrorGeneral_broken" = "Sorry, the communication was broken. Try logging in again.";
 "internetCancellingConnection_button" = "Cancelling Connection…";
 "internetCancelledConnection_button" = "Cancel Connection";
 "internetCancelledConnection_title" = "Connection Cancelled";
@@ -57,7 +57,7 @@
 
 // Login — Errors
 "serverMethodsError_title" = "Unknown Methods";
-"serverMethodsError_message" = "Failed to get server methods.\nProblem with Piwigo server?";
+"serverMethodsError_message" = "Failed to get server methods. Problem with Piwigo server?";
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given web address";
@@ -65,13 +65,13 @@
 "loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
 
 "serverVersionNotCompatible_title" = "Server Incompatible";
-"serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?";
+"serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile. Do you still want to continue?";
 
 "sessionStatusError_title" = "Authentication Fail";
-"sessionStatusError_message" = "Failed to authenticate with the server.\nTry logging in again.";
+"sessionStatusError_message" = "Failed to authenticate with the server. Try logging in again.";
 
 "serverCommunityError_title" = "Community Error";
-"serverCommunityError_message" = "Failed to get Community extension parameters.\nTry logging in again.";
+"serverCommunityError_message" = "Failed to get Community extension parameters. Try logging in again.";
 
 // Logout
 "logoutConfirmation_title" = "Logout";
@@ -79,7 +79,7 @@
 
 // Logout — Errors
 "logoutFail_title" = "Logout Failed";
-"logoutFail_message" = "Failed to logout\nTry again?";
+"logoutFail_message" = "Failed to logout. Try again?";
 
 
 // ===========================================================================
@@ -135,7 +135,7 @@
 "deleteCategory_title" = "DELETE ALBUM";
 "deleteCategory_message" = "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?";
 "deleteCategoryConfirm_title" = "Are you sure?";
-"deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album.\nNumber of images: %@";
+"deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album. Number of images: %@";
 "deleteCategoryConfirm_deleteButton" = "DELETE";
 "deleteCategoryHUD_label" = "Deleting Album…";
 
@@ -199,10 +199,10 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Failed to Update";
-"editImageDetailsError_message" = "Failed to update your changes with your server.\nTry again?";
+"editImageDetailsError_message" = "Failed to update your changes with your server. Try again?";
 "imageDetailsFetchError_title" = "Image Details Fetch Failed";
-"imageDetailsFetchError_retryMessage" = "Fetching the image data failed.\nTry again?";
-"imageDetailsFetchError_continueMessage" = "Fetching the image data failed.\nContinue?";
+"imageDetailsFetchError_retryMessage" = "Fetching the image data failed. Try again?";
+"imageDetailsFetchError_continueMessage" = "Fetching the image data failed. Continue?";
 
 // Image privacy levels
 "privacyLevel" = "Privacy Level";
@@ -224,9 +224,9 @@
 "deleteImageProgress_title" = "Deleting %@%% Done";
 
 "deleteSingleImage_title" = "Delete Image";
-"deleteSingleImage_message" = "Are you sure you want to delete this image?\nThis cannot be undone!";
+"deleteSingleImage_message" = "Are you sure you want to delete this image? This cannot be undone!";
 "deleteSeveralImages_title" = "Delete Images";
-"deleteSeveralImages_message" = "Are you sure you want to delete the selected %@ images?\nThis cannot be undone!";
+"deleteSeveralImages_message" = "Are you sure you want to delete the selected %@ images? This cannot be undone!";
 
 "deleteImageFail_title" = "Delete Failed";
 "deleteImageFail_message" = "Image could not be deleted\n%@";
@@ -305,7 +305,7 @@
 "localAlbums_photosNnil_msg" = "There is a problem reading your local photo library.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Cannot open local photo library.\nPlease go into the Settings app, Privacy, Photos and enable access for Piwigo.";
+"localAlbums_photosNotAuthorized_msg" = "Cannot open local photo library. Please go into the Settings app, Privacy, Photos and enable access for Piwigo.";
 
 // ===========================================================================
 // ==> SETTINGS

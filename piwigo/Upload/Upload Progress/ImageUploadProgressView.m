@@ -157,16 +157,17 @@
                         [self.uploadProgress setProgress:0 animated:NO];
                         self.totalUploadedImages = 0;
                         self.currentImage = 1;
-                        
-                        if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-                        {
-                            [self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
-                        }
                     }];
         
         [alert addAction:defaultAction];
         [topViewController presentViewController:alert animated:YES completion:nil];
 	}
+
+    // Update the local album table view
+    if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+    {
+        [self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
+    }
 }
 
 -(void)imagesToUploadChanged:(NSInteger)imagesLeftToUpload

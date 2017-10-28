@@ -18,7 +18,6 @@
 @interface ImageUploadManager()
 
 @property (nonatomic, assign) BOOL isUploading;
-@property (nonatomic, assign) NSInteger maximumImagesForBatch;
 @property (nonatomic, assign) NSInteger onCurrentImageUpload;
 
 @end
@@ -426,7 +425,7 @@
 
 -(void)uploadNextImageAndRemoveImageFromQueue:(ImageUpload *)image withResponse:(NSDictionary *)response
 {
-    // Remove image from queue
+    // Remove image from queue (in both tables)
     [self.imageUploadQueue removeObjectAtIndex:0];
     [self.imageNamesUploadQueue removeObjectForKey:image.image];
     if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])

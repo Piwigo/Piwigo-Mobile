@@ -334,12 +334,12 @@
 	PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
 	
 	if(selectedCell.cellSelected)
-	{	// the cell is selected, remove it
+	{	// The cell is selected, remove it
 		[self.selectedImages removeObject:imageAsset];
 		selectedCell.cellSelected = NO;
 	}
 	else
-	{	// select the cell
+	{	// Select the cell
 		[self.selectedImages addObject:imageAsset];
 		selectedCell.cellSelected = YES;
 	}
@@ -371,6 +371,7 @@
 	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 	cell.cellUploading = NO;
 	
+    // Update list of "Not Uploaded" images
 	if(self.sortType == kPiwigoSortByNotUploaded)
 	{
 		NSMutableArray *newList = [self.images mutableCopy];
