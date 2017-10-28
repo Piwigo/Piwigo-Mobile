@@ -51,7 +51,7 @@
 		[self addSubview:self.currentSortLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.currentSortLabel]];
 
-		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[sort(80)]-[label]-5-[disclosure]-5-|"
+		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[sort]-[label]-5-[disclosure]-5-|"
 																	 options:kNilOptions
 																	 metrics:nil
 																	   views:@{@"disclosure" : disclosure,
