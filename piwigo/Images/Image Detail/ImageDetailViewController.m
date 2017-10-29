@@ -6,7 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import <AssetsLibrary/AssetsLibrary.h>
+#import <Photos/Photos.h>
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"
 #import "ImageService.h"
@@ -17,7 +19,6 @@
 #import "ImageUpload.h"
 #import "ImageScrollView.h"
 #import "AllCategoriesViewController.h"
-#import <AFNetworking/AFImageDownloader.h>
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 
@@ -223,17 +224,19 @@
 
 -(void)downloadImage
 {
-	// Check that user provided access to Photos.app
-    if ([ALAssetsLibrary authorizationStatus] != ALAuthorizationStatusAuthorized) {
+    // Check autorisation to access Photo Library
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status != PHAuthorizationStatusAuthorized && status != PHAuthorizationStatusNotDetermined) {
+        
         UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                preferredStyle:UIAlertControllerStyleAlert];
+                                    alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                    message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                                    preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
+                                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                        style:UIAlertActionStyleCancel
+                                        handler:^(UIAlertAction * action) {}];
         
         [alert addAction:defaultAction];
         [self presentViewController:alert animated:YES completion:nil];

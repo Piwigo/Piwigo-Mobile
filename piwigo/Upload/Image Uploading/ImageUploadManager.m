@@ -6,9 +6,10 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "ImageUploadManager.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
+#import <Photos/Photos.h>
+
+#import "ImageUploadManager.h"
 #import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "PiwigoTagData.h"
@@ -46,6 +47,16 @@
 	return self;
 }
 
+#pragma mark -- Add images to queue
+
+-(void)addImages:(NSArray*)images
+{
+    for(ImageUpload *image in images)
+    {
+        [self addImage:image];
+    }
+}
+
 -(void)addImage:(ImageUpload*)image
 {
 	[self.imageUploadQueue addObject:image];
@@ -54,14 +65,42 @@
 	[self.imageNamesUploadQueue setObject:image.image forKey:image.image];
 }
 
--(void)addImages:(NSArray*)images
+#pragma mark -- Retrieve image from Photos (iCloud or not)
+-(NSData*)retrieveFullSizeAssetDataFromAsset:(PHAsset*)imageAsset
 {
-	for(ImageUpload *image in images)
-	{
-		[self addImage:image];
-	}
+    __block NSData *assetData = nil;
+
+    if (imageAsset.mediaType == PHAssetMediaTypeImage) {
+        // Case of an image…
+        PHImageManager *imageManager = [PHImageManager defaultManager];
+        PHImageRequestOptions *options = [[PHImageRequestOptions alloc]init];
+        // Blocks the calling thread until image data is ready or an error occurs
+        options.synchronous = YES;
+        // Requests the most recent version of the image asset
+        options.version = PHImageRequestOptionsVersionCurrent;
+        // Requests the highest-quality image available, regardless of how much time it takes to load.
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+        // Requests image…
+        @autoreleasepool {
+            [imageManager requestImageDataForAsset:imageAsset options:options
+                                     resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+#if defined(DEBUG)
+                                         NSLog(@"retrieveFullSizeAssetDataFromAsset returned info(%@)", info);
+#endif
+                                         assetData = [imageData copy];
+                                     }];
+        }
+    } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
+        // Case of a video…
+    } else {
+        // Not an image, nor a video…
+    }
+
+    assert(assetData.length != 0);
+    return assetData;
 }
 
+#pragma mark -- Scale, crope, etc. image before upload
 -(UIImage*)scaleImage:(UIImage*)image toSize:(CGSize)newSize contentMode:(UIViewContentMode)contentMode
 {
 	if (contentMode == UIViewContentModeScaleToFill)
@@ -85,7 +124,6 @@
 		UIImage *newImage = [self image:image byScalingToFillSize:sizeForAspectScale];
 		
 		// if we're doing aspect fill, then the image still needs to be cropped
-		
 		if (contentMode == UIViewContentModeScaleAspectFill)
 		{
 			CGRect  subRect = CGRectMake(floor((sizeForAspectScale.width - newSize.width) / 2.0),
@@ -116,10 +154,12 @@
 	
 	return newImage;
 }
+
 -(UIImage*)image:(UIImage*)image byScalingAspectFillSize:(CGSize)newSize
 {
 	return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFill];
 }
+
 -(UIImage*)image:(UIImage*)image byScalingAspectFitSize:(CGSize)newSize
 {
 	return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFit];
@@ -134,10 +174,10 @@
         NSLog(@"Error: Could not create source");
 #endif
     } else {
-        // this is the type of image (e.g., public.jpeg)
+        // Type of image (e.g., public.jpeg)
         CFStringRef UTI = CGImageSourceGetType(source);
         
-        // create a new data object and write the new image into it
+        // Create a new data object and write the new image into it
         NSMutableData *dest_data = [NSMutableData data];
         CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
         if (!destination) {
@@ -166,6 +206,8 @@
     return imageData;
 }
 
+#pragma mark -- Upload image
+
 -(void)uploadNextImage
 {
 	// Another image to upload?
@@ -178,27 +220,46 @@
     self.isUploading = YES;
     [Model sharedInstance].hasUploadedImages = YES;
 	
-    // Image to be uploaded
+    // Image or video to be uploaded
 	ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
-	ALAsset *imageAsset = nextImageToBeUploaded.imageAsset;
-    NSMutableDictionary *imageMetadata = [[[imageAsset defaultRepresentation] metadata] mutableCopy];
-    UIImage *originalImage = [UIImage imageWithCGImage:[[imageAsset defaultRepresentation] fullResolutionImage]];
+	PHAsset *originalAsset = nextImageToBeUploaded.imageAsset;
+    NSData *originalData = [self retrieveFullSizeAssetDataFromAsset:originalAsset];
 
-    // strip GPS data if user requested it in Settings:
+    // Image and metadata from asset
+    NSMutableDictionary *assetMetadata = nil; UIImage *assetImage = nil;
+    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) originalData, NULL);
+    if (source) {
+        // Get image
+        assetImage = [UIImage imageWithCGImage:CGImageSourceCreateImageAtIndex(source, 0, NULL)];
+        
+        // Get metadata
+        assetMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
 #if defined(DEBUG)
-    NSLog(@"%@",imageMetadata);
+        NSLog(@"%@",assetMetadata);
 #endif
-    if([Model sharedInstance].stripGPSdataOnUpload) [imageMetadata setObject:@"" forKey:(NSString *)kCGImagePropertyGPSDictionary];
+
+        // Done with source
+        CFRelease(source);
+    } else {
+        // Could not get image & metadata  <<<<<=================
+        
+        
+    }
+    
+    // Strips GPS data if user requested it in Settings:
+    if([Model sharedInstance].stripGPSdataOnUpload && (assetMetadata != nil)) {
+        [assetMetadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
+    }
 
     // Video or Photo ?
     NSData *imageData = nil; NSString *mimeType = @"";
-    if ([imageAsset valueForProperty:ALAssetPropertyType] == ALAssetTypeVideo) {
+    if (originalAsset.mediaType == PHAssetMediaTypeVideo) {
         
         // Can we upload videos to the Piwigo Server ?
         if(![Model sharedInstance].canUploadVideos) {
 
             // Release dictionary
-            imageMetadata = nil;
+            assetMetadata = nil;
             
             // Inform user that he/she cannot upload videos
             [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
@@ -230,7 +291,7 @@
                 nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
             } else {
                 // Release dictionary
-                imageMetadata = nil;
+                assetMetadata = nil;
                 
                 // This file won't be compatible!
                 [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
@@ -241,30 +302,26 @@
             }
         }
         
-        // Prepare NSData representation (w/o metadata)
-        ALAssetRepresentation *rep = [imageAsset defaultRepresentation];
-        unsigned long repSize = (unsigned long)rep.size;
-        Byte *buffer = (Byte *)malloc(repSize);
-        NSUInteger length = [rep getBytes:buffer fromOffset:0 length:repSize error:nil];
-        imageData = [NSData dataWithBytesNoCopy:buffer length:length freeWhenDone:YES];
-        imageMetadata = nil;
+        // Prepare NSData representation
+        imageData = [self writeMetadataIntoImageData:originalData metadata:assetMetadata];
+        assetMetadata = nil;
         
     } else {
         
         // Photo — resize image if requested in Settings
         CGFloat scale = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoResize / 100.0 : 1.0;
-        CGSize newImageSize = CGSizeApplyAffineTransform(originalImage.size, CGAffineTransformMakeScale(scale, scale));
-        UIImage *imageResized = [self scaleImage:originalImage toSize:newImageSize contentMode:UIViewContentModeScaleAspectFit];
+        CGSize newImageSize = CGSizeApplyAffineTransform(assetImage.size, CGAffineTransformMakeScale(scale, scale));
+        UIImage *imageResized = [self scaleImage:assetImage toSize:newImageSize contentMode:UIViewContentModeScaleAspectFit];
         
-        // Edit the meta data for the correct size:
-        [imageMetadata setObject:@(imageResized.size.height) forKey:@"PixelHeight"];
-        [imageMetadata setObject:@(imageResized.size.width) forKey:@"PixelWidth"];
+        // Change metadata for new size
+        [assetMetadata setObject:@(imageResized.size.height) forKey:(NSString *)kCGImagePropertyPixelHeight];
+        [assetMetadata setObject:@(imageResized.size.width) forKey:(NSString *)kCGImagePropertyPixelWidth];
 
         // Apply compression and append metadata
         CGFloat compressionQuality = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoQuality / 100.0 : .95;
         NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
-        imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
-        imageMetadata = nil;
+        imageData = [self writeMetadataIntoImageData:imageCompressed metadata:assetMetadata];
+        assetMetadata = nil;
         
         // Prepare MIME type
         mimeType = @"image/jpeg";
@@ -428,6 +485,8 @@
     // Remove image from queue (in both tables)
     [self.imageUploadQueue removeObjectAtIndex:0];
     [self.imageNamesUploadQueue removeObjectForKey:image.image];
+    
+    // Update progress infos
     if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
     {
         [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
