@@ -218,10 +218,9 @@ NSString * const kGetImageOrderDescending = @"desc";
 			  }];
 }
 
-+(NSURLSessionTask*)downloadImage:(PiwigoImageData*)image
++(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
                        onProgress:(void (^)(NSProgress *))progress
-                 ListOnCompletion:(void (^)(NSURLSessionTask *task, UIImage *image))completion
-                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
 	if(!image) return nil;
     
@@ -246,12 +245,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     } else if ([image.ThumbPath length] > 0) {
         URLRequest = [NetworkHandler getURLWithPath:image.ThumbPath asPiwigoRequest:NO withURLParams:nil];
     }
-    
-    NSURL *request = [NSURL URLWithString:URLRequest];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString: URLRequest]];
 
+    // Create session manager
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFImageResponseSerializer serializer];
-    
+
     // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
@@ -273,24 +272,18 @@ NSString * const kGetImageOrderDescending = @"desc";
         }];
     }
     
-    NSURLSessionDataTask *task = [manager GET:request.absoluteString parameters:nil
-                                     progress:progress
-                                      success:^(NSURLSessionTask *task, UIImage *image) {
-                                          if(completion) {
-                                              completion(task, image);
-                                          }
-                                          [manager invalidateSessionCancelingTasks:YES];
-                                      }
-                                      failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-                                          NSLog(@"ImageService/get Error: %@", error);
-#endif
-                                          if(fail) {
-                                              fail(task, error);
-                                          }
-                                          [manager invalidateSessionCancelingTasks:YES];
-                                      }
-     ];
+    // Download and save image
+    NSString *fileName = image.fileName;
+    NSURLSessionDownloadTask *task =
+        [manager downloadTaskWithRequest:request
+                                progress:progress
+                             destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+                                 NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                 return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
+                             }
+                       completionHandler:completionHandler
+         ];
+    [task resume];
 
 	return task;
 }
@@ -301,6 +294,17 @@ NSString * const kGetImageOrderDescending = @"desc";
 {
 	if(!video) return nil;
 
+    NSString *URLRequest = [NetworkHandler getURLWithPath:video.fullResPath asPiwigoRequest:NO withURLParams:nil];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
+    
+    // Replace .mp4 or .m4v with .mov for compatibility with Photos.app
+    NSString *fileName = video.fileName;
+    if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
+        ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {
+        fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
+    }
+    
+    // Create session manager
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
@@ -325,24 +329,16 @@ NSString * const kGetImageOrderDescending = @"desc";
         }];
     }
     
-    NSString *URLRequest = [NetworkHandler getURLWithPath:video.fullResPath asPiwigoRequest:NO withURLParams:nil];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
-    
-    // Replace .mp4 or .m4v with .mov for compatibility with Photos.app
-    NSString *fileName = video.fileName;
-    if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
-        ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {
-        fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
-    }
-    
-    NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request
-                                                             progress:progress
-                                                          destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-                                                              NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-                                                              return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
-                                                          }
-                                                    completionHandler:completionHandler
-                                      ];
+    // Download and save video
+    NSURLSessionDownloadTask *task =
+            [manager downloadTaskWithRequest:request
+                                    progress:progress
+                                 destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+                                     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                     return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
+                                 }
+                           completionHandler:completionHandler
+             ];
     [task resume];
 
     return task;
