@@ -47,7 +47,8 @@
 	return self;
 }
 
-#pragma mark -- Add images to queue
+
+#pragma mark -- Upload image queue management
 
 -(void)addImages:(NSArray*)images
 {
@@ -65,201 +66,69 @@
 	[self.imageNamesUploadQueue setObject:image.image forKey:image.image];
 }
 
-#pragma mark -- Retrieve image from Photos (iCloud or not)
--(NSData*)retrieveFullSizeAssetDataFromAsset:(PHAsset*)imageAsset
+-(void)startUploadIfNeeded
 {
-    __block NSData *assetData = nil;
-
-    if (imageAsset.mediaType == PHAssetMediaTypeImage) {
-        // Case of an image…
-        PHImageManager *imageManager = [PHImageManager defaultManager];
-        PHImageRequestOptions *options = [[PHImageRequestOptions alloc]init];
-        // Blocks the calling thread until image data is ready or an error occurs
-        options.synchronous = YES;
-        // Requests the most recent version of the image asset
-        options.version = PHImageRequestOptionsVersionCurrent;
-        // Requests the highest-quality image available, regardless of how much time it takes to load.
-        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-        // Requests image…
-        @autoreleasepool {
-            [imageManager requestImageDataForAsset:imageAsset options:options
-                                     resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-#if defined(DEBUG)
-                                         NSLog(@"retrieveFullSizeAssetDataFromAsset returned info(%@)", info);
-#endif
-                                         assetData = [imageData copy];
-                                     }];
-        }
-    } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
-        // Case of a video…
-    } else {
-        // Not an image, nor a video…
+    if(!self.isUploading)
+    {
+        [self uploadNextImage];
     }
-
-    assert(assetData.length != 0);
-    return assetData;
 }
 
-#pragma mark -- Scale, crope, etc. image before upload
--(UIImage*)scaleImage:(UIImage*)image toSize:(CGSize)newSize contentMode:(UIViewContentMode)contentMode
+-(void)setIsUploading:(BOOL)isUploading
 {
-	if (contentMode == UIViewContentModeScaleToFill)
-	{
-		return [self image:image byScalingToFillSize:newSize];
-	}
-	else if ((contentMode == UIViewContentModeScaleAspectFill) ||
-			 (contentMode == UIViewContentModeScaleAspectFit))
-	{
-		CGFloat horizontalRatio   = image.size.width  / newSize.width;
-		CGFloat verticalRatio     = image.size.height / newSize.height;
-		CGFloat ratio;
-		
-		if (contentMode == UIViewContentModeScaleAspectFill)
-			ratio = MIN(horizontalRatio, verticalRatio);
-		else
-			ratio = MAX(horizontalRatio, verticalRatio);
-		
-		CGSize  sizeForAspectScale = CGSizeMake(image.size.width / ratio, image.size.height / ratio);
-		
-		UIImage *newImage = [self image:image byScalingToFillSize:sizeForAspectScale];
-		
-		// if we're doing aspect fill, then the image still needs to be cropped
-		if (contentMode == UIViewContentModeScaleAspectFill)
-		{
-			CGRect  subRect = CGRectMake(floor((sizeForAspectScale.width - newSize.width) / 2.0),
-										 floor((sizeForAspectScale.height - newSize.height) / 2.0),
-										 newSize.width,
-										 newSize.height);
-			newImage = [self image:newImage byCroppingToBounds:subRect];
-		}
-		
-		return newImage;
-	}
-	
-	return nil;
-}
-- (UIImage *)image:(UIImage*)image byCroppingToBounds:(CGRect)bounds
-{
-	CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], bounds);
-	UIImage *croppedImage = [UIImage imageWithCGImage:imageRef];
-	CGImageRelease(imageRef);
-	return croppedImage;
-}
-- (UIImage*)image:(UIImage*)image byScalingToFillSize:(CGSize)newSize
-{
-	UIGraphicsBeginImageContext(newSize);
-	[image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-	UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
-	
-	return newImage;
-}
-
--(UIImage*)image:(UIImage*)image byScalingAspectFillSize:(CGSize)newSize
-{
-	return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFill];
-}
-
--(UIImage*)image:(UIImage*)image byScalingAspectFitSize:(CGSize)newSize
-{
-	return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFit];
-}
-
--(NSData*)writeMetadataIntoImageData:(NSData *)imageData metadata:(NSDictionary*)metadata
-{
-	// Create an imagesourceref
-	CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
-    if (!source) {
-#if defined(DEBUG)
-        NSLog(@"Error: Could not create source");
-#endif
-    } else {
-        // Type of image (e.g., public.jpeg)
-        CFStringRef UTI = CGImageSourceGetType(source);
-        
-        // Create a new data object and write the new image into it
-        NSMutableData *dest_data = [NSMutableData data];
-        CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
-        if (!destination) {
-    #if defined(DEBUG)
-            NSLog(@"Error: Could not create image destination");
-    #endif
-            CFRelease(source);
-        } else {
-            // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
-            CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
-            BOOL success = NO;
-            success = CGImageDestinationFinalize(destination);
-            if (!success) {
-    #if defined(DEBUG)
-                NSLog(@"Error: Could not create data from image destination");
-    #endif
-                CFRelease(destination);
-                CFRelease(source);
-            } else {
-                CFRelease(destination);
-                CFRelease(source);
-                return dest_data;
-            }
-        }
+    _isUploading = isUploading;
+    
+    if(!isUploading)
+    {
+        self.maximumImagesForBatch = 0;
+        self.onCurrentImageUpload = 1;
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
     }
-    return imageData;
+    else
+    {
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+    }
 }
 
-#pragma mark -- Upload image
+-(void)setMaximumImagesForBatch:(NSInteger)maximumImagesForBatch
+{
+    _maximumImagesForBatch = maximumImagesForBatch;
+    
+    if([self.delegate respondsToSelector:@selector(imagesToUploadChanged:)])
+    {
+        [self.delegate imagesToUploadChanged:maximumImagesForBatch];
+    }
+}
+
+-(NSInteger)getIndexOfImage:(ImageUpload*)image
+{
+    return [self.imageUploadQueue indexOfObject:image];
+}
 
 -(void)uploadNextImage
 {
-	// Another image to upload?
+    // Another image or video to upload?
     if(self.imageUploadQueue.count <= 0)
-	{
-		self.isUploading = NO;
-		return;
-	}
-	
-    self.isUploading = YES;
-    [Model sharedInstance].hasUploadedImages = YES;
-	
-    // Image or video to be uploaded
-	ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
-	PHAsset *originalAsset = nextImageToBeUploaded.imageAsset;
-    NSData *originalData = [self retrieveFullSizeAssetDataFromAsset:originalAsset];
-
-    // Image and metadata from asset
-    NSMutableDictionary *assetMetadata = nil; UIImage *assetImage = nil;
-    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) originalData, NULL);
-    if (source) {
-        // Get image
-        assetImage = [UIImage imageWithCGImage:CGImageSourceCreateImageAtIndex(source, 0, NULL)];
-        
-        // Get metadata
-        assetMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
-#if defined(DEBUG)
-        NSLog(@"%@",assetMetadata);
-#endif
-
-        // Done with source
-        CFRelease(source);
-    } else {
-        // Could not get image & metadata  <<<<<=================
-        
-        
+    {
+        self.isUploading = NO;
+        return;
     }
     
-    // Strips GPS data if user requested it in Settings:
-    if([Model sharedInstance].stripGPSdataOnUpload && (assetMetadata != nil)) {
-        [assetMetadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
+    self.isUploading = YES;
+    [Model sharedInstance].hasUploadedImages = YES;
+    
+    // Image or video to be uploaded
+    ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
+    PHAsset *originalAsset = nextImageToBeUploaded.imageAsset;
+    NSString *mimeType = @"";
+    
+    // Retrieve image or video
+    if (originalAsset.mediaType == PHAssetMediaTypeImage) {
+        [self retrieveFullSizeAssetDataFromImage:nextImageToBeUploaded];
     }
-
-    // Video or Photo ?
-    NSData *imageData = nil; NSString *mimeType = @"";
-    if (originalAsset.mediaType == PHAssetMediaTypeVideo) {
-        
+    else if (originalAsset.mediaType == PHAssetMediaTypeVideo) {
         // Can we upload videos to the Piwigo Server ?
         if(![Model sharedInstance].canUploadVideos) {
-
-            // Release dictionary
-            assetMetadata = nil;
             
             // Inform user that he/she cannot upload videos
             [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
@@ -290,9 +159,6 @@
                 // Replace file extension
                 nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
             } else {
-                // Release dictionary
-                assetMetadata = nil;
-                
                 // This file won't be compatible!
                 [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
                               andMessage:NSLocalizedString(@"videoUploadError_format", @"Sorry, the video file format is not compatible with the extension \"VideoJS\".")
@@ -301,47 +167,335 @@
                 return;
             }
         }
+
+        // Video upload allowed — Will wait for video download from iCloud if necessary
+        [self retrieveFullSizeAssetDataFromVideo:nextImageToBeUploaded withMimeType:mimeType];
+    }
+}
+
+-(void)uploadNextImageAndRemoveImageFromQueue:(ImageUpload *)image withResponse:(NSDictionary *)response
+{
+    // Remove image from queue (in both tables)
+    [self.imageUploadQueue removeObjectAtIndex:0];
+    [self.imageNamesUploadQueue removeObjectForKey:image.image];
+    
+    // Update progress infos
+    if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+    {
+        [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
+    }
+    
+    // Upload next image
+    [self uploadNextImage];
+}
+
+
+#pragma mark -- Retrieve and modify image before upload
+
+-(void)retrieveFullSizeAssetDataFromImage:(ImageUpload *)image  // Synchronous
+{
+    __block NSData *assetData = nil;
+
+    // Case of an image…
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    // Blocks the calling thread until image data is ready or an error occurs
+    options.synchronous = YES;
+    // Requests the most recent version of the image asset
+    options.version = PHImageRequestOptionsVersionCurrent;
+    // Requests the highest-quality image available, regardless of how much time it takes to load.
+    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    // Requests image…
+    @autoreleasepool {
+        [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
+                     resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+#if defined(DEBUG)
+                         NSLog(@"retrieveFullSizeAssetDataFromImage returned info(%@)", info);
+#endif
+                         assetData = [imageData copy];
+                         assert(assetData.length != 0);
+                         // Modify image before upload if needed
+                         [self modifyImage:image withData:assetData];
+                     }
+         ];
+    }
+}
+
+-(void)modifyImage:(ImageUpload *)image withData:(NSData *)originalData
+{
+    // Image and metadata from asset
+    NSMutableDictionary *assetMetadata = nil; UIImage *assetImage = nil;
+    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) originalData, NULL);
+    if (source) {
+        // Get image
+        assetImage = [UIImage imageWithCGImage:CGImageSourceCreateImageAtIndex(source, 0, NULL)];
         
-        // Prepare NSData representation
-        imageData = [self writeMetadataIntoImageData:originalData metadata:assetMetadata];
-        assetMetadata = nil;
+        // Get metadata
+        assetMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
+#if defined(DEBUG)
+        NSLog(@"%@",assetMetadata);
+#endif
         
-    } else {
-        
-        // Photo — resize image if requested in Settings
-        CGFloat scale = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoResize / 100.0 : 1.0;
+        // Done with source
+        CFRelease(source);
+    }
+    
+    // Strips GPS data if user requested it in Settings:
+    if([Model sharedInstance].stripGPSdataOnUpload && (assetMetadata != nil)) {
+        [assetMetadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
+    }
+    
+    // Resize image if requested in Settings
+    NSData *imageData = nil;
+    if ([Model sharedInstance].resizeImageOnUpload) {
+        CGFloat scale = [Model sharedInstance].photoResize / 100.0;
         CGSize newImageSize = CGSizeApplyAffineTransform(assetImage.size, CGAffineTransformMakeScale(scale, scale));
         UIImage *imageResized = [self scaleImage:assetImage toSize:newImageSize contentMode:UIViewContentModeScaleAspectFit];
         
         // Change metadata for new size
         [assetMetadata setObject:@(imageResized.size.height) forKey:(NSString *)kCGImagePropertyPixelHeight];
         [assetMetadata setObject:@(imageResized.size.width) forKey:(NSString *)kCGImagePropertyPixelWidth];
-
+        
         // Apply compression and append metadata
         CGFloat compressionQuality = [Model sharedInstance].resizeImageOnUpload ? [Model sharedInstance].photoQuality / 100.0 : .95;
         NSData *imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
-        imageData = [self writeMetadataIntoImageData:imageCompressed metadata:assetMetadata];
-        assetMetadata = nil;
         
-        // Prepare MIME type
-        mimeType = @"image/jpeg";
+        // Prepare NSData representation with updated metadata
+        imageData = [self writeMetadataIntoImageData:imageCompressed metadata:assetMetadata];
+        
+    } else {
+        // Prepare NSData representation
+        imageData = [self writeMetadataIntoImageData:originalData metadata:assetMetadata];
     }
     
+    // Release metadata
+    assetMetadata = nil;
+    
+    // Prepare MIME type
+    NSString *mimeType = @"";
+    mimeType = [self contentTypeForImageData:originalData];
+    
+    // Upload image with tags and properties
+    [self uploadImage:image withData:imageData andMimeType:mimeType];
+}
+
+-(NSString *)contentTypeForImageData:(NSData *)data {
+    uint8_t c;
+    [data getBytes:&c length:1];
+    
+    switch (c) {
+        case 0xFF:
+            return @"image/jpeg";
+        case 0x89:
+            return @"image/png";
+        case 0x47:
+            return @"image/gif";
+        case 0x49:
+        case 0x4D:
+            return @"image/tiff";
+    }
+    return nil;
+}
+
+#pragma mark -- Retrieve and modify video before upload
+
+-(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image withMimeType:(NSString *)mimeType  // Asynchronous
+{
+//    __block NSData *assetData = nil;
+    
+    // Case of a video…
+    PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+    // Requests the most recent version of the image asset
+    options.version = PHVideoRequestOptionsVersionCurrent;
+    // Requests the highest-quality video available, regardless of how much time it takes to load.
+    options.deliveryMode = PHVideoRequestOptionsDeliveryModeHighQualityFormat;
+    // Photos can download the requested video from iCloud.
+    options.networkAccessAllowed = YES;
+    // The block Photos calls periodically while downloading the video.
+    options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
+        NSLog(@"downloading video from iCloud — progress %lf",progress);
+    };
+    
+    // Requests video…
+    @autoreleasepool {
+        [[PHImageManager defaultManager] requestAVAssetForVideo:image.imageAsset options:options
+                resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+#if defined(DEBUG)
+                NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+#endif
+                // Writes to documents folder before uploading to Piwigo server
+                NSError *error;
+                AVURLAsset *avurlasset = (AVURLAsset*) asset;
+                NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                NSURL *fileURL = [documentsDirectoryURL URLByAppendingPathComponent:image.image];
+                
+                // Deletes temporary file if exists already (might be incomplete, etc.)
+                [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+                
+                // Writes temporary video file
+                if ([[NSFileManager defaultManager]
+                    copyItemAtURL:avurlasset.URL toURL:fileURL error:&error]) {
+#if defined(DEBUG)
+                    NSLog(@"Copied correctly at %@", fileURL.absoluteString);
+#endif
+                    // Modifies video before upload to Piwigo server
+                    [self modifyVideo:image atURL:fileURL withMimeType:mimeType];
+                    }
+                }
+         ];
+    }
+}
+
+-(void)modifyVideo:(ImageUpload *)image atURL:(NSURL *)fileURL withMimeType:(NSString *)mimeType
+{
+    // Video and metadata from asset
+    __block NSData *assetData = nil;
+    AVAsset *videoAsset = [AVAsset assetWithURL:fileURL];
+    NSArray *assetMetadata = [videoAsset commonMetadata];
+
+    // Strips GPS data if user requested it in Settings
+    if (![Model sharedInstance].stripGPSdataOnUpload || (!assetMetadata)) {
+        
+        // Gets copy as NSData
+        assetData = [[NSData dataWithContentsOfURL:fileURL] copy];
+        assert(assetData.length != 0);
+
+        // Deletes temporary video file
+        if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
+#if defined(DEBUG)
+            NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
+#endif
+        }
+        
+        // Upload video with tags and properties
+        [self uploadImage:image withData:assetData andMimeType:mimeType];
+    }
+    else
+    {
+        // Creates metadata without location data
+        NSMutableArray *newAssetMetadata = [NSMutableArray array];
+        for (AVMetadataItem *item in assetMetadata) {
+            if ([item.commonKey isEqualToString:AVMetadataCommonKeyLocation]){
+#if defined(DEBUG)
+                NSLog(@"Location found: %@", item.stringValue);
+#endif
+            } else {
+                [newAssetMetadata addObject:item];
+            }
+        }
+        
+        // Done if metadata did not contain location
+        if (newAssetMetadata.count == assetMetadata.count) {
+            
+            // Gets copy as NSData
+            assetData = [[NSData dataWithContentsOfURL:fileURL] copy];
+            assert(assetData.length != 0);
+
+            // Deletes temporary video file
+            if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
+#if defined(DEBUG)
+                NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
+#endif
+            }
+
+            // Upload video with tags and properties
+            [self uploadImage:image withData:assetData andMimeType:mimeType];
+        }
+        else if ([videoAsset isExportable]) {
+            
+            // Export from the original asset
+            AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:videoAsset presetName:AVAssetExportPresetPassthrough];
+            
+            // Filename is ("_" + name + ".mp4") in same directory
+            NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+            NSURL *newFileURL = [documentsDirectoryURL URLByAppendingPathComponent:[[@"_" stringByAppendingString:[image.image stringByDeletingPathExtension]] stringByAppendingPathExtension:@"mp4"]];
+            exportSession.outputURL = newFileURL;
+            exportSession.outputFileType = AVFileTypeMPEG4;
+            exportSession.shouldOptimizeForNetworkUse = YES;
+
+            // Deletes temporary file if exists already (might be incomplete, etc.)
+            [[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil];
+
+            // Video range
+            CMTime start = kCMTimeZero;
+            CMTimeRange range = CMTimeRangeMake(start, [videoAsset duration]);
+            exportSession.timeRange = range;
+            
+            // Updated metadata
+            exportSession.metadata = newAssetMetadata;
+            
+            // Export video
+            [exportSession exportAsynchronouslyWithCompletionHandler:^{
+                if ([exportSession status] == AVAssetExportSessionStatusCompleted)
+                {
+#if defined(DEBUG)
+                    NSLog(@"Export sucess…");
+#endif
+                    // Gets copy as NSData
+                    assetData = [[NSData dataWithContentsOfURL:newFileURL] copy];
+                    assert(assetData.length != 0);
+
+                    // Deletes temporary video files
+                    if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
+#if defined(DEBUG)
+                        NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
+#endif
+                    }
+                    if ([[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil]) {
+#if defined(DEBUG)
+                        NSLog(@"Deleted correctly at %@", newFileURL.absoluteString);
+#endif
+                    }
+                    
+                    // Upload video with tags and properties
+                    [self uploadImage:image withData:assetData andMimeType:mimeType];
+                    
+                }
+                else if ([exportSession status] == AVAssetExportSessionStatusFailed)
+                {
+#if defined(DEBUG)
+                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+#endif
+                }
+                else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
+                {
+#if defined(DEBUG)
+                    NSLog(@"Export canceled");
+#endif
+                }
+                else
+                {
+#if defined(DEBUG)
+                    NSLog(@"Export ??");
+#endif
+                }
+            }];
+        }
+        else {
+            // Could not export a new video — What to do?
+        }
+    }
+}
+
+
+#pragma mark -- Upload image/video
+
+-(void)uploadImage:(ImageUpload *)image withData:(NSData *)imageData andMimeType:(NSString *)mimeType
+{
 	// Append Tags
 	NSMutableArray *tagIds = [NSMutableArray new];
-	for(PiwigoTagData *tagData in nextImageToBeUploaded.tags)
+	for(PiwigoTagData *tagData in image.tags)
 	{
 		[tagIds addObject:@(tagData.tagId)];
 	}
 	
     // Prepare properties for upload
 	NSDictionary *imageProperties = @{
-									  kPiwigoImagesUploadParamFileName : nextImageToBeUploaded.image,
-									  kPiwigoImagesUploadParamTitle : nextImageToBeUploaded.title,
-									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.categoryToUploadTo)],
-									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(nextImageToBeUploaded.privacyLevel)],
-									  kPiwigoImagesUploadParamAuthor : nextImageToBeUploaded.author,
-									  kPiwigoImagesUploadParamDescription : nextImageToBeUploaded.imageDescription,
+									  kPiwigoImagesUploadParamFileName : image.image,
+									  kPiwigoImagesUploadParamTitle : image.title,
+									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
+									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(image.privacyLevel)],
+									  kPiwigoImagesUploadParamAuthor : image.author,
+									  kPiwigoImagesUploadParamDescription : image.imageDescription,
 									  kPiwigoImagesUploadParamTags : [tagIds copy],
                                       kPiwigoImagesUploadParamMimeType : mimeType
 									  };
@@ -352,7 +506,7 @@
 					onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
 						if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
 						{
-							[self.delegate imageProgress:nextImageToBeUploaded onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
+							[self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
 						}
 					} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                         // Consider image job done
@@ -365,22 +519,22 @@
                         if ([Model sharedInstance].usesCommunityPluginV29) {
 
                             // Append image to cache only if it is not moderated
-                            [self isUploadedImageModerated:response inCategory:nextImageToBeUploaded.categoryToUploadTo];
+                            [self isUploadedImageModerated:response inCategory:image.categoryToUploadTo];
                             
                         } else {
                             
                             // Increment number of images in category
-                            [[[CategoriesData sharedInstance] getCategoryById:nextImageToBeUploaded.categoryToUploadTo] incrementImageSizeByOne];
+                            [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
                             
                             // Read image/video information and update cache
                             [self addImageDataToCategoryCache:response];
                         }
                         
                         // Remove image from queue and upload next one
-                        [self uploadNextImageAndRemoveImageFromQueue:nextImageToBeUploaded withResponse:response];
+                        [self uploadNextImageAndRemoveImageFromQueue:image withResponse:response];
 
 					} onFailure:^(NSURLSessionTask *task, NSError *error) {
-						NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] uppercaseString];
+						NSString *fileExt = [[image.image pathExtension] uppercaseString];
                         if(error.code == -1016 &&
 						   ([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
                             [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
@@ -390,7 +544,7 @@
                             [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
                                           andMessage:NSLocalizedString(@"videoUploadConfigError_message", @"Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.")
                                          forRetrying:NO
-                                           withImage:nextImageToBeUploaded];
+                                           withImage:image];
 						}
 						else
 						{
@@ -401,17 +555,9 @@
                             [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
                                           andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
                                          forRetrying:YES
-                                           withImage:nextImageToBeUploaded];
+                                           withImage:image];
 						}
 					}];
-}
-
--(void)startUploadIfNeeded
-{
-	if(!self.isUploading)
-	{
-		[self uploadNextImage];
-	}
 }
 
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message forRetrying:(BOOL)retry withImage:(ImageUpload *)image
@@ -480,52 +626,8 @@
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
--(void)uploadNextImageAndRemoveImageFromQueue:(ImageUpload *)image withResponse:(NSDictionary *)response
-{
-    // Remove image from queue (in both tables)
-    [self.imageUploadQueue removeObjectAtIndex:0];
-    [self.imageNamesUploadQueue removeObjectForKey:image.image];
-    
-    // Update progress infos
-    if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-    {
-        [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
-    }
 
-    // Upload next image
-    [self uploadNextImage];
-}
-
--(void)setIsUploading:(BOOL)isUploading
-{
-	_isUploading = isUploading;
-	
-	if(!isUploading)
-	{
-		self.maximumImagesForBatch = 0;
-		self.onCurrentImageUpload = 1;
-		[UIApplication sharedApplication].idleTimerDisabled = NO;
-	}
-	else
-	{
-		[UIApplication sharedApplication].idleTimerDisabled = YES;
-	}
-}
-
--(void)setMaximumImagesForBatch:(NSInteger)maximumImagesForBatch
-{
-	_maximumImagesForBatch = maximumImagesForBatch;
-	
-	if([self.delegate respondsToSelector:@selector(imagesToUploadChanged:)])
-	{
-		[self.delegate imagesToUploadChanged:maximumImagesForBatch];
-	}
-}
-
--(NSInteger)getIndexOfImage:(ImageUpload*)image
-{
-	return [self.imageUploadQueue indexOfObject:image];
-}
+#pragma mark -- Finish image upload
 
 -(void)setImageResponse:(NSDictionary*)jsonResponse withInfo:(NSDictionary*)imageProperties
 {
@@ -616,6 +718,117 @@
                           //
                       }];
     }
+}
+
+
+#pragma mark -- Scale, crope, etc. image before upload
+
+-(UIImage*)scaleImage:(UIImage*)image toSize:(CGSize)newSize contentMode:(UIViewContentMode)contentMode
+{
+    if (contentMode == UIViewContentModeScaleToFill)
+    {
+        return [self image:image byScalingToFillSize:newSize];
+    }
+    else if ((contentMode == UIViewContentModeScaleAspectFill) ||
+             (contentMode == UIViewContentModeScaleAspectFit))
+    {
+        CGFloat horizontalRatio   = image.size.width  / newSize.width;
+        CGFloat verticalRatio     = image.size.height / newSize.height;
+        CGFloat ratio;
+        
+        if (contentMode == UIViewContentModeScaleAspectFill)
+            ratio = MIN(horizontalRatio, verticalRatio);
+        else
+            ratio = MAX(horizontalRatio, verticalRatio);
+        
+        CGSize  sizeForAspectScale = CGSizeMake(image.size.width / ratio, image.size.height / ratio);
+        
+        UIImage *newImage = [self image:image byScalingToFillSize:sizeForAspectScale];
+        
+        // if we're doing aspect fill, then the image still needs to be cropped
+        if (contentMode == UIViewContentModeScaleAspectFill)
+        {
+            CGRect  subRect = CGRectMake(floor((sizeForAspectScale.width - newSize.width) / 2.0),
+                                         floor((sizeForAspectScale.height - newSize.height) / 2.0),
+                                         newSize.width,
+                                         newSize.height);
+            newImage = [self image:newImage byCroppingToBounds:subRect];
+        }
+        
+        return newImage;
+    }
+    
+    return nil;
+}
+- (UIImage *)image:(UIImage*)image byCroppingToBounds:(CGRect)bounds
+{
+    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], bounds);
+    UIImage *croppedImage = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    return croppedImage;
+}
+- (UIImage*)image:(UIImage*)image byScalingToFillSize:(CGSize)newSize
+{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+}
+
+-(UIImage*)image:(UIImage*)image byScalingAspectFillSize:(CGSize)newSize
+{
+    return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFill];
+}
+
+-(UIImage*)image:(UIImage*)image byScalingAspectFitSize:(CGSize)newSize
+{
+    return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFit];
+}
+
+-(NSData*)writeMetadataIntoImageData:(NSData *)imageData metadata:(NSDictionary*)metadata
+{
+    // NOP if metadata == nil
+    if (!metadata) return imageData;
+    
+    // Create an imagesourceref
+    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
+    if (!source) {
+#if defined(DEBUG)
+        NSLog(@"Error: Could not create source");
+#endif
+    } else {
+        // Type of image (e.g., public.jpeg)
+        CFStringRef UTI = CGImageSourceGetType(source);
+        
+        // Create a new data object and write the new image into it
+        NSMutableData *dest_data = [NSMutableData data];
+        CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
+        if (!destination) {
+#if defined(DEBUG)
+            NSLog(@"Error: Could not create image destination");
+#endif
+            CFRelease(source);
+        } else {
+            // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
+            CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
+            BOOL success = NO;
+            success = CGImageDestinationFinalize(destination);
+            if (!success) {
+#if defined(DEBUG)
+                NSLog(@"Error: Could not create data from image destination");
+#endif
+                CFRelease(destination);
+                CFRelease(source);
+            } else {
+                CFRelease(destination);
+                CFRelease(source);
+                return dest_data;
+            }
+        }
+    }
+    return imageData;
 }
 
 @end
