@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class ALAssetsGroup;
+@class PHAssetCollection;
 
 @interface UploadViewController : UIViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId andGroupAsset:(ALAssetsGroup*)groupAsset;
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andGroupAsset:(PHAssetCollection*)groupAsset;
 
 @end

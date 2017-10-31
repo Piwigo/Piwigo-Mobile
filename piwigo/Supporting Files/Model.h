@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "CategorySortViewController.h"
 
-@class ALAssetsLibrary;
+@class PHPhotoLibrary;
 
 typedef enum {
 	kPiwigoPrivacyEverybody = 0,
@@ -27,7 +27,7 @@ typedef enum {
 
 +(Model*)sharedInstance;
 -(void)saveToDisk;
-+(ALAssetsLibrary*)defaultAssetsLibrary;
++(PHPhotoLibrary*)defaultAssetsLibrary;
 
 @property (nonatomic, strong) NSString *serverProtocol;
 @property (nonatomic, strong) NSString *serverName;
