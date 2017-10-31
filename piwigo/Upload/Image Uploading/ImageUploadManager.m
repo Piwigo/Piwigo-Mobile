@@ -171,6 +171,9 @@
         // Video upload allowed — Will wait for video download from iCloud if necessary
         [self retrieveFullSizeAssetDataFromVideo:nextImageToBeUploaded withMimeType:mimeType];
     }
+    else if (originalAsset.mediaType == PHAssetMediaTypeAudio) {
+        // No managed yet by Piwigo Server…
+    }
 }
 
 -(void)uploadNextImageAndRemoveImageFromQueue:(ImageUpload *)image withResponse:(NSDictionary *)response
