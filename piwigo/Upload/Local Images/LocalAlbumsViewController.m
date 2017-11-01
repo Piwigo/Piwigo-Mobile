@@ -125,7 +125,7 @@
 	PHAssetCollection *groupAsset = [self.groups objectAtIndex:indexPath.row];
     NSString *name = [groupAsset localizedTitle];
     NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
-	[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), NSLocalizedString(@"deleteImage_imagePlural", @"Images")]];
+    [cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ?NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")]];
 	
 	return cell;
 }
