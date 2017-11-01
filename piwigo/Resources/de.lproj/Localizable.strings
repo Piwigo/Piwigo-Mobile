@@ -170,6 +170,8 @@
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
+"singleImage" = "Bild";
+"severalImages" = "Bilder";
 "noImages" = "Keine Bilder";
 "pullToRefresh" = "Bilder erneut laden";
 
@@ -220,7 +222,6 @@
 
 // Image delete
 "deleteImage_delete" = "Löschen";
-"deleteImage_imagePlural" = "Bilder";
 "deleteImageProgress_title" = "Löschen von %@%% erledigt";
 
 "deleteSingleImage_title" = "Bild löschen";

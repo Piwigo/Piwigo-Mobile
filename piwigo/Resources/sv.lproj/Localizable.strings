@@ -170,6 +170,8 @@
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
+"singleImage" = "Bild";
+"severalImages" = "Bilder";
 "noImages" = "Inga bilder";
 "pullToRefresh" = "Ladda om bilderna";
 
@@ -220,7 +222,6 @@
 
 // Image delete
 "deleteImage_delete" = "Radera";
-"deleteImage_imagePlural" = "Bilder";
 "deleteImageProgress_title" = "Radering av %@%% utförd";
 
 "deleteSingleImage_title" = "Radera bild";

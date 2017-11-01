@@ -170,6 +170,8 @@
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
+"singleImage" = "Billede";
+"severalImages" = "Billeder";
 "noImages" = "Ingen Billeder";
 "pullToRefresh" = "Genindlæs Billeder";
 
@@ -220,7 +222,6 @@
 
 // Image delete
 "deleteImage_delete" = "Slet";
-"deleteImage_imagePlural" = "Billeder";
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";
 
 "deleteSingleImage_title" = "Slet Billede";
