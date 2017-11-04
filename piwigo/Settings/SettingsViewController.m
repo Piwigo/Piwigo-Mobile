@@ -478,10 +478,10 @@ typedef enum {
 					}
                     cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
 					cell.slider.minimumValue = 50;
-					cell.slider.maximumValue = 98;
+					cell.slider.maximumValue = 100;
                     cell.sliderCountPrefix = @"";
 					cell.sliderCountSuffix = @"%";
-					cell.incrementSliderBy = 1;
+					cell.incrementSliderBy = 5;
 					cell.sliderValue = [Model sharedInstance].photoQuality;
                     [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
 					
@@ -496,11 +496,11 @@ typedef enum {
 						cell = [SliderTableViewCell new];
 					}
                     cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"> Size");
-					cell.slider.minimumValue = 1;
+					cell.slider.minimumValue = 10;
 					cell.slider.maximumValue = 100;
                     cell.sliderCountPrefix = @"";
 					cell.sliderCountSuffix = @"%";
-					cell.incrementSliderBy = 1;
+					cell.incrementSliderBy = 5;
 					cell.sliderValue = [Model sharedInstance].photoResize;
                     [cell.slider addTarget:self action:@selector(updateImageSize:) forControlEvents:UIControlEventValueChanged];
 					
