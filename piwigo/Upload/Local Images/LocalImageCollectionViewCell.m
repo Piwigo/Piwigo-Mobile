@@ -75,7 +75,7 @@
         [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:4]];
         [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
 
-		// Uploading stuff
+        // Uploading stuff: mask
 		self.uploadingView = [UIView new];
 		self.uploadingView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.uploadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
@@ -83,15 +83,18 @@
 		[self.contentView addSubview:self.uploadingView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.uploadingView]];
 		
+        // Uploading stuff: progress bar
 		self.uploadingProgress = [UIProgressView new];
 		self.uploadingProgress.translatesAutoresizingMaskIntoConstraints = NO;
 		[self.uploadingView addSubview:self.uploadingProgress];
-		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadingProgress]];
+		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgress]];
+        [self.uploadingView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.uploadingProgress amount:10]];
 		[self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[progress]-10-|"
 																				   options:kNilOptions
 																				   metrics:nil
 																					 views:@{@"progress" : self.uploadingProgress}]];
 		
+        // Uploading stuff: label
 		UILabel *uploadingLabel = [UILabel new];
 		uploadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		uploadingLabel.font = [UIFont piwigoFontNormal];
