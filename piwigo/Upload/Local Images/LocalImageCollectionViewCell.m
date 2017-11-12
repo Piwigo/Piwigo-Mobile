@@ -32,7 +32,8 @@
 		self.backgroundColor = [UIColor piwigoWhiteCream];
 		self.cellSelected = NO;
 		
-		self.cellImage = [UIImageView new];
+		// Image
+        self.cellImage = [UIImageView new];
 		self.cellImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.cellImage.contentMode = UIViewContentModeScaleAspectFill;
 		self.cellImage.clipsToBounds = YES;
@@ -40,6 +41,7 @@
 		[self.contentView addSubview:self.cellImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
+        // Darken view
 		self.darkenView = [UIView new];
 		self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
@@ -47,6 +49,7 @@
 		[self.contentView addSubview:self.darkenView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
 		
+        // Selected image
 		self.selectedImage = [UIImageView new];
 		self.selectedImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
@@ -59,15 +62,20 @@
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:0]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 		
-		self.playImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"play"]];
-		self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
-		self.playImage.contentMode = UIViewContentModeScaleAspectFit;
-		self.playImage.hidden = YES;
-		[self.contentView addSubview:self.playImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(40, 40)]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.playImage]];
-		
-		// uploading stuff:
+        // Movie type
+        self.playImage = [UIImageView new];
+        UIImage *play = [UIImage imageNamed:@"play"];
+        self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.playImage.tintColor = [UIColor piwigoOrange];
+        self.playImage.hidden = YES;
+        self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
+        self.playImage.contentMode = UIViewContentModeScaleAspectFit;
+        [self.contentView addSubview:self.playImage];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(25, 25)]];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:4]];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
+
+		// Uploading stuff
 		self.uploadingView = [UIView new];
 		self.uploadingView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.uploadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
