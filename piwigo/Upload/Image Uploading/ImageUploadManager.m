@@ -212,8 +212,6 @@
 
 -(void)retrieveFullSizeAssetDataFromImage:(ImageUpload *)image  // Asynchronous
 {
-//    __block NSData *assetData = nil;
-
     // Case of an image…
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     // Blocks the calling thread until image data is ready or an error occurs
@@ -224,6 +222,7 @@
     options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     // Photos can download the requested video from iCloud
     options.networkAccessAllowed = YES;
+
     // The block Photos calls periodically while downloading the photo
     options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
         NSLog(@"downloading Live Photo from iCloud — progress %lf",progress);
@@ -253,69 +252,6 @@
          ];
     }
 }
-
-//-(void)retrieveFullSizeAssetDataFromLivePhoto:(ImageUpload *)image   // Asynchronous
-//{
-//    __block NSData *assetData = nil;
-//
-//    // Case of an Live Photo…
-//    PHLivePhotoRequestOptions *options = [[PHLivePhotoRequestOptions alloc] init];
-//    // Requests the most recent version of the image asset
-//    options.version = PHImageRequestOptionsVersionOriginal;
-//    // Requests the highest-quality image available, regardless of how much time it takes to load.
-//    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-//    // Photos can download the requested video from iCloud.
-//    options.networkAccessAllowed = YES;
-//    // The block Photos calls periodically while downloading the LivePhoto.
-//    options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
-//        NSLog(@"downloading Live Photo from iCloud — progress %lf",progress);
-//    };
-//
-//    // Requests Live Photo…
-//    @autoreleasepool {
-//        [[PHImageManager defaultManager] requestLivePhotoForAsset:image.imageAsset
-//                   targetSize:CGSizeZero contentMode:PHImageContentModeDefault
-//                      options:options resultHandler:^(PHLivePhoto *livePhoto, NSDictionary *info) {
-//#if defined(DEBUG)
-//                          NSLog(@"retrieveFullSizeAssetDataFromLivePhoto returned info(%@)", info);
-//#endif
-//                          if ([info objectForKey:PHImageErrorKey]) {
-//                              NSError *error = [info valueForKey:PHImageErrorKey];
-//                              NSLog(@"=> Error : %@", error.description);
-//                          }
-//
-//                          if (![[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
-//                              // Expected resource available
-//                              NSArray<PHAssetResource*>* resources = [PHAssetResource assetResourcesForLivePhoto:livePhoto];
-//                              // Extract still high resolution image and original video
-//                              __block PHAssetResource *resImage = nil;
-//                              [resources enumerateObjectsUsingBlock:^(PHAssetResource *res, NSUInteger idx, BOOL *stop) {
-//                                  if (res.type == PHAssetResourceTypeFullSizePhoto) {
-//                                      resImage = res;
-//                                  }
-//                              }];
-//
-//                              // Store resources
-//                              NSURL *urlImage = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"jpg"]]];
-//
-//                              // Deletes temporary file if exists (might be incomplete, etc.)
-//                              [[NSFileManager defaultManager] removeItemAtURL:urlImage error:nil];
-//
-//                              // Store temporarily still image and video, then extract data
-//                              [[PHAssetResourceManager defaultManager] writeDataForAssetResource:resImage toFile:urlImage options:nil completionHandler:^(NSError * _Nullable error) {
-//                                      if (error.code) {
-//                                          NSLog(@"=> Error storing image: %@", error.description);
-//                                      }
-//                                      assetData = [[NSData dataWithContentsOfURL:urlImage] copy];
-//                                      assert(assetData.length != 0);
-//                                      // Modify image before upload if needed
-//                                      [self modifyImage:image withData:assetData];
-//                              }];
-//                          }
-//                      }
-//         ];
-//    }
-//}
 
 -(void)modifyImage:(ImageUpload *)image withData:(NSData *)originalData
 {
@@ -449,7 +385,176 @@
 }
 
 
+//-(void)retrieveFullSizeAssetDataFromLivePhoto:(ImageUpload *)image   // Asynchronous
+//{
+//    __block NSData *assetData = nil;
+//
+//    // Case of an Live Photo…
+//    PHLivePhotoRequestOptions *options = [[PHLivePhotoRequestOptions alloc] init];
+//    // Requests the most recent version of the image asset
+//    options.version = PHImageRequestOptionsVersionOriginal;
+//    // Requests the highest-quality image available, regardless of how much time it takes to load.
+//    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+//    // Photos can download the requested video from iCloud.
+//    options.networkAccessAllowed = YES;
+//    // The block Photos calls periodically while downloading the LivePhoto.
+//    options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
+//        NSLog(@"downloading Live Photo from iCloud — progress %lf",progress);
+//    };
+//
+//    // Requests Live Photo…
+//    @autoreleasepool {
+//        [[PHImageManager defaultManager] requestLivePhotoForAsset:image.imageAsset
+//                   targetSize:CGSizeZero contentMode:PHImageContentModeDefault
+//                      options:options resultHandler:^(PHLivePhoto *livePhoto, NSDictionary *info) {
+//#if defined(DEBUG)
+//                          NSLog(@"retrieveFullSizeAssetDataFromLivePhoto returned info(%@)", info);
+//#endif
+//                          if ([info objectForKey:PHImageErrorKey]) {
+//                              NSError *error = [info valueForKey:PHImageErrorKey];
+//                              NSLog(@"=> Error : %@", error.description);
+//                          }
+//
+//                          if (![[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
+//                              // Expected resource available
+//                              NSArray<PHAssetResource*>* resources = [PHAssetResource assetResourcesForLivePhoto:livePhoto];
+//                              // Extract still high resolution image and original video
+//                              __block PHAssetResource *resImage = nil;
+//                              [resources enumerateObjectsUsingBlock:^(PHAssetResource *res, NSUInteger idx, BOOL *stop) {
+//                                  if (res.type == PHAssetResourceTypeFullSizePhoto) {
+//                                      resImage = res;
+//                                  }
+//                              }];
+//
+//                              // Store resources
+//                              NSURL *urlImage = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"jpg"]]];
+//
+//                              // Deletes temporary file if exists (might be incomplete, etc.)
+//                              [[NSFileManager defaultManager] removeItemAtURL:urlImage error:nil];
+//
+//                              // Store temporarily still image and video, then extract data
+//                              [[PHAssetResourceManager defaultManager] writeDataForAssetResource:resImage toFile:urlImage options:nil completionHandler:^(NSError * _Nullable error) {
+//                                      if (error.code) {
+//                                          NSLog(@"=> Error storing image: %@", error.description);
+//                                      }
+//                                      assetData = [[NSData dataWithContentsOfURL:urlImage] copy];
+//                                      assert(assetData.length != 0);
+//                                      // Modify image before upload if needed
+//                                      [self modifyImage:image withData:assetData];
+//                              }];
+//                          }
+//                      }
+//         ];
+//    }
+//}
+
 #pragma mark -- Video, retrieve and modify before upload
+
+// The creation date is kept when copying the MOV video file and uploading it with MP4 extension in Piwigo
+// However, it is replaced when exporting the file in Piwigo while the metadata is correct.
+// With this method, the thumbnail is produced correctly
+
+//-(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image withMimeType:(NSString *)mimeType  // Asynchronous
+//{
+//    // Case of a video…
+//    PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+//    // Requests the most recent version of the image asset
+//    options.version = PHVideoRequestOptionsVersionCurrent;
+//    // Requests the highest-quality video available, regardless of how much time it takes to load.
+//    options.deliveryMode = PHVideoRequestOptionsDeliveryModeHighQualityFormat;
+//    // Photos can download the requested video from iCloud.
+//    options.networkAccessAllowed = YES;
+//    // The block Photos calls periodically while downloading the video.
+//    options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
+//        NSLog(@"downloading Video from iCloud — progress %lf",progress);
+//    };
+//
+//    // Requests video…
+//    @autoreleasepool {
+//        [[PHImageManager defaultManager] requestAVAssetForVideo:image.imageAsset options:options
+//              resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+//#if defined(DEBUG)
+//                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+//#endif
+//                  // Error encountered while retrieving asset?
+//                  if ([info objectForKey:PHImageErrorKey]) {
+//                      NSError *error = [info valueForKey:PHImageErrorKey];
+//#if defined(DEBUG)
+//                      NSLog(@"=> Error : %@", error.description);
+//#endif
+//                  }
+//
+//                  // We don't accept degraded assets
+//                  if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
+//                      // This is a degraded version, wait for the next one…
+//                      return;
+//                  }
+//
+//                  // Location of temporary video file
+//                  NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:image.image]];
+//
+//                  // Deletes temporary file if exists already (might be incomplete, etc.)
+//                  [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+//
+//                  // Writes to documents folder before uploading to Piwigo server
+//                  if ([asset isKindOfClass:[AVURLAsset class]]) {
+//
+//                      // Simple video
+//                      AVURLAsset *avurlasset = (AVURLAsset*) asset;
+//                      NSLog(@"avurlasset=%@", avurlasset.URL.absoluteString);
+//
+//                      // Creates temporary video file and modify it as needed
+//                      NSError *error;
+//                      if ([[NSFileManager defaultManager] copyItemAtURL:avurlasset.URL toURL:fileURL error:&error]) {
+//                          // Modifies video before upload to Piwigo server
+//                          [self modifyVideo:image atURL:fileURL withMimeType:mimeType];
+//                      } else {
+//                          // Could not copy the video file!
+//#if defined(DEBUG)
+//                          NSLog(@"=> Error : %@", error.description);
+//#endif
+//                      }
+//                  } else if ([asset isKindOfClass:[AVComposition class]]) {
+//
+////                      NSURL *avurlasset = [NSURL fileURLWithPath:@"/var/mobile/Media/DCIM/105APPLE/IMG_5374.MOV"];
+////                      NSLog(@"avurlasset=%@", avurlasset.absoluteString);
+////
+////                      // Creates temporary video file and modify it as needed
+////                      NSError *error;
+////                      if ([[NSFileManager defaultManager] copyItemAtURL:avurlasset toURL:fileURL error:&error]) {
+////                          // Modifies video before upload to Piwigo server
+////                          [self modifyVideo:image atURL:fileURL withMimeType:mimeType];
+////                      } else {
+////                          // Could not copy the video file!
+////#if defined(DEBUG)
+////                          NSLog(@"=> Error : %@", error.description);
+////#endif
+////                      }
+//
+//                      // AVComposition object, e.g. a Slow-Motion video
+//                      AVMutableComposition *avComp = [(AVComposition*) asset copy];
+//
+//                      // Export Slow-Mo as standard video
+//                      AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:avComp presetName:AVAssetExportPresetHighestQuality];
+//                      [exportSession setOutputURL:fileURL];
+//                      exportSession.outputFileType = AVFileTypeMPEG4;
+////                      exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+//                      [exportSession setShouldOptimizeForNetworkUse:YES];
+//                      [exportSession exportAsynchronouslyWithCompletionHandler:^{
+//                          // Error ?
+//                          if (exportSession.error) {
+//                              NSLog(@"=> exportSession Status: %ld and Error: %@", (long)exportSession.status, exportSession.error.description);
+//                              return;
+//                          }
+//
+//                          // Modifies video before upload to Piwigo server
+//                          [self modifyVideo:image atURL:exportSession.outputURL withMimeType:mimeType];
+//                      }];
+//                  }
+//              }
+//         ];
+//    }
+//}
 
 -(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image withMimeType:(NSString *)mimeType  // Asynchronous
 {
@@ -461,212 +566,281 @@
     options.deliveryMode = PHVideoRequestOptionsDeliveryModeHighQualityFormat;
     // Photos can download the requested video from iCloud.
     options.networkAccessAllowed = YES;
+
     // The block Photos calls periodically while downloading the video.
     options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
         NSLog(@"downloading Video from iCloud — progress %lf",progress);
     };
-    
+
     // Requests video…
     @autoreleasepool {
-        [[PHImageManager defaultManager] requestAVAssetForVideo:image.imageAsset options:options
-                resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+        [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
+                        exportPreset:AVAssetExportPresetPassthrough
+                        resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
 #if defined(DEBUG)
-                    NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+                            NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
 #endif
-                    if ([info objectForKey:PHImageErrorKey]) {
-                        NSError *error = [info valueForKey:PHImageErrorKey];
-                        NSLog(@"=> Error : %@", error.description);
-                    }
-
-                    if (![[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
-                        // Expected resource available
-                        // Writes to documents folder before uploading to Piwigo server
-                        NSError *error;
-                        AVURLAsset *avurlasset = (AVURLAsset*) asset;
-                        NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:image.image]];
-
-                        // Deletes temporary file if exists already (might be incomplete, etc.)
-                        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
-                        
-                        // Writes temporary video file
-                        if ([[NSFileManager defaultManager]
-                            copyItemAtURL:avurlasset.URL toURL:fileURL error:&error]) {
-        #if defined(DEBUG)
-                            NSLog(@"Copied correctly at %@", fileURL.absoluteString);
-        #endif
-                            // Modifies video before upload to Piwigo server
-                            [self modifyVideo:image atURL:fileURL withMimeType:mimeType];
+                            if ([info objectForKey:PHImageErrorKey]) {
+                                // Error encountered!
+                                NSError *error = [info valueForKey:PHImageErrorKey];
+                                NSLog(@"=> Error : %@", error.description);
+                                return;
                             }
-                    }
-                }
+
+                            if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
+                                // This is a degraded version, wait for the next one…
+                                return;
+                            }
+
+                            // Modifies video before upload to Piwigo server
+                            [self modifyVideo:image beforeExporting:exportSession withMimeType:mimeType];
+
+                            // Deletes temporary file if exists already (might be incomplete, etc.)
+//                            [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:image.image]]];
+//                            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+//
+//                            [exportSession setOutputFileType:AVFileTypeMPEG4];
+//                            [exportSession setShouldOptimizeForNetworkUse:YES];
+//
+//                            exportSession.metadata = nil;
+//                            if ([Model sharedInstance].stripGPSdataOnUpload) {
+//                                NSLog(@"metadataItemFilterForSharing activated… without GPS metadata");
+//                                [exportSession setMetadataItemFilter:[AVMetadataItemFilter metadataItemFilterForSharing]];
+//                            } else {
+//                                NSLog(@"metadataItemFilterForSharing NOT activated… with GPS metadata");
+//                                [exportSession setMetadataItemFilter:nil];
+//                            }
+//
+//                            [exportSession exportAsynchronouslyWithCompletionHandler:^{
+//                                // Error ?
+//                                if (exportSession.error) {
+//                                    NSLog(@"=> exportSession Status: %ld and Error: %@", (long)exportSession.status, exportSession.error.description);
+//                                    return;
+//                                }
+//
+//                                // Modifies video before upload to Piwigo server
+//                                [self modifyVideo:image atURL:exportSession.outputURL withMimeType:mimeType];
+//                            }];
+                        }
          ];
     }
 }
 
--(void)modifyVideo:(ImageUpload *)image atURL:(NSURL *)fileURL withMimeType:(NSString *)mimeType
+-(void)modifyVideo:(ImageUpload *)image beforeExporting:(AVAssetExportSession *)exportSession withMimeType:(NSString *)mimeType
 {
-    // Video and metadata from asset
-    __block NSData *assetData = nil;
-    AVAsset *videoAsset = [AVAsset assetWithURL:fileURL];
-    NSArray *assetMetadata = [videoAsset commonMetadata];
-
-    // Strips GPS data if user requested it in Settings
-    if (![Model sharedInstance].stripGPSdataOnUpload || (!assetMetadata)) {
-        
-        // Gets copy as NSData
-        assetData = [[NSData dataWithContentsOfURL:fileURL] copy];
-        assert(assetData.length != 0);
-
-        // Deletes temporary video file
-        if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
-#if defined(DEBUG)
-            NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
-#endif
-        }
-        
-        // Upload video with tags and properties
-        [self uploadImage:image withData:assetData andMimeType:mimeType];
+    // Strips private metadata if user requested it in Settings
+    // Apple documentation: Removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
+    [exportSession setMetadata:nil];
+    if ([Model sharedInstance].stripGPSdataOnUpload) {
+        NSLog(@"metadataItemFilterForSharing activated… without GPS metadata");
+        [exportSession setMetadataItemFilter:[AVMetadataItemFilter metadataItemFilterForSharing]];
+    } else {
+        NSLog(@"metadataItemFilterForSharing NOT activated… with GPS metadata");
+        [exportSession setMetadataItemFilter:nil];
     }
-    else
-    {
-        // Creates metadata without location data
-        NSMutableArray *newAssetMetadata = [NSMutableArray array];
-        for (AVMetadataItem *item in assetMetadata) {
-            if ([item.commonKey isEqualToString:AVMetadataCommonKeyLocation]){
+
+    // Complete video range
+    [exportSession setTimeRange:CMTimeRangeMake(kCMTimeZero, kCMTimePositiveInfinity)];
+
+    // Video format
 #if defined(DEBUG)
-                NSLog(@"Location found: %@", item.stringValue);
+    NSLog(@"exportSession (before): %@", exportSession);
+    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
 #endif
-            } else {
-                [newAssetMetadata addObject:item];
-            }
-        }
-        
-        // Done if metadata did not contain location
-        if (newAssetMetadata.count == assetMetadata.count) {
-            
+    [exportSession setOutputFileType:AVFileTypeMPEG4];
+    [exportSession setShouldOptimizeForNetworkUse:YES];
+
+    // Temporary filename and path
+    [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]]];
+
+    // Deletes temporary video file if exists (might be incomplete, etc.)
+    [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+
+    // Export temporary video for upload
+    __block NSData *assetData = nil;
+    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+        if ([exportSession status] == AVAssetExportSessionStatusCompleted)
+        {
+#if defined(DEBUG)
+            NSLog(@"Export sucess :-)");
+#endif
             // Gets copy as NSData
-            assetData = [[NSData dataWithContentsOfURL:fileURL] copy];
+            assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
+            AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
+            NSArray *assetMetadata = [videoAsset commonMetadata];
+            NSLog(@"Video metadata: %@", assetMetadata);
             assert(assetData.length != 0);
 
             // Deletes temporary video file
-            if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
-#if defined(DEBUG)
-                NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
-#endif
-            }
+            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
             // Upload video with tags and properties
             [self uploadImage:image withData:assetData andMimeType:mimeType];
         }
-        else if ([videoAsset isExportable]) {
-            
-            // Export new asset from original asset
-            AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:videoAsset presetName:AVAssetExportPresetPassthrough];
-            
-            // Filename is ("_" + name + ".mp4") in same directory
-            NSURL *newFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[@"_" stringByAppendingString:[image.image stringByDeletingPathExtension]] stringByAppendingPathExtension:@"mp4"]]];
-            exportSession.outputURL = newFileURL;
-            exportSession.outputFileType = AVFileTypeMPEG4;
-            exportSession.shouldOptimizeForNetworkUse = YES;
+        else if ([exportSession status] == AVAssetExportSessionStatusFailed)
+        {
+#if defined(DEBUG)
+            NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+#endif
+            // Deletes temporary video file
+            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
-            // Deletes temporary file if exists already (might be incomplete, etc.)
-            [[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil];
-
-            // Video range
-            CMTime start = kCMTimeZero;
-            CMTimeRange range = CMTimeRangeMake(start, [videoAsset duration]);
-            exportSession.timeRange = range;
-            
-            // Updated metadata
-            exportSession.metadata = newAssetMetadata;
-            
-            // Export video
-            [exportSession exportAsynchronouslyWithCompletionHandler:^{
-                if ([exportSession status] == AVAssetExportSessionStatusCompleted)
-                {
-#if defined(DEBUG)
-                    NSLog(@"Export sucess…");
-#endif
-                    // Gets copy as NSData
-                    assetData = [[NSData dataWithContentsOfURL:newFileURL] copy];
-                    assert(assetData.length != 0);
-
-                    // Deletes temporary video files
-                    if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
-#if defined(DEBUG)
-                        NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
-#endif
-                    }
-                    if ([[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil]) {
-#if defined(DEBUG)
-                        NSLog(@"Deleted correctly at %@", newFileURL.absoluteString);
-#endif
-                    }
-                    
-                    // Upload video with tags and properties
-                    [self uploadImage:image withData:assetData andMimeType:mimeType];
-                }
-                else if ([exportSession status] == AVAssetExportSessionStatusFailed)
-                {
-#if defined(DEBUG)
-                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
-#endif
-                    // Deletes temporary video files
-                    if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
-#if defined(DEBUG)
-                        NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
-#endif
-                    }
-                    if ([[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil]) {
-#if defined(DEBUG)
-                        NSLog(@"Deleted correctly at %@", newFileURL.absoluteString);
-#endif
-                    }
-                    
-                }
-                else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
-                {
-#if defined(DEBUG)
-                    NSLog(@"Export canceled");
-#endif
-                    // Deletes temporary video files
-                    if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
-#if defined(DEBUG)
-                        NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
-#endif
-                    }
-                    if ([[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil]) {
-#if defined(DEBUG)
-                        NSLog(@"Deleted correctly at %@", newFileURL.absoluteString);
-#endif
-                    }
-                    
-                }
-                else
-                {
-#if defined(DEBUG)
-                    NSLog(@"Export ??");
-#endif
-                    // Deletes temporary video files
-                    if ([[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil]) {
-#if defined(DEBUG)
-                        NSLog(@"Deleted correctly at %@", fileURL.absoluteString);
-#endif
-                    }
-                    if ([[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil]) {
-#if defined(DEBUG)
-                        NSLog(@"Deleted correctly at %@", newFileURL.absoluteString);
-#endif
-                    }
-                    
-                }
-            }];
         }
-        else {
-            // Could not export a new video — What to do?
+        else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
+        {
+#if defined(DEBUG)
+            NSLog(@"Export canceled");
+#endif
+            // Deletes temporary video file
+            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+
         }
-    }
+        else
+        {
+#if defined(DEBUG)
+            NSLog(@"Export ??");
+#endif
+            // Deletes temporary video files
+            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+
+        }
+    }];
 }
+
+//-(void)modifyVideo:(ImageUpload *)image atURL:(NSURL *)fileURL withMimeType:(NSString *)mimeType
+//{
+//    // Video and metadata from asset
+//    __block NSData *assetData = nil;
+//    AVAsset *videoAsset = [AVAsset assetWithURL:fileURL];
+//    NSArray *assetMetadata = [videoAsset commonMetadata];
+//
+//    // Strips GPS data if user requested it in Settings
+//    if (![Model sharedInstance].stripGPSdataOnUpload || ([assetMetadata count] == 0)) {
+//
+//        // Gets copy as NSData
+//        assetData = [[NSData dataWithContentsOfURL:fileURL] copy];
+//        assert(assetData.length != 0);
+//
+//        // Deletes temporary video file
+//        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+//
+//        // Upload video with tags and properties
+//        [self uploadImage:image withData:assetData andMimeType:mimeType];
+//    }
+//    else
+//    {
+//        // Creates metadata without location data
+//        NSMutableArray *newAssetMetadata = [NSMutableArray array];
+//        for (AVMetadataItem *item in assetMetadata) {
+//            if ([item.commonKey isEqualToString:AVMetadataCommonKeyLocation]){
+//#if defined(DEBUG)
+//                NSLog(@"Location found: %@", item.stringValue);
+//#endif
+//            } else {
+//                [newAssetMetadata addObject:item];
+//            }
+//        }
+//
+//        // Done if metadata did not contain location
+//        if (newAssetMetadata.count == assetMetadata.count) {
+//
+//            // Gets copy as NSData
+//            assetData = [[NSData dataWithContentsOfURL:fileURL] copy];
+//            assert(assetData.length != 0);
+//
+//            // Deletes temporary video file
+//            [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+//
+//            // Upload video with tags and properties
+//            [self uploadImage:image withData:assetData andMimeType:mimeType];
+//        }
+//        else if ([videoAsset isExportable]) {
+//
+//            // Export new asset from original asset
+//            AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:videoAsset presetName:AVAssetExportPresetPassthrough];
+//            NSLog(@"exportSession (before): %@", exportSession);
+//            NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
+//
+//            // Filename is ("_" + name + ".mp4") in same directory
+//            NSURL *newFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[@"_" stringByAppendingString:[image.image stringByDeletingPathExtension]] stringByAppendingPathExtension:@"mp4"]]];
+//            exportSession.outputURL = newFileURL;
+//            if ([exportSession.supportedFileTypes containsObject:AVFileTypeMPEG4]) {
+//                exportSession.outputFileType = AVFileTypeMPEG4;
+//            } else {
+//                exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+//            }
+//            exportSession.shouldOptimizeForNetworkUse = YES;
+////            exportSession.fileLengthLimit ??
+//
+//            // Deletes temporary file if exists already (might be incomplete, etc.)
+//            [[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil];
+//
+//            // Video range
+//            CMTime start = kCMTimeZero;
+//            CMTimeRange range = CMTimeRangeMake(start, [videoAsset duration]);
+//            exportSession.timeRange = range;
+//
+//            // Updated metadata
+//            exportSession.metadata = newAssetMetadata;
+//
+//            // Export video
+//            [exportSession exportAsynchronouslyWithCompletionHandler:^{
+//                if ([exportSession status] == AVAssetExportSessionStatusCompleted)
+//                {
+//#if defined(DEBUG)
+//                    NSLog(@"Export sucess…");
+//#endif
+//                    // Gets copy as NSData
+//                    assetData = [[NSData dataWithContentsOfURL:newFileURL] copy];
+//                    AVAsset *videoAsset = [AVAsset assetWithURL:newFileURL];
+//                    NSArray *assetMetadata = [videoAsset commonMetadata];
+//                    NSLog(@"Video metadata: %@", assetMetadata);
+//                    assert(assetData.length != 0);
+//
+//                    // Deletes temporary video files
+//                    [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+//                    [[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil];
+//
+//                    // Upload video with tags and properties
+//                    [self uploadImage:image withData:assetData andMimeType:mimeType];
+//                }
+//                else if ([exportSession status] == AVAssetExportSessionStatusFailed)
+//                {
+//#if defined(DEBUG)
+//                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+//#endif
+//                    // Deletes temporary video files
+//                    [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+//                    [[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil];
+//
+//                }
+//                else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
+//                {
+//#if defined(DEBUG)
+//                    NSLog(@"Export canceled");
+//#endif
+//                    // Deletes temporary video files
+//                    [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+//                    [[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil];
+//
+//                }
+//                else
+//                {
+//#if defined(DEBUG)
+//                    NSLog(@"Export ??");
+//#endif
+//                    // Deletes temporary video files
+//                    [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+//                    [[NSFileManager defaultManager] removeItemAtURL:newFileURL error:nil];
+//
+//                }
+//            }];
+//        }
+//        else {
+//            // Could not export a new video — What to do?
+//        }
+//    }
+//}
 
 
 #pragma mark -- Upload image/video
