@@ -319,12 +319,13 @@
 	{
 		cell.cellSelected = YES;
 	}
-    else if([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:originalFilename])
+    else if(([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:originalFilename]) ||
+            ([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:[[originalFilename stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]))
     {
         cell.cellUploading = YES;
     }
-    
-	return cell;
+
+    return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
