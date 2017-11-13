@@ -10,7 +10,8 @@
 
 @class ImageUpload;
 
-@interface ImageUploadTableViewCell : UITableViewCell
+@interface ImageUploadTableViewCell : MGSwipeTableCell
+//@interface ImageUploadTableViewCell : UITableViewCell
 
 @property (nonatomic, assign) BOOL isInQueueForUpload;
 @property (nonatomic, assign) CGFloat imageProgress;

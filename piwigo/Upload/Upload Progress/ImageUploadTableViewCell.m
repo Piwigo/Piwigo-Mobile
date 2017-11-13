@@ -67,6 +67,13 @@
 																	 multiplier:1.0
 																	   constant:-10]];
 	
+    self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
+    self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeTrash.png"]
+                                         backgroundColor:[UIColor redColor]
+                                                callback:^BOOL(MGSwipeTableCell *sender) {
+                                                    NSLog(@"Convenience callback received (delete).");
+                                                    return YES;
+                                                }]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -13,8 +13,9 @@
 #import "ImageUploadManager.h"
 #import "ImageUploadProgressView.h"
 #import "Model.h"
+#import "MGSwipeTableCell.h"
 
-@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, ImageUploadProgressDelegate, EditImageDetailsDelegate>
+@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, MGSwipeTableCellDelegate, ImageUploadProgressDelegate, EditImageDetailsDelegate>
 
 @property (nonatomic, strong) UITableView *uploadImagesTableView;
 @property (nonatomic, strong) NSMutableArray *imagesToEdit;
@@ -123,7 +124,7 @@
 	cell.imageProgress = progress;
 }
 
-#pragma mark UITableView Methods
+#pragma mark — UITableView Methods
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -197,6 +198,8 @@
 		[cell setupWithImageInfo:image];
 		cell.isInQueueForUpload = YES;
 	}
+    
+    cell.delegate = self;
 	
 	return cell;
 }
@@ -224,30 +227,41 @@
 	return YES;
 }
 
--(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark — MGSwipeTableCellDelegate Methods
+
+-(BOOL)swipeTableCell:(MGSwipeTableCell *)cell tappedButtonAtIndex:(NSInteger)index
+             direction:(MGSwipeDirection)direction fromExpansion:(BOOL) fromExpansion
 {
-	if(editingStyle == UITableViewCellEditingStyleDelete)
-	{
-		if(indexPath.section == 0)
-		{
-			// Remove image not in upload queue
+    NSLog(@"Delegate: button tapped, %@ position, index %d, from Expansion: %@",
+          direction == MGSwipeDirectionLeftToRight ? @"left" : @"right", (int)index, fromExpansion ? @"YES" : @"NO");
+    
+    if (direction == MGSwipeDirectionRightToLeft && index == 0) {
+        // Delete button
+        NSIndexPath *indexPath = [self.uploadImagesTableView indexPathForCell:cell];
+        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
+        if(indexPath.section == 0)
+        {
+            // Remove image not in upload queue
             [self.imagesToEdit removeObjectAtIndex:indexPath.row];
-		}
-		else if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
-		{
-			// Remove image in upload queue (in both tables)
+        }
+        else if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
+        {
+            // Remove image in upload queue (in both tables)
             ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
             [[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
             [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObjectForKey:image.image];
             [ImageUploadManager sharedInstance].maximumImagesForBatch--;
         }
-		
+
         // Update tables
-        [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
-	}
+        [self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
+    return YES;
 }
 
-#pragma mark ImageUploadProgressDelegate Methods
+
+#pragma mark — ImageUploadProgressDelegate Methods
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
 {
@@ -263,7 +277,8 @@
 	[self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-#pragma mark EditImageDetailsDelegate Methods
+
+#pragma mark — EditImageDetailsDelegate Methods
 
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {
