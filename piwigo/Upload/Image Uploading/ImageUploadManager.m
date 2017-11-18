@@ -119,11 +119,23 @@
     
     // Image or video to be uploaded
     ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
+    NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] lowercaseString];
     PHAsset *originalAsset = nextImageToBeUploaded.imageAsset;
     NSString *mimeType = @"";
     
     // Retrieve Photo, Live Photo or Video
     if (originalAsset.mediaType == PHAssetMediaTypeImage) {
+        
+        // Chek that the image format is accepted by the Piwigo server
+        if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
+            [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_format", @"Sorry, image files with extension .%@ are not accepted by the Piwigo server."), [fileExt uppercaseString]]
+                         forRetrying:NO
+                           withImage:nextImageToBeUploaded];
+            return;
+        }
+        
+        // Image file type accepted
         switch (originalAsset.mediaSubtypes) {
 //            case PHAssetMediaSubtypePhotoLive:
 //                [self retrieveFullSizeAssetDataFromLivePhoto:nextImageToBeUploaded];
@@ -134,63 +146,55 @@
             case PHAssetMediaSubtypePhotoScreenshot:
             case PHAssetMediaSubtypePhotoLive:
             case PHAssetMediaSubtypePhotoDepthEffect:
-            default:                                            // e.g. GIF image
+            default:                                            // Case of GIF image
+                // Image upload allowed — Will wait for image file download from iCloud if necessary
                 [self retrieveFullSizeAssetDataFromImage:nextImageToBeUploaded];
                 break;
         }
     }
     else if (originalAsset.mediaType == PHAssetMediaTypeVideo) {
-        // Can we upload videos to the Piwigo Server ?
-        if(![Model sharedInstance].canUploadVideos) {
-            
-            // Inform user that he/she cannot upload videos
+
+        // Replace .MOV with .MP4 for compatibility with Piwigo server
+        if ([fileExt isEqualToString:@"mov"]) {
+            // Prepare MIME type
+            mimeType = @"video/mp4";
+            // Replace file extension
+            fileExt = @"mp4";
+            nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
+        }
+
+        // Chek that the video format is accepted by the Piwigo server
+        if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
             [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                          andMessage:NSLocalizedString(@"videoUploadError_message", @"You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.")
+                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_format", @"Sorry, video files with extension .%@ are not accepted by the Piwigo server."), [fileExt uppercaseString]]
                          forRetrying:NO
                            withImage:nextImageToBeUploaded];
             return;
         }
         
-        // Only webm, webmv, ogv, m4v, mp4 are compatible with piwigo-videojs extension
-        NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] lowercaseString];
-        if ((([fileExt isEqualToString:@"mp4"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"mp4"])) ||
-            (([fileExt isEqualToString:@"m4v"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"m4v"])) ) {
-            // Prepare MIME type
-            mimeType = @"video/mp4";
-        } else if ((([fileExt isEqualToString:@"ogg"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"ogg"])) ||
-                   (([fileExt isEqualToString:@"ogv"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"ogv"])) ) {
-            // Prepare MIME type
-            mimeType = @"video/ogg";
-        } else if ((([fileExt isEqualToString:@"webm"])  && ([[Model sharedInstance].uploadFileTypes containsString:@"webm"] )) ||
-                   (([fileExt isEqualToString:@"webmv"]) && ([[Model sharedInstance].uploadFileTypes containsString:@"webmv"])) ) {
-            // Prepare MIME type
-            mimeType = @"video/webm";
-        } else {
-            if ([fileExt isEqualToString:@"mov"]) {
-                // Prepare MIME type
-                mimeType = @"video/mp4";
-                // Replace file extension
-                nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
-            } else {
-                // This file won't be compatible!
-                [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                              andMessage:NSLocalizedString(@"videoUploadError_format", @"Sorry, the video file format is not compatible with the extension \"VideoJS\".")
-                             forRetrying:NO
-                               withImage:nextImageToBeUploaded];
-                return;
-            }
-        }
-
-        // Video upload allowed — Will wait for video download from iCloud if necessary
-        [self retrieveFullSizeAssetDataFromVideo:nextImageToBeUploaded withMimeType:mimeType];
+        // Video upload allowed — Will wait for video file download from iCloud if necessary
+        [self retrieveFullSizeAssetDataFromVideo:nextImageToBeUploaded];
     }
     else if (originalAsset.mediaType == PHAssetMediaTypeAudio) {
-        // Not managed by Piwigo Server yet…
+
+        // Not managed by Piwigo iOS yet…
         [self showErrorWithTitle:NSLocalizedString(@"audioUploadError_title", @"Audio Upload Error")
-                      andMessage:NSLocalizedString(@"audioUploadError_format", @"Sorry, the audio file format is not accepted by your Piwigo server.")
+                      andMessage:NSLocalizedString(@"audioUploadError_format", @"Sorry, audio files are not supported by Piwigo Mobile yet.")
                      forRetrying:NO
                        withImage:nextImageToBeUploaded];
         return;
+
+        // Chek that the audio format is accepted by the Piwigo server
+//        if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
+//            [self showErrorWithTitle:NSLocalizedString(@"audioUploadError_title", @"Audio Upload Error")
+//                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"audioUploadError_format", @"Sorry, audio files with extension .%@ are not accepted by the Piwigo server."), [fileExt uppercaseString]]
+//                         forRetrying:NO
+//                           withImage:nextImageToBeUploaded];
+//            return;
+//        }
+
+        // Audio upload allowed — Will wait for audio file download from iCloud if necessary
+//        [self retrieveFullSizeAssetDataFromAudio:nextImageToBeUploaded];
     }
 }
 
@@ -559,7 +563,7 @@
 //    }
 //}
 
--(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image withMimeType:(NSString *)mimeType  // Asynchronous
+-(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image  // Asynchronous
 {
     // Case of a video…
     PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
@@ -596,7 +600,7 @@
                             }
 
                             // Modifies video before upload to Piwigo server
-                            [self modifyVideo:image beforeExporting:exportSession withMimeType:mimeType];
+                            [self modifyVideo:image beforeExporting:exportSession];
 
                             // Deletes temporary file if exists already (might be incomplete, etc.)
 //                            [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:image.image]]];
@@ -622,36 +626,37 @@
 //                                }
 //
 //                                // Modifies video before upload to Piwigo server
-//                                [self modifyVideo:image atURL:exportSession.outputURL withMimeType:mimeType];
+//                                [self modifyVideo:image atURL:exportSession.outputURL];
 //                            }];
                         }
          ];
     }
 }
 
--(void)modifyVideo:(ImageUpload *)image beforeExporting:(AVAssetExportSession *)exportSession withMimeType:(NSString *)mimeType
+-(void)modifyVideo:(ImageUpload *)image beforeExporting:(AVAssetExportSession *)exportSession
 {
     // Strips private metadata if user requested it in Settings
-    // Apple documentation: Removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
+    // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
     [exportSession setMetadata:nil];
     if ([Model sharedInstance].stripGPSdataOnUpload) {
-        NSLog(@"metadataItemFilterForSharing activated… without GPS metadata");
         [exportSession setMetadataItemFilter:[AVMetadataItemFilter metadataItemFilterForSharing]];
     } else {
-        NSLog(@"metadataItemFilterForSharing NOT activated… with GPS metadata");
         [exportSession setMetadataItemFilter:nil];
     }
 
     // Complete video range
     [exportSession setTimeRange:CMTimeRangeMake(kCMTimeZero, kCMTimePositiveInfinity)];
 
-    // Video format
+    // Video formats — Always export video in MP4 format
 #if defined(DEBUG)
     NSLog(@"exportSession (before): %@", exportSession);
     NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
 #endif
     [exportSession setOutputFileType:AVFileTypeMPEG4];
     [exportSession setShouldOptimizeForNetworkUse:YES];
+
+    // Prepare MIME type
+    NSString *mimeType = @"video/mp4";
 
     // Temporary filename and path
     [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]]];

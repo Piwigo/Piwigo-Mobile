@@ -1026,7 +1026,6 @@ typedef enum {
                                
                                // Back to default values
                                [Model sharedInstance].usesCommunityPluginV29 = NO;
-                               [Model sharedInstance].canUploadVideos = NO;
                                [Model sharedInstance].hasAdminRights = NO;
                                
                                // Erase cache

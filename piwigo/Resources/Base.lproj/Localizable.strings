@@ -284,12 +284,15 @@
 // Image upload — Errors
 "uploadError_title" = "Upload Error";
 "uploadError_message" = "Could not upload your image. Error: %@";
-"videoUploadError_title" = "Video Upload Error";
-"videoUploadError_message" = "You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.";
-"videoUploadConfigError_message" = "Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.";
-"videoUploadError_format" = "Sorry, the video file format is not compatible with the extension \"VideoJS\".";
+
+"imageUploadError_title" = "Image Upload Error";
+"imageUploadError_format" = "Sorry, image files with extension .%@ are not accepted by the Piwigo server.";
+
 "audioUploadError_title" = "Audio Upload Error";
-"audioUploadError_format" = "Sorry, the audio file format is not accepted by your Piwigo server.";
+"audioUploadError_format" = "Sorry, audio files are not supported by Piwigo Mobile yet.";
+
+"videoUploadError_title" = "Video Upload Error";
+"videoUploadError_message" = "Sorry, video files with extension .%@ are not accepted by the Piwigo server.";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS

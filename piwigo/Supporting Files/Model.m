@@ -31,7 +31,6 @@
 		instance.hasAdminRights = NO;
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
-        instance.canUploadVideos = NO;                  // Checked at each new session
         instance.usesCommunityPluginV29 = NO;           // Checked at each new session
         instance.performedHTTPauthentication = NO;      // Checked at each new session
         instance.userCancelledCommunication = NO;
