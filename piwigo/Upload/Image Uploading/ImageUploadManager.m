@@ -125,19 +125,17 @@
     // Retrieve Photo, Live Photo or Video
     if (originalAsset.mediaType == PHAssetMediaTypeImage) {
         switch (originalAsset.mediaSubtypes) {
+//            case PHAssetMediaSubtypePhotoLive:
+//                [self retrieveFullSizeAssetDataFromLivePhoto:nextImageToBeUploaded];
+//                break;
             case PHAssetMediaSubtypeNone:
             case PHAssetMediaSubtypePhotoPanorama:
             case PHAssetMediaSubtypePhotoHDR:
             case PHAssetMediaSubtypePhotoScreenshot:
             case PHAssetMediaSubtypePhotoLive:
+            case PHAssetMediaSubtypePhotoDepthEffect:
+            default:                                            // e.g. GIF image
                 [self retrieveFullSizeAssetDataFromImage:nextImageToBeUploaded];
-                break;
-                
-//            case PHAssetMediaSubtypePhotoLive:
-//                [self retrieveFullSizeAssetDataFromLivePhoto:nextImageToBeUploaded];
-//                break;
-                
-            default:
                 break;
         }
     }
@@ -187,7 +185,12 @@
         [self retrieveFullSizeAssetDataFromVideo:nextImageToBeUploaded withMimeType:mimeType];
     }
     else if (originalAsset.mediaType == PHAssetMediaTypeAudio) {
-        // No managed yet by Piwigo Server…
+        // Not managed by Piwigo Server yet…
+        [self showErrorWithTitle:NSLocalizedString(@"audioUploadError_title", @"Audio Upload Error")
+                      andMessage:NSLocalizedString(@"audioUploadError_format", @"Sorry, the audio file format is not accepted by your Piwigo server.")
+                     forRetrying:NO
+                       withImage:nextImageToBeUploaded];
+        return;
     }
 }
 
@@ -304,8 +307,7 @@
     // Get original image
     UIImage *assetImage = [UIImage imageWithCGImage:CGImageSourceCreateImageAtIndex(source, 0, NULL)];
 
-    // Resize and compress image if user requested it in Settings
-    CFStringRef UTI = nil;
+    // Resize image if user requested it in Settings
     UIImage *imageResized = nil;
     if ([Model sharedInstance].resizeImageOnUpload && ([Model sharedInstance].photoResize < 100.0)) {
         // Resize image
@@ -322,7 +324,8 @@
     
     // Apply compression if user requested it in Settings
     NSData *imageCompressed = nil;
-    if ([Model sharedInstance].resizeImageOnUpload && ([Model sharedInstance].photoQuality < 100.0)) {
+    CFStringRef UTI = nil;
+    if ([Model sharedInstance].compressImageOnUpload && ([Model sharedInstance].photoQuality < 100.0)) {
         // Compress image (only possible in JPEG)
         CGFloat compressionQuality = [Model sharedInstance].photoQuality / 100.0;
         imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
@@ -332,7 +335,7 @@
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
     }
     
-    // If compression failed or no compression requested
+    // If compression failed or imageCompressed null, try to use original image
     if (!imageCompressed) {
         UTI = CGImageSourceGetType(source);
         CFMutableDataRef imageDataRef = CFDataCreateMutable(nil, 0);
@@ -1087,7 +1090,7 @@
 }
 
 
-#pragma mark -- Scale, crope, etc. image before upload
+#pragma mark -- Scale, crop, etc. image before upload
 
 -(UIImage*)scaleImage:(UIImage*)image toSize:(CGSize)newSize contentMode:(UIViewContentMode)contentMode
 {

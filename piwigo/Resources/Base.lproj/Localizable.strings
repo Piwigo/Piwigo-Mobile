@@ -288,7 +288,8 @@
 "videoUploadError_message" = "You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.";
 "videoUploadConfigError_message" = "Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.";
 "videoUploadError_format" = "Sorry, the video file format is not compatible with the extension \"VideoJS\".";
-
+"audioUploadError_title" = "Audio Upload Error";
+"audioUploadError_format" = "Sorry, the audio file format is not accepted by your Piwigo server.";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS

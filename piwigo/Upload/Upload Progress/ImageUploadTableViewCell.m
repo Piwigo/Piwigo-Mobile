@@ -71,7 +71,6 @@
     self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeTrash.png"]
                                          backgroundColor:[UIColor redColor]
                                                 callback:^BOOL(MGSwipeTableCell *sender) {
-                                                    NSLog(@"Convenience callback received (delete).");
                                                     return YES;
                                                 }]];
 }
