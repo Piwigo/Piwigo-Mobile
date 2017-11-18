@@ -488,7 +488,6 @@ typedef enum {
                 case 4:     // Image Size slider or Compress Before Upload switch
                 {
                     if ([Model sharedInstance].resizeImageOnUpload) {
-                        NSLog(@"Case #4: Create resize slider at row %ld", indexPath.row);
                         SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoSize"];
                         if(!cell)
                         {
