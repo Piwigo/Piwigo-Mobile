@@ -473,10 +473,8 @@ typedef enum {
                                                                          inSection:SettingsSectionImageUpload];
                         if(switchState) {
                             // Insert row in existing table
-                            NSLog(@"Case #3: Insert resize slider at row %ld", rowAtIndexPath.row);
                             [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                         } else {
-                            NSLog(@"Case #3: Delete resize slider at row %ld", rowAtIndexPath.row);
                            // Remove row in existing table
                             [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                         }
