@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.4_text" = "Version 2.1.4\n\n• Swedish translation\n• Bug fixes\n________________________________________\n\n";
+"v2.1.5_text" = "Version 2.1.5\n\n• Image format now preserved after resize\n• Fix metadata partly lost upon download\n• Code modernization\n________________________________________\n\n";
+
+"v2.1.4_text" = "Version 2.1.4\nOctober 31, 2017\n\n• Swedish translation\n• Bug fixes\n________________________________________\n\n";
 
 "v2.1.3_text" = "Version 2.1.3\nOctober 19, 2017\n\n• Add basic access authentication\n• Allow cancelling auto-connection\n• Improve interface and upload management\n• Improve translations and iOS 11 compatibility\n• Fix bug encountered with \"Not uploaded\" filter\n• Code modernization\n________________________________________\n\n";
 
