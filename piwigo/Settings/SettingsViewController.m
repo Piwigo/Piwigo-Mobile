@@ -504,7 +504,6 @@ typedef enum {
                         
                         tableViewCell = cell;
                     } else {
-                        NSLog(@"Case #4: Create compress switch at row %ld", indexPath.row);
                         SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
                         if(!cell) {
                             cell = [SwitchTableViewCell new];
@@ -541,7 +540,6 @@ typedef enum {
                 case 5:     // Compress Before Upload switch or Image Quality slider
                 {
                     if ([Model sharedInstance].resizeImageOnUpload) {
-                        NSLog(@"Case #5: Create compress switch at row %ld", indexPath.row);
                         SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
                         if(!cell) {
                             cell = [SwitchTableViewCell new];
@@ -573,7 +571,6 @@ typedef enum {
                         
                         tableViewCell = cell;
                     } else {
-                        NSLog(@"Case #5: Create compress slider at row %ld", indexPath.row);
                         SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
                         if(!cell)
                         {
@@ -594,7 +591,6 @@ typedef enum {
                 }
 				case 6:     // Image Quality
 				{
-                    NSLog(@"Case #6: Create compress slider at row %ld", indexPath.row);
 					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
 					if(!cell)
 					{
