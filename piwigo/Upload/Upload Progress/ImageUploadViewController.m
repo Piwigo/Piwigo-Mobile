@@ -232,13 +232,13 @@
 -(BOOL)swipeTableCell:(MGSwipeTableCell *)cell tappedButtonAtIndex:(NSInteger)index
              direction:(MGSwipeDirection)direction fromExpansion:(BOOL) fromExpansion
 {
-    NSLog(@"Delegate: button tapped, %@ position, index %d, from Expansion: %@",
-          direction == MGSwipeDirectionLeftToRight ? @"left" : @"right", (int)index, fromExpansion ? @"YES" : @"NO");
+//    NSLog(@"Delegate: button tapped, %@ position, index %d, from Expansion: %@",
+//          direction == MGSwipeDirectionLeftToRight ? @"left" : @"right", (int)index, fromExpansion ? @"YES" : @"NO");
     
     if (direction == MGSwipeDirectionRightToLeft && index == 0) {
         // Delete button
         NSIndexPath *indexPath = [self.uploadImagesTableView indexPathForCell:cell];
-        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
+//        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
         if(indexPath.section == 0)
         {
             // Remove image not in upload queue

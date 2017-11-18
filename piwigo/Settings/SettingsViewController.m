@@ -28,14 +28,14 @@
 #import "ReleaseNotesViewController.h"
 
 typedef enum {
-	SettingSectionServer,
-	SettingSectionLogout,
-	SettingSectionGeneral,
-	SettingSectionImageUpload,
-	SettingSectionCache,
-	SettingSectionAbout,
-	SettingSectionCount
-} SettingSection;
+	SettingsSectionServer,
+	SettingsSectionLogout,
+	SettingsSectionGeneral,
+	SettingsSectionImageUpload,
+	SettingsSectionCache,
+	SettingsSectionAbout,
+	SettingsSectionCount
+} SettingsSection;
 
 typedef enum {
 	kImageUploadSettingAuthor
@@ -44,7 +44,6 @@ typedef enum {
 @interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
-@property (nonatomic, strong) NSArray *rowsInSection;
 @property (nonatomic, strong) NSArray *headerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
@@ -61,16 +60,8 @@ typedef enum {
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor whiteColor];
-		
-		self.rowsInSection = @[
-							   @2,
-							   @1,
-							   @5,
-							   @6,
-							   @2,
-							   @5
-							   ];
-		self.headerHeights = @[
+        
+        self.headerHeights = @[
 							   @40.0,
 							   @0.01,
 							   @30.0,
@@ -143,7 +134,7 @@ typedef enum {
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return SettingSectionCount;
+	return SettingsSectionCount;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -166,19 +157,19 @@ typedef enum {
     
     switch(section)
     {
-        case SettingSectionServer:
+        case SettingsSectionServer:
             headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
             break;
-        case SettingSectionGeneral:
+        case SettingsSectionGeneral:
             headerLabel.text = NSLocalizedString(@"settingsHeader_general", @"General Settings");
             break;
-        case SettingSectionImageUpload:
+        case SettingsSectionImageUpload:
             headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
             break;
-        case SettingSectionCache:
+        case SettingsSectionCache:
             headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
             break;
-        case SettingSectionAbout:
+        case SettingsSectionAbout:
             headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"Information");
             break;
     }
@@ -190,14 +181,30 @@ typedef enum {
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	if(section == SettingSectionImageUpload) {
-		if([Model sharedInstance].resizeImageOnUpload) {
-			return [self.rowsInSection[section] integerValue];
-		} else {
-			return [self.rowsInSection[section] integerValue] - 2;
-		}
-	}
-	return [self.rowsInSection[section] integerValue];
+    NSInteger nberOfSection = 0;
+    switch(section)
+    {
+        case SettingsSectionServer:
+            nberOfSection = 2;
+            break;
+        case SettingsSectionLogout:
+            nberOfSection = 1;
+            break;
+        case SettingsSectionGeneral:
+            nberOfSection = 5;
+            break;
+        case SettingsSectionImageUpload:
+            nberOfSection = 5 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
+                                ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
+            break;
+        case SettingsSectionCache:
+            nberOfSection = 2;
+            break;
+        case SettingsSectionAbout:
+            nberOfSection = 5;
+            break;
+    }
+    return nberOfSection;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -210,7 +217,7 @@ typedef enum {
     UITableViewCell *tableViewCell = [UITableViewCell new];
 	switch(indexPath.section)
 	{
-		case SettingSectionServer:      // Piwigo Server
+		case SettingsSectionServer:      // Piwigo Server
 		{
 			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
 			if(!cell)
@@ -238,7 +245,7 @@ typedef enum {
 			tableViewCell = cell;
 			break;
 		}
-		case SettingSectionLogout:      // Logout Button
+		case SettingsSectionLogout:      // Logout Button
 		{
 			ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"button"];
 			if(!cell)
@@ -256,7 +263,7 @@ typedef enum {
 			tableViewCell = cell;
 			break;
 		}
-		case SettingSectionGeneral:     // General Settings
+		case SettingsSectionGeneral:     // General Settings
 		{
 			switch(indexPath.row)
 			{
@@ -352,7 +359,7 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 4:     // Default Size of Images
+                case 4:     // Default Size of Previewed Images
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultImageSize"];
                     if(!cell) {
@@ -375,7 +382,7 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingSectionImageUpload:     // Default Upload Settings
+		case SettingsSectionImageUpload:     // Default Upload Settings
 		{
 			switch(indexPath.row)
 			{
@@ -420,7 +427,7 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-                case 2:     // Strip GPS Metadata
+                case 2:     // Strip private Metadata
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"gps"];
                     if(!cell) {
@@ -429,9 +436,9 @@ typedef enum {
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
-                        cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata>375px", @"Strip GPS Metadata Before Upload");
+                        cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata>375px", @"Strip Private Metadata Before Upload");
                     } else {
-                        cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata", @"Strip GPS Metadata");
+                        cell.leftLabel.text = NSLocalizedString(@"settings_stripGPSdata", @"Strip Private Metadata");
                     }
                     [cell.cellSwitch setOn:[Model sharedInstance].stripGPSdataOnUpload];
                     cell.cellSwitchBlock = ^(BOOL switchState) {
@@ -457,20 +464,138 @@ typedef enum {
                     }
 					[cell.cellSwitch setOn:[Model sharedInstance].resizeImageOnUpload];
 					cell.cellSwitchBlock = ^(BOOL switchState) {
-						[Model sharedInstance].resizeImageOnUpload = switchState;
-						if(![Model sharedInstance].resizeImageOnUpload) {
-							[Model sharedInstance].photoQuality = 95;
-                            [Model sharedInstance].photoResize = 100;
-						}
-						[[Model sharedInstance] saveToDisk];
-						[self.settingsTableView reloadSections:[NSIndexSet indexSetWithIndex:SettingSectionImageUpload] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        // Number of rows will change accordingly
+                        [Model sharedInstance].resizeImageOnUpload = switchState;
+                        // Store modified setting
+                        [[Model sharedInstance] saveToDisk];
+                        // Position of the row that should be added/removed
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:4
+                                                                         inSection:SettingsSectionImageUpload];
+                        if(switchState) {
+                            // Insert row in existing table
+                            NSLog(@"Case #3: Insert resize slider at row %ld", rowAtIndexPath.row);
+                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        } else {
+                            NSLog(@"Case #3: Delete resize slider at row %ld", rowAtIndexPath.row);
+                           // Remove row in existing table
+                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        }
 					};
 					
 					tableViewCell = cell;
 					break;
 				}
-				case 4:     // Image Quality
+                case 4:     // Image Size slider or Compress Before Upload switch
+                {
+                    if ([Model sharedInstance].resizeImageOnUpload) {
+                        NSLog(@"Case #4: Create resize slider at row %ld", indexPath.row);
+                        SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoSize"];
+                        if(!cell)
+                        {
+                            cell = [SliderTableViewCell new];
+                        }
+                        cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"> Size");
+                        cell.slider.minimumValue = 5;
+                        cell.slider.maximumValue = 100;
+                        cell.sliderCountPrefix = @"";
+                        cell.sliderCountSuffix = @"%";
+                        cell.incrementSliderBy = 5;
+                        cell.sliderValue = [Model sharedInstance].photoResize;
+                        [cell.slider addTarget:self action:@selector(updateImageSize:) forControlEvents:UIControlEventValueChanged];
+                        
+                        tableViewCell = cell;
+                    } else {
+                        NSLog(@"Case #4: Create compress switch at row %ld", indexPath.row);
+                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
+                        if(!cell) {
+                            cell = [SwitchTableViewCell new];
+                        }
+                        
+                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                        if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                            cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress>375px", @"Compress Image Before Upload");
+                        } else {
+                            cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress", @"Compress Before Upload");
+                        }
+                        [cell.cellSwitch setOn:[Model sharedInstance].compressImageOnUpload];
+                        cell.cellSwitchBlock = ^(BOOL switchState) {
+                            // Number of rows will change accordingly
+                            [Model sharedInstance].compressImageOnUpload = switchState;
+                            // Store modified setting
+                            [[Model sharedInstance] saveToDisk];
+                            // Position of the row that should be added/removed (depends on resize option)
+                            NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:(5 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0))
+                                                                             inSection:SettingsSectionImageUpload];
+                            if(switchState) {
+                                // Insert row in existing table
+                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            } else {
+                                // Remove row in existing table
+                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            }
+                        };
+                        
+                        tableViewCell = cell;
+                    }
+                    break;
+                }
+                case 5:     // Compress Before Upload switch or Image Quality slider
+                {
+                    if ([Model sharedInstance].resizeImageOnUpload) {
+                        NSLog(@"Case #5: Create compress switch at row %ld", indexPath.row);
+                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
+                        if(!cell) {
+                            cell = [SwitchTableViewCell new];
+                        }
+                        
+                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                        if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                            cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress>375px", @"Compress Image Before Upload");
+                        } else {
+                            cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress", @"Compress Before Upload");
+                        }
+                        [cell.cellSwitch setOn:[Model sharedInstance].compressImageOnUpload];
+                        cell.cellSwitchBlock = ^(BOOL switchState) {
+                            // Number of rows will change accordingly
+                            [Model sharedInstance].compressImageOnUpload = switchState;
+                            // Store modified setting
+                            [[Model sharedInstance] saveToDisk];
+                            // Position of the row that should be added/removed
+                            NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:(5 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0))
+                                                                             inSection:SettingsSectionImageUpload];
+                            if(switchState) {
+                                // Insert row in existing table
+                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            } else {
+                                // Remove row in existing table
+                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            }
+                        };
+                        
+                        tableViewCell = cell;
+                    } else {
+                        NSLog(@"Case #5: Create compress slider at row %ld", indexPath.row);
+                        SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
+                        if(!cell)
+                        {
+                            cell = [SliderTableViewCell new];
+                        }
+                        cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
+                        cell.slider.minimumValue = 50;
+                        cell.slider.maximumValue = 98;
+                        cell.sliderCountPrefix = @"";
+                        cell.sliderCountSuffix = @"%";
+                        cell.incrementSliderBy = 2;
+                        cell.sliderValue = [Model sharedInstance].photoQuality;
+                        [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
+                        
+                        tableViewCell = cell;
+                    }
+                    break;
+                }
+				case 6:     // Image Quality
 				{
+                    NSLog(@"Case #6: Create compress slider at row %ld", indexPath.row);
 					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
 					if(!cell)
 					{
@@ -488,29 +613,10 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-				case 5:     // Image Size
-				{
-					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoSize"];
-					if(!cell)
-					{
-						cell = [SliderTableViewCell new];
-					}
-                    cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"> Size");
-					cell.slider.minimumValue = 10;
-					cell.slider.maximumValue = 100;
-                    cell.sliderCountPrefix = @"";
-					cell.sliderCountSuffix = @"%";
-					cell.incrementSliderBy = 5;
-					cell.sliderValue = [Model sharedInstance].photoResize;
-                    [cell.slider addTarget:self action:@selector(updateImageSize:) forControlEvents:UIControlEventValueChanged];
-					
-					tableViewCell = cell;
-					break;
-				}
 			}
 			break;
 		}
-		case SettingSectionCache:       // Cache Settings
+		case SettingsSectionCache:       // Cache Settings
 		{
 			switch(indexPath.row)
 			{
@@ -571,7 +677,7 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingSectionAbout:       // Information
+		case SettingsSectionAbout:       // Information
 		{
             switch(indexPath.row)
             {
@@ -680,12 +786,12 @@ typedef enum {
 	
 	switch(indexPath.section)
 	{
-		case SettingSectionServer:      // Piwigo Server
+		case SettingsSectionServer:      // Piwigo Server
 			break;
-		case SettingSectionLogout:      // Logout
+		case SettingsSectionLogout:      // Logout
 			[self logout];
 			break;
-		case SettingSectionGeneral:     // General Settings
+		case SettingsSectionGeneral:     // General Settings
 		{
 			switch(indexPath.row)
 			{
@@ -712,7 +818,7 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingSectionImageUpload:     // Default Upload Settings
+		case SettingsSectionImageUpload:     // Default Upload Settings
 			switch(indexPath.row)
 			{
 				case 1:     // Privacy
@@ -723,61 +829,61 @@ typedef enum {
 					[self.navigationController pushViewController:selectPrivacy animated:YES];
 					break;
 				}
-				case 4:     // Image Quality
+                case 4:     // Image Size
+                {
+//                    if(self.currentPopDown)
+//                    {
+//                        [self.currentPopDown removeFromSuperview];
+//                    }
+//                    self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderSize", @"Enter a Photo Size from 5 - 100")];
+//                    self.darkenView.hidden = NO;
+//                    [self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+//                        self.darkenView.hidden = YES;
+//                        if(textEntered.length > 0)
+//                        {
+//                            SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SettingsSectionImageUpload]];
+//                            photoSizeCell.sliderValue = [textEntered integerValue];
+//                            if(!photoSizeCell)
+//                            {
+//                                [Model sharedInstance].photoResize = [textEntered integerValue];
+//                                [[Model sharedInstance] saveToDisk];
+//                            }
+//                        }
+//                    }];
+                    break;
+                }
+				case 6:     // Image Quality
 				{
-					if(self.currentPopDown)
-					{
-						[self.currentPopDown removeFromSuperview];
-					}
-					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter an Image Quality")];
-					self.darkenView.hidden = NO;
-					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
-						self.darkenView.hidden = YES;
-						if(textEntered.length > 0)
-						{
-							SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
-							
-							NSInteger valueEntered = [textEntered integerValue];
-							if(valueEntered < 50) valueEntered = 50;
-							else if(valueEntered > 98) valueEntered = 98;
-							
-							photoQualityCell.sliderValue = valueEntered;
-							if(!photoQualityCell)
-							{
-								[Model sharedInstance].photoQuality = valueEntered;
-								[[Model sharedInstance] saveToDisk];
-							}
-						}
-					}];
-					break;
-				}
-				case 5:     // Image Size
-				{
-					if(self.currentPopDown)
-					{
-						[self.currentPopDown removeFromSuperview];
-					}
-					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderSize", @"Enter a Photo Size from 1 - 100")];
-					self.darkenView.hidden = NO;
-					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
-						self.darkenView.hidden = YES;
-						if(textEntered.length > 0)
-						{
-							SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SettingSectionImageUpload]];
-							photoSizeCell.sliderValue = [textEntered integerValue];
-							if(!photoSizeCell)
-							{
-								[Model sharedInstance].photoResize = [textEntered integerValue];
-								[[Model sharedInstance] saveToDisk];
-							}
-						}
-					}];
+//                    if(self.currentPopDown)
+//                    {
+//                        [self.currentPopDown removeFromSuperview];
+//                    }
+//                    self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter an Image Quality")];
+//                    self.darkenView.hidden = NO;
+//                    [self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
+//                        self.darkenView.hidden = YES;
+//                        if(textEntered.length > 0)
+//                        {
+//                            SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingsSectionImageUpload]];
+//
+//                            NSInteger valueEntered = [textEntered integerValue];
+//                            if(valueEntered < 50) valueEntered = 50;
+//                            else if(valueEntered > 98) valueEntered = 98;
+//
+//                            photoQualityCell.sliderValue = valueEntered;
+//                            if(!photoQualityCell)
+//                            {
+//                                [Model sharedInstance].photoQuality = valueEntered;
+//                                [[Model sharedInstance] saveToDisk];
+//                            }
+//                        }
+//                    }];
 					break;
 				}
 			}
 			
 			break;
-		case SettingSectionCache:       // Cache Settings
+		case SettingsSectionCache:       // Cache Settings
 		{
 			switch(indexPath.row)
 			{
@@ -793,7 +899,7 @@ typedef enum {
 						self.darkenView.hidden = YES;
 						if(textEntered.length > 0)
 						{
-							SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
+							SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingsSectionCache]];
 							diskCell.sliderValue = [textEntered integerValue];
 							if(!diskCell)
 							{
@@ -816,7 +922,7 @@ typedef enum {
 						self.darkenView.hidden = YES;
 						if(textEntered.length > 0)
 						{
-							SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
+							SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionCache]];
 							memoryCell.sliderValue = [textEntered integerValue];
 							if(!memoryCell)
 							{
@@ -853,7 +959,7 @@ typedef enum {
 //			}
 			break;
 		}
-		case SettingSectionAbout:       // About — Informations
+		case SettingsSectionAbout:       // About — Informations
 		{
             switch(indexPath.row)
             {
@@ -1010,23 +1116,24 @@ typedef enum {
 
 #pragma mark Sliders changed value Methods
 
-- (IBAction)updateImageQuality:(id)sender
+- (IBAction)updateImageSize:(id)sender
 {
-    SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingSectionImageUpload]];
-    [Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
+    SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingsSectionImageUpload]];
+    [Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
 }
 
-- (IBAction)updateImageSize:(id)sender
+- (IBAction)updateImageQuality:(id)sender
 {
-    SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SettingSectionImageUpload]];
-    [Model sharedInstance].photoResize = [photoSizeCell getCurrentSliderValue];
+    NSInteger row = 5 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0);
+    SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:SettingsSectionImageUpload]];
+    [Model sharedInstance].photoQuality = [photoQualityCell getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
 }
 
 - (IBAction)updateDiskCacheSize:(id)sender
 {
-    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingSectionCache]];
+    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingsSectionCache]];
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
 
@@ -1035,7 +1142,7 @@ typedef enum {
 
 - (IBAction)updateMemoryCacheSize:(id)sender
 {
-    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingSectionCache]];
+    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionCache]];
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     

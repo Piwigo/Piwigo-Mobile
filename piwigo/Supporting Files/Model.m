@@ -77,7 +77,7 @@
         instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
 		
         // Default image upload setting
-        instance.stripGPSdataOnUpload = NO;         // Upload images with GPS metadata
+        instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
 		instance.photoQuality = 95;                 // 95% image quality at compression
 		instance.photoResize = 100;                 // Do not resize images
         
@@ -131,12 +131,21 @@
 #pragma mark - Getter -
 
 -(NSInteger)photoResize {
-    if (_photoResize < 1) {
-        _photoResize = 1;
+    if (_photoResize < 5) {
+        _photoResize = 5;
     } else if (_photoResize > 100) {
         _photoResize = 100;
     }
     return _photoResize;
+}
+
+-(NSInteger)photoQuality {
+    if (_photoQuality < 50) {
+        _photoQuality = 50;
+    } else if (_photoQuality > 100) {
+        _photoQuality = 100;
+    }
+    return _photoQuality;
 }
 
 #pragma mark - Saving to Disk
@@ -170,6 +179,7 @@
         self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
         self.defaultThumbnailSize = modelData.defaultThumbnailSize;
         self.displayImageTitles = modelData.displayImageTitles;
+        self.compressImageOnUpload = modelData.compressImageOnUpload;
 	}
 }
 
@@ -200,6 +210,7 @@
     [saveObject addObject:[NSNumber numberWithBool:self.stripGPSdataOnUpload]];
     [saveObject addObject:@(self.defaultThumbnailSize)];
     [saveObject addObject:@(self.displayImageTitles)];
+    [saveObject addObject:[NSNumber numberWithBool:self.compressImageOnUpload]];    // Added to v2.1.5
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -235,7 +246,6 @@
 		self.resizeImageOnUpload = [[savedData objectAtIndex:10] boolValue];
 	} else {
 		self.resizeImageOnUpload = NO;
-		self.photoQuality = 95;
         self.photoResize = 100;
 	}
 	if(savedData.count > 11) {
@@ -258,6 +268,30 @@
 	} else {
 		self.displayImageTitles = YES;
 	}
+    if(savedData.count > 15) {
+        self.compressImageOnUpload = [[savedData objectAtIndex:15] boolValue];
+    } else {
+        // Previously, there was one slider for both resize & compress options
+        // because resize and JPEG compression was always performed before uploading
+        if (self.resizeImageOnUpload) {     // Option was active, but for doing what?
+            if (self.photoResize < 100) {
+                self.resizeImageOnUpload = YES;
+            } else {
+                self.resizeImageOnUpload = NO;
+                self.photoResize = 100;
+            }
+            if (self.photoQuality < 100) {
+                self.compressImageOnUpload = YES;
+            } else {
+                self.compressImageOnUpload = NO;
+                self.photoQuality = 98;
+            }
+        } else {
+            self.compressImageOnUpload = NO;
+            self.photoResize = 100;
+            self.photoQuality = 98;
+        }
+    }
 	
 	return self;
 }

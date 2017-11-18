@@ -372,12 +372,14 @@
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Privacy";
 "settings_defaultPrivacy>414px" = "Who Can See the Media?";
-"settings_stripGPSdata" = "Strip GPS Metadata";
-"settings_stripGPSdata>375px" = "Strip GPS Metadata Before Upload";
+"settings_stripGPSdata" = "Strip Private Metadata";
+"settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
 "settings_photoResize" = "Resize Before Upload";
 "settings_photoResize>375px" = "Resize Image Before Upload";
 "settings_photoSize" = "> Size   ";
-"settings_placeholderSize" = "Enter a Photo Size from 1 - 100";
+"settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
+"settings_photoCompress" = "Compress Before Upload";
+"settings_photoCompress>375px" = "Compress Image Before Upload";
 "settings_photoQuality" = "> Quality";
 "settings_placeholderQuality" = "Enter an Image Quality from 50 - 98";
 
