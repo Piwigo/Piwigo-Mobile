@@ -19,11 +19,16 @@
 	if(self)
 	{
 		self.imageAsset = imageAsset;
-        NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-        self.image = ((PHAssetResource*)resources[0]).originalFilename;
-		self.title = [((PHAssetResource*)resources[0]).originalFilename stringByDeletingPathExtension];
-		self.categoryToUploadTo = category;
-		self.privacyLevel = privacy;
+        if (imageAsset) {
+            NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
+            self.image = ((PHAssetResource*)resources[0]).originalFilename;
+            self.title = [((PHAssetResource*)resources[0]).originalFilename stringByDeletingPathExtension];
+        } else {
+            self.image = @"";
+            self.title = @"";
+        }
+        self.categoryToUploadTo = category;
+        self.privacyLevel = privacy;
 	}
 	return self;
 }
