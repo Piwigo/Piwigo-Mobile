@@ -72,7 +72,12 @@ static SEL extracted() {
 -(void)categoryDataUpdated
 {
 	self.categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:0];
-	[self.albumsTableView reloadData];
+    // Following 3 lines fix iOS 11 bug encountered with reloadData
+    // See https://forums.developer.apple.com/thread/86703
+    self.albumsTableView.estimatedRowHeight = 0;
+    self.albumsTableView.estimatedSectionHeaderHeight = 0;
+    self.albumsTableView.estimatedSectionFooterHeight = 0;
+    [self.albumsTableView reloadData];
 }
 
 -(void)viewDidLoad
