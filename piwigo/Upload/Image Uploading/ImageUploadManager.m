@@ -126,10 +126,11 @@
     // Retrieve Photo, Live Photo or Video
     if (originalAsset.mediaType == PHAssetMediaTypeImage) {
         
-        // Chek that the image format is accepted by the Piwigo server
-        if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
+        // Chek that the image format will be accepted by the Piwigo server
+        if ((![[Model sharedInstance].uploadFileTypes containsString:fileExt]) &&
+            (![[Model sharedInstance].uploadFileTypes containsString:@"jpg"]) ) {
             [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
-                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_format", @"Sorry, image files with extension .%@ are not accepted by the Piwigo server."), [fileExt uppercaseString]]
+                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_format", @"Sorry, image files with extensions .%@ and .jpg are not accepted by the Piwigo server."), [fileExt uppercaseString]]
                          forRetrying:NO
                            withImage:nextImageToBeUploaded];
             return;
@@ -304,7 +305,7 @@
 
         // Final metadata…
 #if defined(DEBUG)
-        NSLog(@"modifyImage: w/o {GPS} = %@",assetMetadata);
+        NSLog(@"modifyImage: w/o private metadata => %@",assetMetadata);
 #endif
     }
 
@@ -326,14 +327,22 @@
         imageResized = [assetImage copy];
     }
     
-    // Apply compression if user requested it in Settings
-    NSData *imageCompressed = nil;
+    // Apply compression if user requested it in Settings, or convert to JPEG if necessary
     CFStringRef UTI = nil;
+    NSData *imageCompressed = nil;
+    NSString *fileExt = [[image.image pathExtension] lowercaseString];
     if ([Model sharedInstance].compressImageOnUpload && ([Model sharedInstance].photoQuality < 100.0)) {
         // Compress image (only possible in JPEG)
         CGFloat compressionQuality = [Model sharedInstance].photoQuality / 100.0;
         imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
 
+        // Final image file will be in JPEG format
+        UTI = kUTTypeJPEG;
+        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
+    } else if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
+        // Image in unaccepted file format for Piwigo server => convert to JPEG format
+        imageCompressed = UIImageJPEGRepresentation(imageResized, 100.0);
+        
         // Final image file will be in JPEG format
         UTI = kUTTypeJPEG;
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];

@@ -286,7 +286,7 @@
 "uploadError_message" = "Could not upload your image. Error: %@";
 
 "imageUploadError_title" = "Image Upload Error";
-"imageUploadError_format" = "Sorry, image files with extension .%@ are not accepted by the Piwigo server.";
+"imageUploadError_format" = "Sorry, image files with extensions .%@ and .jpg are not accepted by the Piwigo server.";
 
 "audioUploadError_title" = "Audio Upload Error";
 "audioUploadError_format" = "Sorry, audio files are not supported by Piwigo Mobile yet.";

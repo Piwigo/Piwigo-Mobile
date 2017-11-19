@@ -62,21 +62,26 @@
         [topViewController presentViewController:alert animated:YES completion:nil];        
 	}
     
+    // Collect collections from the root of the photo library’s hierarchy of user-created albums and folders
+    PHFetchResult *userCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
+    
     // Collect smart albums created in the Photos app i.e. Camera Roll, Favorites, Recently Deleted, Panoramas, etc.
     PHFetchResult *smartAlbums = [PHAssetCollection
                                   fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum
-                                  subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+                                  subtype:PHAssetCollectionSubtypeAny options:nil];
     
     // Collect albums synced to the device from iPhoto
     PHFetchResult *syncedAlbums = [PHAssetCollection
                                    fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum
                                    subtype:PHAssetCollectionSubtypeAlbumSyncedAlbum options:nil];
     
-    // Collect collections from the root of the photo library’s hierarchy of user-created albums and folders
-    PHFetchResult *userCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
-
+    // Collect albums imported from a camera or external storage
+    PHFetchResult *importedAlbums = [PHAssetCollection
+                                   fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum
+                                   subtype:PHAssetCollectionSubtypeAlbumImported options:nil];
+    
     // Combine album collections
-    NSArray *collectionsFetchResults = @[smartAlbums, userCollections, syncedAlbums];
+    NSArray *collectionsFetchResults = @[userCollections, smartAlbums, syncedAlbums, importedAlbums];
 
     // Add each PHFetchResult to the array
     NSMutableArray *groupAssets = [NSMutableArray new];
