@@ -161,7 +161,7 @@
         // Chek that the video format is accepted by the Piwigo server
         if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
             [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_format", @"Sorry, video files with extension .%@ are not accepted by the Piwigo server."), [fileExt uppercaseString]]
+                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_format", @"Sorry, video files with extension .%@ are not accepted by the Piwigo server."), [fileExt uppercaseString]]
                          forRetrying:NO
                            withImage:nextImageToBeUploaded];
             return;
@@ -228,6 +228,10 @@
     // The block Photos calls periodically while downloading the photo
     options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
         NSLog(@"downloading Live Photo from iCloud — progress %lf",progress);
+
+        
+        
+        
     };
     // Requests image…
     @autoreleasepool {
@@ -394,7 +398,6 @@
     return nil;
 }
 
-
 //-(void)retrieveFullSizeAssetDataFromLivePhoto:(ImageUpload *)image   // Asynchronous
 //{
 //    __block NSData *assetData = nil;
@@ -459,6 +462,145 @@
 //}
 
 #pragma mark -- Video, retrieve and modify before upload
+
+-(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image  // Asynchronous
+{
+    // Case of a video…
+    PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+    // Requests the most recent version of the image asset
+    options.version = PHVideoRequestOptionsVersionCurrent;
+    // Requests the highest-quality video available, regardless of how much time it takes to load.
+    options.deliveryMode = PHVideoRequestOptionsDeliveryModeHighQualityFormat;
+    // Photos can download the requested video from iCloud.
+    options.networkAccessAllowed = YES;
+
+    // The block Photos calls periodically while downloading the video.
+    options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
+        NSLog(@"downloading Video from iCloud — progress %lf",progress);
+
+    
+    
+    
+    };
+
+    // Requests video…
+    @autoreleasepool {
+        [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
+                        exportPreset:AVAssetExportPresetPassthrough
+                        resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
+#if defined(DEBUG)
+                            NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+#endif
+                            if ([info objectForKey:PHImageErrorKey]) {
+                                // Error encountered!
+                                NSError *error = [info valueForKey:PHImageErrorKey];
+                                NSLog(@"=> Error : %@", error.description);
+                                return;
+                            }
+
+                            if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
+                                // This is a degraded version, wait for the next one…
+                                return;
+                            }
+
+                            // Modifies video before upload to Piwigo server
+                            [self modifyVideo:image beforeExporting:exportSession];
+                        }
+         ];
+    }
+}
+
+-(void)modifyVideo:(ImageUpload *)image beforeExporting:(AVAssetExportSession *)exportSession
+{
+    // Strips private metadata if user requested it in Settings
+    // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
+    [exportSession setMetadata:nil];
+    if ([Model sharedInstance].stripGPSdataOnUpload) {
+        [exportSession setMetadataItemFilter:[AVMetadataItemFilter metadataItemFilterForSharing]];
+    } else {
+        [exportSession setMetadataItemFilter:nil];
+    }
+
+    // Complete video range
+    [exportSession setTimeRange:CMTimeRangeMake(kCMTimeZero, kCMTimePositiveInfinity)];
+
+    // Video formats — Always export video in MP4 format
+#if defined(DEBUG)
+    NSLog(@"exportSession (before): %@", exportSession);
+    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
+#endif
+    [exportSession setOutputFileType:AVFileTypeMPEG4];
+    [exportSession setShouldOptimizeForNetworkUse:YES];
+
+    // Prepare MIME type
+    NSString *mimeType = @"video/mp4";
+
+    // Temporary filename and path
+    [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]]];
+
+    // Deletes temporary video file if exists (might be incomplete, etc.)
+    [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+
+    // Export temporary video for upload
+    __block NSData *assetData = nil;
+    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+
+        if ([exportSession status] == AVAssetExportSessionStatusCompleted)
+        {
+#if defined(DEBUG)
+            NSLog(@"Export sucess :-)");
+#endif
+            // Gets copy as NSData
+            assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
+            AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
+            NSArray *assetMetadata = [videoAsset commonMetadata];
+            NSLog(@"Video metadata: %@", assetMetadata);
+            assert(assetData.length != 0);
+
+            // Deletes temporary video file
+            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+
+            // Upload video with tags and properties
+            [self uploadImage:image withData:assetData andMimeType:mimeType];
+        }
+        else if ([exportSession status] == AVAssetExportSessionStatusFailed)
+        {
+            // Deletes temporary video file
+            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+
+            // Inform user
+            [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                          andMessage:NSLocalizedString(@"videoUploadError_export", @"Sorry, the video could not be retrieved in MP4 format for the upload.")
+                         forRetrying:NO
+                           withImage:image];
+            return;
+        }
+        else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
+        {
+            // Deletes temporary video file
+            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+
+            // Inform user
+            [self showErrorWithTitle:NSLocalizedString(@"uploadCancelled_title", @"Upload Cancelled")
+                          andMessage:NSLocalizedString(@"videoUploadCancelled_message", @"The upload of the video has been cancelled.")
+                         forRetrying:YES
+                           withImage:image];
+            return;
+        }
+        else    // Failed for unknown reason!
+        {
+            // Deletes temporary video files
+            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+
+            // Inform user
+            [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                          andMessage:NSLocalizedString(@"videoUploadError_unknown", @"Sorry, the upload of the video has failed for an unknown error during the MP4 conversion.")
+                         forRetrying:YES
+                           withImage:image];
+            return;
+        }
+    }];
+}
 
 // The creation date is kept when copying the MOV video file and uploading it with MP4 extension in Piwigo
 // However, it is replaced when exporting the file in Piwigo while the metadata is correct.
@@ -565,158 +707,6 @@
 //         ];
 //    }
 //}
-
--(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image  // Asynchronous
-{
-    // Case of a video…
-    PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
-    // Requests the most recent version of the image asset
-    options.version = PHVideoRequestOptionsVersionCurrent;
-    // Requests the highest-quality video available, regardless of how much time it takes to load.
-    options.deliveryMode = PHVideoRequestOptionsDeliveryModeHighQualityFormat;
-    // Photos can download the requested video from iCloud.
-    options.networkAccessAllowed = YES;
-
-    // The block Photos calls periodically while downloading the video.
-    options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
-        NSLog(@"downloading Video from iCloud — progress %lf",progress);
-    };
-
-    // Requests video…
-    @autoreleasepool {
-        [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
-                        exportPreset:AVAssetExportPresetPassthrough
-                        resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
-#if defined(DEBUG)
-                            NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
-#endif
-                            if ([info objectForKey:PHImageErrorKey]) {
-                                // Error encountered!
-                                NSError *error = [info valueForKey:PHImageErrorKey];
-                                NSLog(@"=> Error : %@", error.description);
-                                return;
-                            }
-
-                            if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
-                                // This is a degraded version, wait for the next one…
-                                return;
-                            }
-
-                            // Modifies video before upload to Piwigo server
-                            [self modifyVideo:image beforeExporting:exportSession];
-
-                            // Deletes temporary file if exists already (might be incomplete, etc.)
-//                            [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:image.image]]];
-//                            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
-//
-//                            [exportSession setOutputFileType:AVFileTypeMPEG4];
-//                            [exportSession setShouldOptimizeForNetworkUse:YES];
-//
-//                            exportSession.metadata = nil;
-//                            if ([Model sharedInstance].stripGPSdataOnUpload) {
-//                                NSLog(@"metadataItemFilterForSharing activated… without GPS metadata");
-//                                [exportSession setMetadataItemFilter:[AVMetadataItemFilter metadataItemFilterForSharing]];
-//                            } else {
-//                                NSLog(@"metadataItemFilterForSharing NOT activated… with GPS metadata");
-//                                [exportSession setMetadataItemFilter:nil];
-//                            }
-//
-//                            [exportSession exportAsynchronouslyWithCompletionHandler:^{
-//                                // Error ?
-//                                if (exportSession.error) {
-//                                    NSLog(@"=> exportSession Status: %ld and Error: %@", (long)exportSession.status, exportSession.error.description);
-//                                    return;
-//                                }
-//
-//                                // Modifies video before upload to Piwigo server
-//                                [self modifyVideo:image atURL:exportSession.outputURL];
-//                            }];
-                        }
-         ];
-    }
-}
-
--(void)modifyVideo:(ImageUpload *)image beforeExporting:(AVAssetExportSession *)exportSession
-{
-    // Strips private metadata if user requested it in Settings
-    // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
-    [exportSession setMetadata:nil];
-    if ([Model sharedInstance].stripGPSdataOnUpload) {
-        [exportSession setMetadataItemFilter:[AVMetadataItemFilter metadataItemFilterForSharing]];
-    } else {
-        [exportSession setMetadataItemFilter:nil];
-    }
-
-    // Complete video range
-    [exportSession setTimeRange:CMTimeRangeMake(kCMTimeZero, kCMTimePositiveInfinity)];
-
-    // Video formats — Always export video in MP4 format
-#if defined(DEBUG)
-    NSLog(@"exportSession (before): %@", exportSession);
-    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
-#endif
-    [exportSession setOutputFileType:AVFileTypeMPEG4];
-    [exportSession setShouldOptimizeForNetworkUse:YES];
-
-    // Prepare MIME type
-    NSString *mimeType = @"video/mp4";
-
-    // Temporary filename and path
-    [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]]];
-
-    // Deletes temporary video file if exists (might be incomplete, etc.)
-    [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
-
-    // Export temporary video for upload
-    __block NSData *assetData = nil;
-    [exportSession exportAsynchronouslyWithCompletionHandler:^{
-        if ([exportSession status] == AVAssetExportSessionStatusCompleted)
-        {
-#if defined(DEBUG)
-            NSLog(@"Export sucess :-)");
-#endif
-            // Gets copy as NSData
-            assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
-            AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
-            NSArray *assetMetadata = [videoAsset commonMetadata];
-            NSLog(@"Video metadata: %@", assetMetadata);
-            assert(assetData.length != 0);
-
-            // Deletes temporary video file
-            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
-
-            // Upload video with tags and properties
-            [self uploadImage:image withData:assetData andMimeType:mimeType];
-        }
-        else if ([exportSession status] == AVAssetExportSessionStatusFailed)
-        {
-#if defined(DEBUG)
-            NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
-#endif
-            // Deletes temporary video file
-            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
-
-        }
-        else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
-        {
-#if defined(DEBUG)
-            NSLog(@"Export canceled");
-#endif
-            // Deletes temporary video file
-            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
-
-        }
-        else
-        {
-#if defined(DEBUG)
-            NSLog(@"Export ??");
-#endif
-            // Deletes temporary video files
-            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
-
-        }
-    }];
-}
 
 //-(void)modifyVideo:(ImageUpload *)image atURL:(NSURL *)fileURL withMimeType:(NSString *)mimeType
 //{
