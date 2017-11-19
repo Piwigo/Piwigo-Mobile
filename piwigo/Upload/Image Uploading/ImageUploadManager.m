@@ -121,7 +121,6 @@
     ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
     NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] lowercaseString];
     PHAsset *originalAsset = nextImageToBeUploaded.imageAsset;
-    NSString *mimeType = @"";
     
     // Retrieve Photo, Live Photo or Video
     if (originalAsset.mediaType == PHAssetMediaTypeImage) {
@@ -155,14 +154,9 @@
     }
     else if (originalAsset.mediaType == PHAssetMediaTypeVideo) {
 
-        // Replace .MOV with .MP4 for compatibility with Piwigo server
-        if ([fileExt isEqualToString:@"mov"]) {
-            // Prepare MIME type
-            mimeType = @"video/mp4";
-            // Replace file extension
-            fileExt = @"mp4";
-            nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"];
-        }
+        // Videos are always exported in MP4 format (whenever possible)
+        fileExt = @"mp4";
+        nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:fileExt];
 
         // Chek that the video format is accepted by the Piwigo server
         if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
