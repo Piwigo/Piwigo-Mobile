@@ -569,11 +569,15 @@
 
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
-    if(currentIndex < 0)
+    if (currentIndex < 0)
     {
         // Crash reported by AppStore here on August 26th, 2017
-        // Will see if that fixes the issue…
         currentIndex = 0;
+    }
+    if (currentIndex >= self.images.count)
+    {
+        // Crash reported by AppleStore in November 2017
+        currentIndex = self.images.count - 1;
     }
 
     self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex];
