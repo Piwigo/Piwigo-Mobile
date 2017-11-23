@@ -34,6 +34,7 @@
         instance.usesCommunityPluginV29 = NO;           // Checked at each new session
         instance.performedHTTPauthentication = NO;      // Checked at each new session
         instance.userCancelledCommunication = NO;
+        instance.deleteImageAfterUpload = NO;
         
         // Load all albums data at start
 		instance.loadAllCategoryInfo = YES;
@@ -179,6 +180,7 @@
         self.defaultThumbnailSize = modelData.defaultThumbnailSize;
         self.displayImageTitles = modelData.displayImageTitles;
         self.compressImageOnUpload = modelData.compressImageOnUpload;
+        self.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
 	}
 }
 
@@ -210,6 +212,7 @@
     [saveObject addObject:@(self.defaultThumbnailSize)];
     [saveObject addObject:@(self.displayImageTitles)];
     [saveObject addObject:[NSNumber numberWithBool:self.compressImageOnUpload]];    // Added to v2.1.5
+    [saveObject addObject:[NSNumber numberWithBool:self.deleteImageAfterUpload]];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -291,7 +294,11 @@
             self.photoQuality = 98;
         }
     }
-	
+    if(savedData.count > 16) {
+        self.deleteImageAfterUpload = [[savedData objectAtIndex:16] boolValue];
+    } else {
+        self.deleteImageAfterUpload = NO;
+    }
 	return self;
 }
 

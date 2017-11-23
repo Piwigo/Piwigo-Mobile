@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "ImageUploadProgressView.h"
 #import "ImageUpload.h"
 #import "ImageUploadManager.h"
@@ -162,6 +164,18 @@
                         if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
                         {
                             [self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
+                        }
+                        
+                        // Delete images from Photos library if requested
+                        if ([Model sharedInstance].deleteImageAfterUpload) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                                    // Delete images from the library
+                                    [PHAssetChangeRequest deleteAssets:[ImageUploadManager sharedInstance].imageDeleteQueue];
+                                } completionHandler:^(BOOL success, NSError *error) {
+                                    NSLog(@"Finished deleting asset. %@", (success ? @"Success." : error));
+                                }];
+                            });
                         }
                     }];
         

@@ -60,9 +60,10 @@ typedef enum {
 @property (nonatomic, strong) NSString *defaultAuthor;
 @property (nonatomic, assign) BOOL stripGPSdataOnUpload;
 @property (nonatomic, assign) BOOL resizeImageOnUpload;
+@property (nonatomic, assign) NSInteger photoResize;
 @property (nonatomic, assign) BOOL compressImageOnUpload;
 @property (nonatomic, assign) NSInteger photoQuality;
-@property (nonatomic, assign) NSInteger photoResize;
+@property (nonatomic, assign) BOOL deleteImageAfterUpload;
 
 @property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;

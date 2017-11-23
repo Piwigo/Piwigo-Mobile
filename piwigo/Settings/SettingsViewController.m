@@ -194,7 +194,7 @@ typedef enum {
             nberOfSection = 5;
             break;
         case SettingsSectionImageUpload:
-            nberOfSection = 5 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
+            nberOfSection = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
                                 ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
             break;
         case SettingsSectionCache:
@@ -535,7 +535,7 @@ typedef enum {
                     }
                     break;
                 }
-                case 5:     // Compress Before Upload switch or Image Quality slider
+                case 5:     // Compress Before Upload switch or Image Quality slider or Delete Image switch
                 {
                     if ([Model sharedInstance].resizeImageOnUpload) {
                         SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
@@ -568,7 +568,7 @@ typedef enum {
                         };
                         
                         tableViewCell = cell;
-                    } else {
+                    } else if ([Model sharedInstance].compressImageOnUpload) {
                         SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
                         if(!cell)
                         {
@@ -584,28 +584,90 @@ typedef enum {
                         [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
                         
                         tableViewCell = cell;
+                    } else {
+                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"delete"];
+                        if(!cell) {
+                            cell = [SwitchTableViewCell new];
+                        }
+                        
+                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                        if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
+                            cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage>375px", @"Delete Image After Upload");
+                        } else {
+                            cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage", @"Delete After Upload");
+                        }
+                        [cell.cellSwitch setOn:[Model sharedInstance].deleteImageAfterUpload];
+                        cell.cellSwitchBlock = ^(BOOL switchState) {
+                            [Model sharedInstance].deleteImageAfterUpload = switchState;
+                            [[Model sharedInstance] saveToDisk];
+                        };
+                        
+                        tableViewCell = cell;
                     }
                     break;
                 }
-				case 6:     // Image Quality
+				case 6:     // Image Quality slider or Delete Image switch
 				{
-					SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
-					if(!cell)
-					{
-						cell = [SliderTableViewCell new];
-					}
-                    cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
-					cell.slider.minimumValue = 50;
-					cell.slider.maximumValue = 98;
-                    cell.sliderCountPrefix = @"";
-					cell.sliderCountSuffix = @"%";
-					cell.incrementSliderBy = 2;
-					cell.sliderValue = [Model sharedInstance].photoQuality;
-                    [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
-					
-					tableViewCell = cell;
+                    if ([Model sharedInstance].resizeImageOnUpload && [Model sharedInstance].compressImageOnUpload) {
+                        SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
+                        if(!cell)
+                        {
+                            cell = [SliderTableViewCell new];
+                        }
+                        cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
+                        cell.slider.minimumValue = 50;
+                        cell.slider.maximumValue = 98;
+                        cell.sliderCountPrefix = @"";
+                        cell.sliderCountSuffix = @"%";
+                        cell.incrementSliderBy = 2;
+                        cell.sliderValue = [Model sharedInstance].photoQuality;
+                        [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
+                        
+                        tableViewCell = cell;
+                    } else {
+                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"delete"];
+                        if(!cell) {
+                            cell = [SwitchTableViewCell new];
+                        }
+                        
+                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                        if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
+                            cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage>375px", @"Delete Image After Upload");
+                        } else {
+                            cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage", @"Delete After Upload");
+                        }
+                        [cell.cellSwitch setOn:[Model sharedInstance].deleteImageAfterUpload];
+                        cell.cellSwitchBlock = ^(BOOL switchState) {
+                            [Model sharedInstance].deleteImageAfterUpload = switchState;
+                            [[Model sharedInstance] saveToDisk];
+                        };
+                        
+                        tableViewCell = cell;
+                    }
 					break;
 				}
+                case 7:     // Delete image after upload
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"delete"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage>375px", @"Delete Image After Upload");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage", @"Delete After Upload");
+                    }
+                    [cell.cellSwitch setOn:[Model sharedInstance].deleteImageAfterUpload];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        [Model sharedInstance].deleteImageAfterUpload = switchState;
+                        [[Model sharedInstance] saveToDisk];
+                    };
+                    
+                    tableViewCell = cell;
+                    break;
+                }
 			}
 			break;
 		}

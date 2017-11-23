@@ -42,6 +42,7 @@
 	{
 		self.imageUploadQueue = [NSMutableArray new];
 		self.imageNamesUploadQueue = [NSMutableDictionary new];
+        self.imageDeleteQueue = [NSMutableArray new];
 		self.isUploading = NO;
 	}
 	return self;
@@ -70,6 +71,7 @@
 {
     if(!self.isUploading)
     {
+        self.imageDeleteQueue = [NSMutableArray new];
         [self uploadNextImage];
     }
 }
@@ -80,12 +82,16 @@
     
     if(!isUploading)
     {
+        // Reset variables
         self.maximumImagesForBatch = 0;
         self.onCurrentImageUpload = 1;
+
+        // Allow system sleep
         [UIApplication sharedApplication].idleTimerDisabled = NO;
     }
     else
     {
+        // Prevent system sleep
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     }
 }
@@ -264,18 +270,25 @@
     // Create CGI reference from asset
     CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) originalData, NULL);
     if (!source) {
-#if defined(DEBUG)
-        NSLog(@"Error: Could not create source");
-#endif
+//#if defined(DEBUG)
+//        NSLog(@"Error: Could not create source");
+//#endif
         // =================>>>> Code what to do in that case !!!!
+
+        
+        
+        
+        
+        
+        
         return;
     }
     
     // Get metadata of image before removing GPS metadata or resizing image
     NSMutableDictionary *assetMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
-#if defined(DEBUG)
-    NSLog(@"modifyImage finds metadata :%@",assetMetadata);
-#endif
+//#if defined(DEBUG)
+//    NSLog(@"modifyImage finds metadata :%@",assetMetadata);
+//#endif
 
     // Strips GPS metadata if user requested it in Settings
     if([Model sharedInstance].stripGPSdataOnUpload && (assetMetadata != nil)) {
@@ -283,28 +296,28 @@
         // GPS dictionary
         NSMutableDictionary *GPSDictionary = [[assetMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
         if (GPSDictionary) {
-#if defined(DEBUG)
-            NSLog(@"modifyImage: GPS metadata = %@",GPSDictionary);
-#endif
+//#if defined(DEBUG)
+//            NSLog(@"modifyImage: GPS metadata = %@",GPSDictionary);
+//#endif
             [assetMetadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
         }
         
         // EXIF dictionary
         NSMutableDictionary *EXIFDictionary = [[assetMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
         if (EXIFDictionary) {
-#if defined(DEBUG)
-            NSLog(@"modifyImage: EXIF User Comment metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifUserComment]);
-            NSLog(@"modifyImage: EXIF Subject Location metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifSubjectLocation]);
-#endif
+//#if defined(DEBUG)
+//            NSLog(@"modifyImage: EXIF User Comment metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifUserComment]);
+//            NSLog(@"modifyImage: EXIF Subject Location metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifSubjectLocation]);
+//#endif
             [EXIFDictionary removeObjectForKey:(NSString *)kCGImagePropertyExifUserComment];
             [EXIFDictionary removeObjectForKey:(NSString *)kCGImagePropertyExifSubjectLocation];
             [assetMetadata setObject:EXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
         }
 
         // Final metadata…
-#if defined(DEBUG)
-        NSLog(@"modifyImage: w/o private metadata => %@",assetMetadata);
-#endif
+//#if defined(DEBUG)
+//        NSLog(@"modifyImage: w/o private metadata => %@",assetMetadata);
+//#endif
     }
 
     // Get original image
@@ -353,10 +366,14 @@
         CGImageDestinationRef destination = CGImageDestinationCreateWithData(imageDataRef, UTI, 1, nil);
         CGImageDestinationAddImage(destination, imageResized.CGImage, nil);
         if(!CGImageDestinationFinalize(destination)) {
-    #if defined(DEBUG)
-            NSLog(@"Error: Could not retrieve imageData object");
-    #endif
+//    #if defined(DEBUG)
+//            NSLog(@"Error: Could not retrieve imageData object");
+//    #endif
             // =================>>>> Code what to do in that case !!!!
+
+            
+            
+            
             return;
         }
         imageCompressed = (__bridge  NSData *)imageDataRef;
@@ -476,9 +493,12 @@
 
     // The block Photos calls periodically while downloading the video.
     options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
+#if defined(DEBUG)
         NSLog(@"downloading Video from iCloud — progress %lf",progress);
-
+#endif
     
+        
+        
     
     
     };
@@ -525,10 +545,10 @@
     [exportSession setTimeRange:CMTimeRangeMake(kCMTimeZero, kCMTimePositiveInfinity)];
 
     // Video formats — Always export video in MP4 format
-#if defined(DEBUG)
-    NSLog(@"exportSession (before): %@", exportSession);
-    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
-#endif
+//#if defined(DEBUG)
+//    NSLog(@"exportSession (before): %@", exportSession);
+//    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
+//#endif
     [exportSession setOutputFileType:AVFileTypeMPEG4];
     [exportSession setShouldOptimizeForNetworkUse:YES];
 
@@ -547,15 +567,15 @@
 
         if ([exportSession status] == AVAssetExportSessionStatusCompleted)
         {
-#if defined(DEBUG)
-            NSLog(@"Export sucess :-)");
-#endif
             // Gets copy as NSData
             assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
-            AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
-            NSArray *assetMetadata = [videoAsset commonMetadata];
-            NSLog(@"Video metadata: %@", assetMetadata);
             assert(assetData.length != 0);
+//#if defined(DEBUG)
+//            AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
+//            NSArray *assetMetadata = [videoAsset commonMetadata];
+//            NSLog(@"Export sucess :-)");
+//            NSLog(@"Video metadata: %@", assetMetadata);
+//#endif
 
             // Deletes temporary video file
             [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
@@ -889,7 +909,6 @@
                             [self isUploadedImageModerated:response inCategory:image.categoryToUploadTo];
                             
                         } else {
-                            
                             // Increment number of images in category
                             [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
                             
@@ -897,6 +916,11 @@
                             [self addImageDataToCategoryCache:response];
                         }
                         
+                        // Delete image from Photos library if requested
+                        if ([Model sharedInstance].deleteImageAfterUpload) {
+                            [self.imageDeleteQueue addObject:image.imageAsset];
+                        }
+
                         // Remove image from queue and upload next one
                         [self uploadNextImageAndRemoveImageFromQueue:image withResponse:response];
 

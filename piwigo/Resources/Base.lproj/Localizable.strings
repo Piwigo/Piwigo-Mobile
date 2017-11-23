@@ -390,6 +390,8 @@
 "settings_photoCompress>375px" = "Compress Image Before Upload";
 "settings_photoQuality" = "> Quality";
 "settings_placeholderQuality" = "Enter an Image Quality from 50 - 98";
+"settings_deleteImage>375px" = "Delete Image After Upload";
+"settings_deleteImage" = "Delete After Upload";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";
