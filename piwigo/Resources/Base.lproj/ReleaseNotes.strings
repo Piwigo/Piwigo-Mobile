@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.5_text" = "Version 2.1.5\n\n• Image file format now preserved after resize\n• Fix metadata partly lost upon download\n• Code modernization\n• Bug fixes\n________________________________________\n\n";
+"v2.1.5_text" = "Version 2.1.5\n\n• Option for deleting image after upload\n• Image file format now preserved after resize\n• Fix metadata partly lost upon download\n• Code modernization\n• Bug fixes\n________________________________________\n\n";
 
 "v2.1.4_text" = "Version 2.1.4\nOctober 31, 2017\n\n• Swedish translation\n• Bug fixes\n________________________________________\n\n";
 
