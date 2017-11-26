@@ -7,13 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MediaPlayer/MediaPlayer.h>
 
 @interface ImageScrollView : UIScrollView
 
 @property (nonatomic, strong) UIImageView *imageView;
-
-@property (nonatomic, strong) MPMoviePlayerController *player;
--(void)setupPlayerWithURL:(NSString*)videoURL;
+@property (nonatomic, strong) UIImageView *playImage;
 
 @end

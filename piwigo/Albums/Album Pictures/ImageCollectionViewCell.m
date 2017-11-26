@@ -50,10 +50,9 @@
 		[self.contentView addSubview:self.darkenView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
 		
-        // Play button above posters of movie
         // Movie type
         self.playImage = [UIImageView new];
-        UIImage *play = [UIImage imageNamed:@"play"];
+        UIImage *play = [UIImage imageNamed:@"video"];
         self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         self.playImage.tintColor = [UIColor piwigoOrange];
         self.playImage.hidden = YES;
@@ -61,9 +60,9 @@
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
         [self.contentView addSubview:self.playImage];
         [self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(25, 25)]];
-        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:4]];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
         [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
-		
+
         // Banners at bottom of thumbnails
 		self.bottomLayer = [UIView new];
 		self.bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;

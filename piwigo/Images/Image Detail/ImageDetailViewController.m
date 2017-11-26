@@ -50,7 +50,7 @@
 		self.imageData = [self.images objectAtIndex:imageIndex];
 		self.title = self.imageData.name;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
-		[startingImage setImageWithImageData:self.imageData];
+		[startingImage setImageScrollViewWithImageData:self.imageData];
 		startingImage.imageIndex = imageIndex;
 		
 		[self setViewControllers:@[startingImage]
@@ -83,9 +83,16 @@
 {
 	[super viewWillAppear:animated];
 	
+    // Image options button
 	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
 	self.navigationItem.rightBarButtonItem = imageOptionsButton;
 	
+    // Never present video poster in fulls screen
+    if (self.imageData.isVideo) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+    
+    // Scrolling
 	if([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
 	{
 		self.automaticallyAdjustsScrollViewInsets = false;
@@ -440,7 +447,14 @@
 
 	if(self.navigationController.navigationBarHidden)
 	{
-		[self hideTabBar:self.tabBarController];
+        if (self.imageData.isVideo) {
+            // User wants to play/replay the video
+            ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
+            [playVideo startVideoPlayerViewWithImageData:self.imageData];
+        } else {
+            // User wants to display the image in full screen
+            [self hideTabBar:self.tabBarController];
+        }
 	}
 	else
 	{
@@ -499,7 +513,6 @@
 {
 	if(_downloadView) return _downloadView;
 	
-	
 	_downloadView = [ImageDownloadView new];
 	_downloadView.translatesAutoresizingMaskIntoConstraints = NO;
 	[self.view addSubview:_downloadView];
@@ -530,7 +543,7 @@
 	PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
 	
 	ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
-	[nextImage setImageWithImageData:imageData];
+	[nextImage setImageScrollViewWithImageData:imageData];
 	nextImage.imageIndex = currentIndex + 1;
 	return nextImage;
 }
@@ -550,7 +563,7 @@
 	PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
 		
 	ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
-	[prevImage setImageWithImageData:imageData];
+	[prevImage setImageScrollViewWithImageData:imageData];
 	prevImage.imageIndex = currentIndex - 1;
 	return prevImage;
 }

@@ -9,12 +9,12 @@
 #import "ImagePreviewViewController.h"
 #import "PiwigoImageData.h"
 #import "ImageScrollView.h"
+#import "VideoView.h"
 #import "Model.h"
 #import "NetworkHandler.h"
 #import "KeychainAccess.h"
 
 @interface ImagePreviewViewController ()
-
 
 @end
 
@@ -26,6 +26,7 @@
 	if(self)
 	{
 		self.scrollView = [ImageScrollView new];
+        self.videoView = [VideoView new];
 		self.view = self.scrollView;
 	}
 	return self;
@@ -40,31 +41,24 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
-    // Stop playing video if needed
-    if ([self.scrollView.player playbackState]) {
-        [self.scrollView.player stop];
-    }
 }
 
--(void)setImageWithImageData:(PiwigoImageData*)imageData
+-(void)setImageScrollViewWithImageData:(PiwigoImageData*)imageData
 {
-	if(imageData.isVideo)
-	{
-		[self.scrollView setupPlayerWithURL:imageData.fullResPath];
-		return;
-	}
-    
+    // Display "play" button if video
+    self.scrollView.playImage.hidden = !(imageData.isVideo);
+
+    // Thumbnail image may be used as placeholder image
+    NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
+    NSURL *thumbnailURL = [NSURL URLWithString:[NetworkHandler getURLWithPath:thumbnailStr asPiwigoRequest:NO withURLParams:nil]];
     UIImageView *thumb = [UIImageView new];
-    NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.ThumbPath asPiwigoRequest:NO withURLParams:nil];
-    [thumb setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-
-	NSString *URLString = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
-    URLRequest = [NetworkHandler getURLWithPath:URLString asPiwigoRequest:NO withURLParams:nil];
-    NSURL *request = [NSURL URLWithString:URLRequest];
+    [thumb setImageWithURL:thumbnailURL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
     
-	__weak typeof(self) weakSelf = self;
-
+    // Previewed image
+    NSString *previewStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
+    NSURL *previewURL = [NSURL URLWithString:[NetworkHandler getURLWithPath:previewStr asPiwigoRequest:NO withURLParams:nil]];
+    __weak typeof(self) weakSelf = self;
+    
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFImageResponseSerializer serializer];
     
@@ -90,7 +84,7 @@
     
     weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
     
-    [manager GET:request.absoluteString
+    [manager GET:previewURL.absoluteString
       parameters:nil
         progress:^(NSProgress *progress) {
             dispatch_async(dispatch_get_main_queue(),
@@ -106,7 +100,7 @@
         }
          success:^(NSURLSessionTask *task, UIImage *image) {
              weakSelf.scrollView.imageView.image = image;
-             weakSelf.imageLoaded = YES;
+             weakSelf.imageLoaded = YES;                        // Hide progress bar
              [manager invalidateSessionCancelingTasks:YES];
          }
          failure:^(NSURLSessionTask *task, NSError *error) {
@@ -115,7 +109,38 @@
 #endif
              [manager invalidateSessionCancelingTasks:YES];
          }
-    ];
+     ];
+}
+
+-(void)startVideoPlayerViewWithImageData:(PiwigoImageData*)imageData
+{
+    // Set URL
+    NSString *videoStr = [NetworkHandler getURLWithPath:imageData.fullResPath asPiwigoRequest:NO withURLParams:nil];
+    NSURL *videoURL = [NSURL URLWithString:[NetworkHandler getURLWithPath:videoStr asPiwigoRequest:NO withURLParams:nil]];
+
+    // Intialise video controller
+    AVPlayer *videoPlayer = [AVPlayer playerWithURL:videoURL];
+    AVPlayerViewController *playerController = [[AVPlayerViewController alloc] init];
+    playerController.player = videoPlayer;
+    playerController.videoGravity = AVLayerVideoGravityResizeAspect;
+    
+    // Playback controls
+    playerController.showsPlaybackControls = YES;
+//    [self.videoPlayer addObserver:self.imageView forKeyPath:@"rate" options:0 context:nil];
+    
+    // Start playing automatically…
+    [playerController.player play];
+    
+    [self.videoView addSubview:playerController.view];
+    playerController.view.frame = self.videoView.bounds;
+
+    // Present the video
+    UIViewController *currentViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (currentViewController.presentedViewController)
+    {
+        currentViewController = currentViewController.presentedViewController;
+    }
+    [currentViewController presentViewController:playerController animated:YES completion:nil];
 }
 
 @end

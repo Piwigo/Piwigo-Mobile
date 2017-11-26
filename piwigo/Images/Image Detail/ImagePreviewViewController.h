@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AVKit/AVKit.h>
 
 @class PiwigoImageData;
 @class ImageScrollView;
+@class VideoView;
 
 @protocol ImagePreviewDelegate <NSObject>
 
@@ -20,10 +22,14 @@
 @interface ImagePreviewViewController : UINavigationController
 
 @property (nonatomic, weak) id<ImagePreviewDelegate> imagePreviewDelegate;
+
 @property (nonatomic, strong) ImageScrollView *scrollView;
+@property (nonatomic, strong) VideoView *videoView;
+
 @property (nonatomic, assign) NSInteger imageIndex;
 @property (nonatomic, assign) BOOL imageLoaded;
 
--(void)setImageWithImageData:(PiwigoImageData*)imageData;
+-(void)setImageScrollViewWithImageData:(PiwigoImageData*)imageData;
+-(void)startVideoPlayerViewWithImageData:(PiwigoImageData*)imageData;
 
 @end
