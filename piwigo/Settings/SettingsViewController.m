@@ -59,7 +59,7 @@ typedef enum {
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor whiteColor];
+		self.view.backgroundColor = [UIColor piwigoGray];
         
         self.headerHeights = @[
 							   @40.0,

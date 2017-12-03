@@ -58,7 +58,7 @@
         
         // Determine recommended image preview size for device
         CGRect screen = [[UIScreen mainScreen] bounds];
-        NSInteger points = (int)fmin(screen.size.width, screen.size.height);
+        NSInteger points = (int)fmax(screen.size.width, screen.size.height);
         if (points <= 324) {
             instance.defaultImagePreviewSize = kPiwigoImageSizeXSmall;
         } else if (points < 432) {
@@ -74,8 +74,8 @@
         } else {
             instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
         }
-        instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
-		
+		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
+        
         // Default image upload setting
         instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
 		instance.photoQuality = 95;                 // 95% image quality at compression

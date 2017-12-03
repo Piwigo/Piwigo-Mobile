@@ -331,7 +331,7 @@
 "defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";
 "defaultThumbnailSizeTitle" = "Taille par Défaut";
 "defaultThumbnailSizeHeader" = "Veuillez Sélectionner une Taille de Vignette";
-"defaultThumbnailSize_disabled" = " (désactivé sur le serveur)";
+"defaultSize_disabled" = " (désactivé sur le serveur)";
 "settings_displayTitles" = "Afficher Titres sur Vignettes";
 "settings_displayTitles>320px" = "Afficher les Titres sur les Vignettes";
 
@@ -352,7 +352,7 @@
 "defaultImageSizeTitle" = "Taille par Défaut";
 "defaultImageSizeHeader" = "Veuillez Sélectionner une Taille d’Image";
 "defaultImageSize_recommended" = " (recommandé)";
-"defaultImageSize_disabled" = " (désactivé sur le serveur)";
+"defaultSize_disabled" = " (désactivé sur le serveur)";
 
 "imageSizeSquare" = "Carré";
 "imageSizeThumbnail" = "Miniature";

@@ -334,6 +334,7 @@
 "settingsHeader_general" = "General Settings";
 "settings_loadAllCategories" = "Download all Albums at Start";
 "settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
+
 "defaultImageSort" = "Sort";
 "defaultImageSort>320px" = "Default Sort";
 "defaultImageSort>414px" = "Default Sort of Images";
@@ -343,13 +344,12 @@
 "defaultThumbnailSize>414px" = "Default Size of Thumbnails";
 "defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Please Select a Thumbnail Size";
-"defaultThumbnailSize_disabled" = " (disabled on server)";
 "settings_displayTitles" = "Titles on Thumbnails";
 "settings_displayTitles>320px" = "Display Titles on Thumbnails";
 
-"thumbnailSizeSquare" = "Square (faster)";
-"thumbnailSizeThumbnail" = "Thumbnail (default)";
-"thumbnailSizeXXSmall" = "Tiny (better)";
+"thumbnailSizeSquare" = "Square";
+"thumbnailSizeThumbnail" = "Thumbnail";
+"thumbnailSizeXXSmall" = "Tiny";
 "thumbnailSizeXSmall" = "Extra Small";
 "thumbnailSizeSmall" = "Small";
 "thumbnailSizeMedium" = "Medium";
@@ -364,7 +364,8 @@
 "defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "Please Select an Image Size";
 "defaultImageSize_recommended" = " (recommended)";
-"defaultImageSize_disabled" = " (disabled on server)";
+"defaultSize_disabled" = " (disabled on server)";
+"defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
 
 "imageSizeSquare" = "Square";
 "imageSizeThumbnail" = "Thumbnail";

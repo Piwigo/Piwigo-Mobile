@@ -384,15 +384,6 @@
 			path = TabBar;
 			sourceTree = "<group>";
 		};
-		AD92B8F81F1FFE50006E5B63 /* Release Notes */ = {
-			isa = PBXGroup;
-			children = (
-				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
-				AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */,
-			);
-			path = "Release Notes";
-			sourceTree = "<group>";
-		};
 		ADE535901F65C01000372CBD /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -542,6 +533,14 @@
 				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
 				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
 				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
+				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
+				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
+				D8172E941AB9093100271DB0 /* EditPopDownView.h */,
+				D8172E951AB9093100271DB0 /* EditPopDownView.m */,
+				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
+				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
+				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
+				AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -775,15 +774,6 @@
 			path = "Not Uploaded Yet";
 			sourceTree = "<group>";
 		};
-		D8B9BC831A96C4EE00C1B0E5 /* About */ = {
-			isa = PBXGroup;
-			children = (
-				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
-				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
-			);
-			path = About;
-			sourceTree = "<group>";
-		};
 		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
 			isa = PBXGroup;
 			children = (
@@ -818,12 +808,6 @@
 				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
 				D8083A641A7FF30B00A95605 /* Cells */,
 				D81C993E1B02DA190081C976 /* Views */,
-				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
-				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
-				D8172E941AB9093100271DB0 /* EditPopDownView.h */,
-				D8172E951AB9093100271DB0 /* EditPopDownView.m */,
-				D8B9BC831A96C4EE00C1B0E5 /* About */,
-				AD92B8F81F1FFE50006E5B63 /* Release Notes */,
 			);
 			path = Settings;
 			sourceTree = "<group>";

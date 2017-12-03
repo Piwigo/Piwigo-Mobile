@@ -155,7 +155,7 @@
                                       [Model sharedInstance].hasThumbSizeImages = YES;
                                   } else if ([size isEqualToString:@"2small"]) {
                                       [Model sharedInstance].hasXXSmallSizeImages = YES;
-                                  } else if ([size isEqualToString:@" "]) {
+                                  } else if ([size isEqualToString:@"xsmall"]) {
                                       [Model sharedInstance].hasXSmallSizeImages = YES;
                                   } else if ([size isEqualToString:@"small"]) {
                                       [Model sharedInstance].hasSmallSizeImages = YES;

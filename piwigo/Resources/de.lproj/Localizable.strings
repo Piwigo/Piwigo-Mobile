@@ -331,7 +331,7 @@
 "defaultThumbnailSize>414px" = "Standardgröße der Miniaturbilder";
 "defaultThumbnailSizeTitle" = "Standardgröße";
 "defaultThumbnailSizeHeader" = "Bitte wähle eine Miniaturbildgröße";
-"defaultThumbnailSize_disabled" = " (auf Server deaktiviert)";
+"defaultSize_disabled" = " (auf Server deaktiviert)";
 "settings_displayTitles" = "Titel bei Miniaturbildern";
 "settings_displayTitles>320px" = "Titel bei Miniaturbildern anzeigen";
 
@@ -352,7 +352,7 @@
 "defaultImageSizeTitle" = "Standardgröße";
 "defaultImageSizeHeader" = "Bitte wähle eine Bildgröße";
 "defaultImageSize_recommended" = " (empfohlen)";
-"defaultImageSize_disabled" = " (auf Server deaktiviert)";
+"defaultSize_disabled" = " (auf Server deaktiviert)";
 
 "imageSizeSquare" = "Quadratisch";
 "imageSizeThumbnail" = "Miniaturbild";

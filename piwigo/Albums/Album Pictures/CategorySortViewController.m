@@ -22,13 +22,14 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor whiteColor];
+		self.view.backgroundColor = [UIColor piwigoGray];
 		self.title = NSLocalizedString(@"sortTitle", @"Sort Type");
 		
 		self.sortSelectTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.sortSelectTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.sortSelectTableView.delegate = self;
 		self.sortSelectTableView.dataSource = self;
+        self.sortSelectTableView.backgroundColor = [UIColor piwigoGray];
 		[self.view addSubview:self.sortSelectTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.sortSelectTableView]];
 	}
@@ -46,6 +47,33 @@
 }
 
 #pragma mark UITableView Methods
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 50.0;
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
+    
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.textColor = [UIColor piwigoOrange];
+    headerLabel.textAlignment = NSTextAlignmentCenter;
+    headerLabel.text = NSLocalizedString(@"defaultImageSort>414px", @"Default Sort of Images");
+    headerLabel.adjustsFontSizeToFitWidth = YES;
+    headerLabel.minimumScaleFactor = 0.5;
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
+    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"header" : headerLabel}]];
+    
+    return header;
+}
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {

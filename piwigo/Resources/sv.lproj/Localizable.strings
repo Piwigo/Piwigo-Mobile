@@ -331,7 +331,7 @@
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
 "defaultThumbnailSizeTitle" = "Standardstorlek";
 "defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
-"defaultThumbnailSize_disabled" = " (inaktiverad på servern)";
+"defaultSize_disabled" = " (inaktiverad på servern)";
 "settings_displayTitles" = "Titlar på miniatyrbilder";
 "settings_displayTitles>320px" = "Visa titlar på miniatyrbilder";
 
@@ -352,7 +352,7 @@
 "defaultImageSizeTitle" = "Standardstorlek";
 "defaultImageSizeHeader" = "Välj en bildstorlek";
 "defaultImageSize_recommended" = " (rekommenderas)";
-"defaultImageSize_disabled" = " (inaktiverad på servern)";
+"defaultSize_disabled" = " (inaktiverad på servern)";
 
 "imageSizeSquare" = "Kvadrat";
 "imageSizeThumbnail" = "Miniatyrbild";

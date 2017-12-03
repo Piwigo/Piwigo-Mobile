@@ -22,14 +22,14 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoWhiteCream];
+		self.view.backgroundColor = [UIColor piwigoGray];
 		self.title = NSLocalizedString(@"privacyLevel", @"Privacy Level");
 		
 		self.privacyTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.privacyTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.privacyTableView.delegate = self;
 		self.privacyTableView.dataSource = self;
-		self.privacyTableView.backgroundColor = [UIColor piwigoWhiteCream];
+		self.privacyTableView.backgroundColor = [UIColor piwigoGray];
 		[self.view addSubview:self.privacyTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.privacyTableView]];
 		
@@ -68,6 +68,33 @@
 }
 
 #pragma mark UITableView Methods
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 50.0;
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
+    
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.textColor = [UIColor piwigoOrange];
+    headerLabel.textAlignment = NSTextAlignmentCenter;
+    headerLabel.text = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
+    headerLabel.adjustsFontSizeToFitWidth = YES;
+    headerLabel.minimumScaleFactor = 0.5;
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
+    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"header" : headerLabel}]];
+    
+    return header;
+}
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
