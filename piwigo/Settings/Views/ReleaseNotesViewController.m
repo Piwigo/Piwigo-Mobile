@@ -12,6 +12,9 @@
 @interface ReleaseNotesViewController ()
 
 @property (nonatomic, strong) UILabel *piwigoTitle;
+@property (nonatomic, strong) UILabel *byLabel1;
+@property (nonatomic, strong) UILabel *byLabel2;
+@property (nonatomic, strong) UILabel *versionLabel;
 @property (nonatomic, strong) UILabel *releaseNotes;
 
 @property (nonatomic, strong) UITextView *textView;
@@ -36,21 +39,41 @@
         self.piwigoTitle.text = NSLocalizedString(@"settings_appName", @"Piwigo Mobile");
         [self.view addSubview:self.piwigoTitle];
         
-        self.releaseNotes = [UILabel new];
-        self.releaseNotes.translatesAutoresizingMaskIntoConstraints = NO;
-        self.releaseNotes.font = [UIFont piwigoFontNormal];
-        self.releaseNotes.font = [self.releaseNotes.font fontWithSize:16];
-        self.releaseNotes.textColor = [UIColor piwigoWhiteCream];
-        self.releaseNotes.text = NSLocalizedString(@"settings_releaseNotes", @"Release Notes");;
-        [self.view addSubview:self.releaseNotes];
+        self.byLabel1 = [UILabel new];
+        self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
+        self.byLabel1.font = [UIFont piwigoFontNormal];
+        self.byLabel1.font = [self.byLabel1.font fontWithSize:16];
+        self.byLabel1.textColor = [UIColor piwigoWhiteCream];
+        self.byLabel1.text = NSLocalizedStringFromTableInBundle(@"authors1", @"About", [NSBundle mainBundle], @"By Spencer Baker, Olaf Greck,");
+        [self.view addSubview:self.byLabel1];
+        
+        self.byLabel2 = [UILabel new];
+        self.byLabel2.translatesAutoresizingMaskIntoConstraints = NO;
+        self.byLabel2.font = [UIFont piwigoFontNormal];
+        self.byLabel2.font = [self.byLabel2.font fontWithSize:16];
+        self.byLabel2.textColor = [UIColor piwigoWhiteCream];
+        self.byLabel2.text = NSLocalizedStringFromTableInBundle(@"authors2", @"About", [NSBundle mainBundle], @"and Eddy Lelièvre-Berna");
+        [self.view addSubview:self.byLabel2];
+        
+        self.versionLabel = [UILabel new];
+        self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.versionLabel.font = [UIFont piwigoFontNormal];
+        self.versionLabel.font = [self.versionLabel.font fontWithSize:10];
+        self.versionLabel.textColor = [UIColor piwigoWhiteCream];
+        [self.view addSubview:self.versionLabel];
+        
+        NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+        self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
         
         self.textView = [UITextView new];
+        self.textView.restorationIdentifier = @"release+notes";
         self.textView.translatesAutoresizingMaskIntoConstraints = NO;
         self.textView.layer.cornerRadius = 5;
         [self.view addSubview:self.textView];
         
         // Release notes string
-        NSString *notesString = @"\n\n\n\n";
+        NSString *notesString = @"\n\n\n\n\n\n";
         
         // Release 2.1.5 — Bundle string
         NSString *v215String = NSLocalizedStringFromTableInBundle(@"v2.1.5_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.5 Release Notes text");
@@ -261,12 +284,16 @@
 {
     NSDictionary *views = @{
                             @"title" : self.piwigoTitle,
-                            @"subTitle" : self.releaseNotes,
+                            @"by1" : self.byLabel1,
+                            @"by2" : self.byLabel2,
+                            @"usu" : self.versionLabel,
                             @"textView" : self.textView
                             };
     
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoTitle]];
-    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.releaseNotes]];
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel1]];
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
     
     // iPhone X ?
     struct utsname systemInfo;
@@ -276,18 +303,18 @@
     if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
         // Add 25px for iPhone X (not great in landscape mode but temporary solution)
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|-105-[title]-[subTitle]-10-[textView]-65-|"
+                                   constraintsWithVisualFormat:@"V:|-105-[title]-[by1][by2]-3-[usu]-10-[textView]-100-|"
                                    options:kNilOptions metrics:nil views:views]];
     } else {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|-80-[title]-[subTitle]-10-[textView]-65-|"
+                                   constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
                                    options:kNilOptions metrics:nil views:views]];
     }
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
                                                                       options:kNilOptions
                                                                       metrics:nil
-                                                                        views:views]];
+                                                                        views:views]];    
 }
 
 @end

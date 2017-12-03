@@ -66,12 +66,13 @@
 		self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
 		
 		self.textView = [UITextView new];
+        self.textView.restorationIdentifier = @"thanks+licenses";
 		self.textView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.textView.layer.cornerRadius = 5;
 		[self.view addSubview:self.textView];
 		
         // Release notes string
-        NSString *aboutString = @"\n\n\n\n";
+        NSString *aboutString = @"\n\n\n\n\n\n";
         
         // Translators
         NSString *translatorsString = NSLocalizedStringFromTableInBundle(@"translators_text", @"About", [NSBundle mainBundle], @"Translators text");
@@ -155,7 +156,7 @@
         self.textView.allowsEditingTextAttributes = NO;
         self.textView.selectable = YES;
         [self addConstraints];
-	}
+    }
 	return self;
 }
 
@@ -182,7 +183,7 @@
     if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
         // Add 25px for iPhone X (not great in landscape mode but temporary solution)
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|-105-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
+                                   constraintsWithVisualFormat:@"V:|-105-[title]-[by1][by2]-3-[usu]-10-[textView]-100-|"
                                    options:kNilOptions metrics:nil views:views]];
     } else {
         [self.view addConstraints:[NSLayoutConstraint
