@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <sys/utsname.h>                    // For determining iOS device model
 #import "LoginViewController_iPhone.h"
 
 @interface LoginViewController_iPhone ()
@@ -42,13 +43,24 @@
                             @"user" : self.userTextField,
                             @"password" : self.passwordTextField
                             };
+    // iPhone X ?
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    NSString* deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+
+    if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
+        // Add 25px for iPhone X (not great in landscape mode but temporary solution)
+        self.topConstraintAmount = 65;
+    } else {
+        self.topConstraintAmount = 40;
+    }
+
     NSDictionary *metrics = @{
                               @"imageSide" : @25,
                               @"imageTop" : @40,
                               @"imageBottom" : @20,
                               @"side" : @35
                               };
-    self.topConstraintAmount = 40;
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[logo]-imageBottom-[server]-[user]-[password]-[login]"
                                                                       options:kNilOptions
