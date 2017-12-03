@@ -244,8 +244,8 @@
             ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
             if (error) {
                 // Inform user and propose to cancel or continue
-                [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
-                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
+                [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image from iCloud. Error: %@"), [error localizedDescription]]
                              forRetrying:YES
                                withImage:image];
                 return;
@@ -300,14 +300,11 @@
 //#if defined(DEBUG)
 //        NSLog(@"Error: Could not create source");
 //#endif
-        // =================>>>> Code what to do in that case !!!!
-
-        
-        
-        
-        
-        
-        
+    // Inform user and propose to cancel or continue
+    [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                  andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_source", @"cannot create image source")]
+                 forRetrying:YES
+                   withImage:image];
         return;
     }
     
@@ -396,12 +393,12 @@
 //    #if defined(DEBUG)
 //            NSLog(@"Error: Could not retrieve imageData object");
 //    #endif
-            // =================>>>> Code what to do in that case !!!!
-
-            
-            
-            
-            return;
+        // Inform user and propose to cancel or continue
+        [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                      andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_destination", @"cannot create image destination")]
+                     forRetrying:YES
+                       withImage:image];
+        return;
         }
         imageCompressed = (__bridge  NSData *)imageDataRef;
         CFRelease(destination);
@@ -529,8 +526,8 @@
             ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
             if (error) {
                 // Inform user and propose to cancel or continue
-                [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
-                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
+                [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
                              forRetrying:YES
                                withImage:image];
                 return;
@@ -560,9 +557,12 @@
                             NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
 #endif
                             if ([info objectForKey:PHImageErrorKey]) {
-                                // Error encountered!
+                                // Inform user and propose to cancel or continue
                                 NSError *error = [info valueForKey:PHImageErrorKey];
-                                NSLog(@"=> Error : %@", error.description);
+                                [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
+                                             forRetrying:YES
+                                               withImage:image];
                                 return;
                             }
 
