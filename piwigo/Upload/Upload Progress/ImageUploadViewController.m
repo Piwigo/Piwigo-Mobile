@@ -238,18 +238,25 @@
     if (direction == MGSwipeDirectionRightToLeft && index == 0) {
         // Delete button
         NSIndexPath *indexPath = [self.uploadImagesTableView indexPathForCell:cell];
-//        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
-        if(indexPath.section == 0)
+        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
+        if(indexPath.section == 0)      // Image selected for upload
         {
             // Remove image not in upload queue
             [self.imagesToEdit removeObjectAtIndex:indexPath.row];
         }
-        else if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
+        else if(indexPath.row == 0)     // Image being uploaded
         {
-            // Remove image in upload queue (in both tables)
+            // Stop current iCloud download or Piwigo upload
+            ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
+            image.stopUpload = YES;
+            [[ImageUploadManager sharedInstance].imageUploadQueue replaceObjectsAtIndexes:[NSIndexSet indexSetWithIndex:indexPath.row] withObjects:[NSArray arrayWithObject:image]];
+        }
+        else if (indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)    // Image to be uploaded
+        {
+            // Remove image from upload queue (both in table and collection view) or stop iCloud download or Piwigo upload
             ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
             [[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
-            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObjectForKey:image.image];
+            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObjectForKey:[image.image stringByDeletingPathExtension]];
             [ImageUploadManager sharedInstance].maximumImagesForBatch--;
         }
 
@@ -274,6 +281,7 @@
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
+    NSLog(@"ImageUploadViewController[imageUploaded]");
 	[self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 

@@ -61,10 +61,12 @@
 
 -(void)addImage:(ImageUpload*)image
 {
-	[self.imageUploadQueue addObject:image];
+    [self.imageUploadQueue addObject:image];
 	self.maximumImagesForBatch++;
 	[self startUploadIfNeeded];
-	[self.imageNamesUploadQueue setObject:image.image forKey:image.image];
+    
+    // The file name extension may change e.g. MOV => MP4, HEIC => JPG
+	[self.imageNamesUploadQueue setObject:image.image forKey:[image.image stringByDeletingPathExtension]];
 }
 
 -(void)startUploadIfNeeded
@@ -203,8 +205,8 @@
 {
     // Remove image from queue (in both tables)
     [self.imageUploadQueue removeObjectAtIndex:0];
-    [self.imageNamesUploadQueue removeObjectForKey:image.image];
-    
+    [self.imageNamesUploadQueue removeObjectForKey:[image.image stringByDeletingPathExtension]];
+
     // Update progress infos
     if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
     {
@@ -232,19 +234,42 @@
     options.networkAccessAllowed = YES;
 
     // The block Photos calls periodically while downloading the photo
-    options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
-        NSLog(@"downloading Live Photo from iCloud — progress %lf",progress);
+    options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* info) {
+#if defined(DEBUG)
+        NSLog(@"downloading Photo from iCloud — progress %lf",progress);
+#endif
+        // The handler needs to update the user interface => Dispatch to main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
 
-        
-        
-        
+            ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
+            if (error) {
+                // Error encountered, cancel download & inform user
+                
+                
+                return;
+            }
+            else if (imageBeingUploaded.stopUpload) {
+                // User wants to cancel the download
+                *stop = YES;
+                
+                // Remove image from queue and upload next one
+                self.maximumImagesForBatch--;
+                [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
+            }
+            else {
+                // Update progress bar(s)
+            
+            
+            }
+        });
     };
+
     // Requests image…
     @autoreleasepool {
         [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
                      resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 #if defined(DEBUG)
-                         NSLog(@"retrieveFullSizeAssetDataFromImage returned info(%@)", info);
+                         NSLog(@"retrieveFullSizeAssetDataFromImage \"%@\" returned info(%@)", image.image, info);
 #endif
                          if (!info) {
                              NSLog(@"=> info = nil!");
@@ -496,11 +521,30 @@
 #if defined(DEBUG)
         NSLog(@"downloading Video from iCloud — progress %lf",progress);
 #endif
-    
-        
-        
-    
-    
+        // The handler needs to update the user interface => Dispatch to main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
+            if (error) {
+                // Error encountered, cancel download & inform user
+                
+                
+                return;
+            }
+            else if (imageBeingUploaded.stopUpload) {
+                // User wants to cancel the download
+                *stop = YES;
+                
+                // Remove image from queue and upload next one
+                self.maximumImagesForBatch--;
+                [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
+            }
+            else {
+                // Updates progress bar(s)
+                
+                
+            }
+        });
     };
 
     // Requests video…
@@ -890,11 +934,17 @@
     // Upload photo or video
 	[UploadService uploadImage:imageData
 			   withInformation:imageProperties
-					onProgress:^(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks) {
-						if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
-						{
-							[self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
-						}
+					onProgress:^(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks) {
+                        ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
+                        if (imageBeingUploaded.stopUpload) {
+                            [progress cancel];
+                        }
+                        NSInteger current = progress.completedUnitCount;
+                        NSInteger total = progress.totalUnitCount;
+                        if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
+                        {
+                            [self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
+                        }
 					} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                         // Consider image job done
                         self.onCurrentImageUpload++;
@@ -921,17 +971,25 @@
                             [self.imageDeleteQueue addObject:image.imageAsset];
                         }
 
-                        // Remove image from queue and upload next one
-                        [self uploadNextImageAndRemoveImageFromQueue:image withResponse:response];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            // Remove image from queue and upload next one
+                            [self uploadNextImageAndRemoveImageFromQueue:image withResponse:response];
+                        });
 
 					} onFailure:^(NSURLSessionTask *task, NSError *error) {
-						NSString *fileExt = [[image.image pathExtension] uppercaseString];
-                        if(error.code == -1016 &&
+						ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
+                        NSString *fileExt = [[image.image pathExtension] uppercaseString];
+                        if (imageBeingUploaded.stopUpload) {
+                            // Upload was cancelled by user
+                            self.maximumImagesForBatch--;
+                            // Remove image from queue and upload next one
+                            [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
+                        } else if (error.code == -1016 &&
 						   ([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
                             [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
                             [fileExt isEqualToString:@"WEBM"] || [fileExt isEqualToString:@"WEBMV"])
                            )
-						{	// They need to check the VideoJS extension installation
+						{	// They need to check the VideoJS extension installation (should never happen as from v2.1.5
                             [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
                                           andMessage:NSLocalizedString(@"videoUploadConfigError_message", @"Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.")
                                          forRetrying:NO
@@ -977,7 +1035,7 @@
                                             self.onCurrentImageUpload++;
                                             ImageUpload *nextImage = [self.imageUploadQueue firstObject];
                                             [self.imageUploadQueue removeObjectAtIndex:0];
-                                            [self.imageNamesUploadQueue removeObjectForKey:nextImage.image];
+                                            [self.imageNamesUploadQueue removeObjectForKey:[nextImage.image stringByDeletingPathExtension]];
                                         }
                                         // Tell user how many images have been downloaded
                                         if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])

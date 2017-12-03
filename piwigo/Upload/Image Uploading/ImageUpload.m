@@ -29,6 +29,7 @@
         }
         self.categoryToUploadTo = category;
         self.privacyLevel = privacy;
+        self.stopUpload = NO;
 	}
 	return self;
 }

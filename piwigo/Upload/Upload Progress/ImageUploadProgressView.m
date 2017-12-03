@@ -112,19 +112,19 @@
 	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
 	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
 	CGFloat peiceProgress = (CGFloat)current / total;
-	CGFloat totalProgressForThisImage = (onChunkPercent + (chunkPercent * peiceProgress)) / self.maxImages;
-	CGFloat totalBatchProgress = (self.totalUploadedImages / (CGFloat)self.maxImages) + totalProgressForThisImage;
-	
+	CGFloat totalProgressForThisImage = (onChunkPercent + (chunkPercent * peiceProgress)) / fmax(1.0, (CGFloat)self.maxImages);
+	CGFloat totalBatchProgress = (self.totalUploadedImages / fmax(1.0, (CGFloat)self.maxImages)) + totalProgressForThisImage;
 	[self.uploadProgress setProgress:totalBatchProgress animated:YES];
 	
 	if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
 	{
-		[self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
+        [self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
 	}
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
+    NSLog(@"ImageUploadProgressView[imageUploaded]");
     // Increment the number of downloaded media only if upload succeeded
     if(!(response == nil)) {
         self.totalUploadedImages++;

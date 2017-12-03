@@ -68,7 +68,7 @@
 																	   constant:-10]];
 	
     self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
-    self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeTrash.png"]
+    self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeCancel"]
                                          backgroundColor:[UIColor redColor]
                                                 callback:^BOOL(MGSwipeTableCell *sender) {
                                                     return YES;

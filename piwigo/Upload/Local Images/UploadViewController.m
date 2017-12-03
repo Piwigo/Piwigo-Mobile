@@ -319,8 +319,7 @@
 	{
 		cell.cellSelected = YES;
 	}
-    else if(([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:originalFilename]) ||
-            ([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:[[originalFilename stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]))
+    else if ([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:[originalFilename stringByDeletingPathExtension]])
     {
         cell.cellUploading = YES;
     }
@@ -352,23 +351,26 @@
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
 {
-	NSInteger row = [self.images indexOfObject:image.imageAsset];
-	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSInteger row = [self.images indexOfObject:image.imageAsset];
+        LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 
-	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
-	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
-	CGFloat peiceProgress = (CGFloat)current / total;
-	CGFloat totalProgress = onChunkPercent + (chunkPercent * peiceProgress);
-	if(totalProgress > 1)
-	{
-		totalProgress = 1;
-	}
-	cell.progress = totalProgress;
+        CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
+        CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
+        CGFloat pieceProgress = (CGFloat)current / total;
+        CGFloat totalProgress = onChunkPercent + (chunkPercent * pieceProgress);
+        if(totalProgress > 1)
+        {
+            totalProgress = 1;
+        }
+        cell.progress = totalProgress;
+    });
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-	NSInteger row = [self.images indexOfObject:image.imageAsset];
+    NSLog(@"UploadViewController[imageUploaded]");
+    NSInteger row = [self.images indexOfObject:image.imageAsset];
 	LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 	cell.cellUploading = NO;
 	
@@ -378,7 +380,9 @@
 		NSMutableArray *newList = [self.images mutableCopy];
 		[newList removeObject:image.imageAsset];
 		self.images = newList;
-		[self.localImagesCollection reloadData];
+
+        // Update image collection
+        [self.localImagesCollection reloadData];
 	}
 }
 

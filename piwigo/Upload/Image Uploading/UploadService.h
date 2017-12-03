@@ -16,7 +16,7 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
 
 +(void)uploadImage:(NSData*)imageData
    withInformation:(NSDictionary*)imageInformation
-        onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+        onProgress:(void (^)(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks))onProgress
       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
