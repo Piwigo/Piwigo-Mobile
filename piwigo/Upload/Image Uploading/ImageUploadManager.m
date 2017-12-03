@@ -243,9 +243,11 @@
 
             ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
             if (error) {
-                // Error encountered, cancel download & inform user
-                
-                
+                // Inform user and propose to cancel or continue
+                [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
+                             forRetrying:YES
+                               withImage:image];
                 return;
             }
             else if (imageBeingUploaded.stopUpload) {
@@ -526,9 +528,11 @@
             
             ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
             if (error) {
-                // Error encountered, cancel download & inform user
-                
-                
+                // Inform user and propose to cancel or continue
+                [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
+                             forRetrying:YES
+                               withImage:image];
                 return;
             }
             else if (imageBeingUploaded.stopUpload) {
@@ -978,23 +982,12 @@
 
 					} onFailure:^(NSURLSessionTask *task, NSError *error) {
 						ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
-                        NSString *fileExt = [[image.image pathExtension] uppercaseString];
                         if (imageBeingUploaded.stopUpload) {
                             // Upload was cancelled by user
                             self.maximumImagesForBatch--;
                             // Remove image from queue and upload next one
                             [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
-                        } else if (error.code == -1016 &&
-						   ([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
-                            [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
-                            [fileExt isEqualToString:@"WEBM"] || [fileExt isEqualToString:@"WEBMV"])
-                           )
-						{	// They need to check the VideoJS extension installation (should never happen as from v2.1.5
-                            [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                                          andMessage:NSLocalizedString(@"videoUploadConfigError_message", @"Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.")
-                                         forRetrying:NO
-                                           withImage:image];
-						}
+                        }
 						else
 						{
 #if defined(DEBUG)
