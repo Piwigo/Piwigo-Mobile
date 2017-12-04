@@ -547,35 +547,82 @@
             }
         });
     };
+    
+    // Available export session presets?
+    [[PHImageManager defaultManager] requestAVAssetForVideo:image.imageAsset
+                options:options
+          resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
 
-    // Requests video…
-    @autoreleasepool {
-        [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
-                        exportPreset:AVAssetExportPresetPassthrough
-                        resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
+              // QuickTime video exportable with passthrough option (e.g. recorded with device)?
+              [AVAssetExportSession determineCompatibilityOfExportPreset:AVAssetExportPresetPassthrough withAsset:avasset outputFileType:AVFileTypeMPEG4 completionHandler:^(BOOL compatible) {
+            
+                      NSString *exportPreset = nil;
+                      if (compatible) {
+                          // No reencoding required — will keep metadata (or not depending on user's settings)
+                          exportPreset = AVAssetExportPresetPassthrough;
+                      }
+                      else
+                      {
+                          NSInteger maxPixels = lround(fmax(image.imageAsset.pixelWidth, image.imageAsset.pixelHeight));
+                          NSArray *presets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset];
+                          // This array never contains AVAssetExportPresetPassthrough,
+                          // that is why we use determineCompatibilityOfExportPreset: before.
+                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
+                          if ((maxPixels <= 640) && ([presets containsObject:AVAssetExportPreset640x480])) {
+                              // Encode in 640x480 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset640x480;
+                          }
+                          else if ((maxPixels <= 960) && ([presets containsObject:AVAssetExportPreset960x540])) {
+                              // Encode in 960x540 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset960x540;
+                          }
+                          else if ((maxPixels <= 1280) && ([presets containsObject:AVAssetExportPreset1280x720])) {
+                              // Encode in 1280x720 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset1280x720;
+                          }
+                          else if ((maxPixels <= 1920) && ([presets containsObject:AVAssetExportPreset1920x1080])) {
+                              // Encode in 1920x1080 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset1920x1080;
+                          }
+                          else {
+                              // Use highest quality for device
+                              exportPreset = AVAssetExportPresetHighestQuality;
+                          }
+                      }
+
+                  // Requests video with selected export preset…
+                  @autoreleasepool {
+                      [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
+                               exportPreset:exportPreset
+                              resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
 #if defined(DEBUG)
-                            NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+                                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
 #endif
-                            if ([info objectForKey:PHImageErrorKey]) {
-                                // Inform user and propose to cancel or continue
-                                NSError *error = [info valueForKey:PHImageErrorKey];
-                                [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
-                                             forRetrying:YES
-                                               withImage:image];
-                                return;
-                            }
-
-                            if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
-                                // This is a degraded version, wait for the next one…
-                                return;
-                            }
-
-                            // Modifies video before upload to Piwigo server
-                            [self modifyVideo:image beforeExporting:exportSession];
-                        }
-         ];
-    }
+                                  // The handler needs to update the user interface => Dispatch to main thread
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      if ([info objectForKey:PHImageErrorKey]) {
+                                          // Inform user and propose to cancel or continue
+                                          NSError *error = [info valueForKey:PHImageErrorKey];
+                                          [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                                                        andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
+                                                       forRetrying:YES
+                                                         withImage:image];
+                                          return;
+                                      }
+                                  });
+                                  
+                                  if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
+                                      // This is a degraded version, wait for the next one…
+                                      return;
+                                  }
+                                  
+                                  // Modifies video before upload to Piwigo server
+                                  [self modifyVideo:image beforeExporting:exportSession];
+                              }
+                       ];
+                  }
+              }];
+    }];
 }
 
 -(void)modifyVideo:(ImageUpload *)image beforeExporting:(AVAssetExportSession *)exportSession
@@ -593,12 +640,12 @@
     [exportSession setTimeRange:CMTimeRangeMake(kCMTimeZero, kCMTimePositiveInfinity)];
 
     // Video formats — Always export video in MP4 format
-//#if defined(DEBUG)
-//    NSLog(@"exportSession (before): %@", exportSession);
-//    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
-//#endif
     [exportSession setOutputFileType:AVFileTypeMPEG4];
     [exportSession setShouldOptimizeForNetworkUse:YES];
+#if defined(DEBUG)
+    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
+    NSLog(@"Description: %@", exportSession.description);
+#endif
 
     // Prepare MIME type
     NSString *mimeType = @"video/mp4";
@@ -612,61 +659,62 @@
     // Export temporary video for upload
     __block NSData *assetData = nil;
     [exportSession exportAsynchronouslyWithCompletionHandler:^{
-
-        if ([exportSession status] == AVAssetExportSessionStatusCompleted)
-        {
-            // Gets copy as NSData
-            assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
-            assert(assetData.length != 0);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([exportSession status] == AVAssetExportSessionStatusCompleted)
+            {
+                // Gets copy as NSData
+                assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
+                assert(assetData.length != 0);
 //#if defined(DEBUG)
-//            AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
-//            NSArray *assetMetadata = [videoAsset commonMetadata];
-//            NSLog(@"Export sucess :-)");
-//            NSLog(@"Video metadata: %@", assetMetadata);
+//                AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
+//                NSArray *assetMetadata = [videoAsset commonMetadata];
+//                NSLog(@"Export sucess :-)");
+//                NSLog(@"Video metadata: %@", assetMetadata);
 //#endif
 
-            // Deletes temporary video file
-            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+                // Deletes temporary video file
+                [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
-            // Upload video with tags and properties
-            [self uploadImage:image withData:assetData andMimeType:mimeType];
-        }
-        else if ([exportSession status] == AVAssetExportSessionStatusFailed)
-        {
-            // Deletes temporary video file
-            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+                // Upload video with tags and properties
+                [self uploadImage:image withData:assetData andMimeType:mimeType];
+            }
+            else if ([exportSession status] == AVAssetExportSessionStatusFailed)
+            {
+                // Deletes temporary video file if any
+                [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+                
+                // Inform user
+                [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_export", @"Sorry, the video could not be retrieved for the upload. Error: %@"), exportSession.error.localizedDescription]
+                             forRetrying:NO
+                               withImage:image];
+                return;
+            }
+            else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
+            {
+                // Deletes temporary video file
+                [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
-            // Inform user
-            [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                          andMessage:NSLocalizedString(@"videoUploadError_export", @"Sorry, the video could not be retrieved in MP4 format for the upload.")
-                         forRetrying:NO
-                           withImage:image];
-            return;
-        }
-        else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
-        {
-            // Deletes temporary video file
-            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
+                // Inform user
+                [self showErrorWithTitle:NSLocalizedString(@"uploadCancelled_title", @"Upload Cancelled")
+                              andMessage:NSLocalizedString(@"videoUploadCancelled_message", @"The upload of the video has been cancelled.")
+                             forRetrying:YES
+                               withImage:image];
+                return;
+            }
+            else    // Failed for unknown reason!
+            {
+                // Deletes temporary video files
+                [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
-            // Inform user
-            [self showErrorWithTitle:NSLocalizedString(@"uploadCancelled_title", @"Upload Cancelled")
-                          andMessage:NSLocalizedString(@"videoUploadCancelled_message", @"The upload of the video has been cancelled.")
-                         forRetrying:YES
-                           withImage:image];
-            return;
-        }
-        else    // Failed for unknown reason!
-        {
-            // Deletes temporary video files
-            [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
-
-            // Inform user
-            [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                          andMessage:NSLocalizedString(@"videoUploadError_unknown", @"Sorry, the upload of the video has failed for an unknown error during the MP4 conversion.")
-                         forRetrying:YES
-                           withImage:image];
-            return;
-        }
+                // Inform user
+                [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_unknown", @"Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: %@"), exportSession.error.localizedDescription]
+                             forRetrying:YES
+                               withImage:image];
+                return;
+            }
+        });
     }];
 }
 
