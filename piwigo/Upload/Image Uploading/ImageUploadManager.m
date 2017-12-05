@@ -551,7 +551,7 @@
     // Available export session presets?
     [[PHImageManager defaultManager] requestAVAssetForVideo:image.imageAsset
                 options:options
-          resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
+          resultHandler:^(AVAsset *avasset, AVAudioMix *audioMix, NSDictionary *info) {
 
               // QuickTime video exportable with passthrough option (e.g. recorded with device)?
               [AVAssetExportSession determineCompatibilityOfExportPreset:AVAssetExportPresetPassthrough withAsset:avasset outputFileType:AVFileTypeMPEG4 completionHandler:^(BOOL compatible) {
@@ -617,7 +617,8 @@
                                   }
                                   
                                   // Modifies video before upload to Piwigo server
-                                  [self modifyVideo:image beforeExporting:exportSession];
+                                  [self modifyVideo:image withAVAsset:avasset beforeExporting:exportSession];
+//                                  [self modifyVideo:image beforeExporting:exportSession];
                               }
                        ];
                   }
@@ -625,7 +626,7 @@
     }];
 }
 
--(void)modifyVideo:(ImageUpload *)image beforeExporting:(AVAssetExportSession *)exportSession
+-(void)modifyVideo:(ImageUpload *)image withAVAsset:(AVAsset *)originalVideo beforeExporting:(AVAssetExportSession *)exportSession
 {
     // Strips private metadata if user requested it in Settings
     // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
@@ -683,12 +684,41 @@
                 // Deletes temporary video file if any
                 [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
                 
-                // Inform user
-                [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_export", @"Sorry, the video could not be retrieved for the upload. Error: %@"), exportSession.error.localizedDescription]
-                             forRetrying:NO
-                               withImage:image];
-                return;
+                // Try to upload original file
+                if ([originalVideo isKindOfClass:[AVURLAsset class]] &&
+                    [[Model sharedInstance].uploadFileTypes containsString:[image.image pathExtension]]) {
+                    AVURLAsset *originalFileURL = (AVURLAsset *)originalVideo;
+                    NSData *assetData = [[NSData dataWithContentsOfURL:originalFileURL.URL] copy];
+                    NSArray *assetMetadata = [originalVideo commonMetadata];
+
+                    // Creates metadata without location data
+                    NSMutableArray *newAssetMetadata = [NSMutableArray array];
+                    for (AVMetadataItem *item in assetMetadata) {
+                        if ([item.commonKey isEqualToString:AVMetadataCommonKeyLocation]){
+#if defined(DEBUG)
+                            NSLog(@"Location found: %@", item.stringValue);
+#endif
+                        } else {
+                            [newAssetMetadata addObject:item];
+                        }
+                    }
+                    BOOL assetDoesNotContainGPSmetadata =
+                        (newAssetMetadata.count == assetMetadata.count) || ([assetMetadata count] == 0);
+
+                    if (assetData && ((![Model sharedInstance].stripGPSdataOnUpload) || ([Model sharedInstance].stripGPSdataOnUpload && assetDoesNotContainGPSmetadata))) {
+
+                        // Upload video with tags and properties
+                        [self uploadImage:image withData:assetData andMimeType:mimeType];
+                        return;
+                    } else {
+                        // No data — Inform user that it won't succeed
+                        [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                                      andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_export", @"Sorry, the video could not be retrieved for the upload. Error: %@"), exportSession.error.localizedDescription]
+                                     forRetrying:NO
+                                       withImage:image];
+                        return;
+                    }
+                }
             }
             else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
             {
