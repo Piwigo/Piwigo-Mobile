@@ -363,7 +363,6 @@
     }
     
     // Apply compression if user requested it in Settings, or convert to JPEG if necessary
-    CFStringRef UTI = nil;
     NSData *imageCompressed = nil;
     NSString *fileExt = [[image.image pathExtension] lowercaseString];
     if ([Model sharedInstance].compressImageOnUpload && ([Model sharedInstance].photoQuality < 100.0)) {
@@ -372,20 +371,18 @@
         imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
 
         // Final image file will be in JPEG format
-        UTI = kUTTypeJPEG;
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
     } else if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
         // Image in unaccepted file format for Piwigo server => convert to JPEG format
         imageCompressed = UIImageJPEGRepresentation(imageResized, 100.0);
         
         // Final image file will be in JPEG format
-        UTI = kUTTypeJPEG;
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
     }
     
     // If compression failed or imageCompressed null, try to use original image
     if (!imageCompressed) {
-        UTI = CGImageSourceGetType(source);
+        CFStringRef UTI = CGImageSourceGetType(source);
         CFMutableDataRef imageDataRef = CFDataCreateMutable(nil, 0);
         CGImageDestinationRef destination = CGImageDestinationCreateWithData(imageDataRef, UTI, 1, nil);
         CGImageDestinationAddImage(destination, imageResized.CGImage, nil);
@@ -393,15 +390,21 @@
 //    #if defined(DEBUG)
 //            NSLog(@"Error: Could not retrieve imageData object");
 //    #endif
-        // Inform user and propose to cancel or continue
-        [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
-                      andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_destination", @"cannot create image destination")]
-                     forRetrying:YES
-                       withImage:image];
-        return;
+            CFRelease(source);
+            CFRelease(destination);
+            CFRelease(imageDataRef);
+            // Inform user and propose to cancel or continue
+            [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_destination", @"cannot create image destination")]
+                         forRetrying:YES
+                           withImage:image];
+            return;
         }
         imageCompressed = (__bridge  NSData *)imageDataRef;
+        CFRelease(imageDataRef);
         CFRelease(destination);
+        assetMetadata = nil;
+        assetImage = nil;
     }
     
     // Release original CGImageSourceRef
@@ -410,8 +413,9 @@
     // Add metadata to final image
     NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:assetMetadata];
     
-    // Release metadata
+    // Release memory
     assetMetadata = nil;
+    assetImage = nil;
 
     // Prepare MIME type
     NSString *mimeType = @"";
