@@ -1025,8 +1025,8 @@
                         if (imageBeingUploaded.stopUpload) {
                             [progress cancel];
                         }
-                        NSInteger current = progress.completedUnitCount;
-                        NSInteger total = progress.totalUnitCount;
+                        NSInteger current = (NSInteger) progress.completedUnitCount;
+                        NSInteger total = (NSInteger) progress.totalUnitCount;
                         if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
                         {
                             [self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
