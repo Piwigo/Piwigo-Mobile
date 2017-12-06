@@ -23,7 +23,7 @@
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor piwigoGray];
-		self.title = NSLocalizedString(@"sortTitle", @"Sort Type");
+		self.title = NSLocalizedString(@"imageSortTitle", @"Sort Images");
 		
 		self.sortSelectTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.sortSelectTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -50,7 +50,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 50.0;
+    return 64.0;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -61,10 +61,11 @@
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
     headerLabel.textColor = [UIColor piwigoOrange];
+    headerLabel.text = NSLocalizedString(@"imageSortMessage", @"Please select how you wish to sort images");
     headerLabel.textAlignment = NSTextAlignmentCenter;
-    headerLabel.text = NSLocalizedString(@"defaultImageSort>414px", @"Default Sort of Images");
-    headerLabel.adjustsFontSizeToFitWidth = YES;
-    headerLabel.minimumScaleFactor = 0.5;
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
     [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"

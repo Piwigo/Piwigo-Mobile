@@ -40,7 +40,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return 50.0;
+	return 64.0;
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -52,8 +52,9 @@
 	headerLabel.textColor = [UIColor piwigoOrange];
     headerLabel.textAlignment = NSTextAlignmentCenter;
 	headerLabel.text = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
-	headerLabel.adjustsFontSizeToFitWidth = YES;
-	headerLabel.minimumScaleFactor = 0.5;
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	[header addSubview:headerLabel];
 	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
 	[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
@@ -121,9 +122,11 @@
             }
             break;
         case kPiwigoImageSizeSmall:
-            cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
-            if (![Model sharedInstance].hasSmallSizeImages) {
+            if ([Model sharedInstance].hasSmallSizeImages) {
+                cell.userInteractionEnabled = YES;
+            } else {
+                cell.userInteractionEnabled = NO;
+                cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;

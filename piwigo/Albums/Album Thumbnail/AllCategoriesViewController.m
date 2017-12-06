@@ -53,7 +53,7 @@
 	{
 		return 0;
 	}
-	return 50.0;
+	return 64.0;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -65,10 +65,12 @@
 		UILabel *headerLabel = [UILabel new];
 		headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		headerLabel.font = [UIFont piwigoFontNormal];
-		headerLabel.textColor = [UIColor piwigoGray];
+		headerLabel.textColor = [UIColor piwigoOrange];
 		headerLabel.text = NSLocalizedString(@"categorySelection_forImage", @"Select an album for this image");
-		headerLabel.adjustsFontSizeToFitWidth = YES;
-		headerLabel.minimumScaleFactor = 0.5;
+        headerLabel.textAlignment = NSTextAlignmentCenter;
+        headerLabel.numberOfLines = 0;
+        headerLabel.adjustsFontSizeToFitWidth = NO;
+        headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
 		[header addSubview:headerLabel];
 		[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
 		[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"

@@ -567,7 +567,7 @@
                           NSArray *presets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset];
                           // This array never contains AVAssetExportPresetPassthrough,
                           // that is why we use determineCompatibilityOfExportPreset: before.
-                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
+//                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
                           if ((maxPixels <= 640) && ([presets containsObject:AVAssetExportPreset640x480])) {
                               // Encode in 640x480 pixels — metadata will be lost
                               exportPreset = AVAssetExportPreset640x480;

@@ -38,6 +38,7 @@
 		self.uploadImagesTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.uploadImagesTableView.delegate = self;
 		self.uploadImagesTableView.dataSource = self;
+        self.uploadImagesTableView.backgroundColor = [UIColor piwigoGray];
 		UINib *cellNib = [UINib nibWithNibName:@"ImageUploadCell" bundle:nil];
 		[self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:@"Cell"];
 		[self.view addSubview:self.uploadImagesTableView];
@@ -133,21 +134,21 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return 30.0;
+	return 44.0;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
 	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30.0)];
-	header.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.5];
+	header.backgroundColor = [UIColor piwigoGray];
 	
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	headerLabel.textColor = [UIColor whiteColor];
-	headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.font = [UIFont piwigoFontNormal];
+	headerLabel.textColor = [UIColor piwigoOrange];
 	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:3]];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:12]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:5]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:15]];
 	
 	switch(section)
 	{

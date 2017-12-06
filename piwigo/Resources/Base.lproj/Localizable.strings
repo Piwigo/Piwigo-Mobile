@@ -180,8 +180,9 @@
 "albumPhotoError_message" = "Failed to get album photos (corrupt image in your album?)";
 
 // Image sort
-"sortTitle" = "Sort Type";
 "sortBy" = "Sort by";
+"imageSortTitle" = "Sort Images";
+"imageSortMessage" = "Please select how you wish to sort images";
 
 // Image options (actions)
 "imageOptions_title" = "Image Options";
