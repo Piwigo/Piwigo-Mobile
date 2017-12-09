@@ -140,6 +140,7 @@
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
 
+    // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
     if (NSClassFromString(@"SKStoreReviewController")) {
         [SKStoreReviewController requestReview];
