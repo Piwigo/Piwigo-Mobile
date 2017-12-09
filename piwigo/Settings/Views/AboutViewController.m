@@ -90,10 +90,6 @@
             NSString *afnString = NSLocalizedStringFromTableInBundle(@"licenceAFN_text", @"About", [NSBundle mainBundle], @"AFNetworking licence text");
             aboutString = [aboutString stringByAppendingString:afnString];
         
-            // iRate Licence — Bundle string
-            NSString *iRateString = NSLocalizedStringFromTableInBundle(@"licenceIRate_text", @"About", [NSBundle mainBundle], @"iRate licence text");
-            aboutString = [aboutString stringByAppendingString:iRateString];
-            
             // MBProgressHUD Licence — Bundle string
             NSString *mbpHudString = NSLocalizedStringFromTableInBundle(@"licenceMBProgHUD_text", @"About", [NSBundle mainBundle], @"MBProgressHUD licence text");
             aboutString = [aboutString stringByAppendingString:mbpHudString];
@@ -123,13 +119,6 @@
                                           value:[UIFont boldSystemFontOfSize:14]
                                           range:afnetworkingDescriptionRange];
 
-            // iRate Licence — Attributed string
-            NSRange iRateRange = [aboutString rangeOfString:@"iRate"];
-            NSRange iRateDescriptionRange = NSMakeRange(iRateRange.location, [@"iRate" length]);
-            [aboutAttributedString addAttribute:NSFontAttributeName
-                                          value:[UIFont boldSystemFontOfSize:14]
-                                          range:iRateDescriptionRange];
-            
             // MBProgressHUD Licence — Attributed string
             NSRange mbpHudRange = [aboutString rangeOfString:@"MBProgressHUD"];
             NSRange mbpHudDescriptionRange = NSMakeRange(mbpHudRange.location, [@"MBProgressHUD" length]);

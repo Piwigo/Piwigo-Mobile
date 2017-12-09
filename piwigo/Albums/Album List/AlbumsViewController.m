@@ -14,7 +14,6 @@
 #import "AlbumImagesViewController.h"
 #import "CategoriesData.h"
 #import "Model.h"
-#import "iRate.h"
 #import "MBProgressHUD.h"
 
 @interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, AlbumTableViewCellDelegate>
@@ -92,8 +91,6 @@ static SEL extracted() {
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
     self.albumsTableView.allowsMultipleSelectionDuringEditing = NO;
-
-    [[iRate sharedInstance] promptIfAllCriteriaMet];
 }
 
 -(void)viewDidAppear:(BOOL)animated

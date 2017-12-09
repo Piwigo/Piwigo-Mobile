@@ -7,7 +7,6 @@ target 'piwigo' do
 
   # Pods for piwigo
   pod 'AFNetworking', '~> 3.1'
-  pod 'iRate', '~> 1.12.1'
   pod 'MBProgressHUD', '~> 1.0.0'
   pod 'MGSwipeTableCell'
 

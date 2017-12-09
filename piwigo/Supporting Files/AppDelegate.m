@@ -18,9 +18,7 @@
 #import "KeychainAccess.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "Reachability.h"
-
 #import "PhotosFetch.h"
-#import "iRate.h"
 
 @interface AppDelegate ()
 
@@ -32,15 +30,7 @@
 @implementation AppDelegate
 
 + (void)initialize {
-    //configure iRate
-    [iRate sharedInstance].appStoreID       = 472225196;
-    [iRate sharedInstance].daysUntilPrompt  = 5;
-    [iRate sharedInstance].usesUntilPrompt  = 5;
-    [iRate sharedInstance].promptForNewVersionIfUserRated = YES;
-    [iRate sharedInstance].promptAtLaunch   = NO;
-    [iRate sharedInstance].ratingsURL       = [NSURL URLWithString:[NSString stringWithFormat:@"itms-apps://itunes.apple.com/us/app/piwigo/id%lu?action=write-review", (unsigned long)[iRate sharedInstance].appStoreID]];
-//#warning Preview mode
-//    [iRate sharedInstance].previewMode      = YES;
+
 }
 
 

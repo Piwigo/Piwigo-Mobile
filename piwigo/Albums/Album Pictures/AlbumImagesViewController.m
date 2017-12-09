@@ -8,6 +8,7 @@
 
 #import <Photos/Photos.h>
 #import <AFNetworking/AFImageDownloader.h>
+#import <StoreKit/StoreKit.h>
 
 #import "AlbumImagesViewController.h"
 #import "ImageCollectionViewCell.h"
@@ -138,6 +139,11 @@
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
+
+    // Tells StoreKit to ask the user to rate or review the app, if appropriate.
+    if (NSClassFromString(@"SKStoreReviewController")) {
+        [SKStoreReviewController requestReview];
+    }
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{

@@ -24,7 +24,6 @@
 #import "PiwigoImageData.h"
 #import "DefaultImageSizeViewController.h"
 #import "DefaultThumbnailSizeViewController.h"
-#import "iRate.h"
 #import "ReleaseNotesViewController.h"
 
 typedef enum {
@@ -1025,7 +1024,7 @@ typedef enum {
                 }
                 case 1:     // Open Piwigo App Store page for rating
                 {
-                    [[iRate sharedInstance] openRatingsPageInAppStore];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/piwigo/id%lu?action=write-review"]];
                     break;
                 }
                 case 2:     // Open Piwigo Crowdin page for translating
