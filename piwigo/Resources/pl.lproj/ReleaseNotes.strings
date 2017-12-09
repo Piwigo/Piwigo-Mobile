@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.4_text" = "Version 2.1.4\n\n• Dodanie szwedzkiego tłumaczenia\n• Poprawki błędów\n________________________________________\n\n";
+"v2.1.5_text" = "Version 2.1.5\n\n• Add possibility to cancel uploads\n• Add option for deleting images after upload\n• Add compatibility with Optimize Storage (iCloud)\n• Preserve image format after resize whenever possible\n• Fix metadata partly lost upon download\n• Fix PNG format replaced with JPEG before upload\n• Fix issues encountered with iOS 11 and iPhone X\n• Fix minor bugs\n• Code modernisation\n________________________________________\n\n";
+
+"v2.1.4_text" = "Version 2.1.4\nOctober 31, 2017\n\n• Swedish translation\n• Bug fixes\n________________________________________\n\n";
 
 "v2.1.3_text" = "Wersja 2.1.3\n19 października 2017\n\n• Dodanie obsługi podstawowej autentykacji HTTP(S) \n• Dodanie możliwości anulowania auto podłączania\n• Poprawki interfejsu i wysyłania\n• Poprawki tłumaczenia i obsługi iOS 11\n• Poprawki kodu\n\n________________________________________\n\n";
 

@@ -180,8 +180,9 @@
 "albumPhotoError_message" = "Echec du chargement des photos de l'album (image altérée dans votre album ?)";
 
 // Image sort
-"sortTitle" = "Type de Tri";
 "sortBy" = "Trier par";
+"imageSortTitle" = "Tri d’Images";
+"imageSortMessage" = "Veuillez sélectionner comment vous souhaitez trier les images";
 
 // Image options (actions)
 "imageOptions_title" = "Options";
@@ -284,11 +285,23 @@
 // Image upload — Errors
 "uploadError_title" = "Echec de l'Envoi";
 "uploadError_message" = "N'a pas pu envoyer votre image. Erreur : %@";
-"videoUploadError_title" = "Erreur Envoi Video";
-"videoUploadError_message" = "Vous devez ajouter l’extension \"VideoJS\" et modifier votre fichier de configuration local pour envoyer des vidéos à votre serveur Piwigo.";
-"videoUploadConfigError_message" = "Veuillez vérifier l’installation de \"VideoJS\" et le fichier de configuration avec LocalFiles Editor afin de pouvoir envoyer des vidéos à votre serveur Piwigo.";
-"videoUploadError_format" = "Désolé, le format du fichier vidéo n’est pas compatible avec l’extension \"VideoJS\".";
+"uploadCancelled_title" = "Transfert Annulé";
 
+"imageUploadError_title" = "Echec d'Envoi d'Image";
+"imageUploadError_format" = "Désolé, les fichiers d'image ayant comme extension .%@ et .jpg ne sont pas acceptés par le serveur Piwigo.";
+"imageUploadError_source" = "impossible de créer le source de l’image";
+"imageUploadError_destination" = "impossible de créer la destination de l’image";
+"imageUploadError_iCloud" = "Echec de la récupération de l'image stockée sur iCloud. Erreur : %@";
+
+"audioUploadError_title" = "Echec d'Envoi d'Audio";
+"audioUploadError_format" = "Désolé, les fichiers audio ne sont pas encore supportés par Piwigo Mobile.";
+
+"videoUploadError_title" = "Erreur Envoi Video";
+"videoUploadError_format" = "Désolé, les fichiers de vidéo ayant comme extension .%@ ne sont pas acceptés par le serveur Piwigo.";
+"videoUploadError_iCloud" = "Echec de la récupération de la vidéo stockée sur iCloud. Erreur : %@";
+"videoUploadError_export" = "Désolé, la vidéo n'a pas pu être récupérée pour l'envoi vers votre Piwigo. Erreur : %@";
+"videoUploadError_unknown" = "Désolé, le transfert vers votre Piwigo de la vidéo a échoué pour une erreur inconnue lors de la conversion MP4. Erreur : %@";
+"videoUploadCancelled_message" = "Le transfert de la vidéo vers votre Piwigo a été annulé.";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS
@@ -322,6 +335,7 @@
 "settingsHeader_general" = "Paramètres Généraux";
 "settings_loadAllCategories" = "Télécharger Tout au Démarrage";
 "settings_loadAllCategories>320px" = "Télécharger Tout au Démarrage (décochez en cas de problème)";
+
 "defaultImageSort" = "Tri";
 "defaultImageSort>320px" = "Tri";
 "defaultImageSort>414px" = "Tri par Défaut des Images";
@@ -331,13 +345,12 @@
 "defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";
 "defaultThumbnailSizeTitle" = "Taille par Défaut";
 "defaultThumbnailSizeHeader" = "Veuillez Sélectionner une Taille de Vignette";
-"defaultSize_disabled" = " (désactivé sur le serveur)";
 "settings_displayTitles" = "Afficher Titres sur Vignettes";
 "settings_displayTitles>320px" = "Afficher les Titres sur les Vignettes";
 
-"thumbnailSizeSquare" = "Carré (plus rapide)";
-"thumbnailSizeThumbnail" = "Miniature (par défaut)";
-"thumbnailSizeXXSmall" = "Minuscule (mieux)";
+"thumbnailSizeSquare" = "Carré";
+"thumbnailSizeThumbnail" = "Miniature";
+"thumbnailSizeXXSmall" = "Minuscule";
 "thumbnailSizeXSmall" = "Très Petit";
 "thumbnailSizeSmall" = "Petit";
 "thumbnailSizeMedium" = "Moyen";
@@ -353,6 +366,7 @@
 "defaultImageSizeHeader" = "Veuillez Sélectionner une Taille d’Image";
 "defaultImageSize_recommended" = " (recommandé)";
 "defaultSize_disabled" = " (désactivé sur le serveur)";
+"defaultSizeFooter" = "Les tailles grisées ne sont pas conseillées ou indisponibles sur le serveur Piwigo.";
 
 "imageSizeSquare" = "Carré";
 "imageSizeThumbnail" = "Miniature";
@@ -372,14 +386,18 @@
 "settings_defaultAuthorPlaceholder" = "Nom de l'Auteur";
 "settings_defaultPrivacy" = "Qui voit ?";
 "settings_defaultPrivacy>414px" = "Qui Peut Voir les Médias ?";
-"settings_stripGPSdata" = "Supprimer Métadonnées GPS";
-"settings_stripGPSdata>375px" = "Supprimer les Métadonnées GPS avant Envoi";
+"settings_stripGPSdata" = "Supprimer Métadonnées Privées";
+"settings_stripGPSdata>375px" = "Supprimer les Métadonnées privées avant Envoi";
 "settings_photoResize" = "Redimensionner avant Envoi";
 "settings_photoResize>375px" = "Redimensionner l'Image avant Envoi";
 "settings_photoSize" = "> Taille   ";
-"settings_placeholderSize" = "Entrez une Taille de Photo de 1 à 100";
+"settings_placeholderSize" = "Entrez une Taille de Photo de 5 à 100";
+"settings_photoCompress" = "Compresser avant Envoi";
+"settings_photoCompress>375px" = "Compresser l'Image avant Envoi";
 "settings_photoQuality" = "> Qualité";
 "settings_placeholderQuality" = "Entrez une Qualité d’Image entre 50 et 98";
+"settings_deleteImage>375px" = "Effacer l'Image après Envoi";
+"settings_deleteImage" = "Effacer après Envoi";
 
 // Settings — Cache
 "settingsHeader_cache" = "Paramètres de Cache (Utilisé/Total)";
