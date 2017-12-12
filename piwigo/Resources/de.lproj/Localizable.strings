@@ -181,8 +181,8 @@
 
 // Image sort
 "sortBy" = "Sortieren nach";
-"imageSortTitle" = "Sort Images";
-"imageSortMessage" = "Please select how you wish to sort images";
+"imageSortTitle" = "Bilder sortieren";
+"imageSortMessage" = "Bitte wähle, wie du Bilder sortieren möchtest";
 
 // Image options (actions)
 "imageOptions_title" = "Bildoptionen";
@@ -289,18 +289,18 @@
 
 "imageUploadError_title" = "Fehler beim Hochladen des Bildes";
 "imageUploadError_format" = "Entschuldigung, Bilddateien mit der Erweiterung .%@ und .jpg werden von diesem Piwigo Server nicht akzeptiert.";
-"imageUploadError_source" = "cannot create image source";
-"imageUploadError_destination" = "cannot create image destination";
-"imageUploadError_iCloud" = "Could not retrieve image from iCloud. Error: %@";
+"imageUploadError_source" = "Kann Bild am Ursprung nicht erstellen";
+"imageUploadError_destination" = "Kann Bild am Ziel nicht erstellen";
+"imageUploadError_iCloud" = "Bild konnte von iCloud nicht abgerufen werden. Fehler: %@";
 
 "audioUploadError_title" = "Fehler beim Audio Hochladen";
 "audioUploadError_format" = "Entschuldigung, Audio Dateien werden derzeit nicht von Piwigo Mobile unterstützt.";
 
 "videoUploadError_title" = "Fehler beim Video Hochladen";
 "videoUploadError_format" = "Entschuldigung, Videodateien mit der Erweiterung .%@ werden von diesem Piwigo Server nicht akzeptiert.";
-"videoUploadError_iCloud" = "Could not retrieve video from iCloud. Error: %@";
-"videoUploadError_export" = "Sorry, the video could not be retrieved for the upload. Error: %@";
-"videoUploadError_unknown" = "Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: %@";
+"videoUploadError_iCloud" = "Video konnte von iCloud nicht abgerufen werden. Fehler: %@";
+"videoUploadError_export" = "Entschuldigung, das Video konnte nicht zum Hochladen abgerufen werden. Fehler: %@";
+"videoUploadError_unknown" = "Entschuldigung, das Hochladen des Videos schlug aufgrund eines unbekannten Fehlers während der MP4 Konvertierung fehl. Fehler: %@";
 "videoUploadCancelled_message" = "Das Hochladen des Videos wurde abgebrochen.";
 
 // ===========================================================================
@@ -366,7 +366,7 @@
 "defaultImageSizeHeader" = "Bitte wähle eine Bildgröße";
 "defaultImageSize_recommended" = " (empfohlen)";
 "defaultSize_disabled" = " (auf Server deaktiviert)";
-"defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
+"defaultSizeFooter" = "Ausgegraute Größen werden nicht empfohlen oder sind nicht auf dem Piwigo Server verfügbar.";
 
 "imageSizeSquare" = "Quadratisch";
 "imageSizeThumbnail" = "Miniaturbild";
