@@ -313,8 +313,16 @@
 	PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
     [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView]];
 	
+    // For some unknown reason, the asset resource may be empty
     NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-    NSString *originalFilename = ((PHAssetResource*)resources[0]).originalFilename;
+    NSString *originalFilename;
+    if ([resources count] > 0) {
+        originalFilename = ((PHAssetResource*)resources[0]).originalFilename;
+    } else {
+        // No filename => Build filename from 32 characters of local identifier
+        NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
+        originalFilename = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    }    
     if([self.selectedImages containsObject:imageAsset])
 	{
 		cell.cellSelected = YES;
@@ -349,22 +357,27 @@
 
 #pragma mark ImageUploadProgressDelegate Methods
 
--(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
+-(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger row = [self.images indexOfObject:image.imageAsset];
-        LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+    NSInteger row = [self.images indexOfObject:image.imageAsset];
+    LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 
-        CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
-        CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
-        CGFloat pieceProgress = (CGFloat)current / total;
-        CGFloat totalProgress = onChunkPercent + (chunkPercent * pieceProgress);
-        if(totalProgress > 1)
-        {
-            totalProgress = 1;
-        }
-        cell.progress = totalProgress;
-    });
+    CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
+    CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
+    CGFloat pieceProgress = (CGFloat)current / total;
+    CGFloat uploadProgress = onChunkPercent + (chunkPercent * pieceProgress);
+    if(uploadProgress > 1)
+    {
+        uploadProgress = 1;
+    }
+
+    if (iCloudProgress < 0) {
+        cell.progress = uploadProgress;
+        NSLog(@"UploadViewController[ImageProgress]: %.2f", uploadProgress);
+    } else {
+        cell.progress = (iCloudProgress + uploadProgress) / 2.0;
+    NSLog(@"UploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
+    }
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
