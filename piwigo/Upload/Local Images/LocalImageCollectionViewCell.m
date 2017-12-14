@@ -127,19 +127,28 @@
                                                                             1.0 / imageAsset.pixelHeight));
     cropToSquare.normalizedCropRect = cropRect;
     
-    [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)imageAsset
-                                               targetSize:retinaSquare
-                                              contentMode:PHImageContentModeAspectFit
-                                                  options:cropToSquare
-                                            resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                self.cellImage.image = result;
-                                            }
-     ];
-
-	if(imageAsset.mediaType == PHAssetMediaTypeVideo)
-    {
-		self.playImage.hidden = NO;
-	}
+    @autoreleasepool {
+        [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)imageAsset
+                                                   targetSize:retinaSquare
+                                                  contentMode:PHImageContentModeAspectFit
+                                                      options:cropToSquare
+                                                resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        if ([info objectForKey:PHImageErrorKey]) {
+                                                            NSError *error = [info valueForKey:PHImageErrorKey];
+                                                            NSLog(@"=> Error : %@", error.description);
+                                                            self.cellImage.image = [UIImage imageNamed:@"placeholder"];
+                                                        } else {
+                                                            self.cellImage.image = result;
+                                                            if(imageAsset.mediaType == PHAssetMediaTypeVideo)
+                                                            {
+                                                                self.playImage.hidden = NO;
+                                                            }
+                                                        }
+                                                    });
+                                                }
+         ];
+    }
 }
 
 -(void)prepareForReuse
