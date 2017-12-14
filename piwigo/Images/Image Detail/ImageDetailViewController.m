@@ -234,7 +234,7 @@
 {
     // Check autorisation to access Photo Library
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    if (status != PHAuthorizationStatusAuthorized && status != PHAuthorizationStatusNotDetermined) {
+    if (status != PHAuthorizationStatusAuthorized) {
         
         UIAlertController* alert = [UIAlertController
                                     alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
