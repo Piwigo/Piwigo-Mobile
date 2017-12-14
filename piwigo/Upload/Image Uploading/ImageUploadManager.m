@@ -20,6 +20,11 @@
 
 @property (nonatomic, assign) BOOL isUploading;
 @property (nonatomic, assign) NSInteger onCurrentImageUpload;
+@property (nonatomic, assign) NSInteger current;
+@property (nonatomic, assign) NSInteger total;
+@property (nonatomic, assign) NSInteger currentChunk;
+@property (nonatomic, assign) NSInteger totalChunks;
+@property (nonatomic, assign) CGFloat iCloudProgress;
 
 @end
 
@@ -44,6 +49,11 @@
 		self.imageNamesUploadQueue = [NSMutableDictionary new];
         self.imageDeleteQueue = [NSMutableArray new];
 		self.isUploading = NO;
+        
+        self.current = 0;
+        self.total = 1;
+        self.currentChunk = 1;
+        self.totalChunks = 1;
 	}
 	return self;
 }
@@ -122,6 +132,7 @@
         return;
     }
     
+    self.iCloudProgress = -1.0;         // No iCloud download (will become positive if any)
     self.isUploading = YES;
     [Model sharedInstance].hasUploadedImages = YES;
     
@@ -222,9 +233,12 @@
 
 -(void)retrieveFullSizeAssetDataFromImage:(ImageUpload *)image  // Asynchronous
 {
+#if defined(DEBUG)
+    NSLog(@"retrieveFullSizeAssetDataFromImage starting...");
+#endif
     // Case of an image…
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    // Blocks the calling thread until image data is ready or an error occurs
+    // Does not block the calling thread until image data is ready or an error occurs
     options.synchronous = NO;
     // Requests the most recent version of the image asset
     options.version = PHImageRequestOptionsVersionCurrent;
@@ -241,6 +255,7 @@
         // The handler needs to update the user interface => Dispatch to main thread
         dispatch_async(dispatch_get_main_queue(), ^{
 
+            self.iCloudProgress = progress;
             ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
             if (error) {
                 // Inform user and propose to cancel or continue
@@ -254,14 +269,16 @@
                 // User wants to cancel the download
                 *stop = YES;
                 
-                // Remove image from queue and upload next one
+                // Remove image from queue, update UI and upload next one
                 self.maximumImagesForBatch--;
                 [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
             }
             else {
                 // Update progress bar(s)
-            
-            
+                if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:)])
+                {
+                    [self.delegate imageProgress:image onCurrent:self.current forTotal:self.total onChunk:self.currentChunk forChunks:self.totalChunks iCloudProgress:progress];
+                }
             }
         });
     };
@@ -273,20 +290,19 @@
 #if defined(DEBUG)
                          NSLog(@"retrieveFullSizeAssetDataFromImage \"%@\" returned info(%@)", image.image, info);
 #endif
-                         if (!info) {
-                             NSLog(@"=> info = nil!");
-                         }
-                         
                          if ([info objectForKey:PHImageErrorKey]) {
                              NSError *error = [info valueForKey:PHImageErrorKey];
-                             NSLog(@"=> Error : %@", error.description);
+                             // Inform user and propose to cancel or continue
+                             [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                                           andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image from iCloud. Error: %@"), [error localizedDescription]]
+                                          forRetrying:YES
+                                            withImage:image];
+                             return;
                          }
 
-                         if (![[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
-                             // Expected resource available
-                             assert(imageData.length != 0);
-                             [self modifyImage:image withData:imageData];
-                         }
+                         // Expected resource available
+                         assert(imageData.length != 0);
+                         [self modifyImage:image withData:imageData];
                      }
          ];
     }
@@ -527,6 +543,7 @@
         // The handler needs to update the user interface => Dispatch to main thread
         dispatch_async(dispatch_get_main_queue(), ^{
             
+            self.iCloudProgress = progress;
             ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
             if (error) {
                 // Inform user and propose to cancel or continue
@@ -546,8 +563,11 @@
             }
             else {
                 // Updates progress bar(s)
-                
-                
+                if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:)])
+                {
+                    NSLog(@"retrieveFullSizeAssetDataFromVideo: %.2f", progress);
+                    [self.delegate imageProgress:image onCurrent:self.current forTotal:self.total onChunk:self.currentChunk forChunks:self.totalChunks iCloudProgress:progress];
+                }
             }
         });
     };
@@ -615,10 +635,10 @@
                                       }
                                   });
                                   
-                                  if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
-                                      // This is a degraded version, wait for the next one…
-                                      return;
-                                  }
+//                                  if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
+//                                      // This is a degraded version, wait for the next one…
+//                                      return;
+//                                  }
                                   
                                   // Modifies video before upload to Piwigo server
                                   [self modifyVideo:image withAVAsset:avasset beforeExporting:exportSession];
@@ -998,7 +1018,10 @@
 
 -(void)uploadImage:(ImageUpload *)image withData:(NSData *)imageData andMimeType:(NSString *)mimeType
 {
-	// Append Tags
+	// Check that title is not empty (should never happen)
+    if ([image.title length] == 0) image.title = @"Image";
+        
+    // Append Tags
 	NSMutableArray *tagIds = [NSMutableArray new];
 	for(PiwigoTagData *tagData in image.tags)
 	{
@@ -1025,11 +1048,13 @@
                         if (imageBeingUploaded.stopUpload) {
                             [progress cancel];
                         }
-                        NSInteger current = (NSInteger) progress.completedUnitCount;
-                        NSInteger total = (NSInteger) progress.totalUnitCount;
-                        if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
+                        self.current = (NSInteger) progress.completedUnitCount;
+                        self.total = (NSInteger) progress.totalUnitCount;
+                        self.currentChunk = currentChunk;
+                        self.totalChunks = totalChunks;
+                        if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:)])
                         {
-                            [self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
+                            [self.delegate imageProgress:image onCurrent:self.current forTotal:self.total onChunk:currentChunk forChunks:totalChunks iCloudProgress:self.iCloudProgress];
                         }
 					} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                         // Consider image job done

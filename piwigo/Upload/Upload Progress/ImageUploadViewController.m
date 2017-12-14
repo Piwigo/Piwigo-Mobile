@@ -190,7 +190,7 @@
 	
 	if(indexPath.section == 0)
 	{
-		ImageUpload *image = [self.imagesToEdit objectAtIndex:indexPath.row];
+        ImageUpload *image = [self.imagesToEdit objectAtIndex:indexPath.row];
 		[cell setupWithImageInfo:image];
 	}
 	else
@@ -271,18 +271,24 @@
 
 #pragma mark — ImageUploadProgressDelegate Methods
 
--(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
+-(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
-	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
-	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
-	CGFloat peiceProgress = (CGFloat)current / total;
-	CGFloat totalProgress = onChunkPercent + (chunkPercent * peiceProgress);
-	[self updateImage:image withProgress:totalProgress];
+    CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
+    CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
+    CGFloat peiceProgress = (CGFloat)current / total;
+    CGFloat uploadProgress = onChunkPercent + (chunkPercent * peiceProgress);
+    
+    if (iCloudProgress < 0) {
+        [self updateImage:image withProgress:uploadProgress];
+        NSLog(@"ImageUploadViewController[imageProgress]: %.2f", uploadProgress);
+    } else {
+        [self updateImage:image withProgress:((iCloudProgress + uploadProgress) / 2.0)];
+        NSLog(@"ImageUploadViewController[imageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
+    }
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-    NSLog(@"ImageUploadViewController[imageUploaded]");
 	[self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 

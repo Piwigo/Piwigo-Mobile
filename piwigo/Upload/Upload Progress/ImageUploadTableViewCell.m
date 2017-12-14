@@ -109,6 +109,7 @@
                                             }
      ];
 	
+    // Image properties
 	self.imageTitle.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_title", @"Title:")], imageInfo.title];
 	self.author.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_author", @"Author:")], imageInfo.author];
 	self.privacyLevel.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_privacy", @"Privacy:")], [[Model sharedInstance] getNameForPrivacyLevel:imageInfo.privacyLevel]];

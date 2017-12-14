@@ -107,24 +107,30 @@
 
 #pragma mark ImageUploadManagerDelegate Methods
 
--(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
+-(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
-	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
-	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
-	CGFloat peiceProgress = (CGFloat)current / total;
-	CGFloat totalProgressForThisImage = (onChunkPercent + (chunkPercent * peiceProgress)) / fmax(1.0, (CGFloat)self.maxImages);
-	CGFloat totalBatchProgress = (self.totalUploadedImages / fmax(1.0, (CGFloat)self.maxImages)) + totalProgressForThisImage;
-	[self.uploadProgress setProgress:totalBatchProgress animated:YES];
-	
-	if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
+    CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
+    CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
+    CGFloat peiceProgress = (CGFloat)current / total;
+    CGFloat totalProgressForThisImage;
+    if (iCloudProgress < 0) {
+        totalProgressForThisImage = (onChunkPercent + (chunkPercent * peiceProgress)) / fmax(1.0, (CGFloat)self.maxImages);
+    } else {
+        totalProgressForThisImage = (iCloudProgress + onChunkPercent + (chunkPercent * peiceProgress)) / 2.0 / fmax(1.0, (CGFloat)self.maxImages);
+    }
+    CGFloat totalBatchProgress = (self.totalUploadedImages / fmax(1.0, (CGFloat)self.maxImages)) + totalProgressForThisImage;
+
+    [self.uploadProgress setProgress:totalBatchProgress animated:YES];
+    NSLog(@"ImageUploadProgressView[imageProgress]: %.2f", totalBatchProgress);
+
+	if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:)])
 	{
-        [self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
+        [self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks iCloudProgress:iCloudProgress];
 	}
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-    NSLog(@"ImageUploadProgressView[imageUploaded]");
     // Increment the number of downloaded media only if upload succeeded
     if(!(response == nil)) {
         self.totalUploadedImages++;
