@@ -49,9 +49,18 @@
         // Build list of images which have not already been uploaded to the Piwigo server
 		for(PHAsset *imageAsset in images)
 		{
-			// Compare filenames
+            // For some unknown reason, the asset resource may be empty
             NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-            NSString *imageAssetKey = ((PHAssetResource*)resources[0]).originalFilename;
+            NSString *imageAssetKey;
+            if ([resources count] > 0) {
+                imageAssetKey = ((PHAssetResource*)resources[0]).originalFilename;
+            } else {
+                // No filename => Build filename from 32 characters of local identifier
+                NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
+                imageAssetKey = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            }
+
+            // Compare filenames
 			if(imageAssetKey && ![imageAssetKey isEqualToString:@""] && ![onlineImageNamesLookup objectForKey:imageAssetKey])
 			{	// this image doesn't exist in this online category
 				[localImageNamesThatNeedToBeUploaded addObject:imageAsset];
