@@ -19,6 +19,7 @@
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
 		AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
+		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
 		D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */; };
@@ -153,12 +154,19 @@
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
 		AD6D203A1EDC45C4003B60E8 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		AD6D203B1EDC45C4003B60E8 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		AD83385F1FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
+		AD8338611FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		AD8338621FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/AppStore.strings; sourceTree = "<group>"; };
+		AD8338631FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImagesCollection.m; path = "Album Pictures/ImagesCollection.m"; sourceTree = "<group>"; };
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImagesCollection.h; path = "Album Pictures/ImagesCollection.h"; sourceTree = "<group>"; };
 		AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseNotesViewController.h; sourceTree = "<group>"; };
 		AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseNotesViewController.m; sourceTree = "<group>"; };
 		AD92B8FF1F200083006E5B63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		ADB607E61FC9D75700AF28DB /* VideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoView.h; sourceTree = "<group>"; };
+		ADB607E71FC9D79000AF28DB /* VideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoView.m; sourceTree = "<group>"; };
 		ADC06AE01F40B15E0081B4FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE21F40B1ED0081B4FA /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -381,15 +389,6 @@
 			path = TabBar;
 			sourceTree = "<group>";
 		};
-		AD92B8F81F1FFE50006E5B63 /* Release Notes */ = {
-			isa = PBXGroup;
-			children = (
-				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
-				AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */,
-			);
-			path = "Release Notes";
-			sourceTree = "<group>";
-		};
 		ADE535901F65C01000372CBD /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -526,6 +525,8 @@
 				D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */,
 				D860440F1A99922F0067E5D1 /* ImageScrollView.h */,
 				D86044101A99922F0067E5D1 /* ImageScrollView.m */,
+				ADB607E61FC9D75700AF28DB /* VideoView.h */,
+				ADB607E71FC9D79000AF28DB /* VideoView.m */,
 			);
 			path = "Image Detail";
 			sourceTree = "<group>";
@@ -537,6 +538,14 @@
 				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
 				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
 				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
+				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
+				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
+				D8172E941AB9093100271DB0 /* EditPopDownView.h */,
+				D8172E951AB9093100271DB0 /* EditPopDownView.m */,
+				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
+				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
+				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
+				AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -770,15 +779,6 @@
 			path = "Not Uploaded Yet";
 			sourceTree = "<group>";
 		};
-		D8B9BC831A96C4EE00C1B0E5 /* About */ = {
-			isa = PBXGroup;
-			children = (
-				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
-				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
-			);
-			path = About;
-			sourceTree = "<group>";
-		};
 		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
 			isa = PBXGroup;
 			children = (
@@ -813,12 +813,6 @@
 				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
 				D8083A641A7FF30B00A95605 /* Cells */,
 				D81C993E1B02DA190081C976 /* Views */,
-				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
-				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
-				D8172E941AB9093100271DB0 /* EditPopDownView.h */,
-				D8172E951AB9093100271DB0 /* EditPopDownView.m */,
-				D8B9BC831A96C4EE00C1B0E5 /* About */,
-				AD92B8F81F1FFE50006E5B63 /* Release Notes */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -933,6 +927,11 @@
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = ZEC3W885H6;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
 					};
 					D82B8CD31A67820A000E47CA = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -954,6 +953,7 @@
 				pl,
 				de,
 				sv,
+				id,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -1014,13 +1014,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-piwigoTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		577A7301DA17AC6D5EBDAA33 /* [CP] Check Pods Manifest.lock */ = {
@@ -1029,13 +1032,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-piwigo-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7A9296FADB36B3093B24E071 /* [CP] Copy Pods Resources */ = {
@@ -1044,9 +1050,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh",
+				"${PODS_ROOT}/iRate/iRate/iRate.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1155,6 +1164,7 @@
 				D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */,
 				D818EA021A74C7BA00733991 /* AlbumTableViewCell.m in Sources */,
 				D8083AA21A81B34000A95605 /* ImageUpload.m in Sources */,
+				ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */,
 				D89045AC1A94654D00A306FE /* PiwigoTagData.m in Sources */,
 				D88A685E1AC26FA4002A3259 /* SwitchTableViewCell.m in Sources */,
 				D8083A631A7FF30800A95605 /* TextFieldTableViewCell.m in Sources */,
@@ -1219,6 +1229,7 @@
 				AD45949E1F36765200CF9438 /* pl */,
 				AD591A3C1F9116FA008D02B6 /* de */,
 				AD0822741FA06B0A0005AA12 /* sv */,
+				AD8338621FE677970072104F /* id */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -1241,6 +1252,7 @@
 				AD45949B1F36765200CF9438 /* pl */,
 				AD591A391F9116F9008D02B6 /* de */,
 				AD0822711FA06B090005AA12 /* sv */,
+				AD83385F1FE677970072104F /* id */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1254,6 +1266,7 @@
 				AD45949C1F36765200CF9438 /* pl */,
 				AD591A3A1F9116FA008D02B6 /* de */,
 				AD0822721FA06B090005AA12 /* sv */,
+				AD8338601FE677970072104F /* id */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -1267,6 +1280,7 @@
 				AD45949D1F36765200CF9438 /* pl */,
 				AD591A3B1F9116FA008D02B6 /* de */,
 				AD0822731FA06B0A0005AA12 /* sv */,
+				AD8338611FE677970072104F /* id */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
@@ -1280,6 +1294,7 @@
 				ADC06AE41F40B2BC0081B4FA /* pl */,
 				AD591A3D1F9116FA008D02B6 /* de */,
 				AD0822751FA06B0A0005AA12 /* sv */,
+				AD8338631FE677970072104F /* id */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

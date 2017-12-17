@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSString *imageDescription;
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, assign) NSInteger imageId;
+@property (nonatomic, assign) BOOL stopUpload;
 
 -(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;
 -(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags;

@@ -38,7 +38,6 @@ typedef enum {
 @property (nonatomic, strong) NSString *uploadFileTypes;
 @property (nonatomic, assign) BOOL hasAdminRights;
 @property (nonatomic, assign) BOOL usesCommunityPluginV29;
-@property (nonatomic, assign) BOOL canUploadVideos;
 @property (nonatomic, assign) BOOL hasUploadedImages;
 @property (nonatomic, assign) BOOL hadOpenedSession;
 @property (nonatomic, assign) BOOL performedHTTPauthentication;
@@ -61,8 +60,10 @@ typedef enum {
 @property (nonatomic, strong) NSString *defaultAuthor;
 @property (nonatomic, assign) BOOL stripGPSdataOnUpload;
 @property (nonatomic, assign) BOOL resizeImageOnUpload;
-@property (nonatomic, assign) NSInteger photoQuality;
 @property (nonatomic, assign) NSInteger photoResize;
+@property (nonatomic, assign) BOOL compressImageOnUpload;
+@property (nonatomic, assign) NSInteger photoQuality;
+@property (nonatomic, assign) BOOL deleteImageAfterUpload;
 
 @property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;

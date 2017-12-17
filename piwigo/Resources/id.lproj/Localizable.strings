@@ -1,0 +1,418 @@
+/*
+ Localizable.strings
+ piwigo
+ 
+ Created by Spencer Baker on 1/17/15.
+ Copyright (c) 2015 bakercrew. All rights reserved.
+ */
+// ===========================================================================
+// ==> GENERIC
+// ===========================================================================
+// Tab bar
+
+"tabBar_albums" = "Album";
+"tabBar_upload" = "Unggah";
+"tabBar_preferences" = "Preferensi";
+
+// Alert buttons
+"alertOkButton" = "Oke";
+"alertDismissButton" = "Abaikan";
+"alertYesButton" = "Ya";
+"alertNoButton" = "Tidak";
+"alertTryAgainButton" = "Coba Lagi";
+"alertCancelButton" = "Batal";
+"alertAddButton" = "Tambah";
+"alertRetryButton" = "Ulangi";
+"alertNextButton" = "Gambar Berikutnya";
+
+// Complete views
+"Complete" = "Selesai";
+
+// Upload rights
+"uploadRights_title" = "Hak Unggah Diperlukan";
+"uploadRights_message" = "Anda harus memiliki hak unggah untuk dapat mengunggah gambar atau video.";
+
+// Errors
+"internetErrorGeneral_title" = "Galat Koneksi";
+"internetErrorGeneral_broken" = "Maaf, komunikasi terputus. Coba masuk lagi.";
+"internetCancellingConnection_button" = "Membatalkan Koneksi…";
+"internetCancelledConnection_button" = "Batalkan Koneksi";
+"internetCancelledConnection_title" = "Koneksi Dibatalkan";
+
+// ===========================================================================
+// ==> LOGIN / LOGOUT
+// ===========================================================================
+// Login
+"login" = "Masuk";
+"login_serverPlaceholder" = "Alamat Web";
+"login_userPlaceholder" = "Nama pengguna (opsional)";
+"login_passwordPlaceholder" = "Kata sandi (opsional)";
+"login_loggingIn" = "Proses Masuk...";
+"login_protocolDescription" = "(ketuk untuk mengubah)";
+"login_connecting" = "Menyambungkan";
+"login_newSession" = "Membuka Sesi";
+"login_communityParameters" = "Parameter Komunitas";
+"login_serverParameters" = "Parameter Piwigo";
+"login_connectionChanged" = "Koneksi diubah!";
+
+// Login — Errors
+"serverMethodsError_title" = "Metode Tidak Diketahui";
+"serverMethodsError_message" = "Gagal mendapatkan metode peladen. Masalah dengan peladen Piwigo?";
+
+"loginError_title" = "Gagal Masuk";
+"loginError_message" = "Nama pengguna dan kata sandi tidak sesuai dengan alamat web yang diberikan";
+"loginEmptyServer_title" = "Masukkan Alamat Web";
+"loginEmptyServer_message" = "Silakan pilih sebuah protokol dan masukkan alamat web Piwigo untuk melanjutkan.";
+
+"serverVersionNotCompatible_title" = "Peladen Tidak Kompatibel";
+"serverVersionNotCompatible_message" = "Versi peladen Piwigo Anda adalah %@. Piwigo Mobile hanya mendukung minimal versi 2.7. Perbarui peladen Anda untuk menggunakan Piwigo Mobile. Apakah Anda ingin melanjutkan?";
+
+"sessionStatusError_title" = "Pengesahan Gagal";
+"sessionStatusError_message" = "Gagal untuk pengesahan pada peladen. Coba masuk lagi.";
+
+"serverCommunityError_title" = "Galat Komunitas";
+"serverCommunityError_message" = "Gagal mendapatkan parameter ekstensi Komunitas. Coba masuk lagi.";
+
+// Logout
+"logoutConfirmation_title" = "Keluar";
+"logoutConfirmation_message" = "Anda yakin ingin keluar?";
+
+// Logout — Errors
+"logoutFail_title" = "Gagal Keluar";
+"logoutFail_message" = "Gagal untuk keluar. Coba lagi?";
+
+
+// ===========================================================================
+// ==> ALBUMS
+// ===========================================================================
+// Albums view
+"categoryMainEmtpy" = "Belum ada album dalam Piwigo Anda.\nAnda dapat menarik ke bawah untuk menyegarkan atau menyambung kembali.";
+"categoryTableView_photoCount" = "foto";
+"categoryTableView_photosCount" = "foto";
+"categoryTableView_subCategoryCount" = "sub-album";
+"categoryTableView_subCategoriesCount" = "sub-album";
+"categoryImageList_selectButton" = "Pilih";
+"categoryImageList_noDataError" = "Galat Tidak Ada Data";
+
+// Albums sort
+"categorySort_nameAscending" = "Judul Foto, A → Z";
+"categorySort_nameDescending" = "Judul Foto, Z → A";
+"categorySort_fileNameAscending" = "Nama Berkas, A → Z";
+"categorySort_fileNameDescending" = "Nama Berkas, Z → A";
+"categorySort_dateCreatedDescending" = "Tanggal Dibuat, baru → lama";
+"categorySort_dateCreatedAscending" = "Tanggal Dibuat, lama → baru";
+"categorySort_datePostedDescending" = "Tanggal Dikirim, baru → lama";
+"categorySort_datePostedAscending" = "Tanggal Dikirim, lama → baru";
+"categorySort_videosOnly" = "Hanya Video";
+"categorySort_imagesOnly" = "Hanya Gambar";
+
+// Album create
+"createNewAlbum_title" = "Album Baru";
+"createNewAlbum_message" = "Masukkan nama untuk album ini:";
+"createNewAlbum_placeholder" = "Nama Album";
+"createNewAlbumHUD_label" = "Membuat Album…";
+
+// Album create — Errors
+"createAlbumError_title" = "Galat Membuat Album";
+"createAlbumError_message" = "Gagal untuk membuat album baru";
+
+// Album options (actions)
+"categoryCellOption_rename" = "Ganti Nama";
+"categoryCellOption_move" = "Pindah";
+"categoryCellOption_delete" = "Hapus";
+
+// Album rename
+"renameCategory_title" = "Ganti Nama Album";
+"renameCategory_message" = "Masukkan nama baru untuk album ini";
+"renameCategory_button" = "Ganti Nama";
+"renameCategoryHUD_label" = "Mengganti Nama Album…";
+
+// Album rename — Errors
+"renameCategoyError_title" = "Gagal Mengganti Nama";
+"renameCategoyError_message" = "Gagal untuk mengganti nama album Anda";
+
+// Album delete
+"deleteCategory_title" = "HAPUS ALBUM";
+"deleteCategory_message" = "ANDA YAKIN INGIN MENGHAPUS ALBUM \"%@\" DAN SEMUA %@ GAMBAR?";
+"deleteCategoryConfirm_title" = "Anda yakin?";
+"deleteCategoryConfirm_message" = "Masukkan jumlah gambar untuk menghapus album ini. Jumlah gambar: %@";
+"deleteCategoryConfirm_deleteButton" = "HAPUS";
+"deleteCategoryHUD_label" = "Menghapus Album…";
+
+// Album delete — errors
+"deleteCategoryMatchError_title" = "Nomor Tidak Sesuai";
+"deleteCategoryMatchError_message" = "Jumlah gambar yang Anda masukkan tidak sesuai dengan jumlah gambar dalam album. Silakan coba lagi jika Anda ingin menghapus album ini";
+"deleteCategoryError_title" = "Gagal Menghapus";
+"deleteCategoryError_message" = "Gagal menghapus album Anda";
+
+// Album move
+"moveCategory" = "Pindahkan Album";
+"moveCategory_selectParent" = "Pilih album yang akan dipindahkan ke dalam album \"%@\"";
+"moveCategory_message" = "Anda yakin ingin memindahkan \"%@\" ke dalam album \"%@\"?";
+"moveCategoryHUD_moving" = "Memindahkan Album…";
+
+// album move — Errors
+"moveCategoryError_title" = "Gagal Memindahkan";
+"moveCategoryError_message" = "Gagal untuk memindahkan album Anda";
+
+// Album set image thumbnail
+"categorySelection" = "Pilih Album";
+"categorySelection_forImage" = "Pilih album untuk gambar ini";
+"categoryImageSet_title" = "Atur Gambar untuk Gambar Mini";
+"categoryImageSet_message" = "Anda yakin ingin membuat gambar ini sebagai gambar untuk album \"%@\"?";
+"categoryImageSetHUD_updating" = "Memperbarui Gambar Mini Album…";
+
+// Album set image thumbnail — Errors
+"categoryImageSetError_title" = "Penetapan Gambar Galat";
+"categoryImageSetError_message" = "Gagal untuk menetapkan gambar album";
+
+
+// ===========================================================================
+// ==> IMAGES
+// ===========================================================================
+"singleImage" = "Gambar";
+"severalImages" = "Gambar";
+"noImages" = "Tidak Ada Gambar";
+"pullToRefresh" = "Muat Ulang Gambar";
+
+// Errors
+"albumPhotoError_title" = "Galat dalam Mendapatkan Foto Album";
+"albumPhotoError_message" = "Gagal untuk mendapatkan foto album (gambar rusak dalam album Anda?)";
+
+// Image sort
+"sortBy" = "Sortir Berdasarkan";
+"imageSortTitle" = "Pilah Gambar";
+"imageSortMessage" = "Silakan pilih bagaimana Anda ingin memilah gambar";
+
+// Image options (actions)
+"imageOptions_title" = "Pilihan Gambar";
+"imageOptions_edit" = "Sunting";
+"imageOptions_download" = "Unduh";
+"imageOptions_setAlbumImage" = "Tetapkan sebagai Gambar Album";
+
+// Image details
+"imageDetailsView_title" = "Detail Gambar";
+"editImageDetails_title" = "Judul:";
+"editImageDetails_titlePlaceholder" = "Judul";
+"editImageDetails_author" = "Penulis:";
+"editImageDetails_tags" = "Tag:";
+"editImageDetails_privacyLevel" = "Siapa yang bisa melihat foto ini?";
+"editImageDetails_descriptionPlaceholder" = "Deskripsi";
+"editImageDetailsHUD_updating" = "Memperbarui Info Gambar…";
+
+// Image details — Errors
+"editImageDetailsError_title" = "Gagal untuk Memperbarui";
+"editImageDetailsError_message" = "Gagal untuk memperbarui perubahan dengan peladen Anda. Coba lagi?";
+"imageDetailsFetchError_title" = "Galat dalam Pengambilan Detai Gambar";
+"imageDetailsFetchError_retryMessage" = "Pengambilan data gambar gagal. Coba lagi?";
+"imageDetailsFetchError_continueMessage" = "Pengambilan data gambar gagal. Lanjutkan?";
+
+// Image privacy levels
+"privacyLevel" = "Level Privasi";
+"privacyLevel_admin" = "Admin";
+"privacyLevel_adminFamily" = "Admin, Keluarga";
+"privacyLevel_adminsFamilyFriends" = "Admin, Keluarga, Teman";
+"privacyLevel_adminsFamilyFriendsContacts" = "Admin, Keluarga, Teman, Kontak";
+"privacyLevel_everybody" = "Semua orang";
+
+// Image tags
+"none" = "tidak ada";
+"tags" = "Tag";
+"tagsHeader_selected" = "Dipilih";
+"tagsHeader_all" = "Semua";
+
+// Image delete
+"deleteImage_delete" = "Hapus";
+"deleteImageProgress_title" = "Menghapus %@%% Selesai";
+
+"deleteSingleImage_title" = "Hapus Gambar";
+"deleteSingleImage_message" = "Anda yakin ingin menghapus gambar ini? Ini tidak dapat dibatalkan!";
+"deleteSeveralImages_title" = "Hapus Gambar";
+"deleteSeveralImages_message" = "Anda yakin ingin menghapus gambar %@ yang dipilih? Ini tidak dapat dibatalkan!";
+
+"deleteImageFail_title" = "Gagal Menghapus";
+"deleteImageFail_message" = "Gambar tidak dapat dihapus\n%@";
+
+// Image download
+"downloadSingleImage_title" = "Unduh Gambar";
+"downloadSingleImage_confirmation" = "Yakin ingin mengunduh gambar yang dipilih?";
+"downloadSeveralImages_title" = "Unduh Gambar";
+"downloadSeveralImage_confirmation" = "Anda yakin ingin mengunduh gambar %@ yang dipilih?";
+
+"downloadingImage" = "Mengunduh Gambar";
+"downloadingImages" = "Mengunduh Gambar";
+"downloadingImageInfo" = "Mengunduh Info Gambar";
+"downloadingImageInfoForSort" = "Mengunduh Info Gambar untuk Penyortiran";
+
+// Image download — Errors
+"downloadImageFail_title" = "Gagal Mengunduh";
+"downloadImageFail_message" = "Gagal untuk mengunduh gambar!\n%@";
+"downloadVideoFail_message" = "Gagal untuk mengunduh video!\n%@";
+"downloadVideoFail_Photos" = "Format video tidak diterima oleh Foto!";
+
+"imageSaveError_title" = "Gagal Menyimpan Gambar";
+"imageSaveError_message" = "Gagal untuk menyimpan gambar. Galat: %@";
+
+"videoSaveError_title" = "Gagal Menyimpan Video";
+"videoSaveError_message" = "Gagal untuk menyimpan video. Galat: %@";
+
+// Images upload
+"categoryUpload_chooseAlbum" = "Pilih album untuk mengunggah gambar";
+"categoryUpload_chooseLocalAlbum" = "Pilih album untuk mendapatkan gambar";
+"categoyUpload_loadSubCategories" = "muat";
+"selectAll" = "Semua";
+
+"imageUploadDetails_title" = "Judul:";
+"imageUploadDetails_author" = "Penulis:";
+"imageUploadDetails_privacy" = "Privasi:";
+"imageUploadDetails_tags" = "Tag:";
+"imageUploadDetails_description" = "Deskripsi:";
+
+"imageUploadDetailsView_title" = "Gambar";
+"imageUploadDetailsButton_title" = "Unggah";
+"imageUploadDetailsEdit_title" = "Sunting Gambar untuk Diunggah";
+"imageUploadDetailsUploading_title" = "Gambar yang Akan Diunggah";
+"imageUploadDetailsCell_uploadComplete" = "Lengkap! Selesaikan...";
+
+"imageUploadTableCell_uploading" = "Mengunggah...";
+"imageUploadProgressBar_zero" = "Mengunggah 0/0";
+"imageUploadProgressBar_nonZero" = "Mengunggah %@/%@";
+"imageUploadProgressBar_completed" = "Selesai";
+"imageUploadCompleted_title" = "Pengunggahan Selesai";
+"imageUploadCompleted_message" = "gambar/video telah duinggah ke peladen Piwigo Anda.";
+"imageUploadCompleted_message>1" = "gambar/video telah diunggah ke peladen Piwigo Anda.";
+
+// Image upload — Errors
+"uploadError_title" = "Galat dalam Mengunggah";
+"uploadError_message" = "Tidak dapat mengunggah gambar Anda. Galat: %@";
+"uploadCancelled_title" = "Mengunggah Dibatalkan";
+
+"imageUploadError_title" = "Galat dalam Mengunggah Gambar";
+"imageUploadError_format" = "Maaf, berkas gambar dengan ekstensi .%@ dan .jpg tidak diterima oleh peladen Piwigo.";
+"imageUploadError_source" = "tidak dapat membuat sumber gambar";
+"imageUploadError_destination" = "tidak dapat membuat tujuan gambar";
+"imageUploadError_iCloud" = "Tidak dapat mengambil gambar dari iCloud. Galat: %@";
+
+"audioUploadError_title" = "Galat dalam Mengunggah Audio";
+"audioUploadError_format" = "Maaf, berkas audio belum didukung oleh Piwigo Mobile.";
+
+"videoUploadError_title" = "Galat dalam Menunggah Video";
+"videoUploadError_format" = "Maaf, berkas video dengan ekstensi .%@ tidak diterima oleh peladen Piwigo.";
+"videoUploadError_iCloud" = "Tidak dapat mengambil video dari iCloud. Galat: %@";
+"videoUploadError_export" = "Maaf, video tidak dapat diambil untuk diunggah. Galat: %@";
+"videoUploadError_unknown" = "Maaf, pengunggahan video telah gagal karena kesalahan yang tidak diketahui selama konversi MP4. Galat: %@";
+"videoUploadCancelled_message" = "Pengunggahan video telah dibatalkan.";
+
+// ===========================================================================
+// ==> LOCAL ALBUMS
+// ===========================================================================
+"localAlbums" = "Album Lokal";
+
+"localImageSort_newest" = "Terbaru";
+"localImageSort_oldest" = "Terlama";
+"localImageSort_notUploaded" = "Tidak Diunggah";
+"localImageSort_undefined" = "Tidak Ditentukan";
+
+// Local albums — Access not Authorized
+"localAlbums_photosNotAuthorized_title" = "Akses Ditolak";
+"localAlbums_photosNiltitle" = "Masalah dalam Membaca Foto";
+"localAlbums_photosNnil_msg" = "Ada masalah dalam membaca pustaka lokal foto Anda.";
+
+// Local albums — Tell user to change settings, how
+"localAlbums_photosNotAuthorized_msg" = "Tidak dapat membuka pustaka lokal foto. Silakan masuk ke Pengaturan aplikasi, Privasi, Foto dan izinkan akses untuk Piwigo.";
+
+// ===========================================================================
+// ==> SETTINGS
+// ===========================================================================
+// Settings — Piwigo Server
+"settingsHeader_server" = "Peladen Piwigo";
+"settings_server" = "Alamat";
+"settings_username" = "Nama Pengguna";
+"settings_notLoggedIn" = " - Tidak Masuk - ";
+"settings_logout" = "Keluar";
+
+// Settings — General
+"settingsHeader_general" = "Pengaturan Umum";
+"settings_loadAllCategories" = "Unduh Semua Album saat Memulai";
+"settings_loadAllCategories>320px" = "Unduh Semua Album saat Memulai (jangan centang jika bermasalah)";
+
+"defaultImageSort" = "Sortir";
+"defaultImageSort>320px" = "Sortir Standar";
+"defaultImageSort>414px" = "Sortir Standar untuk Gambar";
+
+"defaultThumbnailSize" = "Gambar Mini";
+"defaultThumbnailSize>320px" = "Ukuran Gambar Mini";
+"defaultThumbnailSize>414px" = "Ukuran Standar untuk Gambar Mini";
+"defaultThumbnailSizeTitle" = "Ukuran Standar";
+"defaultThumbnailSizeHeader" = "Pilih Ukuran Gambar Mini";
+"settings_displayTitles" = "Judul dalam Gambar Mini";
+"settings_displayTitles>320px" = "Tampilkan Judul dalam Gambar Mini";
+
+"thumbnailSizeSquare" = "Persegi";
+"thumbnailSizeThumbnail" = "Tampilan Besar";
+"thumbnailSizeXXSmall" = "Mungil";
+"thumbnailSizeXSmall" = "Sangat Kecil";
+"thumbnailSizeSmall" = "Kecil";
+"thumbnailSizeMedium" = "Sedang";
+"thumbnailSizeLarge" = "Besar";
+"thumbnailSizeXLarge" = "Sangat Besar";
+"thumbnailSizeXXLarge" = "Besar";
+"thumbnailSizexFullRes" = "Resolusi Penuh";
+
+"defaultImageSize" = "Gambar";
+"defaultImageSize>320px" = "Ukuran Gambar";
+"defaultImageSize>414px" = "Ukuran Standar Gambar";
+"defaultImageSizeTitle" = "Ukuran Default";
+"defaultImageSizeHeader" = "Pilih Ukuran Gambar";
+"defaultImageSize_recommended" = " (direkomendasikan)";
+"defaultSize_disabled" = " (nonaktifkan pada peladen)";
+"defaultSizeFooter" = "Ukuran berbayang tidak disarankan atau tidak tersedia dalam peladen Piwigo.";
+
+"imageSizeSquare" = "Persegi";
+"imageSizeThumbnail" = "Tampilan Besar";
+"imageSizeXXSmall" = "Mungil";
+"imageSizeXSmall" = "Ekstra Kecil";
+"imageSizeSmall" = "Kecil";
+"imageSizeMedium" = "Menengah";
+"imageSizeLarge" = "Besar";
+"imageSizeXLarge" = "Ekstra Besar";
+"imageSizeXXLarge" = "Besar Sekali";
+"imageSizexFullRes" = "Resolusi Penuh";
+
+// Settings — Upload
+"settingsHeader_upload" = "Pengaturan Unggah Standar";
+"settings_defaultAuthor" = "Penulis";
+"settings_defaultAuthor>320px" = "Nama Penulis";
+"settings_defaultAuthorPlaceholder" = "Nama Penulis";
+"settings_defaultPrivacy" = "Privasi";
+"settings_defaultPrivacy>414px" = "Siapa Yang Bisa Melihat Media?";
+"settings_stripGPSdata" = "Hapus Metadata Pribadi";
+"settings_stripGPSdata>375px" = "Hapus Metadata Pribadi Sebelum Mengunggah";
+"settings_photoResize" = "Ubah Ukuran Sebelum Mengunggah";
+"settings_photoResize>375px" = "Ubah Ukuran Gambar Sebelum Mengunggah";
+"settings_photoSize" = "> Ukuran   ";
+"settings_placeholderSize" = "Masukkan Ukuran Foto dari 5 - 100";
+"settings_photoCompress" = "Kompresi Sebelum Mengunggah";
+"settings_photoCompress>375px" = "Kompresi Gambar Sebelum Mengunggah";
+"settings_photoQuality" = "> Kualitas";
+"settings_placeholderQuality" = "Masukkan Kualitas Gambar antara 50 - 98";
+"settings_deleteImage>375px" = "Hapus Gambar Setelah Mengunggah";
+"settings_deleteImage" = "Hapus Setelah Mengunggah";
+
+// Settings — Cache
+"settingsHeader_cache" = "Pengaturan Tembolok (Terpakai/Total)";
+"settings_cacheDisk" = "Diska";
+"settings_placeholderDisk" = "Masukkan Tembolok Diska dari 10 - 200";
+"settings_cacheMemory" = "Memori";
+"settings_placeholderMemory" = "Masukkan Tembolok Memori dari 10 - 200";
+"settings_cacheMegabytes" = "MB";
+
+// Settings — Information
+"settings_appName" = "Piwigo Mobile";
+"settingsHeader_about" = "Informasi";
+"settings_supportForum" = "Forum Bantuan";
+"settings_releaseNotes" = "Catatan Rilis";
+"settings_rateInAppStore" = "Beri Nilai untuk Piwigo Mobile";
+"settings_translateWithCrowdin" = "Terjemahan Piwigo Mobile";
+"settings_pwgForumURL" = "http://piwigo.org/forum";
+"settings_acknowledgements" = "Ucapan Terima Kasih";

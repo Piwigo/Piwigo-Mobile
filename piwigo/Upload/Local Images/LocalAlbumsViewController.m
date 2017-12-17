@@ -83,7 +83,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 50.0;
+    return 64.0;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -96,8 +96,9 @@
     headerLabel.textColor = [UIColor piwigoOrange];
     headerLabel.text = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
     headerLabel.textAlignment = NSTextAlignmentCenter;
-    headerLabel.adjustsFontSizeToFitWidth = YES;
-    headerLabel.minimumScaleFactor = 0.5;
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
     [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
@@ -125,7 +126,7 @@
 	PHAssetCollection *groupAsset = [self.groups objectAtIndex:indexPath.row];
     NSString *name = [groupAsset localizedTitle];
     NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
-	[cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), NSLocalizedString(@"deleteImage_imagePlural", @"Images")]];
+    [cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ?NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")]];
 	
 	return cell;
 }

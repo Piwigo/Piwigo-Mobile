@@ -7,6 +7,7 @@
 //
 
 #import "NetworkHandler.h"
+#import <AFNetworking/AFImageDownloader.h>
 
 FOUNDATION_EXPORT NSString * const kGetImageOrderFileName;
 FOUNDATION_EXPORT NSString * const kGetImageOrderId;
@@ -36,10 +37,9 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)downloadImage:(PiwigoImageData*)image
++(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
                        onProgress:(void (^)(NSProgress *))progress
-                 ListOnCompletion:(void (^)(NSURLSessionTask *task, UIImage *image))completion
-                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
 +(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
                        onProgress:(void (^)(NSProgress *))progress

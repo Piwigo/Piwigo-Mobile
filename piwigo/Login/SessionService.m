@@ -126,16 +126,9 @@
                               [Model sharedInstance].version = [[responseObject objectForKey:@"result"] objectForKey:@"version"];
                               NSString *uploadFileTypes = [[responseObject objectForKey:@"result"] objectForKey:@"upload_file_types"];
 
-                              // Videos can be uploaded if video file types are authorized
-                              // The iPhone creates mov type files that are uploaded as mp4
-                              // Types managed by VideoJS are ogg, ogv, mp4, m4v, webm, webmv
+                              // Images and videos can be uploaded if their file types are found.
+                              // The iPhone creates mov files that will be uploaded in mp4 format.
                               [Model sharedInstance].uploadFileTypes = uploadFileTypes;
-                              [Model sharedInstance].canUploadVideos = ([uploadFileTypes containsString:@"mp4"] ||
-                                                                        [uploadFileTypes containsString:@"m4v"] ||
-                                                                        [uploadFileTypes containsString:@"ogg"] ||
-                                                                        [uploadFileTypes containsString:@"ogv"] ||
-                                                                        [uploadFileTypes containsString:@"webm"] ||
-                                                                        [uploadFileTypes containsString:@"webmv"] );
                               
                               // User rights are determined by Community extension (if installed)
                               if(![Model sharedInstance].usesCommunityPluginV29) {
@@ -162,7 +155,7 @@
                                       [Model sharedInstance].hasThumbSizeImages = YES;
                                   } else if ([size isEqualToString:@"2small"]) {
                                       [Model sharedInstance].hasXXSmallSizeImages = YES;
-                                  } else if ([size isEqualToString:@" "]) {
+                                  } else if ([size isEqualToString:@"xsmall"]) {
                                       [Model sharedInstance].hasXSmallSizeImages = YES;
                                   } else if ([size isEqualToString:@"small"]) {
                                       [Model sharedInstance].hasSmallSizeImages = YES;

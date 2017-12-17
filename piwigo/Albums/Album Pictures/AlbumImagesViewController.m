@@ -8,6 +8,7 @@
 
 #import <Photos/Photos.h>
 #import <AFNetworking/AFImageDownloader.h>
+#import <StoreKit/StoreKit.h>
 
 #import "AlbumImagesViewController.h"
 #import "ImageCollectionViewCell.h"
@@ -27,6 +28,7 @@
 #import "AlbumData.h"
 #import "NetworkHandler.h"
 #import "ImagesCollection.h"
+#import "KeychainAccess.h"
 
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
@@ -137,6 +139,12 @@
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
+
+    // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
+    // Tells StoreKit to ask the user to rate or review the app, if appropriate.
+    if (NSClassFromString(@"SKStoreReviewController")) {
+        [SKStoreReviewController requestReview];
+    }
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -418,14 +426,32 @@
 	__weak typeof(self) weakSelf = self;
     NSString *URLRequest = [NetworkHandler getURLWithPath:downloadingImage.ThumbPath asPiwigoRequest:NO withURLParams:nil];
 
+    // Create image downloader instance
+    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+
     // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
-    
-    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
     [dow.sessionManager setSecurityPolicy:policy];
 
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // To remember app recieved anthentication challenge
+            [Model sharedInstance].performedHTTPauthentication = YES;
+            // Supply requested credentials if not provided yet
+            if (challenge.previousFailureCount == 0) {
+                *credential = [NSURLCredential credentialWithUser:user
+                                                         password:password
+                                                      persistence:NSURLCredentialPersistenceForSession];
+            }
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
+    
     [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
 					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -434,17 +460,23 @@
 	
     if(!downloadingImage.isVideo)
 	{
-		[ImageService downloadImage:downloadingImage
+        [ImageService downloadImage:downloadingImage
                          onProgress:^(NSProgress *progress) {
-                              dispatch_async(dispatch_get_main_queue(),
-                                             ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;});
-						 } ListOnCompletion:^(NSURLSessionTask *task, UIImage *image) {
-							 [self saveImageToCameraRoll:image];
-						 } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                               dispatch_async(dispatch_get_main_queue(),
+                                    ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;});
+                         }
+                  completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+                      // Any error ?
+                      if (error.code) {
 #if defined(DEBUG)
-							 NSLog(@"downloadVideo fail");
+                           NSLog(@"downloadImage fail");
 #endif
-                         }];
+                      } else {
+                          // Try to move photo in Photos.app
+                          [self saveImageToCameraRoll:filePath];
+                      }
+                  }
+         ];
 	}
 	else
 	{
@@ -484,43 +516,37 @@
                       }
                   }
          ];
-        
         self.downloadView.hidden = NO;
-
 	}
 }
 
--(void)saveImageToCameraRoll:(UIImage*)imageToSave
+-(void)saveImageToCameraRoll:(NSURL *)filePath
 {
-	UIImageWriteToSavedPhotosAlbum(imageToSave, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-}
-
-// called when the image is done saving to disk
--(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
-{
-	if(error)
-	{
-        UIAlertController* alert = [UIAlertController
-                    alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
-                    message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-                    preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* dismissAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                    style:UIAlertActionStyleDefault
-                    handler:^(UIAlertAction * action) {
-                        [self cancelSelect];
-                    }];
-        
-        [alert addAction:dismissAction];
-        [self presentViewController:alert animated:YES completion:nil];
-	}
-	else
-	{
-		[self.selectedImageIds removeLastObject];
-		[self.imagesCollection reloadData];
-		[self downloadImage];
-	}
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        [PHAssetChangeRequest creationRequestForAssetFromImageAtFileURL:filePath];
+    } completionHandler:^(BOOL success, NSError *error) {
+        if (!success) {
+            // Failed — Inform user
+            UIAlertController* alert = [UIAlertController
+                                        alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
+                                        message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+                                        preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* dismissAction = [UIAlertAction
+                                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                [self cancelSelect];
+                                            }];
+            
+            [alert addAction:dismissAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }];
+    
+    // Unqueue image and download next image
+    [self.selectedImageIds removeLastObject];
+    [self downloadImage];
 }
 
 -(void)movie:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
@@ -545,7 +571,6 @@
 	else
 	{
 		[self.selectedImageIds removeLastObject];
-		[self.imagesCollection reloadData];
 		[self downloadImage];
 	}
 }
@@ -683,7 +708,7 @@
 	{
 		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 		
-		if(self.albumData.images.count >= indexPath.row) {
+		if(self.albumData.images.count > indexPath.row) {
 			PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 			[cell setupWithImageData:imageData];
 			

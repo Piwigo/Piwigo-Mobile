@@ -170,6 +170,8 @@
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
+"singleImage" = "Image";
+"severalImages" = "Images";
 "noImages" = "No Images";
 "pullToRefresh" = "Reload Images";
 
@@ -178,8 +180,9 @@
 "albumPhotoError_message" = "Failed to get album photos (corrupt image in your album?)";
 
 // Image sort
-"sortTitle" = "Sort Type";
 "sortBy" = "Sort by";
+"imageSortTitle" = "Sort Images";
+"imageSortMessage" = "Please select how you wish to sort images";
 
 // Image options (actions)
 "imageOptions_title" = "Image Options";
@@ -220,7 +223,6 @@
 
 // Image delete
 "deleteImage_delete" = "Delete";
-"deleteImage_imagePlural" = "Images";
 "deleteImageProgress_title" = "Deleting %@%% Done";
 
 "deleteSingleImage_title" = "Delete Image";
@@ -283,11 +285,23 @@
 // Image upload — Errors
 "uploadError_title" = "Upload Error";
 "uploadError_message" = "Could not upload your image. Error: %@";
-"videoUploadError_title" = "Video Upload Error";
-"videoUploadError_message" = "You need to add the extension \"VideoJS\" and edit your local config file to allow video to be uploaded to your Piwigo.";
-"videoUploadConfigError_message" = "Please check the installation of \"VideoJS\" and the config file with LocalFiles Editor to allow video to be uploaded to your Piwigo.";
-"videoUploadError_format" = "Sorry, the video file format is not compatible with the extension \"VideoJS\".";
+"uploadCancelled_title" = "Upload Cancelled";
 
+"imageUploadError_title" = "Image Upload Error";
+"imageUploadError_format" = "Sorry, image files with extensions .%@ and .jpg are not accepted by the Piwigo server.";
+"imageUploadError_source" = "cannot create image source";
+"imageUploadError_destination" = "cannot create image destination";
+"imageUploadError_iCloud" = "Could not retrieve image from iCloud. Error: %@";
+
+"audioUploadError_title" = "Audio Upload Error";
+"audioUploadError_format" = "Sorry, audio files are not supported by Piwigo Mobile yet.";
+
+"videoUploadError_title" = "Video Upload Error";
+"videoUploadError_format" = "Sorry, video files with extension .%@ are not accepted by the Piwigo server.";
+"videoUploadError_iCloud" = "Could not retrieve video from iCloud. Error: %@";
+"videoUploadError_export" = "Sorry, the video could not be retrieved for the upload. Error: %@";
+"videoUploadError_unknown" = "Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: %@";
+"videoUploadCancelled_message" = "The upload of the video has been cancelled.";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS
@@ -321,6 +335,7 @@
 "settingsHeader_general" = "General Settings";
 "settings_loadAllCategories" = "Download all Albums at Start";
 "settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
+
 "defaultImageSort" = "Sort";
 "defaultImageSort>320px" = "Default Sort";
 "defaultImageSort>414px" = "Default Sort of Images";
@@ -330,13 +345,12 @@
 "defaultThumbnailSize>414px" = "Default Size of Thumbnails";
 "defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Please Select a Thumbnail Size";
-"defaultThumbnailSize_disabled" = " (disabled on server)";
 "settings_displayTitles" = "Titles on Thumbnails";
 "settings_displayTitles>320px" = "Display Titles on Thumbnails";
 
-"thumbnailSizeSquare" = "Square (faster)";
-"thumbnailSizeThumbnail" = "Thumbnail (default)";
-"thumbnailSizeXXSmall" = "Tiny (better)";
+"thumbnailSizeSquare" = "Square";
+"thumbnailSizeThumbnail" = "Thumbnail";
+"thumbnailSizeXXSmall" = "Tiny";
 "thumbnailSizeXSmall" = "Extra Small";
 "thumbnailSizeSmall" = "Small";
 "thumbnailSizeMedium" = "Medium";
@@ -351,7 +365,8 @@
 "defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "Please Select an Image Size";
 "defaultImageSize_recommended" = " (recommended)";
-"defaultImageSize_disabled" = " (disabled on server)";
+"defaultSize_disabled" = " (disabled on server)";
+"defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
 
 "imageSizeSquare" = "Square";
 "imageSizeThumbnail" = "Thumbnail";
@@ -371,14 +386,18 @@
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Privacy";
 "settings_defaultPrivacy>414px" = "Who Can See the Media?";
-"settings_stripGPSdata" = "Strip GPS Metadata";
-"settings_stripGPSdata>375px" = "Strip GPS Metadata Before Upload";
+"settings_stripGPSdata" = "Strip Private Metadata";
+"settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
 "settings_photoResize" = "Resize Before Upload";
 "settings_photoResize>375px" = "Resize Image Before Upload";
 "settings_photoSize" = "> Size   ";
-"settings_placeholderSize" = "Enter a Photo Size from 1 - 100";
+"settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
+"settings_photoCompress" = "Compress Before Upload";
+"settings_photoCompress>375px" = "Compress Image Before Upload";
 "settings_photoQuality" = "> Quality";
 "settings_placeholderQuality" = "Enter an Image Quality from 50 - 98";
+"settings_deleteImage>375px" = "Delete Image After Upload";
+"settings_deleteImage" = "Delete After Upload";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";

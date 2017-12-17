@@ -67,6 +67,12 @@
 																	 multiplier:1.0
 																	   constant:-10]];
 	
+    self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
+    self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeCancel"]
+                                         backgroundColor:[UIColor redColor]
+                                                callback:^BOOL(MGSwipeTableCell *sender) {
+                                                    return YES;
+                                                }]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -103,6 +109,7 @@
                                             }
      ];
 	
+    // Image properties
 	self.imageTitle.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_title", @"Title:")], imageInfo.title];
 	self.author.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_author", @"Author:")], imageInfo.author];
 	self.privacyLevel.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_privacy", @"Privacy:")], [[Model sharedInstance] getNameForPrivacyLevel:imageInfo.privacyLevel]];

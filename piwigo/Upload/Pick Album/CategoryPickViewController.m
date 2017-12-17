@@ -106,7 +106,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return 50.0;
+	return 64.0;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -119,8 +119,9 @@
 	headerLabel.textColor = [UIColor piwigoOrange];
 	headerLabel.text = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
     headerLabel.textAlignment = NSTextAlignmentCenter;
-	headerLabel.adjustsFontSizeToFitWidth = YES;
-	headerLabel.minimumScaleFactor = 0.5;
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	[header addSubview:headerLabel];
 	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
 	[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"

@@ -6,7 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import <AssetsLibrary/AssetsLibrary.h>
+#import <Photos/Photos.h>
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"
 #import "ImageService.h"
@@ -17,7 +19,7 @@
 #import "ImageUpload.h"
 #import "ImageScrollView.h"
 #import "AllCategoriesViewController.h"
-#import <AFNetworking/AFImageDownloader.h>
+#import "KeychainAccess.h"
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
 
@@ -48,7 +50,7 @@
 		self.imageData = [self.images objectAtIndex:imageIndex];
 		self.title = self.imageData.name;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
-		[startingImage setImageWithImageData:self.imageData];
+		[startingImage setImageScrollViewWithImageData:self.imageData];
 		startingImage.imageIndex = imageIndex;
 		
 		[self setViewControllers:@[startingImage]
@@ -81,9 +83,16 @@
 {
 	[super viewWillAppear:animated];
 	
+    // Image options button
 	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
 	self.navigationItem.rightBarButtonItem = imageOptionsButton;
 	
+    // Never present video poster in fulls screen
+    if (self.imageData.isVideo) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+    
+    // Scrolling
 	if([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
 	{
 		self.automaticallyAdjustsScrollViewInsets = false;
@@ -223,17 +232,19 @@
 
 -(void)downloadImage
 {
-	// Check that user provided access to Photos.app
-    if ([ALAssetsLibrary authorizationStatus] != ALAuthorizationStatusAuthorized) {
+    // Check autorisation to access Photo Library
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status != PHAuthorizationStatusAuthorized) {
+        
         UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                preferredStyle:UIAlertControllerStyleAlert];
+                                    alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                    message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+                                    preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
+                                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                        style:UIAlertActionStyleCancel
+                                        handler:^(UIAlertAction * action) {}];
         
         [alert addAction:defaultAction];
         [self presentViewController:alert animated:YES completion:nil];
@@ -247,13 +258,31 @@
 	__weak typeof(self) weakSelf = self;
     NSString *URLRequest = [NetworkHandler getURLWithPath:self.imageData.ThumbPath asPiwigoRequest:NO withURLParams:nil];
 
+    // Create image downloader instance
+    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+    
     // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
-    
-    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
     [dow.sessionManager setSecurityPolicy:policy];
+    
+    // Manage servers performing HTTP Authentication
+    NSString *user = [KeychainAccess getLoginUser];
+    if ((user != nil) && ([user length] > 0)) {
+        NSString *password = [KeychainAccess getLoginPassword];
+        [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+            // To remember app recieved anthentication challenge
+            [Model sharedInstance].performedHTTPauthentication = YES;
+            // Supply requested credentials if not provided yet
+            if (challenge.previousFailureCount == 0) {
+                *credential = [NSURLCredential credentialWithUser:user
+                                                         password:password
+                                                      persistence:NSURLCredentialPersistenceForSession];
+            }
+            return NSURLSessionAuthChallengeUseCredential;
+        }];
+    }
     
     [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
 					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
@@ -264,37 +293,43 @@
     if(!self.imageData.isVideo)
 	{
 		[ImageService downloadImage:self.imageData
-						 onProgress:^(NSProgress *progress) {
+                         onProgress:^(NSProgress *progress) {
                              dispatch_async(dispatch_get_main_queue(),
                                             ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;});
-						 
-                         } ListOnCompletion:^(NSURLSessionTask *task, UIImage *image) {
-							 [self saveImageToCameraRoll:image];
-						 
-                         } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                             // Failed — Inform user
-							 self.downloadView.hidden = YES;
-                             UIAlertController* alert = [UIAlertController
-                                 alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                                 message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
-                                 preferredStyle:UIAlertControllerStyleAlert];
-                             
-                             UIAlertAction* defaultAction = [UIAlertAction
-                                 actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                 style:UIAlertActionStyleCancel
-                                 handler:^(UIAlertAction * action) {}];
-                             
-                             UIAlertAction* retryAction = [UIAlertAction
-                                 actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
-                                 style:UIAlertActionStyleDefault
-                                 handler:^(UIAlertAction * action) {
-                                     [self downloadImage];
-                                 }];
-                             
-                             [alert addAction:defaultAction];
-                             [alert addAction:retryAction];
-                             [self presentViewController:alert animated:YES completion:nil];
-						 }];
+
+                         }
+                  completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+                      // Any error ?
+                      if (error.code) {
+                          // Failed — Inform user
+                          self.downloadView.hidden = YES;
+                          UIAlertController* alert = [UIAlertController
+                                                      alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                                      message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
+                                                      preferredStyle:UIAlertControllerStyleAlert];
+
+                          UIAlertAction* defaultAction = [UIAlertAction
+                                                          actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                          style:UIAlertActionStyleCancel
+                                                          handler:^(UIAlertAction * action) {}];
+
+                          UIAlertAction* retryAction = [UIAlertAction
+                                                        actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                                        style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) {
+                                                            [self downloadImage];
+                                                        }];
+
+                          [alert addAction:defaultAction];
+                          [alert addAction:retryAction];
+                          [self presentViewController:alert animated:YES completion:nil];
+
+                      } else {
+                          // Try to move photo in Photos.app
+                          [self saveImageToCameraRoll:filePath];
+                      }
+                  }
+         ];
 	}
 	else
 	{
@@ -359,31 +394,30 @@
 	}
 }
 
--(void)saveImageToCameraRoll:(UIImage*)imageToSave
+-(void)saveImageToCameraRoll:(NSURL *)filePath
 {
-	UIImageWriteToSavedPhotosAlbum(imageToSave, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-}
-
-// called when the image is done saving to disk
--(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
-{
-	if(error)
-	{
-        // Failed — Inform user
-        UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
-                message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
-        
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:nil];
-	}
-	self.downloadView.hidden = YES;
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        [PHAssetChangeRequest creationRequestForAssetFromImageAtFileURL:filePath];
+    } completionHandler:^(BOOL success, NSError *error) {
+        if (!success) {
+            // Failed — Inform user
+            UIAlertController* alert = [UIAlertController
+                                        alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
+                                        message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+                                        preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction
+                                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                            style:UIAlertActionStyleCancel
+                                            handler:^(UIAlertAction * action) {}];
+            
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }];
+    
+    // Hide progress view
+    self.downloadView.hidden = YES;
 }
 
 -(void)movie:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
@@ -413,7 +447,14 @@
 
 	if(self.navigationController.navigationBarHidden)
 	{
-		[self hideTabBar:self.tabBarController];
+        if (self.imageData.isVideo) {
+            // User wants to play/replay the video
+            ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
+            [playVideo startVideoPlayerViewWithImageData:self.imageData];
+        } else {
+            // User wants to display the image in full screen
+            [self hideTabBar:self.tabBarController];
+        }
 	}
 	else
 	{
@@ -472,7 +513,6 @@
 {
 	if(_downloadView) return _downloadView;
 	
-	
 	_downloadView = [ImageDownloadView new];
 	_downloadView.translatesAutoresizingMaskIntoConstraints = NO;
 	[self.view addSubview:_downloadView];
@@ -503,7 +543,7 @@
 	PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
 	
 	ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
-	[nextImage setImageWithImageData:imageData];
+	[nextImage setImageScrollViewWithImageData:imageData];
 	nextImage.imageIndex = currentIndex + 1;
 	return nextImage;
 }
@@ -523,7 +563,7 @@
 	PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
 		
 	ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
-	[prevImage setImageWithImageData:imageData];
+	[prevImage setImageScrollViewWithImageData:imageData];
 	prevImage.imageIndex = currentIndex - 1;
 	return prevImage;
 }
@@ -542,11 +582,15 @@
 
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
-    if(currentIndex < 0)
+    if (currentIndex < 0)
     {
         // Crash reported by AppStore here on August 26th, 2017
-        // Will see if that fixes the issue…
         currentIndex = 0;
+    }
+    if (currentIndex >= self.images.count)
+    {
+        // Crash reported by AppleStore in November 2017
+        currentIndex = self.images.count - 1;
     }
 
     self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex];

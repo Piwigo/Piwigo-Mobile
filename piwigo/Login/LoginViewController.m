@@ -90,13 +90,11 @@
     // Default settings
     [Model sharedInstance].hasAdminRights = NO;
     [Model sharedInstance].usesCommunityPluginV29 = NO;
-    [Model sharedInstance].canUploadVideos = YES;
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin: starting with…");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 #endif
 
     // Check server address and cancel login if address not provided
@@ -161,10 +159,9 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> performLogin: starting with…");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 #endif
     
     // Perform Login if username exists
@@ -214,10 +211,9 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting with…", isFirstLogin ? @"YES" : @"NO");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@,
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 #endif
     if(([Model sharedInstance].usesCommunityPluginV29) &&(![Model sharedInstance].userCancelledCommunication)) {
 
@@ -257,10 +253,9 @@
 #if defined(DEBUG_SESSION)
     NSLog(@"=> getSessionStatusAtLogin:%@ andFirstLogin:%@ starting with…",
           isLoggingIn ? @"YES" : @"NO", isFirstLogin ? @"YES" : @"NO");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 #endif
     if (![Model sharedInstance].userCancelledCommunication) {
         // Update HUD during login
@@ -355,10 +350,9 @@
                 [self hideLoading];
 #if defined(DEBUG_SESSION)
                 NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
-                NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+                NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
                       ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-                      ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-                      ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
+                      ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 #endif
             }
         } else {
@@ -378,10 +372,9 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> performRelogin: starting with…");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, canUploadVideos=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
-          ([Model sharedInstance].canUploadVideos ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 #endif
     
     // Update HUD during re-login

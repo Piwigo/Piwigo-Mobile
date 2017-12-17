@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "ImageUploadProgressView.h"
 #import "ImageUpload.h"
 #import "ImageUploadManager.h"
@@ -105,19 +107,25 @@
 
 #pragma mark ImageUploadManagerDelegate Methods
 
--(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
+-(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
-	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
-	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
-	CGFloat peiceProgress = (CGFloat)current / total;
-	CGFloat totalProgressForThisImage = (onChunkPercent + (chunkPercent * peiceProgress)) / self.maxImages;
-	CGFloat totalBatchProgress = (self.totalUploadedImages / (CGFloat)self.maxImages) + totalProgressForThisImage;
-	
-	[self.uploadProgress setProgress:totalBatchProgress animated:YES];
-	
-	if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:)])
+    CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
+    CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
+    CGFloat peiceProgress = (CGFloat)current / total;
+    CGFloat totalProgressForThisImage;
+    if (iCloudProgress < 0) {
+        totalProgressForThisImage = (onChunkPercent + (chunkPercent * peiceProgress)) / fmax(1.0, (CGFloat)self.maxImages);
+    } else {
+        totalProgressForThisImage = (iCloudProgress + onChunkPercent + (chunkPercent * peiceProgress)) / 2.0 / fmax(1.0, (CGFloat)self.maxImages);
+    }
+    CGFloat totalBatchProgress = (self.totalUploadedImages / fmax(1.0, (CGFloat)self.maxImages)) + totalProgressForThisImage;
+
+    [self.uploadProgress setProgress:totalBatchProgress animated:YES];
+    NSLog(@"ImageUploadProgressView[imageProgress]: %.2f", totalBatchProgress);
+
+	if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:)])
 	{
-		[self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks];
+        [self.delegate imageProgress:image onCurrent:current forTotal:total onChunk:currentChunk forChunks:totalChunks iCloudProgress:iCloudProgress];
 	}
 }
 
@@ -157,16 +165,34 @@
                         [self.uploadProgress setProgress:0 animated:NO];
                         self.totalUploadedImages = 0;
                         self.currentImage = 1;
+
+                        // Update the local album table view
+                        if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+                        {
+                            [self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
+                        }
+                        
+                        // Delete images from Photos library if requested
+                        if ([Model sharedInstance].deleteImageAfterUpload) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                                    // Delete images from the library
+                                    [PHAssetChangeRequest deleteAssets:[ImageUploadManager sharedInstance].imageDeleteQueue];
+                                } completionHandler:^(BOOL success, NSError *error) {
+                                    NSLog(@"Finished deleting asset. %@", (success ? @"Success." : error));
+                                }];
+                            });
+                        }
                     }];
         
         [alert addAction:defaultAction];
         [topViewController presentViewController:alert animated:YES completion:nil];
-	}
-
-    // Update the local album table view
-    if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-    {
-        [self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
+    } else {
+        // Update the local album table view
+        if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+        {
+            [self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
+        }
     }
 }
 

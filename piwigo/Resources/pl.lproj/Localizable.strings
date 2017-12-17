@@ -170,6 +170,8 @@
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
+"singleImage" = "Zdjęcie";
+"severalImages" = "Zdjęcia";
 "noImages" = "Brak Zdjęć";
 "pullToRefresh" = "Przeładuj Zdjęcia";
 
@@ -178,8 +180,9 @@
 "albumPhotoError_message" = "Nie udało się pobrać zdjęć z albumu (jakieś uszkodzone zdjęcie w Twoim albumie?)";
 
 // Image sort
-"sortTitle" = "Typ Sortowania";
 "sortBy" = "Sortuj wg";
+"imageSortTitle" = "Sort Images";
+"imageSortMessage" = "Please select how you wish to sort images";
 
 // Image options (actions)
 "imageOptions_title" = "Opcje Zdjęcia";
@@ -220,7 +223,6 @@
 
 // Image delete
 "deleteImage_delete" = "Usuń";
-"deleteImage_imagePlural" = "Zdjęcia";
 "deleteImageProgress_title" = "Usuwanie %@%% zakończone";
 
 "deleteSingleImage_title" = "Usuń Zdjęcie";
@@ -283,11 +285,23 @@
 // Image upload — Errors
 "uploadError_title" = "Błąd przesyłania";
 "uploadError_message" = "Nie można przesłać zdjęcia. Błąd: %@";
-"videoUploadError_title" = "Błąd Przesyłania Wideo";
-"videoUploadError_message" = "Musisz dodać rozszerzenie \"VideoJS\" i edytować lokalny plik konfiguracyjny, aby umożliwić przesyłanie plików wideo do Twojego Piwigo.";
-"videoUploadConfigError_message" = "Sprawdź instalację rozszerzenia \"VideoJS\" i plik konfiguracyjny edytorem LocalFiles aby umożliwić przesyłanie wideo do Twojego Piwigo.";
-"videoUploadError_format" = "Przepraszamy format pliku wideo nie jest zgodny z rozszerzeniem \"VideoJS\".";
+"uploadCancelled_title" = "Upload Cancelled";
 
+"imageUploadError_title" = "Image Upload Error";
+"imageUploadError_format" = "Sorry, image files with extensions .%@ and .jpg are not accepted by the Piwigo server.";
+"imageUploadError_source" = "cannot create image source";
+"imageUploadError_destination" = "cannot create image destination";
+"imageUploadError_iCloud" = "Could not retrieve image from iCloud. Error: %@";
+
+"audioUploadError_title" = "Błąd Przesyłania Audio";
+"audioUploadError_format" = "Sorry, audio files are not supported by Piwigo Mobile yet.";
+
+"videoUploadError_title" = "Błąd Przesyłania Wideo";
+"videoUploadError_format" = "Sorry, video files with extension .%@ are not accepted by the Piwigo server.";
+"videoUploadError_iCloud" = "Could not retrieve video from iCloud. Error: %@";
+"videoUploadError_export" = "Sorry, the video could not be retrieved for the upload. Error: %@";
+"videoUploadError_unknown" = "Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: %@";
+"videoUploadCancelled_message" = "The upload of the video has been cancelled.";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS
@@ -321,6 +335,7 @@
 "settingsHeader_general" = "Ustawienia Ogólne";
 "settings_loadAllCategories" = "Pobierz wszystkie Albumy na Start";
 "settings_loadAllCategories>320px" = "Pobierz wszystkie albumy przy uruchomieniu (odznacz w razie problemów)";
+
 "defaultImageSort" = "Sortowanie";
 "defaultImageSort>320px" = "Sortowanie";
 "defaultImageSort>414px" = "Domyślne Sortowanie Zdjęć";
@@ -330,13 +345,12 @@
 "defaultThumbnailSize>414px" = "Domyślny Rozmiar Miniatur";
 "defaultThumbnailSizeTitle" = "Domyślny Rozmiar";
 "defaultThumbnailSizeHeader" = "Proszę Wybrać Rozmiar Miniaturki";
-"defaultThumbnailSize_disabled" = " (wyłączone na serwerze)";
 "settings_displayTitles" = "Tytułów na Miniaturkach";
 "settings_displayTitles>320px" = "Wyświetlanie Tytułów na Miniaturkach";
 
-"thumbnailSizeSquare" = "Kwadrat (szybsze)";
-"thumbnailSizeThumbnail" = "Miniatura (domyślne)";
-"thumbnailSizeXXSmall" = "Najmniejsze (zalecane)";
+"thumbnailSizeSquare" = "Kwadrat";
+"thumbnailSizeThumbnail" = "Miniaturka";
+"thumbnailSizeXXSmall" = "Najmniejsze";
 "thumbnailSizeXSmall" = "Bardzo Małe";
 "thumbnailSizeSmall" = "Małe";
 "thumbnailSizeMedium" = "Średnie";
@@ -351,7 +365,8 @@
 "defaultImageSizeTitle" = "Domyślny Rozmiar";
 "defaultImageSizeHeader" = "Proszę Wybrać Rozmiar Zdjęcia";
 "defaultImageSize_recommended" = " (zalecane)";
-"defaultImageSize_disabled" = " (wyłączone na serwerze)";
+"defaultSize_disabled" = " (wyłączone na serwerze)";
+"defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
 
 "imageSizeSquare" = "Kwadrat";
 "imageSizeThumbnail" = "Miniaturka";
@@ -371,14 +386,18 @@
 "settings_defaultAuthorPlaceholder" = "Imię Autora";
 "settings_defaultPrivacy" = "Prywatność";
 "settings_defaultPrivacy>414px" = "Kto Może Zobaczyć Zdjęcia i Filmy?";
-"settings_stripGPSdata" = "Usuń Metadane GPS";
-"settings_stripGPSdata>375px" = "Usuń Metadane GPS Przed Przesłaniem";
+"settings_stripGPSdata" = "Strip Private Metadata";
+"settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
 "settings_photoResize" = "Zmień Rozmiar Przed Przesłaniem";
 "settings_photoResize>375px" = "Zmień Rozmiar Zdjęcia Przed Przesłaniem";
 "settings_photoSize" = "> Rozmiar   ";
-"settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 1 - 100";
+"settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 5 - 100";
+"settings_photoCompress" = "Compress Before Upload";
+"settings_photoCompress>375px" = "Compress Image Before Upload";
 "settings_photoQuality" = "> Jakość";
 "settings_placeholderQuality" = "Wprowadź Jakość Zdjęcia z Zakresu 50 - 98";
+"settings_deleteImage>375px" = "Delete Image After Upload";
+"settings_deleteImage" = "Delete After Upload";
 
 // Settings — Cache
 "settingsHeader_cache" = "Podręczna (Używany/Całkowity)";

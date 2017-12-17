@@ -14,7 +14,6 @@
 #import "AlbumImagesViewController.h"
 #import "CategoriesData.h"
 #import "Model.h"
-#import "iRate.h"
 #import "MBProgressHUD.h"
 
 @interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, AlbumTableViewCellDelegate>
@@ -52,7 +51,8 @@ static SEL extracted() {
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
 		
         [[NSNotificationCenter defaultCenter] addObserver:self selector:extracted() name:kPiwigoNotificationCategoryDataUpdated object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAlbumData) name:UIApplicationDidBecomeActiveNotification object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAlbumData) name:UIApplicationDidBecomeActiveNotification object:nil];
 	}
 	return self;
 }
@@ -72,7 +72,12 @@ static SEL extracted() {
 -(void)categoryDataUpdated
 {
 	self.categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:0];
-	[self.albumsTableView reloadData];
+    // Following 3 lines fix iOS 11 bug encountered with reloadData
+    // See https://forums.developer.apple.com/thread/86703
+    self.albumsTableView.estimatedRowHeight = 0;
+    self.albumsTableView.estimatedSectionHeaderHeight = 0;
+    self.albumsTableView.estimatedSectionFooterHeight = 0;
+    [self.albumsTableView reloadData];
 }
 
 -(void)viewDidLoad
@@ -86,8 +91,6 @@ static SEL extracted() {
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
     self.albumsTableView.allowsMultipleSelectionDuringEditing = NO;
-
-    [[iRate sharedInstance] promptIfAllCriteriaMet];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -138,7 +141,7 @@ static SEL extracted() {
         textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
-        textField.returnKeyType = UIReturnKeyDone;
+        textField.returnKeyType = UIReturnKeyContinue;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.delegate = self;
     }];

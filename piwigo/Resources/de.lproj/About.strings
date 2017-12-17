@@ -10,15 +10,13 @@
 "authors2" = "und Eddy Lelièvre-Berna";
 "version" = "Version:";
 
-"translators_text" = "Wir danken den folgenden Benutzern herzlich für ihre Zeit und ihre Bemühungen bei der Übersetzung von Piwigo: Thomas Christfort (Danish), Jörg Knörchen (Deutsch), Elger Lindgren (Schwedisch), Michał Majchrowicz (Polish), Robert Mulder (Dutch).\n\n";
+"translators_text" = "Wir danken den folgenden Benutzern herzlich für ihre Zeit und ihre Bemühungen bei der Übersetzung von Piwigo: Thomas Christfort (Danish), Jörg Knörchen (Deutsch), Elger Lindgren (Schwedisch), Michał Majchrowicz (Polish), Robert Mulder (Dutch), Alfian Silaban (Indonesisch).\n\n";
 
 "about_text" = "Diese Software enthält Drittanbieter-Software, die unter den allgemeinen Geschäftsbedingungen ihrer ursprünglichen Lizenzen wiederverwendet werden.\n\n";
 
 "licenceMIT_text" = "MIT-Lizenz (MIT)\n\nHiermit wird unentgeltlich jeder Person, die eine Kopie der Software und der zugehörigen Dokumentationen (die \"Software\") erhält, die Erlaubnis erteilt, sie uneingeschränkt zu nutzen, inklusive und ohne Ausnahme mit dem Recht, sie zu verwenden, zu kopieren, zu verändern, zusammenzufügen, zu veröffentlichen, zu verbreiten, zu unterlizenzieren und/oder zu verkaufen, und Personen, denen diese Software überlassen wird, diese Rechte zu verschaffen, unter den folgenden Bedingungen:\n\nDer obige Urheberrechtsvermerk und dieser Erlaubnisvermerk sind in allen Kopien oder Teilkopien der Software beizulegen.\n\nDIE SOFTWARE WIRD OHNE JEDE AUSDRÜCKLICHE ODER IMPLIZIERTE GARANTIE BEREITGESTELLT, EINSCHLIEẞLICH DER GARANTIE ZUR BENUTZUNG FÜR DEN VORGESEHENEN ODER EINEM BESTIMMTEN ZWECK SOWIE JEGLICHER RECHTSVERLETZUNG, JEDOCH NICHT DARAUF BESCHRÄNKT. IN KEINEM FALL SIND DIE AUTOREN ODER COPYRIGHTINHABER FÜR JEGLICHEN SCHADEN ODER SONSTIGE ANSPRÜCHE HAFTBAR ZU MACHEN, OB INFOLGE DER ERFÜLLUNG EINES VERTRAGES, EINES DELIKTES ODER ANDERS IM ZUSAMMENHANG MIT DER SOFTWARE ODER SONSTIGER VERWENDUNG DER SOFTWARE ENTSTANDEN.\n________________________________________\n\n";
 
 "licenceAFN_text" = "AFNetworking\n\nMIT Lizenz (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)\n________________________________________\n\n";
-
-"licenceIRate_text" = "iRate\n\nVersion 1.12.1\nCreated by Nick Lockwood on 26/01/2011.\nCopyright © 2011 Charcoal Design\n\nThis software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.\n\nPermission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:\n\n1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.\n2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.\n3. This notice may not be removed or altered from any source distribution.\n________________________________________\n\n";
 
 "licenceMBProgHUD_text" = "MBProgressHUD\n\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski\n________________________________________\n\n";
 

@@ -16,7 +16,7 @@
 
 +(void)uploadImage:(NSData*)imageData
    withInformation:(NSDictionary*)imageInformation
-			onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+			onProgress:(void (^)(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks))onProgress
 		  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
 			 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
@@ -31,7 +31,7 @@
                                     forOffset:0
                                       onChunk:0
                                forTotalChunks:(NSInteger)chunks
-                                   onProgress:progress
+                                   onProgress:onProgress
                                  OnCompletion:completion
                                     onFailure:fail];
 }
@@ -41,7 +41,7 @@
 					  forOffset:(NSInteger)offset
 						onChunk:(NSInteger)count
 				 forTotalChunks:(NSInteger)chunks
-					 onProgress:(void (^)(NSInteger current, NSInteger total, NSInteger currentChunk, NSInteger totalChunks))progress
+					 onProgress:(void (^)(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks))onProgress
 				   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
 					  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
@@ -59,9 +59,9 @@
 	
 	[self postMultiPart:kPiwigoImagesUpload
           parameters:imageInformation
-               progress:^(NSProgress *onProgress) {
+               progress:^(NSProgress *progress) {
                    dispatch_async(dispatch_get_main_queue(),
-                                  ^(void){if(onProgress) progress((NSInteger)onProgress.completedUnitCount, (NSInteger)onProgress.totalUnitCount, count + 1, chunks);});
+                                  ^(void){if(progress) onProgress((NSProgress *)progress, count + 1, chunks);});
                }
              success:^(NSURLSessionTask *task, id responseObject) {
                  if(count >= chunks - 1) {
@@ -76,7 +76,7 @@
                             forOffset:offset
                               onChunk:nextChunkNumber
                        forTotalChunks:chunks
-                           onProgress:progress
+                           onProgress:onProgress
                          OnCompletion:completion
                             onFailure:fail];
                   }

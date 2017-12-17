@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.4_text" = "Version 2.1.4\n\n• Traduction en Suédois\n• Correction de bugs\n________________________________________\n\n";
+"v2.1.5_text" = "Version 2.1.5\n\n• Ajoute la possibilité d'annuler des transferts vers Piwigo\n• Ajoute une option pour effacer les images après un transfert\n• Ajoute la compatibilité avec l'option Optimiser le Stockage (iCloud)\n• Préserve si possible le format d'image après redimensionnement\n• Règle la perte partielle des métadonnées pendant un téléchargement\n• Règle le remplacement du format PNG par JPEG au cours d'un transfert\n• Règle quelques problèmes rencontrés avec iOS 11 et l'iPhone X\n• Règle quelques bugs mineurs\n• Modernisation du code\n________________________________________\n\n";
+
+"v2.1.4_text" = "Version 2.1.4\n31 octobre 2017\n\n• Traduction en Suédois\n• Correction de bugs\n________________________________________\n\n";
 
 "v2.1.3_text" = "Version 2.1.3\n19 octobre 2017\n\n• Ajoute l'accès par authentification HTTP(S)\n• Permet de stopper l'auto-connexion\n• Améliore l'interface et la gestion des téléversements\n• Améliore les traductions et la compatibilité avec iOS 11\n• Règle un bug rencontré avec le filtre \"Pas Encore Envoyées\"\n• Modernisation du code\n________________________________________\n\n";
 

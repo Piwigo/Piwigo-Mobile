@@ -170,6 +170,8 @@
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
+"singleImage" = "Bild";
+"severalImages" = "Bilder";
 "noImages" = "Inga bilder";
 "pullToRefresh" = "Ladda om bilderna";
 
@@ -178,8 +180,9 @@
 "albumPhotoError_message" = "Kunde inte hämta albumbilder (korrupt bild i ditt album?)";
 
 // Image sort
-"sortTitle" = "Sorteringstyp";
 "sortBy" = "Sortera efter";
+"imageSortTitle" = "Sortera bilder";
+"imageSortMessage" = "Välj hur du vill sortera bilder";
 
 // Image options (actions)
 "imageOptions_title" = "Bildalternativ";
@@ -220,7 +223,6 @@
 
 // Image delete
 "deleteImage_delete" = "Radera";
-"deleteImage_imagePlural" = "Bilder";
 "deleteImageProgress_title" = "Radering av %@%% utförd";
 
 "deleteSingleImage_title" = "Radera bild";
@@ -283,11 +285,23 @@
 // Image upload — Errors
 "uploadError_title" = "Uppladdningsfel";
 "uploadError_message" = "Kunde inte ladda upp din bild. Fel: %@";
-"videoUploadError_title" = "Fel vid videouppladdning";
-"videoUploadError_message" = "Du behöver lägga till tillägget ”VideoJS” och redigera din lokala config-fil för att tillåta video att överföras till din Piwigo.";
-"videoUploadConfigError_message" = "Kontrollera installationen av ”VideoJS” och config-filen med LocalFiles-editorn för att tillåta videofiler att laddas upp till din Piwigo.";
-"videoUploadError_format" = "Tyvärr, är videofilens format är inte kompatibelt med tillägget ”VideoJS”.";
+"uploadCancelled_title" = "Uppladdning avbruten";
 
+"imageUploadError_title" = "Bilduppladdningsfel";
+"imageUploadError_format" = "Tyvärr, men bildfiler med tillägg .%@ och .jpg accepteras inte av Piwigo servern.";
+"imageUploadError_source" = "kan inte skapa bildkälla";
+"imageUploadError_destination" = "kan inte skapa bild destination";
+"imageUploadError_iCloud" = "Kunde inte att hämta bild från iCloud. Fel: %@";
+
+"audioUploadError_title" = "Fel vid ljuduppladdning";
+"audioUploadError_format" = "Tyvärr, ljudfiler stöds inte av Piwigo Mobile ännu.";
+
+"videoUploadError_title" = "Fel vid videouppladdning";
+"videoUploadError_format" = "Tyvärr, men videofiler med tillägg .%@ accepteras inte av Piwigo server.";
+"videoUploadError_iCloud" = "Kunde inte att hämta video från iCloud. Fel: %@";
+"videoUploadError_export" = "Tyvärr, videon kunde inte hämtas för uppladdning. Fel: %@";
+"videoUploadError_unknown" = "Tyvärr, uppladdning av video misslyckades p.g.a ett okänt fel under MP4 konvertering. Fel: %@";
+"videoUploadCancelled_message" = "Uppladdning av videon har avbrutits.";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS
@@ -321,6 +335,7 @@
 "settingsHeader_general" = "Allmänna inställningar";
 "settings_loadAllCategories" = "Ladda ner alla album vid Start";
 "settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
+
 "defaultImageSort" = "Sortera";
 "defaultImageSort>320px" = "Sortera";
 "defaultImageSort>414px" = "Standardsortering av bilder";
@@ -330,13 +345,12 @@
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
 "defaultThumbnailSizeTitle" = "Standardstorlek";
 "defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
-"defaultThumbnailSize_disabled" = " (inaktiverad på servern)";
 "settings_displayTitles" = "Titlar på miniatyrbilder";
 "settings_displayTitles>320px" = "Visa titlar på miniatyrbilder";
 
-"thumbnailSizeSquare" = "Kvadrat (snabbare)";
-"thumbnailSizeThumbnail" = "Miniatyrbild (standard)";
-"thumbnailSizeXXSmall" = "Mini (bättre)";
+"thumbnailSizeSquare" = "Kvadrat";
+"thumbnailSizeThumbnail" = "Miniatyrbild";
+"thumbnailSizeXXSmall" = "Mini";
 "thumbnailSizeXSmall" = "Extra liten";
 "thumbnailSizeSmall" = "Liten";
 "thumbnailSizeMedium" = "Medium";
@@ -351,7 +365,8 @@
 "defaultImageSizeTitle" = "Standardstorlek";
 "defaultImageSizeHeader" = "Välj en bildstorlek";
 "defaultImageSize_recommended" = " (rekommenderas)";
-"defaultImageSize_disabled" = " (inaktiverad på servern)";
+"defaultSize_disabled" = " (inaktiverad på servern)";
+"defaultSizeFooter" = "Utgråade storlekar är inte rekommenderade eller inte tillgänglig på Piwigo server.";
 
 "imageSizeSquare" = "Kvadrat";
 "imageSizeThumbnail" = "Miniatyrbild";
@@ -371,14 +386,18 @@
 "settings_defaultAuthorPlaceholder" = "Författarnamn";
 "settings_defaultPrivacy" = "Behörighet";
 "settings_defaultPrivacy>414px" = "Vem kan se dessa media?";
-"settings_stripGPSdata" = "Rensa GPS-metadata";
-"settings_stripGPSdata>375px" = "Rensa GPS-metadata innan uppladdning";
+"settings_stripGPSdata" = "Rensa privat Metadata";
+"settings_stripGPSdata>375px" = "Rensa privat Metadata före uppladdning";
 "settings_photoResize" = "Skala om före uppladdning";
 "settings_photoResize>375px" = "Ändra bildstorlek före uppladdning";
 "settings_photoSize" = "> Storlek   ";
-"settings_placeholderSize" = "Ange en bildstorlek från 1-100";
+"settings_placeholderSize" = "Ange en bildstorlek mellan 5 - 100";
+"settings_photoCompress" = "Komprimera före uppladdning";
+"settings_photoCompress>375px" = "Komprimera bild före uppladdning";
 "settings_photoQuality" = "> Kvalitet";
 "settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
+"settings_deleteImage>375px" = "Radera bild efter uppladdning";
+"settings_deleteImage" = "Radera efter uppladdning";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-inställningar (använd/totalt)";

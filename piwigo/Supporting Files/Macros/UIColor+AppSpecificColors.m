@@ -26,6 +26,10 @@
 {
 	return [UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1.0];
 }
++(UIColor*)piwigoGrayUltraLight
+{
+    return [UIColor colorWithRed:160/255.0 green:160/255.0 blue:160/255.0 alpha:1.0];
+}
 +(UIColor*)piwigoBrown
 {
 	return [UIColor colorWithRed:114/255.0 green:93/255.0 blue:49/255.0 alpha:1.0];

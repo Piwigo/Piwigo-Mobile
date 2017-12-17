@@ -7,7 +7,6 @@
 //
 
 #import "ImageScrollView.h"
-#import "NetworkHandler.h"
 
 @interface ImageScrollView() <UIScrollViewDelegate>
 
@@ -29,34 +28,31 @@
 		self.maximumZoomScale = 2.5;
 		self.minimumZoomScale = 1.0;
 		
+        // Image previewed
 		self.imageView = [UIImageView new];
 		self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        self.imageView.backgroundColor = [UIColor piwigoGray];
 		[self addSubview:self.imageView];
-		
-	}
+
+        // Play button above posters of movie
+        self.playImage = [UIImageView new];
+        UIImage *play = [UIImage imageNamed:@"videoPlay"];
+        self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.playImage.tintColor = [UIColor piwigoWhiteCream];
+        self.playImage.hidden = YES;
+        self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
+        self.playImage.contentMode = UIViewContentModeScaleAspectFit;
+        [self addSubview:self.playImage];
+        [self addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(50, 50)]];
+        [self addConstraints:[NSLayoutConstraint constraintCenterView:self.playImage]];
+}
 	return self;
 }
 
 -(UIView*)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
 	return self.imageView;
-}
-
--(void)setupPlayerWithURL:(NSString*)videoURL
-{
-	self.maximumZoomScale = 1.0;
-	self.minimumZoomScale = 1.0;
-	
-    NSString *URLRequest = [NetworkHandler getURLWithPath:videoURL asPiwigoRequest:NO withURLParams:nil];
-    self.player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:URLRequest]];
-	[self.player setControlStyle:MPMovieControlStyleDefault];
-	self.player.scalingMode = MPMovieScalingModeAspectFit;
-	self.player.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	[self  addSubview: self.player.view];
-	[self  bringSubviewToFront:self.player.view];
-	[self.player prepareToPlay];
-	self.player.shouldAutoplay = NO;	
 }
 
 @end

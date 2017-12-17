@@ -19,11 +19,25 @@
 	if(self)
 	{
 		self.imageAsset = imageAsset;
-        NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-        self.image = ((PHAssetResource*)resources[0]).originalFilename;
-		self.title = [((PHAssetResource*)resources[0]).originalFilename stringByDeletingPathExtension];
-		self.categoryToUploadTo = category;
-		self.privacyLevel = privacy;
+        if (imageAsset) {
+            // For some unknown reason, the asset resource may be empty
+            NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
+            if ([resources count] > 0) {
+                self.image = ((PHAssetResource*)resources[0]).originalFilename;
+                self.title = [((PHAssetResource*)resources[0]).originalFilename stringByDeletingPathExtension];
+            } else {
+                // No filename => Build filename from 32 characters of local identifier
+                NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
+                self.image = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+                self.title = @"Image";
+            }
+        } else {
+            self.image = @"";
+            self.title = @"";
+        }
+        self.categoryToUploadTo = category;
+        self.privacyLevel = privacy;
+        self.stopUpload = NO;
 	}
 	return self;
 }

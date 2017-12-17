@@ -13,8 +13,9 @@
 #import "ImageUploadManager.h"
 #import "ImageUploadProgressView.h"
 #import "Model.h"
+#import "MGSwipeTableCell.h"
 
-@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, ImageUploadProgressDelegate, EditImageDetailsDelegate>
+@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, MGSwipeTableCellDelegate, ImageUploadProgressDelegate, EditImageDetailsDelegate>
 
 @property (nonatomic, strong) UITableView *uploadImagesTableView;
 @property (nonatomic, strong) NSMutableArray *imagesToEdit;
@@ -37,6 +38,7 @@
 		self.uploadImagesTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.uploadImagesTableView.delegate = self;
 		self.uploadImagesTableView.dataSource = self;
+        self.uploadImagesTableView.backgroundColor = [UIColor piwigoGray];
 		UINib *cellNib = [UINib nibWithNibName:@"ImageUploadCell" bundle:nil];
 		[self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:@"Cell"];
 		[self.view addSubview:self.uploadImagesTableView];
@@ -123,7 +125,7 @@
 	cell.imageProgress = progress;
 }
 
-#pragma mark UITableView Methods
+#pragma mark — UITableView Methods
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -132,21 +134,21 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return 30.0;
+	return 44.0;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
 	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30.0)];
-	header.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.5];
+	header.backgroundColor = [UIColor piwigoGray];
 	
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	headerLabel.textColor = [UIColor whiteColor];
-	headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.font = [UIFont piwigoFontNormal];
+	headerLabel.textColor = [UIColor piwigoOrange];
 	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:3]];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:12]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:5]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:15]];
 	
 	switch(section)
 	{
@@ -188,7 +190,7 @@
 	
 	if(indexPath.section == 0)
 	{
-		ImageUpload *image = [self.imagesToEdit objectAtIndex:indexPath.row];
+        ImageUpload *image = [self.imagesToEdit objectAtIndex:indexPath.row];
 		[cell setupWithImageInfo:image];
 	}
 	else
@@ -197,6 +199,8 @@
 		[cell setupWithImageInfo:image];
 		cell.isInQueueForUpload = YES;
 	}
+    
+    cell.delegate = self;
 	
 	return cell;
 }
@@ -224,38 +228,63 @@
 	return YES;
 }
 
--(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark — MGSwipeTableCellDelegate Methods
+
+-(BOOL)swipeTableCell:(MGSwipeTableCell *)cell tappedButtonAtIndex:(NSInteger)index
+             direction:(MGSwipeDirection)direction fromExpansion:(BOOL) fromExpansion
 {
-	if(editingStyle == UITableViewCellEditingStyleDelete)
-	{
-		if(indexPath.section == 0)
-		{
-			// Remove image not in upload queue
+//    NSLog(@"Delegate: button tapped, %@ position, index %d, from Expansion: %@",
+//          direction == MGSwipeDirectionLeftToRight ? @"left" : @"right", (int)index, fromExpansion ? @"YES" : @"NO");
+    
+    if (direction == MGSwipeDirectionRightToLeft && index == 0) {
+        // Delete button
+        NSIndexPath *indexPath = [self.uploadImagesTableView indexPathForCell:cell];
+        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
+        if(indexPath.section == 0)      // Image selected for upload
+        {
+            // Remove image not in upload queue
             [self.imagesToEdit removeObjectAtIndex:indexPath.row];
-		}
-		else if(indexPath.row != 0 && indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)
-		{
-			// Remove image in upload queue (in both tables)
+        }
+        else if(indexPath.row == 0)     // Image being uploaded
+        {
+            // Stop current iCloud download or Piwigo upload
+            ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
+            image.stopUpload = YES;
+            [[ImageUploadManager sharedInstance].imageUploadQueue replaceObjectsAtIndexes:[NSIndexSet indexSetWithIndex:indexPath.row] withObjects:[NSArray arrayWithObject:image]];
+        }
+        else if (indexPath.row < [ImageUploadManager sharedInstance].imageUploadQueue.count)    // Image to be uploaded
+        {
+            // Remove image from upload queue (both in table and collection view) or stop iCloud download or Piwigo upload
             ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
             [[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
-            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObjectForKey:image.image];
+            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObjectForKey:[image.image stringByDeletingPathExtension]];
             [ImageUploadManager sharedInstance].maximumImagesForBatch--;
         }
-		
+
         // Update tables
-        [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
-	}
+        [self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
+    return YES;
 }
 
-#pragma mark ImageUploadProgressDelegate Methods
 
--(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks
+#pragma mark — ImageUploadProgressDelegate Methods
+
+-(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
-	CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
-	CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
-	CGFloat peiceProgress = (CGFloat)current / total;
-	CGFloat totalProgress = onChunkPercent + (chunkPercent * peiceProgress);
-	[self updateImage:image withProgress:totalProgress];
+    CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
+    CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
+    CGFloat peiceProgress = (CGFloat)current / total;
+    CGFloat uploadProgress = onChunkPercent + (chunkPercent * peiceProgress);
+    
+    if (iCloudProgress < 0) {
+        [self updateImage:image withProgress:uploadProgress];
+        NSLog(@"ImageUploadViewController[imageProgress]: %.2f", uploadProgress);
+    } else {
+        [self updateImage:image withProgress:((iCloudProgress + uploadProgress) / 2.0)];
+        NSLog(@"ImageUploadViewController[imageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
+    }
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
@@ -263,7 +292,8 @@
 	[self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-#pragma mark EditImageDetailsDelegate Methods
+
+#pragma mark — EditImageDetailsDelegate Methods
 
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {

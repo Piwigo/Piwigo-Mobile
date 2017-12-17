@@ -32,7 +32,8 @@
 		self.backgroundColor = [UIColor piwigoWhiteCream];
 		self.cellSelected = NO;
 		
-		self.cellImage = [UIImageView new];
+		// Image
+        self.cellImage = [UIImageView new];
 		self.cellImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.cellImage.contentMode = UIViewContentModeScaleAspectFill;
 		self.cellImage.clipsToBounds = YES;
@@ -40,6 +41,7 @@
 		[self.contentView addSubview:self.cellImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
+        // Darken view
 		self.darkenView = [UIView new];
 		self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
@@ -47,6 +49,7 @@
 		[self.contentView addSubview:self.darkenView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
 		
+        // Selected image
 		self.selectedImage = [UIImageView new];
 		self.selectedImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
@@ -59,15 +62,20 @@
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:0]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 		
-		self.playImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"play"]];
-		self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
-		self.playImage.contentMode = UIViewContentModeScaleAspectFit;
-		self.playImage.hidden = YES;
-		[self.contentView addSubview:self.playImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(40, 40)]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.playImage]];
-		
-		// uploading stuff:
+        // Movie type
+        self.playImage = [UIImageView new];
+        UIImage *play = [UIImage imageNamed:@"video"];
+        self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.playImage.tintColor = [UIColor piwigoOrange];
+        self.playImage.hidden = YES;
+        self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
+        self.playImage.contentMode = UIViewContentModeScaleAspectFit;
+        [self.contentView addSubview:self.playImage];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(25, 25)]];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
+
+        // Uploading stuff: mask
 		self.uploadingView = [UIView new];
 		self.uploadingView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.uploadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
@@ -75,15 +83,18 @@
 		[self.contentView addSubview:self.uploadingView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.uploadingView]];
 		
+        // Uploading stuff: progress bar
 		self.uploadingProgress = [UIProgressView new];
 		self.uploadingProgress.translatesAutoresizingMaskIntoConstraints = NO;
 		[self.uploadingView addSubview:self.uploadingProgress];
-		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadingProgress]];
+		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgress]];
+        [self.uploadingView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.uploadingProgress amount:10]];
 		[self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[progress]-10-|"
 																				   options:kNilOptions
 																				   metrics:nil
 																					 views:@{@"progress" : self.uploadingProgress}]];
 		
+        // Uploading stuff: label
 		UILabel *uploadingLabel = [UILabel new];
 		uploadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		uploadingLabel.font = [UIFont piwigoFontNormal];
@@ -116,19 +127,28 @@
                                                                             1.0 / imageAsset.pixelHeight));
     cropToSquare.normalizedCropRect = cropRect;
     
-    [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)imageAsset
-                                               targetSize:retinaSquare
-                                              contentMode:PHImageContentModeAspectFit
-                                                  options:cropToSquare
-                                            resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                self.cellImage.image = result;
-                                            }
-     ];
-
-	if(imageAsset.mediaType == PHAssetMediaTypeVideo)
-    {
-		self.playImage.hidden = NO;
-	}
+    @autoreleasepool {
+        [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)imageAsset
+                                                   targetSize:retinaSquare
+                                                  contentMode:PHImageContentModeAspectFit
+                                                      options:cropToSquare
+                                                resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        if ([info objectForKey:PHImageErrorKey]) {
+                                                            NSError *error = [info valueForKey:PHImageErrorKey];
+                                                            NSLog(@"=> Error : %@", error.description);
+                                                            self.cellImage.image = [UIImage imageNamed:@"placeholder"];
+                                                        } else {
+                                                            self.cellImage.image = result;
+                                                            if(imageAsset.mediaType == PHAssetMediaTypeVideo)
+                                                            {
+                                                                self.playImage.hidden = NO;
+                                                            }
+                                                        }
+                                                    });
+                                                }
+         ];
+    }
 }
 
 -(void)prepareForReuse

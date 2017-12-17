@@ -18,9 +18,7 @@
 #import "KeychainAccess.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "Reachability.h"
-
 #import "PhotosFetch.h"
-#import "iRate.h"
 
 @interface AppDelegate ()
 
@@ -32,15 +30,7 @@
 @implementation AppDelegate
 
 + (void)initialize {
-    //configure iRate
-    [iRate sharedInstance].appStoreID       = 472225196;
-    [iRate sharedInstance].daysUntilPrompt  = 5;
-    [iRate sharedInstance].usesUntilPrompt  = 5;
-    [iRate sharedInstance].promptForNewVersionIfUserRated = YES;
-    [iRate sharedInstance].promptAtLaunch   = NO;
-    [iRate sharedInstance].ratingsURL       = [NSURL URLWithString:[NSString stringWithFormat:@"itms-apps://itunes.apple.com/us/app/piwigo/id%lu?action=write-review", (unsigned long)[iRate sharedInstance].appStoreID]];
-//#warning Preview mode
-//    [iRate sharedInstance].previewMode      = YES;
+
 }
 
 
@@ -193,6 +183,14 @@
         
         [alert addAction:dismissAction];
         [self.loginVC presentViewController:alert animated:YES completion:nil];
+    }
+    
+    // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
+    // Furthermore, it will interrupt any other current audio sessions (no mixing)
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    NSArray<NSString *> *availableCategories = [audioSession availableCategories];
+    if ([availableCategories containsObject:AVAudioSessionCategoryPlayback]) {
+        [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
     }
 }
 
