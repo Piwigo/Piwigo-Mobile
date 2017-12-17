@@ -25,7 +25,9 @@ For video upload using your iOS device, you need the plugin on your Piwigo serve
 Your Piwigo server generates a poster of each uploaded video with [FFmpeg](http://www.ffmpeg.org) (or [avconv](https://libav.org/documentation/avconv.html) from [Libdav](https://libav.org)). If neither of these solutions is installed, the upload will fail. From to our experience, we recommand to install the 'true' [FFmpeg](http://www.ffmpeg.org).
 
 ## Translations
-Piwigo Mobile is available in the following languages since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/milestone/5?closed=1): [Danish](https://itunes.apple.com/dk/app/piwigo/id472225196?mt=8), [English (U.S.)](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8), [French](https://itunes.apple.com/fr/app/piwigo/id472225196?mt=8) and [Polish](https://itunes.apple.com/pl/app/piwigo/id472225196?mt=8).
+Piwigo Mobile is available from the [App Store](https://itunes.apple.com/app/piwigo/id472225196?mt=8) in the following languages:
+- [Swedish](https://crowdin.com/project/piwigo-mobile/sv-SE#) since [v2.1.4](https://github.com/Piwigo/Piwigo-Mobile/milestone/10?closed=1),
+- [Danish](https://crowdin.com/project/piwigo-mobile/da#), [English (U.S.)](https://crowdin.com/project/piwigo-mobile), [French](https://crowdin.com/project/piwigo-mobile/fr#) and [Polish](https://crowdin.com/project/piwigo-mobile/pl#) since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/milestone/5?closed=1).
 
 Help us to translate Piwigo Mobile on [Crowdin](https://crowdin.com/project/piwigo-mobile)!
 
