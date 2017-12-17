@@ -1,0 +1,13 @@
+/* 
+  AppStore.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 29/07/2017.
+  Copyright © 2017 Piwigo.org. All rights reserved.
+*/
+
+"description" = "Piwigo untuk iPhone/iPad/iPod melengkapi perangkat lunak galeri foto pada komputasi awan Piwigo (v2.7 atau lebih tinggi):\n\n• Jelajahi album,\n• Buat album baru,\n• Hapus, pindahkan dan ganti nama album,\n• Edit, unduh dan hapus foto & video,\n• Atur foto sebagai gambar album,\n• Unggah foto:\n - dengan memodifikasi ukuran dan kualitas,\n - dengan deskripsi, penulis, tag, metadata EXIF,\n - dengan atau tanpa metadata GPS.\n• Unggah video.\n\nPiwigo memberdayakan Anda untuk membuat galeri foto Anda sendiri di web. Ini mencakup banyak fitur hebat seperti album, tag, geolokasi, banyak tingkat penyesuaian, unggah oleh pengunjung, privasi, kalender atau statistik.\n\nPiwigo gratis dan sumber-terbuka.";
+
+"feedback" = "Tanggapan atau pertanyaan ?\nPiwigo menawarkan layanan gratis di %@ dan kami ingin mendengar kabar dari Anda.";
+
+"promotional_text" = "Komputasi awan Piwigo yang gratis ada di tangan Anda!";

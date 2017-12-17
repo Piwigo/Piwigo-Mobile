@@ -293,7 +293,7 @@
 "imageUploadError_destination" = "cannot create image destination";
 "imageUploadError_iCloud" = "Could not retrieve image from iCloud. Error: %@";
 
-"audioUploadError_title" = "Audio Upload Error";
+"audioUploadError_title" = "Błąd Przesyłania Audio";
 "audioUploadError_format" = "Sorry, audio files are not supported by Piwigo Mobile yet.";
 
 "videoUploadError_title" = "Błąd Przesyłania Wideo";
@@ -391,7 +391,7 @@
 "settings_photoResize" = "Zmień Rozmiar Przed Przesłaniem";
 "settings_photoResize>375px" = "Zmień Rozmiar Zdjęcia Przed Przesłaniem";
 "settings_photoSize" = "> Rozmiar   ";
-"settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
+"settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 5 - 100";
 "settings_photoCompress" = "Compress Before Upload";
 "settings_photoCompress>375px" = "Compress Image Before Upload";
 "settings_photoQuality" = "> Jakość";

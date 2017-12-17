@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 13/08/2017.
+  Copyright © 2017 Piwigo.org. All rights reserved.
+*/
+
+"NSPhotoLibraryUsageDescription" = "sehingga ia bisa mengunduh gambar ke Foto dan mengunggah gambar tersebut ke Piwigo Anda.";

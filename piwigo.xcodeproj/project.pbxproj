@@ -154,6 +154,11 @@
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
 		AD6D203A1EDC45C4003B60E8 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		AD6D203B1EDC45C4003B60E8 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		AD83385F1FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
+		AD8338611FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		AD8338621FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/AppStore.strings; sourceTree = "<group>"; };
+		AD8338631FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImagesCollection.m; path = "Album Pictures/ImagesCollection.m"; sourceTree = "<group>"; };
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImagesCollection.h; path = "Album Pictures/ImagesCollection.h"; sourceTree = "<group>"; };
 		AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseNotesViewController.h; sourceTree = "<group>"; };
@@ -948,6 +953,7 @@
 				pl,
 				de,
 				sv,
+				id,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -1223,6 +1229,7 @@
 				AD45949E1F36765200CF9438 /* pl */,
 				AD591A3C1F9116FA008D02B6 /* de */,
 				AD0822741FA06B0A0005AA12 /* sv */,
+				AD8338621FE677970072104F /* id */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -1245,6 +1252,7 @@
 				AD45949B1F36765200CF9438 /* pl */,
 				AD591A391F9116F9008D02B6 /* de */,
 				AD0822711FA06B090005AA12 /* sv */,
+				AD83385F1FE677970072104F /* id */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1258,6 +1266,7 @@
 				AD45949C1F36765200CF9438 /* pl */,
 				AD591A3A1F9116FA008D02B6 /* de */,
 				AD0822721FA06B090005AA12 /* sv */,
+				AD8338601FE677970072104F /* id */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -1271,6 +1280,7 @@
 				AD45949D1F36765200CF9438 /* pl */,
 				AD591A3B1F9116FA008D02B6 /* de */,
 				AD0822731FA06B0A0005AA12 /* sv */,
+				AD8338611FE677970072104F /* id */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
@@ -1284,6 +1294,7 @@
 				ADC06AE41F40B2BC0081B4FA /* pl */,
 				AD591A3D1F9116FA008D02B6 /* de */,
 				AD0822751FA06B0A0005AA12 /* sv */,
+				AD8338631FE677970072104F /* id */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
