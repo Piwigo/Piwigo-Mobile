@@ -258,7 +258,7 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Sélectionnez l'album Piwigo qui recevra les images";
-"categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les images à envoyer au serveur Piwigo";
+"categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les images à envoyer";
 "categoyUpload_loadSubCategories" = "télécharge";
 "selectAll" = "Tout";
 
