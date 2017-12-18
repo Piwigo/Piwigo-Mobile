@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.5_text" = "Version 2.1.5\n\n• Add possibility to cancel uploads\n• Add option for deleting images after upload\n• Add compatibility with Optimize Storage (iCloud)\n• Preserve image format after resize whenever possible\n• Fix metadata partly lost upon download\n• Fix PNG format replaced with JPEG before upload\n• Fix issues encountered with iOS 11 and iPhone X\n• Fix minor bugs\n• Code modernisation\n________________________________________\n\n";
+"v2.1.5_text" = "Version 2.1.5\n\n• Dodano możliwość anulowania wysyłania\n• Dodano możliwość usuwania zdjęcia po wysłaniu\n• Dodano kompatybilność z Optymalizowaniem Magazynu (iCloud)\n• Zachowuje format obrazu po zmianie rozmiaru, gdy to możliwe\n• Naprawiono tracenie części metadanych przy pobieraniu\n• Naprawiono zmianę formatu z PNG na JPG przed wysłaniem\n• Naprawiono błędy napotkane w iOS 11 i iPhone X\n• Naprawiono drobne błędy\n• Zmodernizowano kod\n________________________________________\n\n";
 
 "v2.1.4_text" = "Version 2.1.4\nOctober 31, 2017\n\n• Dodanie szwedzkiego tłumaczenia\n• Poprawki błędów\n________________________________________\n\n";
 

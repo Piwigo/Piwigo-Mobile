@@ -181,8 +181,8 @@
 
 // Image sort
 "sortBy" = "Sortuj wg";
-"imageSortTitle" = "Sort Images";
-"imageSortMessage" = "Please select how you wish to sort images";
+"imageSortTitle" = "Sortuj Zdjęcia";
+"imageSortMessage" = "Wybierz sposób sortowania zdjęć";
 
 // Image options (actions)
 "imageOptions_title" = "Opcje Zdjęcia";
@@ -285,23 +285,23 @@
 // Image upload — Errors
 "uploadError_title" = "Błąd przesyłania";
 "uploadError_message" = "Nie można przesłać zdjęcia. Błąd: %@";
-"uploadCancelled_title" = "Upload Cancelled";
+"uploadCancelled_title" = "Anulowano Wysyłanie";
 
-"imageUploadError_title" = "Image Upload Error";
-"imageUploadError_format" = "Sorry, image files with extensions .%@ and .jpg are not accepted by the Piwigo server.";
-"imageUploadError_source" = "cannot create image source";
-"imageUploadError_destination" = "cannot create image destination";
-"imageUploadError_iCloud" = "Could not retrieve image from iCloud. Error: %@";
+"imageUploadError_title" = "Błąd Przesyłania Obrazu";
+"imageUploadError_format" = "Przepraszamy, pliki obrazów z rozszerzeniem .%@ i jpg nie są akceptowane przez serwer Piwigo.";
+"imageUploadError_source" = "nie można utworzyć źródła obrazu";
+"imageUploadError_destination" = "nie można utworzyć obrazu docelowego";
+"imageUploadError_iCloud" = "Nie można pobrać obrazu z iCloud. Błąd: %@";
 
 "audioUploadError_title" = "Błąd Przesyłania Audio";
-"audioUploadError_format" = "Sorry, audio files are not supported by Piwigo Mobile yet.";
+"audioUploadError_format" = "Niestety, pliki audio nie są jeszcze obsługiwane przez Piwigo Mobile.";
 
 "videoUploadError_title" = "Błąd Przesyłania Wideo";
-"videoUploadError_format" = "Sorry, video files with extension .%@ are not accepted by the Piwigo server.";
-"videoUploadError_iCloud" = "Could not retrieve video from iCloud. Error: %@";
-"videoUploadError_export" = "Sorry, the video could not be retrieved for the upload. Error: %@";
-"videoUploadError_unknown" = "Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: %@";
-"videoUploadCancelled_message" = "The upload of the video has been cancelled.";
+"videoUploadError_format" = "Przepraszamy, pliki wideo z rozszerzeniem .%@ nie są akceptowane przez serwer Piwigo.";
+"videoUploadError_iCloud" = "Nie można pobrać wideo z usługi iCloud. Błąd: %@";
+"videoUploadError_export" = "Niestety, film nie mógł zostać odzyskany do wysłania. Błąd: %@";
+"videoUploadError_unknown" = "Niestety, wysyłanie wideo nie udało się z powodu nieznanego błędu podczas konwersji w MP4. Błąd: %@";
+"videoUploadCancelled_message" = "Wysyłanie wideo zostało anulowane.";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS
@@ -366,7 +366,7 @@
 "defaultImageSizeHeader" = "Proszę Wybrać Rozmiar Zdjęcia";
 "defaultImageSize_recommended" = " (zalecane)";
 "defaultSize_disabled" = " (wyłączone na serwerze)";
-"defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
+"defaultSizeFooter" = "Wyszarzone rozmiary nie są zalecane lub nie są dostępne na serwerze Piwigo.";
 
 "imageSizeSquare" = "Kwadrat";
 "imageSizeThumbnail" = "Miniaturka";
@@ -386,18 +386,18 @@
 "settings_defaultAuthorPlaceholder" = "Imię Autora";
 "settings_defaultPrivacy" = "Prywatność";
 "settings_defaultPrivacy>414px" = "Kto Może Zobaczyć Zdjęcia i Filmy?";
-"settings_stripGPSdata" = "Strip Private Metadata";
-"settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
+"settings_stripGPSdata" = "Usuń prywatne metadane";
+"settings_stripGPSdata>375px" = "Usuń prywatne metadane przed wysłaniem";
 "settings_photoResize" = "Zmień Rozmiar Przed Przesłaniem";
 "settings_photoResize>375px" = "Zmień Rozmiar Zdjęcia Przed Przesłaniem";
 "settings_photoSize" = "> Rozmiar   ";
 "settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 5 - 100";
-"settings_photoCompress" = "Compress Before Upload";
-"settings_photoCompress>375px" = "Compress Image Before Upload";
+"settings_photoCompress" = "Skompresuj przed wysłaniem";
+"settings_photoCompress>375px" = "Kompresuj obraz przed wysłaniem";
 "settings_photoQuality" = "> Jakość";
 "settings_placeholderQuality" = "Wprowadź Jakość Zdjęcia z Zakresu 50 - 98";
-"settings_deleteImage>375px" = "Delete Image After Upload";
-"settings_deleteImage" = "Delete After Upload";
+"settings_deleteImage>375px" = "Usuń obraz po wysłaniu";
+"settings_deleteImage" = "Usuń po wysłaniu";
 
 // Settings — Cache
 "settingsHeader_cache" = "Podręczna (Używany/Całkowity)";
