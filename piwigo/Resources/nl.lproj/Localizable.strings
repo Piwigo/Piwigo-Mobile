@@ -280,7 +280,7 @@
 "imageUploadProgressBar_completed" = "Klaar";
 "imageUploadCompleted_title" = "Uploaden klaar";
 "imageUploadCompleted_message" = "foto/video die ge-upload zijn naar jouw Piwigo-server.";
-"imageUploadCompleted_message>1" = "images/videos uploaded to your Piwigo server.";
+"imageUploadCompleted_message>1" = "afbeeldingen/video's geüpload naar uw server Piwigo.";
 
 // Image upload — Errors
 "uploadError_title" = "Upload-fout";
