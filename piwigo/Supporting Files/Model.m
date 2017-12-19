@@ -56,24 +56,10 @@
         instance.hasXLargeSizeImages = NO;
         instance.hasXXLargeSizeImages = NO;
         
-        // Determine recommended image preview size for device
-        CGRect screen = [[UIScreen mainScreen] bounds];
-        NSInteger points = (int)fmax(screen.size.width, screen.size.height);
-        if (points <= 324) {
-            instance.defaultImagePreviewSize = kPiwigoImageSizeXSmall;
-        } else if (points < 432) {
-            instance.defaultImagePreviewSize = kPiwigoImageSizeSmall;
-        } else if (points <= 594) {
-            instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
-        } else if (points <= 756) {
-            instance.defaultImagePreviewSize = kPiwigoImageSizeLarge;
-        } else if (points <= 918) {
-            instance.defaultImagePreviewSize = kPiwigoImageSizeXLarge;
-        } else if (points <= 1242) {
-            instance.defaultImagePreviewSize = kPiwigoImageSizeXXLarge;
-        } else {
-            instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
-        }
+        // Default thumbnail size
+        instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
+        
+        // Default image preview size
 		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
         
         // Default image upload setting
