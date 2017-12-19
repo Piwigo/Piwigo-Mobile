@@ -10,7 +10,7 @@
 "authors2" = "og Eddy Lelièvre-Berna";
 "version" = "Version:";
 
-"translators_text" = "Stor tak til følgende brugere for deres tid og indsats ved oversættelse af Piwigo: Thomas Christfort (Dansk), Jörg Knörchen (Tysk), Elger Lindgren (Svensk), Michał Majchrowicz (Polsk), Robert Mulder (Hollandsk), Alfian Silaban (Indonesisk).\n\n";
+"translators_text" = "Stor tak til følgende brugere for deres tid og indsats ved oversættelse af Piwigo:\n\n- Dansk: Thomas Christfort,\n- Fransk: Eddy Lelièvre-Berna,\n- Hollandsk: Robert Mulder en Wim Woonings,\n- Indonesisk: Alfian Silaban,\n- Polsk: Michał Majchrowicz,\n- Svensk: Elger Lindgren,\n- Tysk: Jörg Knörchen.\n\n";
 
 "about_text" = "Denne software indeholder tredjepartssoftware, som er videredistribueret under vilkår og betingelser for deres oprindelige licenser.\n\n";
 

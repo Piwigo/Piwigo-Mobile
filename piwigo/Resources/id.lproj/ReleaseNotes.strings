@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.5_text" = "Versi 2.1.5\n\n• Penambahan kemampuan untuk membatalkan proses unggah\n• Penambahan pilihan untuk menghapus gambar setelah diunggah\n• Penambahan kompatibilitas dengan Mengoptimalkan Penyimpanan (iCloud)\n• Mempertahankan format gambar setelah mengubah ukuran bila memungkinkan\n• Perbaikan metadata yang sebagian hilang saat mengunduh\n• Perbaikan format PNG yang diganti dengan JPEG sebelum proses unggah\n• Perbaikan masalah sebelumnya dengan iOS 11 dan iPhone X\n• Perbaikan bug kecil\n• Modernisasi kode\n________________________________________\n\n";
+"v2.1.5_text" = "Versi 2.1.5\n\n• Penambahan kemampuan untuk membatalkan proses unggah\n• Penambahan pilihan untuk menghapus gambar setelah diunggah\n• Penambahan kompatibilitas dengan Mengoptimalkan Penyimpanan (iCloud)\n• Mempertahankan format gambar setelah mengubah ukuran bila memungkinkan\n• Terjemahan Denmark dan Bahasa Indonesia\n• Perbaikan metadata yang sebagian hilang saat mengunduh\n• Perbaikan format PNG yang diganti dengan JPEG sebelum proses unggah\n• Perbaikan masalah sebelumnya dengan iOS 11 dan iPhone X\n• Perbaikan bug kecil\n• Modernisasi kode\n________________________________________\n\n";
 
 "v2.1.4_text" = "Versi 2.1.4\n31 Oktober, 2017\n\n• Terjemahan bahasa Swedia\n• Perbaikan bug\n________________________________________\n\n";
 

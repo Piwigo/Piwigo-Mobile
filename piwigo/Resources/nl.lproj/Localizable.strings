@@ -1,0 +1,418 @@
+/*
+ Localizable.strings
+ piwigo
+ 
+ Created by Spencer Baker on 1/17/15.
+ Copyright (c) 2015 bakercrew. All rights reserved.
+ */
+// ===========================================================================
+// ==> GENERIC
+// ===========================================================================
+// Tab bar
+
+"tabBar_albums" = "Albums";
+"tabBar_upload" = "Uploaden";
+"tabBar_preferences" = "Voorkeuren";
+
+// Alert buttons
+"alertOkButton" = "Oké";
+"alertDismissButton" = "Sluiten";
+"alertYesButton" = "Ja";
+"alertNoButton" = "Nee";
+"alertTryAgainButton" = "Probeer opnieuw";
+"alertCancelButton" = "Annuleren";
+"alertAddButton" = "Toevoegen";
+"alertRetryButton" = "Probeer opnieuw";
+"alertNextButton" = "Volgende foto";
+
+// Complete views
+"Complete" = "Klaar";
+
+// Upload rights
+"uploadRights_title" = "Upload-rechten nodig";
+"uploadRights_message" = "Je moet uploadrechten hebben om foto's en video's te kunnen uploaden.";
+
+// Errors
+"internetErrorGeneral_title" = "Verbindingsfout";
+"internetErrorGeneral_broken" = "Sorry, de verbinding is verbroken. Probeer opnieuw aan te melden.";
+"internetCancellingConnection_button" = "Verbinding afgebroken…";
+"internetCancelledConnection_button" = "Verbinden afgebroken";
+"internetCancelledConnection_title" = "Verbindingen afgebroken";
+
+// ===========================================================================
+// ==> LOGIN / LOGOUT
+// ===========================================================================
+// Login
+"login" = "Aanmelden";
+"login_serverPlaceholder" = "Webadres";
+"login_userPlaceholder" = "Gebruikersnaam (optioneel)";
+"login_passwordPlaceholder" = "Wachtwoord (optioneel)";
+"login_loggingIn" = "Bezig met aanmelden...";
+"login_protocolDescription" = "(Klik om te wijzigen)";
+"login_connecting" = "Bezig met verbinden";
+"login_newSession" = "Sessie openen";
+"login_communityParameters" = "Community Parameters";
+"login_serverParameters" = "Piwigo parameters";
+"login_connectionChanged" = "Verbinding gewijzigd!";
+
+// Login — Errors
+"serverMethodsError_title" = "Onbekende methoden";
+"serverMethodsError_message" = "Server methoden verkrijgen mislukt. Problemen met de Piwigo-server?";
+
+"loginError_title" = "Mislukte aanmelding";
+"loginError_message" = "De gebruikersnaam en het wachtwoord komen niet overeen op het opgegeven webadres";
+"loginEmptyServer_title" = "Voer een webadres in";
+"loginEmptyServer_message" = "Selecteer een protocol en voeg een Piwigo webadres toe om door te gaan.";
+
+"serverVersionNotCompatible_title" = "Server niet ondersteund";
+"serverVersionNotCompatible_message" = "Jouw Piwigo server versie is %@. Piwigo Mobiel ondersteunt alleen versie 2.7 of hoger. Werk jouw server bij om Piwigo Mobile te kunnen gebruiken. Wil je toch doorgaan?";
+
+"sessionStatusError_title" = "Authenticatie is mislukt";
+"sessionStatusError_message" = "Kan niet worden geverifieerd door de server. Probeer opnieuw aan te melden.";
+
+"serverCommunityError_title" = "Community-fout";
+"serverCommunityError_message" = "Fout bij het ophalen van de Community extensie parameters. Probeer opnieuw aan te melden";
+
+// Logout
+"logoutConfirmation_title" = "Afmelden";
+"logoutConfirmation_message" = "Weet je zeker dat je je wilt afmelden?";
+
+// Logout — Errors
+"logoutFail_title" = "Afmelden is mislukt";
+"logoutFail_message" = "Afmelden mislukt. Nog een keer proberen?";
+
+
+// ===========================================================================
+// ==> ALBUMS
+// ===========================================================================
+// Albums view
+"categoryMainEmtpy" = "Nog geen albums in jouw Piwigo.\nGebruik de pull down om te vernieuwen, of meld opnieuw aan.";
+"categoryTableView_photoCount" = "foto";
+"categoryTableView_photosCount" = "foto's";
+"categoryTableView_subCategoryCount" = "sub-album";
+"categoryTableView_subCategoriesCount" = "sub-albums";
+"categoryImageList_selectButton" = "Selecteer";
+"categoryImageList_noDataError" = "Fout geen gegevens";
+
+// Albums sort
+"categorySort_nameAscending" = "Foto titel, A → Z";
+"categorySort_nameDescending" = "Foto titel, Z → A";
+"categorySort_fileNameAscending" = "Bestandsnaam A → Z";
+"categorySort_fileNameDescending" = "Bestandsnaam, Z → A";
+"categorySort_dateCreatedDescending" = "Aanmaakdatum, nieuw → oud";
+"categorySort_dateCreatedAscending" = "Datum gemaakt, oud → nieuw";
+"categorySort_datePostedDescending" = "Datum geplaatst, nieuw → oud";
+"categorySort_datePostedAscending" = "Datum geplaatst, oud → nieuw";
+"categorySort_videosOnly" = "Alleen video's";
+"categorySort_imagesOnly" = "Alleen foto's";
+
+// Album create
+"createNewAlbum_title" = "Nieuw album";
+"createNewAlbum_message" = "Voer een naam in voor dit album:";
+"createNewAlbum_placeholder" = "Albumnaam";
+"createNewAlbumHUD_label" = "Bezig album te maken…";
+
+// Album create — Errors
+"createAlbumError_title" = "Fout bij het maken van een nieuw album";
+"createAlbumError_message" = "Het aanmaken van een album is mislukt";
+
+// Album options (actions)
+"categoryCellOption_rename" = "Naam wijzigen";
+"categoryCellOption_move" = "Verplaatsen";
+"categoryCellOption_delete" = "Verwijderen";
+
+// Album rename
+"renameCategory_title" = "Albumnaam wijzigen";
+"renameCategory_message" = "Voer een nieuwe naam voor dit album in";
+"renameCategory_button" = "Naam wijzigen";
+"renameCategoryHUD_label" = "Bezig albumnaam te wijzigen…";
+
+// Album rename — Errors
+"renameCategoyError_title" = "Naam wijzigen is mislukt";
+"renameCategoyError_message" = "Naam wijzigen van jouw album is mislukt";
+
+// Album delete
+"deleteCategory_title" = "ALBUM VERWIJDEREN";
+"deleteCategory_message" = "WEET JE ZEKER DAT JE HET ALBUM \"%@\" EN ALLE %@ FOTO'S WILT VERWIJDEREN?";
+"deleteCategoryConfirm_title" = "Weet je het zeker?";
+"deleteCategoryConfirm_message" = "Voer het juiste aantal foto's in om het album te kunnen verwijderen. Aantal foto's: %@";
+"deleteCategoryConfirm_deleteButton" = "VERWIJDEREN";
+"deleteCategoryHUD_label" = "Bezig album te verwijderen…";
+
+// Album delete — errors
+"deleteCategoryMatchError_title" = "Aantal komt niet overeen";
+"deleteCategoryMatchError_message" = "Het aantal foto's dat je hebt opgegeven, komt niet overeen met het aantal foto's in de categorie. Probeer opnieuw als je dit album wilt verwijderen";
+"deleteCategoryError_title" = "Verwijderen is mislukt";
+"deleteCategoryError_message" = "Fout bij het verwijderen van jouw album";
+
+// Album move
+"moveCategory" = "Album verplaatsen";
+"moveCategory_selectParent" = "Selecteer een album om het verplaatsen \"%@\" naar";
+"moveCategory_message" = "Weet je zeker dat je \"%@\" wilt verplaatsen naar album \"%@\"?";
+"moveCategoryHUD_moving" = "Bezig album te verplaatsen…";
+
+// album move — Errors
+"moveCategoryError_title" = "Verplaatsen is mislukt";
+"moveCategoryError_message" = "Verplaatsen van jouw album is mislukt";
+
+// Album set image thumbnail
+"categorySelection" = "Selecteer album";
+"categorySelection_forImage" = "Selecteer een album voor deze foto";
+"categoryImageSet_title" = "Stel foto-miniatuur in";
+"categoryImageSet_message" = "Weet je zeker dat je deze foto wilt gebruiken voor album \"%@\"?";
+"categoryImageSetHUD_updating" = "Bijwerken album-miniatuur…";
+
+// Album set image thumbnail — Errors
+"categoryImageSetError_title" = "Foto-instelling-fout";
+"categoryImageSetError_message" = "Instellen albumfoto mislukt";
+
+
+// ===========================================================================
+// ==> IMAGES
+// ===========================================================================
+"singleImage" = "Foto";
+"severalImages" = "Foto's";
+"noImages" = "Geen foto's";
+"pullToRefresh" = "Foto's opnieuw laden";
+
+// Errors
+"albumPhotoError_title" = "Haal albumfoto's is mislukt";
+"albumPhotoError_message" = "Ophalen van albumfoto's is mislukt (corrupte afbeelding in jouw album?)";
+
+// Image sort
+"sortBy" = "Sorteren op";
+"imageSortTitle" = "Sorteer foto's";
+"imageSortMessage" = "Selecteer hoe je de foto's wilt sorteren";
+
+// Image options (actions)
+"imageOptions_title" = "Foto-opties";
+"imageOptions_edit" = "Bewerken";
+"imageOptions_download" = "Downloaden";
+"imageOptions_setAlbumImage" = "Instellen als albumfoto";
+
+// Image details
+"imageDetailsView_title" = "Foto-details";
+"editImageDetails_title" = "Titel:";
+"editImageDetails_titlePlaceholder" = "Titel";
+"editImageDetails_author" = "Fotograaf:";
+"editImageDetails_tags" = "Labels:";
+"editImageDetails_privacyLevel" = "Wie mag deze foto zien?";
+"editImageDetails_descriptionPlaceholder" = "Omschrijving";
+"editImageDetailsHUD_updating" = "Bijwerken foto-info…";
+
+// Image details — Errors
+"editImageDetailsError_title" = "Bijwerken is mislukt";
+"editImageDetailsError_message" = "Bijwerken van jouw wijzigingen met jouw server is mislukt. Opnieuw proberen?";
+"imageDetailsFetchError_title" = "Ophalen van de foto-eigenschappen is mislukt";
+"imageDetailsFetchError_retryMessage" = "Ophalen van foto-data is mislukt. Opnieuw proberen?";
+"imageDetailsFetchError_continueMessage" = "Ophalen van fotodata is mislukt. Doorgaan?";
+
+// Image privacy levels
+"privacyLevel" = "Privacyniveau";
+"privacyLevel_admin" = "Admins";
+"privacyLevel_adminFamily" = "Admins, familie";
+"privacyLevel_adminsFamilyFriends" = "Admins, familie, vrienden";
+"privacyLevel_adminsFamilyFriendsContacts" = "Admins, familie, vrienden, contacten";
+"privacyLevel_everybody" = "Iedereen";
+
+// Image tags
+"none" = "niets";
+"tags" = "Labels";
+"tagsHeader_selected" = "Geselecteerd";
+"tagsHeader_all" = "Alles";
+
+// Image delete
+"deleteImage_delete" = "Verwijderen";
+"deleteImageProgress_title" = "Verwijderen van %@%% voltooid";
+
+"deleteSingleImage_title" = "Foto verwijderen";
+"deleteSingleImage_message" = "Weet je zeker dat je dit bestand wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
+"deleteSeveralImages_title" = "Verwijder foto's";
+"deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
+
+"deleteImageFail_title" = "Verwijderen is mislukt";
+"deleteImageFail_message" = "Foto kon niet worden verwijderd.\n%@";
+
+// Image download
+"downloadSingleImage_title" = "Download foto";
+"downloadSingleImage_confirmation" = "Weet je zeker dat je deze foto wilt downloaden?";
+"downloadSeveralImages_title" = "Download foto's";
+"downloadSeveralImage_confirmation" = "Weet je zeker dat je de geselecteerde %@ foto's wilt downloaden?";
+
+"downloadingImage" = "Download foto";
+"downloadingImages" = "Foto's downloaden";
+"downloadingImageInfo" = "Foto-informatie aan het downloaden";
+"downloadingImageInfoForSort" = "Bezig met downloaden van foto-info om te sorteren";
+
+// Image download — Errors
+"downloadImageFail_title" = "Download mislukt";
+"downloadImageFail_message" = "Downloaden foto is mislukt!\n%@";
+"downloadVideoFail_message" = "Downloaden video is mislukt!\n%@";
+"downloadVideoFail_Photos" = "Video-formaat niet geaccepteerd door Foto's!";
+
+"imageSaveError_title" = "Opslaan foto is mislukt";
+"imageSaveError_message" = "Opslaan foto is mislukt. Fout: %@";
+
+"videoSaveError_title" = "Opslaan video is mislukt";
+"videoSaveError_message" = "Opslaan video is mislukt. Fout: %@";
+
+// Images upload
+"categoryUpload_chooseAlbum" = "Selecteer een album om de foto's naar te uploaden";
+"categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
+"categoyUpload_loadSubCategories" = "laden";
+"selectAll" = "Allemaal";
+
+"imageUploadDetails_title" = "Titel:";
+"imageUploadDetails_author" = "Fotograaf:";
+"imageUploadDetails_privacy" = "Privacy:";
+"imageUploadDetails_tags" = "Labels:";
+"imageUploadDetails_description" = "Omschrijving:";
+
+"imageUploadDetailsView_title" = "Afbeeldingen";
+"imageUploadDetailsButton_title" = "Upload";
+"imageUploadDetailsEdit_title" = "Bewerk foto's vóór uploaden";
+"imageUploadDetailsUploading_title" = "Foto's die worden ge-upload";
+"imageUploadDetailsCell_uploadComplete" = "Klaar! Afronden...";
+
+"imageUploadTableCell_uploading" = "Bezig met uploaden...";
+"imageUploadProgressBar_zero" = "Bezig met uploaden 0/0";
+"imageUploadProgressBar_nonZero" = "Bezig met uploaden %@/%@";
+"imageUploadProgressBar_completed" = "Klaar";
+"imageUploadCompleted_title" = "Uploaden klaar";
+"imageUploadCompleted_message" = "foto/video die ge-upload zijn naar jouw Piwigo-server.";
+"imageUploadCompleted_message>1" = "images/videos uploaded to your Piwigo server.";
+
+// Image upload — Errors
+"uploadError_title" = "Upload-fout";
+"uploadError_message" = "Kon je foto niet uploaden. Fout: %@";
+"uploadCancelled_title" = "Uploaden afgebroken";
+
+"imageUploadError_title" = "Foto-upload-fout";
+"imageUploadError_format" = "Sorry. Fotobestanden met extensie %@ en .jpg worden niet ondersteund door de Piwigo-server.";
+"imageUploadError_source" = "kan geen foto-bron maken";
+"imageUploadError_destination" = "kan geen foto-bestemming maken";
+"imageUploadError_iCloud" = "Kon afbeelding niet ophalen van iCloud. Fout: %@";
+
+"audioUploadError_title" = "Audio-upload-fout";
+"audioUploadError_format" = "Sorry, audio bestanden worden nog niet niet ondersteund door Piwigo Mobiel.";
+
+"videoUploadError_title" = "Video-upload-fout";
+"videoUploadError_format" = "Sorry, video bestanden met de extensie .%@ worden niet geaccepteerd door de Piwigo-server.";
+"videoUploadError_iCloud" = "Kon de video niet ophalen van de iCloud. Fout: %@";
+"videoUploadError_export" = "Sorry, de video kon niet opgehaald worden om te uploaden. Fout: %@";
+"videoUploadError_unknown" = "Sorry, het uploaden van de video is mislukt vanwege een onbekende fout tijdens de MP4-conversie. Fout: %@";
+"videoUploadCancelled_message" = "De upload van de video is afgebroken.";
+
+// ===========================================================================
+// ==> LOCAL ALBUMS
+// ===========================================================================
+"localAlbums" = "Lokale albums";
+
+"localImageSort_newest" = "Nieuwste";
+"localImageSort_oldest" = "Oudste";
+"localImageSort_notUploaded" = "Niet geüpload";
+"localImageSort_undefined" = "Ongedefineerd";
+
+// Local albums — Access not Authorized
+"localAlbums_photosNotAuthorized_title" = "Geen toegang";
+"localAlbums_photosNiltitle" = "Probleem bij het inlezen van foto's";
+"localAlbums_photosNnil_msg" = "Probleem bij het inlezen van jouw lokale fotobibliotheek.";
+
+// Local albums — Tell user to change settings, how
+"localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen, Privacy, Foto's en geef Piwigo toegang.";
+
+// ===========================================================================
+// ==> SETTINGS
+// ===========================================================================
+// Settings — Piwigo Server
+"settingsHeader_server" = "Piwigo Server";
+"settings_server" = "Adres";
+"settings_username" = "Gebruikersnaam";
+"settings_notLoggedIn" = " - Niet aangemeld - ";
+"settings_logout" = "Afmelden";
+
+// Settings — General
+"settingsHeader_general" = "Algemene instellingen";
+"settings_loadAllCategories" = "Download alle Albums bij opstarten";
+"settings_loadAllCategories>320px" = "Download alle Albums bij opstarten (vink uit bij problemen)";
+
+"defaultImageSort" = "Sorteren";
+"defaultImageSort>320px" = "Standaard sorteervolgorde";
+"defaultImageSort>414px" = "Standaardsorteervolgorde van foto's";
+
+"defaultThumbnailSize" = "Miniaturen";
+"defaultThumbnailSize>320px" = "Miniatuurgrootte";
+"defaultThumbnailSize>414px" = "Standaardgrootte van miniaturen";
+"defaultThumbnailSizeTitle" = "Standaard grootte";
+"defaultThumbnailSizeHeader" = "Selecteer een miniatuurgrootte";
+"settings_displayTitles" = "Titels op miniaturen";
+"settings_displayTitles>320px" = "Titels op miniaturen weergeven";
+
+"thumbnailSizeSquare" = "Vierkant";
+"thumbnailSizeThumbnail" = "Miniatuurafbeelding";
+"thumbnailSizeXXSmall" = "Heel klein";
+"thumbnailSizeXSmall" = "Extra klein";
+"thumbnailSizeSmall" = "Klein";
+"thumbnailSizeMedium" = "Middel";
+"thumbnailSizeLarge" = "Groot";
+"thumbnailSizeXLarge" = "Extra groot";
+"thumbnailSizeXXLarge" = "Enorm";
+"thumbnailSizexFullRes" = "Volledige resolutie";
+
+"defaultImageSize" = "Foto's";
+"defaultImageSize>320px" = "Fotogrootte";
+"defaultImageSize>414px" = "Standaardgrootte van foto's";
+"defaultImageSizeTitle" = "Standaard grootte";
+"defaultImageSizeHeader" = "Selecteer de grootte van een foto";
+"defaultImageSize_recommended" = " (aanbevolen)";
+"defaultSize_disabled" = " (uitgeschakeld op de server)";
+"defaultSizeFooter" = "Greysize formaten worden niet geadviseerd of zijn niet beschikbaar op de Piwigo-server.";
+
+"imageSizeSquare" = "Vierkant";
+"imageSizeThumbnail" = "Miniatuurafbeelding";
+"imageSizeXXSmall" = "Heel klein";
+"imageSizeXSmall" = "Extra klein";
+"imageSizeSmall" = "Klein";
+"imageSizeMedium" = "Middel";
+"imageSizeLarge" = "Groot";
+"imageSizeXLarge" = "Extra groot";
+"imageSizeXXLarge" = "Enorm";
+"imageSizexFullRes" = "Volledige resolutie";
+
+// Settings — Upload
+"settingsHeader_upload" = "Standaard upload-instellingen";
+"settings_defaultAuthor" = "Fotograaf";
+"settings_defaultAuthor>320px" = "Naam van de fotograaf";
+"settings_defaultAuthorPlaceholder" = "Naam van de fotograaf";
+"settings_defaultPrivacy" = "Privacy";
+"settings_defaultPrivacy>414px" = "Hvem kan se dette billede?";
+"settings_stripGPSdata" = "Verwijder privé metadata";
+"settings_stripGPSdata>375px" = "Verwijder privé metadata vóór het uploaden";
+"settings_photoResize" = "Pas grootte aan vóór de upload";
+"settings_photoResize>375px" = "Pas de fotogrootte aan vóór de upload";
+"settings_photoSize" = "> Grootte   ";
+"settings_placeholderSize" = "Voor een fotoformaat in vanaf 5-100";
+"settings_photoCompress" = "Comprimeer vóór het uploaden";
+"settings_photoCompress>375px" = "Comprimeer de foto vóór het uploaden";
+"settings_photoQuality" = "> Kwaliteit";
+"settings_placeholderQuality" = "Voer beeldkwaliteit in tussen 50-98";
+"settings_deleteImage>375px" = "Verwijder de foto ná het uploaden";
+"settings_deleteImage" = "Verwijder na uploaden";
+
+// Settings — Cache
+"settingsHeader_cache" = "Cache-instellingen (gebruikt/totaal)";
+"settings_cacheDisk" = "Schijf";
+"settings_placeholderDisk" = "Voer een schijfcache in tussen 10-200";
+"settings_cacheMemory" = "Geheugen";
+"settings_placeholderMemory" = "Voer een geheugencache in tussen 10-200";
+"settings_cacheMegabytes" = "MB";
+
+// Settings — Information
+"settings_appName" = "Piwigo Mobiel";
+"settingsHeader_about" = "Informatie";
+"settings_supportForum" = "Ondersteuningsforum";
+"settings_releaseNotes" = "Uitgave opmerkingen";
+"settings_rateInAppStore" = "Waardeer Piwigo Mobiel";
+"settings_translateWithCrowdin" = "Vertaling Piwigo Mobiel";
+"settings_pwgForumURL" = "http://piwigo.org/forum";
+"settings_acknowledgements" = "Dank";
