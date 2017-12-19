@@ -176,7 +176,10 @@
 
 -(void)categoriesUpdated
 {
-	[self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    // Added to fix potential crash (19 Dec. 2017 - v2.1.5)
+    if ([self.imagesCollection numberOfItemsInSection:0] > 0) {
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    }
 }
 
 -(void)loadNavButtons
