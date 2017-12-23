@@ -23,6 +23,10 @@
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
+        
+        // Directionality of the language in the user interface of the app?
+        UIUserInterfaceLayoutDirection direction = [UIApplication sharedApplication].userInterfaceLayoutDirection;
+        instance.isAppLanguageRTL = (direction == UIUserInterfaceLayoutDirectionRightToLeft);
 		
 		instance.serverProtocol = @"https://";
 		instance.imagesPerPage = 100;

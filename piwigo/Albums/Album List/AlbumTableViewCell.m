@@ -28,7 +28,7 @@
 @property (nonatomic, strong) UILabel *numberOfImages;
 @property (nonatomic, strong) UILabel *date;
 @property (nonatomic, strong) UIView *textUnderlay;
-@property (nonatomic, strong) UIImageView *cellDisclosure;
+@property (nonatomic, strong) OutlinedText *cellDisclosure;
 @property (nonatomic, strong) NSURLSessionTask *cellDataRequest;
 @property (nonatomic, strong) UIAlertAction *categoryAction;
 @property (nonatomic, strong) UIAlertAction *deleteAction;
@@ -78,8 +78,37 @@
 		self.albumName.adjustsFontSizeToFitWidth = YES;
 		self.albumName.minimumScaleFactor = 0.6;
 		[self.contentView addSubview:self.albumName];
-		
-		self.numberOfImages = [UILabel new];
+
+        self.cellDisclosure = [OutlinedText new];
+        if ([Model sharedInstance].isAppLanguageRTL) {
+            self.cellDisclosure.text = @"<";
+            self.cellDisclosure.textAlignment = NSLayoutAttributeLeftMargin;
+        } else {
+            self.cellDisclosure.text = @">";
+            self.cellDisclosure.textAlignment = NSLayoutAttributeRight;
+        }
+        self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
+        self.cellDisclosure.font = [UIFont piwigoFontNormal];
+        self.cellDisclosure.font = [self.cellDisclosure.font fontWithSize:21.0];
+        self.cellDisclosure.textColor = [UIColor piwigoOrange];
+        self.cellDisclosure.adjustsFontSizeToFitWidth = NO;
+        self.cellDisclosure.minimumScaleFactor = 0.6;
+        [self.contentView addSubview:self.cellDisclosure];
+
+//        UIImage *cellDisclosureImg;
+//        if ([Model sharedInstance].isAppLanguageRTL) {
+//            cellDisclosureImg = [UIImage imageNamed:@"cellDisclosureLeft" ];
+//        } else {
+//            cellDisclosureImg = [UIImage imageNamed:@"cellDisclosureRight" ];
+//        }
+//        self.cellDisclosure = [UIImageView new];
+//        self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
+//        self.cellDisclosure.image = [cellDisclosureImg imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//        self.cellDisclosure.tintColor = [UIColor piwigoWhiteCream];
+//        self.cellDisclosure.contentMode = UIViewContentModeScaleAspectFit;
+//        [self.contentView addSubview:self.cellDisclosure];
+
+        self.numberOfImages = [UILabel new];
 		self.numberOfImages.translatesAutoresizingMaskIntoConstraints = NO;
 		self.numberOfImages.font = [UIFont piwigoFontNormal];
 		self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
@@ -95,18 +124,16 @@
 		self.date.font = [UIFont piwigoFontNormal];
 		self.date.font = [self.date.font fontWithSize:16.0];
 		self.date.textColor = [UIColor piwigoWhiteCream];
-		self.date.textAlignment = NSTextAlignmentRight;
+        self.numberOfImages.adjustsFontSizeToFitWidth = YES;
+        self.numberOfImages.minimumScaleFactor = 0.8;
+        if ([Model sharedInstance].isAppLanguageRTL) {
+            self.date.textAlignment = NSTextAlignmentLeft;
+        } else {
+            self.date.textAlignment = NSTextAlignmentRight;
+        }
 		[self.date setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
 		[self.contentView addSubview:self.date];
-		
-		UIImage *cellDisclosureImg = [UIImage imageNamed:@"cellDisclosure"];
-		self.cellDisclosure = [UIImageView new];
-		self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-		self.cellDisclosure.image = [cellDisclosureImg imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-		self.cellDisclosure.tintColor = [UIColor piwigoWhiteCream];
-		self.cellDisclosure.contentMode = UIViewContentModeScaleAspectFit;
-		[self.contentView addSubview:self.cellDisclosure];
-		
+				
 		[self setupAutoLayout];
 		
         // Add renaming, moving and deleting capabilities when user has admin rights
@@ -143,6 +170,7 @@
 {
 	NSDictionary *views = @{
 							@"name" : self.albumName,
+                            @"disclosure" : self.cellDisclosure,
 							@"numImages" : self.numberOfImages,
 							@"date" : self.date
 							};
@@ -151,20 +179,42 @@
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-																 attribute:NSLayoutAttributeLeft
-																 relatedBy:NSLayoutRelationEqual
-																	toItem:self.contentView
-																 attribute:NSLayoutAttributeLeft
-																multiplier:1.0
-																  constant:20]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-																 attribute:NSLayoutAttributeRight
-																 relatedBy:NSLayoutRelationLessThanOrEqual
-																	toItem:self.contentView
-																 attribute:NSLayoutAttributeRight
-																multiplier:1.0
-																  constant:-30]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[name]-[disclosure]-20-|"
+                                                                             options:kNilOptions
+                                                                             metrics:nil
+                                                                               views:views]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintViewToSameBase:self.cellDisclosure equalToView:self.albumName]];
+//    if ([Model sharedInstance].isAppLanguageRTL) {
+//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
+//                                                                     attribute:NSLayoutAttributeRight
+//                                                                     relatedBy:NSLayoutRelationEqual
+//                                                                        toItem:self.contentView
+//                                                                     attribute:NSLayoutAttributeRight
+//                                                                    multiplier:1.0
+//                                                                      constant:-20]];
+//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
+//                                                                     attribute:NSLayoutAttributeLeft
+//                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
+//                                                                        toItem:self.contentView
+//                                                                     attribute:NSLayoutAttributeLeft
+//                                                                    multiplier:1.0
+//                                                                      constant:40]];
+//    } else {
+//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
+//                                                                     attribute:NSLayoutAttributeLeft
+//                                                                     relatedBy:NSLayoutRelationEqual
+//                                                                        toItem:self.contentView
+//                                                                     attribute:NSLayoutAttributeLeft
+//                                                                    multiplier:1.0
+//                                                                      constant:20]];
+//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
+//                                                                     attribute:NSLayoutAttributeRight
+//                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
+//                                                                        toItem:self.contentView
+//                                                                     attribute:NSLayoutAttributeRight
+//                                                                    multiplier:1.0
+//                                                                      constant:-30]];
+//    }
 	
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[numImages]-[date]-20-|"
 																			 options:kNilOptions
@@ -185,9 +235,13 @@
 																multiplier:1.0
 																  constant:-5]];
 	
-	[self.cellDisclosure addConstraints:[NSLayoutConstraint constraintView:self.cellDisclosure toSize:CGSizeMake(28, 28)]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.cellDisclosure amount:15]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.cellDisclosure amount:40]];
+//	[self.cellDisclosure addConstraints:[NSLayoutConstraint constraintView:self.cellDisclosure toSize:CGSizeMake(28, 28)]];
+//    if ([Model sharedInstance].isAppLanguageRTL) {
+//        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.cellDisclosure amount:15]];
+//    } else {
+//        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.cellDisclosure amount:15]];
+//    }
+//    [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.cellDisclosure amount:40]];
 }
 
 -(void)imageUpdated

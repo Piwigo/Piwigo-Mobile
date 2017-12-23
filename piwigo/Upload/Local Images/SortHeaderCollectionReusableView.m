@@ -7,6 +7,7 @@
 //
 
 #import "SortHeaderCollectionReusableView.h"
+#import "Model.h"
 
 @interface SortHeaderCollectionReusableView()
 
@@ -31,32 +32,37 @@
 		[self addSubview:sortLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:sortLabel]];
 		
-		UIImageView *disclosure = [UIImageView new];
-		disclosure.translatesAutoresizingMaskIntoConstraints = NO;
-		UIImage *disclosureImg = [[UIImage imageNamed:@"cellDisclosure"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-		disclosure.image = disclosureImg;
-		disclosure.tintColor = [UIColor piwigoGrayLight];
-		[self addSubview:disclosure];
-		[self addConstraints:[NSLayoutConstraint constraintView:disclosure toSize:CGSizeMake(28, 28)]];
-		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:disclosure]];
+//        UIImageView *disclosure = [UIImageView new];
+//        disclosure.translatesAutoresizingMaskIntoConstraints = NO;
+//        UIImage *disclosureImg = [[UIImage imageNamed:@"cellDisclosure"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//        disclosure.image = disclosureImg;
+//        disclosure.tintColor = [UIColor piwigoGrayLight];
+//        [self addSubview:disclosure];
+//        [self addConstraints:[NSLayoutConstraint constraintView:disclosure toSize:CGSizeMake(28, 28)]];
+//        [self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:disclosure]];
 		
 		self.currentSortLabel = [UILabel new];
 		self.currentSortLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.currentSortLabel.text = NSLocalizedString(@"localImageSort_name", @"Name");
 		self.currentSortLabel.font = [UIFont piwigoFontNormal];
 		self.currentSortLabel.textColor = [UIColor piwigoBrown];
-        self.currentSortLabel.textAlignment = NSTextAlignmentRight;
+//        self.currentSortLabel.textAlignment = NSTextAlignmentRight;
 		self.currentSortLabel.adjustsFontSizeToFitWidth = YES;
 		self.currentSortLabel.minimumScaleFactor = 0.5;
 		[self addSubview:self.currentSortLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.currentSortLabel]];
 
-		[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[sort]-[label]-5-[disclosure]-5-|"
-																	 options:kNilOptions
-																	 metrics:nil
-																	   views:@{@"disclosure" : disclosure,
-																			   @"label" : self.currentSortLabel,
-																			   @"sort" : sortLabel}]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[sort]-[label]-10-|"
+                                                                     options:kNilOptions
+                                                                     metrics:nil
+                                                                       views:@{@"label" : self.currentSortLabel,
+                                                                               @"sort" : sortLabel}]];
+//        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[sort]-[label]-5-[disclosure]-5-|"
+//                                                                     options:kNilOptions
+//                                                                     metrics:nil
+//                                                                       views:@{@"disclosure" : disclosure,
+//                                                                               @"label" : self.currentSortLabel,
+//                                                                               @"sort" : sortLabel}]];
 		
 	}
 	return self;

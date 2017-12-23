@@ -147,7 +147,7 @@ typedef enum {
     header.backgroundColor = [UIColor clearColor];
     
     CGRect labelFrame = header.frame;
-    labelFrame.origin.x += 15;
+    labelFrame.origin.x += 15 * ([Model sharedInstance].isAppLanguageRTL ? -1.0 : 1.0);
     
     UILabel *headerLabel = [[UILabel alloc] initWithFrame:labelFrame];
     headerLabel.font = [UIFont piwigoFontNormal];
@@ -498,7 +498,7 @@ typedef enum {
                         cell.incrementSliderBy = 5;
                         cell.sliderValue = [Model sharedInstance].photoResize;
                         [cell.slider addTarget:self action:@selector(updateImageSize:) forControlEvents:UIControlEventValueChanged];
-                        
+
                         tableViewCell = cell;
                     } else {
                         SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
@@ -744,9 +744,13 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_supportForum", @"Support Forum");
-                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-                    cell.leftLabelWidth = 220;
-                    cell.rightText = @">";
+//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+//                    cell.leftLabelWidth = 220;
+                    if ([Model sharedInstance].isAppLanguageRTL) {
+                        cell.rightText = @"<";
+                    } else {
+                        cell.rightText = @">";
+                    }
                     
                     tableViewCell = cell;
                     break;
@@ -760,10 +764,14 @@ typedef enum {
                     }
                     
                     cell.leftText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settings_rateInAppStore", @"Rate Piwigo Mobile"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
-                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-                    cell.leftLabelWidth = 220;
-                    cell.rightText = @">";
-                    
+//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+//                    cell.leftLabelWidth = 220;
+                    if ([Model sharedInstance].isAppLanguageRTL) {
+                        cell.rightText = @"<";
+                    } else {
+                        cell.rightText = @">";
+                    }
+
                     tableViewCell = cell;
                     break;
                 }
@@ -776,10 +784,14 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_translateWithCrowdin", @"Translate Piwigo Mobile");
-                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-                    cell.leftLabelWidth = 220;
-                    cell.rightText = @">";
-                    
+//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+//                    cell.leftLabelWidth = 220;
+                    if ([Model sharedInstance].isAppLanguageRTL) {
+                        cell.rightText = @"<";
+                    } else {
+                        cell.rightText = @">";
+                    }
+
                     tableViewCell = cell;
                     break;
                 }
@@ -792,10 +804,14 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_releaseNotes", @"Release Notes");
-                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-                    cell.leftLabelWidth = 220;
-                    cell.rightText = @">";
-                    
+//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+//                    cell.leftLabelWidth = 220;
+                    if ([Model sharedInstance].isAppLanguageRTL) {
+                        cell.rightText = @"<";
+                    } else {
+                        cell.rightText = @">";
+                    }
+
                     tableViewCell = cell;
                     break;
                 }
@@ -808,10 +824,14 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_acknowledgements", @"Acknowledgements");
-                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-                    cell.leftLabelWidth = 220;
-                    cell.rightText = @">";
-                    
+//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
+//                    cell.leftLabelWidth = 220;
+                    if ([Model sharedInstance].isAppLanguageRTL) {
+                        cell.rightText = @"<";
+                    } else {
+                        cell.rightText = @">";
+                    }
+
                     tableViewCell = cell;
                     break;
                 }

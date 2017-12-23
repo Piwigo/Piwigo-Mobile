@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.5_text" = "Version 2.1.5\n\n• Adderat möjlighet att avbryta uppladdningar\n• Adderat alternativ att radera bilder efter uppladdning\n• Adderat kompatibilitet med optimerad lagring (iCloud)\n• Bevara bildformatet efter storleksändring närhelst möjligt\n• Danska och indonesiska översättningar\n• Fixat metadata delvis förlorat vid nedladdning\n• Fixat PNG format ersättas med JPEG innan uppladdning\n• Fixat problem som uppstått med iOS 11 och iPhone X\n• Fixat mindre buggar\n• Kodmodernisering\n________________________________________\n\n";
+"v2.1.6_text" = "Version 2.1.6\n\n• Arabisk översättning\n________________________________________\n\n";
+
+"v2.1.5_text" = "Version 2.1.5\n21 december 2017\n\n• Adderat möjlighet att avbryta uppladdningar\n• Adderat alternativ att radera bilder efter uppladdning\n• Adderat kompatibilitet med optimerad lagring (iCloud)\n• Bevara bildformatet efter storleksändring närhelst möjligt\n• Danska och indonesiska översättningar\n• Fixat metadata delvis förlorat vid nedladdning\n• Fixat PNG format ersättas med JPEG innan uppladdning\n• Fixat problem som uppstått med iOS 11 och iPhone X\n• Fixat mindre buggar\n• Kodmodernisering\n________________________________________\n\n";
 
 "v2.1.4_text" = "Version 2.1.4\n31 oktober 2017\n\n• Svensk översättning\n• Buggfixar\n________________________________________\n\n";
 

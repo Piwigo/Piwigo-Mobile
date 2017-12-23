@@ -44,17 +44,17 @@
 		self.sliderCount.textAlignment = NSTextAlignmentRight;
 		self.sliderCount.font = [UIFont piwigoFontNormal];
 		self.sliderCount.textColor = [UIColor piwigoBrown];
-		self.sliderCount.adjustsFontSizeToFitWidth = YES;
-		self.sliderCount.minimumScaleFactor = 0.5;
+		self.sliderCount.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.sliderCount];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderCount]];
 		
-		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label(<=90)]-[count(>=50)]-[slider]-15-|"
+		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[slider]-[count]-15-|"
 																				 options:kNilOptions
 																				 metrics:nil
 																				   views:@{@"label" : self.sliderName,
-																						   @"count" : self.sliderCount,
-																						   @"slider" : self.slider}]];
+                                                                                           @"slider" : self.slider,
+																						   @"count" : self.sliderCount
+																						   }]];
 	}
 	return self;
 }

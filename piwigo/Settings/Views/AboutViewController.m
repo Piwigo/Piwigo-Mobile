@@ -71,75 +71,52 @@
 		self.textView.layer.cornerRadius = 5;
 		[self.view addSubview:self.textView];
 		
-        // Release notes string
-        NSString *aboutString = @"\n\n\n\n\n\n";
-        
-        // Translators
-        NSString *translatorsString = NSLocalizedStringFromTableInBundle(@"translators_text", @"About", [NSBundle mainBundle], @"Translators text");
-        aboutString = [aboutString stringByAppendingString:translatorsString];
-        
-        // About string
-		NSString *introString = NSLocalizedStringFromTableInBundle(@"about_text", @"About", [NSBundle mainBundle], @"Introduction text");
-        aboutString = [aboutString stringByAppendingString:introString];
+        // Release notes attributed string
+        NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"\n\n\n\n\n\n"];
 
-            // MIT Licence — Bundle string
-            NSString *mitString = NSLocalizedStringFromTableInBundle(@"licenceMIT_text", @"About", [NSBundle mainBundle], @"AFNetworking licence text");
-            aboutString = [aboutString stringByAppendingString:mitString];
-        
-            // AFNetworking Licence — Bundle string
-            NSString *afnString = NSLocalizedStringFromTableInBundle(@"licenceAFN_text", @"About", [NSBundle mainBundle], @"AFNetworking licence text");
-            aboutString = [aboutString stringByAppendingString:afnString];
-        
-            // MBProgressHUD Licence — Bundle string
-            NSString *mbpHudString = NSLocalizedStringFromTableInBundle(@"licenceMBProgHUD_text", @"About", [NSBundle mainBundle], @"MBProgressHUD licence text");
-            aboutString = [aboutString stringByAppendingString:mbpHudString];
-        
-            // MGSwipeTableCell Licence — Bundle string
-            NSString *mgstcString = NSLocalizedStringFromTableInBundle(@"licenceMGSTC_text", @"About", [NSBundle mainBundle], @"MGSwipeTableCell licence text");
-            aboutString = [aboutString stringByAppendingString:mgstcString];
-            
-            // UICountingLabel Licence — Bundle string
-            NSString *uiclString = NSLocalizedStringFromTableInBundle(@"licenceUICL_text", @"About", [NSBundle mainBundle], @"UICountingLabel licence text");
-            aboutString = [aboutString stringByAppendingString:uiclString];
-            
-        // Attributed strings
-        NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:aboutString];
-		
-            // MIT Licence — Attributed string
-            NSRange mitLicenseRange = [aboutString rangeOfString:@"The MIT License (MIT)"];
-            NSRange mitLicenseDescriptionRange = NSMakeRange(mitLicenseRange.location, [@"The MIT License (MIT)" length]);
-            [aboutAttributedString addAttribute:NSFontAttributeName
-                                          value:[UIFont boldSystemFontOfSize:14]
-                                          range:mitLicenseDescriptionRange];
-            
-            // AFNetworking Licence — Attributed string
-            NSRange afnetworkingRange = [aboutString rangeOfString:@"AFNetworking"];
-            NSRange afnetworkingDescriptionRange = NSMakeRange(afnetworkingRange.location, [@"AFNetworking" length]);
-            [aboutAttributedString addAttribute:NSFontAttributeName
-                                          value:[UIFont boldSystemFontOfSize:14]
-                                          range:afnetworkingDescriptionRange];
+        // Translators — Bundle string
+        NSAttributedString *translatorsString = [[NSAttributedString alloc] initWithString:NSLocalizedStringFromTableInBundle(@"translators_text", @"About", [NSBundle mainBundle], @"Translators text")];
+        [aboutAttributedString appendAttributedString:translatorsString];
 
-            // MBProgressHUD Licence — Attributed string
-            NSRange mbpHudRange = [aboutString rangeOfString:@"MBProgressHUD"];
-            NSRange mbpHudDescriptionRange = NSMakeRange(mbpHudRange.location, [@"MBProgressHUD" length]);
-            [aboutAttributedString addAttribute:NSFontAttributeName
-                                          value:[UIFont boldSystemFontOfSize:14]
-                                          range:mbpHudDescriptionRange];
-            
-            // MGSwipeTableCell Licence — Attributed string
-            NSRange mgSwipeTCRange = [aboutString rangeOfString:@"MGSwipeTableCell"];
-            NSRange mgSwipeTCDescriptionRange = NSMakeRange(mgSwipeTCRange.location, [@"MGSwipeTableCell" length]);
-            [aboutAttributedString addAttribute:NSFontAttributeName
-                                          value:[UIFont boldSystemFontOfSize:14]
-                                          range:mgSwipeTCDescriptionRange];
-            
-            // UICountingLabel Licence — Attributed string
-            NSRange uiCountingLabelRange = [aboutString rangeOfString:@"UICountingLabel"];
-            NSRange uiCountingLabelDescriptionRange = NSMakeRange(uiCountingLabelRange.location, [@"UICountingLabel" length]);
-            [aboutAttributedString addAttribute:NSFontAttributeName
-                                          value:[UIFont boldSystemFontOfSize:14]
-                                          range:uiCountingLabelDescriptionRange];
-            
+        // About string — Bundle string
+        NSAttributedString *introString = [[NSAttributedString alloc] initWithString:NSLocalizedStringFromTableInBundle(@"about_text", @"About", [NSBundle mainBundle], @"Introduction text")];
+        [aboutAttributedString appendAttributedString:introString];
+        
+        // MIT Licence — Bundle string
+        NSString *mitString = NSLocalizedStringFromTableInBundle(@"licenceMIT_text", @"About", [NSBundle mainBundle], @"AFNetworking licence text");
+        NSRange mitTitleRange = NSMakeRange(0, [mitString rangeOfString:@"\n"].location);
+        NSMutableAttributedString *mitAttributedString = [[NSMutableAttributedString alloc] initWithString:mitString];
+        [mitAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:mitTitleRange];
+        [aboutAttributedString appendAttributedString:mitAttributedString];
+
+        // AFNetworking Licence — Bundle string
+        NSString *afnString = NSLocalizedStringFromTableInBundle(@"licenceAFN_text", @"About", [NSBundle mainBundle], @"AFNetworking licence text");
+        NSRange afnTitleRange = NSMakeRange(0, [afnString rangeOfString:@"\n"].location);
+        NSMutableAttributedString *afnAttributedString = [[NSMutableAttributedString alloc] initWithString:afnString];
+        [afnAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:afnTitleRange];
+        [aboutAttributedString appendAttributedString:afnAttributedString];
+
+        // MBProgressHUD Licence — Bundle string
+        NSString *mbpHudString = NSLocalizedStringFromTableInBundle(@"licenceMBProgHUD_text", @"About", [NSBundle mainBundle], @"MBProgressHUD licence text");
+        NSRange mbpHudRange = NSMakeRange(0, [mbpHudString rangeOfString:@"\n"].location);
+        NSMutableAttributedString *mbpHudAttributedString = [[NSMutableAttributedString alloc] initWithString:mbpHudString];
+        [mbpHudAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:mbpHudRange];
+        [aboutAttributedString appendAttributedString:mbpHudAttributedString];
+
+        // MGSwipeTableCell Licence — Bundle string
+        NSString *mgstcString = NSLocalizedStringFromTableInBundle(@"licenceMGSTC_text", @"About", [NSBundle mainBundle], @"MGSwipeTableCell licence text");
+        NSRange mgstcRange = NSMakeRange(0, [mgstcString rangeOfString:@"\n"].location);
+        NSMutableAttributedString *mgstcAttributedString = [[NSMutableAttributedString alloc] initWithString:mgstcString];
+        [mgstcAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:mgstcRange];
+        [aboutAttributedString appendAttributedString:mgstcAttributedString];
+
+        // UICountingLabel Licence — Bundle string
+        NSString *uiclString = NSLocalizedStringFromTableInBundle(@"licenceUICL_text", @"About", [NSBundle mainBundle], @"UICountingLabel licence text");
+        NSRange uiclRange = NSMakeRange(0, [uiclString rangeOfString:@"\n"].location);
+        NSMutableAttributedString *uiclAttributedString = [[NSMutableAttributedString alloc] initWithString:uiclString];
+        [uiclAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:uiclRange];
+        [aboutAttributedString appendAttributedString:uiclAttributedString];
+        
         self.textView.attributedText = aboutAttributedString;
         self.textView.editable = NO;
         self.textView.allowsEditingTextAttributes = NO;

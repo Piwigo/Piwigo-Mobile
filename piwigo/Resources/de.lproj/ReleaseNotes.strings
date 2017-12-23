@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.5_text" = "Version 2.1.5\n\n• Neu Möglichkeit zur Unterbrechung während des Hochladens\n• Neu Option zum Löschen von Bildern nach dem Hochladen\n• Neu Kompatibilität mit Optimize Storage (iCloud)\n• Beibehalten des Bildformates nach Größenveränderung wann immer möglich\n• Dänische und Indonesische Übersetzungen\n• Behoben Metadaten beim Herunterladen teilweise verloren\n• Behoben PNG Format wurde durch JPEG beim Hochladen ersetzt\n• Behoben Probleme bei iOS 11 und iPhone X behoben\n• Korrektur kleinerer Fehler\n• Code Modernisierung\n________________________________________\n\n \n\n";
+"v2.1.6_text" = "Version 2.1.6\n\n• Arabische Übersetzung\n________________________________________\n\n";
+
+"v2.1.5_text" = "Version 2.1.5\n21. Dezember 2017\n\n• Neu Möglichkeit zur Unterbrechung während des Hochladens\n• Neu Option zum Löschen von Bildern nach dem Hochladen\n• Neu Kompatibilität mit Optimize Storage (iCloud)\n• Beibehalten des Bildformates nach Größenveränderung wann immer möglich\n• Dänische und Indonesische Übersetzungen\n• Behoben Metadaten beim Herunterladen teilweise verloren\n• Behoben PNG Format wurde durch JPEG beim Hochladen ersetzt\n• Behoben Probleme bei iOS 11 und iPhone X behoben\n• Korrektur kleinerer Fehler\n• Code Modernisierung\n________________________________________\n\n \n\n";
 
 "v2.1.4_text" = "Version 2.1.4\n31. Oktober 2017\n\n• Schwedische Übersetzung\n• Fehlerbehebungen\n________________________________________\n\n \n\n";
 

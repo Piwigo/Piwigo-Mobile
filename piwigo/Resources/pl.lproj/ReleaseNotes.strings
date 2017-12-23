@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.5_text" = "Version 2.1.5\n\n• Dodano możliwość anulowania wysyłania\n• Dodano możliwość usuwania zdjęcia po wysłaniu\n• Dodano kompatybilność z Optymalizowaniem Magazynu (iCloud)\n• Zachowuje format obrazu po zmianie rozmiaru, gdy to możliwe\n• Tłumaczenia duńskie i indonezyjskie\n• Naprawiono tracenie części metadanych przy pobieraniu\n• Naprawiono zmianę formatu z PNG na JPG przed wysłaniem\n• Naprawiono błędy napotkane w iOS 11 i iPhone X\n• Naprawiono drobne błędy\n• Zmodernizowano kod\n________________________________________\n\n";
+"v2.1.6_text" = "Wersja 2.1.6\n\n• Tłumaczenie arabskie\n________________________________________\n\n";
 
-"v2.1.4_text" = "Version 2.1.4\nOctober 31, 2017\n\n• Dodanie szwedzkiego tłumaczenia\n• Poprawki błędów\n________________________________________\n\n";
+"v2.1.5_text" = "Wersja 2.1.5\n21 grudnia 2017\n\n• Dodano możliwość anulowania wysyłania\n• Dodano możliwość usuwania zdjęcia po wysłaniu\n• Dodano kompatybilność z Optymalizowaniem Magazynu (iCloud)\n• Zachowuje format obrazu po zmianie rozmiaru, gdy to możliwe\n• Tłumaczenia duńskie i indonezyjskie\n• Naprawiono tracenie części metadanych przy pobieraniu\n• Naprawiono zmianę formatu z PNG na JPG przed wysłaniem\n• Naprawiono błędy napotkane w iOS 11 i iPhone X\n• Naprawiono drobne błędy\n• Zmodernizowano kod\n________________________________________\n\n";
+
+"v2.1.4_text" = "Wersja 2.1.4\n31 października 2017\n\n• Dodanie szwedzkiego tłumaczenia\n• Poprawki błędów\n________________________________________\n\n";
 
 "v2.1.3_text" = "Wersja 2.1.3\n19 października 2017\n\n• Dodanie obsługi podstawowej autentykacji HTTP(S) \n• Dodanie możliwości anulowania auto podłączania\n• Poprawki interfejsu i wysyłania\n• Poprawki tłumaczenia i obsługi iOS 11\n• Poprawki kodu\n\n________________________________________\n\n";
 

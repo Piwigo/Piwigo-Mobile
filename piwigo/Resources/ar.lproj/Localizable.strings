@@ -1,0 +1,418 @@
+/*
+ Localizable.strings
+ piwigo
+ 
+ Created by Spencer Baker on 1/17/15.
+ Copyright (c) 2015 bakercrew. All rights reserved.
+ */
+// ===========================================================================
+// ==> GENERIC
+// ===========================================================================
+// Tab bar
+
+"tabBar_albums" = "ألبومات";
+"tabBar_upload" = "تحميل";
+"tabBar_preferences" = "تفضيلات";
+
+// Alert buttons
+"alertOkButton" = "موافق";
+"alertDismissButton" = "تجاهل";
+"alertYesButton" = "نعم";
+"alertNoButton" = "لا";
+"alertTryAgainButton" = "إعادة المحاولة";
+"alertCancelButton" = "إلغاء";
+"alertAddButton" = "إضافة";
+"alertRetryButton" = "إعادة المحاولة";
+"alertNextButton" = "الصورة الموالية";
+
+// Complete views
+"Complete" = "أكتمل";
+
+// Upload rights
+"uploadRights_title" = "تحميل الحقوق المطلوبة";
+"uploadRights_message" = "يجب أن يكون لديك حقوق تحميل ليتمكن من تحميل الصور أو مقاطع الفيديو.";
+
+// Errors
+"internetErrorGeneral_title" = "خطأ في الاتصال";
+"internetErrorGeneral_broken" = "عذرا، تم كسر الاتصال. حاول تسجيل الدخول مرة أخرى.";
+"internetCancellingConnection_button" = "جاري إلغاء الإتصال…";
+"internetCancelledConnection_button" = "إلغاء الإتصال";
+"internetCancelledConnection_title" = "تم إلغاء الإتصال";
+
+// ===========================================================================
+// ==> LOGIN / LOGOUT
+// ===========================================================================
+// Login
+"login" = "تسجيل الدخول";
+"login_serverPlaceholder" = "عنوان الويب";
+"login_userPlaceholder" = "اسم المستخدم (اختياري)";
+"login_passwordPlaceholder" = "كلمة المرور (اختياري)";
+"login_loggingIn" = "جاري تسجيل الدخول...";
+"login_protocolDescription" = "(اضغط للتغيير)";
+"login_connecting" = "جاري الإتصال";
+"login_newSession" = "الجلسة المفتوحة";
+"login_communityParameters" = "المعلمات Community";
+"login_serverParameters" = "معايير Piwigo";
+"login_connectionChanged" = "تم تغيير الاتصال!";
+
+// Login — Errors
+"serverMethodsError_title" = "طرق غير معروفة";
+"serverMethodsError_message" = "أخفق الحصول على طرق الخادم. مشكلة مع خادم Piwigo ؟";
+
+"loginError_title" = "أخفق تسجيل الدخول";
+"loginError_message" = "لا يتطابق اسم المستخدم وكلمة المرور مع عنوان الويب المحدد";
+"loginEmptyServer_title" = "أدخل عنوان ويب";
+"loginEmptyServer_message" = "يرجى تحديد بروتوكول وإدخال عنوان ويب Piwigo للمواصلة.";
+
+"serverVersionNotCompatible_title" = "الخادم غير متوافق";
+"serverVersionNotCompatible_message" = "إصدار خادم Piwigo هو %@. Piwigo موبايل يدعم فقط على الأقل نسخة من 2.7. يرجى تحديث الخادم الخاص بك لاستخدام Piwigo موبايل. هل ما زلت ترغب في المتابعة؟";
+
+"sessionStatusError_title" = "فشل أثناء المصادقة";
+"sessionStatusError_message" = "فشل أثناء المصادقة مع الخادم. حاول تسجيل الدخول مرة أخرى.";
+
+"serverCommunityError_title" = "خطأ في Community";
+"serverCommunityError_message" = "أخفق الحصول على معلمات إضافة المجتمع. حاول تسجيل الدخول مرة أخرى.";
+
+// Logout
+"logoutConfirmation_title" = "تسجيل خروج";
+"logoutConfirmation_message" = "هل أنت متأكد من أنك تريد الخروج؟";
+
+// Logout — Errors
+"logoutFail_title" = "فشل في تسجيل الخروج";
+"logoutFail_message" = "أخفق تسجيل الخروج. حاول ثانية؟";
+
+
+// ===========================================================================
+// ==> ALBUMS
+// ===========================================================================
+// Albums view
+"categoryMainEmtpy" = "لا توجد ألبومات في Piwigo حتى الآن.\nيمكنك السحب إلى الأسفل لتحديث أو إعادة تسجيل الدخول.";
+"categoryTableView_photoCount" = "صورة";
+"categoryTableView_photosCount" = "صور";
+"categoryTableView_subCategoryCount" = "ألبوم فرعي";
+"categoryTableView_subCategoriesCount" = "ألبومات فرعية";
+"categoryImageList_selectButton" = "حدد";
+"categoryImageList_noDataError" = "خطأ لا توجد بيانات";
+
+// Albums sort
+"categorySort_nameAscending" = "عنوان الصورة، A → Z";
+"categorySort_nameDescending" = "عنوان الصورة، Z → A";
+"categorySort_fileNameAscending" = "اسم الملف، A → Z";
+"categorySort_fileNameDescending" = "اسم الملف، Z → A";
+"categorySort_dateCreatedDescending" = "تاريخ الإنشاء، جديد → القديم";
+"categorySort_dateCreatedAscending" = "تاريخ الإنشاء، القديم → جديد";
+"categorySort_datePostedDescending" = "تاريخ النشر، جديد → القديم";
+"categorySort_datePostedAscending" = "تاريخ النشر، القديم → جديد";
+"categorySort_videosOnly" = "مقاطع الفيديو فقط";
+"categorySort_imagesOnly" = "الصور فقط";
+
+// Album create
+"createNewAlbum_title" = "البوم جديد";
+"createNewAlbum_message" = "أدخل اسم لهذا الألبوم:";
+"createNewAlbum_placeholder" = "اسم الألبوم";
+"createNewAlbumHUD_label" = "جار إنشاء الألبوم…";
+
+// Album create — Errors
+"createAlbumError_title" = "خطأ في إنشاء ألبوم";
+"createAlbumError_message" = "فشل إنشاء ألبوم جديد";
+
+// Album options (actions)
+"categoryCellOption_rename" = "إعادة التسمية";
+"categoryCellOption_move" = "نقل";
+"categoryCellOption_delete" = "حذف";
+
+// Album rename
+"renameCategory_title" = "إعادة تسمية الألبوم";
+"renameCategory_message" = "أدخل اسم جديد لهذا الألبوم";
+"renameCategory_button" = "إعادة التسمية";
+"renameCategoryHUD_label" = "جار إعادة تسمية الألبوم…";
+
+// Album rename — Errors
+"renameCategoyError_title" = "فشلت إعادة التسمية";
+"renameCategoyError_message" = "فشل إعادة تسمية الألبوم الخاص بك";
+
+// Album delete
+"deleteCategory_title" = "حذف الألبوم";
+"deleteCategory_message" = "هل أنت متأكد من رغبتك في حذف الألبوم \"%@\" وجميع %@ من الصور؟";
+"deleteCategoryConfirm_title" = "هل أنت واثق؟";
+"deleteCategoryConfirm_message" = "الرجاء إدخال عدد الصور لحذف هذا الألبوم. عدد الصور: %@";
+"deleteCategoryConfirm_deleteButton" = "حذف";
+"deleteCategoryHUD_label" = "جار حذف الألبوم…";
+
+// Album delete — errors
+"deleteCategoryMatchError_title" = "الرقم لا يطابق";
+"deleteCategoryMatchError_message" = "لا يتطابق عدد الصور التي أدخلتها مع عدد الصور في الفئة. الرجاء إعادة المحاولة إذا كنت ترغب في حذف هذا الألبوم";
+"deleteCategoryError_title" = "فشل في حذف";
+"deleteCategoryError_message" = "فشل في حذف الألبوم الخاص بك";
+
+// Album move
+"moveCategory" = "نقل الألبوم";
+"moveCategory_selectParent" = "حدد ألبوما لنقل الألبوم \"%@\" إلى";
+"moveCategory_message" = "هل تريد بالتأكيد نقل \"%@\" إلى الألبوم \"%@\"؟";
+"moveCategoryHUD_moving" = "جار نقل الألبوم…";
+
+// album move — Errors
+"moveCategoryError_title" = "فشل النقل";
+"moveCategoryError_message" = "فشل في نقل الألبوم الخاص بك";
+
+// Album set image thumbnail
+"categorySelection" = "حدد الألبوم";
+"categorySelection_forImage" = "حدد ألبوم لهذه الصورة";
+"categoryImageSet_title" = "تعيين صورة مصغرة";
+"categoryImageSet_message" = "هل تريد بالتأكيد تعيين هذه الصورة للألبوم \"%@\"؟";
+"categoryImageSetHUD_updating" = "جار تحديث الصورة المصغرة للألبوم…";
+
+// Album set image thumbnail — Errors
+"categoryImageSetError_title" = "خطأ في تعيين الصورة";
+"categoryImageSetError_message" = "أخفق تعيين صورة الألبوم";
+
+
+// ===========================================================================
+// ==> IMAGES
+// ===========================================================================
+"singleImage" = "صورة";
+"severalImages" = "الصور";
+"noImages" = "لا توجد صور";
+"pullToRefresh" = "إعادة تحميل الصور";
+
+// Errors
+"albumPhotoError_title" = "احصل على خطأ صور الألبوم";
+"albumPhotoError_message" = "تعذر الحصول على صور الألبوم (صورة تالفة في ألبومك؟)";
+
+// Image sort
+"sortBy" = "التصنيف حسب";
+"imageSortTitle" = "فرز الصور";
+"imageSortMessage" = "الرجاء تحديد الطريقة التي ترغب في فرز الصور بها";
+
+// Image options (actions)
+"imageOptions_title" = "خيارات الصورة";
+"imageOptions_edit" = "تعديل";
+"imageOptions_download" = "تنزيل";
+"imageOptions_setAlbumImage" = "تعيين كصورة الألبوم";
+
+// Image details
+"imageDetailsView_title" = "تفاصيل الصورة";
+"editImageDetails_title" = "العنوان:";
+"editImageDetails_titlePlaceholder" = "العنوان";
+"editImageDetails_author" = "المؤلف:";
+"editImageDetails_tags" = "العلامات:";
+"editImageDetails_privacyLevel" = "من يمكنه مشاهدة هذه الصورة؟";
+"editImageDetails_descriptionPlaceholder" = "الوصف";
+"editImageDetailsHUD_updating" = "جار تحديث معلومات الصورة…";
+
+// Image details — Errors
+"editImageDetailsError_title" = "فشل في التحديث";
+"editImageDetailsError_message" = "فشل في تحديث التغييرات مع الخادم. حاول ثانية؟";
+"imageDetailsFetchError_title" = "أخفق جلب تفاصيل الصورة";
+"imageDetailsFetchError_retryMessage" = "أخفق جلب بيانات الصورة. حاول مرة أخرى؟";
+"imageDetailsFetchError_continueMessage" = "أخفق جلب بيانات الصورة. استمر؟";
+
+// Image privacy levels
+"privacyLevel" = "مستوى الخصوصية";
+"privacyLevel_admin" = "المشرفين";
+"privacyLevel_adminFamily" = "المشرفين، العائلة";
+"privacyLevel_adminsFamilyFriends" = "المشرفين، العائلة، الأصدقاء";
+"privacyLevel_adminsFamilyFriendsContacts" = "المشرفين، العائلة، الأصدقاء، جهات الاتصال";
+"privacyLevel_everybody" = "الجميع";
+
+// Image tags
+"none" = "لا شيء";
+"tags" = "العلامات";
+"tagsHeader_selected" = "تم تحديدها";
+"tagsHeader_all" = "الكل";
+
+// Image delete
+"deleteImage_delete" = "حذف";
+"deleteImageProgress_title" = "تم حذف %@%%";
+
+"deleteSingleImage_title" = "حذف الصورة";
+"deleteSingleImage_message" = "هل أنت متأكد أنك تريد حذف هذه الصورة؟ هذا لا يمكن التراجع عنه!";
+"deleteSeveralImages_title" = "حذف الصور";
+"deleteSeveralImages_message" = "هل تريد بالتأكيد حذف %@ من الصور المحددة؟ هذا لا يمكن التراجع عنه!";
+
+"deleteImageFail_title" = "فشل الحذف";
+"deleteImageFail_message" = "تعذر حذف الصورة\n%@";
+
+// Image download
+"downloadSingleImage_title" = "تحميل الصورة";
+"downloadSingleImage_confirmation" = "هل تريد بالتأكيد تنزيل الصورة المحددة؟";
+"downloadSeveralImages_title" = "تحميل الصور";
+"downloadSeveralImage_confirmation" = "هل تريد بالتأكيد تنزيل %@ من الصور المحددة؟";
+
+"downloadingImage" = "تنزيل الصورة";
+"downloadingImages" = "تنزيل الصور";
+"downloadingImageInfo" = "تنزيل معلومات الصورة";
+"downloadingImageInfoForSort" = "تحميل معلومات الصورة للفرز";
+
+// Image download — Errors
+"downloadImageFail_title" = "أخفق التنزيل";
+"downloadImageFail_message" = "أخفق تنزيل الصورة!\n%@";
+"downloadVideoFail_message" = "أخفق تنزيل الفيديو!\n%@";
+"downloadVideoFail_Photos" = "تنسيق الفيديو غير مقبول من قبل الصور!";
+
+"imageSaveError_title" = "أخفق حفظ الصورة";
+"imageSaveError_message" = "أخفق حفظ الصورة. خطأ:%@";
+
+"videoSaveError_title" = "أخفق حفظ الفيديو";
+"videoSaveError_message" = "أخفق حفظ الفيديو. خطأ:%@";
+
+// Images upload
+"categoryUpload_chooseAlbum" = "حدد ألبوما لتحميل الصور إلى";
+"categoryUpload_chooseLocalAlbum" = "حدد ألبوما للحصول على صور من";
+"categoyUpload_loadSubCategories" = "تحميل";
+"selectAll" = "الكل";
+
+"imageUploadDetails_title" = "العنوان:";
+"imageUploadDetails_author" = "الكاتب:";
+"imageUploadDetails_privacy" = "الخصوصية:";
+"imageUploadDetails_tags" = "العلامات:";
+"imageUploadDetails_description" = "الوصف:";
+
+"imageUploadDetailsView_title" = "الصور";
+"imageUploadDetailsButton_title" = "تحميل";
+"imageUploadDetailsEdit_title" = "تعديل الصور للتحميل";
+"imageUploadDetailsUploading_title" = "الصور التي يتم تحميلها";
+"imageUploadDetailsCell_uploadComplete" = "اكتملت! جار الانتهاء...";
+
+"imageUploadTableCell_uploading" = "تحميل...";
+"imageUploadProgressBar_zero" = "جار التحميل 0/0";
+"imageUploadProgressBar_nonZero" = "جار التحميل %@/%@";
+"imageUploadProgressBar_completed" = "اكتملت";
+"imageUploadCompleted_title" = "اكتمل التحميل";
+"imageUploadCompleted_message" = "صورة / فيديو تم تحميلها إلى خادم Piwigo الخاص بك.";
+"imageUploadCompleted_message>1" = "صور / فيديوهات تم تحميلها إلى خادم Piwigo الخاص بك.";
+
+// Image upload — Errors
+"uploadError_title" = "خطأ في التحميل";
+"uploadError_message" = "تعذر تحميل الصورة الخاصة بك. خطأ: %@";
+"uploadCancelled_title" = "تم إلغاء الرفع";
+
+"imageUploadError_title" = "خطأ في تحميل الصورة";
+"imageUploadError_format" = "عذرا، لا يتم قبول ملفات الصور ذات الإضافات.%@ و .jpg بواسطة خادم Piwigo.";
+"imageUploadError_source" = "لا يمكن إنشاء مصدر الصورة";
+"imageUploadError_destination" = "لا يمكن إنشاء وجهة الصورة";
+"imageUploadError_iCloud" = "تعذر استرداد الصورة من iCloud. خطأ:%@";
+
+"audioUploadError_title" = "خطأ في تحميل الصوت";
+"audioUploadError_format" = "عذرا، لا يتم اعتماد الملفات الصوتية من قبل Piwigo موبايل حتى الآن.";
+
+"videoUploadError_title" = "خطأ في تحميل الفيديو";
+"videoUploadError_format" = "عذرا، لا يتم قبول ملفات الفيديو التي تحتوي على إضافة .%@ بواسطة خادم Piwigo.";
+"videoUploadError_iCloud" = "تعذر استرداد الفيديو من iCloud. خطأ:%@";
+"videoUploadError_export" = "عذرا، تعذر استرداد الفيديوليتم تحميله. خطأ:%@";
+"videoUploadError_unknown" = "عذرا، أخفق تحميل الفيديو بسبب خطأ غير معروف أثناء عملية التحويل MP4. خطأ:%@";
+"videoUploadCancelled_message" = "تم إلغاء تحميل الفيديو.";
+
+// ===========================================================================
+// ==> LOCAL ALBUMS
+// ===========================================================================
+"localAlbums" = "الألبومات المحلية";
+
+"localImageSort_newest" = "الأحدث";
+"localImageSort_oldest" = "الأقدم";
+"localImageSort_notUploaded" = "لم يتم تحميلها";
+"localImageSort_undefined" = "غير محدد";
+
+// Local albums — Access not Authorized
+"localAlbums_photosNotAuthorized_title" = "ممنوع الدخول";
+"localAlbums_photosNiltitle" = "مشكلة في قراءة الصور";
+"localAlbums_photosNnil_msg" = "هناك مشكلة في قراءة مكتبة الصور المحلية.";
+
+// Local albums — Tell user to change settings, how
+"localAlbums_photosNotAuthorized_msg" = "لا يمكن فتح مكتبة الصور المحلية. يرجى الدخول إلى إعدادات التطبيق، الخصوصية، صور وتمكين الوصول ل Piwigo.";
+
+// ===========================================================================
+// ==> SETTINGS
+// ===========================================================================
+// Settings — Piwigo Server
+"settingsHeader_server" = "خادم Piwigo";
+"settings_server" = "العنوان";
+"settings_username" = "اسم المستخدم";
+"settings_notLoggedIn" = " - لم تقم بتسجيل الدخول - ";
+"settings_logout" = "الخروج";
+
+// Settings — General
+"settingsHeader_general" = "الاعدادات العامة";
+"settings_loadAllCategories" = "تحميل جميع الألبومات في البداية";
+"settings_loadAllCategories>320px" = "تحميل جميع الألبومات في البداية (إلغاء التحديد إذا تعذرت)";
+
+"defaultImageSort" = "التصنيف";
+"defaultImageSort>320px" = "النوع الافتراضي";
+"defaultImageSort>414px" = "الفرز الافتراضي للصور";
+
+"defaultThumbnailSize" = "الصور المصغرة";
+"defaultThumbnailSize>320px" = "حجم الصور المصغرة";
+"defaultThumbnailSize>414px" = "الحجم الافتراضي للصور المصغرة";
+"defaultThumbnailSizeTitle" = "الحجم الافتراضي";
+"defaultThumbnailSizeHeader" = "الرجاء تحديد حجم الصورة المصغرة";
+"settings_displayTitles" = "العناوين على الصور المصغرة";
+"settings_displayTitles>320px" = "عرض العناوين على الصور المصغرة";
+
+"thumbnailSizeSquare" = "مربع";
+"thumbnailSizeThumbnail" = "الصورة المصغرة";
+"thumbnailSizeXXSmall" = "صغير";
+"thumbnailSizeXSmall" = "صغير جدا";
+"thumbnailSizeSmall" = "صغير";
+"thumbnailSizeMedium" = "متوسط";
+"thumbnailSizeLarge" = "كبير";
+"thumbnailSizeXLarge" = "كبير جدا";
+"thumbnailSizeXXLarge" = "ضخم";
+"thumbnailSizexFullRes" = "عرض كامل";
+
+"defaultImageSize" = "الصور";
+"defaultImageSize>320px" = "حجم الصورة";
+"defaultImageSize>414px" = "الحجم الافتراضي للصور";
+"defaultImageSizeTitle" = "حجم افتراضى";
+"defaultImageSizeHeader" = "الرجاء تحديد حجم الصورة";
+"defaultImageSize_recommended" = " (موصى به)";
+"defaultSize_disabled" = " (معطل على الخادم)";
+"defaultSizeFooter" = "لا ينصح بأحجام الرمادي أو إنها غير متوفرة على خادم Piwigo.";
+
+"imageSizeSquare" = "مربع";
+"imageSizeThumbnail" = "الصورة المصغرة";
+"imageSizeXXSmall" = "صغير";
+"imageSizeXSmall" = "صغير جدا";
+"imageSizeSmall" = "صغير";
+"imageSizeMedium" = "متوسط";
+"imageSizeLarge" = "كبير";
+"imageSizeXLarge" = "كبير جدًا";
+"imageSizeXXLarge" = "ضخم";
+"imageSizexFullRes" = "عرض كامل";
+
+// Settings — Upload
+"settingsHeader_upload" = "إعدادات التحميل الافتراضية";
+"settings_defaultAuthor" = "الكاتب";
+"settings_defaultAuthor>320px" = "اسم الكاتب";
+"settings_defaultAuthorPlaceholder" = "اسم الكاتب";
+"settings_defaultPrivacy" = "الخصوصية";
+"settings_defaultPrivacy>414px" = "من يمكنه مشاهدة وسائل الإعلام؟";
+"settings_stripGPSdata" = "قطاع البيانات الوصفية الخاصة";
+"settings_stripGPSdata>375px" = "جرد البيانات الوصفية الخاصة قبل التحميل";
+"settings_photoResize" = "تغيير الحجم قبل التحميل";
+"settings_photoResize>375px" = "تغيير حجم الصورة قبل التحميل";
+"settings_photoSize" = "> الحجم   ";
+"settings_placeholderSize" = "أدخل حجم الصورة من 5 - 100";
+"settings_photoCompress" = "التضغيط قبل التحميل";
+"settings_photoCompress>375px" = "ضغط الصورة قبل التحميل";
+"settings_photoQuality" = "> الجودة";
+"settings_placeholderQuality" = "أدخل جودة الصورة من 50 - 98";
+"settings_deleteImage>375px" = "حذف الصورة بعد تحميل";
+"settings_deleteImage" = "الحذف بعد التحميل";
+
+// Settings — Cache
+"settingsHeader_cache" = "ذاكرة الإعدادات المؤقة (المستخدم / الإجمالي)";
+"settings_cacheDisk" = "القرص";
+"settings_placeholderDisk" = "أدخل ذاكرة التخزين المؤقت على القرص من 10 - 200";
+"settings_cacheMemory" = "الذاكرة";
+"settings_placeholderMemory" = "أدخل ذاكرة التخزين المؤقت من 10 - 200";
+"settings_cacheMegabytes" = "MB";
+
+// Settings — Information
+"settings_appName" = "Piwigo موبايل";
+"settingsHeader_about" = "معلومة";
+"settings_supportForum" = "منتدى الدعم";
+"settings_releaseNotes" = "ملاحظات الإصدار";
+"settings_rateInAppStore" = "تقييم Piwigo موبايل";
+"settings_translateWithCrowdin" = "ترجمة Piwigo موبايل";
+"settings_pwgForumURL" = "http://piwigo.org/forum";
+"settings_acknowledgements" = "شكر وتقدير";

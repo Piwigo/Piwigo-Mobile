@@ -14,10 +14,11 @@
 
 @property (nonatomic, strong) UILabel *categoryLabel;
 @property (nonatomic, strong) PiwigoAlbumData *categoryData;
-@property (nonatomic, strong) UIView *rightHitView;
-@property (nonatomic, strong) UIImageView *leftDisclosure;
-@property (nonatomic, strong) UIImageView *rightDisclosure;
-@property (nonatomic, strong) UILabel *selectLabel;
+@property (nonatomic, strong) UIView *loadTapView;
+//@property (nonatomic, strong) UIImageView *leftDisclosure;
+@property (nonatomic, strong) UIImageView *loadDisclosure;
+@property (nonatomic, strong) UILabel *cellDisclosure;
+@property (nonatomic, strong) UILabel *loadLabel;
 @property (nonatomic, strong) NSLayoutConstraint *disclosureRightConstraint;
 
 @end
@@ -40,62 +41,82 @@
 		[self.contentView addSubview:self.categoryLabel];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.categoryLabel]];
 		
-		self.leftDisclosure = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"cellDisclosure"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
-		self.leftDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-		self.leftDisclosure.tintColor = [UIColor colorWithRed:199/255.0 green:199/255.0 blue:204/255.0 alpha:1];
-		[self.contentView addSubview:self.leftDisclosure];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftDisclosure]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.leftDisclosure toSize:CGSizeMake(20, 20)]];
+        self.cellDisclosure = [UILabel new];
+        if ([Model sharedInstance].isAppLanguageRTL) {
+            self.cellDisclosure.text = @"<";
+            self.cellDisclosure.textAlignment = NSLayoutAttributeLeftMargin;
+        } else {
+            self.cellDisclosure.text = @">";
+            self.cellDisclosure.textAlignment = NSLayoutAttributeRight;
+        }
+        self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
+        self.cellDisclosure.font = [UIFont piwigoFontNormal];
+        self.cellDisclosure.font = [self.cellDisclosure.font fontWithSize:21.0];
+        self.cellDisclosure.textColor = [UIColor piwigoOrange];
+        self.cellDisclosure.adjustsFontSizeToFitWidth = NO;
+        self.cellDisclosure.minimumScaleFactor = 0.6;
+        [self.contentView addSubview:self.cellDisclosure];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.cellDisclosure]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[label]-[disclosure]-10-|"
+                                                                                 options:kNilOptions
+                                                                                 metrics:nil
+                                                                                   views:@{@"label" : self.categoryLabel,
+                                                                                           @"disclosure" : self.cellDisclosure
+                                                                                           }]];
+
+		self.loadLabel = [UILabel new];
+		self.loadLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.loadLabel.font = [UIFont piwigoFontNormal];
+		self.loadLabel.font = [self.loadLabel.font fontWithSize:13];
+		self.loadLabel.textColor = [UIColor lightGrayColor];
+//		self.loadLabel.textAlignment = NSTextAlignmentRight;
+		self.loadLabel.text = NSLocalizedString(@"categoyUpload_loadSubCategories", @"load");
+		[self.contentView addSubview:self.loadLabel];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.loadLabel]];
 		
-		self.selectLabel = [UILabel new];
-		self.selectLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.selectLabel.font = [UIFont piwigoFontNormal];
-		self.selectLabel.font = [self.selectLabel.font fontWithSize:13];
-		self.selectLabel.textColor = [UIColor lightGrayColor];
-		self.selectLabel.textAlignment = NSTextAlignmentRight;
-		self.selectLabel.text = NSLocalizedString(@"categoyUpload_loadSubCategories", @"load");
-		[self.contentView addSubview:self.selectLabel];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.selectLabel]];
+		self.loadDisclosure = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"down"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
+		self.loadDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
+		self.loadDisclosure.tintColor = [UIColor lightGrayColor];
+		[self.contentView addSubview:self.loadDisclosure];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.loadDisclosure]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.loadDisclosure toSize:CGSizeMake(28, 28)]];
+		[self.contentView addConstraints:[NSLayoutConstraint
+                                          constraintsWithVisualFormat:@"|-10-[label]-[load]-[downDisclosure]-10-|"
+                                                               options:kNilOptions
+                                                              metrics:nil
+                                                                views:@{@"label" : self.categoryLabel,
+                                                                        @"load" : self.loadLabel,
+                                                                        @"downDisclosure" : self.loadDisclosure
+                                                                        }]];
 		
-		self.rightDisclosure = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"down"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
-		self.rightDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-		self.rightDisclosure.tintColor = [UIColor lightGrayColor];
-		[self.contentView addSubview:self.rightDisclosure];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.rightDisclosure]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.rightDisclosure toSize:CGSizeMake(28, 28)]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[label]-[select][downDisclosure]-10-|"
-																				 options:kNilOptions
-																				 metrics:nil
-																				   views:@{@"label" : self.categoryLabel,
-																						   @"downDisclosure" : self.rightDisclosure,
-																						   @"select" : self.selectLabel}]];
-		
-		self.rightHitView = [UIView new];
-		self.rightHitView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.rightHitView.backgroundColor = [UIColor piwigoWhiteCream];
-		[self.contentView addSubview:self.rightHitView];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.rightHitView]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.rightHitView amount:0]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.rightHitView
-																	 attribute:NSLayoutAttributeLeft
-																	 relatedBy:NSLayoutRelationEqual
-																		toItem:self.selectLabel
-																	 attribute:NSLayoutAttributeLeft
-																	multiplier:1.0
-																	  constant:-10]];
-		
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.leftDisclosure
-																	 attribute:NSLayoutAttributeRight
-																	 relatedBy:NSLayoutRelationEqual
-																		toItem:self.rightHitView
-																	 attribute:NSLayoutAttributeLeft
-																	multiplier:1.0
-																	  constant:0]];
-		
-		[self.contentView bringSubviewToFront:self.selectLabel];
-		[self.contentView bringSubviewToFront:self.rightDisclosure];
-		
-		[self.rightHitView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedRightHit)]];
+		self.loadTapView = [UIView new];
+		self.loadTapView.translatesAutoresizingMaskIntoConstraints = NO;
+		[self.contentView addSubview:self.loadTapView];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.loadTapView]];
+        if ([Model sharedInstance].isAppLanguageRTL) {
+            [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.loadTapView amount:0]];
+            [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.loadTapView
+                                                                         attribute:NSLayoutAttributeRight
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.loadLabel
+                                                                         attribute:NSLayoutAttributeRight
+                                                                        multiplier:1.0
+                                                                          constant:10]];
+        } else {
+            [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.loadTapView amount:0]];
+            [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.loadTapView
+                                                                         attribute:NSLayoutAttributeLeft
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.loadLabel
+                                                                         attribute:NSLayoutAttributeLeft
+                                                                        multiplier:1.0
+                                                                          constant:-10]];
+        }
+				
+		[self.contentView bringSubviewToFront:self.loadDisclosure];
+        [self.contentView bringSubviewToFront:self.loadLabel];
+
+		[self.loadTapView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedLoadView)]];
 	}
 	return self;
 }
@@ -104,36 +125,60 @@
 {
 	self.categoryData = category;
 
-	NSInteger depth = [self.categoryData getDepthOfCategory];
-	if(depth <= 0) depth = 1;
-	NSString *front = [@"" stringByPaddingToLength:depth-1 withString:@"-" startingAtIndex:0];
-	
-	self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", front, self.categoryData.name];
-    self.categoryLabel.backgroundColor = [UIColor piwigoWhiteCream];
+	// Is this a sub-category?
+    NSInteger depth = [self.categoryData getDepthOfCategory];
+    if(depth <= 1) {
+        // Categories are presented in piwigoGray
+        self.categoryLabel.text = self.categoryData.name;
+        self.categoryLabel.textColor = [UIColor piwigoGray];
+    } else {
+        // Sub-categories are presented in another color
+        self.categoryLabel.textColor = [UIColor piwigoBrown];
 
+        // Append "—" characters to sub-category names
+        NSString *subAlbumMark = [@"" stringByPaddingToLength:depth-1 withString:@"—" startingAtIndex:0];
+        if ([Model sharedInstance].isAppLanguageRTL) {
+            self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", self.categoryData.name, subAlbumMark];
+        } else {
+            self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", subAlbumMark, self.categoryData.name];
+        }
+    }
+    
+    // Show upload button if sub-categories are not loaded yet
 	if(category.numberOfSubCategories <= 0 || [Model sharedInstance].loadAllCategoryInfo)
 	{
-		[self hideRightViews];
-	}	
+		[self hideUploadViews];
+        self.cellDisclosure.hidden = NO;
+    } else {
+        [self showUploadViews];
+        self.cellDisclosure.hidden = YES;
+    }
 }
 
--(void)hideRightViews
+-(void)showUploadViews
+    {
+        self.loadLabel.hidden = NO;
+        self.loadTapView.hidden = NO;
+        self.loadDisclosure.hidden = NO;
+    }
+
+-(void)hideUploadViews
 {
-	self.selectLabel.hidden = YES;
-	self.leftDisclosure.hidden = YES;
-	self.rightHitView.hidden = YES;
-	self.rightDisclosure.image = [[UIImage imageNamed:@"cellDisclosure"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.loadLabel.hidden = YES;
+	self.loadTapView.hidden = YES;
+    self.loadDisclosure.hidden = YES;
 }
 
 -(void)setHasLoadedSubCategories:(BOOL)hasLoadedSubCategories
 {
 	if(hasLoadedSubCategories)
 	{
-		[self hideRightViews];
+		[self hideUploadViews];
+        self.cellDisclosure.hidden = NO;
 	}
 }
 
--(void)tappedRightHit
+-(void)tappedLoadView
 {
 	if([self.categoryDelegate respondsToSelector:@selector(tappedDisclosure:)])
 	{
@@ -145,11 +190,8 @@
 {
 	[super prepareForReuse];
 	
-	self.selectLabel.hidden = NO;
-	self.leftDisclosure.hidden = NO;
-	self.rightHitView.hidden = NO;
-	self.categoryLabel.text = @"";
-	self.rightDisclosure.image = [[UIImage imageNamed:@"down"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.categoryLabel.text = @"";
+    self.loadDisclosure.image = [[UIImage imageNamed:@"down"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 }
 
 #pragma mark LocalAlbums Methods
@@ -158,7 +200,8 @@
 {
 	self.categoryLabel.text = text;
     self.categoryLabel.textColor = [UIColor piwigoGray];
-	[self hideRightViews];
+	[self hideUploadViews];
+    self.cellDisclosure.hidden = NO;
 }
 
 @end

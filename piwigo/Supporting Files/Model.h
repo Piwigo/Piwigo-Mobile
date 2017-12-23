@@ -29,6 +29,8 @@ typedef enum {
 -(void)saveToDisk;
 +(PHPhotoLibrary*)defaultAssetsLibrary;
 
+@property (nonatomic, assign) BOOL isAppLanguageRTL;
+
 @property (nonatomic, strong) NSString *serverProtocol;
 @property (nonatomic, strong) NSString *serverName;
 @property (nonatomic, strong) NSString *pwgToken;
