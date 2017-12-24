@@ -77,7 +77,9 @@
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"] && [[responseObject objectForKey:@"result"] boolValue])
                       {
                           [Model sharedInstance].username = user;
+                          [[Model sharedInstance] saveToDisk];
                           [Model sharedInstance].hadOpenedSession = YES;
+                          [[Model sharedInstance] saveToDisk];
                           completion(YES, [responseObject objectForKey:@"result"]);
                       }
                       else
@@ -85,6 +87,7 @@
                           // May be this server only uses HTTP authentication
                           if ([Model sharedInstance].performedHTTPauthentication) {
                               [Model sharedInstance].username = user;
+                              [[Model sharedInstance] saveToDisk];
                               [Model sharedInstance].hadOpenedSession = YES;
                               completion(YES, nil);
                           } else {

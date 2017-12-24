@@ -28,7 +28,7 @@
 #import "AlbumData.h"
 #import "NetworkHandler.h"
 #import "ImagesCollection.h"
-#import "KeychainAccess.h"
+#import "SAMKeychain.h"
 
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
@@ -438,22 +438,25 @@
     [policy setValidatesDomainName:NO];
     [dow.sessionManager setSecurityPolicy:policy];
 
-    // Manage servers performing HTTP Authentication
-    NSString *user = [KeychainAccess getLoginUser];
-    if ((user != nil) && ([user length] > 0)) {
-        NSString *password = [KeychainAccess getLoginPassword];
-        [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-            // To remember app recieved anthentication challenge
-            [Model sharedInstance].performedHTTPauthentication = YES;
-            // Supply requested credentials if not provided yet
-            if (challenge.previousFailureCount == 0) {
-                *credential = [NSURLCredential credentialWithUser:user
-                                                         password:password
-                                                      persistence:NSURLCredentialPersistenceForSession];
-            }
+    // Manage servers performing HTTP Basic Access Authentication
+    [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+        
+        // HTTP basic authentification credentials
+        NSString *user = [Model sharedInstance].HttpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        
+        // Supply requested credentials if not provided yet
+        if (challenge.previousFailureCount == 0) {
+            // Trying HTTP credentials…
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
             return NSURLSessionAuthChallengeUseCredential;
-        }];
-    }
+        } else {
+            // HTTP credentials refused!
+            return NSURLSessionAuthChallengeUseCredential;
+        }
+    }];
     
     [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
 					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]

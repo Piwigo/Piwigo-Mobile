@@ -31,12 +31,13 @@ typedef enum {
 
 @property (nonatomic, assign) BOOL isAppLanguageRTL;
 
-@property (nonatomic, strong) NSString *serverProtocol;
-@property (nonatomic, strong) NSString *serverName;
+@property (nonatomic, strong) NSString *serverProtocol;     // => Manages cases where the Piwigo server
+@property (nonatomic, strong) NSString *serverName;         // returns the wrong protocol (http: or https:)
 @property (nonatomic, strong) NSString *pwgToken;
 @property (nonatomic, strong) NSString *language;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *username;
+@property (nonatomic, strong) NSString *HttpUsername;
 @property (nonatomic, strong) NSString *uploadFileTypes;
 @property (nonatomic, assign) BOOL hasAdminRights;
 @property (nonatomic, assign) BOOL usesCommunityPluginV29;

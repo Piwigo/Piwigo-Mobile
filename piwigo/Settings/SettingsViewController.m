@@ -227,7 +227,12 @@ typedef enum {
 			{
 				case 0:
                     cell.leftText = NSLocalizedString(@"settings_server", @"Address");
-					cell.rightText = [Model sharedInstance].serverName;
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
+                        cell.rightText = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+                    } else {
+                        cell.rightText = [Model sharedInstance].serverName;
+                    }
 					break;
 				case 1:
 					cell.leftText = NSLocalizedString(@"settings_username", @"Username");

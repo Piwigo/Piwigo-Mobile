@@ -16,6 +16,7 @@
 #import "SessionService.h"
 #import "Model.h"
 #import "KeychainAccess.h"
+#import "SAMKeychain.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "Reachability.h"
 #import "PhotosFetch.h"
@@ -45,10 +46,37 @@
 	[NSURLCache setSharedURLCache:URLCache];
 	
     // Login ?
+    NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;
-	NSString *user = [KeychainAccess getLoginUser];
-	NSString *password = [KeychainAccess getLoginPassword];
-	if(server.length > 0 || (user.length > 0 && password.length > 0))
+    [SAMKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
+    
+    // Look for credentials if server address provided
+    if (server.length > 0)
+    {
+        // Known acounts for that server?
+        NSArray *accounts = [SAMKeychain accountsForService:server];
+        if ((accounts == nil) || ([accounts count] <= 0))
+        {
+            // No credentials available for that server. And with the old methods?
+            user = [KeychainAccess getLoginUser];
+            password = [KeychainAccess getLoginPassword];
+            
+            // Store credentials with new method if found
+            if (user.length > 0) {
+                [Model sharedInstance].username = user;
+                [[Model sharedInstance] saveToDisk];
+                [SAMKeychain setPassword:password forService:server account:user];
+            }
+        } else {
+            // Credentials available
+            user = [Model sharedInstance].username;
+            if (user.length > 0) {
+                password = [SAMKeychain passwordForService:server account:user];
+            }
+        }
+    }
+    
+    if(server.length > 0 || (user.length > 0 && password.length > 0))
 	{
 		[self.loginVC launchLogin];
 	}
@@ -150,7 +178,7 @@
     // Should we reopen the session ?
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
     NSString *server = [Model sharedInstance].serverName;
-    NSString *user = [KeychainAccess getLoginUser];
+    NSString *user = [Model sharedInstance].username;
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
         // Let's see…

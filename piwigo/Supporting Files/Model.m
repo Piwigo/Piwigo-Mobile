@@ -28,7 +28,10 @@
         UIUserInterfaceLayoutDirection direction = [UIApplication sharedApplication].userInterfaceLayoutDirection;
         instance.isAppLanguageRTL = (direction == UIUserInterfaceLayoutDirectionRightToLeft);
 		
-		instance.serverProtocol = @"https://";
+        instance.serverProtocol = @"https://";
+        instance.serverName = @"";
+        instance.username = @"";
+        instance.HttpUsername = @"";
 		instance.imagesPerPage = 100;
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
@@ -171,6 +174,8 @@
         self.displayImageTitles = modelData.displayImageTitles;
         self.compressImageOnUpload = modelData.compressImageOnUpload;
         self.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
+        self.username = modelData.username;
+        self.HttpUsername = modelData.HttpUsername;
 	}
 }
 
@@ -203,6 +208,8 @@
     [saveObject addObject:@(self.displayImageTitles)];
     [saveObject addObject:[NSNumber numberWithBool:self.compressImageOnUpload]];    // Added to v2.1.5
     [saveObject addObject:[NSNumber numberWithBool:self.deleteImageAfterUpload]];
+    [saveObject addObject:self.username];                                           // Added to v2.1.6
+    [saveObject addObject:self.HttpUsername];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -288,6 +295,16 @@
         self.deleteImageAfterUpload = [[savedData objectAtIndex:16] boolValue];
     } else {
         self.deleteImageAfterUpload = NO;
+    }
+    if (savedData.count > 17) {
+        self.username = [savedData objectAtIndex:17];
+    } else {
+        self.username = @"";
+    }
+    if (savedData.count > 18) {
+        self.HttpUsername = [savedData objectAtIndex:18];
+    } else {
+        self.HttpUsername = @"";
     }
 	return self;
 }

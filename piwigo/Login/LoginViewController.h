@@ -10,12 +10,11 @@
 
 #import "PiwigoButton.h"
 #import "PiwigoTextField.h"
-#import "ServerField.h"
 
 @interface LoginViewController : UIViewController
 
 @property (nonatomic, strong) UIImageView *piwigoLogo;
-@property (nonatomic, strong) ServerField *serverTextField;
+@property (nonatomic, strong) PiwigoTextField *serverTextField;
 @property (nonatomic, strong) PiwigoTextField *userTextField;
 @property (nonatomic, strong) PiwigoTextField *passwordTextField;
 @property (nonatomic, strong) PiwigoButton *loginButton;

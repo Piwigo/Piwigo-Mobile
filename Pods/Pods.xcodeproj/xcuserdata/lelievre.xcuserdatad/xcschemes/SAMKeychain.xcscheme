@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "43D4904DF594137A279871AE44F319BC"
-               BuildableName = "libPods-piwigo.a"
-               BlueprintName = "Pods-piwigo"
+               BlueprintIdentifier = "E375EC282BC4B280A1426C990A7ADDAA"
+               BuildableName = "libSAMKeychain.a"
+               BlueprintName = "SAMKeychain"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,9 +47,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "43D4904DF594137A279871AE44F319BC"
-            BuildableName = "libPods-piwigo.a"
-            BlueprintName = "Pods-piwigo"
+            BlueprintIdentifier = "E375EC282BC4B280A1426C990A7ADDAA"
+            BuildableName = "libSAMKeychain.a"
+            BlueprintName = "SAMKeychain"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

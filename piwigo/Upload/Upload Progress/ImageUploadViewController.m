@@ -280,10 +280,10 @@
     
     if (iCloudProgress < 0) {
         [self updateImage:image withProgress:uploadProgress];
-        NSLog(@"ImageUploadViewController[imageProgress]: %.2f", uploadProgress);
+//        NSLog(@"ImageUploadViewController[imageProgress]: %.2f", uploadProgress);
     } else {
         [self updateImage:image withProgress:((iCloudProgress + uploadProgress) / 2.0)];
-        NSLog(@"ImageUploadViewController[imageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
+//        NSLog(@"ImageUploadViewController[imageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
     }
 }
 

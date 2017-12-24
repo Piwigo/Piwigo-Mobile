@@ -9,6 +9,7 @@ target 'piwigo' do
   pod 'AFNetworking', '~> 3.1'
   pod 'MBProgressHUD', '~> 1.0.0'
   pod 'MGSwipeTableCell'
+  pod 'SAMKeychain'
 
   target 'piwigoTests' do
     inherit! :search_paths

@@ -121,7 +121,7 @@
     CGFloat totalBatchProgress = (self.totalUploadedImages / fmax(1.0, (CGFloat)self.maxImages)) + totalProgressForThisImage;
 
     [self.uploadProgress setProgress:totalBatchProgress animated:YES];
-    NSLog(@"ImageUploadProgressView[imageProgress]: %.2f", totalBatchProgress);
+//    NSLog(@"ImageUploadProgressView[imageProgress]: %.2f", totalBatchProgress);
 
 	if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:)])
 	{

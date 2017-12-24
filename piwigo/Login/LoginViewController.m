@@ -9,7 +9,7 @@
 #import "LoginViewController.h"
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
-#import "KeychainAccess.h"
+#import "SAMKeychain.h"
 #import "Model.h"
 #import "SessionService.h"
 #import "ClearCache.h"
@@ -21,6 +21,8 @@
 //#endif
 
 @interface LoginViewController () <UITextFieldDelegate>
+
+@property (nonatomic, strong) UIAlertAction *httpLoginAction;
 
 @end
 
@@ -39,21 +41,21 @@
 		self.piwigoLogo.contentMode = UIViewContentModeScaleAspectFit;
 		[self.view addSubview:self.piwigoLogo];
 		
-		self.serverTextField = [ServerField new];
+		self.serverTextField = [PiwigoTextField new];
 		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.serverTextField.textField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"Server");
-		self.serverTextField.textField.text = [Model sharedInstance].serverName;
-		self.serverTextField.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.serverTextField.textField.autocorrectionType = UITextAutocorrectionTypeNo;
-		self.serverTextField.textField.keyboardType = UIKeyboardTypeURL;
-		self.serverTextField.textField.returnKeyType = UIReturnKeyNext;
-		self.serverTextField.textField.delegate = self;
+		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"Server");
+		self.serverTextField.text = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+		self.serverTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+		self.serverTextField.keyboardType = UIKeyboardTypeURL;
+		self.serverTextField.returnKeyType = UIReturnKeyNext;
+		self.serverTextField.delegate = self;
 		[self.view addSubview:self.serverTextField];
 				
 		self.userTextField = [PiwigoTextField new];
 		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username (optional)");
-		self.userTextField.text = [KeychainAccess getLoginUser];
+		self.userTextField.text = [Model sharedInstance].username;
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.userTextField.returnKeyType = UIReturnKeyNext;
@@ -64,7 +66,7 @@
 		self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
-		self.passwordTextField.text = [KeychainAccess getLoginPassword];
+		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
 		self.passwordTextField.delegate = self;
 		[self.view addSubview:self.passwordTextField];
@@ -98,7 +100,7 @@
 #endif
 
     // Check server address and cancel login if address not provided
-    if(self.serverTextField.textField.text.length <= 0)
+    if(self.serverTextField.text.length <= 0)
     {
         UIAlertController* alert = [UIAlertController
                 alertControllerWithTitle:NSLocalizedString(@"loginEmptyServer_title", @"Enter a Web Address")
@@ -121,19 +123,14 @@
         [self showLoadingWithSubtitle:NSLocalizedString(@"login_connecting", @"Connecting")];
     });
     
-    // Clean server address and save it to disk
-    NSString *cleanServerString = [self cleanServerString:self.serverTextField.textField.text];
-    self.serverTextField.textField.text = cleanServerString;
+    // Save server address and username to disk
+    [self saveToDiskServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
     
-    [Model sharedInstance].serverName = cleanServerString;
-    [Model sharedInstance].serverProtocol = [self.serverTextField getProtocolString];
-    [[Model sharedInstance] saveToDisk];
-    
-    // If username exists, save credentials in Keychain (needed before login if using HTTP Authentication)
+    // Save credentials in Keychain (needed before login when using HTTP Authentication)
     if(self.userTextField.text.length > 0)
     {
         // Store credentials in Keychain
-        [KeychainAccess storeLoginInKeychainForUser:self.userTextField.text andPassword:self.passwordTextField.text];
+        [SAMKeychain setPassword:self.passwordTextField.text forService:[Model sharedInstance].serverName account:self.userTextField.text];
     }
 
     // Collect list of methods supplied by Piwigo server
@@ -150,9 +147,65 @@
         }
         
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        // Display error message
-        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
+        // If Piwigo server requires HTTP basic authentication, ask credentials
+        if ([Model sharedInstance].performedHTTPauthentication){
+            // Without prior knowledge, the app already tried Piwigo credentials
+            // But unsuccessfully, so must now request HTTP credentials
+            [self requestHttpCredentialsAfterError:[error localizedDescription]];
+        } else {
+            // Display error message
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
+        }
     }];
+}
+
+-(void)requestHttpCredentialsAfterError:(NSString *)error
+{
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"loginHTTP_title", @"HTTP Credentials")
+                                message:NSLocalizedString(@"loginHTTP_message", @"HTTP basic authentification is required by the Piwigo server:")
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull userTextField) {
+        userTextField.placeholder = NSLocalizedString(@"loginHTTPuser_placeholder", @"username");
+        userTextField.clearButtonMode = UITextFieldViewModeAlways;
+        userTextField.keyboardType = UIKeyboardTypeDefault;
+        userTextField.returnKeyType = UIReturnKeyContinue;
+        userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        userTextField.delegate = self;
+    }];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull pwdTextField) {
+        pwdTextField.placeholder = NSLocalizedString(@"loginHTTPpwd_placeholder", @"password");
+        pwdTextField.clearButtonMode = UITextFieldViewModeAlways;
+        pwdTextField.keyboardType = UIKeyboardTypeDefault;
+        pwdTextField.returnKeyType = UIReturnKeyContinue;
+        pwdTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        pwdTextField.delegate = self;
+    }];
+
+    UIAlertAction* cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {
+                                       // Stop logging in action, display error message
+                                       [self loggingInConnectionError:error];
+                                   }];
+    
+    self.httpLoginAction = [UIAlertAction
+                              actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
+                              style:UIAlertActionStyleDefault
+                              handler:^(UIAlertAction * action) {
+                                  // Store credentials
+                                  [Model sharedInstance].HttpUsername = [alert.textFields objectAtIndex:0].text;
+                                  [SAMKeychain setPassword:[alert.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:[alert.textFields objectAtIndex:0].text];
+                                  // Try logging in with new HTTP credentials
+                                  [self launchLogin];
+                              }];
+    
+    [alert addAction:cancelAction];
+    [alert addAction:self.httpLoginAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)performLogin
@@ -185,7 +238,7 @@
 									 else
 									 {
                                          // Don't keep credentials
-                                         [KeychainAccess resetKeychain];
+                                         [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:self.userTextField.text];
 
                                          // Session could not be re-opened
                                          [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server"))];
@@ -198,8 +251,9 @@
 	else     // No username, get only server status
 	{
         // Reset keychain and credentials
+        [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
         [Model sharedInstance].username = @"";
-        [KeychainAccess resetKeychain];
+        [[Model sharedInstance] saveToDisk];
 
         // Check Piwigo version, get token, available sizes, etc.
         [self getCommunityStatusAtFirstLogin:YES];
@@ -383,8 +437,8 @@
     });
 
     // Perform login
-    NSString *user = [KeychainAccess getLoginUser];
-    NSString *password = [KeychainAccess getLoginPassword];
+    NSString *user = [Model sharedInstance].username;
+    NSString *password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
     [SessionService performLoginWithUser:user
                              andPassword:password
                             onCompletion:^(BOOL result, id response) {
@@ -537,9 +591,31 @@
 
 #pragma mark -- UITextField Delegate Methods
 
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    // Disable HTTP login action
+    [self.httpLoginAction setEnabled:NO];
+    return YES;
+}
+
+-(BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    // Disable HTTP login action
+    [self.httpLoginAction setEnabled:NO];
+    return YES;
+}
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    // Enable Add Category action if album name is non null
+    NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    [self.httpLoginAction setEnabled:(finalString.length >= 1)];
+    return YES;
+}
+
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-	if(textField == self.serverTextField.textField) {
+	if(textField == self.serverTextField) {
 		[self.userTextField becomeFirstResponder];
 	} else if (textField == self.userTextField) {
 		[self.passwordTextField becomeFirstResponder];
@@ -573,23 +649,33 @@
 
 #pragma mark -- Utilities
 
--(NSString*)cleanServerString:(NSString*)serverString
+-(void)saveToDiskServerAddress:(NSString *)serverString andUsername:(NSString *)user
 {
-    NSString *server = serverString;
+    [Model sharedInstance].username = user;
     
-    NSRange httpRange = [server rangeOfString:@"http://" options:NSCaseInsensitiveSearch];
+    // remove extrat "/" in server address
+    if ([serverString hasSuffix:@"/"]) {
+        serverString = [serverString substringWithRange:NSMakeRange(0, serverString.length-1)];
+    }
+    
+    // Extract "http://" and set server proptocol
+    NSRange httpRange = [serverString rangeOfString:@"http://" options:NSCaseInsensitiveSearch];
     if(httpRange.location == 0)
     {
-        server = [server substringFromIndex:7];
+        [Model sharedInstance].serverName = [serverString substringFromIndex:7];
+        [Model sharedInstance].serverProtocol = @"http://";
     }
     
-    NSRange httpsRange = [server rangeOfString:@"https://" options:NSCaseInsensitiveSearch];
+    // Extract "https://" and set server proptocol
+    NSRange httpsRange = [serverString rangeOfString:@"https://" options:NSCaseInsensitiveSearch];
     if(httpsRange.location == 0)
     {
-        server = [server substringFromIndex:8];
+        [Model sharedInstance].serverName = [serverString substringFromIndex:8];
+        [Model sharedInstance].serverProtocol = @"https://";
     }
     
-    return server;
+    // Save username, server address and protocol to disk
+    [[Model sharedInstance] saveToDisk];
 }
 
 -(void)moveTextFieldsBy:(NSInteger)amount

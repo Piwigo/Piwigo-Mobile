@@ -92,7 +92,6 @@
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
 		D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */; };
 		D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */; };
-		D8E4D61E1ABD223B0057EB95 /* ServerField.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D61D1ABD223B0057EB95 /* ServerField.m */; };
 		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
 		D8EAC8C71AD773FD00D9D15E /* CategoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */; };
 		D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F113591A9E40EF000EC0A6 /* LoadingView.m */; };
@@ -325,8 +324,6 @@
 		D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryImageSort.m; sourceTree = "<group>"; };
 		D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalAlbumsViewController.h; sourceTree = "<group>"; };
 		D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalAlbumsViewController.m; sourceTree = "<group>"; };
-		D8E4D61C1ABD223B0057EB95 /* ServerField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerField.h; sourceTree = "<group>"; };
-		D8E4D61D1ABD223B0057EB95 /* ServerField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerField.m; sourceTree = "<group>"; };
 		D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
 		D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
 		D8EAC8C51AD773FD00D9D15E /* CategoryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListViewController.h; sourceTree = "<group>"; };
@@ -687,8 +684,6 @@
 				D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */,
 				D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */,
 				D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */,
-				D8E4D61C1ABD223B0057EB95 /* ServerField.h */,
-				D8E4D61D1ABD223B0057EB95 /* ServerField.m */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -1063,7 +1058,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh",
-				"${PODS_ROOT}/iRate/iRate/iRate.bundle",
+				"${PODS_ROOT}/SAMKeychain/Support/SAMKeychain.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1205,7 +1200,6 @@
 				D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */,
 				D8172E201AB7D2EA00271DB0 /* AllCategoriesViewController.m in Sources */,
 				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
-				D8E4D61E1ABD223B0057EB95 /* ServerField.m in Sources */,
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
 				D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,

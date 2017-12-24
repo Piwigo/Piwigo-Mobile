@@ -12,7 +12,7 @@
 #import "PiwigoAlbumData.h"
 #import "CategoriesData.h"
 #import "PiwigoTagData.h"
-#import "KeychainAccess.h"
+#import "SAMKeychain.h"
 
 NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
@@ -257,20 +257,25 @@ NSString * const kGetImageOrderDescending = @"desc";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
 
-    // Manage servers performing HTTP Authentication
-    NSString *user = [KeychainAccess getLoginUser];
-    if ((user != nil) && ([user length] > 0)) {
-        NSString *password = [KeychainAccess getLoginPassword];
-        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-            // Supply requested credentials if not provided yet
-            if (challenge.previousFailureCount == 0) {
-                *credential = [NSURLCredential credentialWithUser:user
-                                                         password:password
-                                                      persistence:NSURLCredentialPersistenceForSession];
-            }
+    // Manage servers performing HTTP Basic Access Authentication
+    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+        
+        // HTTP basic authentification credentials
+        NSString *user = [Model sharedInstance].HttpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        
+        // Supply requested credentials if not provided yet
+        if (challenge.previousFailureCount == 0) {
+            // Trying HTTP credentials…
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
             return NSURLSessionAuthChallengeUseCredential;
-        }];
-    }
+        } else {
+            // HTTP credentials refused!
+            return NSURLSessionAuthChallengeUseCredential;
+        }
+    }];
     
     // Download and save image
     NSString *fileName = image.fileName;
@@ -314,21 +319,26 @@ NSString * const kGetImageOrderDescending = @"desc";
     [policy setValidatesDomainName:NO];
     [manager setSecurityPolicy:policy];
 
-    // Manage servers performing HTTP Authentication
-    NSString *user = [KeychainAccess getLoginUser];
-    if ((user != nil) && ([user length] > 0)) {
-        NSString *password = [KeychainAccess getLoginPassword];
-        [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-            // Supply requested credentials if not provided yet
-            if (challenge.previousFailureCount == 0) {
-                *credential = [NSURLCredential credentialWithUser:user
-                                                         password:password
-                                                      persistence:NSURLCredentialPersistenceForSession];
-            }
+    // Manage servers performing HTTP Basic Access Authentication
+    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+        
+        // HTTP basic authentification credentials
+        NSString *user = [Model sharedInstance].HttpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        
+        // Supply requested credentials if not provided yet
+        if (challenge.previousFailureCount == 0) {
+            // Trying HTTP credentials…
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
             return NSURLSessionAuthChallengeUseCredential;
-        }];
-    }
-    
+        } else {
+            // HTTP credentials refused!
+            return NSURLSessionAuthChallengeUseCredential;
+        }
+    }];
+
     // Download and save video
     NSURLSessionDownloadTask *task =
             [manager downloadTaskWithRequest:request
