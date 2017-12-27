@@ -26,9 +26,10 @@ Your Piwigo server generates a poster of each uploaded video with [FFmpeg](http:
 
 ## Translations
 Piwigo Mobile is available from the [App Store](https://itunes.apple.com/app/piwigo/id472225196?mt=8) in the following languages:
-- [Dutch](https://crowdin.com/project/piwigo-mobile/nl#) and [Indonesian](https://crowdin.com/project/piwigo-mobile/id#) since [v2.1.5](https://github.com/Piwigo/Piwigo-Mobile/milestone/9?closed=1),
-- [Swedish](https://crowdin.com/project/piwigo-mobile/sv-SE#) since [v2.1.4](https://github.com/Piwigo/Piwigo-Mobile/milestone/10?closed=1),
-- [Danish](https://crowdin.com/project/piwigo-mobile/da#), [English (U.S.)](https://crowdin.com/project/piwigo-mobile), [French](https://crowdin.com/project/piwigo-mobile/fr#) and [Polish](https://crowdin.com/project/piwigo-mobile/pl#) since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/milestone/5?closed=1).
+- [Arabic](https://crowdin.com/project/piwigo-mobile/ar#) since [v2.1.6](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1.6),
+- [Dutch](https://crowdin.com/project/piwigo-mobile/nl#) and [Indonesian](https://crowdin.com/project/piwigo-mobile/id#) since [v2.1.5](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1.5),
+- [Swedish](https://crowdin.com/project/piwigo-mobile/sv-SE#) since [v2.1.4](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1.4),
+- [Danish](https://crowdin.com/project/piwigo-mobile/da#), [English (U.S.)](https://crowdin.com/project/piwigo-mobile), [French](https://crowdin.com/project/piwigo-mobile/fr#) and [Polish](https://crowdin.com/project/piwigo-mobile/pl#) since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1).
 
 Help us to translate Piwigo Mobile on [Crowdin](https://crowdin.com/project/piwigo-mobile)!
 
