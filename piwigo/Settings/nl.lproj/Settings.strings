@@ -1,0 +1,18 @@
+
+/* Class = "UILabel"; text = "https://www.example.com"; ObjectID = "J5V-aV-OXr"; */
+"J5V-aV-OXr.text" = "https://www.example.com";
+
+/* Class = "UILabel"; text = "Address"; ObjectID = "O6E-Gd-VFc"; */
+"O6E-Gd-VFc.text" = "Address";
+
+/* Class = "UILabel"; text = "Username"; ObjectID = "SfK-HE-aGn"; */
+"SfK-HE-aGn.text" = "Username";
+
+/* Class = "UITableViewSection"; headerTitle = "Piwigo Server"; ObjectID = "g4W-bQ-TOu"; */
+"g4W-bQ-TOu.headerTitle" = "Piwigo Server";
+
+/* Class = "UILabel"; text = "username"; ObjectID = "olf-WM-eY6"; */
+"olf-WM-eY6.text" = "username";
+
+/* Class = "UITableViewController"; title = "Preferences"; ObjectID = "zJ6-5i-RZp"; */
+"zJ6-5i-RZp.title" = "Preferences";

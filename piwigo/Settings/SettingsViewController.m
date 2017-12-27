@@ -217,7 +217,11 @@ typedef enum {
     switch(section)
     {
         case SettingsSectionLogout:
-            footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
+            if (([Model sharedInstance].uploadFileTypes == nil) || ([[Model sharedInstance].uploadFileTypes length] <= 0)) {
+                footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken. Try logging in again.")];
+            } else {
+                footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
+            }
             break;
     }
     

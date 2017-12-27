@@ -48,7 +48,6 @@
 "login_userPlaceholder" = "Username (optional)";
 "login_passwordPlaceholder" = "Password (optional)";
 "login_loggingIn" = "Logging In...";
-"login_protocolDescription" = "(tap to change)";
 "login_connecting" = "Connecting";
 "login_newSession" = "Opening Session";
 "login_communityParameters" = "Community Parameters";
