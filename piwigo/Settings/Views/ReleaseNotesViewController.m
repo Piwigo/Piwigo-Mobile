@@ -73,7 +73,7 @@
         [self.view addSubview:self.textView];
         
         // Release notes attributed string
-        NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:@"\n\n\n\n\n\n"];
+        NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:@"\n\n\n\n\n"];
                 
         // Release 2.1.6 — Bundle string
         NSString *v216String = NSLocalizedStringFromTableInBundle(@"v2.1.6_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.6 Release Notes text");

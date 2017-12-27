@@ -72,7 +72,7 @@
 		[self.view addSubview:self.textView];
 		
         // Release notes attributed string
-        NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"\n\n\n\n\n\n"];
+        NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"\n\n\n\n\n"];
 
         // Translators — Bundle string
         NSAttributedString *translatorsString = [[NSAttributedString alloc] initWithString:NSLocalizedStringFromTableInBundle(@"translators_text", @"About", [NSBundle mainBundle], @"Translators text")];
@@ -116,6 +116,13 @@
         NSMutableAttributedString *uiclAttributedString = [[NSMutableAttributedString alloc] initWithString:uiclString];
         [uiclAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:uiclRange];
         [aboutAttributedString appendAttributedString:uiclAttributedString];
+        
+        // SAMKeychain Licence — Bundle string
+        NSString *samString = NSLocalizedStringFromTableInBundle(@"licenceSAM_text", @"About", [NSBundle mainBundle], @"SAMKeychain licence text");
+        NSRange samRange = NSMakeRange(0, [samString rangeOfString:@"\n"].location);
+        NSMutableAttributedString *samAttributedString = [[NSMutableAttributedString alloc] initWithString:samString];
+        [samAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:samRange];
+        [aboutAttributedString appendAttributedString:samAttributedString];
         
         self.textView.attributedText = aboutAttributedString;
         self.textView.editable = NO;

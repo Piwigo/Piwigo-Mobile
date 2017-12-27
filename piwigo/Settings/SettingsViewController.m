@@ -44,6 +44,7 @@ typedef enum {
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSArray *headerHeights;
+@property (nonatomic, strong) NSArray *footerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
 @property (nonatomic, strong) UIView *darkenView;
@@ -61,15 +62,24 @@ typedef enum {
 		self.view.backgroundColor = [UIColor piwigoGray];
         
         self.headerHeights = @[
-							   @40.0,
-							   @0.01,
-							   @30.0,
-							   @30.0,
-							   @30.0,
-							   @30.0
+							   @44.0,
+							   @0.0,
+							   @44.0,
+							   @44.0,
+							   @44.0,
+							   @44.0
 							   ];
 		
-		self.settingsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        self.footerHeights = @[
+                               @12.0,
+                               @44.0,
+                               @0.0,
+                               @0.0,
+                               @0.0,
+                               @0.0
+                               ];
+
+        self.settingsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.settingsTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.settingsTableView.backgroundColor = [UIColor piwigoGray];
 		self.settingsTableView.delegate = self;
@@ -129,7 +139,7 @@ typedef enum {
 	}
 }
 
-#pragma mark -- UITableView Methods, headers
+#pragma mark -- UITableView Methods, headers & footers
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -143,17 +153,20 @@ typedef enum {
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, [self.headerHeights[section] floatValue])];
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, fmin([self.headerHeights[section] floatValue], 36.0))];
     header.backgroundColor = [UIColor clearColor];
     
-    CGRect labelFrame = header.frame;
-    labelFrame.origin.x += 15 * ([Model sharedInstance].isAppLanguageRTL ? -1.0 : 1.0);
-    
-    UILabel *headerLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
     headerLabel.textColor = [UIColor piwigoWhiteCream];
     [header addSubview:headerLabel];
-    
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"header" : headerLabel}]];
+
     switch(section)
     {
         case SettingsSectionServer:
@@ -176,34 +189,69 @@ typedef enum {
     return header;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return [self.footerHeights[section] floatValue];
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, [self.footerHeights[section] floatValue])];
+    footer.backgroundColor = [UIColor clearColor];
+    
+    UILabel *footerLabel = [UILabel new];
+    footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    footerLabel.font = [UIFont piwigoFontSmall];
+    footerLabel.textColor = [UIColor piwigoWhiteCream];
+    footerLabel.textAlignment = NSTextAlignmentCenter;
+    footerLabel.numberOfLines = 0;
+    footerLabel.adjustsFontSizeToFitWidth = NO;
+    footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [footer addSubview:footerLabel];
+    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
+    [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"footer" : footerLabel}]];
+
+    switch(section)
+    {
+        case SettingsSectionLogout:
+            footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
+            break;
+    }
+    
+    return footer;
+}
+
 #pragma mark -- UITableView Methods, rows
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger nberOfSection = 0;
+    NSInteger nberOfRows = 0;
     switch(section)
     {
         case SettingsSectionServer:
-            nberOfSection = 2;
+            nberOfRows = 2;
             break;
         case SettingsSectionLogout:
-            nberOfSection = 1;
+            nberOfRows = 1;
             break;
         case SettingsSectionGeneral:
-            nberOfSection = 5;
+            nberOfRows = 5;
             break;
         case SettingsSectionImageUpload:
-            nberOfSection = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
+            nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
                                 ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
             break;
         case SettingsSectionCache:
-            nberOfSection = 2;
+            nberOfRows = 2;
             break;
         case SettingsSectionAbout:
-            nberOfSection = 5;
+            nberOfRows = 5;
             break;
     }
-    return nberOfSection;
+    return nberOfRows;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
