@@ -54,6 +54,10 @@
 "login_communityParameters" = "Community Parameter";
 "login_serverParameters" = "Piwigo Parameter";
 "login_connectionChanged" = "Verbindung geändert!";
+"loginHTTP_title" = "HTTP Credentials";
+"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTPuser_placeholder" = "Benutzername";
+"loginHTTPpwd_placeholder" = "Passwort";
 
 // Login — Errors
 "serverMethodsError_title" = "Unbekannte Methoden";
@@ -330,6 +334,7 @@
 "settings_username" = "Benutzername";
 "settings_notLoggedIn" = " -Nicht eingeloggt- ";
 "settings_logout" = "Abmelden";
+"settingsFooter_formats" = "The server accepts the following file types";
 
 // Settings — General
 "settingsHeader_general" = "Allgemeine Einstellungen";

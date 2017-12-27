@@ -54,6 +54,10 @@
 "login_communityParameters" = "Community parametre";
 "login_serverParameters" = "Piwigo Parametre";
 "login_connectionChanged" = "Forbindelsen ændret!";
+"loginHTTP_title" = "HTTP Credentials";
+"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTPuser_placeholder" = "Brugernavn";
+"loginHTTPpwd_placeholder" = "Adgangskode";
 
 // Login — Errors
 "serverMethodsError_title" = "Ukendt Protokol";
@@ -330,6 +334,7 @@
 "settings_username" = "Brugernavn";
 "settings_notLoggedIn" = " - Ikke logget ind - ";
 "settings_logout" = "Log ud";
+"settingsFooter_formats" = "The server accepts the following file types";
 
 // Settings — General
 "settingsHeader_general" = "Generelle Indstillinger";

@@ -54,6 +54,10 @@
 "login_communityParameters" = "Communityparametrar";
 "login_serverParameters" = "Piwigoparametrar";
 "login_connectionChanged" = "Anslutningen ändrad!";
+"loginHTTP_title" = "HTTP Credentials";
+"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTPuser_placeholder" = "Användarnamn";
+"loginHTTPpwd_placeholder" = "Lösenord";
 
 // Login — Errors
 "serverMethodsError_title" = "Okända metoder";
@@ -330,6 +334,7 @@
 "settings_username" = "Användarnamn";
 "settings_notLoggedIn" = " -Inte inloggad- ";
 "settings_logout" = "Logga ut";
+"settingsFooter_formats" = "The server accepts the following file types";
 
 // Settings — General
 "settingsHeader_general" = "Allmänna inställningar";

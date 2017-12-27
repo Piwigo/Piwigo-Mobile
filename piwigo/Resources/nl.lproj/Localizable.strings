@@ -54,6 +54,10 @@
 "login_communityParameters" = "Community Parameters";
 "login_serverParameters" = "Piwigo parameters";
 "login_connectionChanged" = "Verbinding gewijzigd!";
+"loginHTTP_title" = "HTTP Credentials";
+"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTPuser_placeholder" = "Gebruikersnaam";
+"loginHTTPpwd_placeholder" = "Password";
 
 // Login — Errors
 "serverMethodsError_title" = "Onbekende methoden";
@@ -330,6 +334,7 @@
 "settings_username" = "Gebruikersnaam";
 "settings_notLoggedIn" = " - Niet aangemeld - ";
 "settings_logout" = "Afmelden";
+"settingsFooter_formats" = "The server accepts the following file types";
 
 // Settings — General
 "settingsHeader_general" = "Algemene instellingen";

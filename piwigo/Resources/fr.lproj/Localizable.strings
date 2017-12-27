@@ -54,6 +54,10 @@
 "login_communityParameters" = "Paramètres Community";
 "login_serverParameters" = "Paramètres Piwigo";
 "login_connectionChanged" = "Connexion Modifiée !";
+"loginHTTP_title" = "Identification HTTP";
+"loginHTTP_message" = "L'authentification HTTP est requise par le serveur Piwigo:";
+"loginHTTPuser_placeholder" = "Identifiant";
+"loginHTTPpwd_placeholder" = "Mot de Passe";
 
 // Login — Errors
 "serverMethodsError_title" = "Méthodes Inconnues";
@@ -330,6 +334,7 @@
 "settings_username" = "Identifiant";
 "settings_notLoggedIn" = " - Non Connecté - ";
 "settings_logout" = "Déconnexion";
+"settingsFooter_formats" = "Le serveur accepte les types de fichiers suivants";
 
 // Settings — General
 "settingsHeader_general" = "Paramètres Généraux";

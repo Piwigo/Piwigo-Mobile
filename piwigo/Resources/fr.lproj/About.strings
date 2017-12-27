@@ -22,4 +22,6 @@
 
 "licenceMGSTC_text" = "MGSwipeTableCell\n\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro\n________________________________________\n\n";
 
-"licenceUICL_text" = "UICountingLabel\n\nThe MIT License (MIT)\n\nCopyright © 2013 Tim Gostony";
+"licenceUICL_text" = "UICountingLabel\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2013 Tim Gostony\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+
+"licenceSAM_text" = "SAMKeychain\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2010-2016 Sam Soffes\n‎(http‎:‎/‎/soff.es‎)";

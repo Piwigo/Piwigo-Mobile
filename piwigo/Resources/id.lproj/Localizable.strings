@@ -54,6 +54,10 @@
 "login_communityParameters" = "Parameter Komunitas";
 "login_serverParameters" = "Parameter Piwigo";
 "login_connectionChanged" = "Koneksi diubah!";
+"loginHTTP_title" = "HTTP Credentials";
+"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTPuser_placeholder" = "Nama Pengguna";
+"loginHTTPpwd_placeholder" = "Kata sandi";
 
 // Login — Errors
 "serverMethodsError_title" = "Metode Tidak Diketahui";
@@ -330,6 +334,7 @@
 "settings_username" = "Nama Pengguna";
 "settings_notLoggedIn" = " - Tidak Masuk - ";
 "settings_logout" = "Keluar";
+"settingsFooter_formats" = "The server accepts the following file types";
 
 // Settings — General
 "settingsHeader_general" = "Pengaturan Umum";

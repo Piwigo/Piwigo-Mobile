@@ -62,16 +62,16 @@ typedef enum {
 		self.view.backgroundColor = [UIColor piwigoGray];
         
         self.headerHeights = @[
-							   @44.0,
+							   @50.0,
 							   @0.0,
-							   @44.0,
-							   @44.0,
-							   @44.0,
-							   @44.0
+							   @50.0,
+							   @50.0,
+							   @50.0,
+							   @50.0
 							   ];
 		
         self.footerHeights = @[
-                               @12.0,
+                               @15.0,
                                @44.0,
                                @0.0,
                                @0.0,

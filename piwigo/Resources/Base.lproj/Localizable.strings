@@ -56,8 +56,8 @@
 "login_connectionChanged" = "Connection Changed!";
 "loginHTTP_title" = "HTTP Credentials";
 "loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
-"loginHTTPuser_placeholder" = "username";
-"loginHTTPpwd_placeholder" = "password";
+"loginHTTPuser_placeholder" = "Username";
+"loginHTTPpwd_placeholder" = "Password";
 
 // Login — Errors
 "serverMethodsError_title" = "Unknown Methods";

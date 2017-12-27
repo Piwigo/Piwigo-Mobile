@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.6_text" = "Version 2.1.6\n\n• Traduction en Arabe\n________________________________________\n\n";
+"v2.1.6_text" = "Version 2.1.6\n\n• Traduction en Arabe\n• Amélioration de la gestion de l'authentification HTTP\n________________________________________\n\n";
 
 "v2.1.5_text" = "Version 2.1.5\n21 Décembre 2017\n\n• Ajoute la possibilité d'annuler des transferts vers Piwigo\n• Ajoute une option pour effacer les images après un transfert\n• Ajoute la compatibilité avec l'option Optimiser le Stockage (iCloud)\n• Préserve si possible le format d'image après redimensionnement\n• Traductions en Danois et en Indonésien\n• Règle la perte partielle des métadonnées pendant un téléchargement\n• Règle le remplacement du format PNG par JPEG au cours d'un transfert\n• Règle quelques problèmes rencontrés avec iOS 11 et l'iPhone X\n• Règle quelques bugs mineurs\n• Modernisation du code\n________________________________________\n\n";
 
