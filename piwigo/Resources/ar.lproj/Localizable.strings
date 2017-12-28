@@ -54,8 +54,8 @@
 "login_communityParameters" = "المعلمات Community";
 "login_serverParameters" = "معايير Piwigo";
 "login_connectionChanged" = "تم تغيير الاتصال!";
-"loginHTTP_title" = "HTTP Credentials";
-"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTP_title" = "بيانات اعتماد HTTP";
+"loginHTTP_message" = "مطلوب مصادقة الوصول الأساسية من قبل خادم Piwigo:";
 "loginHTTPuser_placeholder" = "اسم المستخدم";
 "loginHTTPpwd_placeholder" = "كلمة المرور";
 
@@ -334,7 +334,7 @@
 "settings_username" = "اسم المستخدم";
 "settings_notLoggedIn" = " - لم تقم بتسجيل الدخول - ";
 "settings_logout" = "الخروج";
-"settingsFooter_formats" = "The server accepts the following file types";
+"settingsFooter_formats" = "يقبل الخادم أنواع الملفات التالية";
 
 // Settings — General
 "settingsHeader_general" = "الاعدادات العامة";

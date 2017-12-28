@@ -54,8 +54,8 @@
 "login_communityParameters" = "Community parametre";
 "login_serverParameters" = "Piwigo Parametre";
 "login_connectionChanged" = "Forbindelsen ændret!";
-"loginHTTP_title" = "HTTP Credentials";
-"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTP_title" = "HTTP legitimationsoplysninger";
+"loginHTTP_message" = "Login kræves af Piwigo server:";
 "loginHTTPuser_placeholder" = "Brugernavn";
 "loginHTTPpwd_placeholder" = "Adgangskode";
 
@@ -334,7 +334,7 @@
 "settings_username" = "Brugernavn";
 "settings_notLoggedIn" = " - Ikke logget ind - ";
 "settings_logout" = "Log ud";
-"settingsFooter_formats" = "The server accepts the following file types";
+"settingsFooter_formats" = "Serveren accepterer følgende filtyper";
 
 // Settings — General
 "settingsHeader_general" = "Generelle Indstillinger";
