@@ -19,7 +19,7 @@
 #import "MoveCategoryViewController.h"
 #import "NetworkHandler.h"
 #import "MBProgressHUD.h"
-
+#import "SAMKeychain.h"
 
 @interface AlbumTableViewCell() <UITextFieldDelegate>
 
@@ -94,19 +94,6 @@
         self.cellDisclosure.adjustsFontSizeToFitWidth = NO;
         self.cellDisclosure.minimumScaleFactor = 0.6;
         [self.contentView addSubview:self.cellDisclosure];
-
-//        UIImage *cellDisclosureImg;
-//        if ([Model sharedInstance].isAppLanguageRTL) {
-//            cellDisclosureImg = [UIImage imageNamed:@"cellDisclosureLeft" ];
-//        } else {
-//            cellDisclosureImg = [UIImage imageNamed:@"cellDisclosureRight" ];
-//        }
-//        self.cellDisclosure = [UIImageView new];
-//        self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-//        self.cellDisclosure.image = [cellDisclosureImg imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//        self.cellDisclosure.tintColor = [UIColor piwigoWhiteCream];
-//        self.cellDisclosure.contentMode = UIViewContentModeScaleAspectFit;
-//        [self.contentView addSubview:self.cellDisclosure];
 
         self.numberOfImages = [UILabel new];
 		self.numberOfImages.translatesAutoresizingMaskIntoConstraints = NO;
@@ -184,37 +171,6 @@
                                                                              metrics:nil
                                                                                views:views]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintViewToSameBase:self.cellDisclosure equalToView:self.albumName]];
-//    if ([Model sharedInstance].isAppLanguageRTL) {
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-//                                                                     attribute:NSLayoutAttributeRight
-//                                                                     relatedBy:NSLayoutRelationEqual
-//                                                                        toItem:self.contentView
-//                                                                     attribute:NSLayoutAttributeRight
-//                                                                    multiplier:1.0
-//                                                                      constant:-20]];
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-//                                                                     attribute:NSLayoutAttributeLeft
-//                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
-//                                                                        toItem:self.contentView
-//                                                                     attribute:NSLayoutAttributeLeft
-//                                                                    multiplier:1.0
-//                                                                      constant:40]];
-//    } else {
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-//                                                                     attribute:NSLayoutAttributeLeft
-//                                                                     relatedBy:NSLayoutRelationEqual
-//                                                                        toItem:self.contentView
-//                                                                     attribute:NSLayoutAttributeLeft
-//                                                                    multiplier:1.0
-//                                                                      constant:20]];
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-//                                                                     attribute:NSLayoutAttributeRight
-//                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
-//                                                                        toItem:self.contentView
-//                                                                     attribute:NSLayoutAttributeRight
-//                                                                    multiplier:1.0
-//                                                                      constant:-30]];
-//    }
 	
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[numImages]-[date]-20-|"
 																			 options:kNilOptions
@@ -234,14 +190,6 @@
 																 attribute:NSLayoutAttributeTop
 																multiplier:1.0
 																  constant:-5]];
-	
-//	[self.cellDisclosure addConstraints:[NSLayoutConstraint constraintView:self.cellDisclosure toSize:CGSizeMake(28, 28)]];
-//    if ([Model sharedInstance].isAppLanguageRTL) {
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.cellDisclosure amount:15]];
-//    } else {
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.cellDisclosure amount:15]];
-//    }
-//    [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.cellDisclosure amount:40]];
 }
 
 -(void)imageUpdated
@@ -313,39 +261,59 @@
     {
         __weak typeof(self) weakSelf = self;
         self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
-                                             ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-                                                 if(!imageData.MediumPath)
-                                                 {
-                                                     albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
-                                                 }
-                                                 else
-                                                 {
-                                                     NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
-                                                     
-                                                     // Ensure that SSL certificates won't be rejected
-                                                     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-                                                     [policy setAllowInvalidCertificates:YES];
-                                                     [policy setValidatesDomainName:NO];
-                                                     
-                                                     AFImageDownloader *dow = [AFImageDownloader defaultInstance];
-                                                     [dow.sessionManager setSecurityPolicy:policy];
-                                                     
-                                                     [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
-                                                                                 placeholderImage:[UIImage imageNamed:@"placeholder"]
-                                                                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                                                              albumData.categoryImage = image;
-                                                                                              [weakSelf setupBgWithImage:image];
-                                                                                          } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                 ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                     if(!imageData.MediumPath)
+                     {
+                         albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+                     }
+                     else
+                     {
+                         NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
+                         
+                         // Ensure that SSL certificates won't be rejected
+                         AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+                         [policy setAllowInvalidCertificates:YES];
+                         [policy setValidatesDomainName:NO];
+                         
+                         AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+                         [dow.sessionManager setSecurityPolicy:policy];
+                         
+                         // Manage servers performing HTTP Basic Access Authentication
+                         [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+                             
+                             // HTTP basic authentification credentials
+                             NSString *user = [Model sharedInstance].HttpUsername;
+                             NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+                             
+                             // Supply requested credentials if not provided yet
+                             if (challenge.previousFailureCount == 0) {
+                                 // Trying HTTP credentials…
+                                 *credential = [NSURLCredential credentialWithUser:user
+                                                                          password:password
+                                                                       persistence:NSURLCredentialPersistenceForSession];
+                                 return NSURLSessionAuthChallengeUseCredential;
+                             } else {
+                                 // HTTP credentials refused!
+                                 return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                             }
+                         }];
+
+                         [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
+                                                     placeholderImage:[UIImage imageNamed:@"placeholder"]
+                                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                                  albumData.categoryImage = image;
+                                                                  [weakSelf setupBgWithImage:image];
+                                                              } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-                                                                                              NSLog(@"fail to get imgage for album at %@", imageData.MediumPath);
+                                                                  NSLog(@"fail to get imgage for album at %@", imageData.MediumPath);
 #endif
-                                                                                          }];
-                                                 }
-                                             } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                                              }];
+                     }
+                 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                                                 NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
+                     NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
 #endif
-                                             }];
+                 }];
     }
 }
 

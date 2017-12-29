@@ -6,11 +6,13 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "ImageCollectionViewCell.h"
 #import "PiwigoImageData.h"
 #import "Model.h"
 #import "NetworkHandler.h"
-#import <AFNetworking/AFImageDownloader.h>
+#import "SAMKeychain.h"
 
 @interface ImageCollectionViewCell()
 
@@ -166,6 +168,26 @@
     AFImageDownloader *dow = [AFImageDownloader defaultInstance];
     [dow.sessionManager setSecurityPolicy:policy];
     
+    // Manage servers performing HTTP Basic Access Authentication
+    [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+        
+        // HTTP basic authentification credentials
+        NSString *user = [Model sharedInstance].HttpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        
+        // Supply requested credentials if not provided yet
+        if (challenge.previousFailureCount == 0) {
+            // Trying HTTP credentials…
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        } else {
+            // HTTP credentials refused!
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        }
+    }];
+
     // Download the image of the requested resolution (or get it from the cache)
     switch ([Model sharedInstance].defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:

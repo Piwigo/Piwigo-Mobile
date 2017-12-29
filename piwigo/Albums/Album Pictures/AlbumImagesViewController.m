@@ -454,7 +454,7 @@
             return NSURLSessionAuthChallengeUseCredential;
         } else {
             // HTTP credentials refused!
-            return NSURLSessionAuthChallengeUseCredential;
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
     

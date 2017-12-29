@@ -282,7 +282,8 @@
                                                   persistence:NSURLCredentialPersistenceForSession];
             return NSURLSessionAuthChallengeUseCredential;
         } else {
-            return NSURLSessionAuthChallengeUseCredential;
+            // HTTP credentials refused!
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
     

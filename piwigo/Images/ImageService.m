@@ -273,7 +273,7 @@ NSString * const kGetImageOrderDescending = @"desc";
             return NSURLSessionAuthChallengeUseCredential;
         } else {
             // HTTP credentials refused!
-            return NSURLSessionAuthChallengeUseCredential;
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
     
@@ -335,7 +335,7 @@ NSString * const kGetImageOrderDescending = @"desc";
             return NSURLSessionAuthChallengeUseCredential;
         } else {
             // HTTP credentials refused!
-            return NSURLSessionAuthChallengeUseCredential;
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
 
