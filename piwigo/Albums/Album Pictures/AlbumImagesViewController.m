@@ -681,7 +681,7 @@
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(10, kMarginsSpacing, 40, kMarginsSpacing);
+    return UIEdgeInsetsMake(10, kMarginsSpacing, 10, kMarginsSpacing);
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
@@ -700,11 +700,11 @@
 	{
         // Calculate the optimum image size
         CGFloat size = (CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView];
-        return CGSizeMake(size, size);                                      // Thumbnails
+        return CGSizeMake(size, size);                                 // Thumbnails
 	}
 	else
 	{
-		return CGSizeMake(collectionView.frame.size.width - 20, 188);       // Albums
+		return CGSizeMake(collectionView.frame.size.width, 188);       // Albums
 	}
 }
 
