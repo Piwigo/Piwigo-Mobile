@@ -164,7 +164,7 @@
                                    options:kNilOptions metrics:nil views:views]];
     }
 	
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
+	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textView]-|"
 																	  options:kNilOptions
 																	  metrics:nil
 																		views:views]];
