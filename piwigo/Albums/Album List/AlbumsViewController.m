@@ -36,9 +36,13 @@ static SEL extracted() {
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
-		self.categories = [NSArray new];
+		// Background color
+        self.view.backgroundColor = [UIColor piwigoGray];
+
+        // List of albums
+        self.categories = [NSArray new];
 		
+        // Table view
 		self.albumsTableView = [UITableView new];
 		self.albumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.albumsTableView.backgroundColor = [UIColor clearColor];
@@ -90,20 +94,37 @@ static SEL extracted() {
 		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showCreateCategoryDialog)];
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
+    
+    // No multiple selection
     self.albumsTableView.allowsMultipleSelectionDuringEditing = NO;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoGray]];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
 	
+    // Refresh control
 	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
 	refreshControl.backgroundColor = [UIColor piwigoOrange];
 	refreshControl.tintColor = [UIColor piwigoGray];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
     self.albumsTableView.alwaysBounceVertical = YES;
-	
+
     [self getAlbumData];
 	[self refreshShowingCells];
 }
