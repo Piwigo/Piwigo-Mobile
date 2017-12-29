@@ -29,7 +29,6 @@
 		self.leftLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.leftLabel.font = [UIFont piwigoFontNormal];
 		self.leftLabel.textColor = [UIColor piwigoGray];
-//        self.rightLabel.textAlignment = NSTextAlignmentLeft;
 		self.leftLabel.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.leftLabel];
 		
@@ -37,7 +36,6 @@
 		self.rightLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightLabel.font = [UIFont piwigoFontNormal];
 		self.rightLabel.textColor = [UIColor piwigoBrown];
-//        self.rightLabel.textAlignment = NSTextAlignmentRight;
 		self.rightLabel.adjustsFontSizeToFitWidth = YES;
 		self.rightLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.rightLabel];
@@ -57,7 +55,7 @@
     [self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftLabel]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.rightLabel]];
 	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[left]-[right]-15-|"
+	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[left]-[right]-|"
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];

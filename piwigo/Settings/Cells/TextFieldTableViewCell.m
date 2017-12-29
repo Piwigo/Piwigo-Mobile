@@ -7,6 +7,7 @@
 //
 
 #import "TextFieldTableViewCell.h"
+#import "Model.h"
 
 @interface TextFieldTableViewCell()
 
@@ -34,7 +35,11 @@
 		self.rightTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightTextField.font = [UIFont piwigoFontNormal];
 		self.rightTextField.textColor = [UIColor piwigoBrown];
-        self.rightTextField.textAlignment = NSTextAlignmentRight;
+        if ([Model sharedInstance].isAppLanguageRTL) {
+            self.rightTextField.textAlignment = NSTextAlignmentLeft;
+        } else {
+            self.rightTextField.textAlignment = NSTextAlignmentRight;
+        }
 		[self.contentView addSubview:self.rightTextField];
 		
 		[self setupConstraints];
@@ -51,8 +56,7 @@
 	
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftLabel]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.rightTextField]];
-	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[field]-15-|"
+	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[field]-|"
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];

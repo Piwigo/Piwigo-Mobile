@@ -44,7 +44,6 @@ typedef enum {
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSArray *headerHeights;
-@property (nonatomic, strong) NSArray *footerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
 @property (nonatomic, strong) UIView *darkenView;
@@ -59,29 +58,18 @@ typedef enum {
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
-        
         self.headerHeights = @[
-							   @50.0,
-							   @0.0,
-							   @50.0,
-							   @50.0,
-							   @50.0,
-							   @50.0
+							   @44.0,
+							   @14.0,
+							   @44.0,
+							   @44.0,
+							   @44.0,
+							   @44.0
 							   ];
 		
-        self.footerHeights = @[
-                               @15.0,
-                               @44.0,
-                               @0.0,
-                               @0.0,
-                               @0.0,
-                               @0.0
-                               ];
-
         self.settingsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.settingsTableView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.settingsTableView.backgroundColor = [UIColor piwigoGray];
+        self.settingsTableView.backgroundColor = [UIColor piwigoGray];
 		self.settingsTableView.delegate = self;
 		self.settingsTableView.dataSource = self;
 		[self.view addSubview:self.settingsTableView];
@@ -153,20 +141,13 @@ typedef enum {
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, fmin([self.headerHeights[section] floatValue], 36.0))];
-    header.backgroundColor = [UIColor clearColor];
-    
+    // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
     headerLabel.textColor = [UIColor piwigoWhiteCream];
-    [header addSubview:headerLabel];
-    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
-                                                                   options:kNilOptions
-                                                                   metrics:nil
-                                                                     views:@{@"header" : headerLabel}]];
 
+    // Header text
     switch(section)
     {
         case SettingsSectionServer:
@@ -186,19 +167,57 @@ typedef enum {
             break;
     }
     
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    header.backgroundColor = [UIColor clearColor];
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"header" : headerLabel}]];
+
     return header;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return [self.footerHeights[section] floatValue];
+    // No footer by default (nil => 0 point)
+    NSString *footer;
+
+    // Any footer text?
+    switch(section)
+    {
+        case SettingsSectionLogout:
+            if (([Model sharedInstance].uploadFileTypes == nil) || ([[Model sharedInstance].uploadFileTypes length] <= 0)) {
+                footer = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken. Try logging in again.")];
+            } else {
+                footer = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
+            }
+            break;
+    }
+    
+    // Footer height?
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+//    NSLog(@"=> Rect = (%f x %f) %f width and %f height)", footerRect.origin.x, footerRect.origin.y, footerRect.size.width, ceil(footerRect.size.height));
+
+    return ceil(footerRect.size.height);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, [self.footerHeights[section] floatValue])];
-    footer.backgroundColor = [UIColor clearColor];
-    
+    // Footer label
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     footerLabel.font = [UIFont piwigoFontSmall];
@@ -207,13 +226,8 @@ typedef enum {
     footerLabel.numberOfLines = 0;
     footerLabel.adjustsFontSizeToFitWidth = NO;
     footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [footer addSubview:footerLabel];
-    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
-    [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
-                                                                   options:kNilOptions
-                                                                   metrics:nil
-                                                                     views:@{@"footer" : footerLabel}]];
 
+    // Footer text
     switch(section)
     {
         case SettingsSectionLogout:
@@ -225,6 +239,23 @@ typedef enum {
             break;
     }
     
+    // Footer height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:attributes
+                                                 context:nil];
+
+    // Footer view
+    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
+    footer.backgroundColor = [UIColor clearColor];
+    [footer addSubview:footerLabel];
+    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
+    [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"footer" : footerLabel}]];
+
     return footer;
 }
 

@@ -89,7 +89,7 @@
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"header" : headerLabel}]];

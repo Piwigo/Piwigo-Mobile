@@ -50,7 +50,7 @@
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftLabel]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.cellSwitch]];
 	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[switch]-15-|"
+	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[switch]-|"
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];
