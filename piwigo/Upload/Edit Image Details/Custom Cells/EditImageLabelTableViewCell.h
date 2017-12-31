@@ -13,4 +13,5 @@
 
 -(void)setPrivacyLevel:(kPiwigoPrivacy)privacy;
 -(void)setLeftLabelText:(NSString*)text;
+
 @end

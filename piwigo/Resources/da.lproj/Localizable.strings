@@ -48,7 +48,6 @@
 "login_userPlaceholder" = "Brugernavn (valgfri)";
 "login_passwordPlaceholder" = "Adgangskode (valgfrit)";
 "login_loggingIn" = "Logger ind...";
-"login_protocolDescription" = "(tryk for at ændre)";
 "login_connecting" = "Forbinder";
 "login_newSession" = "Åbner session";
 "login_communityParameters" = "Community parametre";
@@ -411,6 +410,12 @@
 "settings_cacheMemory" = "Hukommelse";
 "settings_placeholderMemory" = "Angiv en Hukommelsescache fra 10 - 200";
 "settings_cacheMegabytes" = "MB";
+
+// Settings — Colors
+"settingsHeader_colors" = "Color Settings";
+"settings_darkPalette" = "Dark Palette";
+"settings_switchPalette" = "Switch Automatically";
+"settings_brightness" = "Brightness";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

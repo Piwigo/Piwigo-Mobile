@@ -22,12 +22,12 @@
 {
 	self = [super init];
 	
-	self.view.backgroundColor = [UIColor piwigoGray];
+	self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 	self.title = NSLocalizedString(@"defaultImageSizeTitle", @"Default Size");
 	
 	self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    self.tableView.backgroundColor = [UIColor clearColor];
 	self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.tableView.backgroundColor = [UIColor piwigoGray];
 	self.tableView.dataSource = self;
 	self.tableView.delegate = self;
 	[self.view addSubview:self.tableView];
@@ -36,27 +36,54 @@
 	return self;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Table view
+    self.tableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.tableView reloadData];
+}
+
+
 #pragma mark - UITableView Methods
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return 64.0;
+    // Header height?
+    NSString *header = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    return ceil(headerRect.size.height + 4.0 + 10.0);
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-	
+    // Header label
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor piwigoOrange];
+	headerLabel.font = [UIFont piwigoFontSmall];
+	headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.textAlignment = NSTextAlignmentCenter;
 	headerLabel.text = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    header.backgroundColor = [UIColor clearColor];
 	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
 	[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
 																   options:kNilOptions
 																   metrics:nil
@@ -79,8 +106,10 @@
 	}
 	
     // Name of the image size
+    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.tintColor = [UIColor piwigoOrange];
     cell.textLabel.font = [UIFont piwigoFontNormal];
-    cell.textLabel.textColor = [UIColor piwigoGray];
+    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
     cell.textLabel.adjustsFontSizeToFitWidth = NO;
     cell.textLabel.text = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)indexPath.row];
     
@@ -95,28 +124,28 @@
     switch (indexPath.row) {
         case kPiwigoImageSizeSquare:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+            cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
             if (![Model sharedInstance].hasSquareSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeThumb:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+            cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
             if (![Model sharedInstance].hasThumbSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXXSmall:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+            cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
             if (![Model sharedInstance].hasXXSmallSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXSmall:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+            cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
             if (![Model sharedInstance].hasXSmallSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
@@ -126,7 +155,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -135,7 +164,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -144,7 +173,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -153,7 +182,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -162,7 +191,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoGrayUltraLight];
+                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -179,25 +208,43 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 100.0;
+    // Footer height?
+    NSString *footer = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    
+    return ceil(footerRect.size.height + 4.0 + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100)];
-    
+    // Footer label
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    footerLabel.font = [UIFont piwigoFontNormal];
-    footerLabel.textColor = [UIColor piwigoOrange];
+    footerLabel.font = [UIFont piwigoFontSmall];
+    footerLabel.textColor = [UIColor piwigoHeaderColor];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
+    footerLabel.text = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");
     footerLabel.adjustsFontSizeToFitWidth = NO;
     footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    footerLabel.text = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");
+    
+    // Footer height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Footer view
+    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
+    footer.backgroundColor = [UIColor clearColor];
     [footer addSubview:footerLabel];
-    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:10]];
-    [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
+    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
+    [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"footer" : footerLabel}]];

@@ -224,13 +224,8 @@
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_9_x_Max) {
-        hud.contentColor = [UIColor piwigoWhiteCream];
-        hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
-    } else {
-        hud.contentColor = [UIColor piwigoGray];
-        hud.bezelView.color = [UIColor piwigoGrayLight];
-    }
+    hud.contentColor = [UIColor piwigoHudContentColor];
+    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
 
     // Define the text
     hud.label.text = NSLocalizedString(@"categoryImageSetHUD_updating", @"Updating Album Thumbnail…");

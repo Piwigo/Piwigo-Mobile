@@ -22,19 +22,29 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
+		self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.title = NSLocalizedString(@"privacyLevel", @"Privacy Level");
 		
 		self.privacyTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        self.privacyTableView.backgroundColor = [UIColor clearColor];
+        self.privacyTableView.separatorColor = [UIColor piwigoSeparatorColor];
 		self.privacyTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.privacyTableView.delegate = self;
 		self.privacyTableView.dataSource = self;
-		self.privacyTableView.backgroundColor = [UIColor piwigoGray];
 		[self.view addSubview:self.privacyTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.privacyTableView]];
 		
 	}
 	return self;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Table view
+    self.privacyTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.privacyTableView reloadData];
 }
 
 -(kPiwigoPrivacy)getPrivacyLevelForRow:(NSInteger)row
@@ -71,24 +81,41 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 64.0;
+    // Header height?
+    NSString *header = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    return ceil(headerRect.size.height + 4.0 + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-    
+    // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontNormal];
-    headerLabel.textColor = [UIColor piwigoOrange];
+    headerLabel.font = [UIFont piwigoFontSmall];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.text = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
-    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
     [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
@@ -121,6 +148,11 @@
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
 	
+    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.tintColor = [UIColor piwigoOrange];
+    cell.textLabel.font = [UIFont piwigoFontNormal];
+    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+    cell.textLabel.adjustsFontSizeToFitWidth = NO;
 	cell.textLabel.text = [[Model sharedInstance] getNameForPrivacyLevel:privacyLevel];
 	cell.tag = privacyLevel;
 	

@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import <sys/utsname.h>                    // For determining iOS device model
 #import "AboutViewController.h"
 
 @interface AboutViewController ()
@@ -27,7 +26,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
+		self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.title = NSLocalizedString(@"settings_acknowledgements", @"Acknowledgements");
 		
 		self.piwigoTitle = [UILabel new];
@@ -69,10 +68,10 @@
         self.textView.restorationIdentifier = @"thanks+licenses";
 		self.textView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.textView.layer.cornerRadius = 5;
-		[self.view addSubview:self.textView];
 		
         // Release notes attributed string
-        NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"\n\n\n\n\n"];
+//        NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"\n\n\n\n\n"];
+        NSMutableAttributedString *aboutAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
 
         // Translators — Bundle string
         NSAttributedString *translatorsString = [[NSAttributedString alloc] initWithString:NSLocalizedStringFromTableInBundle(@"translators_text", @"About", [NSBundle mainBundle], @"Translators text")];
@@ -128,6 +127,8 @@
         self.textView.editable = NO;
         self.textView.allowsEditingTextAttributes = NO;
         self.textView.selectable = YES;
+        [self.view addSubview:self.textView];
+
         [self addConstraints];
     }
 	return self;
@@ -148,22 +149,16 @@
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
 	[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
 	
-    // iPhone X ?
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    NSString* deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-    
-    if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
-        // Add 25px for iPhone X (not great in landscape mode but temporary solution)
+    if (@available(iOS 11, *)) {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|-105-[title]-[by1][by2]-3-[usu]-10-[textView]-100-|"
+                                   constraintsWithVisualFormat:@"V:|-[title]-[by1][by2]-3-[usu]-10-[textView]-|"
                                    options:kNilOptions metrics:nil views:views]];
     } else {
         [self.view addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
                                    options:kNilOptions metrics:nil views:views]];
     }
-	
+
 	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textView]-|"
 																	  options:kNilOptions
 																	  metrics:nil

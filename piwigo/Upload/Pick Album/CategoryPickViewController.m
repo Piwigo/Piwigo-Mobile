@@ -42,7 +42,7 @@
 		adminLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		adminLabel.font = [UIFont piwigoFontNormal];
 		adminLabel.font = [adminLabel.font fontWithSize:20];
-		adminLabel.textColor = [UIColor piwigoOrange];
+		adminLabel.textColor = [UIColor piwigoWhiteCream];
 		adminLabel.text = NSLocalizedString(@"uploadRights_title", @"Upload Rights Needed");
 		adminLabel.minimumScaleFactor = 0.5;
 		adminLabel.adjustsFontSizeToFitWidth = YES;
@@ -90,7 +90,7 @@
 		
 	}
 	
-	self.view.backgroundColor = [UIColor piwigoGray];
+	self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 	
 	return self;
 }
@@ -99,6 +99,9 @@
 {
     [super viewWillAppear:animated];
     
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -106,7 +109,17 @@
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoGray]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    // Tab bar appearance
+    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 10, *)) {
+        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
+    }
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
 }
 
 -(void)selectedCategory:(PiwigoAlbumData *)category
@@ -130,7 +143,7 @@
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor piwigoOrange];
+	headerLabel.textColor = [UIColor piwigoHeaderColor];
 	headerLabel.text = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
     headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.numberOfLines = 0;

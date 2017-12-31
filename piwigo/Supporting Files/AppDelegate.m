@@ -31,7 +31,7 @@
 @implementation AppDelegate
 
 + (void)initialize {
-
+    
 }
 
 
@@ -106,6 +106,22 @@
     // Monitor Internet connection reachability
     self.internetReachability = [Reachability reachabilityForInternetConnection];
     [self.internetReachability startNotifier];
+
+    // Observe the UIScreenBrightnessDidChangeNotification.
+    // When that notification is posted, the method screenBrightnessChanged will be called.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged:) name:UIScreenBrightnessDidChangeNotification object:nil];
+}
+
+// Called when changing theme
+-(void)reLoadNavigation
+{
+    NSArray *windows = [UIApplication sharedApplication].windows;
+    for (UIWindow *window in windows) {
+        for (UIView *view in window.subviews) {
+            [view removeFromSuperview];
+            [window addSubview:view];
+        }
+    }
 }
 
 // Called by Reachability whenever Internet connection changes.
@@ -139,6 +155,28 @@
                 [self.loginVC checkSessionStatusAndTryRelogin];
             }
             break;
+        }
+    }
+}
+
+// Called when the screen brightness has changed
+-(void) screenBrightnessChanged:(NSNotification *)note
+{
+    // Do nothing in static palette mode
+//    NSLog(@"Screen Brightness: %f",[[UIScreen mainScreen] brightness]);
+    if (![Model sharedInstance].isDarkPaletteModeActive ||
+        ![Model sharedInstance].switchPaletteAutomatically) return;
+    
+    NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
+    if ([Model sharedInstance].isDarkPaletteActive) {
+        if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
+            [Model sharedInstance].isDarkPaletteActive = NO;
+            [self reLoadNavigation];
+        }
+    } else {
+        if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
+            [Model sharedInstance].isDarkPaletteActive = YES;
+            [self reLoadNavigation];
         }
     }
 }

@@ -48,7 +48,6 @@
 "login_userPlaceholder" = "Identifiant (optionnel)";
 "login_passwordPlaceholder" = "Mot de Passe (optionnel)";
 "login_loggingIn" = "Connexion en cours...";
-"login_protocolDescription" = "(taper > changer)";
 "login_connecting" = "Connexion en cours";
 "login_newSession" = "Ouverture de la Session";
 "login_communityParameters" = "Paramètres Community";
@@ -338,8 +337,8 @@
 
 // Settings — General
 "settingsHeader_general" = "Paramètres Généraux";
-"settings_loadAllCategories" = "Télécharger Tout au Démarrage";
-"settings_loadAllCategories>320px" = "Télécharger Tout au Démarrage (décochez en cas de problème)";
+"settings_loadAllCategories" = "Tout Télécharger au Démarrage";
+"settings_loadAllCategories>320px" = "Tout Télécharger au Démarrage (décochez en cas de problème)";
 
 "defaultImageSort" = "Tri";
 "defaultImageSort>320px" = "Tri";
@@ -411,6 +410,12 @@
 "settings_cacheMemory" = "Mémoire";
 "settings_placeholderMemory" = "Entrez un Cache Mémoire de 10 à 200";
 "settings_cacheMegabytes" = "Mo";
+
+// Settings — Colors
+"settingsHeader_colors" = "Réglages des Couleurs";
+"settings_darkPalette" = "Palette Sombre";
+"settings_switchPalette" = "Commuter Automatiquement";
+"settings_brightness" = "Luminosité";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

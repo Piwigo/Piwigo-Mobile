@@ -10,6 +10,7 @@
 
 @interface SortHeaderCollectionReusableView : UICollectionReusableView
 
+@property (nonatomic, strong) UILabel *sortLabel;
 @property (nonatomic, strong) UILabel *currentSortLabel;
 
 @end

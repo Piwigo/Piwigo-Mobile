@@ -69,6 +69,12 @@
         // Default image preview size
 		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
         
+        // Default palette mode
+        instance.isDarkPaletteActive = NO;
+        instance.switchPaletteAutomatically = NO;
+        instance.switchPaletteThreshold = 50;
+        instance.isDarkPaletteModeActive = NO;
+        
         // Default image upload setting
         instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
 		instance.photoQuality = 95;                 // 95% image quality at compression
@@ -176,6 +182,10 @@
         self.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
         self.username = modelData.username;
         self.HttpUsername = modelData.HttpUsername;
+        self.isDarkPaletteActive = modelData.isDarkPaletteActive;
+        self.switchPaletteAutomatically = modelData.switchPaletteAutomatically;
+        self.switchPaletteThreshold = modelData.switchPaletteThreshold;
+        self.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
 	}
 }
 
@@ -206,10 +216,14 @@
     [saveObject addObject:[NSNumber numberWithBool:self.stripGPSdataOnUpload]];
     [saveObject addObject:@(self.defaultThumbnailSize)];
     [saveObject addObject:@(self.displayImageTitles)];
-    [saveObject addObject:[NSNumber numberWithBool:self.compressImageOnUpload]];    // Added to v2.1.5
+    [saveObject addObject:[NSNumber numberWithBool:self.compressImageOnUpload]];    // Added in v2.1.5
     [saveObject addObject:[NSNumber numberWithBool:self.deleteImageAfterUpload]];
-    [saveObject addObject:self.username];                                           // Added to v2.1.6
+    [saveObject addObject:self.username];                                           // Added in v2.1.6
     [saveObject addObject:self.HttpUsername];
+    [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteActive]];
+    [saveObject addObject:[NSNumber numberWithBool:self.switchPaletteAutomatically]];
+    [saveObject addObject:@(self.switchPaletteThreshold)];
+    [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteModeActive]];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -305,6 +319,26 @@
         self.HttpUsername = [savedData objectAtIndex:18];
     } else {
         self.HttpUsername = @"";
+    }
+    if(savedData.count > 19) {
+        self.isDarkPaletteActive = [[savedData objectAtIndex:19] boolValue];
+    } else {
+        self.isDarkPaletteActive = NO;
+    }
+    if(savedData.count > 20) {
+        self.switchPaletteAutomatically = [[savedData objectAtIndex:20] boolValue];
+    } else {
+        self.switchPaletteAutomatically = NO;
+    }
+    if(savedData.count > 21) {
+        self.switchPaletteThreshold = [[savedData objectAtIndex:21] integerValue];
+    } else {
+        self.switchPaletteThreshold = NO;
+    }
+    if(savedData.count > 22) {
+        self.isDarkPaletteModeActive = [[savedData objectAtIndex:22] boolValue];
+    } else {
+        self.isDarkPaletteModeActive = NO;
     }
 	return self;
 }

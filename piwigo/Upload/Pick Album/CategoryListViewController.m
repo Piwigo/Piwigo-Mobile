@@ -26,15 +26,15 @@
 	self = [super init];
 	if(self)
 	{
-		self.categories = [NSMutableArray new];
+        self.categories = [NSMutableArray new];
 		self.categoriesThatHaveLoadedSubCategories = [NSMutableDictionary new];
 		[self buildCategoryArray];
 		
 		self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.categoriesTableView.backgroundColor = [UIColor clearColor];
 		self.categoriesTableView.delegate = self;
 		self.categoriesTableView.dataSource = self;
-		self.categoriesTableView.backgroundColor = [UIColor piwigoGray];
 		[self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
 		[self.view addSubview:self.categoriesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
@@ -42,6 +42,26 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 	}
 	return self;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    // Table view
+    self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.categoriesTableView reloadData];
 }
 
 -(void)categoryDataUpdated
@@ -125,6 +145,9 @@
 	PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
 	
 	[cell setupWithCategoryData:categoryData];
+    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.tintColor = [UIColor piwigoOrange];
+    cell.textLabel.font = [UIFont piwigoFontNormal];
 	if([self.categoriesThatHaveLoadedSubCategories objectForKey:[NSString stringWithFormat:@"%@", @(categoryData.albumId)]])
 	{
 		cell.hasLoadedSubCategories = YES;

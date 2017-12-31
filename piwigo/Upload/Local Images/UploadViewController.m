@@ -50,7 +50,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
+		self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.categoryId = categoryId;
 		self.groupAsset = groupAsset;
 		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
@@ -106,7 +106,20 @@
 {
 	[super viewWillAppear:animated];
 	
-	[self loadNavButtons];
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    [self loadNavButtons];
 	[ImageUploadProgressView sharedInstance].delegate = self;
 	
 	if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
@@ -256,7 +269,10 @@
 	if(kind == UICollectionElementKindSectionHeader)
 	{
 		header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header" forIndexPath:indexPath];
+        header.backgroundColor = [UIColor piwigoCellBackgroundColor];
+        header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
 		header.currentSortLabel.text = [SortSelectViewController getNameForSortType:self.sortType];
+        header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
 		[header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
 	}
 	

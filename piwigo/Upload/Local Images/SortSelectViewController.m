@@ -11,6 +11,7 @@
 #import "SortSelectViewController.h"
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
+#import "Model.h"
 
 @interface SortSelectViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -25,11 +26,11 @@
 	self = [super init];
 	if(self)
 	{
-		self.title = NSLocalizedString(@"imageSortTitle", @"Sort Images");
+        self.title = NSLocalizedString(@"imageSortTitle", @"Sort Images");
 
 		self.sortSelectTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.sortSelectTableView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.sortSelectTableView.backgroundColor = [UIColor piwigoGray];
+        self.sortSelectTableView.backgroundColor = [UIColor clearColor];
 		self.sortSelectTableView.delegate = self;
 		self.sortSelectTableView.dataSource = self;
 		[self.view addSubview:self.sortSelectTableView];
@@ -37,6 +38,26 @@
 		
 	}
 	return self;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    // Table view
+    self.sortSelectTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.sortSelectTableView reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -147,25 +168,42 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 64.0;
+    // Header height?
+    NSString *header = NSLocalizedString(@"imageSortMessage", @"Please select how you wish to sort images");
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    return ceil(headerRect.size.height + 4.0 + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-    
+    // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontNormal];
-    headerLabel.textColor = [UIColor piwigoOrange];
-    headerLabel.text = NSLocalizedString(@"imageSortMessage", @"Please select how you wish to sort images");
+    headerLabel.font = [UIFont piwigoFontSmall];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.textAlignment = NSTextAlignmentCenter;
+    headerLabel.text = NSLocalizedString(@"imageSortMessage", @"Please select how you wish to sort images");
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
-    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"header" : headerLabel}]];
@@ -186,9 +224,11 @@
 		cell = [UITableViewCell new];
 	}
 	
-	cell.textLabel.text = [SortSelectViewController getNameForSortType:(kPiwigoSortBy)indexPath.row];
-    cell.textLabel.textColor = [UIColor piwigoGray];
-    cell.textLabel.backgroundColor = [UIColor piwigoWhiteCream];
+    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.tintColor = [UIColor piwigoOrange];
+    cell.textLabel.font = [UIFont piwigoFontNormal];
+    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+    cell.textLabel.text = [SortSelectViewController getNameForSortType:(kPiwigoSortBy)indexPath.row];
 	
 	if(indexPath.row == self.currentSortType)
 	{

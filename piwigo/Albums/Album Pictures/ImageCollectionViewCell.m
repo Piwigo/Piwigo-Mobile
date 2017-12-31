@@ -68,7 +68,7 @@
         // Banners at bottom of thumbnails
 		self.bottomLayer = [UIView new];
 		self.bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
-		self.bottomLayer.backgroundColor = [UIColor piwigoGray];
+		self.bottomLayer.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.bottomLayer.alpha = 0.5;
 		[self.contentView addSubview:self.bottomLayer];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
@@ -78,7 +78,7 @@
 		self.nameLabel = [UILabel new];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.nameLabel.font = [UIFont piwigoFontNormal];
-		self.nameLabel.textColor = [UIColor piwigoWhiteCream];
+		self.nameLabel.textColor = [UIColor piwigoLeftLabelColor];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.nameLabel];

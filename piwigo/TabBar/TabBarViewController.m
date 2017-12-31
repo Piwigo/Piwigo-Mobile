@@ -22,31 +22,33 @@
 	self = [super init];
 	if(self)
 	{
-		self.tabBar.tintColor = [UIColor whiteColor];
-		self.tabBar.barTintColor = [UIColor piwigoOrange];
-		
 		NSMutableArray *tabs = [NSMutableArray new];
 		
 		AlbumsViewController *albums = [AlbumsViewController new];
 		albums.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-		albums.tabBarItem.image = [[UIImage imageNamed:@"album"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+		albums.tabBarItem.image = [[UIImage imageNamed:@"album"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		albums.tabBarItem.selectedImage = [UIImage imageNamed:@"albumSelected"];
 		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:albums]];
 		
 		CategoryPickViewController *upload = [CategoryPickViewController new];
 		upload.title = NSLocalizedString(@"tabBar_upload", @"Upload");
-		upload.tabBarItem.image = [[UIImage imageNamed:@"cloud"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+		upload.tabBarItem.image = [[UIImage imageNamed:@"cloud"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		upload.tabBarItem.selectedImage = [UIImage imageNamed:@"cloudSelected"];
 		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:upload]];
 		
 		SettingsViewController *settings = [SettingsViewController new];
 		settings.title = NSLocalizedString(@"tabBar_preferences", @"Preferences");
-		settings.tabBarItem.image = [[UIImage imageNamed:@"preferences"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+		settings.tabBarItem.image = [[UIImage imageNamed:@"preferences"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		settings.tabBarItem.selectedImage = [UIImage imageNamed:@"preferencesSelected"];
 		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:settings]];
 		
-		[[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateNormal];
-		[[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateSelected];
+        self.tabBar.tintColor = [UIColor piwigoOrange];
+        self.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
+        if (@available(iOS 10, *)) {
+            self.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
+        }
+		[[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
+		[[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
 		
 		self.viewControllers = tabs;
 	}

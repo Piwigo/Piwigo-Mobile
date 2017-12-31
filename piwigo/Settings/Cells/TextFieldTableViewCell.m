@@ -22,19 +22,19 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
 		
 		self.leftLabel = [UILabel new];
 		self.leftLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.leftLabel.font = [UIFont piwigoFontNormal];
-		self.leftLabel.textColor = [UIColor piwigoGray];
+		self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
 		self.leftLabel.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.leftLabel];
 		
 		self.rightTextField = [UITextField new];
 		self.rightTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightTextField.font = [UIFont piwigoFontNormal];
-		self.rightTextField.textColor = [UIColor piwigoBrown];
+		self.rightTextField.textColor = [UIColor piwigoRightLabelColor];
         if ([Model sharedInstance].isAppLanguageRTL) {
             self.rightTextField.textAlignment = NSTextAlignmentLeft;
         } else {

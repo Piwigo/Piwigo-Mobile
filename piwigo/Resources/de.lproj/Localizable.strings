@@ -48,7 +48,6 @@
 "login_userPlaceholder" = "Benutzername (optional)";
 "login_passwordPlaceholder" = "Passwort (optional)";
 "login_loggingIn" = "Anmeldung läuft...";
-"login_protocolDescription" = "(Zum Ändern tippen)";
 "login_connecting" = "Verbinde";
 "login_newSession" = "Starte die Sitzung";
 "login_communityParameters" = "Community Parameter";
@@ -411,6 +410,12 @@
 "settings_cacheMemory" = "Speicher";
 "settings_placeholderMemory" = "Gib einen Speicher-Cache von 10-200 an";
 "settings_cacheMegabytes" = "MB";
+
+// Settings — Colors
+"settingsHeader_colors" = "Color Settings";
+"settings_darkPalette" = "Dark Palette";
+"settings_switchPalette" = "Switch Automatically";
+"settings_brightness" = "Brightness";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

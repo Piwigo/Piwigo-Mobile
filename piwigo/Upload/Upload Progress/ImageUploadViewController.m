@@ -29,16 +29,15 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
 		self.imagesToEdit = [NSMutableArray new];
 		
 		self.title = NSLocalizedString(@"imageUploadDetailsView_title", @"Images");
 		
 		self.uploadImagesTableView = [UITableView new];
 		self.uploadImagesTableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.uploadImagesTableView.backgroundColor = [UIColor clearColor];
 		self.uploadImagesTableView.delegate = self;
 		self.uploadImagesTableView.dataSource = self;
-        self.uploadImagesTableView.backgroundColor = [UIColor piwigoGray];
 		UINib *cellNib = [UINib nibWithNibName:@"ImageUploadCell" bundle:nil];
 		[self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:@"Cell"];
 		[self.view addSubview:self.uploadImagesTableView];
@@ -58,6 +57,9 @@
 {
 	[super viewWillAppear:animated];
 	
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -65,7 +67,8 @@
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoGray]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 
     // Navigation bar buttons
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(cancel)];
@@ -77,7 +80,11 @@
 															  action:@selector(startUpload)];
 	self.navigationItem.rightBarButtonItem = upload;
 	
-	if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
+    // Table view
+    self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.uploadImagesTableView reloadData];
+
+    if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 	{
 		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
 	}
@@ -150,12 +157,11 @@
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
 	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30.0)];
-	header.backgroundColor = [UIColor piwigoGray];
 	
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor piwigoOrange];
+	headerLabel.textColor = [UIColor piwigoHeaderColor];
 	[header addSubview:headerLabel];
 	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:5]];
 	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:15]];
@@ -211,7 +217,9 @@
 	}
     
     cell.delegate = self;
-	
+    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.tintColor = [UIColor piwigoOrange];
+    
 	return cell;
 }
 

@@ -21,6 +21,12 @@
     // Initialization code
     [super awakeFromNib];
     
+    self.cellLabel.font = [UIFont piwigoFontNormal];
+    self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
+
+    self.cellTextField.font = [UIFont piwigoFontNormal];
+    self.cellTextField.textColor = [UIColor piwigoRightLabelColor];
+    self.cellTextField.backgroundColor = [UIColor piwigoCellBackgroundColor];
 }
 
 -(void)setLabel:(NSString*)label andTextField:(NSString*)text withPlaceholder:(NSString*)placeholder

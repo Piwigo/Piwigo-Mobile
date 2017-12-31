@@ -48,7 +48,6 @@
 "login_userPlaceholder" = "اسم المستخدم (اختياري)";
 "login_passwordPlaceholder" = "كلمة المرور (اختياري)";
 "login_loggingIn" = "جاري تسجيل الدخول...";
-"login_protocolDescription" = "(اضغط للتغيير)";
 "login_connecting" = "جاري الإتصال";
 "login_newSession" = "الجلسة المفتوحة";
 "login_communityParameters" = "المعلمات Community";
@@ -411,6 +410,12 @@
 "settings_cacheMemory" = "الذاكرة";
 "settings_placeholderMemory" = "أدخل ذاكرة التخزين المؤقت من 10 - 200";
 "settings_cacheMegabytes" = "MB";
+
+// Settings — Colors
+"settingsHeader_colors" = "Color Settings";
+"settings_darkPalette" = "Dark Palette";
+"settings_switchPalette" = "Switch Automatically";
+"settings_brightness" = "Brightness";
 
 // Settings — Information
 "settings_appName" = "Piwigo موبايل";

@@ -41,7 +41,7 @@ typedef enum {
 {
 	[super awakeFromNib];
 	
-	self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
+    self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
@@ -54,9 +54,14 @@ typedef enum {
 	self.navigationController.navigationBarHidden = NO;
 
     // Hide the 1px header
-    self.editImageDetailsTableView.contentInset = UIEdgeInsetsMake(-1.0f, 0.0f, 0.0f, 0.0);
+//    self.editImageDetailsTableView.contentInset = UIEdgeInsetsMake(-1.0f, 0.0f, 0.0f, 0.0);
 
-	if(self.isEdit)
+    // Table view
+    self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.editImageDetailsTableView reloadData];
+    
+    if(self.isEdit)
 	{
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
 		UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
@@ -189,13 +194,8 @@ typedef enum {
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_9_x_Max) {
-        hud.contentColor = [UIColor piwigoWhiteCream];
-        hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
-    } else {
-        hud.contentColor = [UIColor piwigoGray];
-        hud.bezelView.color = [UIColor piwigoGrayLight];
-    }
+    hud.contentColor = [UIColor piwigoHudContentColor];
+    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
 
     // Define the text
     hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating Image Info…");
@@ -257,7 +257,7 @@ typedef enum {
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 1.0f;        // To hide the section header
+    return 0.0;        // To hide the section header
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -311,6 +311,8 @@ typedef enum {
 		}
 	}
 	
+    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.tintColor = [UIColor piwigoOrange];
 	return cell;
 }
 

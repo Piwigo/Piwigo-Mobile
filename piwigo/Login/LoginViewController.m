@@ -33,11 +33,11 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
+		self.view.backgroundColor = [UIColor piwigoBrown];
 		
 		self.piwigoLogo = [UIImageView new];
 		self.piwigoLogo.translatesAutoresizingMaskIntoConstraints = NO;
-		self.piwigoLogo.image = [UIImage imageNamed:@"piwigoLogo"];
+        self.piwigoLogo.image = [UIImage imageNamed:@"piwigoLogo"];
 		self.piwigoLogo.contentMode = UIViewContentModeScaleAspectFit;
 		[self.view addSubview:self.piwigoLogo];
 		
@@ -489,13 +489,8 @@
         hud.animationType = MBProgressHUDAnimationFade;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_9_x_Max) {
-            hud.contentColor = [UIColor piwigoWhiteCream];
-            hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
-        } else {
-            hud.contentColor = [UIColor piwigoGray];
-            hud.bezelView.color = [UIColor piwigoGrayLight];
-        }
+        hud.contentColor = [UIColor piwigoHudContentColor];
+        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
         
         // Set title
         hud.label.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");

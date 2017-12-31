@@ -29,7 +29,6 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = categoryId;
 		
 		self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
@@ -67,7 +66,7 @@
 		
 		self.localAlbumsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.localAlbumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.localAlbumsTableView.backgroundColor = [UIColor piwigoGray];
+        self.localAlbumsTableView.backgroundColor = [UIColor clearColor];
 		self.localAlbumsTableView.delegate = self;
 		self.localAlbumsTableView.dataSource = self;
 		[self.localAlbumsTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
@@ -76,6 +75,26 @@
 		
 	}
 	return self;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    // Table view
+    self.localAlbumsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.localAlbumsTableView reloadData];
 }
 
 
@@ -93,7 +112,7 @@
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
-    headerLabel.textColor = [UIColor piwigoOrange];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.text = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
     headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.numberOfLines = 0;

@@ -48,7 +48,6 @@
 "login_userPlaceholder" = "Nama pengguna (opsional)";
 "login_passwordPlaceholder" = "Kata sandi (opsional)";
 "login_loggingIn" = "Proses Masuk...";
-"login_protocolDescription" = "(ketuk untuk mengubah)";
 "login_connecting" = "Menyambungkan";
 "login_newSession" = "Membuka Sesi";
 "login_communityParameters" = "Parameter Komunitas";
@@ -411,6 +410,12 @@
 "settings_cacheMemory" = "Memori";
 "settings_placeholderMemory" = "Masukkan Tembolok Memori dari 10 - 200";
 "settings_cacheMegabytes" = "MB";
+
+// Settings — Colors
+"settingsHeader_colors" = "Color Settings";
+"settings_darkPalette" = "Dark Palette";
+"settings_switchPalette" = "Switch Automatically";
+"settings_brightness" = "Brightness";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
