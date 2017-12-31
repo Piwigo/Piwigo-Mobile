@@ -142,10 +142,17 @@
     header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
     
     return header;
 }

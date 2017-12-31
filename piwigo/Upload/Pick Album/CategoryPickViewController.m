@@ -70,15 +70,9 @@
                                    options:kNilOptions metrics:nil
                                    views:@{@"description" : description}]];
 		
-        // iPhone X ?
-        struct utsname systemInfo;
-        uname(&systemInfo);
-        NSString* deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-        
-        if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
-            // Add 25px for iPhone X (not great in landscape mode but temporary solution)
+        if (@available(iOS 11, *)) {
             [self.view addConstraints:[NSLayoutConstraint
-                                       constraintsWithVisualFormat:@"V:|-105-[admin]-[description]"
+                                       constraintsWithVisualFormat:@"V:|-[admin]-[description]"
                                        options:kNilOptions metrics:nil
                                        views:@{@"admin" : adminLabel, @"description" : description}]];
         } else {
@@ -87,7 +81,6 @@
                                        options:kNilOptions metrics:nil
                                        views:@{@"admin" : adminLabel, @"description" : description}]];
         }
-		
 	}
 	
 	self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -133,13 +126,19 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return 64.0;
+    // Header height?
+    NSString *header = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    return ceil(headerRect.size.height + 4.0 + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-	
+    // Header label
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	headerLabel.font = [UIFont piwigoFontNormal];
@@ -149,13 +148,29 @@
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
 	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
-	[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
 																   options:kNilOptions
 																   metrics:nil
 																	 views:@{@"header" : headerLabel}]];
-	
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
 	return header;
 }
 

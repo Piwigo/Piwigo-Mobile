@@ -207,11 +207,17 @@ typedef enum {
     header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"header" : headerLabel}]];
-
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
     return header;
 }
 
@@ -275,10 +281,17 @@ typedef enum {
     footer.backgroundColor = [UIColor clearColor];
     [footer addSubview:footerLabel];
     [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
-    [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
+    if (@available(iOS 11, *)) {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"footer" : footerLabel}]];
+    } else {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"footer" : footerLabel}]];
+    }
 
     return footer;
 }

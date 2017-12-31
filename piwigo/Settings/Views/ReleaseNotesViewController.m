@@ -194,16 +194,20 @@
         [self.view addConstraints:[NSLayoutConstraint
                                constraintsWithVisualFormat:@"V:|-[title]-[by1][by2]-3-[usu]-10-[textView]-|"
                                options:kNilOptions metrics:nil views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textView]-|"
+                                                                          options:kNilOptions
+                                                                          metrics:nil
+                                                                            views:views]];
     } else {
         [self.view addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
                                    options:kNilOptions metrics:nil views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
+                                                                          options:kNilOptions
+                                                                          metrics:nil
+                                                                            views:views]];
     }
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textView]-|"
-                                                                      options:kNilOptions
-                                                                      metrics:nil
-                                                                        views:views]];    
 }
 
 @end

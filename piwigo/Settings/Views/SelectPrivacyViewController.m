@@ -83,7 +83,7 @@
 {
     // Header height?
     NSString *header = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
@@ -96,7 +96,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontSmall];
+    headerLabel.font = [UIFont piwigoFontNormal];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.text = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
@@ -105,7 +105,7 @@
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
     // Header height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
@@ -116,10 +116,17 @@
     header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
     
     return header;
 }

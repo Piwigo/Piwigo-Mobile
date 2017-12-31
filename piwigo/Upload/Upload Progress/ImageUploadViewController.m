@@ -151,30 +151,68 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return 44.0;
+    // Header height?
+    NSString *header;
+    switch(section)
+    {
+        case 0:
+            header = NSLocalizedString(@"imageUploadDetailsEdit_title", @"Edit Images to Upload");
+            break;
+        case 1:
+            header = NSLocalizedString(@"imageUploadDetailsUploading_title", @"Images that are Being Uploaded");
+            break;
+    }
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    return ceil(headerRect.size.height + 4.0 + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30.0)];
-	
+	// Header label
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
 	headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    switch(section)
+    {
+        case 0:
+            headerLabel.text = NSLocalizedString(@"imageUploadDetailsEdit_title", @"Edit Images to Upload");
+            break;
+        case 1:
+            headerLabel.text = NSLocalizedString(@"imageUploadDetailsUploading_title", @"Images that are Being Uploaded");
+            break;
+    }
+
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    header.backgroundColor = [UIColor clearColor];
 	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:5]];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromLeft:headerLabel amount:15]];
-	
-	switch(section)
-	{
-		case 0:
-			headerLabel.text = NSLocalizedString(@"imageUploadDetailsEdit_title", @"Edit Images to Upload");
-			break;
-		case 1:
-			headerLabel.text = NSLocalizedString(@"imageUploadDetailsUploading_title", @"Images that are Being Uploaded");
-			break;
-	}
+	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
 	
 	return header;
 }

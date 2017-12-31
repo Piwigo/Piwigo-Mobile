@@ -40,11 +40,19 @@
 		[self addSubview:self.currentSortLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.currentSortLabel]];
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[sort]-[label]-10-|"
+        if (@available(iOS 11, *)) {
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[sort]-[label]-|"
                                                                      options:kNilOptions
                                                                      metrics:nil
                                                                        views:@{@"label" : self.currentSortLabel,
                                                                                @"sort" : self.sortLabel}]];
+        } else {
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[sort]-[label]-10-|"
+                                                                         options:kNilOptions
+                                                                         metrics:nil
+                                                                           views:@{@"label" : self.currentSortLabel,
+                                                                                   @"sort" : self.sortLabel}]];
+        }
 	}
 	return self;
 }

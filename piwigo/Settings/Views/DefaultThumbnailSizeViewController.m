@@ -52,7 +52,7 @@
 {
     // Header height?
     NSString *header = NSLocalizedString(@"defaultThumbnailSizeHeader", @"Please Select a Thumbnail Size");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
@@ -65,7 +65,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontSmall];
+    headerLabel.font = [UIFont piwigoFontNormal];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.text = NSLocalizedString(@"defaultThumbnailSizeHeader", @"Please Select a Thumbnail Size");
@@ -74,7 +74,7 @@
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     // Header height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
@@ -85,10 +85,17 @@
     header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
     
     return header;
 }
@@ -213,7 +220,7 @@
 {
     // Footer height?
     NSString *footer = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
@@ -227,7 +234,7 @@
     // Footer label
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    footerLabel.font = [UIFont piwigoFontSmall];
+    footerLabel.font = [UIFont piwigoFontNormal];
     footerLabel.textColor = [UIColor piwigoHeaderColor];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
@@ -236,7 +243,7 @@
     footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     // Footer height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
@@ -247,10 +254,17 @@
     footer.backgroundColor = [UIColor clearColor];
     [footer addSubview:footerLabel];
     [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
-    [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
+    if (@available(iOS 11, *)) {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"footer" : footerLabel}]];
+    } else {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"footer" : footerLabel}]];
+    }
     
     return footer;
 }

@@ -50,13 +50,23 @@
 		[self.contentView addSubview:self.sliderCount];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderCount]];
 		
-		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[slider]-[count]-|"
+		if (@available(iOS 11, *)) {
+            [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[slider]-[count]-|"
 																				 options:kNilOptions
 																				 metrics:nil
 																				   views:@{@"label" : self.sliderName,
                                                                                            @"slider" : self.slider,
 																						   @"count" : self.sliderCount
 																						   }]];
+        } else {
+            [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[slider]-[count]-15-|"
+                                                                                     options:kNilOptions
+                                                                                     metrics:nil
+                                                                                       views:@{@"label" : self.sliderName,
+                                                                                               @"slider" : self.slider,
+                                                                                               @"count" : self.sliderCount
+                                                                                               }]];
+        }
 	}
 	return self;
 }

@@ -56,10 +56,18 @@
 	
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftLabel]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.rightTextField]];
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[field]-|"
+
+    if (@available(iOS 11, *)) {
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[field]-|"
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];
+    } else {
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[field]-15-|"
+                                                                                 options:kNilOptions
+                                                                                 metrics:nil
+                                                                                   views:views]];
+    }
 }
 
 -(void)setLabelText:(NSString *)labelText

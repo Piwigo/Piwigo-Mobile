@@ -333,7 +333,7 @@
     if(savedData.count > 21) {
         self.switchPaletteThreshold = [[savedData objectAtIndex:21] integerValue];
     } else {
-        self.switchPaletteThreshold = NO;
+        self.switchPaletteThreshold = 50;
     }
     if(savedData.count > 22) {
         self.isDarkPaletteModeActive = [[savedData objectAtIndex:22] boolValue];

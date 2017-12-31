@@ -53,10 +53,17 @@
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftLabel]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.cellSwitch]];
 	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[switch]-|"
+    if (@available(iOS 11, *)) {
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[switch]-|"
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];
+    } else {
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[switch]-15-|"
+                                                                                 options:kNilOptions
+                                                                                 metrics:nil
+                                                                                   views:views]];
+    }
 }
 
 -(void)switchChanged
