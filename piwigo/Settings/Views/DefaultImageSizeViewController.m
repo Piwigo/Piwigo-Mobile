@@ -131,28 +131,28 @@
     switch (indexPath.row) {
         case kPiwigoImageSizeSquare:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasSquareSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeThumb:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasThumbSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXXSmall:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasXXSmallSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXSmall:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasXSmallSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
@@ -162,7 +162,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -171,7 +171,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -180,7 +180,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -189,7 +189,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -198,7 +198,7 @@
                 cell.userInteractionEnabled = YES;
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
