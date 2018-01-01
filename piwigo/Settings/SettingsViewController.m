@@ -836,6 +836,8 @@ typedef enum {
                         if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
+                        // Refresh table
+                        [self.settingsTableView reloadData];
                         // Redraw views in windows
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate screenBrightnessChanged:nil];
@@ -868,6 +870,8 @@ typedef enum {
 //                            // Remove row in existing table
 //                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 //                        }
+                        // Refresh table
+                        [self.settingsTableView reloadData];
                         // Redraw views in windows
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate screenBrightnessChanged:nil];
