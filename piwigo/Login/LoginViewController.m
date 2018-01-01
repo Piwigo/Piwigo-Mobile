@@ -16,9 +16,9 @@
 #import "AppDelegate.h"
 #import "MBProgressHUD.h"
 
-//#ifndef DEBUG_SESSION
-//#define DEBUG_SESSION
-//#endif
+#ifndef DEBUG_SESSION
+#define DEBUG_SESSION
+#endif
 
 @interface LoginViewController () <UITextFieldDelegate>
 
@@ -265,7 +265,7 @@
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting with…", isFirstLogin ? @"YES" : @"NO");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@,
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 #endif

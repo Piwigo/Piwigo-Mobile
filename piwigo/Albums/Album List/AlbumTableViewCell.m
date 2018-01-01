@@ -223,19 +223,13 @@
     self.backgroundColor = [UIColor piwigoBackgroundColor];
     self.numberOfImages.textColor = [UIColor piwigoTextColor];
     self.date.textColor = [UIColor piwigoTextColor];
-//    UIBlurEffect *blurEffect;
     if ([Model sharedInstance].isDarkPaletteActive) {
         self.textUnderlayDark.hidden = NO;
         self.textUnderlayLight.hidden = YES;
-//        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     } else {
         self.textUnderlayDark.hidden = YES;
         self.textUnderlayLight.hidden = NO;
-//        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
     }
-//    [self.contentView willRemoveSubview:self.textUnderlay];
-//    self.textUnderlay = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-//    [self.contentView addSubview:self.textUnderlay];
 
     // Add up/down arrows in front of album name when Community extension active
 //#if defined(DEBUG)

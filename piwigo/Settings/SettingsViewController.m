@@ -814,34 +814,31 @@ typedef enum {
                     cell.cellSwitchBlock = ^(BOOL switchState) {
                         // Number of rows will change accordingly
                         [Model sharedInstance].isDarkPaletteModeActive = switchState;
-                        // Position of the row(s) that should be added/removed
-                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
-                                                                         inSection:SettingsSectionColor];
-                        NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
-                                                                         inSection:SettingsSectionColor];
-                        if(switchState) {
-                            // Insert row in existing table
-                            if ([Model sharedInstance].switchPaletteAutomatically)
-                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            else
-                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        } else {
-                            // Remove row in existing table
-                            if ([Model sharedInstance].switchPaletteAutomatically)
-                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            else
-                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        }
-                        // Update palette mode
-                        [Model sharedInstance].isDarkPaletteActive = switchState;
+//                        // Position of the row(s) that should be added/removed
+//                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
+//                                                                         inSection:SettingsSectionColor];
+//                        NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
+//                                                                         inSection:SettingsSectionColor];
+//                        if(switchState) {
+//                            // Insert row in existing table
+//                            if ([Model sharedInstance].switchPaletteAutomatically)
+//                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                            else
+//                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                        } else {
+//                            // Remove row in existing table
+//                            if ([Model sharedInstance].switchPaletteAutomatically)
+//                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                            else
+//                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                        }
+                        // Switch off auto mode if dark palette mode disabled
                         if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
-                        // Reload views in windows
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            [appDelegate reLoadNavigation];
-                        });
+                        // Redraw views in windows
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate screenBrightnessChanged:nil];
                     };
                     
                     tableViewCell = cell;
@@ -862,15 +859,18 @@ typedef enum {
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
                         // Position of the row that should be added/removed
-                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
-                                                                         inSection:SettingsSectionColor];
-                        if(switchState) {
-                            // Insert row in existing table
-                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        } else {
-                            // Remove row in existing table
-                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        }
+//                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
+//                                                                         inSection:SettingsSectionColor];
+//                        if(switchState) {
+//                            // Insert row in existing table
+//                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                        } else {
+//                            // Remove row in existing table
+//                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                        }
+                        // Redraw views in windows
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate screenBrightnessChanged:nil];
                     };
                     
                     tableViewCell = cell;
@@ -1429,20 +1429,9 @@ typedef enum {
     [Model sharedInstance].switchPaletteThreshold = [sliderSettingPalette getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
 
-    // Update palette ?
+    // Update palette if needed
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
-    if ([Model sharedInstance].isDarkPaletteActive) {
-        if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
-            [Model sharedInstance].isDarkPaletteActive = NO;
-            [appDelegate reLoadNavigation];
-        }
-    } else {
-        if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
-            [Model sharedInstance].isDarkPaletteActive = YES;
-            [appDelegate reLoadNavigation];
-        }
-    }
+    [appDelegate screenBrightnessChanged:nil];
 }
 
 - (IBAction)updateDiskCacheSize:(id)sender

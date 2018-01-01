@@ -14,6 +14,6 @@
 
 -(void)loadLoginView;
 -(void)loadNavigation;
--(void)reLoadNavigation;
+-(void)screenBrightnessChanged:(NSNotification *)note;
 
 @end

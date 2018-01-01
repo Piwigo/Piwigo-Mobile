@@ -112,20 +112,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged:) name:UIScreenBrightnessDidChangeNotification object:nil];
 }
 
-// Called when changing theme
--(void)reLoadNavigation
-{
-    NSArray *windows = [UIApplication sharedApplication].windows;
-    for (UIWindow *window in windows) {
-        for (UIView *view in window.subviews) {
-            [view removeFromSuperview];
-            [window addSubview:view];
-        }
-    }
-}
-
 // Called by Reachability whenever Internet connection changes.
-- (void) reachabilityChanged:(NSNotification *)note
+- (void)reachabilityChanged:(NSNotification *)note
 {
     Reachability* curReach = [note object];
     NetworkStatus netStatus = [curReach currentReachabilityStatus];
@@ -159,24 +147,69 @@
     }
 }
 
-// Called when the screen brightness has changed
--(void) screenBrightnessChanged:(NSNotification *)note
+// Called when the screen brightness has changed or when user changed settings
+-(void)screenBrightnessChanged:(NSNotification *)note
 {
-    // Do nothing in static palette mode
 //    NSLog(@"Screen Brightness: %f",[[UIScreen mainScreen] brightness]);
-    if (![Model sharedInstance].isDarkPaletteModeActive ||
-        ![Model sharedInstance].switchPaletteAutomatically) return;
-    
-    NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
-    if ([Model sharedInstance].isDarkPaletteActive) {
-        if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
+    if (![Model sharedInstance].isDarkPaletteModeActive) {
+        // Static light palette mode chosen
+        if (![Model sharedInstance].isDarkPaletteActive) {
+            // Already showing light palette
+            return;
+        } else {
+            // Switch to light palette
             [Model sharedInstance].isDarkPaletteActive = NO;
-            [self reLoadNavigation];
         }
     } else {
-        if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
-            [Model sharedInstance].isDarkPaletteActive = YES;
-            [self reLoadNavigation];
+        // Dark palette mode chosen
+        if (![Model sharedInstance].switchPaletteAutomatically) {
+            // Static dark palette chosen
+            if ([Model sharedInstance].isDarkPaletteActive) {
+                // Already showing dark palette
+                return;
+            } else {
+                // Switch to dark palette
+                [Model sharedInstance].isDarkPaletteActive = YES;
+            }
+        } else {
+            // Dynamic dark palette chosen
+            NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
+            if ([Model sharedInstance].isDarkPaletteActive) {
+                // Dark palette displayed
+                if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
+                    // Screen brightness > thereshold, switch to light palette
+                    [Model sharedInstance].isDarkPaletteActive = NO;
+                } else {
+                    // Keep dark palette
+                    return;
+                }
+            } else {
+                // Light palette displayed
+                if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
+                    // Screen brightness < threshold, switch to dark palette
+                    [Model sharedInstance].isDarkPaletteActive = YES;
+                } else {
+                    // Keep light palette
+                    return;
+                }
+            }
+        }
+    }
+    
+    // Store modified settings
+    [[Model sharedInstance] saveToDisk];
+    // Redraw current views
+    [self reLoadNavigation];
+}
+
+// Called when changing theme
+-(void)reLoadNavigation
+{
+    NSArray *windows = [UIApplication sharedApplication].windows;
+    for (UIWindow *window in windows) {
+        for (UIView *view in window.subviews) {
+            [view removeFromSuperview];
+            [window addSubview:view];
         }
     }
 }
@@ -212,6 +245,9 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+
+    // Should we change the theme ?
+    [self screenBrightnessChanged:nil];
 
     // Should we reopen the session ?
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
