@@ -412,10 +412,10 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors
-"settingsHeader_colors" = "Color Settings";
+"settingsHeader_colors" = "Kleuren";
 "settings_darkPalette" = "Dark Palette";
-"settings_switchPalette" = "Switch Automatically";
-"settings_brightness" = "Brightness";
+"settings_switchPalette" = "Schakel automatisch";
+"settings_brightness" = "Helderheid";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobiel";

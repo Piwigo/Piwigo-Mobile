@@ -53,8 +53,8 @@
 "login_communityParameters" = "Parameter Komunitas";
 "login_serverParameters" = "Parameter Piwigo";
 "login_connectionChanged" = "Koneksi diubah!";
-"loginHTTP_title" = "HTTP Credentials";
-"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTP_title" = "Kredensial HTTP";
+"loginHTTP_message" = "Otentikasi akses dasar yang dibutuhkan oleh server Piwigo‎:";
 "loginHTTPuser_placeholder" = "Nama Pengguna";
 "loginHTTPpwd_placeholder" = "Kata sandi";
 
@@ -333,7 +333,7 @@
 "settings_username" = "Nama Pengguna";
 "settings_notLoggedIn" = " - Tidak Masuk - ";
 "settings_logout" = "Keluar";
-"settingsFooter_formats" = "The server accepts the following file types";
+"settingsFooter_formats" = "Server menerima jenis file berikut";
 
 // Settings — General
 "settingsHeader_general" = "Pengaturan Umum";
@@ -412,10 +412,10 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors
-"settingsHeader_colors" = "Color Settings";
-"settings_darkPalette" = "Dark Palette";
-"settings_switchPalette" = "Switch Automatically";
-"settings_brightness" = "Brightness";
+"settingsHeader_colors" = "Warna";
+"settings_darkPalette" = "Palet gelap";
+"settings_switchPalette" = "Beralih secara otomatis";
+"settings_brightness" = "Kecerahan";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

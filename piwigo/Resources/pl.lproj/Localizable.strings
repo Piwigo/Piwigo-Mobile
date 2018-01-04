@@ -53,8 +53,8 @@
 "login_communityParameters" = "Community parametrów";
 "login_serverParameters" = "Piwigo parametrów";
 "login_connectionChanged" = "Połączenie uległo zmianie!";
-"loginHTTP_title" = "HTTP Credentials";
-"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTP_title" = "Poświadczenia HTTP";
+"loginHTTP_message" = "Podstawowa autoryzacja dostępu jest wymagana przez serwer Piwigo‎:";
 "loginHTTPuser_placeholder" = "Nazwa Użytkownika";
 "loginHTTPpwd_placeholder" = "Hasło";
 
@@ -333,7 +333,7 @@
 "settings_username" = "Nazwa Użytkownika";
 "settings_notLoggedIn" = " - Nie jesteś zalogowany - ";
 "settings_logout" = "Wyloguj";
-"settingsFooter_formats" = "The server accepts the following file types";
+"settingsFooter_formats" = "Serwer akceptuje następujące typy plików";
 
 // Settings — General
 "settingsHeader_general" = "Ustawienia Ogólne";
@@ -412,10 +412,10 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors
-"settingsHeader_colors" = "Color Settings";
-"settings_darkPalette" = "Dark Palette";
-"settings_switchPalette" = "Switch Automatically";
-"settings_brightness" = "Brightness";
+"settingsHeader_colors" = "Kolory";
+"settings_darkPalette" = "Ciemna paleta";
+"settings_switchPalette" = "Przełącz się automatycznie";
+"settings_brightness" = "Jasność";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

@@ -53,8 +53,8 @@
 "login_communityParameters" = "Communityparametrar";
 "login_serverParameters" = "Piwigoparametrar";
 "login_connectionChanged" = "Anslutningen ändrad!";
-"loginHTTP_title" = "HTTP Credentials";
-"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTP_title" = "Http-referenser";
+"loginHTTP_message" = "Grundläggande autentisering som krävs av Piwigo-servern‎:";
 "loginHTTPuser_placeholder" = "Användarnamn";
 "loginHTTPpwd_placeholder" = "Lösenord";
 
@@ -333,7 +333,7 @@
 "settings_username" = "Användarnamn";
 "settings_notLoggedIn" = " -Inte inloggad- ";
 "settings_logout" = "Logga ut";
-"settingsFooter_formats" = "The server accepts the following file types";
+"settingsFooter_formats" = "Servern accepterar följande filtyper";
 
 // Settings — General
 "settingsHeader_general" = "Allmänna inställningar";
@@ -412,10 +412,10 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors
-"settingsHeader_colors" = "Color Settings";
-"settings_darkPalette" = "Dark Palette";
-"settings_switchPalette" = "Switch Automatically";
-"settings_brightness" = "Brightness";
+"settingsHeader_colors" = "Färger";
+"settings_darkPalette" = "Mörka palett";
+"settings_switchPalette" = "Automatiskt växla";
+"settings_brightness" = "Ljusstyrka";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

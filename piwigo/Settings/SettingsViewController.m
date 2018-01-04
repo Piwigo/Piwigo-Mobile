@@ -31,8 +31,8 @@ typedef enum {
 	SettingsSectionLogout,
 	SettingsSectionGeneral,
 	SettingsSectionImageUpload,
-    SettingsSectionColor,
     SettingsSectionCache,
+    SettingsSectionColor,
 	SettingsSectionAbout,
 	SettingsSectionCount
 } SettingsSection;
@@ -184,11 +184,11 @@ typedef enum {
         case SettingsSectionImageUpload:
             headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
             break;
-        case SettingsSectionColor:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_colors", @"Color Settings");
-            break;
         case SettingsSectionCache:
             headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
+            break;
+        case SettingsSectionColor:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_colors", @"Colors");
             break;
         case SettingsSectionAbout:
             headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"Information");
@@ -316,11 +316,11 @@ typedef enum {
             nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
                                 ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
             break;
-        case SettingsSectionColor:
-            nberOfRows = 1 + ([Model sharedInstance].isDarkPaletteModeActive ? 1 + ([Model sharedInstance].switchPaletteAutomatically ? 1 : 0) : 0);
-            break;
         case SettingsSectionCache:
             nberOfRows = 2;
+            break;
+        case SettingsSectionColor:
+            nberOfRows = 1 + ([Model sharedInstance].isDarkPaletteModeActive ? 1 + ([Model sharedInstance].switchPaletteAutomatically ? 1 : 0) : 0);
             break;
         case SettingsSectionAbout:
             nberOfRows = 5;
@@ -798,6 +798,67 @@ typedef enum {
 			}
 			break;
 		}
+        case SettingsSectionCache:       // Cache Settings
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Disk
+                {
+                    NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
+                    float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
+                    cell.slider.minimumValue = 10;
+                    cell.slider.maximumValue = 200;
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentDiskSizeInMB];
+                    } else {
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
+                    }
+                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
+                    cell.incrementSliderBy = 10;
+                    cell.sliderValue = [Model sharedInstance].diskCache;
+                    [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Memory
+                {
+                    NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
+                    float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
+                    cell.slider.minimumValue = 10;
+                    cell.slider.maximumValue = 200;
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentMemSizeInMB];
+                    } else {
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
+                    }
+                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
+                    cell.incrementSliderBy = 10;
+                    cell.sliderValue = [Model sharedInstance].memoryCache;
+                    [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+            }
+            break;
+        }
         case SettingsSectionColor:      // Colors
         {
             switch (indexPath.row)
@@ -896,67 +957,6 @@ typedef enum {
                     cell.incrementSliderBy = 1;
                     cell.sliderValue = [Model sharedInstance].switchPaletteThreshold;
                     [cell.slider addTarget:self action:@selector(updatePaletteBrightnessThreshold:) forControlEvents:UIControlEventValueChanged];
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-            }
-            break;
-        }
-        case SettingsSectionCache:       // Cache Settings
-        {
-            switch(indexPath.row)
-            {
-                case 0:     // Disk
-                {
-                    NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
-                    float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
-                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
-                    if(!cell)
-                    {
-                        cell = [SliderTableViewCell new];
-                    }
-                    cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
-                    cell.slider.minimumValue = 10;
-                    cell.slider.maximumValue = 200;
-                    
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
-                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentDiskSizeInMB];
-                    } else {
-                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
-                    }
-                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = 10;
-                    cell.sliderValue = [Model sharedInstance].diskCache;
-                    [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-                case 1:     // Memory
-                {
-                    NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
-                    float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
-                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
-                    if(!cell)
-                    {
-                        cell = [SliderTableViewCell new];
-                    }
-                    cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
-                    cell.slider.minimumValue = 10;
-                    cell.slider.maximumValue = 200;
-                    
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
-                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentMemSizeInMB];
-                    } else {
-                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
-                    }
-                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = 10;
-                    cell.sliderValue = [Model sharedInstance].memoryCache;
-                    [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
                     tableViewCell = cell;
                     break;

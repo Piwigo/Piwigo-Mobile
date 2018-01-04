@@ -412,7 +412,7 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors
-"settingsHeader_colors" = "إعدادات الألوان";
+"settingsHeader_colors" = "الألوان";
 "settings_darkPalette" = "اللوحة المظلمة";
 "settings_switchPalette" = "التبديل تلقائيا";
 "settings_brightness" = "السطوع";

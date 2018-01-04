@@ -412,7 +412,7 @@
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors
-"settingsHeader_colors" = "Color Settings";
+"settingsHeader_colors" = "Colors";
 "settings_darkPalette" = "Dark Palette";
 "settings_switchPalette" = "Switch Automatically";
 "settings_brightness" = "Brightness";
