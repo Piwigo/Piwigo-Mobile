@@ -75,7 +75,7 @@
     // Header height?
     NSString *header = NSLocalizedString(@"defaultThumbnailSizeHeader", @"Please Select a Thumbnail Size");
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
                                              context:nil];
@@ -97,7 +97,7 @@
 
     // Header height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
                                                        context:nil];
@@ -243,7 +243,7 @@
     // Footer height?
     NSString *footer = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
                                              context:nil];
@@ -266,7 +266,7 @@
 
     // Footer height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
                                                        context:nil];

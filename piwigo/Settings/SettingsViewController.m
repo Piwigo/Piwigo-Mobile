@@ -197,7 +197,7 @@ typedef enum {
     
     // Header height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
                                                        context:nil];
@@ -238,7 +238,7 @@ typedef enum {
     
     // Footer height?
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
-    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
                                              context:nil];
@@ -271,7 +271,7 @@ typedef enum {
     
     // Footer height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
-    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                  options:NSStringDrawingUsesLineFragmentOrigin
                                               attributes:attributes
                                                  context:nil];
