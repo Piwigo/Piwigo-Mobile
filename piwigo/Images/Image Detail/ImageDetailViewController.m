@@ -87,7 +87,7 @@
 	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
 	self.navigationItem.rightBarButtonItem = imageOptionsButton;
 	
-    // Never present video poster in fulls screen
+    // Never present video poster in full screen
     if (self.imageData.isVideo) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
