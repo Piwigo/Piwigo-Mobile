@@ -298,13 +298,15 @@
                      else
                      {
                          NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
-                         
+
+                         // Create image downloader instance
+                         AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+                         dow.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
+
                          // Ensure that SSL certificates won't be rejected
                          AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
                          [policy setAllowInvalidCertificates:YES];
                          [policy setValidatesDomainName:NO];
-                         
-                         AFImageDownloader *dow = [AFImageDownloader defaultInstance];
                          [dow.sessionManager setSecurityPolicy:policy];
                          
                          // Manage servers performing HTTP Basic Access Authentication

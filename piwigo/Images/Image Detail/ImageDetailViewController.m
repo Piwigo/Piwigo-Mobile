@@ -257,10 +257,11 @@
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
     NSString *URLRequest = [NetworkHandler getURLWithPath:self.imageData.ThumbPath asPiwigoRequest:NO withURLParams:nil];
-
+    
     // Create image downloader instance
     AFImageDownloader *dow = [AFImageDownloader defaultInstance];
-    
+    dow.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
+
     // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];

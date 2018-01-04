@@ -78,7 +78,7 @@
     
     if(server.length > 0 || (user.length > 0 && password.length > 0))
 	{
-		[self.loginVC launchLogin];
+        [self.loginVC launchLogin];
 	}
 	
     // No login
