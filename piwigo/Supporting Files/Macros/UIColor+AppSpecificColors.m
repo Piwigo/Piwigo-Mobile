@@ -131,6 +131,15 @@
         return [UIColor colorWithRed:239/255.0 green:239/255.0 blue:244/255.0 alpha:1.0];
 }
 
+// Color of lines under fields
++(UIColor*)piwigoUnderlineColor
+{
+    if ([Model sharedInstance].isDarkPaletteActive)
+        return [UIColor colorWithRed:51/255.0 green:51/255.0 blue:53/255.0 alpha:1.0];
+    else
+        return [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1];
+}
+
 
 +(UIColor*)piwigoGray
 {

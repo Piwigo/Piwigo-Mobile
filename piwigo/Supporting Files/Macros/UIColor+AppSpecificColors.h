@@ -26,6 +26,7 @@
 +(UIColor*)piwigoLeftLabelColor;
 +(UIColor*)piwigoRightLabelColor;
 +(UIColor*)piwigoThumbColor;
++(UIColor*)piwigoUnderlineColor;
 
 +(UIColor*)piwigoGray;
 +(UIColor*)piwigoGrayLight;
