@@ -29,7 +29,7 @@
 	self = [super initWithFrame:frame];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoWhiteCream];
+		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
 		self.cellSelected = NO;
 		
 		// Image
@@ -86,6 +86,8 @@
         // Uploading stuff: progress bar
 		self.uploadingProgress = [UIProgressView new];
 		self.uploadingProgress.translatesAutoresizingMaskIntoConstraints = NO;
+        self.uploadingProgress.progressTintColor = [UIColor piwigoOrange];
+        self.uploadingProgress.trackTintColor = [UIColor piwigoLeftLabelColor];
 		[self.uploadingView addSubview:self.uploadingProgress];
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgress]];
         [self.uploadingView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.uploadingProgress amount:10]];
@@ -98,7 +100,7 @@
 		UILabel *uploadingLabel = [UILabel new];
 		uploadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		uploadingLabel.font = [UIFont piwigoFontNormal];
-		uploadingLabel.textColor = [UIColor piwigoWhiteCream];
+		uploadingLabel.textColor = [UIColor piwigoRightLabelColor];
 		uploadingLabel.text = NSLocalizedString(@"imageUploadTableCell_uploading", @"Uploading...");
 		[self.uploadingView addSubview:uploadingLabel];
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:uploadingLabel]];

@@ -15,7 +15,6 @@
 @property (nonatomic, strong) UILabel *categoryLabel;
 @property (nonatomic, strong) PiwigoAlbumData *categoryData;
 @property (nonatomic, strong) UIView *loadTapView;
-//@property (nonatomic, strong) UIImageView *leftDisclosure;
 @property (nonatomic, strong) UIImageView *loadDisclosure;
 @property (nonatomic, strong) UILabel *cellDisclosure;
 @property (nonatomic, strong) UILabel *loadLabel;
@@ -30,7 +29,7 @@
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoWhiteCream];
+//		self.backgroundColor = [UIColor piwigoWhiteCream];
 		
 		self.categoryLabel = [UILabel new];
 		self.categoryLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -69,7 +68,6 @@
 		self.loadLabel.font = [UIFont piwigoFontNormal];
 		self.loadLabel.font = [self.loadLabel.font fontWithSize:13];
 		self.loadLabel.textColor = [UIColor lightGrayColor];
-//		self.loadLabel.textAlignment = NSTextAlignmentRight;
 		self.loadLabel.text = NSLocalizedString(@"categoyUpload_loadSubCategories", @"load");
 		[self.contentView addSubview:self.loadLabel];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.loadLabel]];
@@ -125,15 +123,15 @@
 {
 	self.categoryData = category;
 
-	// Is this a sub-category?
+    // Is this a sub-category?
     NSInteger depth = [self.categoryData getDepthOfCategory];
     if(depth <= 1) {
-        // Categories are presented in piwigoGray
+        // Categories
         self.categoryLabel.text = self.categoryData.name;
-        self.categoryLabel.textColor = [UIColor piwigoGray];
+        self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
     } else {
         // Sub-categories are presented in another color
-        self.categoryLabel.textColor = [UIColor piwigoBrown];
+        self.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
 
         // Append "—" characters to sub-category names
         NSString *subAlbumMark = [@"" stringByPaddingToLength:depth-1 withString:@"—" startingAtIndex:0];
@@ -199,8 +197,11 @@
 -(void)setCellLeftLabel:(NSString*)text
 {
 	self.categoryLabel.text = text;
-    self.categoryLabel.textColor = [UIColor piwigoGray];
-	[self hideUploadViews];
+    self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.tintColor = [UIColor piwigoOrange];
+
+    [self hideUploadViews];
     self.cellDisclosure.hidden = NO;
 }
 

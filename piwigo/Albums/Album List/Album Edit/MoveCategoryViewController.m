@@ -56,28 +56,51 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return 64.0;
+    // Header height?
+    NSString *header = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectParent", @"Select an album to move album \"%@\" into"), self.selectedCategory.name];
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    return ceil(headerRect.size.height + 4.0 + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-	
+    // Header label
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor piwigoOrange];
+	headerLabel.textColor = [UIColor piwigoHeaderColor];
 	headerLabel.text = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectParent", @"Select an album to move album \"%@\" into"), self.selectedCategory.name];
     headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
-	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
-	[header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    [header addSubview:headerLabel];
+	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
 																   options:kNilOptions
 																   metrics:nil
 																	 views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
 	
 	return header;
 }
@@ -192,13 +215,8 @@
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_9_x_Max) {
-        hud.contentColor = [UIColor piwigoWhiteCream];
-        hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
-    } else {
-        hud.contentColor = [UIColor piwigoGray];
-        hud.bezelView.color = [UIColor piwigoGrayLight];
-    }
+    hud.contentColor = [UIColor piwigoHudContentColor];
+    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
 
     // Define the text
     hud.label.text = NSLocalizedString(@"moveCategoryHUD_moving", @"Moving Album…");

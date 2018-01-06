@@ -36,9 +36,13 @@ static SEL extracted() {
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
-		self.categories = [NSArray new];
+		// Background color
+        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+
+        // List of albums
+        self.categories = [NSArray new];
 		
+        // Table view
 		self.albumsTableView = [UITableView new];
 		self.albumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.albumsTableView.backgroundColor = [UIColor clearColor];
@@ -90,20 +94,55 @@ static SEL extracted() {
 		UIBarButtonItem *addCategory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showCreateCategoryDialog)];
 		self.navigationItem.rightBarButtonItem = addCategory;
 	}
+    
+    // No multiple selection
     self.albumsTableView.allowsMultipleSelectionDuringEditing = NO;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    // Tab bar appearance
+    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 10, *)) {
+        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
+    }
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
 	
+    // Refresh control
 	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-	refreshControl.backgroundColor = [UIColor piwigoOrange];
-	refreshControl.tintColor = [UIColor piwigoGray];
+	refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
+	refreshControl.tintColor = [UIColor piwigoOrange];
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoOrange],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributes];
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
     self.albumsTableView.alwaysBounceVertical = YES;
-	
+
     [self getAlbumData];
 	[self refreshShowingCells];
 }
@@ -238,13 +277,8 @@ static SEL extracted() {
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_9_x_Max) {
-        hud.contentColor = [UIColor piwigoWhiteCream];
-        hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
-    } else {
-        hud.contentColor = [UIColor piwigoGray];
-        hud.bezelView.color = [UIColor piwigoGrayLight];
-    }
+    hud.contentColor = [UIColor piwigoHudContentColor];
+    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
 
     // Define the text
     hud.label.text = NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…");

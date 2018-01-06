@@ -41,7 +41,7 @@ CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
 	}
 	
 	if (!self.placeholderColor) {
-		[self setPlaceholderColor:[UIColor lightGrayColor]];
+		[self setPlaceholderColor:[UIColor piwigoLeftLabelColor]];
 	}
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textChanged:) name:UITextViewTextDidChangeNotification object:nil];
@@ -52,7 +52,7 @@ CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
 	if( (self = [super initWithFrame:frame]) )
 	{
 		[self setPlaceholder:@""];
-		[self setPlaceholderColor:[UIColor lightGrayColor]];
+		[self setPlaceholderColor:[UIColor piwigoLeftLabelColor]];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textChanged:) name:UITextViewTextDidChangeNotification object:nil];
 	}
 	return self;
@@ -91,8 +91,8 @@ CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
 			_placeHolderLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,8,self.bounds.size.width - 16,0)];
 			_placeHolderLabel.lineBreakMode = NSLineBreakByWordWrapping;
 			_placeHolderLabel.numberOfLines = 0;
-			_placeHolderLabel.font = self.font;
-			_placeHolderLabel.backgroundColor = [UIColor clearColor];
+//			_placeHolderLabel.font = self.font;
+            _placeHolderLabel.font = [UIFont piwigoFontNormal];
 			_placeHolderLabel.textColor = self.placeholderColor;
 			_placeHolderLabel.alpha = 0;
 			_placeHolderLabel.tag = 999;

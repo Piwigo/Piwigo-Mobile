@@ -118,7 +118,7 @@ NSInteger const loadingViewTag = 899;
         } else {
             // HTTP credentials refused!
             [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-            return NSURLSessionAuthChallengeUseCredential;
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
     
@@ -180,7 +180,8 @@ NSInteger const loadingViewTag = 899;
                                                   persistence:NSURLCredentialPersistenceForSession];
             return NSURLSessionAuthChallengeUseCredential;
         } else {
-            return NSURLSessionAuthChallengeUseCredential;
+            // HTTP credentials refused!
+           return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
     

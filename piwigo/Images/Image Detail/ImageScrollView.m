@@ -32,7 +32,7 @@
 		self.imageView = [UIImageView new];
 		self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        self.imageView.backgroundColor = [UIColor piwigoGray];
+        self.imageView.backgroundColor = [UIColor piwigoBackgroundColor];
 		[self addSubview:self.imageView];
 
         // Play button above posters of movie

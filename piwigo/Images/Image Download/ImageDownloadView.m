@@ -26,11 +26,11 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+		self.backgroundColor = [UIColor piwigoBackgroundColor];
 		
 		self.modal = [UIView new];
 		self.modal.translatesAutoresizingMaskIntoConstraints = NO;
-		self.modal.backgroundColor = [UIColor piwigoWhiteCream];
+		self.modal.backgroundColor = [UIColor piwigoCellBackgroundColor];
 		self.modal.layer.cornerRadius = 10;
 		[self addSubview:self.modal];
 		[self addConstraints:[NSLayoutConstraint constraintCenterView:self.modal]];
@@ -42,7 +42,7 @@
 		self.statusLabel.text = NSLocalizedString(@"downloadingImage", @"Downloading Image");
 		self.statusLabel.font = [UIFont piwigoFontNormal];
 		self.statusLabel.font = [self.statusLabel.font fontWithSize:18];
-		self.statusLabel.textColor = [UIColor piwigoGray];
+		self.statusLabel.textColor = [UIColor piwigoLeftLabelColor];
         self.statusLabel.textAlignment = NSTextAlignmentCenter;
 		self.statusLabel.adjustsFontSizeToFitWidth = YES;
 		self.statusLabel.minimumScaleFactor = 0.5;
@@ -58,7 +58,7 @@
 		self.percentLabel.text = [NSString stringWithFormat:@"%@ %%", @(0)];
 		self.percentLabel.font = [UIFont piwigoFontNormal];
 		self.percentLabel.font = [self.percentLabel.font fontWithSize:15];
-		self.percentLabel.textColor = [UIColor piwigoGrayLight];
+		self.percentLabel.textColor = [UIColor piwigoLeftLabelColor];
 		[self.modal addSubview:self.percentLabel];
 		[self.modal addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.percentLabel]];
 		
@@ -66,7 +66,7 @@
 		self.totalPercentLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.totalPercentLabel.font = [UIFont piwigoFontNormal];
 		self.totalPercentLabel.font = [self.totalPercentLabel.font fontWithSize:16.5];
-		self.totalPercentLabel.textColor = [UIColor piwigoGray];
+		self.totalPercentLabel.textColor = [UIColor piwigoLeftLabelColor];
 		[self.modal addSubview:self.totalPercentLabel];
 		[self.modal addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.totalPercentLabel]];
 		[self.modal addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.totalPercentLabel amount:10]];

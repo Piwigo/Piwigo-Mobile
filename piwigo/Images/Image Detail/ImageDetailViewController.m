@@ -87,7 +87,7 @@
 	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
 	self.navigationItem.rightBarButtonItem = imageOptionsButton;
 	
-    // Never present video poster in fulls screen
+    // Never present video poster in full screen
     if (self.imageData.isVideo) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
@@ -257,10 +257,11 @@
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
     NSString *URLRequest = [NetworkHandler getURLWithPath:self.imageData.ThumbPath asPiwigoRequest:NO withURLParams:nil];
-
+    
     // Create image downloader instance
     AFImageDownloader *dow = [AFImageDownloader defaultInstance];
-    
+    dow.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
+
     // Ensure that SSL certificates won't be rejected
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
@@ -282,7 +283,8 @@
                                                   persistence:NSURLCredentialPersistenceForSession];
             return NSURLSessionAuthChallengeUseCredential;
         } else {
-            return NSURLSessionAuthChallengeUseCredential;
+            // HTTP credentials refused!
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
     

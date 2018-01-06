@@ -29,7 +29,6 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
 		self.categoryId = categoryId;
 		
 		self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
@@ -67,7 +66,7 @@
 		
 		self.localAlbumsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.localAlbumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.localAlbumsTableView.backgroundColor = [UIColor piwigoGray];
+        self.localAlbumsTableView.backgroundColor = [UIColor clearColor];
 		self.localAlbumsTableView.delegate = self;
 		self.localAlbumsTableView.dataSource = self;
 		[self.localAlbumsTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
@@ -78,33 +77,76 @@
 	return self;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    // Table view
+    self.localAlbumsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.localAlbumsTableView reloadData];
+}
+
 
 #pragma mark UITableView Methods
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 64.0;
+    // Header height?
+    NSString *header = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    return ceil(headerRect.size.height + 4.0 + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-    
+    // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
-    headerLabel.textColor = [UIColor piwigoOrange];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.text = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
     headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
     [header addSubview:headerLabel];
-    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:10]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
                                                                    options:kNilOptions
                                                                    metrics:nil
                                                                      views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
     
     return header;
 }

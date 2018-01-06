@@ -23,7 +23,12 @@
     // Initialization code
     [super awakeFromNib];
 	
-	self.leftLabel.textColor = [UIColor piwigoGray];
+    self.backgroundColor = [UIColor piwigoBackgroundColor];
+
+    self.leftLabel.font = [UIFont piwigoFontNormal];
+	self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.rightLabel.font = [UIFont piwigoFontNormal];
+    self.rightLabel.textColor = [UIColor piwigoRightLabelColor];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

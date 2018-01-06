@@ -58,6 +58,10 @@ typedef enum {
 @property (nonatomic, assign) NSInteger defaultThumbnailSize;
 @property (nonatomic, assign) NSInteger defaultImagePreviewSize;
 @property (nonatomic, assign) BOOL displayImageTitles;
+@property (nonatomic, assign) BOOL isDarkPaletteActive;
+@property (nonatomic, assign) BOOL switchPaletteAutomatically;
+@property (nonatomic, assign) NSInteger switchPaletteThreshold;
+@property (nonatomic, assign) BOOL isDarkPaletteModeActive;
 
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;

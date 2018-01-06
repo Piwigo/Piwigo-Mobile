@@ -6,11 +6,13 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "ImageCollectionViewCell.h"
 #import "PiwigoImageData.h"
 #import "Model.h"
 #import "NetworkHandler.h"
-#import <AFNetworking/AFImageDownloader.h>
+#import "SAMKeychain.h"
 
 @interface ImageCollectionViewCell()
 
@@ -66,7 +68,7 @@
         // Banners at bottom of thumbnails
 		self.bottomLayer = [UIView new];
 		self.bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
-		self.bottomLayer.backgroundColor = [UIColor piwigoGray];
+		self.bottomLayer.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.bottomLayer.alpha = 0.5;
 		[self.contentView addSubview:self.bottomLayer];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
@@ -76,7 +78,7 @@
 		self.nameLabel = [UILabel new];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.nameLabel.font = [UIFont piwigoFontNormal];
-		self.nameLabel.textColor = [UIColor piwigoWhiteCream];
+		self.nameLabel.textColor = [UIColor piwigoLeftLabelColor];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.nameLabel];
@@ -166,6 +168,26 @@
     AFImageDownloader *dow = [AFImageDownloader defaultInstance];
     [dow.sessionManager setSecurityPolicy:policy];
     
+    // Manage servers performing HTTP Basic Access Authentication
+    [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+        
+        // HTTP basic authentification credentials
+        NSString *user = [Model sharedInstance].HttpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        
+        // Supply requested credentials if not provided yet
+        if (challenge.previousFailureCount == 0) {
+            // Trying HTTP credentials…
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        } else {
+            // HTTP credentials refused!
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        }
+    }];
+
     // Download the image of the requested resolution (or get it from the cache)
     switch ([Model sharedInstance].defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:

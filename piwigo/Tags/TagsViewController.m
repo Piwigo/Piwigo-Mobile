@@ -24,10 +24,11 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor whiteColor];
+		self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.title = NSLocalizedString(@"tags", @"Tags");
 				
 		self.tagsTableView = [UITableView new];
+        self.tagsTableView.backgroundColor = [UIColor clearColor];
 		self.tagsTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.tagsTableView.delegate = self;
 		self.tagsTableView.dataSource = self;
@@ -47,11 +48,20 @@
 	return self;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Table view
+    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.tagsTableView reloadData];
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
 	
-	if([self.delegate respondsToSelector:@selector(didExitWithSelectedTags:)])
+    if([self.delegate respondsToSelector:@selector(didExitWithSelectedTags:)])
 	{
 		[self.delegate didExitWithSelectedTags:self.alreadySelectedTags];
 	}
@@ -86,13 +96,67 @@
 }
 
 #pragma mark UITableView Methods
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    // Header height?
+    NSString *header;
     if (section == 0) {
-        return NSLocalizedString(@"tagsHeader_selected", @"Selected");
+        header = NSLocalizedString(@"tagsHeader_selected", @"Selected");
     } else {
-        return NSLocalizedString(@"tagsHeader_all", @"All");
+        header = NSLocalizedString(@"tagsHeader_all", @"All");
     }
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+    return ceil(headerRect.size.height + 4.0 + 10.0);
 }
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    // Header label
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textAlignment = NSTextAlignmentNatural;
+    if (section == 0) {
+        headerLabel.text = NSLocalizedString(@"tagsHeader_selected", @"Selected");
+    } else {
+        headerLabel.text = NSLocalizedString(@"tagsHeader_all", @"All");
+    }
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    header.backgroundColor = [UIColor clearColor];
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
+    
+    return header;
+}
+
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
 }
@@ -113,14 +177,17 @@
 	{
 		cell = [UITableViewCell new];
 	}
+    
     PiwigoTagData *currentTag;
     if (indexPath.section == 0) {
         currentTag = self.alreadySelectedTags[indexPath.row];
     } else {
         currentTag = [TagsData sharedInstance].tagList[indexPath.row];
     }
-    
-        cell.textLabel.text = currentTag.tagName;
+    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.tintColor = [UIColor piwigoOrange];
+    cell.textLabel.text = currentTag.tagName;
+    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
         
     NSArray *selectedTagIDs = [self.alreadySelectedTags valueForKey:@"tagId"];
     if ([selectedTagIDs containsObject:@(currentTag.tagId)]) {

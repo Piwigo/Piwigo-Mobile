@@ -6,8 +6,8 @@
 //  Copyright © 2017 Piwigo.org. All rights reserved.
 //
 
-#import <sys/utsname.h>                    // For determining iOS device model
 #import "ReleaseNotesViewController.h"
+#import "Model.h"
 
 @interface ReleaseNotesViewController ()
 
@@ -28,7 +28,6 @@
     self = [super init];
     if(self)
     {
-        self.view.backgroundColor = [UIColor piwigoGray];
         self.title = NSLocalizedString(@"settings_releaseNotes", @"Release Notes");
         
         self.piwigoTitle = [UILabel new];
@@ -43,7 +42,6 @@
         self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
         self.byLabel1.font = [UIFont piwigoFontNormal];
         self.byLabel1.font = [self.byLabel1.font fontWithSize:16];
-        self.byLabel1.textColor = [UIColor piwigoWhiteCream];
         self.byLabel1.text = NSLocalizedStringFromTableInBundle(@"authors1", @"About", [NSBundle mainBundle], @"By Spencer Baker, Olaf Greck,");
         [self.view addSubview:self.byLabel1];
         
@@ -51,7 +49,6 @@
         self.byLabel2.translatesAutoresizingMaskIntoConstraints = NO;
         self.byLabel2.font = [UIFont piwigoFontNormal];
         self.byLabel2.font = [self.byLabel2.font fontWithSize:16];
-        self.byLabel2.textColor = [UIColor piwigoWhiteCream];
         self.byLabel2.text = NSLocalizedStringFromTableInBundle(@"authors2", @"About", [NSBundle mainBundle], @"and Eddy Lelièvre-Berna");
         [self.view addSubview:self.byLabel2];
         
@@ -59,7 +56,6 @@
         self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.versionLabel.font = [UIFont piwigoFontNormal];
         self.versionLabel.font = [self.versionLabel.font fontWithSize:10];
-        self.versionLabel.textColor = [UIColor piwigoWhiteCream];
         [self.view addSubview:self.versionLabel];
         
         NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
@@ -70,10 +66,9 @@
         self.textView.restorationIdentifier = @"release+notes";
         self.textView.translatesAutoresizingMaskIntoConstraints = NO;
         self.textView.layer.cornerRadius = 5;
-        [self.view addSubview:self.textView];
         
         // Release notes attributed string
-        NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:@"\n\n\n\n\n"];
+        NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
                 
         // Release 2.1.6 — Bundle string
         NSString *v216String = NSLocalizedStringFromTableInBundle(@"v2.1.6_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.6 Release Notes text");
@@ -170,10 +165,43 @@
         self.textView.editable = NO;
         self.textView.allowsEditingTextAttributes = NO;
         self.textView.selectable = YES;
-
+        [self.view addSubview:self.textView];
+        
         [self addConstraints];
     }
     return self;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    
+    // Tab bar appearance
+    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 10, *)) {
+        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
+    }
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
+
+    // Text color depdending on background color
+    self.byLabel1.textColor = [UIColor piwigoTextColor];
+    self.byLabel2.textColor = [UIColor piwigoTextColor];
+    self.versionLabel.textColor = [UIColor piwigoTextColor];
 }
 
 -(void)addConstraints
@@ -191,26 +219,24 @@
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
     
-    // iPhone X ?
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    NSString* deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-    
-    if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
-        // Add 25px for iPhone X (not great in landscape mode but temporary solution)
+    if (@available(iOS 11, *)) {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|-105-[title]-[by1][by2]-3-[usu]-10-[textView]-100-|"
-                                   options:kNilOptions metrics:nil views:views]];
+                               constraintsWithVisualFormat:@"V:|-[title]-[by1][by2]-3-[usu]-10-[textView]-|"
+                               options:kNilOptions metrics:nil views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textView]-|"
+                                                                          options:kNilOptions
+                                                                          metrics:nil
+                                                                            views:views]];
     } else {
         [self.view addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"V:|-80-[title]-[by1][by2]-3-[usu]-10-[textView]-60-|"
                                    options:kNilOptions metrics:nil views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
+                                                                          options:kNilOptions
+                                                                          metrics:nil
+                                                                            views:views]];
     }
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
-                                                                      options:kNilOptions
-                                                                      metrics:nil
-                                                                        views:views]];    
+
 }
 
 @end

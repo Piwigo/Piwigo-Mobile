@@ -25,10 +25,15 @@
     // Initialization code
     [super awakeFromNib];
 
-    self.leftLabel.textColor = [UIColor piwigoGray];
+    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
 	
 	self.tagsString = @"";
 	self.leftLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
+    self.leftLabel.font = [UIFont piwigoFontNormal];
+    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.rightLabel.font = [UIFont piwigoFontNormal];
+    self.rightLabel.textColor = [UIColor piwigoRightLabelColor];
 }
 
 -(void)setTagsString:(NSString *)tagsString
@@ -37,12 +42,10 @@
 	
 	if(tagsString.length <= 0)
 	{
-		self.rightLabel.textColor = [UIColor lightGrayColor];
 		self.rightLabel.text = NSLocalizedString(@"none", @"none");
 	}
 	else
 	{
-		self.rightLabel.textColor = [UIColor blackColor];
 		self.rightLabel.text = tagsString;
 	}
 }

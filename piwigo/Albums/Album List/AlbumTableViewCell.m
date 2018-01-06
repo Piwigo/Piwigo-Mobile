@@ -19,16 +19,17 @@
 #import "MoveCategoryViewController.h"
 #import "NetworkHandler.h"
 #import "MBProgressHUD.h"
-
+#import "SAMKeychain.h"
 
 @interface AlbumTableViewCell() <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundImage;
-@property (nonatomic, strong) OutlinedText *albumName;
+@property (nonatomic, strong) UILabel *albumName;
 @property (nonatomic, strong) UILabel *numberOfImages;
 @property (nonatomic, strong) UILabel *date;
-@property (nonatomic, strong) UIView *textUnderlay;
-@property (nonatomic, strong) OutlinedText *cellDisclosure;
+@property (nonatomic, strong) UIView *textUnderlayDark;
+@property (nonatomic, strong) UIView *textUnderlayLight;
+@property (nonatomic, strong) UILabel *cellDisclosure;
 @property (nonatomic, strong) NSURLSessionTask *cellDataRequest;
 @property (nonatomic, strong) UIAlertAction *categoryAction;
 @property (nonatomic, strong) UIAlertAction *deleteAction;
@@ -42,14 +43,13 @@
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoGray];
-		
 		self.backgroundImage = [UIImageView new];
 		self.backgroundImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.backgroundImage.contentMode = UIViewContentModeScaleAspectFill;
 		self.backgroundImage.clipsToBounds = YES;
-		self.backgroundImage.backgroundColor = [UIColor piwigoGray];
+		self.backgroundImage.backgroundColor = [UIColor clearColor];
 		self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
+        self.backgroundImage.layer.cornerRadius = 10;
 		[self.contentView addSubview:self.backgroundImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[img]-5-|"
 																				 options:kNilOptions
@@ -57,20 +57,22 @@
 																				   views:@{@"img" : self.backgroundImage}]];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.backgroundImage]];
 		
-		if(IS_OS_8_OR_LATER)
-		{
-			UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-			self.textUnderlay = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-		}
-		else
-		{
-			self.textUnderlay = [UIView new];
-			self.textUnderlay.alpha = 0.5;
-		}
-		self.textUnderlay.translatesAutoresizingMaskIntoConstraints = NO;
-		[self.contentView addSubview:self.textUnderlay];
-		
-		self.albumName = [OutlinedText new];
+        UIBlurEffect *blurEffect;
+        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        self.textUnderlayDark = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        if (@available(iOS 10, *))
+            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        else
+            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        self.textUnderlayLight = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+		self.textUnderlayDark.translatesAutoresizingMaskIntoConstraints = NO;
+        self.textUnderlayDark.hidden = YES;
+		[self.contentView addSubview:self.textUnderlayDark];
+        self.textUnderlayLight.translatesAutoresizingMaskIntoConstraints = NO;
+        self.textUnderlayLight.hidden = YES;
+        [self.contentView addSubview:self.textUnderlayLight];
+
+		self.albumName = [UILabel new];         // Was OutlinedText
 		self.albumName.translatesAutoresizingMaskIntoConstraints = NO;
 		self.albumName.font = [UIFont piwigoFontNormal];
 		self.albumName.font = [self.albumName.font fontWithSize:21.0];
@@ -79,7 +81,7 @@
 		self.albumName.minimumScaleFactor = 0.6;
 		[self.contentView addSubview:self.albumName];
 
-        self.cellDisclosure = [OutlinedText new];
+        self.cellDisclosure = [UILabel new];    // Was OutlinedText
         if ([Model sharedInstance].isAppLanguageRTL) {
             self.cellDisclosure.text = @"<";
             self.cellDisclosure.textAlignment = NSLayoutAttributeLeftMargin;
@@ -95,24 +97,11 @@
         self.cellDisclosure.minimumScaleFactor = 0.6;
         [self.contentView addSubview:self.cellDisclosure];
 
-//        UIImage *cellDisclosureImg;
-//        if ([Model sharedInstance].isAppLanguageRTL) {
-//            cellDisclosureImg = [UIImage imageNamed:@"cellDisclosureLeft" ];
-//        } else {
-//            cellDisclosureImg = [UIImage imageNamed:@"cellDisclosureRight" ];
-//        }
-//        self.cellDisclosure = [UIImageView new];
-//        self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-//        self.cellDisclosure.image = [cellDisclosureImg imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//        self.cellDisclosure.tintColor = [UIColor piwigoWhiteCream];
-//        self.cellDisclosure.contentMode = UIViewContentModeScaleAspectFit;
-//        [self.contentView addSubview:self.cellDisclosure];
-
         self.numberOfImages = [UILabel new];
 		self.numberOfImages.translatesAutoresizingMaskIntoConstraints = NO;
 		self.numberOfImages.font = [UIFont piwigoFontNormal];
 		self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
-		self.numberOfImages.textColor = [UIColor piwigoWhiteCream];
+		self.numberOfImages.textColor = [UIColor piwigoTextColor];
 		self.numberOfImages.adjustsFontSizeToFitWidth = YES;
 		self.numberOfImages.minimumScaleFactor = 0.8;
 		self.numberOfImages.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -123,7 +112,7 @@
 		self.date.translatesAutoresizingMaskIntoConstraints = NO;
 		self.date.font = [UIFont piwigoFontNormal];
 		self.date.font = [self.date.font fontWithSize:16.0];
-		self.date.textColor = [UIColor piwigoWhiteCream];
+		self.date.textColor = [UIColor piwigoTextColor];
         self.numberOfImages.adjustsFontSizeToFitWidth = YES;
         self.numberOfImages.minimumScaleFactor = 0.8;
         if ([Model sharedInstance].isAppLanguageRTL) {
@@ -147,7 +136,7 @@
                                                             return YES;
                                                         }],
 								  [MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeMove.png"]
-												 backgroundColor:[UIColor piwigoGrayLight]
+												 backgroundColor:[UIColor piwigoBrown]
 														callback:^BOOL(MGSwipeTableCell *sender) {
 															[self moveCategory];
 															return YES;
@@ -184,37 +173,6 @@
                                                                              metrics:nil
                                                                                views:views]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintViewToSameBase:self.cellDisclosure equalToView:self.albumName]];
-//    if ([Model sharedInstance].isAppLanguageRTL) {
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-//                                                                     attribute:NSLayoutAttributeRight
-//                                                                     relatedBy:NSLayoutRelationEqual
-//                                                                        toItem:self.contentView
-//                                                                     attribute:NSLayoutAttributeRight
-//                                                                    multiplier:1.0
-//                                                                      constant:-20]];
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-//                                                                     attribute:NSLayoutAttributeLeft
-//                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
-//                                                                        toItem:self.contentView
-//                                                                     attribute:NSLayoutAttributeLeft
-//                                                                    multiplier:1.0
-//                                                                      constant:40]];
-//    } else {
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-//                                                                     attribute:NSLayoutAttributeLeft
-//                                                                     relatedBy:NSLayoutRelationEqual
-//                                                                        toItem:self.contentView
-//                                                                     attribute:NSLayoutAttributeLeft
-//                                                                    multiplier:1.0
-//                                                                      constant:20]];
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.albumName
-//                                                                     attribute:NSLayoutAttributeRight
-//                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
-//                                                                        toItem:self.contentView
-//                                                                     attribute:NSLayoutAttributeRight
-//                                                                    multiplier:1.0
-//                                                                      constant:-30]];
-//    }
 	
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[numImages]-[date]-20-|"
 																			 options:kNilOptions
@@ -225,28 +183,34 @@
 	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[bg]-5-|"
 																			 options:kNilOptions
 																			 metrics:nil
-																			   views:@{@"bg" : self.textUnderlay}]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.textUnderlay amount:0]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.textUnderlay
+																			   views:@{@"bg" : self.textUnderlayDark}]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.textUnderlayDark amount:0]];
+	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.textUnderlayDark
 																 attribute:NSLayoutAttributeTop
 																 relatedBy:NSLayoutRelationEqual
 																	toItem:self.albumName
 																 attribute:NSLayoutAttributeTop
 																multiplier:1.0
 																  constant:-5]];
-	
-//	[self.cellDisclosure addConstraints:[NSLayoutConstraint constraintView:self.cellDisclosure toSize:CGSizeMake(28, 28)]];
-//    if ([Model sharedInstance].isAppLanguageRTL) {
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.cellDisclosure amount:15]];
-//    } else {
-//        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.cellDisclosure amount:15]];
-//    }
-//    [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.cellDisclosure amount:40]];
+
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[bg]-5-|"
+                                                                             options:kNilOptions
+                                                                             metrics:nil
+                                                                               views:@{@"bg" : self.textUnderlayLight}]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.textUnderlayLight amount:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.textUnderlayLight
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.albumName
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1.0
+                                                                  constant:-5]];
 }
 
 -(void)imageUpdated
 {
-	[self setupBgWithImage:self.albumData.categoryImage];
+//    [self setupBgWithImage:self.albumData.categoryImage];
+    self.backgroundImage.image = self.albumData.categoryImage;
 }
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
@@ -255,6 +219,18 @@
     
     self.albumData = albumData;
     
+    // Changed Theme ?
+    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.numberOfImages.textColor = [UIColor piwigoTextColor];
+    self.date.textColor = [UIColor piwigoTextColor];
+    if ([Model sharedInstance].isDarkPaletteActive) {
+        self.textUnderlayDark.hidden = NO;
+        self.textUnderlayLight.hidden = YES;
+    } else {
+        self.textUnderlayDark.hidden = YES;
+        self.textUnderlayLight.hidden = NO;
+    }
+
     // Add up/down arrows in front of album name when Community extension active
 //#if defined(DEBUG)
 //    NSLog(@"setupWithAlbumData: usesCommunityPluginV29=%@, hasAdminRights=%@",
@@ -307,74 +283,97 @@
     
     if(albumData.categoryImage && imageSize > 0)
     {
-        [self setupBgWithImage:albumData.categoryImage];
+//        [self setupBgWithImage:albumData.categoryImage];
+        self.backgroundImage.image = albumData.categoryImage;
     }
     else if(albumData.albumThumbnailId > 0)
     {
         __weak typeof(self) weakSelf = self;
         self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
-                                             ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-                                                 if(!imageData.MediumPath)
-                                                 {
-                                                     albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
-                                                 }
-                                                 else
-                                                 {
-                                                     NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
-                                                     
-                                                     // Ensure that SSL certificates won't be rejected
-                                                     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-                                                     [policy setAllowInvalidCertificates:YES];
-                                                     [policy setValidatesDomainName:NO];
-                                                     
-                                                     AFImageDownloader *dow = [AFImageDownloader defaultInstance];
-                                                     [dow.sessionManager setSecurityPolicy:policy];
-                                                     
-                                                     [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
-                                                                                 placeholderImage:[UIImage imageNamed:@"placeholder"]
-                                                                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                                                              albumData.categoryImage = image;
-                                                                                              [weakSelf setupBgWithImage:image];
-                                                                                          } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                 ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                     if(!imageData.MediumPath)
+                     {
+                         albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+                     }
+                     else
+                     {
+                         NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
+
+                         // Create image downloader instance
+                         AFImageDownloader *dow = [AFImageDownloader defaultInstance];
+                         dow.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
+
+                         // Ensure that SSL certificates won't be rejected
+                         AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+                         [policy setAllowInvalidCertificates:YES];
+                         [policy setValidatesDomainName:NO];
+                         [dow.sessionManager setSecurityPolicy:policy];
+                         
+                         // Manage servers performing HTTP Basic Access Authentication
+                         [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+                             
+                             // HTTP basic authentification credentials
+                             NSString *user = [Model sharedInstance].HttpUsername;
+                             NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+                             
+                             // Supply requested credentials if not provided yet
+                             if (challenge.previousFailureCount == 0) {
+                                 // Trying HTTP credentials…
+                                 *credential = [NSURLCredential credentialWithUser:user
+                                                                          password:password
+                                                                       persistence:NSURLCredentialPersistenceForSession];
+                                 return NSURLSessionAuthChallengeUseCredential;
+                             } else {
+                                 // HTTP credentials refused!
+                                 return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                             }
+                         }];
+
+                         [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
+                                                     placeholderImage:[UIImage imageNamed:@"placeholder"]
+                                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                                  albumData.categoryImage = image;
+                                                                  weakSelf.backgroundImage.image = image;
+//                                                                  [weakSelf setupBgWithImage:image];
+                                                              } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-                                                                                              NSLog(@"fail to get imgage for album at %@", imageData.MediumPath);
+                                                                  NSLog(@"fail to get imgage for album at %@", imageData.MediumPath);
 #endif
-                                                                                          }];
-                                                 }
-                                             } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                                              }];
+                     }
+                 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                                                 NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
+                     NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
 #endif
-                                             }];
+                 }];
     }
 }
 
--(void)setupBgWithImage:(UIImage*)image
-{
-    self.backgroundImage.image = image;
-    
-    if(!IS_OS_8_OR_LATER)
-    {
-        LEColorPicker *colorPicker = [LEColorPicker new];
-        LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
-        UIColor *backgroundColor = colorScheme.backgroundColor;
-        //    UIColor *primaryColor = colorScheme.primaryTextColor;
-        //    UIColor *secondaryColor = colorScheme.secondaryTextColor;
-        
-        CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
-        CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
-        CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
-        
-        
-        int threshold = 105;
-        int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
-        UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
-        self.textUnderlay.backgroundColor = bgColor;
-        self.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor piwigoWhiteCream] : [UIColor piwigoGray];
-        self.date.textColor = self.numberOfImages.textColor;
-        self.cellDisclosure.tintColor = self.numberOfImages.textColor;
-    }
-}
+//-(void)setupBgWithImage:(UIImage*)image
+//{
+//    self.backgroundImage.image = image;
+//    
+//    if(!IS_OS_8_OR_LATER)
+//    {
+//        LEColorPicker *colorPicker = [LEColorPicker new];
+//        LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
+//        UIColor *backgroundColor = colorScheme.backgroundColor;
+//        //    UIColor *primaryColor = colorScheme.primaryTextColor;
+//        //    UIColor *secondaryColor = colorScheme.secondaryTextColor;
+//        
+//        CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
+//        CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
+//        CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
+//        
+//        int threshold = 105;
+//        int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
+//        UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
+//        self.textUnderlay.backgroundColor = bgColor;
+//        self.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1] : [UIColor colorWithRed:23/255.0 green:23/255.0 blue:23/255.0 alpha:1.0];
+//        self.date.textColor = self.numberOfImages.textColor;
+//        self.cellDisclosure.tintColor = self.numberOfImages.textColor;
+//    }
+//}
 
 -(void)prepareForReuse
 {
@@ -655,13 +654,8 @@
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_9_x_Max) {
-        hud.contentColor = [UIColor piwigoWhiteCream];
-        hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:1.0];
-    } else {
-        hud.contentColor = [UIColor piwigoGray];
-        hud.bezelView.color = [UIColor piwigoGrayLight];
-    }
+    hud.contentColor = [UIColor piwigoHudContentColor];
+    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
 
     // Define the text
     hud.label.text = label;

@@ -20,50 +20,39 @@
 	self = [super initWithFrame:frame];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoWhiteCream];
-		
-		UILabel *sortLabel = [UILabel new];
-		sortLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		sortLabel.text = NSLocalizedString(@"sortBy", @"Sort by");
-		sortLabel.font = [UIFont piwigoFontNormal];
-        sortLabel.textColor = [UIColor piwigoGray];
-		sortLabel.minimumScaleFactor = 0.5;
-		sortLabel.adjustsFontSizeToFitWidth = YES;
-		[self addSubview:sortLabel];
-		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:sortLabel]];
-		
-//        UIImageView *disclosure = [UIImageView new];
-//        disclosure.translatesAutoresizingMaskIntoConstraints = NO;
-//        UIImage *disclosureImg = [[UIImage imageNamed:@"cellDisclosure"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//        disclosure.image = disclosureImg;
-//        disclosure.tintColor = [UIColor piwigoGrayLight];
-//        [self addSubview:disclosure];
-//        [self addConstraints:[NSLayoutConstraint constraintView:disclosure toSize:CGSizeMake(28, 28)]];
-//        [self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:disclosure]];
+		self.sortLabel = [UILabel new];
+		self.sortLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.sortLabel.text = NSLocalizedString(@"sortBy", @"Sort by");
+		self.sortLabel.font = [UIFont piwigoFontNormal];
+        self.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
+		self.sortLabel.minimumScaleFactor = 0.5;
+		self.sortLabel.adjustsFontSizeToFitWidth = YES;
+		[self addSubview:self.sortLabel];
+		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sortLabel]];
 		
 		self.currentSortLabel = [UILabel new];
 		self.currentSortLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.currentSortLabel.text = NSLocalizedString(@"localImageSort_name", @"Name");
 		self.currentSortLabel.font = [UIFont piwigoFontNormal];
-		self.currentSortLabel.textColor = [UIColor piwigoBrown];
-//        self.currentSortLabel.textAlignment = NSTextAlignmentRight;
+		self.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
 		self.currentSortLabel.adjustsFontSizeToFitWidth = YES;
 		self.currentSortLabel.minimumScaleFactor = 0.5;
 		[self addSubview:self.currentSortLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.currentSortLabel]];
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[sort]-[label]-10-|"
+        if (@available(iOS 11, *)) {
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[sort]-[label]-|"
                                                                      options:kNilOptions
                                                                      metrics:nil
                                                                        views:@{@"label" : self.currentSortLabel,
-                                                                               @"sort" : sortLabel}]];
-//        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[sort]-[label]-5-[disclosure]-5-|"
-//                                                                     options:kNilOptions
-//                                                                     metrics:nil
-//                                                                       views:@{@"disclosure" : disclosure,
-//                                                                               @"label" : self.currentSortLabel,
-//                                                                               @"sort" : sortLabel}]];
-		
+                                                                               @"sort" : self.sortLabel}]];
+        } else {
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[sort]-[label]-10-|"
+                                                                         options:kNilOptions
+                                                                         metrics:nil
+                                                                           views:@{@"label" : self.currentSortLabel,
+                                                                                   @"sort" : self.sortLabel}]];
+        }
 	}
 	return self;
 }

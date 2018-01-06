@@ -31,7 +31,8 @@ typedef enum {
 	SettingsSectionLogout,
 	SettingsSectionGeneral,
 	SettingsSectionImageUpload,
-	SettingsSectionCache,
+    SettingsSectionCache,
+    SettingsSectionColor,
 	SettingsSectionAbout,
 	SettingsSectionCount
 } SettingsSection;
@@ -44,7 +45,6 @@ typedef enum {
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSArray *headerHeights;
-@property (nonatomic, strong) NSArray *footerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
 @property (nonatomic, strong) UIView *darkenView;
@@ -59,29 +59,19 @@ typedef enum {
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoGray];
-        
         self.headerHeights = @[
-							   @50.0,
-							   @0.0,
-							   @50.0,
-							   @50.0,
-							   @50.0,
-							   @50.0
+							   @44.0,
+							   @14.0,
+							   @44.0,
+							   @44.0,
+                               @44.0,
+							   @44.0,
+							   @44.0
 							   ];
 		
-        self.footerHeights = @[
-                               @15.0,
-                               @44.0,
-                               @0.0,
-                               @0.0,
-                               @0.0,
-                               @0.0
-                               ];
-
         self.settingsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.settingsTableView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.settingsTableView.backgroundColor = [UIColor piwigoGray];
+        self.settingsTableView.backgroundColor = [UIColor clearColor];
 		self.settingsTableView.delegate = self;
 		self.settingsTableView.dataSource = self;
 		[self.view addSubview:self.settingsTableView];
@@ -107,13 +97,36 @@ typedef enum {
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-	
-	[self.settingsTableView reloadData];
+
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    // Tab bar appearance
+    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 10, *)) {
+        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
+    }
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
+    
+    // Table view
+    self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    [self.settingsTableView reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-	
 	[super viewWillDisappear:animated];
 }
 
@@ -153,20 +166,13 @@ typedef enum {
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, fmin([self.headerHeights[section] floatValue], 36.0))];
-    header.backgroundColor = [UIColor clearColor];
-    
+    // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
-    headerLabel.textColor = [UIColor piwigoWhiteCream];
-    [header addSubview:headerLabel];
-    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
-    [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
-                                                                   options:kNilOptions
-                                                                   metrics:nil
-                                                                     views:@{@"header" : headerLabel}]];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
 
+    // Header text
     switch(section)
     {
         case SettingsSectionServer:
@@ -181,50 +187,112 @@ typedef enum {
         case SettingsSectionCache:
             headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
             break;
+        case SettingsSectionColor:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            break;
         case SettingsSectionAbout:
             headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"Information");
             break;
     }
     
+    // Header height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:nil];
+    
+    // Header view
+    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    header.backgroundColor = [UIColor clearColor];
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
     return header;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return [self.footerHeights[section] floatValue];
+    // No footer by default (nil => 0 point)
+    NSString *footer;
+
+    // Any footer text?
+    switch(section)
+    {
+        case SettingsSectionLogout:
+            if (([Model sharedInstance].uploadFileTypes != nil) && ([[Model sharedInstance].uploadFileTypes length] > 0)) {
+                footer = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
+            }
+            break;
+    }
+    
+    // Footer height?
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:nil];
+//    NSLog(@"=> Rect = (%f x %f) %f width and %f height)", footerRect.origin.x, footerRect.origin.y, footerRect.size.width, ceil(footerRect.size.height));
+
+    return ceil(footerRect.size.height);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, [self.footerHeights[section] floatValue])];
-    footer.backgroundColor = [UIColor clearColor];
-    
+    // Footer label
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     footerLabel.font = [UIFont piwigoFontSmall];
-    footerLabel.textColor = [UIColor piwigoWhiteCream];
+    footerLabel.textColor = [UIColor piwigoHeaderColor];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
     footerLabel.adjustsFontSizeToFitWidth = NO;
     footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [footer addSubview:footerLabel];
-    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
-    [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
-                                                                   options:kNilOptions
-                                                                   metrics:nil
-                                                                     views:@{@"footer" : footerLabel}]];
 
+    // Footer text
     switch(section)
     {
         case SettingsSectionLogout:
-            if (([Model sharedInstance].uploadFileTypes == nil) || ([[Model sharedInstance].uploadFileTypes length] <= 0)) {
-                footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken. Try logging in again.")];
-            } else {
+            if (([Model sharedInstance].uploadFileTypes != nil) && ([[Model sharedInstance].uploadFileTypes length] > 0)) {
                 footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
             }
             break;
     }
     
+    // Footer height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:attributes
+                                                 context:nil];
+
+    // Footer view
+    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
+    footer.backgroundColor = [UIColor clearColor];
+    [footer addSubview:footerLabel];
+    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"footer" : footerLabel}]];
+    } else {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"footer" : footerLabel}]];
+    }
+
     return footer;
 }
 
@@ -250,6 +318,9 @@ typedef enum {
             break;
         case SettingsSectionCache:
             nberOfRows = 2;
+            break;
+        case SettingsSectionColor:
+            nberOfRows = 1 + ([Model sharedInstance].isDarkPaletteModeActive ? 1 + ([Model sharedInstance].switchPaletteAutomatically ? 1 : 0) : 0);
             break;
         case SettingsSectionAbout:
             nberOfRows = 5;
@@ -367,7 +438,7 @@ typedef enum {
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultImageSort", @"Sort");
                     }
-					cell.rightText = [[CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort] stringByAppendingString:@"   >"];
+					cell.rightText = [[CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort] stringByAppendingString:@" >"];
 
                     tableViewCell = cell;
 					break;
@@ -387,7 +458,7 @@ typedef enum {
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultThumbnailSize", @"Thumbnails");
                     }
-					cell.rightText = [[PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize] stringByAppendingString:@"   >"];
+					cell.rightText = [[PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize] stringByAppendingString:@" >"];
 					
 					tableViewCell = cell;
 					break;
@@ -430,7 +501,7 @@ typedef enum {
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultImageSize", @"Images");
                     }
-                    cell.rightText = [[PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize] stringByAppendingString:@"   >"];
+                    cell.rightText = [[PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize] stringByAppendingString:@" >"];
                     
                     tableViewCell = cell;
                     break;
@@ -478,7 +549,7 @@ typedef enum {
                     } else {
                         cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
                     }
-					cell.rightText = [[[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel] stringByAppendingString:@"   >"];
+					cell.rightText = [[[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel] stringByAppendingString:@" >"];
 					
 					tableViewCell = cell;
 					break;
@@ -727,68 +798,173 @@ typedef enum {
 			}
 			break;
 		}
-		case SettingsSectionCache:       // Cache Settings
-		{
-			switch(indexPath.row)
-			{
-				case 0:     // Disk
-				{
+        case SettingsSectionCache:       // Cache Settings
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Disk
+                {
                     NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
                     float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
-					if(!cell)
-					{
-						cell = [SliderTableViewCell new];
-					}
-					cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
                     cell.slider.minimumValue = 10;
                     cell.slider.maximumValue = 200;
-
+                    
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentDiskSizeInMB];
                     } else {
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
                     }
-					cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-					cell.incrementSliderBy = 10;
-					cell.sliderValue = [Model sharedInstance].diskCache;
+                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
+                    cell.incrementSliderBy = 10;
+                    cell.sliderValue = [Model sharedInstance].diskCache;
                     [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
-					
-					tableViewCell = cell;
-					break;
-				}
-				case 1:     // Memory
-				{
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Memory
+                {
                     NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
                     float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
-					if(!cell)
-					{
-						cell = [SliderTableViewCell new];
-					}
-					cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
                     cell.slider.minimumValue = 10;
                     cell.slider.maximumValue = 200;
-
+                    
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentMemSizeInMB];
                     } else {
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
                     }
-					cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-					cell.incrementSliderBy = 10;
-					cell.sliderValue = [Model sharedInstance].memoryCache;
+                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
+                    cell.incrementSliderBy = 10;
+                    cell.sliderValue = [Model sharedInstance].memoryCache;
                     [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
-					
-					tableViewCell = cell;
-					break;
-				}
-			}
-			break;
-		}
-		case SettingsSectionAbout:       // Information
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+            }
+            break;
+        }
+        case SettingsSectionColor:      // Colors
+        {
+            switch (indexPath.row)
+            {
+                case 0:     // Dark Palette Mode
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"darkPalette"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    cell.leftLabel.text = NSLocalizedString(@"settings_darkPalette", @"Dark Palette");
+                    [cell.cellSwitch setOn:[Model sharedInstance].isDarkPaletteModeActive];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        // Number of rows will change accordingly
+                        [Model sharedInstance].isDarkPaletteModeActive = switchState;
+//                        // Position of the row(s) that should be added/removed
+//                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
+//                                                                         inSection:SettingsSectionColor];
+//                        NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
+//                                                                         inSection:SettingsSectionColor];
+//                        if(switchState) {
+//                            // Insert row in existing table
+//                            if ([Model sharedInstance].switchPaletteAutomatically)
+//                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                            else
+//                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                        } else {
+//                            // Remove row in existing table
+//                            if ([Model sharedInstance].switchPaletteAutomatically)
+//                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                            else
+//                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                        }
+                        // Switch off auto mode if dark palette mode disabled
+                        if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
+                        // Store modified setting
+                        [[Model sharedInstance] saveToDisk];
+                        // Refresh table
+                        [self.settingsTableView reloadData];
+                        // Redraw views in windows
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate screenBrightnessChanged:nil];
+                    };
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Switch automatically ?
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchPalette"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    cell.leftLabel.text = NSLocalizedString(@"settings_switchPalette", @"Switch Automatically");
+                    [cell.cellSwitch setOn:[Model sharedInstance].switchPaletteAutomatically];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        // Number of rows will change accordingly
+                        [Model sharedInstance].switchPaletteAutomatically = switchState;
+                        // Store modified setting
+                        [[Model sharedInstance] saveToDisk];
+                        // Position of the row that should be added/removed
+//                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
+//                                                                         inSection:SettingsSectionColor];
+//                        if(switchState) {
+//                            // Insert row in existing table
+//                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                        } else {
+//                            // Remove row in existing table
+//                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                        }
+                        // Refresh table
+                        [self.settingsTableView reloadData];
+                        // Redraw views in windows
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate screenBrightnessChanged:nil];
+                    };
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 2:     // Switch at Brightness ?
+                {
+                    CGFloat currentBrightness = [[UIScreen mainScreen] brightness] * 100;
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderPalette"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_brightness", @"Brightness");
+                    cell.slider.minimumValue = 0;
+                    cell.slider.maximumValue = 100;
+                    cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentBrightness)];
+                    cell.sliderCountSuffix = @"";
+                    cell.incrementSliderBy = 1;
+                    cell.sliderValue = [Model sharedInstance].switchPaletteThreshold;
+                    [cell.slider addTarget:self action:@selector(updatePaletteBrightnessThreshold:) forControlEvents:UIControlEventValueChanged];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+            }
+            break;
+        }
+        case SettingsSectionAbout:      // Information
 		{
             switch(indexPath.row)
             {
@@ -801,8 +977,6 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_supportForum", @"Support Forum");
-//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-//                    cell.leftLabelWidth = 220;
                     if ([Model sharedInstance].isAppLanguageRTL) {
                         cell.rightText = @"<";
                     } else {
@@ -821,8 +995,6 @@ typedef enum {
                     }
                     
                     cell.leftText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settings_rateInAppStore", @"Rate Piwigo Mobile"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
-//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-//                    cell.leftLabelWidth = 220;
                     if ([Model sharedInstance].isAppLanguageRTL) {
                         cell.rightText = @"<";
                     } else {
@@ -841,8 +1013,6 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_translateWithCrowdin", @"Translate Piwigo Mobile");
-//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-//                    cell.leftLabelWidth = 220;
                     if ([Model sharedInstance].isAppLanguageRTL) {
                         cell.rightText = @"<";
                     } else {
@@ -861,8 +1031,6 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_releaseNotes", @"Release Notes");
-//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-//                    cell.leftLabelWidth = 220;
                     if ([Model sharedInstance].isAppLanguageRTL) {
                         cell.rightText = @"<";
                     } else {
@@ -881,8 +1049,6 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_acknowledgements", @"Acknowledgements");
-//                    cell.leftLabel.textAlignment = NSTextAlignmentLeft;
-//                    cell.leftLabelWidth = 220;
                     if ([Model sharedInstance].isAppLanguageRTL) {
                         cell.rightText = @"<";
                     } else {
@@ -1261,12 +1427,23 @@ typedef enum {
     [[Model sharedInstance] saveToDisk];
 }
 
+- (IBAction)updatePaletteBrightnessThreshold:(id)sender
+{
+    SliderTableViewCell *sliderSettingPalette = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingsSectionColor]];
+    [Model sharedInstance].switchPaletteThreshold = [sliderSettingPalette getCurrentSliderValue];
+    [[Model sharedInstance] saveToDisk];
+
+    // Update palette if needed
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate screenBrightnessChanged:nil];
+}
+
 - (IBAction)updateDiskCacheSize:(id)sender
 {
     SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingsSectionCache]];
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
-
+    
     [NSURLCache sharedURLCache].diskCapacity = [Model sharedInstance].diskCache * 1024*1024;
 }
 

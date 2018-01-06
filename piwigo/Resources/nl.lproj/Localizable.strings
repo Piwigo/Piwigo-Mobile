@@ -48,16 +48,15 @@
 "login_userPlaceholder" = "Gebruikersnaam (optioneel)";
 "login_passwordPlaceholder" = "Wachtwoord (optioneel)";
 "login_loggingIn" = "Bezig met aanmelden...";
-"login_protocolDescription" = "(Klik om te wijzigen)";
 "login_connecting" = "Bezig met verbinden";
 "login_newSession" = "Sessie openen";
 "login_communityParameters" = "Community Parameters";
 "login_serverParameters" = "Piwigo parameters";
 "login_connectionChanged" = "Verbinding gewijzigd!";
-"loginHTTP_title" = "HTTP Credentials";
-"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
+"loginHTTP_title" = "HTTP Referenties";
+"loginHTTP_message" = "Authenticatie van basistoegang is vereist door de Piwigo-server:";
 "loginHTTPuser_placeholder" = "Gebruikersnaam";
-"loginHTTPpwd_placeholder" = "Password";
+"loginHTTPpwd_placeholder" = "Wachtwoord";
 
 // Login — Errors
 "serverMethodsError_title" = "Onbekende methoden";
@@ -334,7 +333,7 @@
 "settings_username" = "Gebruikersnaam";
 "settings_notLoggedIn" = " - Niet aangemeld - ";
 "settings_logout" = "Afmelden";
-"settingsFooter_formats" = "The server accepts the following file types";
+"settingsFooter_formats" = "De server accepteert de volgende bestanden";
 
 // Settings — General
 "settingsHeader_general" = "Algemene instellingen";
@@ -411,6 +410,12 @@
 "settings_cacheMemory" = "Geheugen";
 "settings_placeholderMemory" = "Voer een geheugencache in tussen 10-200";
 "settings_cacheMegabytes" = "MB";
+
+// Settings — Colors
+"settingsHeader_colors" = "Kleuren";
+"settings_darkPalette" = "Dark Palette";
+"settings_switchPalette" = "Schakel automatisch";
+"settings_brightness" = "Helderheid";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobiel";

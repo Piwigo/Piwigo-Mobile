@@ -10,12 +10,27 @@
 
 @interface UIColor (AppSpecificColors)
 
++(UIColor*)piwigoTextColor;
++(UIColor*)piwigoBackgroundColor;
+
++(UIColor*)piwigoBrown;
 +(UIColor*)piwigoOrange;
 +(UIColor*)piwigoOrangeSelected;
+
++(UIColor*)piwigoHudContentColor;
++(UIColor*)piwigoHudBezelViewColor;
+
++(UIColor*)piwigoHeaderColor;
++(UIColor*)piwigoSeparatorColor;
++(UIColor*)piwigoCellBackgroundColor;
++(UIColor*)piwigoLeftLabelColor;
++(UIColor*)piwigoRightLabelColor;
++(UIColor*)piwigoThumbColor;
++(UIColor*)piwigoUnderlineColor;
+
 +(UIColor*)piwigoGray;
 +(UIColor*)piwigoGrayLight;
-+(UIColor*)piwigoGrayUltraLight;
-+(UIColor*)piwigoBrown;
++(UIColor*)piwigoGrayXXLight;
 +(UIColor*)piwigoWhiteCream;
 
 @end

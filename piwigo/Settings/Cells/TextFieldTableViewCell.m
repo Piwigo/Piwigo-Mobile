@@ -7,6 +7,7 @@
 //
 
 #import "TextFieldTableViewCell.h"
+#import "Model.h"
 
 @interface TextFieldTableViewCell()
 
@@ -21,20 +22,24 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
 		
 		self.leftLabel = [UILabel new];
 		self.leftLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.leftLabel.font = [UIFont piwigoFontNormal];
-		self.leftLabel.textColor = [UIColor piwigoGray];
+		self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
 		self.leftLabel.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.leftLabel];
 		
 		self.rightTextField = [UITextField new];
 		self.rightTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightTextField.font = [UIFont piwigoFontNormal];
-		self.rightTextField.textColor = [UIColor piwigoBrown];
-        self.rightTextField.textAlignment = NSTextAlignmentRight;
+		self.rightTextField.textColor = [UIColor piwigoRightLabelColor];
+        if ([Model sharedInstance].isAppLanguageRTL) {
+            self.rightTextField.textAlignment = NSTextAlignmentLeft;
+        } else {
+            self.rightTextField.textAlignment = NSTextAlignmentRight;
+        }
 		[self.contentView addSubview:self.rightTextField];
 		
 		[self setupConstraints];
@@ -51,11 +56,18 @@
 	
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.leftLabel]];
 	[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.rightTextField]];
-	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[field]-15-|"
+
+    if (@available(iOS 11, *)) {
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[field]-|"
 																			 options:kNilOptions
 																			 metrics:nil
 																			   views:views]];
+    } else {
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[label]-[field]-15-|"
+                                                                                 options:kNilOptions
+                                                                                 metrics:nil
+                                                                                   views:views]];
+    }
 }
 
 -(void)setLabelText:(NSString *)labelText

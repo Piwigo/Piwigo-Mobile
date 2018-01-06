@@ -31,7 +31,7 @@
 @implementation AppDelegate
 
 + (void)initialize {
-
+    
 }
 
 
@@ -78,7 +78,7 @@
     
     if(server.length > 0 || (user.length > 0 && password.length > 0))
 	{
-		[self.loginVC launchLogin];
+        [self.loginVC launchLogin];
 	}
 	
     // No login
@@ -106,10 +106,14 @@
     // Monitor Internet connection reachability
     self.internetReachability = [Reachability reachabilityForInternetConnection];
     [self.internetReachability startNotifier];
+
+    // Observe the UIScreenBrightnessDidChangeNotification.
+    // When that notification is posted, the method screenBrightnessChanged will be called.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged:) name:UIScreenBrightnessDidChangeNotification object:nil];
 }
 
 // Called by Reachability whenever Internet connection changes.
-- (void) reachabilityChanged:(NSNotification *)note
+- (void)reachabilityChanged:(NSNotification *)note
 {
     Reachability* curReach = [note object];
     NetworkStatus netStatus = [curReach currentReachabilityStatus];
@@ -139,6 +143,77 @@
                 [self.loginVC checkSessionStatusAndTryRelogin];
             }
             break;
+        }
+    }
+}
+
+// Called when the screen brightness has changed or when user changed settings
+-(void)screenBrightnessChanged:(NSNotification *)note
+{
+//    NSLog(@"Screen Brightness: %f",[[UIScreen mainScreen] brightness]);
+    if (![Model sharedInstance].isDarkPaletteModeActive) {
+        // Static light palette mode chosen
+        if (![Model sharedInstance].isDarkPaletteActive) {
+            // Already showing light palette
+            return;
+        } else {
+            // Switch to light palette
+            [Model sharedInstance].isDarkPaletteActive = NO;
+            [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceLight;
+        }
+    } else {
+        // Dark palette mode chosen
+        if (![Model sharedInstance].switchPaletteAutomatically) {
+            // Static dark palette chosen
+            if ([Model sharedInstance].isDarkPaletteActive) {
+                // Already showing dark palette
+                return;
+            } else {
+                // Switch to dark palette
+                [Model sharedInstance].isDarkPaletteActive = YES;
+                [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceDark;
+            }
+        } else {
+            // Dynamic dark palette chosen
+            NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
+            if ([Model sharedInstance].isDarkPaletteActive) {
+                // Dark palette displayed
+                if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
+                    // Screen brightness > thereshold, switch to light palette
+                    [Model sharedInstance].isDarkPaletteActive = NO;
+                    [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceLight;
+                } else {
+                    // Keep dark palette
+                    return;
+                }
+            } else {
+                // Light palette displayed
+                if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
+                    // Screen brightness < threshold, switch to dark palette
+                    [Model sharedInstance].isDarkPaletteActive = YES;
+                    [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceDark;
+                } else {
+                    // Keep light palette
+                    return;
+                }
+            }
+        }
+    }
+    
+    // Store modified settings
+    [[Model sharedInstance] saveToDisk];
+    // Redraw current views
+    [self reLoadNavigation];
+}
+
+// Called when changing theme
+-(void)reLoadNavigation
+{
+    NSArray *windows = [UIApplication sharedApplication].windows;
+    for (UIWindow *window in windows) {
+        for (UIView *view in window.subviews) {
+            [view removeFromSuperview];
+            [window addSubview:view];
         }
     }
 }
@@ -174,6 +249,9 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+
+    // Should we change the theme ?
+    [self screenBrightnessChanged:nil];
 
     // Should we reopen the session ?
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;

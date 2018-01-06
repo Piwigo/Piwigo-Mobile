@@ -19,7 +19,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
 		
 		self.buttonLabel = [UILabel new];
 		self.buttonLabel.translatesAutoresizingMaskIntoConstraints = NO;
