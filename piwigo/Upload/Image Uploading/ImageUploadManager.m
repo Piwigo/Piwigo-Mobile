@@ -355,9 +355,9 @@
         }
 
         // Final metadata…
-//#if defined(DEBUG)
-//        NSLog(@"modifyImage: w/o private metadata => %@",assetMetadata);
-//#endif
+#if defined(DEBUG)
+        NSLog(@"modifyImage: w/o private metadata => %@",assetMetadata);
+#endif
     }
 
     // Get original image
@@ -396,7 +396,7 @@
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
     }
     
-    // If compression failed or imageCompressed null, try to use original image
+    // If compression failed or imageCompressed nil, try to use original image
     if (!imageCompressed) {
         CFStringRef UTI = CGImageSourceGetType(source);
         CFMutableDataRef imageDataRef = CFDataCreateMutable(nil, 0);
@@ -419,8 +419,6 @@
         imageCompressed = (__bridge  NSData *)imageDataRef;
         CFRelease(imageDataRef);
         CFRelease(destination);
-        assetMetadata = nil;
-        assetImage = nil;
     }
     
     // Release original CGImageSourceRef
