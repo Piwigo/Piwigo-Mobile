@@ -1267,7 +1267,8 @@ typedef enum {
                 }
                 case 1:     // Open Piwigo App Store page for rating
                 {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/piwigo/id%lu?action=write-review"]];
+                    // See https://itunes.apple.com/us/app/piwigo/id472225196?ls=1&mt=8
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/piwigo/id472225196?action=write-review"]];
                     break;
                 }
                 case 2:     // Open Piwigo Crowdin page for translating
