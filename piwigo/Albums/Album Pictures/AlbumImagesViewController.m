@@ -218,7 +218,7 @@
             [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
         }
 	} else {
-        // Selection mode active (only amdins have delete rights)
+        // Selection mode active (only admins have delete rights)
         if([Model sharedInstance].hasAdminRights)
 		{
             if (self.selectedImageIds.count > 0) {

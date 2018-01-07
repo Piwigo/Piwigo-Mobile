@@ -148,16 +148,24 @@
                                                 [self.navigationController pushViewController:allCategoriesPickVC animated:YES];
                                             }];
 
-    // Add default actions
-    [alert addAction:cancelAction];
-    [alert addAction:deleteAction];
-    [alert addAction:downloadAction];
+    // Admins users can delete images/videos
+    if([Model sharedInstance].hasAdminRights) {
+        [alert addAction:deleteAction];
+    }
     
-    // Add Edit and Set As Album Image actions if user has admin rights
-    if ([Model sharedInstance].hasAdminRights) {
+    // Admins and Community users having upload rights can edit images/videos in selected albums
+    if([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) {
         [alert addAction:editAction];
+    }
+    
+    // Admin users can "Set As Album Image"
+    if ([Model sharedInstance].hasAdminRights) {
         [alert addAction:setAsAlbumImageAction];
     }
+    
+    // Add default actions
+    [alert addAction:downloadAction];
+    [alert addAction:cancelAction];
     
     // Present list of actions
     alert.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
