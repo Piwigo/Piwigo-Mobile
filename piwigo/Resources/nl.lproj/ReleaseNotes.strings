@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.6_text" = "Versie 2.1.6\n\n• Arabische vertaling\n• Verbeterd HTTP-basistoegangsverificatiebeheer\n________________________________________\n\n";
+"v2.1.6_text" = "Versie 2.1.6\n\n• Arabische vertaling\n• Verbeterd HTTP-basistoegangsverificatiebeheer\n• Foutjes verbeterd\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.5_text" = "Versie 2.1.5\n21 december, 2017\n\n• Toegevoegd mogelijkheid om uploads te annuleren\n• Optie toegevoegd voor het verwijderen van foto's na het uploaden\n• Compatibiliteit toegevoegd met Optimize Storage (iCloud)\n• Bewaar het fotoformaat ná het wijzigen van het formaat van de foto wanneer dan ook\n• Deense en Indonesische vertalingen\n• Verbeterd metadata gedeeltelijk verloren bij het downloaden\n• Verbeterd PNG-formaat vervangen door JPEG voor uploaden\n• Problemen verholpen die zijn tegengekomen met iOS 11 en iPhone X\n• Verbetering kleine bugs\n• Codemodernisering\n________________________________________\n\n";
 
