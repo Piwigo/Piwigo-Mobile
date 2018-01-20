@@ -26,21 +26,21 @@
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId
 {
-	self = [super init];
-	if(self)
-	{
-		self.categoryId = categoryId;
-		
-		self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
-		
-		self.groups = [NSArray new];
-		[[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject) {
-			if([responseObject isKindOfClass:[NSNumber class]])
-			{	// make view disappear
-				[self.navigationController popToRootViewControllerAnimated:YES];
-			}
-			else if(responseObject == nil)
-			{
+    self = [super init];
+    if(self)
+    {
+        self.categoryId = categoryId;
+        
+        self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
+        
+        self.groups = [NSArray new];
+        [[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject) {
+            if([responseObject isKindOfClass:[NSNumber class]])
+            {    // make view disappear
+                [self.navigationController popToRootViewControllerAnimated:YES];
+            }
+            else if(responseObject == nil)
+            {
                 UIAlertController* alert = [UIAlertController
                             alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
                             message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
@@ -57,28 +57,30 @@
                 [alert addAction:dismissAction];
                 [self presentViewController:alert animated:YES completion:nil];
             }
-			else
-			{
-				self.groups = responseObject;
-				[self.localAlbumsTableView reloadData];
-			}
-		}];
-		
-		self.localAlbumsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-		self.localAlbumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
+            else
+            {
+                self.groups = responseObject;
+                [self.localAlbumsTableView reloadData];
+            }
+        }];
+        
+        self.localAlbumsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        self.localAlbumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.localAlbumsTableView.backgroundColor = [UIColor clearColor];
-		self.localAlbumsTableView.delegate = self;
-		self.localAlbumsTableView.dataSource = self;
-		[self.localAlbumsTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
-		[self.view addSubview:self.localAlbumsTableView];
-		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
-		
-	}
-	return self;
+        self.localAlbumsTableView.delegate = self;
+        self.localAlbumsTableView.dataSource = self;
+        [self.localAlbumsTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
+        [self.view addSubview:self.localAlbumsTableView];
+        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
+        
+    }
+    return self;
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
@@ -138,9 +140,9 @@
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
     if (@available(iOS 11, *)) {
         [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
-                                                                   options:kNilOptions
-                                                                   metrics:nil
-                                                                     views:@{@"header" : headerLabel}]];
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
     } else {
         [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
                                                                        options:kNilOptions
@@ -153,33 +155,34 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return self.groups.count;
+    return self.groups.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 44.0;
+    return 44.0;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-	
-	PHAssetCollection *groupAsset = [self.groups objectAtIndex:indexPath.row];
+    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    
+    PHAssetCollection *groupAsset = [self.groups objectAtIndex:indexPath.row];
     NSString *name = [groupAsset localizedTitle];
     NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
     [cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ?NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")]];
-	
-	return cell;
+    
+    return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
-	UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.groups objectAtIndex:indexPath.row]];
-	[self.navigationController pushViewController:uploadVC animated:YES];
-	
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.groups objectAtIndex:indexPath.row]];
+    [self.navigationController pushViewController:uploadVC animated:YES];
+    
 }
 
 @end
+
