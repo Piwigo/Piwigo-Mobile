@@ -90,7 +90,7 @@ NSInteger const loadingViewTag = 899;
     
     // Manage servers performing HTTP Authentication
     [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-
+        
         // To remember app recieved anthentication challenge
         [Model sharedInstance].performedHTTPauthentication = YES;
         
@@ -139,7 +139,7 @@ NSInteger const loadingViewTag = 899;
                                            fail(task, error);
                                        }
                                        [manager invalidateSessionCancelingTasks:YES];
-                                  }
+                                   }
                               ];
     
     return task;
@@ -181,37 +181,38 @@ NSInteger const loadingViewTag = 899;
             return NSURLSessionAuthChallengeUseCredential;
         } else {
             // HTTP credentials refused!
-           return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
     
     NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:nil]
                                 parameters:nil
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
-    {
-        [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
-                                    name:@"file"
-                                fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
-                                mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];
-        
-        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamTitle] dataUsingEncoding:NSUTF8StringEncoding]
-                                    name:@"name"];
-        
-        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]
-                                    name:@"chunk"];
-        
-        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding]
-                                    name:@"chunks"];
-        
-        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding]
-                                    name:@"category"];
-        
-        [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding]
-                                    name:@"level"];
-        
-        [formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
-                                    name:@"pwg_token"];
-    }
+                  {
+                      [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
+                                                  name:@"file"
+                                              fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
+                                              mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];
+                      
+                      // Fixes bug #212 — pwg.images.upload: filename key is "name"
+                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamFileName] dataUsingEncoding:NSUTF8StringEncoding]
+                                                  name:@"name"];
+                      
+                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]
+                                                  name:@"chunk"];
+                      
+                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding]
+                                                  name:@"chunks"];
+                      
+                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding]
+                                                  name:@"category"];
+                      
+                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding]
+                                                  name:@"level"];
+                      
+                      [formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
+                                                  name:@"pwg_token"];
+                  }
                                   progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
                                        if (success) {
@@ -246,29 +247,29 @@ NSInteger const loadingViewTag = 899;
         NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
         cleanPath = [cleanPath stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
     }
-
+    
     // Compile final URL
     NSString *url = [NSString stringWithFormat:@"%@%@%@%@",
                      [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName,
                      piwigo ? @"/ws.php?" : @"", cleanPath];
-
-	return url;
+    
+    return url;
 }
 
 +(void)showConnectionError:(NSError*)error
 {
     UIAlertController* alert = [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-            message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
-            preferredStyle:UIAlertControllerStyleAlert];
+                                alertControllerWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                                message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
+                                preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* defaultAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-            style:UIAlertActionStyleDefault
-            handler:^(UIAlertAction * action) {}];
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) {}];
     
     [alert addAction:defaultAction];
-
+    
     UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
     while (topViewController.presentedViewController) {
         topViewController = topViewController.presentedViewController;
@@ -277,3 +278,4 @@ NSInteger const loadingViewTag = 899;
 }
 
 @end
+
