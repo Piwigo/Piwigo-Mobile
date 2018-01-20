@@ -32,30 +32,30 @@
 
 +(ImageUploadManager*)sharedInstance
 {
-	static ImageUploadManager *instance = nil;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		instance = [[self alloc] init];
-	});
-	return instance;
+    static ImageUploadManager *instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[self alloc] init];
+    });
+    return instance;
 }
 
 -(instancetype)init
 {
-	self = [super init];
-	if(self)
-	{
-		self.imageUploadQueue = [NSMutableArray new];
-		self.imageNamesUploadQueue = [NSMutableDictionary new];
+    self = [super init];
+    if(self)
+    {
+        self.imageUploadQueue = [NSMutableArray new];
+        self.imageNamesUploadQueue = [NSMutableDictionary new];
         self.imageDeleteQueue = [NSMutableArray new];
-		self.isUploading = NO;
+        self.isUploading = NO;
         
         self.current = 0;
         self.total = 1;
         self.currentChunk = 1;
         self.totalChunks = 1;
-	}
-	return self;
+    }
+    return self;
 }
 
 
@@ -72,11 +72,11 @@
 -(void)addImage:(ImageUpload*)image
 {
     [self.imageUploadQueue addObject:image];
-	self.maximumImagesForBatch++;
-	[self startUploadIfNeeded];
+    self.maximumImagesForBatch++;
+    [self startUploadIfNeeded];
     
     // The file name extension may change e.g. MOV => MP4, HEIC => JPG
-	[self.imageNamesUploadQueue setObject:image.image forKey:[image.image stringByDeletingPathExtension]];
+    [self.imageNamesUploadQueue setObject:image.image forKey:[image.image stringByDeletingPathExtension]];
 }
 
 -(void)startUploadIfNeeded
@@ -434,7 +434,19 @@
     // Prepare MIME type
     NSString *mimeType = @"";
     mimeType = [self contentTypeForImageData:imageData];
-
+    
+    // Re-check filename extension
+    fileExt = [[image.image pathExtension] lowercaseString];
+    if (([mimeType isEqualToString:@"image/jpeg"]) && !([fileExt isEqualToString:@"jpg"])) {
+        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"jpg"];
+    } else if (([mimeType isEqualToString:@"image/png"]) && !([fileExt isEqualToString:@"png"])) {
+        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"png"];
+    } else if (([mimeType isEqualToString:@"image/gif"]) && !([fileExt isEqualToString:@"gif"])) {
+        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"gif"];
+    } else if (([mimeType isEqualToString:@"image/tiff"]) && !([fileExt isEqualToString:@"tif"])) {
+        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"tif"];
+    }
+    
     // Upload image with tags and properties
     [self uploadImage:image withData:imageData andMimeType:mimeType];
 }
@@ -572,80 +584,80 @@
     
     // Available export session presets?
     [[PHImageManager defaultManager] requestAVAssetForVideo:image.imageAsset
-                options:options
-          resultHandler:^(AVAsset *avasset, AVAudioMix *audioMix, NSDictionary *info) {
-
-              // QuickTime video exportable with passthrough option (e.g. recorded with device)?
-              [AVAssetExportSession determineCompatibilityOfExportPreset:AVAssetExportPresetPassthrough withAsset:avasset outputFileType:AVFileTypeMPEG4 completionHandler:^(BOOL compatible) {
-            
-                      NSString *exportPreset = nil;
-                      if (compatible) {
-                          // No reencoding required — will keep metadata (or not depending on user's settings)
-                          exportPreset = AVAssetExportPresetPassthrough;
-                      }
-                      else
-                      {
-                          NSInteger maxPixels = lround(fmax(image.imageAsset.pixelWidth, image.imageAsset.pixelHeight));
-                          NSArray *presets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset];
-                          // This array never contains AVAssetExportPresetPassthrough,
-                          // that is why we use determineCompatibilityOfExportPreset: before.
-//                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
-                          if ((maxPixels <= 640) && ([presets containsObject:AVAssetExportPreset640x480])) {
-                              // Encode in 640x480 pixels — metadata will be lost
-                              exportPreset = AVAssetExportPreset640x480;
-                          }
-                          else if ((maxPixels <= 960) && ([presets containsObject:AVAssetExportPreset960x540])) {
-                              // Encode in 960x540 pixels — metadata will be lost
-                              exportPreset = AVAssetExportPreset960x540;
-                          }
-                          else if ((maxPixels <= 1280) && ([presets containsObject:AVAssetExportPreset1280x720])) {
-                              // Encode in 1280x720 pixels — metadata will be lost
-                              exportPreset = AVAssetExportPreset1280x720;
-                          }
-                          else if ((maxPixels <= 1920) && ([presets containsObject:AVAssetExportPreset1920x1080])) {
-                              // Encode in 1920x1080 pixels — metadata will be lost
-                              exportPreset = AVAssetExportPreset1920x1080;
-                          }
-                          else {
-                              // Use highest quality for device
-                              exportPreset = AVAssetExportPresetHighestQuality;
-                          }
-                      }
-
-                  // Requests video with selected export preset…
-                  @autoreleasepool {
-                      [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
-                               exportPreset:exportPreset
-                              resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
+                                                    options:options
+                                              resultHandler:^(AVAsset *avasset, AVAudioMix *audioMix, NSDictionary *info) {
+                                                  
+                                                  // QuickTime video exportable with passthrough option (e.g. recorded with device)?
+                                                  [AVAssetExportSession determineCompatibilityOfExportPreset:AVAssetExportPresetPassthrough withAsset:avasset outputFileType:AVFileTypeMPEG4 completionHandler:^(BOOL compatible) {
+                                                      
+                                                      NSString *exportPreset = nil;
+                                                      if (compatible) {
+                                                          // No reencoding required — will keep metadata (or not depending on user's settings)
+                                                          exportPreset = AVAssetExportPresetPassthrough;
+                                                      }
+                                                      else
+                                                      {
+                                                          NSInteger maxPixels = lround(fmax(image.imageAsset.pixelWidth, image.imageAsset.pixelHeight));
+                                                          NSArray *presets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset];
+                                                          // This array never contains AVAssetExportPresetPassthrough,
+                                                          // that is why we use determineCompatibilityOfExportPreset: before.
+                                                          //                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
+                                                          if ((maxPixels <= 640) && ([presets containsObject:AVAssetExportPreset640x480])) {
+                                                              // Encode in 640x480 pixels — metadata will be lost
+                                                              exportPreset = AVAssetExportPreset640x480;
+                                                          }
+                                                          else if ((maxPixels <= 960) && ([presets containsObject:AVAssetExportPreset960x540])) {
+                                                              // Encode in 960x540 pixels — metadata will be lost
+                                                              exportPreset = AVAssetExportPreset960x540;
+                                                          }
+                                                          else if ((maxPixels <= 1280) && ([presets containsObject:AVAssetExportPreset1280x720])) {
+                                                              // Encode in 1280x720 pixels — metadata will be lost
+                                                              exportPreset = AVAssetExportPreset1280x720;
+                                                          }
+                                                          else if ((maxPixels <= 1920) && ([presets containsObject:AVAssetExportPreset1920x1080])) {
+                                                              // Encode in 1920x1080 pixels — metadata will be lost
+                                                              exportPreset = AVAssetExportPreset1920x1080;
+                                                          }
+                                                          else {
+                                                              // Use highest quality for device
+                                                              exportPreset = AVAssetExportPresetHighestQuality;
+                                                          }
+                                                      }
+                                                      
+                                                      // Requests video with selected export preset…
+                                                      @autoreleasepool {
+                                                          [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
+                                                                                                           exportPreset:exportPreset
+                                                                                                          resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
 #if defined(DEBUG)
-                                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+                                                                                                              NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
 #endif
-                                  // The handler needs to update the user interface => Dispatch to main thread
-                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                      if ([info objectForKey:PHImageErrorKey]) {
-                                          // Inform user and propose to cancel or continue
-                                          NSError *error = [info valueForKey:PHImageErrorKey];
-                                          [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                                                        andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
-                                                       forRetrying:YES
-                                                         withImage:image];
-                                          return;
-                                      }
-                                  });
-                                  
-//                                  if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
-//                                      // This is a degraded version, wait for the next one…
-//                                      return;
-//                                  }
-                                  
-                                  // Modifies video before upload to Piwigo server
-                                  [self modifyVideo:image withAVAsset:avasset beforeExporting:exportSession];
-//                                  [self modifyVideo:image beforeExporting:exportSession];
-                              }
-                       ];
-                  }
-              }];
-    }];
+                                                                                                              // The handler needs to update the user interface => Dispatch to main thread
+                                                                                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                                  if ([info objectForKey:PHImageErrorKey]) {
+                                                                                                                      // Inform user and propose to cancel or continue
+                                                                                                                      NSError *error = [info valueForKey:PHImageErrorKey];
+                                                                                                                      [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                                                                                                                                    andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
+                                                                                                                                   forRetrying:YES
+                                                                                                                                     withImage:image];
+                                                                                                                      return;
+                                                                                                                  }
+                                                                                                              });
+                                                                                                              
+                                                                                                              //                                  if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
+                                                                                                              //                                      // This is a degraded version, wait for the next one…
+                                                                                                              //                                      return;
+                                                                                                              //                                  }
+                                                                                                              
+                                                                                                              // Modifies video before upload to Piwigo server
+                                                                                                              [self modifyVideo:image withAVAsset:avasset beforeExporting:exportSession];
+                                                                                                              //                                  [self modifyVideo:image beforeExporting:exportSession];
+                                                                                                          }
+                                                           ];
+                                                      }
+                                                  }];
+                                              }];
 }
 
 -(void)modifyVideo:(ImageUpload *)image withAVAsset:(AVAsset *)originalVideo beforeExporting:(AVAssetExportSession *)exportSession
@@ -1016,32 +1028,34 @@
 
 -(void)uploadImage:(ImageUpload *)image withData:(NSData *)imageData andMimeType:(NSString *)mimeType
 {
-	// Check that title is not empty (should never happen)
+    // Check that title is not empty (should never happen)
     if ([image.title length] == 0) image.title = @"Image";
-        
+    
     // Append Tags
-	NSMutableArray *tagIds = [NSMutableArray new];
-	for(PiwigoTagData *tagData in image.tags)
-	{
-		[tagIds addObject:@(tagData.tagId)];
-	}
-	
-    // Prepare properties for upload
-	NSDictionary *imageProperties = @{
-									  kPiwigoImagesUploadParamFileName : image.image,
-									  kPiwigoImagesUploadParamTitle : image.title,
-									  kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
-									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(image.privacyLevel)],
-									  kPiwigoImagesUploadParamAuthor : image.author,
-									  kPiwigoImagesUploadParamDescription : image.imageDescription,
-									  kPiwigoImagesUploadParamTags : [tagIds copy],
+    NSMutableArray *tagIds = [NSMutableArray new];
+    for(PiwigoTagData *tagData in image.tags)
+    {
+        [tagIds addObject:@(tagData.tagId)];
+    }
+    
+    // Prepare properties for uploaded image/video (filename key is kPiwigoImagesUploadParamFileName)
+    // pwg.images.upload: file name key is kPiwigoImagesUploadParamTitle
+    // pwg.images.setInfo: file name key is kPiwigoImagesUploadParamFileName
+    NSDictionary *imageProperties = @{
+                                      kPiwigoImagesUploadParamFileName : image.image,
+                                      kPiwigoImagesUploadParamTitle : image.title,
+                                      kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
+                                      kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(image.privacyLevel)],
+                                      kPiwigoImagesUploadParamAuthor : image.author,
+                                      kPiwigoImagesUploadParamDescription : image.imageDescription,
+                                      kPiwigoImagesUploadParamTags : [tagIds copy],
                                       kPiwigoImagesUploadParamMimeType : mimeType
-									  };
-	
+                                      };
+    
     // Upload photo or video
-	[UploadService uploadImage:imageData
-			   withInformation:imageProperties
-					onProgress:^(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks) {
+    [UploadService uploadImage:imageData
+               withInformation:imageProperties
+                    onProgress:^(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks) {
                         ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
                         if (imageBeingUploaded.stopUpload) {
                             [progress cancel];
@@ -1054,14 +1068,14 @@
                         {
                             [self.delegate imageProgress:image onCurrent:self.current forTotal:self.total onChunk:currentChunk forChunks:totalChunks iCloudProgress:self.iCloudProgress];
                         }
-					} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+                    } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                         // Consider image job done
                         self.onCurrentImageUpload++;
-						
+                        
                         // Set properties of uploaded image/video on Piwigo server
                         [self setImageResponse:response withInfo:imageProperties];
                         
-						// The image must not be appended to the cache if it is moderated
+                        // The image must not be appended to the cache if it is moderated
                         if ([Model sharedInstance].usesCommunityPluginV29) {
 
                             // Append image to cache only if it is not moderated
@@ -1084,27 +1098,27 @@
                             // Remove image from queue and upload next one
                             [self uploadNextImageAndRemoveImageFromQueue:image withResponse:response];
                         });
-
-					} onFailure:^(NSURLSessionTask *task, NSError *error) {
-						ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
+                        
+                    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                        ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
                         if (imageBeingUploaded.stopUpload) {
                             // Upload was cancelled by user
                             self.maximumImagesForBatch--;
                             // Remove image from queue and upload next one
                             [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
                         }
-						else
-						{
+                        else
+                        {
 #if defined(DEBUG)
-							NSLog(@"ERROR IMAGE UPLOAD: %@", error);
+                            NSLog(@"ERROR IMAGE UPLOAD: %@", error);
 #endif
                             // Inform user and propose to cancel or continue
                             [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
                                           andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), [error localizedDescription]]
                                          forRetrying:YES
                                            withImage:image];
-						}
-					}];
+                        }
+                    }];
 }
 
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message forRetrying:(BOOL)retry withImage:(ImageUpload *)image
@@ -1127,7 +1141,7 @@
                                     handler:^(UIAlertAction * action) {
                                         // Consider image job done
                                         self.onCurrentImageUpload++;
-
+                                        
                                         // Empty queue
                                         while (self.imageUploadQueue.count > 0) {
                                             self.onCurrentImageUpload++;
@@ -1147,12 +1161,12 @@
     if (retry) {
         // Retry to upload the image
         UIAlertAction* retryAction = [UIAlertAction
-                                     actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                                     style:UIAlertActionStyleDefault
-                                     handler:^(UIAlertAction * action) {
-                                         // Upload image
-                                         [self uploadNextImage];
-                                     }];
+                                      actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                                      style:UIAlertActionStyleDefault
+                                      handler:^(UIAlertAction * action) {
+                                          // Upload image
+                                          [self uploadNextImage];
+                                      }];
         [alert addAction:retryAction];
     } else {
         // Upload next image
@@ -1162,7 +1176,7 @@
                                      handler:^(UIAlertAction * action) {
                                          // Consider image job done
                                          self.onCurrentImageUpload++;
-
+                                         
                                          // Remove image from queue and upload next one
                                          [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
                                      }];
@@ -1178,23 +1192,23 @@
 
 -(void)setImageResponse:(NSDictionary*)jsonResponse withInfo:(NSDictionary*)imageProperties
 {
-	if([[jsonResponse objectForKey:@"stat"] isEqualToString:@"ok"])
-	{
-		NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
-		NSString *imageId = [imageResponse objectForKey:@"image_id"];
-		
+    if([[jsonResponse objectForKey:@"stat"] isEqualToString:@"ok"])
+    {
+        NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
+        NSString *imageId = [imageResponse objectForKey:@"image_id"];
+        
         // Set properties of image on Piwigo server
-		[UploadService setImageInfoForImageWithId:imageId
-								  withInformation:imageProperties
-									   onProgress:^(NSProgress *progress) {
-										   // progress
-									   } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-										   // completion
-									   } onFailure:^(NSURLSessionTask *task, NSError *error) {
-										   // fail
-									   }];
-		
-	}
+        [UploadService setImageInfoForImageWithId:imageId
+                                  withInformation:imageProperties
+                                       onProgress:^(NSProgress *progress) {
+                                           // progress
+                                       } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+                                           // completion
+                                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                           // fail
+                                       }];
+        
+    }
 }
 
 -(void)isUploadedImageModerated:(NSDictionary*)jsonResponse inCategory:(NSInteger)categoryId
@@ -1210,35 +1224,35 @@
                                        onProgress:^(NSProgress *progress) {
                                            // progress
                                        }
-                                    OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-
-                                        if ([[response objectForKey:@"stat"] isEqualToString:@"ok"]) {
-                                            
-                                            // When admin trusts user, pending answer is empty
-                                            id pendingStatus = [[response objectForKey:@"result"] objectForKey:@"pending"];
-                                            if (pendingStatus && [pendingStatus count]) {
-                                                
-                                                id pendingState = [pendingStatus objectAtIndex:0];
-                                                if ([[pendingState objectForKey:@"state"] isEqualToString:@"moderation_pending"]) {
-                                                    
-                                                    // Moderation pending => Don't add this uploaded image/video to cache now
-                                                
-                                                } else {    // No moderation pending
-                                                    
-                                                    // Increment number of images in category
-                                                    [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
-
-                                                    // Read image/video information and update cache
-                                                    [self addImageDataToCategoryCache:jsonResponse];
-                                                }
-                                            } else {        // No pending status response ! Trusted user
-
-                                                // Increment number of images in category
-                                                [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
-                                                
-                                                // Read image/video information and update cache
-                                                [self addImageDataToCategoryCache:jsonResponse];
-                                            }
+                                     OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+                                         
+                                         if ([[response objectForKey:@"stat"] isEqualToString:@"ok"]) {
+                                             
+                                             // When admin trusts user, pending answer is empty
+                                             id pendingStatus = [[response objectForKey:@"result"] objectForKey:@"pending"];
+                                             if (pendingStatus && [pendingStatus count]) {
+                                                 
+                                                 id pendingState = [pendingStatus objectAtIndex:0];
+                                                 if ([[pendingState objectForKey:@"state"] isEqualToString:@"moderation_pending"]) {
+                                                     
+                                                     // Moderation pending => Don't add this uploaded image/video to cache now
+                                                     
+                                                 } else {    // No moderation pending
+                                                     
+                                                     // Increment number of images in category
+                                                     [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
+                                                     
+                                                     // Read image/video information and update cache
+                                                     [self addImageDataToCategoryCache:jsonResponse];
+                                                 }
+                                             } else {        // No pending status response ! Trusted user
+                                                 
+                                                 // Increment number of images in category
+                                                 [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
+                                                 
+                                                 // Read image/video information and update cache
+                                                 [self addImageDataToCategoryCache:jsonResponse];
+                                             }
                                          }
                                     }
                                         onFailure:^(NSURLSessionTask *task, NSError *error) {
