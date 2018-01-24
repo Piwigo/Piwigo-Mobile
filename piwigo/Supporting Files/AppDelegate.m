@@ -250,9 +250,6 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 
-    // Should we change the theme ?
-    [self screenBrightnessChanged:nil];
-
     // Should we reopen the session ?
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
     NSString *server = [Model sharedInstance].serverName;
@@ -298,6 +295,9 @@
     if ([availableCategories containsObject:AVAudioSessionCategoryPlayback]) {
         [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
     }
+
+    // Should we change the theme ?
+    [self screenBrightnessChanged:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
