@@ -174,6 +174,7 @@
 		AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseNotesViewController.m; sourceTree = "<group>"; };
 		AD92B8FF1F200083006E5B63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		ADAE9253201888640060B2BA /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Model.h; path = ../../../../Desktop/v2.1.7/Model.h; sourceTree = "<group>"; };
 		ADB607E61FC9D75700AF28DB /* VideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoView.h; sourceTree = "<group>"; };
 		ADB607E71FC9D79000AF28DB /* VideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoView.m; sourceTree = "<group>"; };
 		ADC06AE01F40B15E0081B4FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -607,6 +608,7 @@
 				D847B8341A7BFF1900231886 /* LEColorPicker */,
 				D82B8CED1A6790A3000E47CA /* Macros */,
 				D82B8D291A68832C000E47CA /* Model.h */,
+				ADAE9253201888640060B2BA /* Model.h */,
 				D82B8D2A1A68832C000E47CA /* Model.m */,
 				D82B8CC21A67820A000E47CA /* AppDelegate.h */,
 				D82B8CC31A67820A000E47CA /* AppDelegate.m */,

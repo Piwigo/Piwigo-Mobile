@@ -677,10 +677,10 @@
     // Video formats — Always export video in MP4 format
     [exportSession setOutputFileType:AVFileTypeMPEG4];
     [exportSession setShouldOptimizeForNetworkUse:YES];
-#if defined(DEBUG)
-    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
-    NSLog(@"Description: %@", exportSession.description);
-#endif
+//#if defined(DEBUG)
+//    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
+//    NSLog(@"Description: %@", exportSession.description);
+//#endif
 
     // Prepare MIME type
     NSString *mimeType = @"video/mp4";
