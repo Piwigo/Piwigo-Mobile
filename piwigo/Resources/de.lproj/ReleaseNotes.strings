@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.7_text" = "Version 2.1.7\n\n• Behebt Probleme mit dem Hochladen von Videos auf einigen Servern\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.7_text" = "Version 2.1.7\n\n• Behebt Probleme beim dem Hochladen von Videos auf einigen Servern\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.6_text" = "Version 2.1.6\n7. Januar 2018\n\n• Arabische Übersetzung\n• Verbesserte HTTP Basis Zugriffs-Authentifizierungsverwaltung\n• kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 

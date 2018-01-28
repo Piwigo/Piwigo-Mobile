@@ -15,7 +15,7 @@
 "tabBar_preferences" = "Voorkeuren";
 
 // Alert buttons
-"alertOkButton" = "Oké";
+"alertOkButton" = "Ok";
 "alertDismissButton" = "Sluiten";
 "alertYesButton" = "Ja";
 "alertNoButton" = "Nee";
@@ -36,7 +36,7 @@
 "internetErrorGeneral_title" = "Verbindingsfout";
 "internetErrorGeneral_broken" = "Sorry, de verbinding is verbroken. Probeer opnieuw aan te melden.";
 "internetCancellingConnection_button" = "Verbinding afgebroken…";
-"internetCancelledConnection_button" = "Verbinden afgebroken";
+"internetCancelledConnection_button" = "Verbinding afgebroken";
 "internetCancelledConnection_title" = "Verbindingen afgebroken";
 
 // ===========================================================================
@@ -415,7 +415,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Kleuren";
-"settings_darkPalette" = "Dark Palette";
+"settings_darkPalette" = "Donker palet";
 "settings_switchPalette" = "Schakel automatisch";
 "settings_brightness" = "Helderheid";
 

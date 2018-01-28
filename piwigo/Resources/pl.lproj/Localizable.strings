@@ -36,7 +36,7 @@
 "internetErrorGeneral_title" = "Błąd połączenia";
 "internetErrorGeneral_broken" = "Przepraszamy komunikacja została przerwana. Spróbuj zalogować się ponownie.";
 "internetCancellingConnection_button" = "Anulowanie połączenia…";
-"internetCancelledConnection_button" = "Połączenie Anulowane";
+"internetCancelledConnection_button" = "Anuluj połączenie";
 "internetCancelledConnection_title" = "Połączenie anulowane";
 
 // ===========================================================================
@@ -51,7 +51,7 @@
 "login_connecting" = "Łączenie";
 "login_newSession" = "Otwieranie sesji";
 "login_communityParameters" = "Community parametrów";
-"login_serverParameters" = "Piwigo parametrów";
+"login_serverParameters" = "Parametry Piwigo";
 "login_connectionChanged" = "Połączenie uległo zmianie!";
 "loginHTTP_title" = "Poświadczenia HTTP";
 "loginHTTP_message" = "Podstawowa autoryzacja dostępu jest wymagana przez serwer Piwigo‎:";
@@ -59,16 +59,16 @@
 "loginHTTPpwd_placeholder" = "Hasło";
 
 // Login — Errors
-"serverMethodsError_title" = "Metody nieznany";
+"serverMethodsError_title" = "Nieznane metody";
 "serverMethodsError_message" = "Nie udało się uzyskać metod serwera. Problem z serwerem Piwigo?";
 
 "loginError_title" = "Logowanie nieudane";
 "loginError_message" = "Nazwa użytkownika i hasło nie pasują do podanego serwera";
 "loginEmptyServer_title" = "Wprowadź Adres Strony";
-"loginEmptyServer_message" = "Proszę wybrać protokół i wprowadź adres internetowy Piwigo, aby kontynuować.";
+"loginEmptyServer_message" = "Proszę wybrać protokół i wprowadzić adres internetowy Piwigo, aby kontynuować.";
 
-"serverVersionNotCompatible_title" = "Serwera Nie Kompatybilna";
-"serverVersionNotCompatible_message" = "Wersja serwera Twojej Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2,7. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile. Czy nadal chcesz kontynuować?";
+"serverVersionNotCompatible_title" = "Serwera Niekompatybilny";
+"serverVersionNotCompatible_message" = "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2,7. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile. Czy nadal chcesz kontynuować?";
 
 "sessionStatusError_title" = "Niepowodzenie Uwierzytelniania";
 "sessionStatusError_message" = "Nie można uwierzytelnić z serwerem. Spróbuj zalogować się ponownie.";
@@ -174,7 +174,7 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Zdjęcie";
-"singleVideo" = "Filmu";
+"singleVideo" = "Wideo";
 "singleAudio" = "Audio";
 "severalImages" = "Zdjęcia";
 "noImages" = "Brak Zdjęć";
@@ -416,7 +416,7 @@
 // Settings — Colors
 "settingsHeader_colors" = "Kolory";
 "settings_darkPalette" = "Ciemna paleta";
-"settings_switchPalette" = "Przełącz się automatycznie";
+"settings_switchPalette" = "Przełącz automatycznie";
 "settings_brightness" = "Jasność";
 
 // Settings — Information

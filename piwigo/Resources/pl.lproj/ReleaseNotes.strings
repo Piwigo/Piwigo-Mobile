@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.7_text" = "Wersja 2.1.7\n\n• Napraw problemy z przesyłaniem wideo na niektórych serwerach\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.7_text" = "Wersja 2.1.7\n\n• Naprawiono problemy z przesyłaniem wideo na niektórych serwerach\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
-"v2.1.6_text" = "Wersja 2.1.6\n7 stycznia 2018\n\n• Tłumaczenie arabskie\n• Udoskonalone zarządzanie uwierzytelnianiem za pomocą podstawowego dostępu HTTP\n• Poprawki błędów i usprawnienia interfejsu\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.6_text" = "Wersja 2.1.6\n7 stycznia 2018\n\n• Tłumaczenie arabskie\n• Udoskonalono zarządzanie uwierzytelnianiem za pomocą podstawowego dostępu HTTP\n• Poprawki błędów i usprawnienia interfejsu\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.5_text" = "Wersja 2.1.5\n21 grudnia 2017\n\n• Dodano możliwość anulowania wysyłania\n• Dodano możliwość usuwania zdjęcia po wysłaniu\n• Dodano kompatybilność z Optymalizowaniem Magazynu (iCloud)\n• Zachowuje format obrazu po zmianie rozmiaru, gdy to możliwe\n• Tłumaczenia duńskie i indonezyjskie\n• Naprawiono tracenie części metadanych przy pobieraniu\n• Naprawiono zmianę formatu z PNG na JPG przed wysłaniem\n• Naprawiono błędy napotkane w iOS 11 i iPhone X\n• Naprawiono drobne błędy\n• Zmodernizowano kod\n________________________________________\n\n";
 
@@ -30,6 +30,6 @@
 
 "v2.0.1_text" = "Wersja 2.0.1\n26 czerwca 2015\n\nNowe ustawienia:\n - Możliwość zmiany rozmiaru obrazów na upload\n + Jakość obrazu jest z zakres 50 - 98%\n- Możliwość ustawiania domyślnego obrazu podglądu rozmiar\nPoprawki\n________________________________________\n\n";
 
-"v2.0.0_text" = "Wersja 2.0\n24 kwiecień 2015\n\nNowe Natywna aplikacja oferuje:\n - Możliwość zarządzania albumy \n - Zobacz obrazy\n - Bulk image upload\n - Upload wideo i odtwarzania (VideoJS musi być zainstalowany plugin)\n________________________________________\n\n";
+"v2.0.0_text" = "Wersja 2.0\n24 kwiecień 2015\n\nNowa natywna aplikacja oferuje:\n - Możliwość zarządzania albumami\n - Oglądanie Twoich obrazów\n - Masowe wysyłanie zdjęć\n - Wysyłanie i odtwarzanie wideo (musi być zainstalowany plugin VideoJS)\n________________________________________\n\n";
 
 "v1.0.0_text" = "Wersja 1.0\n17 października 2011";
