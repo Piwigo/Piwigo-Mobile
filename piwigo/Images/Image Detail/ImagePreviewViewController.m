@@ -35,7 +35,29 @@
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-	self.navigationBarHidden = YES;
+
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    self.navigationBarHidden = YES;
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    
+    // Tab bar appearance
+    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 10, *)) {
+        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
+    }
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
