@@ -174,8 +174,8 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "صورة";
-"singleVideo" = "Video";
-"singleAudio" = "Audio";
+"singleVideo" = "فيديو";
+"singleAudio" = "الصوت";
 "severalImages" = "الصور";
 "noImages" = "لا توجد صور";
 "pullToRefresh" = "إعادة تحميل الصور";
