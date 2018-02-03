@@ -54,7 +54,7 @@
 "login_serverParameters" = "Piwigoparametrar";
 "login_connectionChanged" = "Anslutningen ändrad!";
 "loginHTTP_title" = "Http-referenser";
-"loginHTTP_message" = "Grundläggande autentisering som krävs av Piwigo-servern‎:";
+"loginHTTP_message" = "Grundläggande autentisering krävs av Piwigo-servern‎:";
 "loginHTTPuser_placeholder" = "Användarnamn";
 "loginHTTPpwd_placeholder" = "Lösenord";
 
@@ -415,8 +415,8 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Färger";
-"settings_darkPalette" = "Mörka palett";
-"settings_switchPalette" = "Automatiskt växla";
+"settings_darkPalette" = "Mörk palett";
+"settings_switchPalette" = "Växla automatiskt";
 "settings_brightness" = "Ljusstyrka";
 
 // Settings — Information
