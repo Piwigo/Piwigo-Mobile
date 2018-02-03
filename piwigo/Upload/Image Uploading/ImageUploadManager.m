@@ -215,13 +215,15 @@
 -(void)uploadNextImageAndRemoveImageFromQueue:(ImageUpload *)image withResponse:(NSDictionary *)response
 {
     // Remove image from queue (in both tables)
-    [self.imageUploadQueue removeObjectAtIndex:0];
-    [self.imageNamesUploadQueue removeObjectForKey:[image.image stringByDeletingPathExtension]];
+    if (self.imageUploadQueue.count > 0) {                  // Added to prevent crash
+        [self.imageUploadQueue removeObjectAtIndex:0];
+        [self.imageNamesUploadQueue removeObjectForKey:[image.image stringByDeletingPathExtension]];
 
-    // Update progress infos
-    if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
-    {
-        [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
+        // Update progress infos
+        if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
+        {
+            [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:response];
+        }
     }
     
     // Upload next image
@@ -290,7 +292,7 @@
 #if defined(DEBUG)
                          NSLog(@"retrieveFullSizeAssetDataFromImage \"%@\" returned info(%@)", image.image, info);
 #endif
-                         if ([info objectForKey:PHImageErrorKey]) {
+                         if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
                              NSError *error = [info valueForKey:PHImageErrorKey];
                              // Inform user and propose to cancel or continue
                              [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
@@ -301,7 +303,6 @@
                          }
 
                          // Expected resource available
-                         assert(imageData.length != 0);
                          [self modifyImage:image withData:imageData];
                      }
          ];
@@ -390,7 +391,7 @@
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
     } else if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
         // Image in unaccepted file format for Piwigo server => convert to JPEG format
-        imageCompressed = UIImageJPEGRepresentation(imageResized, 100.0);
+        imageCompressed = UIImageJPEGRepresentation(imageResized, 1.0);
         
         // Final image file will be in JPEG format
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
@@ -431,41 +432,129 @@
     assetMetadata = nil;
     assetImage = nil;
 
-    // Prepare MIME type
+    // Try to determine MIME type from image data
     NSString *mimeType = @"";
     mimeType = [self contentTypeForImageData:imageData];
     
-    // Re-check filename extension
-    fileExt = [[image.image pathExtension] lowercaseString];
-    if (([mimeType isEqualToString:@"image/jpeg"]) && !([fileExt isEqualToString:@"jpg"])) {
-        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"jpg"];
-    } else if (([mimeType isEqualToString:@"image/png"]) && !([fileExt isEqualToString:@"png"])) {
-        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"png"];
-    } else if (([mimeType isEqualToString:@"image/gif"]) && !([fileExt isEqualToString:@"gif"])) {
-        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"gif"];
-    } else if (([mimeType isEqualToString:@"image/tiff"]) && !([fileExt isEqualToString:@"tif"])) {
-        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"tif"];
+    // Re-check filename extension if MIME type known
+    if (mimeType != nil) {
+        fileExt = [[image.image pathExtension] lowercaseString];
+        NSString *expectedFileExtension = [self fileExtensionForImageData:imageData];
+        if (![fileExt isEqualToString:expectedFileExtension]) {
+            image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:expectedFileExtension];
+        }
+    } else {
+        // Could not determine image file format from image data,
+        // keep file extension and use arbitrary mime type
+        mimeType = @"image/jpg";
     }
     
     // Upload image with tags and properties
     [self uploadImage:image withData:imageData andMimeType:mimeType];
 }
 
+#pragma mark -- MIME type and file extension sniffing
+
+// See https://en.wikipedia.org/wiki/List_of_file_signatures
+// https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
+
+// https://en.wikipedia.org/wiki/BMP_file_format
+const char bmp[2] = {'B', 'M'};
+
+// https://en.wikipedia.org/wiki/GIF
+const char gif87a[6] = {'G', 'I', 'F', '8', '7', 'a'};
+const char gif89a[6] = {'G', 'I', 'F', '8', '9', 'a'};
+
+// https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
+const char heic[12] = {0x00, 0x00, 0x00, 0x18, 'f', 't', 'y', 'p', 'h', 'e', 'i', 'c'};
+
+// https://en.wikipedia.org/wiki/ILBM
+const char iff[4] = {'F', 'O', 'R', 'M'};
+
+// https://en.wikipedia.org/wiki/JPEG
+const char jpg[3] = {0xff, 0xd8, 0xff};
+
+// https://en.wikipedia.org/wiki/JPEG_2000
+const char jp2[12] = {0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a};
+
+// https://en.wikipedia.org/wiki/Portable_Network_Graphics
+const char png[8] = {0x89, 'P', 'N', 'G', 0x0d, 0x0a, 0x1a, 0x0a};
+
+// https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
+const char psd[4] = {'8', 'B', 'P', 'S'};
+
+// https://en.wikipedia.org/wiki/TIFF
+const char tif_ii[4] = {'I','I', 0x2A, 0x00};
+const char tif_mm[4] = {'M','M', 0x00, 0x2A};
+
+// https://en.wikipedia.org/wiki/WebP
+const char webp[4] = {'R', 'I', 'F', 'F'};
+
+// https://en.wikipedia.org/wiki/ICO_(file_format)
+const char win_ico[4] = {0x00, 0x00, 0x01, 0x00};
+const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
+
 -(NSString *)contentTypeForImageData:(NSData *)data {
-    uint8_t c;
-    [data getBytes:&c length:1];
+    char bytes[12] = {0};
+    [data getBytes:&bytes length:12];
     
-    switch (c) {
-        case 0xFF:
-            return @"image/jpeg";
-        case 0x89:
-            return @"image/png";
-        case 0x47:
-            return @"image/gif";
-        case 0x49:
-        case 0x4D:
-            return @"image/tiff";
+    if (!memcmp(bytes, jpg, 3)) {
+        return @"image/jpeg";
+    } else if (!memcmp(bytes, heic, 12)) {
+        return @"image/heic";
+    } else if (!memcmp(bytes, png, 8)) {
+        return @"image/png";
+    } else if (!memcmp(bytes, gif87a, 6) || !memcmp(bytes, gif89a, 6)) {
+        return @"image/gif";
+    } else if (!memcmp(bytes, bmp, 2)) {
+        return @"image/x-ms-bmp";
+    } else if (!memcmp(bytes, psd, 4)) {
+        return @"image/vnd.adobe.photoshop";
+    } else if (!memcmp(bytes, iff, 4)) {
+        return @"image/iff";
+    } else if (!memcmp(bytes, webp, 4)) {
+        return @"image/webp";
+    } else if (!memcmp(bytes, win_ico, 4) || !memcmp(bytes, win_cur, 4)) {
+        return @"image/x-icon";
+    } else if (!memcmp(bytes, tif_ii, 4) || !memcmp(bytes, tif_mm, 4)) {
+        return @"image/tiff";
+    } else if (!memcmp(bytes, jp2, 12)) {
+        return @"image/jp2";
     }
+
+    return nil;
+}
+
+-(NSString *)fileExtensionForImageData:(NSData *)data {
+    char bytes[12] = {0};
+    [data getBytes:&bytes length:12];
+    
+    if (!memcmp(bytes, jpg, 3)) {
+        return @"jpg";
+    } else if (!memcmp(bytes, heic, 12)) {
+        return @"heic";
+    } else if (!memcmp(bytes, png, 8)) {
+        return @"png";
+    } else if (!memcmp(bytes, gif87a, 6) || !memcmp(bytes, gif89a, 6)) {
+        return @"gif";
+    } else if (!memcmp(bytes, bmp, 2)) {
+        return @"bmp";
+    } else if (!memcmp(bytes, psd, 4)) {
+        return @"psd";
+    } else if (!memcmp(bytes, iff, 4)) {
+        return @"iff";
+    } else if (!memcmp(bytes, webp, 4)) {
+        return @"webp";
+    } else if (!memcmp(bytes, win_ico, 4)) {
+        return @"ico";
+    } else if (!memcmp(bytes, win_cur, 4)) {
+        return @"cur";
+    } else if (!memcmp(bytes, tif_ii, 4) || !memcmp(bytes, tif_mm, 4)) {
+        return @"tif";
+    } else if (!memcmp(bytes, jp2, 12)) {
+        return @"jp2";
+    }
+    
     return nil;
 }
 
@@ -587,77 +676,72 @@
                                                     options:options
                                               resultHandler:^(AVAsset *avasset, AVAudioMix *audioMix, NSDictionary *info) {
                                                   
-                                                  // QuickTime video exportable with passthrough option (e.g. recorded with device)?
-                                                  [AVAssetExportSession determineCompatibilityOfExportPreset:AVAssetExportPresetPassthrough withAsset:avasset outputFileType:AVFileTypeMPEG4 completionHandler:^(BOOL compatible) {
-                                                      
-                                                      NSString *exportPreset = nil;
-                                                      if (compatible) {
-                                                          // No reencoding required — will keep metadata (or not depending on user's settings)
-                                                          exportPreset = AVAssetExportPresetPassthrough;
-                                                      }
-                                                      else
-                                                      {
-                                                          NSInteger maxPixels = lround(fmax(image.imageAsset.pixelWidth, image.imageAsset.pixelHeight));
-                                                          NSArray *presets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset];
-                                                          // This array never contains AVAssetExportPresetPassthrough,
-                                                          // that is why we use determineCompatibilityOfExportPreset: before.
-                                                          //                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
-                                                          if ((maxPixels <= 640) && ([presets containsObject:AVAssetExportPreset640x480])) {
-                                                              // Encode in 640x480 pixels — metadata will be lost
-                                                              exportPreset = AVAssetExportPreset640x480;
-                                                          }
-                                                          else if ((maxPixels <= 960) && ([presets containsObject:AVAssetExportPreset960x540])) {
-                                                              // Encode in 960x540 pixels — metadata will be lost
-                                                              exportPreset = AVAssetExportPreset960x540;
-                                                          }
-                                                          else if ((maxPixels <= 1280) && ([presets containsObject:AVAssetExportPreset1280x720])) {
-                                                              // Encode in 1280x720 pixels — metadata will be lost
-                                                              exportPreset = AVAssetExportPreset1280x720;
-                                                          }
-                                                          else if ((maxPixels <= 1920) && ([presets containsObject:AVAssetExportPreset1920x1080])) {
-                                                              // Encode in 1920x1080 pixels — metadata will be lost
-                                                              exportPreset = AVAssetExportPreset1920x1080;
-                                                          }
-                                                          else {
-                                                              // Use highest quality for device
-                                                              exportPreset = AVAssetExportPresetHighestQuality;
-                                                          }
-                                                      }
-                                                      
-                                                      // Requests video with selected export preset…
-                                                      @autoreleasepool {
-                                                          [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
-                                                                                                           exportPreset:exportPreset
-                                                                                                          resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
+                  // QuickTime video exportable with passthrough option (e.g. recorded with device)?
+                  [AVAssetExportSession determineCompatibilityOfExportPreset:AVAssetExportPresetPassthrough withAsset:avasset outputFileType:AVFileTypeMPEG4 completionHandler:^(BOOL compatible) {
+                      
+                      NSString *exportPreset = nil;
+                      if (compatible) {
+                          // No reencoding required — will keep metadata (or not depending on user's settings)
+                          exportPreset = AVAssetExportPresetPassthrough;
+                      }
+                      else
+                      {
+                          NSInteger maxPixels = lround(fmax(image.imageAsset.pixelWidth, image.imageAsset.pixelHeight));
+                          NSArray *presets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset];
+                          // This array never contains AVAssetExportPresetPassthrough,
+                          // that is why we use determineCompatibilityOfExportPreset: before.
+                          //                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
+                          if ((maxPixels <= 640) && ([presets containsObject:AVAssetExportPreset640x480])) {
+                              // Encode in 640x480 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset640x480;
+                          }
+                          else if ((maxPixels <= 960) && ([presets containsObject:AVAssetExportPreset960x540])) {
+                              // Encode in 960x540 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset960x540;
+                          }
+                          else if ((maxPixels <= 1280) && ([presets containsObject:AVAssetExportPreset1280x720])) {
+                              // Encode in 1280x720 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset1280x720;
+                          }
+                          else if ((maxPixels <= 1920) && ([presets containsObject:AVAssetExportPreset1920x1080])) {
+                              // Encode in 1920x1080 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset1920x1080;
+                          }
+                          else {
+                              // Use highest quality for device
+                              exportPreset = AVAssetExportPresetHighestQuality;
+                          }
+                      }
+                      
+                      // Requests video with selected export preset…
+                      @autoreleasepool {
+                          [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
+                         exportPreset:exportPreset
+                        resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
 #if defined(DEBUG)
-                                                                                                              NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+                                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
 #endif
-                                                                                                              // The handler needs to update the user interface => Dispatch to main thread
-                                                                                                              dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                                  if ([info objectForKey:PHImageErrorKey]) {
-                                                                                                                      // Inform user and propose to cancel or continue
-                                                                                                                      NSError *error = [info valueForKey:PHImageErrorKey];
-                                                                                                                      [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                                                                                                                                    andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
-                                                                                                                                   forRetrying:YES
-                                                                                                                                     withImage:image];
-                                                                                                                      return;
-                                                                                                                  }
-                                                                                                              });
-                                                                                                              
-                                                                                                              //                                  if ([[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
-                                                                                                              //                                      // This is a degraded version, wait for the next one…
-                                                                                                              //                                      return;
-                                                                                                              //                                  }
-                                                                                                              
-                                                                                                              // Modifies video before upload to Piwigo server
-                                                                                                              [self modifyVideo:image withAVAsset:avasset beforeExporting:exportSession];
-                                                                                                              //                                  [self modifyVideo:image beforeExporting:exportSession];
-                                                                                                          }
-                                                           ];
-                                                      }
-                                                  }];
-                                              }];
+                                  // The handler needs to update the user interface => Dispatch to main thread
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      if ([info objectForKey:PHImageErrorKey]) {
+                                          // Inform user and propose to cancel or continue
+                                          NSError *error = [info valueForKey:PHImageErrorKey];
+                                          [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
+                                                        andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
+                                                       forRetrying:YES
+                                                         withImage:image];
+                                          return;
+                                      }
+                                  });
+                            
+                                  // Modifies video before upload to Piwigo server
+                                  [self modifyVideo:image withAVAsset:avasset beforeExporting:exportSession];
+                                  //                                  [self modifyVideo:image beforeExporting:exportSession];
+                              }
+                           ];
+                      }
+                  }];
+              }];
 }
 
 -(void)modifyVideo:(ImageUpload *)image withAVAsset:(AVAsset *)originalVideo beforeExporting:(AVAssetExportSession *)exportSession
@@ -1028,6 +1112,15 @@
 
 -(void)uploadImage:(ImageUpload *)image withData:(NSData *)imageData andMimeType:(NSString *)mimeType
 {
+    // Chek that the final image format will be accepted by the Piwigo server
+    if (![[Model sharedInstance].uploadFileTypes containsString:[[image.image pathExtension] lowercaseString]]) {
+        [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                      andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_destination", @"cannot create image destination")]
+                     forRetrying:YES
+                       withImage:image];
+        return;
+    }
+
     // Check that title is not empty (should never happen)
     if ([image.title length] == 0) image.title = @"Image";
     
