@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.6_text" = "Versi 2.1.6\n\n• Terjemahan bahasa Arab\n• Peningkatan manajemen otentikasi akses dasar HTTP\n• Perbaikan bug minor dan perbaikan antarmuka\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.7_text" = "Versi 2.1.7\n\n• Perbaiki masalah upload video di beberapa server\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+
+"v2.1.6_text" = "Versi 2.1.6\n7 Januari 2018\n\n• Terjemahan bahasa Arab\n• Peningkatan manajemen otentikasi akses dasar HTTP\n• Perbaikan bug minor dan perbaikan antarmuka\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.5_text" = "Versi 2.1.5\n21 Desember 2017\n\n• Penambahan kemampuan untuk membatalkan proses unggah\n• Penambahan pilihan untuk menghapus gambar setelah diunggah\n• Penambahan kompatibilitas dengan Mengoptimalkan Penyimpanan (iCloud)\n• Mempertahankan format gambar setelah mengubah ukuran bila memungkinkan\n• Terjemahan Denmark dan Bahasa Indonesia\n• Perbaikan metadata yang sebagian hilang saat mengunduh\n• Perbaikan format PNG yang diganti dengan JPEG sebelum proses unggah\n• Perbaikan masalah sebelumnya dengan iOS 11 dan iPhone X\n• Perbaikan bug kecil\n• Modernisasi kode\n________________________________________\n\n";
 

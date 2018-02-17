@@ -15,10 +15,10 @@
 
 -(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy
 {
-	self = [super init];
-	if(self)
-	{
-		self.imageAsset = imageAsset;
+    self = [super init];
+    if(self)
+    {
+        self.imageAsset = imageAsset;
         if (imageAsset) {
             // For some unknown reason, the asset resource may be empty
             NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
@@ -29,7 +29,20 @@
                 // No filename => Build filename from 32 characters of local identifier
                 NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
                 self.image = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
-                self.title = @"Image";
+                // Filename extension required by Piwigo so that it knows how to deal with it
+                if (imageAsset.mediaType == PHAssetMediaTypeImage) {
+                    // Adopt JPEG photo format by default, will be rechecked
+                    self.image = [self.image stringByAppendingPathExtension:@"jpg"];
+                    self.title = NSLocalizedString(@"singleImage", @"Image");
+                } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
+                    // Videos are exported in MP4 format
+                    self.image = [self.image stringByAppendingPathExtension:@"mp4"];
+                    self.title = NSLocalizedString(@"singleVideo", @"Video");
+                } else if (imageAsset.mediaType == PHAssetMediaTypeAudio) {
+                    // Arbitrary extension, not managed yet
+                    self.image = [self.image stringByAppendingPathExtension:@"m4a"];
+                    self.title = NSLocalizedString(@"singleAudio", @"Audio");
+                }
             }
         } else {
             self.image = @"";
@@ -38,41 +51,41 @@
         self.categoryToUploadTo = category;
         self.privacyLevel = privacy;
         self.stopUpload = NO;
-	}
-	return self;
+    }
+    return self;
 }
 
 -(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags
 {
-	self = [self initWithImageAsset:imageAsset forCategory:category forPrivacyLevel:privacy];
-	if(self)
-	{
-		if([description isKindOfClass:[NSNull class]])
-		{
-			description = nil;
-		}
-		
-		self.author = author;
-		self.imageDescription = description;
+    self = [self initWithImageAsset:imageAsset forCategory:category forPrivacyLevel:privacy];
+    if(self)
+    {
+        if([description isKindOfClass:[NSNull class]])
+        {
+            description = nil;
+        }
+        
+        self.author = author;
+        self.imageDescription = description;
         if (tags == nil) {
             self.tags = [[NSArray alloc] init];     // New images have no tags
         } else {
             self.tags = tags;
         }
-	}
-	return self;
+    }
+    return self;
 }
 
 -(instancetype)initWithImageData:(PiwigoImageData*)imageData
 {
-	self = [self initWithImageAsset:nil forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
-	self.image = imageData.fileName;
-	self.title = imageData.name;
-	if(self)
-	{
-		self.imageId = [imageData.imageId integerValue];
-	}
-	return self;
+    self = [self initWithImageAsset:nil forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
+    self.image = imageData.fileName;
+    self.title = imageData.name;
+    if(self)
+    {
+        self.imageId = [imageData.imageId integerValue];
+    }
+    return self;
 }
 
 -(NSString *)author {

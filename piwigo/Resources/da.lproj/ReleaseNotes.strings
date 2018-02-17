@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.6_text" = "Version 2.1.6\n\n• Arabisk oversættelse\n• Forbedret HTTP adgangs-autentificeringsstyring\n• Mindre fejlrettelser og forbedringer af brugergrænsefladen\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.7_text" = "Version 2.1.7\n\n• Løs videooverførselsproblemer på nogle servere\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
-"v2.1.5_text" = "Version 2.1.5\n21 december, 2017\n\n• Tilføjet mulighed for at annullere upload\n• Tilføjet mulighed for at slette billede efter upload\n• Tilføjet kompatibilitet med lageroptimering (iCloud)\n• Fasthold billedformat efter ændring af størrelse når muligt\n• Dansk og Indonesisk oversættelse\n• Fix metadata delvist tabt ved download\n• Fix PNG format erstattet med JPEG før upload\n• Fix af iOS 11 and iPhone X problemer\n• Fix mindre fejl\n• Modernisering af kode\n________________________________________\n\n";
+"v2.1.6_text" = "Version 2.1.6\n7 januar 2018\n\n• Arabisk oversættelse\n• Forbedret HTTP adgangs-autentificeringsstyring\n• Mindre fejlrettelser og forbedringer af brugergrænsefladen\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+
+"v2.1.5_text" = "Version 2.1.5\n21 december 2017\n\n• Tilføjet mulighed for at annullere upload\n• Tilføjet mulighed for at slette billede efter upload\n• Tilføjet kompatibilitet med lageroptimering ‎(iCloud‎)\n• Fasthold billedformat efter ændring af størrelse når muligt\n• Dansk og Indonesisk oversættelse\n• Fix metadata delvist tabt ved download\n• Fix PNG format erstattet med JPEG før upload\n• Fix af iOS 11 and iPhone X problemer\n• Fix mindre fejl\n• Modernisering af kode\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.4_text" = "Version 2.1.4\n31 oktober 2017\n\n• Svensk oversættelse\n• Fejlrettelser\n________________________________________\n\n";
 
