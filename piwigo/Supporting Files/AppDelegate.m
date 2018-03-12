@@ -290,10 +290,12 @@
     
     // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
     // Furthermore, it will interrupt any other current audio sessions (no mixing)
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    NSArray<NSString *> *availableCategories = [audioSession availableCategories];
-    if ([availableCategories containsObject:AVAudioSessionCategoryPlayback]) {
-        [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+    if (@available(iOS 9, *)) {
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        NSArray<NSString *> *availableCategories = [audioSession availableCategories];
+        if ([availableCategories containsObject:AVAudioSessionCategoryPlayback]) {
+            [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+        }
     }
 
     // Should we change the theme ?
