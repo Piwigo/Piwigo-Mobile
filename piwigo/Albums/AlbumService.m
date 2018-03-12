@@ -107,7 +107,7 @@
 		albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];
 		albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
 		
-        // When "representative_picture_id" is null of not supplied: no album image
+        // When "representative_picture_id" is null or not supplied: no album image
         if (([category objectForKey:@"representative_picture_id"] != nil) &&
             ([category objectForKey:@"representative_picture_id"] != [NSNull null]))
 		{
