@@ -18,13 +18,12 @@
 #import "KeychainAccess.h"
 #import "SAMKeychain.h"
 #import "AFNetworkActivityIndicatorManager.h"
-#import "Reachability.h"
+#import "CategoriesData.h"
 #import "PhotosFetch.h"
 
 @interface AppDelegate ()
 
 @property (nonatomic, strong) LoginViewController *loginVC;
-@property (nonatomic, strong) Reachability *internetReachability;
 
 @end
 
@@ -88,7 +87,10 @@
 	
     // Enable network activity indicator
 	[AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-	
+    
+    // Enable network reachability monitoring
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    	
 	return YES;
 }
 
@@ -99,52 +101,33 @@
 	[self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     
-    // Observe the kNetworkReachabilityChangedNotification.
-    // When that notification is posted, the method reachabilityChanged will be called.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
-    
-    // Monitor Internet connection reachability
-    self.internetReachability = [Reachability reachabilityForInternetConnection];
-    [self.internetReachability startNotifier];
-
     // Observe the UIScreenBrightnessDidChangeNotification.
     // When that notification is posted, the method screenBrightnessChanged will be called.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged:) name:UIScreenBrightnessDidChangeNotification object:nil];
-}
 
-// Called by Reachability whenever Internet connection changes.
-- (void)reachabilityChanged:(NSNotification *)note
-{
-    Reachability* curReach = [note object];
-    NetworkStatus netStatus = [curReach currentReachabilityStatus];
-
-    switch (netStatus)
-    {
-        case NotReachable:
-        {
-#if defined(DEBUG)
-            NSLog(@"Access Not Available");
-#endif
-            break;
-        }
-        case ReachableViaWWAN:
-        case ReachableViaWiFi:
-        {
+    // Set network reachability status change block
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        NSLog(@"!!!!!! Network Reachability Changed!");
+        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
+              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
+              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
+              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+        
+        if ([AFNetworkReachabilityManager sharedManager].reachable) {
             // Connection changed but again reachable — Login again?
             BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
             NSString *server = [Model sharedInstance].serverName;
             NSString *user = [KeychainAccess getLoginUser];
-
+            
             if(hadOpenedSession && (server.length > 0) && (user.length > 0))
             {
 #if defined(DEBUG)
-                NSLog(@"Connection changed but again reachable — Login again?");
+                NSLog(@"       Connection changed but again reachable — Login again?");
 #endif
                 [self.loginVC checkSessionStatusAndTryRelogin];
             }
-            break;
         }
-    }
+    }];
 }
 
 // Called when the screen brightness has changed or when user changed settings
@@ -299,11 +282,17 @@
     }
 
     // Should we change the theme ?
-    [self screenBrightnessChanged:nil];
+    [self screenBrightnessChanged:nil];    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+
+    // Disable network activity indicator
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;
+    
+    // Disable network reachability monitoring
+    [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
 }
 
 @end

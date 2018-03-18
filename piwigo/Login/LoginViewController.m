@@ -15,6 +15,7 @@
 #import "ClearCache.h"
 #import "AppDelegate.h"
 #import "MBProgressHUD.h"
+#import "CategoriesData.h"
 
 #ifndef DEBUG_SESSION
 #define DEBUG_SESSION
@@ -211,10 +212,10 @@
 -(void)performLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"=> performLogin: starting with…");
     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+    NSLog(@"=> performLogin: starting…");
 #endif
     
     // Perform Login if username exists
@@ -264,10 +265,10 @@
 -(void)getCommunityStatusAtFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting with…", isFirstLogin ? @"YES" : @"NO");
     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+    NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting…", isFirstLogin ? @"YES" : @"NO");
 #endif
     if(([Model sharedInstance].usesCommunityPluginV29) &&(![Model sharedInstance].userCancelledCommunication)) {
 
@@ -305,11 +306,11 @@
 -(void)getSessionStatusAtLogin:(BOOL)isLoggingIn andFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"=> getSessionStatusAtLogin:%@ andFirstLogin:%@ starting with…",
-          isLoggingIn ? @"YES" : @"NO", isFirstLogin ? @"YES" : @"NO");
     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+    NSLog(@"=> getSessionStatusAtLogin:%@ andFirstLogin:%@ starting…",
+          isLoggingIn ? @"YES" : @"NO", isFirstLogin ? @"YES" : @"NO");
 #endif
     if (![Model sharedInstance].userCancelledCommunication) {
         // Update HUD during login
@@ -360,6 +361,9 @@
                         if (isFirstLogin) {
                             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                             [appDelegate loadNavigation];
+                        } else {
+                            // Refresh category data
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil];
                         }
                     }];
                 }
@@ -378,10 +382,10 @@
 
 -(void)checkSessionStatusAndTryRelogin
 {
-    // Display HUD during re-login
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
-    });
+//    // Display HUD during re-login
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
+//    });
     
     // Check whether session is still active
     [SessionService getPiwigoStatusAtLogin:NO
@@ -401,7 +405,7 @@
 
             } else {
                 // Connection still alive. Close HUD and do nothing.
-                [self hideLoading];
+//                [self hideLoading];
 #if defined(DEBUG_SESSION)
                 NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
                 NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
@@ -410,6 +414,11 @@
 #endif
             }
         } else {
+            // Display HUD
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
+            });
+
             // Connection really lost, inform user
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again."))];
         }

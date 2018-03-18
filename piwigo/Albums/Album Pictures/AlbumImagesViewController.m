@@ -93,17 +93,8 @@
 		self.selectedImageIds = [NSMutableArray new];
 		
 		self.downloadView.hidden = YES;
-		
-		[AlbumService getAlbumListForCategory:self.categoryId
-								 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-									 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-								 }
-                                    onFailure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-                                        NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
-#endif
-                                    }];
-		
+
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData) name:kPiwigoNotificationGetCategoryData object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
 	}
@@ -114,6 +105,9 @@
 {
 	[super viewWillAppear:animated];
 	
+    // Reload category data
+    [self getCategoryData];
+
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
@@ -185,19 +179,26 @@
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
+    [self getCategoryData];
+    
     [self.albumData loadAllImagesOnCompletion:^{
-        [refreshControl endRefreshing];
         [self.imagesCollection reloadData];
     }];
 
+    [refreshControl endRefreshing];
+}
+
+-(void)getCategoryData
+{
     [AlbumService getAlbumListForCategory:self.categoryId
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                  [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                             } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                             }
+                                onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                                 NSLog(@"refresh fail");
+                                    NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
-                             }];
+                                }];
 }
 
 -(void)categoriesUpdated

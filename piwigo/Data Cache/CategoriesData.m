@@ -8,6 +8,7 @@
 
 #import "CategoriesData.h"
 
+NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
 NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
 NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotificationCategoryImageUpdated";
 

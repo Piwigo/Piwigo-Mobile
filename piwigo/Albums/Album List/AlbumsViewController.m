@@ -27,7 +27,11 @@
 
 @implementation AlbumsViewController
 
-static SEL extracted() {
+static SEL extractedGCD() {
+    return @selector(getCategoryData);
+}
+
+static SEL extractedCDU() {
     return @selector(categoryDataUpdated);
 }
 
@@ -54,21 +58,22 @@ static SEL extracted() {
 		[self.view addSubview:self.albumsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.albumsTableView]];
 		
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:extracted() name:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:extractedGCD() name:kPiwigoNotificationGetCategoryData object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:extractedCDU() name:kPiwigoNotificationCategoryDataUpdated object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData) name:UIApplicationDidBecomeActiveNotification object:nil];
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAlbumData) name:UIApplicationDidBecomeActiveNotification object:nil];
 	}
 	return self;
 }
 
--(void)getAlbumData
+-(void)getCategoryData
 {
-	[AlbumService getAlbumListForCategory:0
+    [AlbumService getAlbumListForCategory:0
 							 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
 								 
 							 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-								 NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
+								 NSLog(@"getCategoryData error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
                              }];
 }
@@ -102,7 +107,11 @@ static SEL extracted() {
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+
+    // Reload category data and refresh showing cells
+    [self getCategoryData];
+    [self refreshShowingCells];
+
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
@@ -128,7 +137,7 @@ static SEL extracted() {
 
 -(void)viewDidAppear:(BOOL)animated
 {
-	[super viewDidAppear:animated];
+    [super viewDidAppear:animated];
 	
     // Refresh control
 	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
@@ -142,9 +151,6 @@ static SEL extracted() {
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
     self.albumsTableView.alwaysBounceVertical = YES;
-
-    [self getAlbumData];
-	[self refreshShowingCells];
 }
 
 -(void)refresh:(UIRefreshControl*)refreshControl

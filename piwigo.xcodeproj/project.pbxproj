@@ -16,7 +16,6 @@
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
-		AD6D203C1EDC45C4003B60E8 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6D203B1EDC45C4003B60E8 /* Reachability.m */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
 		AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
@@ -151,8 +150,6 @@
 		AD6B2E771F0930CE0040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/About.strings; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
-		AD6D203A1EDC45C4003B60E8 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		AD6D203B1EDC45C4003B60E8 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		AD83385F1FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
 		AD8338611FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -717,8 +714,6 @@
 			children = (
 				D82B8CE41A678ED2000E47CA /* NetworkHandler.h */,
 				D82B8CE51A678ED2000E47CA /* NetworkHandler.m */,
-				AD6D203A1EDC45C4003B60E8 /* Reachability.h */,
-				AD6D203B1EDC45C4003B60E8 /* Reachability.m */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -934,6 +929,9 @@
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+							com.apple.iCloud = {
 								enabled = 0;
 							};
 						};
@@ -1203,7 +1201,6 @@
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
 				D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
-				AD6D203C1EDC45C4003B60E8 /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1443,7 +1440,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1ece3018-6d44-403a-a1be-c18dce74f489";
+				PROVISIONING_PROFILE = "d89819cc-7b31-4d70-b8ff-47449f48f807";
 				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
