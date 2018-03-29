@@ -81,7 +81,7 @@
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)]];
 		
 		[self performSelector:@selector(setupAutoLayout) withObject:nil]; // now located in child VC, thus import .h files
-	}
+    }
 	return self;
 }
 
@@ -91,6 +91,7 @@
     [self.view endEditing:YES];
 
     // Default settings
+    self.usesCommunityPluginV29 = NO;
     [Model sharedInstance].hasAdminRights = NO;
     [Model sharedInstance].usesCommunityPluginV29 = NO;
 #if defined(DEBUG_SESSION)
@@ -139,6 +140,14 @@
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
         
         if(methodsList) {
+            // Community extension installed and active ?
+            for (NSString *method in methodsList) {
+                
+                // Check if the Community extension is installed and active (> 2.9a)
+                if([method isEqualToString:@"community.session.getStatus"]) {
+                    self.usesCommunityPluginV29 = YES;
+                }
+            }
             // Known methods, pursue logging in…
             [self performLogin];
         
@@ -270,7 +279,7 @@
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
     NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting…", isFirstLogin ? @"YES" : @"NO");
 #endif
-    if(([Model sharedInstance].usesCommunityPluginV29) &&(![Model sharedInstance].userCancelledCommunication)) {
+    if((self.usesCommunityPluginV29) &&(![Model sharedInstance].userCancelledCommunication)) {
 
         // Update HUD during login
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -657,7 +666,7 @@
 {
     [Model sharedInstance].username = user;
     
-    // remove extrat "/" in server address
+    // Remove extrat "/" in server address
     if ([serverString hasSuffix:@"/"]) {
         serverString = [serverString substringWithRange:NSMakeRange(0, serverString.length-1)];
     }
