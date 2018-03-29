@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void(^CompletionBlock)(id responseObject);
+typedef void(^CompletionBlock)(id responseObject1, id responseObject2);
 
 @class PHAsset;
 @class PHAssetCollection;

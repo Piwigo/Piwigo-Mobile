@@ -54,7 +54,7 @@
                 handler:^(UIAlertAction * action) {
                     if(completion)
                     {
-                        completion(@(-1));
+                        completion(@(-1),@(-1));
                     }
                 }];
         
@@ -62,10 +62,8 @@
         [topViewController presentViewController:alert animated:YES completion:nil];        
 	}
     
-    // Collect collections from the root of the photo library’s hierarchy of user-created albums and folders
-//    PHFetchResult *userCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
-    
-    // Collect all smart albums created in the Photos app i.e. Camera Roll, Favorites, Recently Deleted, Panoramas, etc.
+    // Collect all smart albums created in the Photos app
+    // i.e. Camera Roll, Favorites, Recently Deleted, Panoramas, etc.
     PHFetchResult *smartAlbums = [PHAssetCollection
                                   fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum
                                   subtype:PHAssetCollectionSubtypeAny options:nil];
@@ -86,50 +84,70 @@
                                      subtype:PHAssetCollectionSubtypeAlbumImported options:nil];
     
     // Collect user’s personal iCloud Photo Stream album
-//    PHFetchResult *iCloudStreamAlbums = [PHAssetCollection
-//                                     fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum
-//                                     subtype:PHAssetCollectionSubtypeAlbumMyPhotoStream options:nil];
+    PHFetchResult *iCloudStreamAlbums = [PHAssetCollection
+                                     fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum
+                                     subtype:PHAssetCollectionSubtypeAlbumMyPhotoStream options:nil];
     
     // Collect iCloud Shared Photo Stream albums.
-//    PHFetchResult *iCloudSharedAlbums = [PHAssetCollection
-//                                         fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum
-//                                         subtype:PHAssetCollectionSubtypeAlbumCloudShared options:nil];
+    PHFetchResult *iCloudSharedAlbums = [PHAssetCollection
+                                         fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum
+                                         subtype:PHAssetCollectionSubtypeAlbumCloudShared options:nil];
     
-    // Combine album collections
-    NSArray<PHFetchResult *> *collectionsFetchResults = @[smartAlbums, regularAlbums, syncedAlbums, importedAlbums];
+    // Combine local album collections
+    NSArray<PHFetchResult *> *localCollectionsFetchResults = @[smartAlbums, regularAlbums, syncedAlbums, importedAlbums];
+
+    // Combine iCloud album collections
+    NSArray<PHFetchResult *> *iCloudCollectionsFetchResults = @[iCloudStreamAlbums, iCloudSharedAlbums];
 
     // Add each PHFetchResult to the array
-    NSMutableArray *groupAssets = [NSMutableArray new];
+    NSMutableArray *localGroupAssets = [NSMutableArray new];
+    NSMutableArray *iCloudGroupAssets = [NSMutableArray new];
     PHFetchResult *fetchResult;
     PHAssetCollection *collection;
     PHFetchResult<PHAsset *> *fetchAssets;
-    for (int i = 0; i < collectionsFetchResults.count; i ++) {
+    for (int i = 0; i < localCollectionsFetchResults.count; i ++) {
 
         // Check each fetch result
-        fetchResult = collectionsFetchResults[i];
+        fetchResult = localCollectionsFetchResults[i];
 
         // Keep only non-empty albums
         for (int x = 0; x < fetchResult.count; x++) {
             collection = fetchResult[x];
             fetchAssets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
-            if ([fetchAssets count] > 0) [groupAssets addObject:collection];
+            if ([fetchAssets count] > 0) [localGroupAssets addObject:collection];
         }
     }
-    
+    for (int i = 0; i < iCloudCollectionsFetchResults.count; i ++) {
+        
+        // Check each fetch result
+        fetchResult = iCloudCollectionsFetchResults[i];
+        
+        // Keep only non-empty albums
+        for (int x = 0; x < fetchResult.count; x++) {
+            collection = fetchResult[x];
+            fetchAssets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+            if ([fetchAssets count] > 0) [iCloudGroupAssets addObject:collection];
+        }
+    }
+
     // Sort albums by title
-    NSArray *sortedAlbums = [groupAssets
-                             sortedArrayUsingComparator:^NSComparisonResult(PHAssetCollection *obj1, PHAssetCollection *obj2) {
+    NSArray *localSortedAlbums = [localGroupAssets
+                sortedArrayUsingComparator:^NSComparisonResult(PHAssetCollection *obj1, PHAssetCollection *obj2) {
         return [obj1.localizedTitle compare:obj2.localizedTitle] != NSOrderedAscending;
     }];
+    NSArray *iCloudSortedAlbums = [iCloudGroupAssets
+                sortedArrayUsingComparator:^NSComparisonResult(PHAssetCollection *obj1, PHAssetCollection *obj2) {
+                                      return [obj1.localizedTitle compare:obj2.localizedTitle] != NSOrderedAscending;
+                                  }];
 
     // Return result
-    if (!sortedAlbums) {
+    if (!localSortedAlbums) {       // Should never happen
         if (completion) {
-            completion(nil);
+            completion(nil, nil);
         }
     } else {
         if (completion) {
-            completion(sortedAlbums);
+            completion(localSortedAlbums, iCloudSortedAlbums);
         }
     }
 }

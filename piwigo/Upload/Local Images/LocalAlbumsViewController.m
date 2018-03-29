@@ -18,7 +18,8 @@
 
 @property (nonatomic, strong) UITableView *localAlbumsTableView;
 @property (nonatomic, assign) NSInteger categoryId;
-@property (nonatomic, strong) NSArray *groups;
+@property (nonatomic, strong) NSArray *localGroups;
+@property (nonatomic, strong) NSArray *iCloudGroups;
 
 @end
 
@@ -33,13 +34,14 @@
         
         self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
         
-        self.groups = [NSArray new];
-        [[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject) {
-            if([responseObject isKindOfClass:[NSNumber class]])
+        self.localGroups = [NSArray new];
+        self.iCloudGroups = [NSArray new];
+        [[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject1, id responseObject2) {
+            if([responseObject1 isKindOfClass:[NSNumber class]])
             {    // make view disappear
                 [self.navigationController popToRootViewControllerAnimated:YES];
             }
-            else if(responseObject == nil)
+            else if(responseObject1 == nil)
             {
                 UIAlertController* alert = [UIAlertController
                             alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
@@ -59,7 +61,8 @@
             }
             else
             {
-                self.groups = responseObject;
+                self.localGroups = responseObject1;
+                self.iCloudGroups = responseObject2;
                 [self.localAlbumsTableView reloadData];
             }
         }];
@@ -102,10 +105,26 @@
 
 #pragma mark UITableView Methods
 
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1 + (self.iCloudGroups.count != 0);
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     // Header height?
-    NSString *header = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
+    NSString *header;
+    switch (section) {
+        case 0:
+            header = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
+            break;
+        case 1:
+            header = NSLocalizedString(@"categoryUpload_chooseiCloudAlbum", @"Select an iCloud album to get images from");
+            break;
+
+        default:
+            break;
+    }
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
@@ -121,11 +140,21 @@
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
-    headerLabel.text = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
     headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    switch (section) {
+        case 0:
+            headerLabel.text = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
+            break;
+        case 1:
+            headerLabel.text = NSLocalizedString(@"categoryUpload_chooseiCloudAlbum", @"Select an iCloud album to get images from");
+            break;
+            
+        default:
+            break;
+    }
 
     // Header height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
@@ -155,7 +184,16 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.groups.count;
+    NSInteger nberRows = 0;
+    switch (section) {
+        case 0:
+            nberRows = self.localGroups.count;
+            break;
+        case 1:
+            nberRows = self.iCloudGroups.count;
+            break;
+    }
+    return nberRows;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -167,7 +205,15 @@
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
-    PHAssetCollection *groupAsset = [self.groups objectAtIndex:indexPath.row];
+    PHAssetCollection *groupAsset;
+    switch (indexPath.section) {
+        case 0:
+            groupAsset = [self.localGroups objectAtIndex:indexPath.row];
+            break;
+        case 1:
+            groupAsset = [self.iCloudGroups objectAtIndex:indexPath.row];
+            break;
+    }
     NSString *name = [groupAsset localizedTitle];
     NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
     [cell setCellLeftLabel:[NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ?NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")]];
@@ -179,7 +225,15 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    UploadViewController *uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.groups objectAtIndex:indexPath.row]];
+    UploadViewController *uploadVC;
+    switch (indexPath.section) {
+        case 0:
+            uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.localGroups objectAtIndex:indexPath.row]];
+            break;
+        case 1:
+            uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.iCloudGroups objectAtIndex:indexPath.row]];
+            break;
+    }
     [self.navigationController pushViewController:uploadVC animated:YES];
     
 }

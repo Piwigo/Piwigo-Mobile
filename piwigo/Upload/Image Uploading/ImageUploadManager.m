@@ -25,6 +25,9 @@
 @property (nonatomic, assign) NSInteger currentChunk;
 @property (nonatomic, assign) NSInteger totalChunks;
 @property (nonatomic, assign) CGFloat iCloudProgress;
+@property (nonatomic, strong) NSMutableArray *cachedImages;
+@property (nonatomic, strong) PHCachingImageManager *cachingManager;
+@property (nonatomic, strong) PHImageRequestOptions *options;
 
 @end
 
@@ -48,6 +51,13 @@
         self.imageUploadQueue = [NSMutableArray new];
         self.imageNamesUploadQueue = [NSMutableDictionary new];
         self.imageDeleteQueue = [NSMutableArray new];
+        self.cachedImages = [NSMutableArray new];
+        self.cachingManager = [[PHCachingImageManager alloc] init];
+        self.options = [[PHImageRequestOptions alloc] init];
+        // Requests the most recent version of the image asset
+        self.options.version = PHImageRequestOptionsVersionCurrent;
+        // Requests the highest-quality image available, regardless of how much time it takes to load.
+        self.options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
         self.isUploading = NO;
         
         self.current = 0;
@@ -67,11 +77,16 @@
     {
         [self addImage:image];
     }
+    
+    // Caching images…
+    [self.cachingManager startCachingImagesForAssets:self.cachedImages
+            targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeDefault options:self.options];
 }
 
 -(void)addImage:(ImageUpload*)image
 {
     [self.imageUploadQueue addObject:image];
+    [self.cachedImages addObject:image.imageAsset];
     self.maximumImagesForBatch++;
     [self startUploadIfNeeded];
     
@@ -128,7 +143,11 @@
     // Another image or video to upload?
     if(self.imageUploadQueue.count <= 0)
     {
+        // Stop upoading
         self.isUploading = NO;
+        
+        // Stop caching images
+        [self.cachingManager stopCachingImagesForAllAssets];
         return;
     }
     
@@ -167,7 +186,7 @@
             case PHAssetMediaSubtypePhotoDepthEffect:
             default:                                            // Case of GIF image
                 // Image upload allowed — Will wait for image file download from iCloud if necessary
-                [self retrieveFullSizeAssetDataFromImage:nextImageToBeUploaded];
+                [self retrieveImageFromiCloudWithAsset:nextImageToBeUploaded];
                 break;
         }
     }
@@ -233,11 +252,87 @@
 
 #pragma mark -- Image, retrieve and modify before upload
 
--(void)retrieveFullSizeAssetDataFromImage:(ImageUpload *)image  // Asynchronous
+-(void)retrieveImageFromiCloudWithAsset:(ImageUpload *)image
 {
-#if defined(DEBUG)
-    NSLog(@"retrieveFullSizeAssetDataFromImage starting...");
-#endif
+//#if defined(DEBUG)
+//    NSLog(@"retrieveImageFromiCloudWithAsset starting...");
+//#endif
+    // Case of an image…
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    // Does not block the calling thread until image data is ready or an error occurs
+    options.synchronous = NO;
+    // Requests the most recent version of the image asset
+    options.version = PHImageRequestOptionsVersionCurrent;
+    // Requests the highest-quality image available, regardless of how much time it takes to load.
+    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    // Photos can download the requested video from iCloud
+    options.networkAccessAllowed = YES;
+    
+    // The block Photos calls periodically while downloading the photo
+    options.progressHandler = ^(double progress, NSError *error, BOOL* stop, NSDictionary* info) {
+//#if defined(DEBUG)
+//        NSLog(@"downloading Photo from iCloud — progress %lf",progress);
+//#endif
+        // The handler needs to update the user interface => Dispatch to main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            self.iCloudProgress = progress;
+            ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
+            if (error) {
+                // Inform user and propose to cancel or continue
+                [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image from iCloud. Error: %@"), [error localizedDescription]]
+                             forRetrying:YES
+                               withImage:image];
+                return;
+            }
+            else if (imageBeingUploaded.stopUpload) {
+                // User wants to cancel the download
+                *stop = YES;
+
+                // Remove image from queue, update UI and upload next one
+                self.maximumImagesForBatch--;
+                [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
+            }
+            else {
+                // Update progress bar(s)
+                if([self.delegate respondsToSelector:@selector(imageProgress:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:)])
+                {
+                    [self.delegate imageProgress:image onCurrent:self.current forTotal:self.total onChunk:self.currentChunk forChunks:self.totalChunks iCloudProgress:progress];
+                }
+            }
+        });
+    };
+    
+    // Requests image…
+    @autoreleasepool {
+        [[PHImageManager defaultManager] requestImageForAsset:image.imageAsset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFill options:options resultHandler:
+         ^(UIImage *assetImage, NSDictionary *info) {
+//#if defined(DEBUG)
+//             NSLog(@"retrieveImageFromiCloudWithAsset \"%@\" returned info(%@)", assetImage.description, info);
+//             NSLog(@"got image %f x %f", assetImage.size.width, assetImage.size.height);
+//#endif
+             if ([info objectForKey:PHImageErrorKey] || (assetImage.size.width == 0) || (assetImage.size.height == 0)) {
+                 NSError *error = [info valueForKey:PHImageErrorKey];
+                 // Inform user and propose to cancel or continue
+                 [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                               andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image from iCloud. Error: %@"), [error localizedDescription]]
+                              forRetrying:YES
+                                withImage:image];
+                 return;
+             }
+             
+             // Expected resource available
+             [self retrieveFullSizeAssetDataFromAsset:image withImage:assetImage];
+         }];
+    }
+}
+
+-(void)retrieveFullSizeAssetDataFromAsset:(ImageUpload *)image withImage:(UIImage *)assetImage
+{
+//#if defined(DEBUG)
+//    NSLog(@"retrieveFullSizeAssetDataFromImage starting...");
+//#endif
     // Case of an image…
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     // Does not block the calling thread until image data is ready or an error occurs
@@ -251,9 +346,9 @@
 
     // The block Photos calls periodically while downloading the photo
     options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* info) {
-#if defined(DEBUG)
-        NSLog(@"downloading Photo from iCloud — progress %lf",progress);
-#endif
+//#if defined(DEBUG)
+//        NSLog(@"downloading Photo from iCloud — progress %lf",progress);
+//#endif
         // The handler needs to update the user interface => Dispatch to main thread
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -285,13 +380,12 @@
         });
     };
 
-    // Requests image…
     @autoreleasepool {
         [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
                      resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-#if defined(DEBUG)
-                         NSLog(@"retrieveFullSizeAssetDataFromImage \"%@\" returned info(%@)", image.image, info);
-#endif
+//#if defined(DEBUG)
+//                         NSLog(@"retrieveFullSizeAssetDataFromImage \"%@\" returned info(%@)", image.image, info);
+//#endif
                          if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
                              NSError *error = [info valueForKey:PHImageErrorKey];
                              // Inform user and propose to cancel or continue
@@ -303,13 +397,13 @@
                          }
 
                          // Expected resource available
-                         [self modifyImage:image withData:imageData];
+                         [self modifyImage:image withData:imageData andAssetImage:assetImage];
                      }
          ];
     }
 }
 
--(void)modifyImage:(ImageUpload *)image withData:(NSData *)originalData
+-(void)modifyImage:(ImageUpload *)image withData:(NSData *)originalData andAssetImage:(UIImage *)assetImage
 {
     // Create CGI reference from asset
     CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) originalData, NULL);
@@ -317,23 +411,23 @@
 //#if defined(DEBUG)
 //        NSLog(@"Error: Could not create source");
 //#endif
-    // Inform user and propose to cancel or continue
-    [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+        // Inform user and propose to cancel or continue
+        [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
                   andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_source", @"cannot create image source")]
                  forRetrying:YES
                    withImage:image];
         return;
     }
     
-    // Get metadata of image before removing GPS metadata or resizing image
+    // Get metadata of image
     NSMutableDictionary *assetMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
 //#if defined(DEBUG)
 //    NSLog(@"modifyImage finds metadata :%@",assetMetadata);
 //#endif
-
+    
     // Strips GPS metadata if user requested it in Settings
     if([Model sharedInstance].stripGPSdataOnUpload && (assetMetadata != nil)) {
-        
+
         // GPS dictionary
         NSMutableDictionary *GPSDictionary = [[assetMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
         if (GPSDictionary) {
@@ -342,7 +436,7 @@
 //#endif
             [assetMetadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
         }
-        
+
         // EXIF dictionary
         NSMutableDictionary *EXIFDictionary = [[assetMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
         if (EXIFDictionary) {
@@ -356,13 +450,10 @@
         }
 
         // Final metadata…
-#if defined(DEBUG)
-        NSLog(@"modifyImage: w/o private metadata => %@",assetMetadata);
-#endif
+//#if defined(DEBUG)
+//        NSLog(@"modifyImage: w/o private metadata => %@",assetMetadata);
+//#endif
     }
-
-    // Get original image
-    UIImage *assetImage = [UIImage imageWithCGImage:CGImageSourceCreateImageAtIndex(source, 0, NULL)];
 
     // Resize image if user requested it in Settings
     UIImage *imageResized = nil;
@@ -718,9 +809,9 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                           [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
                          exportPreset:exportPreset
                         resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
-#if defined(DEBUG)
-                                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
-#endif
+//#if defined(DEBUG)
+//                                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+//#endif
                                   // The handler needs to update the user interface => Dispatch to main thread
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       if ([info objectForKey:PHImageErrorKey]) {
@@ -1197,6 +1288,9 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                         if (imageBeingUploaded.stopUpload) {
                             // Upload was cancelled by user
                             self.maximumImagesForBatch--;
+                            // Remove image from caching
+                            [self.cachingManager stopCachingImagesForAssets:@[image.imageAsset]
+                                            targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeDefault options:self.options];
                             // Remove image from queue and upload next one
                             [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
                         }
@@ -1232,6 +1326,9 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                     actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                                     style:UIAlertActionStyleCancel
                                     handler:^(UIAlertAction * action) {
+                                        // Stop caching images
+                                        [self.cachingManager stopCachingImagesForAllAssets];
+
                                         // Consider image job done
                                         self.onCurrentImageUpload++;
                                         
@@ -1242,11 +1339,13 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                             [self.imageUploadQueue removeObjectAtIndex:0];
                                             [self.imageNamesUploadQueue removeObjectForKey:[nextImage.image stringByDeletingPathExtension]];
                                         }
+                                        
                                         // Tell user how many images have been downloaded
                                         if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
                                         {
                                             [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
                                         }
+                                        
                                         // Stop uploading
                                         self.isUploading = NO;
                                     }];
@@ -1267,6 +1366,10 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                      actionWithTitle:NSLocalizedString(@"alertNextButton", @"Next Image")
                                      style:UIAlertActionStyleDefault
                                      handler:^(UIAlertAction * action) {
+                                         // Remove image from caching
+                                         [self.cachingManager stopCachingImagesForAssets:@[image.imageAsset]
+                                                targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeDefault options:self.options];
+
                                          // Consider image job done
                                          self.onCurrentImageUpload++;
                                          
