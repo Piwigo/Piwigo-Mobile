@@ -35,7 +35,7 @@
 		self.backgroundColor = [UIColor whiteColor];
 		self.isSelected = NO;
 		
-        // Images and photos thumbnails
+        // Thumbnails
 		self.cellImage = [UIImageView new];
 		self.cellImage.translatesAutoresizingMaskIntoConstraints = NO;
 		self.cellImage.contentMode = UIViewContentModeScaleAspectFill;
@@ -69,7 +69,7 @@
 		self.bottomLayer = [UIView new];
 		self.bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
 		self.bottomLayer.backgroundColor = [UIColor piwigoBackgroundColor];
-		self.bottomLayer.alpha = 0.5;
+		self.bottomLayer.alpha = 0.7;
 		[self.contentView addSubview:self.bottomLayer];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.bottomLayer amount:0]];
@@ -77,35 +77,35 @@
         // Title of images shown in banners
 		self.nameLabel = [UILabel new];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.nameLabel.font = [UIFont piwigoFontNormal];
+		self.nameLabel.font = [UIFont piwigoFontTiny];
 		self.nameLabel.textColor = [UIColor piwigoLeftLabelColor];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.nameLabel];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.nameLabel]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.nameLabel amount:5]];
+		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.nameLabel amount:1]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.nameLabel
 																	 attribute:NSLayoutAttributeLeft
 																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
 																		toItem:self.contentView
 																	 attribute:NSLayoutAttributeLeft
 																	multiplier:1.0
-																	  constant:5]];
+																	  constant:3]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.nameLabel
 																	 attribute:NSLayoutAttributeRight
 																	 relatedBy:NSLayoutRelationLessThanOrEqual
 																		toItem:self.contentView
 																	 attribute:NSLayoutAttributeRight
 																	multiplier:1.0
-																	  constant:5]];
+																	  constant:3]];
 		
 		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayer
-																	 attribute:NSLayoutAttributeTop
+																	 attribute:NSLayoutAttributeCenterY
 																	 relatedBy:NSLayoutRelationEqual
 																		toItem:self.nameLabel
-																	 attribute:NSLayoutAttributeTop
+																	 attribute:NSLayoutAttributeCenterY
 																	multiplier:1.0
-																	  constant:-5]];
+																	  constant:0]];
 		
         // Selected image thumbnails
         self.selectedImage = [UIImageView new];

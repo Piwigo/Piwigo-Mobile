@@ -62,6 +62,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL switchPaletteAutomatically;
 @property (nonatomic, assign) NSInteger switchPaletteThreshold;
 @property (nonatomic, assign) BOOL isDarkPaletteModeActive;
+@property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;

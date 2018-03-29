@@ -10,8 +10,13 @@
 
 @interface UIFont (AppFonts)
 
++(UIFont*)piwigoFontLight;
 +(UIFont*)piwigoFontNormal;
-+(UIFont*)piwigoFontButton;
++(UIFont*)piwigoFontBold;
++(UIFont*)piwigoFontExtraBold;
 +(UIFont*)piwigoFontSmall;
++(UIFont*)piwigoFontTiny;
++(UIFont*)piwigoFontButton;
++(UIFont*)piwigoFontDisclosure;
 
 @end

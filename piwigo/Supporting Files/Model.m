@@ -10,6 +10,7 @@
 
 #import "Model.h"
 #import "PiwigoImageData.h"
+#import "ImagesCollection.h"
 
 @interface Model()
 
@@ -63,8 +64,9 @@
         instance.hasXLargeSizeImages = NO;
         instance.hasXXLargeSizeImages = NO;
         
-        // Default thumbnail size
+        // Default thumbnail size and number per row in portrait mode
         instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
+        instance.thumbnailsPerRowInPortrait = 4;
         
         // Default image preview size
 		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
@@ -186,6 +188,7 @@
         self.switchPaletteAutomatically = modelData.switchPaletteAutomatically;
         self.switchPaletteThreshold = modelData.switchPaletteThreshold;
         self.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
+        self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
 	}
 }
 
@@ -224,6 +227,7 @@
     [saveObject addObject:[NSNumber numberWithBool:self.switchPaletteAutomatically]];
     [saveObject addObject:@(self.switchPaletteThreshold)];
     [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteModeActive]];
+    [saveObject addObject:@(self.thumbnailsPerRowInPortrait)];                      // Added in v2.1.8
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -339,6 +343,11 @@
         self.isDarkPaletteModeActive = [[savedData objectAtIndex:22] boolValue];
     } else {
         self.isDarkPaletteModeActive = NO;
+    }
+    if(savedData.count > 23) {
+        self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
+    } else {
+        self.thumbnailsPerRowInPortrait = 4;
     }
 	return self;
 }

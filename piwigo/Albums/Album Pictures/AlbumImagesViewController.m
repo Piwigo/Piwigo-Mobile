@@ -82,8 +82,8 @@
 		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
 		self.imagesCollection.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 		[self.view addSubview:self.imagesCollection];
-		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
-		
+        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
+
 		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
@@ -730,7 +730,7 @@
     if(indexPath.section == 1)
 	{
         // Calculate the optimum image size
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView];
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
         return CGSizeMake(size, size);                                 // Thumbnails
 	}
 	else
@@ -756,7 +756,7 @@
 		}
 		
         // Calculate the number of thumbnails displayed on screen
-        NSInteger imagesPerScreen = [ImagesCollection numberOfImagesPerScreenForCollectionView:collectionView];
+        NSInteger imagesPerScreen = [ImagesCollection numberOfImagesPerScreenForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 
         // Load images in advance if possible
         if((indexPath.row >= [collectionView numberOfItemsInSection:1] - imagesPerScreen) && (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))

@@ -295,7 +295,7 @@
     if (direction == MGSwipeDirectionRightToLeft && index == 0) {
         // Delete button
         NSIndexPath *indexPath = [self.uploadImagesTableView indexPathForCell:cell];
-        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
+//        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
         if(indexPath.section == 0)      // Image selected for upload
         {
             // Remove image not in upload queue

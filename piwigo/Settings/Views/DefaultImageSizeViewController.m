@@ -140,7 +140,7 @@
     cell.textLabel.font = [UIFont piwigoFontNormal];
     cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
     cell.textLabel.adjustsFontSizeToFitWidth = NO;
-    cell.textLabel.text = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)indexPath.row];
+    cell.textLabel.text = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)indexPath.row withAdvice:YES];
     
     // Add checkmark in front of selected item
 	if([Model sharedInstance].defaultImagePreviewSize == indexPath.row) {

@@ -10,22 +10,52 @@
 
 @implementation UIFont (AppFonts)
 
-+(UIFont*)piwigoFontButton
++(UIFont*)piwigoFontLight
 {
-	return [UIFont fontWithName:@"LacunaRegular" size:21.0];
+    return [UIFont fontWithName:@"OpenSans-Light" size:17.0];
 }
 
 +(UIFont*)piwigoFontNormal
 {
-	return [UIFont fontWithName:@"LacunaRegular" size:17.0];
+	return [UIFont fontWithName:@"OpenSans" size:17.0];
+}
+
++(UIFont*)piwigoFontBold
+{
+    return [UIFont fontWithName:@"OpenSans-Bold" size:17.0];
+}
+
++(UIFont*)piwigoFontExtraBold
+{
+    return [UIFont fontWithName:@"OpenSans-Extrabold" size:17.0];
 }
 
 +(UIFont*)piwigoFontSmall
 {
-    return [UIFont fontWithName:@"LacunaRegular" size:13.0];
+    return [UIFont fontWithName:@"OpenSans" size:13.0];
+}
+
++(UIFont*)piwigoFontTiny
+{
+    return [UIFont fontWithName:@"OpenSans" size:10.0];
+}
+
++(UIFont*)piwigoFontButton
+{
+    return [UIFont fontWithName:@"OpenSans" size:21.0];
+}
+
++(UIFont*)piwigoFontDisclosure
+{
+    return [UIFont fontWithName:@"LacunaRegular" size:21.0];
 }
 
 @end
 
-// Sans:
-// Gill Sans family... GillSans
+// Code for determining font name, e.g. LacunaRegular, OpenSans
+
+//for ( NSString *familyName in [UIFont familyNames] )
+//{
+//    NSLog(@"Family %@", familyName);
+//    NSLog(@"Names = %@", [UIFont fontNamesForFamilyName:familyName]);
+//}

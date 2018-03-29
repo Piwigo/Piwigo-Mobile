@@ -264,6 +264,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Select an album to upload images to";
 "categoryUpload_chooseLocalAlbum" = "Select an album to get images from";
+"categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get images from";
 "categoyUpload_loadSubCategories" = "load";
 "selectAll" = "All";
 
@@ -337,8 +338,9 @@
 "settings_logout" = "Logout";
 "settingsFooter_formats" = "The server accepts the following file types";
 
-// Settings — General
+// Settings — Thumbnails
 "settingsHeader_general" = "General Settings";
+"settingsHeader_thumbnails" = "Thumbnails";
 "settings_loadAllCategories" = "Download all Albums at Start";
 "settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
 
@@ -346,7 +348,10 @@
 "defaultImageSort>320px" = "Default Sort";
 "defaultImageSort>414px" = "Default Sort of Images";
 
-"defaultThumbnailSize" = "Thumbnails";
+"defaultThumbnailFile" = "File";
+"defaultThumbnailFile>320px" = "Thumbnail File";
+"defaultThumbnailFile>414px" = "Thumbnail Image File";
+"defaultThumbnailSize" = "Size";
 "defaultThumbnailSize>320px" = "Thumbnails Size";
 "defaultThumbnailSize>414px" = "Default Size of Thumbnails";
 "defaultThumbnailSizeTitle" = "Default Size";
@@ -365,6 +370,12 @@
 "thumbnailSizeXXLarge" = "Huge";
 "thumbnailSizexFullRes" = "Full Resolution";
 
+// Settings — Images
+"settingsHeader_images" = "Images";
+
+"defaultPreviewFile" = "Preview";
+"defaultPreviewFile>320px" = "Preview File";
+"defaultPreviewFile>414px" = "Preview Image File";
 "defaultImageSize" = "Images";
 "defaultImageSize>320px" = "Images Size";
 "defaultImageSize>414px" = "Default Size of Images";

@@ -11,8 +11,8 @@ extern NSInteger const kMarginsSpacing;
 
 @interface ImagesCollection : NSObject
 
-+(float)numberOfImagesPerRowForCollectionView:(UICollectionView *)collectionView;
-+(float)imageSizeForCollectionView:(UICollectionView *)collectionView;
-+(NSInteger)numberOfImagesPerScreenForCollectionView:(UICollectionView *)collectionView;
++(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth;
++(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
++(NSInteger)numberOfImagesPerScreenForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
 
 @end

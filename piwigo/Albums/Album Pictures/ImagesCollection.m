@@ -7,39 +7,38 @@
 //
 
 #import "ImagesCollection.h"
+#import "Model.h"
 
-NSInteger const kCellSpacing = 2;               // Spacing between items (horizontally and vertically)
+NSInteger const kCellSpacing = 1;               // Spacing between items (horizontally and vertically)
 NSInteger const kMarginsSpacing = 0;            // Left and right margins
 
 #pragma mark Determine number of images per row
 
 @implementation ImagesCollection
 
-+(float)numberOfImagesPerRowForCollectionView:(UICollectionView *)collectionView
++(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
 {
-    // Thumbnails should always be available on server (default size of 144x144 pixels)
+    // Thumbnails should always be available on server
+    // => default size of 144x144 pixels set in SettingsViewController
     // We display at least 3 thumbnails per row and images never exceed the thumbnails size
-    return fmax(3.0, roundf((collectionView.frame.size.width - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + 144.0)));
+    return fmax(3.0, roundf((fmin(view.frame.size.width,view.frame.size.height) - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + maxWidth)));
 }
 
-+(float)imageSizeForCollectionView:(UICollectionView *)collectionView
++(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
 {
-    // Optimum number of images per row
-    float imagesPerRow = [self numberOfImagesPerRowForCollectionView:collectionView];
+    float imagesSizeInPortrait = floorf((fmin(view.frame.size.width,view.frame.size.height) - 2.0 * kMarginsSpacing - (imagesPerRowInPortrait - 1.0) * kCellSpacing) / imagesPerRowInPortrait);
+    float imagesPerRow = fmax(3.0, roundf((view.frame.size.width - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + imagesSizeInPortrait)));
     
     // Size of squared images for that number
-    return floorf((collectionView.frame.size.width - 2.0 * kMarginsSpacing - (imagesPerRow - 1.0) * kCellSpacing) / imagesPerRow);
+    return floorf((view.frame.size.width - 2.0 * kMarginsSpacing - (imagesPerRow - 1.0) * kCellSpacing) / imagesPerRow);
 }
 
-+(NSInteger)numberOfImagesPerScreenForCollectionView:(UICollectionView *)collectionView
++(NSInteger)numberOfImagesPerScreenForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
 {
-    // Optimum number of images per row
-    float imagesPerRow = [self numberOfImagesPerRowForCollectionView:collectionView];
-
     // Size of squared images for that number
-    float size = [self imageSizeForCollectionView:collectionView];
+    float size = [self imageSizeForView:view andNberOfImagesPerRowInPortrait:imagesPerRowInPortrait];
 
-    return (NSInteger)ceilf(collectionView.frame.size.height / (size + kCellSpacing)) * imagesPerRow;
+    return (NSInteger)ceilf(view.frame.size.height / (size + kCellSpacing)) * imagesPerRowInPortrait;
 }
 
 @end

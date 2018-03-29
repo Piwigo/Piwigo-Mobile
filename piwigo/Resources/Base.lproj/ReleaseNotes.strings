@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.1.8_text" = "Version 2.1.8\n\n• Minor bug fixes and improvement of the interface\n________________________________________\n\n";
+
 "v2.1.7_text" = "Version 2.1.7\n\n• Fix video upload issues on some servers\n________________________________________\n\n";
 
 "v2.1.6_text" = "Version 2.1.6\nJanuary 7, 2018\n\n• Arabic translation\n• Improved HTTP basic access authentication management\n• Minor bug fixes and improvement of the interface\n________________________________________\n\n";

@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>94</string>
+	<string>95</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -34,6 +34,10 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>LacunaRegular.TTF</string>
+		<string>OpenSansLight.TTF</string>
+		<string>OpenSansRegular.TTF</string>
+		<string>OpenSansBold.TTF</string>
+		<string>OpenSansExtraBold.TTF</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>Launch Screen</string>

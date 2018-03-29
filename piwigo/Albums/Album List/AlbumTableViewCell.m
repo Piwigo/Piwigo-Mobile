@@ -74,8 +74,7 @@
 
 		self.albumName = [UILabel new];         // Was OutlinedText
 		self.albumName.translatesAutoresizingMaskIntoConstraints = NO;
-		self.albumName.font = [UIFont piwigoFontNormal];
-		self.albumName.font = [self.albumName.font fontWithSize:21.0];
+		self.albumName.font = [UIFont piwigoFontButton];
 		self.albumName.textColor = [UIColor piwigoOrange];
 		self.albumName.adjustsFontSizeToFitWidth = YES;
 		self.albumName.minimumScaleFactor = 0.6;
@@ -90,8 +89,7 @@
             self.cellDisclosure.textAlignment = NSLayoutAttributeRight;
         }
         self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-        self.cellDisclosure.font = [UIFont piwigoFontNormal];
-        self.cellDisclosure.font = [self.cellDisclosure.font fontWithSize:21.0];
+        self.cellDisclosure.font = [UIFont piwigoFontDisclosure];
         self.cellDisclosure.textColor = [UIColor piwigoOrange];
         self.cellDisclosure.adjustsFontSizeToFitWidth = NO;
         self.cellDisclosure.minimumScaleFactor = 0.6;

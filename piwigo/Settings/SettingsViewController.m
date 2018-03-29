@@ -25,11 +25,13 @@
 #import "DefaultImageSizeViewController.h"
 #import "DefaultThumbnailSizeViewController.h"
 #import "ReleaseNotesViewController.h"
+#import "ImagesCollection.h"
 
 typedef enum {
 	SettingsSectionServer,
 	SettingsSectionLogout,
-	SettingsSectionGeneral,
+	SettingsSectionThumbnails,
+    SettingsSectionImages,
 	SettingsSectionImageUpload,
     SettingsSectionCache,
     SettingsSectionColor,
@@ -40,6 +42,8 @@ typedef enum {
 typedef enum {
 	kImageUploadSettingAuthor
 } kImageUploadSetting;
+
+NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file size
 
 @interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
@@ -63,6 +67,7 @@ typedef enum {
 							   @44.0,
 							   @14.0,
 							   @44.0,
+                               @44.0,
 							   @44.0,
                                @44.0,
 							   @44.0,
@@ -169,7 +174,7 @@ typedef enum {
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.font = [UIFont piwigoFontBold];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
 
     // Header text
@@ -178,8 +183,11 @@ typedef enum {
         case SettingsSectionServer:
             headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
             break;
-        case SettingsSectionGeneral:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_general", @"General Settings");
+        case SettingsSectionThumbnails:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
+            break;
+        case SettingsSectionImages:
+            headerLabel.text = NSLocalizedString(@"settingsHeader_images", @"Images");
             break;
         case SettingsSectionImageUpload:
             headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
@@ -196,7 +204,7 @@ typedef enum {
     }
     
     // Header height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
@@ -309,15 +317,18 @@ typedef enum {
         case SettingsSectionLogout:
             nberOfRows = 1;
             break;
-        case SettingsSectionGeneral:
-            nberOfRows = 5;
+        case SettingsSectionThumbnails:
+            nberOfRows = 4;
+            break;
+        case SettingsSectionImages:
+            nberOfRows = 1;
             break;
         case SettingsSectionImageUpload:
             nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
                                 ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
             break;
         case SettingsSectionCache:
-            nberOfRows = 2;
+            nberOfRows = 3;
             break;
         case SettingsSectionColor:
             nberOfRows = 1 + ([Model sharedInstance].isDarkPaletteModeActive ? 1 + ([Model sharedInstance].switchPaletteAutomatically ? 1 : 0) : 0);
@@ -346,7 +357,7 @@ typedef enum {
 			{
 				cell = [LabelTableViewCell new];
 			}
-			switch(indexPath.row)
+            switch(indexPath.row)
 			{
 				case 0:
                     cell.leftText = NSLocalizedString(@"settings_server", @"Address");
@@ -390,41 +401,13 @@ typedef enum {
 			tableViewCell = cell;
 			break;
 		}
-		case SettingsSectionGeneral:     // General Settings
+		case SettingsSectionThumbnails:     // Thumbnails
 		{
 			switch(indexPath.row)
 			{
-				case 0:     // Download all Albums at Start
+				case 0:     // Default Sort
 				{
-                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchCell"];
-					if(!cell)
-					{
-						cell = [SwitchTableViewCell new];
-					}
-					
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
-                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories>320px", @"Download all Albums at Start (uncheck if troubles)");
-                    } else {
-                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Download all Albums at Start");
-                    }
-					[cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
-					cell.cellSwitchBlock = ^(BOOL switchState) {
-						if(![Model sharedInstance].loadAllCategoryInfo && switchState)
-						{
-							[AlbumService getAlbumListForCategory:-1 OnCompletion:nil onFailure:nil];
-						}
-						
-						[Model sharedInstance].loadAllCategoryInfo = switchState;
-						[[Model sharedInstance] saveToDisk];
-					};
-					
-					tableViewCell = cell;
-					break;
-				}
-				case 1:     // Default Sort
-				{
-					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sort"];
+					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultSort"];
 					if(!cell)
 					{
 						cell = [LabelTableViewCell new];
@@ -438,31 +421,60 @@ typedef enum {
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultImageSort", @"Sort");
                     }
-					cell.rightText = [[CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort] stringByAppendingString:@" >"];
+					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
                     tableViewCell = cell;
 					break;
 				}
-				case 2:     // Default Size of Thumbnails
+				case 1:     // Default Thumbnail File
 				{
-					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailSize"];
+					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailFile"];
 					if(!cell) {
 						cell = [LabelTableViewCell new];
 					}
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
-                        cell.leftText = NSLocalizedString(@"defaultThumbnailSize>414px", @"Default Size of Thumbnails");
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailFile>414px", @"Thumbnail Image File");
                     } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
-                        cell.leftText = NSLocalizedString(@"defaultThumbnailSize>320px", @"Thumbnails Size");
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailFile>320px", @"Thumbnail File");
                     } else {
-                        cell.leftText = NSLocalizedString(@"defaultThumbnailSize", @"Thumbnails");
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailFile", @"File");
                     }
-					cell.rightText = [[PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize] stringByAppendingString:@" >"];
-					
+					cell.rightText = [PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
 					tableViewCell = cell;
 					break;
 				}
+                case 2:     // Default Thumbnail Size
+                {
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailSize"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                        cell.sliderName.text = NSLocalizedString(@"defaultThumbnailSize>414px", @"Default Size of Thumbnails");
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+                        cell.sliderName.text = NSLocalizedString(@"defaultThumbnailSize>320px", @"Thumbnails Size");
+                    } else {
+                        cell.sliderName.text = NSLocalizedString(@"defaultThumbnailSize", @"Size");
+                    }
+                    
+                    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:self.view withMaxWidth:kThumbnailFileSize];
+                    cell.slider.minimumValue = 1;
+                    cell.slider.maximumValue = 1 + minNberOfImages; // Allows to double the number of thumbnails
+                    cell.incrementSliderBy = 1;
+                    cell.sliderCountPrefix = @"";
+                    cell.sliderCountSuffix = [NSString stringWithFormat:@"/%d", (int)cell.slider.maximumValue];
+                    cell.sliderValue = 2 * minNberOfImages - [Model sharedInstance].thumbnailsPerRowInPortrait + 1;
+                    [cell.slider addTarget:self action:@selector(updateThumbnailSize:) forControlEvents:UIControlEventValueChanged];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
                 case 3:     // Display titles on thumbnails
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titles"];
@@ -486,29 +498,37 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 4:     // Default Size of Previewed Images
+			}
+			break;
+		}
+        case SettingsSectionImages:     // Images
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Default Size of Previewed Images
                 {
-                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultImageSize"];
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultPreviewFile"];
                     if(!cell) {
                         cell = [LabelTableViewCell new];
                     }
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
-                        cell.leftText = NSLocalizedString(@"defaultImageSize>414px", @"Default Size of Images");
+                        cell.leftText = NSLocalizedString(@"defaultPreviewFile>414px", @"Preview Image File");
                     } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
-                        cell.leftText = NSLocalizedString(@"defaultImageSize>320px", @"Images Size");
+                        cell.leftText = NSLocalizedString(@"defaultPreviewFile>320px", @"Preview File");
                     } else {
-                        cell.leftText = NSLocalizedString(@"defaultImageSize", @"Images");
+                        cell.leftText = NSLocalizedString(@"defaultPreviewFile", @"Preview");
                     }
-                    cell.rightText = [[PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize] stringByAppendingString:@" >"];
+                    cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize withAdvice:NO];
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     
                     tableViewCell = cell;
                     break;
                 }
-			}
-			break;
-		}
+            }
+            break;
+        }
 		case SettingsSectionImageUpload:     // Default Upload Settings
 		{
 			switch(indexPath.row)
@@ -549,8 +569,9 @@ typedef enum {
                     } else {
                         cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
                     }
-					cell.rightText = [[[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel] stringByAppendingString:@" >"];
-					
+					cell.rightText = [[Model sharedInstance] getNameForPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel];
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
 					tableViewCell = cell;
 					break;
 				}
@@ -802,7 +823,35 @@ typedef enum {
         {
             switch(indexPath.row)
             {
-                case 0:     // Disk
+                case 0:     // Download all Albums at Start
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchCell"];
+                    if(!cell)
+                    {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories>320px", @"Download all Albums at Start (uncheck if troubles)");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Download all Albums at Start");
+                    }
+                    [cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        if(![Model sharedInstance].loadAllCategoryInfo && switchState)
+                        {
+                            [AlbumService getAlbumListForCategory:-1 OnCompletion:nil onFailure:nil];
+                        }
+                        
+                        [Model sharedInstance].loadAllCategoryInfo = switchState;
+                        [[Model sharedInstance] saveToDisk];
+                    };
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Disk
                 {
                     NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
                     float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
@@ -829,7 +878,7 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Memory
+                case 2:     // Memory
                 {
                     NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
                     float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
@@ -977,11 +1026,12 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_supportForum", @"Support Forum");
-                    if ([Model sharedInstance].isAppLanguageRTL) {
-                        cell.rightText = @"<";
-                    } else {
-                        cell.rightText = @">";
-                    }
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
                     
                     tableViewCell = cell;
                     break;
@@ -995,11 +1045,12 @@ typedef enum {
                     }
                     
                     cell.leftText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settings_rateInAppStore", @"Rate Piwigo Mobile"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
-                    if ([Model sharedInstance].isAppLanguageRTL) {
-                        cell.rightText = @"<";
-                    } else {
-                        cell.rightText = @">";
-                    }
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
 
                     tableViewCell = cell;
                     break;
@@ -1013,11 +1064,12 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_translateWithCrowdin", @"Translate Piwigo Mobile");
-                    if ([Model sharedInstance].isAppLanguageRTL) {
-                        cell.rightText = @"<";
-                    } else {
-                        cell.rightText = @">";
-                    }
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
 
                     tableViewCell = cell;
                     break;
@@ -1031,11 +1083,12 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_releaseNotes", @"Release Notes");
-                    if ([Model sharedInstance].isAppLanguageRTL) {
-                        cell.rightText = @"<";
-                    } else {
-                        cell.rightText = @">";
-                    }
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
 
                     tableViewCell = cell;
                     break;
@@ -1049,11 +1102,12 @@ typedef enum {
                     }
                     
                     cell.leftText = NSLocalizedString(@"settings_acknowledgements", @"Acknowledgements");
-                    if ([Model sharedInstance].isAppLanguageRTL) {
-                        cell.rightText = @"<";
-                    } else {
-                        cell.rightText = @">";
-                    }
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
 
                     tableViewCell = cell;
                     break;
@@ -1088,11 +1142,11 @@ typedef enum {
 		case SettingsSectionLogout:      // Logout
 			[self logout];
 			break;
-		case SettingsSectionGeneral:     // General Settings
+		case SettingsSectionThumbnails:     // General Settings
 		{
 			switch(indexPath.row)
 			{
-				case 1:
+				case 0:
 				{
 					CategorySortViewController *categoryVC = [CategorySortViewController new];
 					categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;
@@ -1100,21 +1154,28 @@ typedef enum {
 					[self.navigationController pushViewController:categoryVC animated:YES];
 					break;
 				}
-				case 2:
+				case 1:
 				{
 					DefaultThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultThumbnailSizeViewController new];
 					[self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
 					break;
 				}
-                case 4:
+			}
+			break;
+		}
+        case SettingsSectionImages:     // Images
+        {
+            switch(indexPath.row)
+            {
+                case 0:
                 {
                     DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
                     [self.navigationController pushViewController:defaultImageSizeVC animated:YES];
                     break;
                 }
-			}
-			break;
-		}
+            }
+            break;
+        }
 		case SettingsSectionImageUpload:     // Default Upload Settings
 			switch(indexPath.row)
 			{
@@ -1413,6 +1474,14 @@ typedef enum {
 
 #pragma mark Sliders changed value Methods
 
+- (IBAction)updateThumbnailSize:(id)sender
+{
+    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingsSectionThumbnails]];
+    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:self.view withMaxWidth:kThumbnailFileSize];
+    [Model sharedInstance].thumbnailsPerRowInPortrait = 2 * minNberOfImages - ([thumbnailsSizeCell getCurrentSliderValue] - 1);
+    [[Model sharedInstance] saveToDisk];
+}
+
 - (IBAction)updateImageSize:(id)sender
 {
     SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingsSectionImageUpload]];
@@ -1441,7 +1510,7 @@ typedef enum {
 
 - (IBAction)updateDiskCacheSize:(id)sender
 {
-    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingsSectionCache]];
+    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionCache]];
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
@@ -1450,7 +1519,7 @@ typedef enum {
 
 - (IBAction)updateMemoryCacheSize:(id)sender
 {
-    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionCache]];
+    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingsSectionCache]];
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
