@@ -196,31 +196,31 @@
     __block NSDate *lastTime = [NSDate date];
     
     [SortSelectViewController getSortedImageArrayFromSortType:sortType
-                                                    forImages:self.images
-                                                  forCategory:self.categoryId
-                                                  forProgress:^(NSInteger onPage, NSInteger outOf) {
-                                                      NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
-                                                      NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
-                                                      
-                                                      NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
-                                                      
-                                                      if(currentDownloaded > downloadingCategory.numberOfImages)
-                                                      {
-                                                          currentDownloaded = downloadingCategory.numberOfImages;
-                                                      }
-                                                      
-                                                      [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
-                                                      
-                                                      lastTime = [NSDate date];
-                                                  } onCompletion:^(NSArray *images) {
-                                                      
-                                                      if(sortType == kPiwigoSortByNotUploaded && !self.loadingView.hidden)
-                                                      {
-                                                          [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"Complete", nil) showCheckMark:YES withDelay:0.5];
-                                                      }
-                                                      self.images = images;
-                                                      [self.localImagesCollection reloadData];
-                                                  }];
+                forImages:self.images
+              forCategory:self.categoryId
+              forProgress:^(NSInteger onPage, NSInteger outOf) {
+                  NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
+                  NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
+                  
+                  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
+                  
+                  if(currentDownloaded > downloadingCategory.numberOfImages)
+                  {
+                      currentDownloaded = downloadingCategory.numberOfImages;
+                  }
+                  
+                  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
+                  
+                  lastTime = [NSDate date];
+              } onCompletion:^(NSArray *images) {
+                  
+                  if(sortType == kPiwigoSortByNotUploaded && !self.loadingView.hidden)
+                  {
+                      [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"Complete", nil) showCheckMark:YES withDelay:0.5];
+                  }
+                  self.images = images;
+                  [self.localImagesCollection reloadData];
+              }];
 }
 
 -(void)selectAll
@@ -317,7 +317,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 
     return CGSizeMake(size, size);
 }
@@ -327,8 +327,8 @@
     LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     
     PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
-    [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView]];
-    
+    [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait]];
+
     // For some unknown reason, the asset resource may be empty
     NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
     NSString *originalFilename;
