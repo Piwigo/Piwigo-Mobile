@@ -64,7 +64,7 @@
 		self.progressBar.tintColor = [UIColor piwigoOrange];
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
-		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:5]];
+		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:3]];
 		self.topProgressBarConstraint = [NSLayoutConstraint constraintWithItem:self.progressBar
 															  attribute:NSLayoutAttributeTop
 															  relatedBy:NSLayoutRelationEqual
@@ -275,7 +275,7 @@
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
     [dow.sessionManager setSecurityPolicy:policy];
-    
+
     // Manage servers performing HTTP Basic Access Authentication
     [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
