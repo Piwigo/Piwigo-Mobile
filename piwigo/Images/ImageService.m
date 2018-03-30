@@ -247,18 +247,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString: URLRequest]];
 
-    // Create session manager
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.responseSerializer = [AFImageResponseSerializer serializer];
-
-    // Ensure that SSL certificates won't be rejected
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [manager setSecurityPolicy:policy];
-
-    // Manage servers performing HTTP Basic Access Authentication
-    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+    [Model sharedInstance].sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
+    [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
         // HTTP basic authentification credentials
         NSString *user = [Model sharedInstance].HttpUsername;
@@ -280,7 +270,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Download and save image
     NSString *fileName = image.fileName;
     NSURLSessionDownloadTask *task =
-        [manager downloadTaskWithRequest:request
+        [[Model sharedInstance].sessionManager downloadTaskWithRequest:request
                                 progress:progress
                              destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
                                  NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];

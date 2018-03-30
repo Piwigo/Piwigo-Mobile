@@ -81,17 +81,9 @@
     NSURL *previewURL = [NSURL URLWithString:[NetworkHandler getURLWithPath:previewStr asPiwigoRequest:NO withURLParams:nil]];
     __weak typeof(self) weakSelf = self;
     
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.responseSerializer = [AFImageResponseSerializer serializer];
-    
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [manager setSecurityPolicy:policy];
-    
-    // Manage servers performing HTTP Basic Access Authentication
-    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
+    [Model sharedInstance].sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
+    [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+
         // HTTP basic authentification credentials
         NSString *user = [Model sharedInstance].HttpUsername;
         NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
@@ -111,7 +103,7 @@
     
     weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
     
-    [manager GET:previewURL.absoluteString
+    [[Model sharedInstance].sessionManager GET:previewURL.absoluteString
       parameters:nil
         progress:^(NSProgress *progress) {
             dispatch_async(dispatch_get_main_queue(),
@@ -128,13 +120,11 @@
          success:^(NSURLSessionTask *task, UIImage *image) {
              weakSelf.scrollView.imageView.image = image;
              weakSelf.imageLoaded = YES;                        // Hide progress bar
-             [manager invalidateSessionCancelingTasks:YES];
          }
          failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
              NSLog(@"ImageDetail/GET Error: %@", error);
 #endif
-             [manager invalidateSessionCancelingTasks:YES];
          }
      ];
 }

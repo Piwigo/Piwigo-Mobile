@@ -44,7 +44,7 @@
 // ===========================================================================
 // Login
 "login" = "Login";
-"login_serverPlaceholder" = "Web Address";
+"login_serverPlaceholder" = "example.com";
 "login_userPlaceholder" = "Username (optional)";
 "login_passwordPlaceholder" = "Password (optional)";
 "login_loggingIn" = "Logging In...";
@@ -66,6 +66,9 @@
 "loginError_message" = "The username and password don't match on the given web address";
 "loginEmptyServer_title" = "Enter a Web Address";
 "loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
+
+"serverSSLAccessError_title" = "Security Issue";
+"serverSLLAccessError_message" = "A secured HTTPS connection could not be established. Do you want to continue with non-encrypted HTTP communications?";
 
 "serverVersionNotCompatible_title" = "Server Incompatible";
 "serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile. Do you still want to continue?";

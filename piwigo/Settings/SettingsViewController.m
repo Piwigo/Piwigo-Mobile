@@ -1388,6 +1388,7 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
                            if(sucessfulLogout)
                            {
                                // Session closed
+                               [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
                                [Model sharedInstance].hadOpenedSession = NO;
                                
                                // Back to default values

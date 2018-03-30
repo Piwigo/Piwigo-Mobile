@@ -45,6 +45,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL hadOpenedSession;
 @property (nonatomic, assign) BOOL performedHTTPauthentication;
 @property (nonatomic, assign) BOOL userCancelledCommunication;
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 
 @property (nonatomic, assign) BOOL hasSquareSizeImages;
 @property (nonatomic, assign) BOOL hasThumbSizeImages;

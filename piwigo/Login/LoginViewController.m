@@ -44,8 +44,8 @@
 		
 		self.serverTextField = [PiwigoTextField new];
 		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
-		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"Server");
-		self.serverTextField.text = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"example.com");
+		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverName];
 		self.serverTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
@@ -126,7 +126,7 @@
     });
     
     // Save server address and username to disk
-    [self saveToDiskServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
+    [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
     
     // Save credentials in Keychain (needed before login when using HTTP Authentication)
     if(self.userTextField.text.length > 0)
@@ -134,6 +134,13 @@
         // Store credentials in Keychain
         [SAMKeychain setPassword:self.passwordTextField.text forService:[Model sharedInstance].serverName account:self.userTextField.text];
     }
+
+    // Create shared session manager
+    [Model sharedInstance].sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]]];
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [[Model sharedInstance].sessionManager setSecurityPolicy:policy];
 
     // Collect list of methods supplied by Piwigo server
     // => Determine if Community extension 2.9a or later is installed and active
@@ -153,7 +160,8 @@
         
         } else {
             // Methods unknown, so we cannot reach the server, inform user
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?"))];
+            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }
         
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -161,15 +169,22 @@
         if ([Model sharedInstance].performedHTTPauthentication){
             // Without prior knowledge, the app already tried Piwigo credentials
             // But unsuccessfully, so must now request HTTP credentials
-            [self requestHttpCredentialsAfterError:[error localizedDescription]];
+            [self requestHttpCredentialsAfterError:error];
         } else {
-            // Display error message
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
+            // HTTPS login request failed
+            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"])
+            {
+                // Suggest HTTP connection if HTTPS attempt failed
+                [self tryNonSecuredAccessAfterError:error];
+            } else {
+                // Display error message
+                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+            }
         }
     }];
 }
 
--(void)requestHttpCredentialsAfterError:(NSString *)error
+-(void)requestHttpCredentialsAfterError:(NSError *)error
 {
     UIAlertController* alert = [UIAlertController
                                 alertControllerWithTitle:NSLocalizedString(@"loginHTTP_title", @"HTTP Credentials")
@@ -218,6 +233,43 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+-(void)tryNonSecuredAccessAfterError:(NSError *)error
+{
+    // Retrieve the HTTP status code (see http://www.ietf.org/rfc/rfc2616.txt)
+//    NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+
+    [self hideLoadingWithCompletion:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIAlertController* alert = [UIAlertController
+                    alertControllerWithTitle:NSLocalizedString(@"serverSSLAccessError_title", @"Security Issue")
+                    message:[NSString stringWithFormat:NSLocalizedString(@"serverSLLAccessError_message", @"A secured HTTPS connection could not be established. Do you want to continue with non-encrypted HTTP communications?"), [Model sharedInstance].version]
+                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                    style:UIAlertActionStyleCancel
+                    handler:^(UIAlertAction * action) {
+                        // We cannot reach the server, inform user
+                        NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
+                        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                    }];
+            
+            UIAlertAction* continueAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                    style:UIAlertActionStyleDestructive
+                    handler:^(UIAlertAction * action) {
+                        // Proceed at their own risk
+                        [Model sharedInstance].serverProtocol = @"http://";
+                        [self performLogin];
+                    }];
+            
+            [alert addAction:defaultAction];
+            [alert addAction:continueAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        });
+    }];
+}
+
 -(void)performLogin
 {
 #if defined(DEBUG_SESSION)
@@ -227,7 +279,7 @@
     NSLog(@"=> performLogin: starting…");
 #endif
     
-    // Perform Login if username exists
+    // Perform login if username exists
 	if((self.userTextField.text.length > 0) && (![Model sharedInstance].userCancelledCommunication))
 	{
         // Update HUD during login
@@ -237,26 +289,34 @@
         
         // Perform login
         [SessionService performLoginWithUser:self.userTextField.text
-								  andPassword:self.passwordTextField.text
-								 onCompletion:^(BOOL result, id response) {
-									 if(result)
-									 {
-                                         // Session now opened
-                                         // First determine user rights if Community extension installed
-                                         [self getCommunityStatusAtFirstLogin:YES];
-                                      }
-									 else
-									 {
-                                         // Don't keep credentials
-                                         [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:self.userTextField.text];
+                  andPassword:self.passwordTextField.text
+                 onCompletion:^(BOOL result, id response) {
+                     if(result)
+                     {
+                         // Session now opened
+                         // First determine user rights if Community extension installed
+                         [self getCommunityStatusAtFirstLogin:YES];
+                     }
+                     else
+                     {
+                         // Don't keep unaccepted credentials
+                         [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:self.userTextField.text];
 
-                                         // Session could not be re-opened
-                                         [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server"))];
-									 }
-								 } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                     // Display message
-                                     [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
-                                 }];
+                         // Session could not be opened
+                         NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+                         [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                     }
+                 } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                     // HTTPS login request failed
+                     if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"])
+                     {
+                         // Suggest HTTP connection if HTTPS attempt failed
+                         [self tryNonSecuredAccessAfterError:error];
+                     } else {
+                         // Display message
+                         [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                     }
+                 }];
 	}
 	else     // No username, get only server status
 	{
@@ -296,12 +356,13 @@
             
             } else {
                 // Inform user that server failed to retrieve Community parameters
-                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again."))];
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
+                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
             }
             
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
             // Display error message
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }];
 
     } else {
@@ -378,11 +439,12 @@
                 }
             } else {
                 // Inform user that we could not authenticate with server
-                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again."))];
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
+                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
             // Display error message
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }];
     } else {
         [self loggingInConnectionError:nil];
@@ -398,46 +460,47 @@
     
     // Check whether session is still active
     [SessionService getPiwigoStatusAtLogin:NO
-                                   OnCompletion:^(NSDictionary *responseObject) {
-        if(responseObject) {
-            
-            // When the session is closed, user becomes guest
-            NSString *userName = [responseObject objectForKey:@"username"];
+                              OnCompletion:^(NSDictionary *responseObject) {
+            if(responseObject) {
+                
+                // When the session is closed, user becomes guest
+                NSString *userName = [responseObject objectForKey:@"username"];
 #if defined(DEBUG_SESSION)
-            NSLog(@"=> checkSessionStatusAndTryRelogin: username=%@", userName);
+                NSLog(@"=> checkSessionStatusAndTryRelogin: username=%@", userName);
 #endif
-            if (![userName isEqualToString:[Model sharedInstance].username]) {
+                if (![userName isEqualToString:[Model sharedInstance].username]) {
 
-                // Session was closed, try relogging in assuming server did not change for speed
-                [Model sharedInstance].hadOpenedSession = NO;
-                [self performRelogin];
+                    // Session was closed, try relogging in assuming server did not change for speed
+                    [self performRelogin];
 
-            } else {
-                // Connection still alive. Close HUD and do nothing.
+                } else {
+                    // Connection still alive. Close HUD and do nothing.
 //                [self hideLoading];
 #if defined(DEBUG_SESSION)
-                NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
-                NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
-                      ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-                      ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+                    NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
+                    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+                          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
+                          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 #endif
-            }
-        } else {
-            // Display HUD
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
-            });
+                }
+            } else {
+                // Display HUD
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
+                });
 
-            // Connection really lost, inform user
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again."))];
+                // Connection really lost, inform user
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")}];
+                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+            }
+        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+            // No connection or server down
+            [Model sharedInstance].hadOpenedSession = NO;
+            
+            // Display message
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        // No connection or server down
-        [Model sharedInstance].hadOpenedSession = NO;
-        
-        // Display message
-        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
-    }];
+     ];
 }
 
 -(void)performRelogin
@@ -454,7 +517,7 @@
         [self showLoadingWithSubtitle:NSLocalizedString(@"login_connecting", @"Connecting")];
     });
 
-    // Perform login
+    // Perform re-login
     NSString *user = [Model sharedInstance].username;
     NSString *password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
     [SessionService performLoginWithUser:user
@@ -471,7 +534,9 @@
                                 else
                                 {
                                     // Session could not be re-opened, inform user
-                                    [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server"))];
+                                    [Model sharedInstance].hadOpenedSession = NO;
+                                    NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+                                    [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                                 }
 
                             } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -479,7 +544,7 @@
                                 [Model sharedInstance].hadOpenedSession = NO;
                                 
                                 // Display error message
-                                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : [error localizedDescription])];
+                                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                             }];
 }
 
@@ -546,7 +611,7 @@
     });
 }
 
-- (void)loggingInConnectionError:(NSString *)error
+- (void)loggingInConnectionError:(NSError *)error
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         // Update login HUD
@@ -565,7 +630,7 @@
                 hud.detailsLabel.text = @" ";
             } else {
                 hud.label.text = NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error");
-                hud.detailsLabel.text = [NSString stringWithFormat:@"%@", error];
+                hud.detailsLabel.text = [NSString stringWithFormat:@"%@", [error localizedDescription]];
             }
         }
     });
@@ -629,10 +694,17 @@
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	if(textField == self.serverTextField) {
+        // User entered server address
 		[self.userTextField becomeFirstResponder];
 	} else if (textField == self.userTextField) {
-		[self.passwordTextField becomeFirstResponder];
+        // User entered username
+        NSString *pwd = [SAMKeychain passwordForService:self.serverTextField.text account:self.userTextField.text];
+        if (pwd != nil) {
+            self.passwordTextField.text = pwd;
+        }
+        [self.passwordTextField becomeFirstResponder];
 	} else if (textField == self.passwordTextField) {
+        
 		if(self.view.frame.size.height > 320)
 		{
 			[self moveTextFieldsBy:self.topConstraintAmount];
@@ -662,32 +734,33 @@
 
 #pragma mark -- Utilities
 
--(void)saveToDiskServerAddress:(NSString *)serverString andUsername:(NSString *)user
+-(void)saveServerAddress:(NSString *)serverString andUsername:(NSString *)user
 {
-    [Model sharedInstance].username = user;
-    
-    // Remove extrat "/" in server address
+    // Remove extra "/" at the end of the server address
     if ([serverString hasSuffix:@"/"]) {
         serverString = [serverString substringWithRange:NSMakeRange(0, serverString.length-1)];
     }
     
-    // Extract "http://" and set server proptocol
+    // Extract "http://"
     NSRange httpRange = [serverString rangeOfString:@"http://" options:NSCaseInsensitiveSearch];
     if(httpRange.location == 0)
     {
-        [Model sharedInstance].serverName = [serverString substringFromIndex:7];
-        [Model sharedInstance].serverProtocol = @"http://";
+        serverString = [serverString substringFromIndex:7];
     }
     
-    // Extract "https://" and set server proptocol
+    // Extract "https://"
     NSRange httpsRange = [serverString rangeOfString:@"https://" options:NSCaseInsensitiveSearch];
     if(httpsRange.location == 0)
     {
-        [Model sharedInstance].serverName = [serverString substringFromIndex:8];
-        [Model sharedInstance].serverProtocol = @"https://";
+        serverString = [serverString substringFromIndex:8];
     }
     
+    // Force HTTPS protocol?
+    [Model sharedInstance].serverProtocol = @"https://";
+    
     // Save username, server address and protocol to disk
+    [Model sharedInstance].serverName = serverString;
+    [Model sharedInstance].username = user;
     [[Model sharedInstance] saveToDisk];
 }
 

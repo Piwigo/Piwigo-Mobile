@@ -74,22 +74,15 @@ NSInteger const loadingViewTag = 899;
                  success:(void (^)(NSURLSessionTask *task, id responseObject))success
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    
+    // Modify session manager
     AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
     NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
     [jsonAcceptableContentTypes addObject:@"text/plain"];
     jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-    manager.responseSerializer = jsonResponseSerializer;
-    
-    // Ensure that SSL certificates won't be rejected
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [manager setSecurityPolicy:policy];
-    
+    [Model sharedInstance].sessionManager.responseSerializer = jsonResponseSerializer;
+
     // Manage servers performing HTTP Authentication
-    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+    [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
         // To remember app recieved anthentication challenge
         [Model sharedInstance].performedHTTPauthentication = YES;
@@ -122,14 +115,15 @@ NSInteger const loadingViewTag = 899;
         }
     }];
     
-    NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
+//    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
+    NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
                                 parameters:parameters
                                   progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
                                        if (success) {
                                            success(task, responseObject);
                                        }
-                                       [manager invalidateSessionCancelingTasks:YES];
+//                                       [manager invalidateSessionCancelingTasks:YES];
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
@@ -138,7 +132,7 @@ NSInteger const loadingViewTag = 899;
                                        if(fail) {
                                            fail(task, error);
                                        }
-                                       [manager invalidateSessionCancelingTasks:YES];
+//                                       [manager invalidateSessionCancelingTasks:YES];
                                    }
                               ];
     
@@ -151,24 +145,16 @@ NSInteger const loadingViewTag = 899;
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    
     AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
     NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
     [jsonAcceptableContentTypes addObject:@"text/plain"];
     jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-    manager.responseSerializer = jsonResponseSerializer;
-    
-    // Ensure that SSL certificates won't be rejected
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [manager setSecurityPolicy:policy];
-    
+    [Model sharedInstance].sessionManager.responseSerializer = jsonResponseSerializer;
+
     // Manage servers performing HTTP Basic Access Authentication
-    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+    [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
-        // HTTP basic authentification credentials
+        // HTTP basic authentification credentials (may be different from Piwigo credentials)
         NSString *user = [Model sharedInstance].HttpUsername;
         NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
         
@@ -185,7 +171,7 @@ NSInteger const loadingViewTag = 899;
         }
     }];
     
-    NSURLSessionTask *task = [manager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:nil]
+    NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:nil]
                                 parameters:nil
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
                   {
@@ -218,7 +204,7 @@ NSInteger const loadingViewTag = 899;
                                        if (success) {
                                            success(task, responseObject);
                                        }
-                                       [manager invalidateSessionCancelingTasks:YES];
+//                                       [manager invalidateSessionCancelingTasks:YES];
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
@@ -227,7 +213,7 @@ NSInteger const loadingViewTag = 899;
                                        if(fail) {
                                            fail(task, error);
                                        }
-                                       [manager invalidateSessionCancelingTasks:YES];
+//                                       [manager invalidateSessionCancelingTasks:YES];
                                    }];
     
     return task;
