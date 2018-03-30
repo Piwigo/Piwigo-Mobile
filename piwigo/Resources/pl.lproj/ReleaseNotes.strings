@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.7_text" = "Wersja 2.1.7\n\n• Naprawiono problemy z przesyłaniem wideo na niektórych serwerach\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.8_text" = "Wersja 2.1.8\n\n• Dodaje możliwość zmiany wielkości miniatur\n• HTTPS staje się domyślnym protokołem\n• Poprawki błędów i usprawnienia interfejsu\n________________________________________\n\n";
+
+"v2.1.7_text" = "Wersja 2.1.7\n3 lutego 2018\n\n• Naprawiono problemy z przesyłaniem wideo na niektórych serwerach\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.6_text" = "Wersja 2.1.6\n7 stycznia 2018\n\n• Tłumaczenie arabskie\n• Udoskonalono zarządzanie uwierzytelnianiem za pomocą podstawowego dostępu HTTP\n• Poprawki błędów i usprawnienia interfejsu\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 

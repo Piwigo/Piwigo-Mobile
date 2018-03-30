@@ -44,7 +44,7 @@
 // ===========================================================================
 // Login
 "login" = "Anmelden";
-"login_serverPlaceholder" = "Webadresse";
+"login_serverPlaceholder" = "example.com";
 "login_userPlaceholder" = "Benutzername (optional)";
 "login_passwordPlaceholder" = "Passwort (optional)";
 "login_loggingIn" = "Anmeldung läuft...";
@@ -66,6 +66,9 @@
 "loginError_message" = "Benutzername und Passwort stimmen für die angegebene Webadresse nicht überein";
 "loginEmptyServer_title" = "Webadresse eingeben";
 "loginEmptyServer_message" = "Bitte wählen Sie ein Protokoll und geben Sie eine Piwigo Webadresse ein, um fortfahren zu können.";
+
+"serverSSLAccessError_title" = "Sicherheitsproblem";
+"serverSLLAccessError_message" = "Eine sichere HTTPS-Verbindung konnte nicht hergestellt werden. Möchten Sie weiterhin mit unverschlüsselten http-Kommunikation?";
 
 "serverVersionNotCompatible_title" = "Serverinkompatibilität";
 "serverVersionNotCompatible_message" = "Deine Piwigo Serverversion ist %@. Piwigo Mobile unterstützt nur Versionen ab 2.7. Bitte aktualisiere Deinen Server um Piwigo Mobile verwenden zu können. Möchtest Du trotzdem fortfahren?";
@@ -264,6 +267,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Wähle ein Album zum Hochladen der Bilder";
 "categoryUpload_chooseLocalAlbum" = "Wähle ein Album um Bilder zu erhalten";
+"categoryUpload_chooseiCloudAlbum" = "Wähle ein iCloud Album um Bilder zu erhalten";
 "categoyUpload_loadSubCategories" = "Laden";
 "selectAll" = "Alle";
 
@@ -337,8 +341,9 @@
 "settings_logout" = "Abmelden";
 "settingsFooter_formats" = "Der Server akzeptiert die folgenden Dateitypen";
 
-// Settings — General
+// Settings — Thumbnails
 "settingsHeader_general" = "Allgemeine Einstellungen";
+"settingsHeader_thumbnails" = "Miniaturbilder";
 "settings_loadAllCategories" = "Alle Alben beim Start herunterladen";
 "settings_loadAllCategories>320px" = "Alle Alben beim Start herunterladen (bei Problemen deaktivieren)";
 
@@ -346,7 +351,10 @@
 "defaultImageSort>320px" = "Standardsortierung";
 "defaultImageSort>414px" = "Standardsortierung der Bilder";
 
-"defaultThumbnailSize" = "Miniaturbilder";
+"defaultThumbnailFile" = "Datei";
+"defaultThumbnailFile>320px" = "Thumbnaildatei";
+"defaultThumbnailFile>414px" = "Thumbnail Image-Datei";
+"defaultThumbnailSize" = "Größe";
 "defaultThumbnailSize>320px" = "Miniaturbildergröße";
 "defaultThumbnailSize>414px" = "Standardgröße der Miniaturbilder";
 "defaultThumbnailSizeTitle" = "Standardgröße";
@@ -365,6 +373,12 @@
 "thumbnailSizeXXLarge" = "Riesig";
 "thumbnailSizexFullRes" = "Volle Auflösung";
 
+// Settings — Images
+"settingsHeader_images" = "Bilder";
+
+"defaultPreviewFile" = "Vorschau";
+"defaultPreviewFile>320px" = "Vorschau Datei";
+"defaultPreviewFile>414px" = "Vorschau Bilddatei";
 "defaultImageSize" = "Bilder";
 "defaultImageSize>320px" = "Bildergröße";
 "defaultImageSize>414px" = "Standardgröße der Bilder";

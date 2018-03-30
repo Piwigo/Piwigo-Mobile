@@ -44,7 +44,7 @@
 // ===========================================================================
 // Login
 "login" = "Logga in";
-"login_serverPlaceholder" = "Webbadress";
+"login_serverPlaceholder" = "exempel.se";
 "login_userPlaceholder" = "Användarnamn (frivilligt)";
 "login_passwordPlaceholder" = "Lösenord (frivilligt)";
 "login_loggingIn" = "Loggar In...";
@@ -66,6 +66,9 @@
 "loginError_message" = "Användarnamnet och lösenordet matchar inte den angivna webbadressen";
 "loginEmptyServer_title" = "Ange en webbadress";
 "loginEmptyServer_message" = "Välj ett protokoll och ange en Piwigo webbadress för att gå vidare.";
+
+"serverSSLAccessError_title" = "Säkerhetsproblem";
+"serverSLLAccessError_message" = "En säker HTTPS-anslutning kunde inte fastställas. Vill du fortsätta med icke-krypterad HTTP-kommunikation?";
 
 "serverVersionNotCompatible_title" = "Servern är inkompatibel";
 "serverVersionNotCompatible_message" = "Din Piwigo serverversion är %@. Piwigo Mobile stöder endast en version av minst 2,7. Uppdatera din server för att använda Piwigo Mobile. Vill du ändå fortsätta?";
@@ -264,6 +267,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Välj ett album att ladda upp bilder till";
 "categoryUpload_chooseLocalAlbum" = "Välj ett album att hämta bilder från";
+"categoryUpload_chooseiCloudAlbum" = "Välj ett iCloud-album att hämta bilder från";
 "categoyUpload_loadSubCategories" = "ladda";
 "selectAll" = "Alla";
 
@@ -337,8 +341,9 @@
 "settings_logout" = "Logga ut";
 "settingsFooter_formats" = "Servern accepterar följande filtyper";
 
-// Settings — General
+// Settings — Thumbnails
 "settingsHeader_general" = "Allmänna inställningar";
+"settingsHeader_thumbnails" = "Miniatyrbilder";
 "settings_loadAllCategories" = "Ladda ner alla album vid Start";
 "settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
 
@@ -346,7 +351,10 @@
 "defaultImageSort>320px" = "Sortera";
 "defaultImageSort>414px" = "Standardsortering av bilder";
 
-"defaultThumbnailSize" = "Miniatyrbilder";
+"defaultThumbnailFile" = "Fil";
+"defaultThumbnailFile>320px" = "Miniatyr-fil";
+"defaultThumbnailFile>414px" = "Miniatyrbildsfil";
+"defaultThumbnailSize" = "Storlek";
 "defaultThumbnailSize>320px" = "Miniatyrbilder";
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
 "defaultThumbnailSizeTitle" = "Standardstorlek";
@@ -365,6 +373,12 @@
 "thumbnailSizeXXLarge" = "Enorm";
 "thumbnailSizexFullRes" = "Full upplösning";
 
+// Settings — Images
+"settingsHeader_images" = "Bilder";
+
+"defaultPreviewFile" = "Förhandsgranska";
+"defaultPreviewFile>320px" = "Förhandsgranska fil";
+"defaultPreviewFile>414px" = "Förhandsgranska bildfilen";
 "defaultImageSize" = "Bilder";
 "defaultImageSize>320px" = "Bildstorlek";
 "defaultImageSize>414px" = "Standardstorlek för bilder";

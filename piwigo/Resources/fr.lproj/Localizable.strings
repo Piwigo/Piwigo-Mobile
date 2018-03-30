@@ -44,7 +44,7 @@
 // ===========================================================================
 // Login
 "login" = "Connexion";
-"login_serverPlaceholder" = "Adresse Web";
+"login_serverPlaceholder" = "exemple.com";
 "login_userPlaceholder" = "Identifiant (optionnel)";
 "login_passwordPlaceholder" = "Mot de Passe (optionnel)";
 "login_loggingIn" = "Connexion en cours...";
@@ -66,6 +66,9 @@
 "loginError_message" = "Les nom d’utilisateur et mot de passe ne correspondent pas à l’adresse donnée";
 "loginEmptyServer_title" = "Entrez une Adresse Web";
 "loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
+
+"serverSSLAccessError_title" = "Problème de sécurité";
+"serverSLLAccessError_message" = "Une connexion HTTPS sécurisée n’a pas pu être établie. Voulez-vous continuer avec des communications HTTP non cryptées ?";
 
 "serverVersionNotCompatible_title" = "Serveur Incompatible";
 "serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile. Voulez-vous quand même continuer ?";
@@ -264,6 +267,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Sélectionnez l'album Piwigo qui recevra les images";
 "categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les images à envoyer";
+"categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album local iCloud qui contient les images à envoyer";
 "categoyUpload_loadSubCategories" = "télécharge";
 "selectAll" = "Tout";
 
@@ -337,8 +341,9 @@
 "settings_logout" = "Déconnexion";
 "settingsFooter_formats" = "Le serveur accepte les types de fichiers suivants";
 
-// Settings — General
+// Settings — Thumbnails
 "settingsHeader_general" = "Paramètres Généraux";
+"settingsHeader_thumbnails" = "Vignettes";
 "settings_loadAllCategories" = "Tout Télécharger au Démarrage";
 "settings_loadAllCategories>320px" = "Tout Télécharger au Démarrage (décochez en cas de problème)";
 
@@ -346,7 +351,10 @@
 "defaultImageSort>320px" = "Tri";
 "defaultImageSort>414px" = "Tri par Défaut des Images";
 
-"defaultThumbnailSize" = "Vignettes";
+"defaultThumbnailFile" = "Fichier";
+"defaultThumbnailFile>320px" = "Fichier de miniature";
+"defaultThumbnailFile>414px" = "Fichier d’image miniature";
+"defaultThumbnailSize" = "Taille";
 "defaultThumbnailSize>320px" = "Taille des Vignettes";
 "defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";
 "defaultThumbnailSizeTitle" = "Taille par Défaut";
@@ -365,6 +373,12 @@
 "thumbnailSizeXXLarge" = "Énorme";
 "thumbnailSizexFullRes" = "Haute Résolution";
 
+// Settings — Images
+"settingsHeader_images" = "Images";
+
+"defaultPreviewFile" = "Aperçu";
+"defaultPreviewFile>320px" = "Fichier de prévisualisation";
+"defaultPreviewFile>414px" = "Fichier de prévisualisation";
 "defaultImageSize" = "Images";
 "defaultImageSize>320px" = "Taille des Images";
 "defaultImageSize>414px" = "Taille par Défaut des Images";

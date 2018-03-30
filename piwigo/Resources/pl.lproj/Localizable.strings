@@ -44,7 +44,7 @@
 // ===========================================================================
 // Login
 "login" = "Zaloguj";
-"login_serverPlaceholder" = "Adres strony";
+"login_serverPlaceholder" = "przyklad.pl";
 "login_userPlaceholder" = "Nazwa użytkownika (opcjonalna)";
 "login_passwordPlaceholder" = "Hasło (opcjonalne)";
 "login_loggingIn" = "Logowanie...";
@@ -66,6 +66,9 @@
 "loginError_message" = "Nazwa użytkownika i hasło nie pasują do podanego serwera";
 "loginEmptyServer_title" = "Wprowadź Adres Strony";
 "loginEmptyServer_message" = "Proszę wybrać protokół i wprowadzić adres internetowy Piwigo, aby kontynuować.";
+
+"serverSSLAccessError_title" = "Problem zabezpieczeń";
+"serverSLLAccessError_message" = "Nie można ustanowić bezpiecznego połączenia HTTPS. Czy chcesz kontynuować bez szyfrowania komunikacji HTTP?";
 
 "serverVersionNotCompatible_title" = "Serwera Niekompatybilny";
 "serverVersionNotCompatible_message" = "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2,7. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile. Czy nadal chcesz kontynuować?";
@@ -264,6 +267,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Wybierz album, do którego przesyłać zdjęcia";
 "categoryUpload_chooseLocalAlbum" = "Wybierz album z którego chcesz pobrać zdjęcia";
+"categoryUpload_chooseiCloudAlbum" = "Wybierz iCloud album z którego chcesz pobrać zdjęcia";
 "categoyUpload_loadSubCategories" = "ładowanie";
 "selectAll" = "Wszystkie";
 
@@ -337,8 +341,9 @@
 "settings_logout" = "Wyloguj";
 "settingsFooter_formats" = "Serwer akceptuje następujące typy plików";
 
-// Settings — General
+// Settings — Thumbnails
 "settingsHeader_general" = "Ustawienia Ogólne";
+"settingsHeader_thumbnails" = "Miniatury";
 "settings_loadAllCategories" = "Pobierz wszystkie Albumy na Start";
 "settings_loadAllCategories>320px" = "Pobierz wszystkie albumy przy uruchomieniu (odznacz w razie problemów)";
 
@@ -346,7 +351,10 @@
 "defaultImageSort>320px" = "Sortowanie";
 "defaultImageSort>414px" = "Domyślne Sortowanie Zdjęć";
 
-"defaultThumbnailSize" = "Miniatury";
+"defaultThumbnailFile" = "Plik";
+"defaultThumbnailFile>320px" = "Plik miniatury";
+"defaultThumbnailFile>414px" = "Plik obrazu miniatury";
+"defaultThumbnailSize" = "Rozmiar";
 "defaultThumbnailSize>320px" = "Rozmiar Miniatur";
 "defaultThumbnailSize>414px" = "Domyślny Rozmiar Miniatur";
 "defaultThumbnailSizeTitle" = "Domyślny Rozmiar";
@@ -365,6 +373,12 @@
 "thumbnailSizeXXLarge" = "Ogromne";
 "thumbnailSizexFullRes" = "Pełna Rozdzielczość";
 
+// Settings — Images
+"settingsHeader_images" = "Zdjęcia";
+
+"defaultPreviewFile" = "Podgląd";
+"defaultPreviewFile>320px" = "Podgląd Pliku";
+"defaultPreviewFile>414px" = "Podgląd pliku obrazu";
 "defaultImageSize" = "Zdjęcia";
 "defaultImageSize>320px" = "Rozmiar Zdjęć";
 "defaultImageSize>414px" = "Domyślny Rozmiar Zdjęć";
