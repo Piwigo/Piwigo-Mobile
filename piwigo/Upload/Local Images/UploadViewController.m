@@ -120,7 +120,10 @@
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     [self loadNavButtons];
+    
+    // Progress bar
     [ImageUploadProgressView sharedInstance].delegate = self;
+    [[ImageUploadProgressView sharedInstance] changePaletteMode];
     
     if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
     {

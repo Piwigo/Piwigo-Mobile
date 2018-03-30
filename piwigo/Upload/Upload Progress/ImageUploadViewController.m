@@ -83,7 +83,10 @@
     // Table view
     self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
     [self.uploadImagesTableView reloadData];
-
+    
+    // Progress bar
+    [[ImageUploadProgressView sharedInstance] changePaletteMode];
+    
     if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 	{
 		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];

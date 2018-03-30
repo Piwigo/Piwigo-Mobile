@@ -26,5 +26,6 @@
 @property (nonatomic, weak) id<ImageUploadProgressDelegate> delegate;
 
 -(void)addViewToView:(UIView*)view forBottomLayout:(id)bottomLayout;
+-(void)changePaletteMode;
 
 @end

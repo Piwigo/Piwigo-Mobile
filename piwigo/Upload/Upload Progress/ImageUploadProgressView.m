@@ -40,7 +40,6 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
 		self.translatesAutoresizingMaskIntoConstraints = NO;
 		self.currentImage = 1;
 		self.maxImages = 0;
@@ -51,7 +50,6 @@
 		self.imageCountLabel = [UILabel new];
 		self.imageCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.imageCountLabel.font = [UIFont piwigoFontNormal];
-		self.imageCountLabel.textColor = [UIColor piwigoRightLabelColor];
 		self.imageCountLabel.text = NSLocalizedString(@"imageUploadProgressBar_zero", @"Uploading 0/0");
 		self.imageCountLabel.minimumScaleFactor = 0.5;
 		self.imageCountLabel.adjustsFontSizeToFitWidth = YES;
@@ -62,7 +60,6 @@
 		self.uploadProgress = [[UIProgressView alloc] init];
 		self.uploadProgress.translatesAutoresizingMaskIntoConstraints = NO;
         self.uploadProgress.progressTintColor = [UIColor piwigoOrange];
-        self.uploadProgress.trackTintColor = [UIColor piwigoLeftLabelColor];
 		[self addSubview:self.uploadProgress];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadProgress]];
 		
@@ -93,6 +90,15 @@
 														 multiplier:1.0
 														   constant:0]];
 	[view addConstraint:[NSLayoutConstraint constraintView:self toHeight:50]];
+}
+
+-(void)changePaletteMode
+{
+    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.imageCountLabel.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.imageCountLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.uploadProgress.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.uploadProgress.trackTintColor = [UIColor piwigoLeftLabelColor];
 }
 
 -(void)updateImageCountLabel
