@@ -66,7 +66,8 @@
         
         // Default thumbnail size and number per row in portrait mode
         instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
-        instance.thumbnailsPerRowInPortrait = 4;
+        instance.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize]);
+        NSLog(@"Model => %ld", instance.thumbnailsPerRowInPortrait);
         
         // Default image preview size
 		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;

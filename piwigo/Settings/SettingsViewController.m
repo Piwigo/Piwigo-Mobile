@@ -43,8 +43,6 @@ typedef enum {
 	kImageUploadSettingAuthor
 } kImageUploadSetting;
 
-NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file size
-
 @interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;

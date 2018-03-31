@@ -8,6 +8,7 @@
 
 extern NSInteger const kCellSpacing;
 extern NSInteger const kMarginsSpacing;
+extern NSInteger const kThumbnailFileSize;
 
 @interface ImagesCollection : NSObject
 

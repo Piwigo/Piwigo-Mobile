@@ -11,6 +11,7 @@
 
 NSInteger const kCellSpacing = 1;               // Spacing between items (horizontally and vertically)
 NSInteger const kMarginsSpacing = 0;            // Left and right margins
+NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file size
 
 #pragma mark Determine number of images per row
 
@@ -21,7 +22,16 @@ NSInteger const kMarginsSpacing = 0;            // Left and right margins
     // Thumbnails should always be available on server
     // => default size of 144x144 pixels set in SettingsViewController
     // We display at least 3 thumbnails per row and images never exceed the thumbnails size
-    return fmax(3.0, roundf((fmin(view.frame.size.width,view.frame.size.height) - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + maxWidth)));
+    float viewWidth;
+    
+    if (view == nil) {
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        viewWidth = fmin(screenRect.size.width, screenRect.size.height);
+    } else {
+        viewWidth = fmin(view.frame.size.width,view.frame.size.height);
+    }
+    
+    return fmax(3.0, roundf((viewWidth - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + maxWidth)));
 }
 
 +(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
