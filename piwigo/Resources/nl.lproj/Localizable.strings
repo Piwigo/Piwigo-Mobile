@@ -67,8 +67,8 @@
 "loginEmptyServer_title" = "Voer een webadres in";
 "loginEmptyServer_message" = "Selecteer een protocol en voeg een Piwigo webadres toe om door te gaan.";
 
-"serverSSLAccessError_title" = "Beveiligingsprobleem";
-"serverSLLAccessError_message" = "Een beveiligde HTTPS-verbinding kan niet worden vastgesteld. Wilt u doorgaan met niet-gecodeerde HTTP communications?";
+"serverConnectionError_title" = "Verbinding Mislukt";
+"serverSLLAccessError_message" = "Een beveiligde HTTPS-verbinding kan niet worden vastgesteld. Controleer het adres of probeer in niet-gecodeerde HTTP-modus?";
 
 "serverVersionNotCompatible_title" = "Server niet ondersteund";
 "serverVersionNotCompatible_message" = "Jouw Piwigo server versie is %@. Piwigo Mobiel ondersteunt alleen versie 2.7 of hoger. Werk jouw server bij om Piwigo Mobile te kunnen gebruiken. Wil je toch doorgaan?";

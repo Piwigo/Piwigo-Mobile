@@ -67,7 +67,7 @@
 "loginEmptyServer_title" = "أدخل عنوان ويب";
 "loginEmptyServer_message" = "يرجى تحديد بروتوكول وإدخال عنوان ويب Piwigo للمواصلة.";
 
-"serverSSLAccessError_title" = "قضية الأمن";
+"serverConnectionError_title" = "فشل الإتصال";
 "serverSLLAccessError_message" = "تعذر تأسيس اتصال أمن HTTPS. هل تريد المتابعة مع اتصالات HTTP غير مشفرة؟";
 
 "serverVersionNotCompatible_title" = "الخادم غير متوافق";

@@ -67,8 +67,8 @@
 "loginEmptyServer_title" = "Entrez une Adresse Web";
 "loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
 
-"serverSSLAccessError_title" = "Problème de sécurité";
-"serverSLLAccessError_message" = "Une connexion HTTPS sécurisée n’a pas pu être établie. Voulez-vous continuer avec des communications HTTP non cryptées ?";
+"serverConnectionError_title" = "Échec de la Connexion";
+"serverSLLAccessError_message" = "Une connexion HTTPS sécurisée n'a pas pu être établie. S'il vous plaît vérifier l'adresse ou essayez en mode HTTP non crypté?";
 
 "serverVersionNotCompatible_title" = "Serveur Incompatible";
 "serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile. Voulez-vous quand même continuer ?";

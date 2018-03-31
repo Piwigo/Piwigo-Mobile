@@ -67,8 +67,8 @@
 "loginEmptyServer_title" = "Masukkan Alamat Web";
 "loginEmptyServer_message" = "Silakan pilih sebuah protokol dan masukkan alamat web Piwigo untuk melanjutkan.";
 
-"serverSSLAccessError_title" = "Masalah Keamanan";
-"serverSLLAccessError_message" = "HTTPS sambungan aman tidak dapat dibentuk. Apakah Anda ingin melanjutkan dengan non-dienkripsi HTTP komunikasi?";
+"serverConnectionError_title" = "Koneksi gagal";
+"serverSLLAccessError_message" = "Koneksi HTTPS aman tidak dapat ditentukan. Silakan periksa alamat atau coba dalam mode HTTP yang tidak terenkripsi?";
 
 "serverVersionNotCompatible_title" = "Peladen Tidak Kompatibel";
 "serverVersionNotCompatible_message" = "Versi peladen Piwigo Anda adalah %@. Piwigo Mobile hanya mendukung minimal versi 2.7. Perbarui peladen Anda untuk menggunakan Piwigo Mobile. Apakah Anda ingin melanjutkan?";

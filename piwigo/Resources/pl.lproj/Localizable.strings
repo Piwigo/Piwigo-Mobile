@@ -67,8 +67,8 @@
 "loginEmptyServer_title" = "Wprowadź Adres Strony";
 "loginEmptyServer_message" = "Proszę wybrać protokół i wprowadzić adres internetowy Piwigo, aby kontynuować.";
 
-"serverSSLAccessError_title" = "Problem zabezpieczeń";
-"serverSLLAccessError_message" = "Nie można ustanowić bezpiecznego połączenia HTTPS. Czy chcesz kontynuować bez szyfrowania komunikacji HTTP?";
+"serverConnectionError_title" = "Połączenie nie udało się";
+"serverSLLAccessError_message" = "Nie można ustanowić zabezpieczonego połączenia HTTPS. Sprawdź adres lub spróbuj w trybie niezaszyfrowanego HTTP?";
 
 "serverVersionNotCompatible_title" = "Serwera Niekompatybilny";
 "serverVersionNotCompatible_message" = "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2,7. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile. Czy nadal chcesz kontynuować?";
