@@ -50,6 +50,7 @@
 		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
 		self.serverTextField.returnKeyType = UIReturnKeyNext;
+        self.serverTextField.clearButtonMode = YES;
 		self.serverTextField.delegate = self;
 		[self.view addSubview:self.serverTextField];
 				
@@ -60,6 +61,7 @@
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.userTextField.returnKeyType = UIReturnKeyNext;
+        self.userTextField.clearButtonMode = YES;
 		self.userTextField.delegate = self;
 		[self.view addSubview:self.userTextField];
 		
@@ -69,6 +71,7 @@
 		self.passwordTextField.secureTextEntry = YES;
 		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
+        self.passwordTextField.clearButtonMode = YES;
 		self.passwordTextField.delegate = self;
 		[self.view addSubview:self.passwordTextField];
 		
