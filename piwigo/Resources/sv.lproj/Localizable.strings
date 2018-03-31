@@ -24,6 +24,7 @@
 "alertAddButton" = "Lägg till";
 "alertRetryButton" = "Försök igen";
 "alertNextButton" = "Nästa bild";
+"alertTryButton" = "Prova";
 
 // Complete views
 "Complete" = "Klart";
@@ -68,7 +69,7 @@
 "loginEmptyServer_message" = "Välj ett protokoll och ange en Piwigo webbadress för att gå vidare.";
 
 "serverConnectionError_title" = "Anslutningen misslyckades";
-"serverSLLAccessError_message" = "En säker HTTPS-anslutning kunde inte fastställas. Kontrollera adressen eller försök i okrypterat HTTP-läge?";
+"serverConnectionError_message" = "En säker HTTPS-anslutning kunde inte fastställas. Kontrollera adressen eller försök i okrypterat HTTP-läge?";
 
 "serverVersionNotCompatible_title" = "Servern är inkompatibel";
 "serverVersionNotCompatible_message" = "Din Piwigo serverversion är %@. Piwigo Mobile stöder endast en version av minst 2,7. Uppdatera din server för att använda Piwigo Mobile. Vill du ändå fortsätta?";

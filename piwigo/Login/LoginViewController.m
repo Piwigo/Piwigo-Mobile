@@ -244,12 +244,12 @@
     [self hideLoadingWithCompletion:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             UIAlertController* alert = [UIAlertController
-                    alertControllerWithTitle:NSLocalizedString(@"serverSSLAccessError_title", @"Security Issue")
-                    message:[NSString stringWithFormat:NSLocalizedString(@"serverSLLAccessError_message", @"A secured HTTPS connection could not be established. Do you want to continue with non-encrypted HTTP communications?"), [Model sharedInstance].version]
+                    alertControllerWithTitle:NSLocalizedString(@"serverConnectionError_title", @"Security Issue")
+                    message:[NSString stringWithFormat:NSLocalizedString(@"serverConnectionError_message", @"A secured HTTPS connection could not be established. Do you want to continue with non-encrypted HTTP communications?"), [Model sharedInstance].version]
                     preferredStyle:UIAlertControllerStyleAlert];
             
             UIAlertAction* defaultAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                     style:UIAlertActionStyleCancel
                     handler:^(UIAlertAction * action) {
                         // We cannot reach the server, inform user
@@ -258,7 +258,7 @@
                     }];
             
             UIAlertAction* continueAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                    actionWithTitle:NSLocalizedString(@"alertTryButton", @"Try")
                     style:UIAlertActionStyleDestructive
                     handler:^(UIAlertAction * action) {
                         // Proceed at their own risk

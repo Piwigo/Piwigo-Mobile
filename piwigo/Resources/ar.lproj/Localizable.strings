@@ -24,6 +24,7 @@
 "alertAddButton" = "إضافة";
 "alertRetryButton" = "إعادة المحاولة";
 "alertNextButton" = "الصورة الموالية";
+"alertTryButton" = "محاولة";
 
 // Complete views
 "Complete" = "أكتمل";
@@ -68,7 +69,7 @@
 "loginEmptyServer_message" = "يرجى تحديد بروتوكول وإدخال عنوان ويب Piwigo للمواصلة.";
 
 "serverConnectionError_title" = "فشل الإتصال";
-"serverSLLAccessError_message" = "تعذر تأسيس اتصال أمن HTTPS. هل تريد المتابعة مع اتصالات HTTP غير مشفرة؟";
+"serverConnectionError_message" = "تعذر إنشاء اتصال HTTPS آمن. يرجى التحقق من العنوان أو محاولة وضع HTTP غير المشفرة؟";
 
 "serverVersionNotCompatible_title" = "الخادم غير متوافق";
 "serverVersionNotCompatible_message" = "إصدار خادم Piwigo هو %@. Piwigo موبايل يدعم فقط على الأقل نسخة من 2.7. يرجى تحديث الخادم الخاص بك لاستخدام Piwigo موبايل. هل ما زلت ترغب في المتابعة؟";

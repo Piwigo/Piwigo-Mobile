@@ -24,6 +24,7 @@
 "alertAddButton" = "Dodaj";
 "alertRetryButton" = "Ponów";
 "alertNextButton" = "Następne zdjęcie";
+"alertTryButton" = "Próbować";
 
 // Complete views
 "Complete" = "Zakończono";
@@ -68,7 +69,7 @@
 "loginEmptyServer_message" = "Proszę wybrać protokół i wprowadzić adres internetowy Piwigo, aby kontynuować.";
 
 "serverConnectionError_title" = "Połączenie nie udało się";
-"serverSLLAccessError_message" = "Nie można ustanowić zabezpieczonego połączenia HTTPS. Sprawdź adres lub spróbuj w trybie niezaszyfrowanego HTTP?";
+"serverConnectionError_message" = "Nie można ustanowić zabezpieczonego połączenia HTTPS. Sprawdź adres lub spróbuj w trybie niezaszyfrowanego HTTP?";
 
 "serverVersionNotCompatible_title" = "Serwera Niekompatybilny";
 "serverVersionNotCompatible_message" = "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2,7. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile. Czy nadal chcesz kontynuować?";

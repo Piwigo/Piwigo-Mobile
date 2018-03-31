@@ -24,6 +24,7 @@
 "alertAddButton" = "Tilføj";
 "alertRetryButton" = "Retry";
 "alertNextButton" = "Næste billede";
+"alertTryButton" = "Forsøg";
 
 // Complete views
 "Complete" = "Udført";
@@ -68,7 +69,7 @@
 "loginEmptyServer_message" = "Venligst Vælg en protokol og indtast en Piwigo web-adresse for at fortsætte.";
 
 "serverConnectionError_title" = "Forbindelsen fejlede";
-"serverSLLAccessError_message" = "En sikker HTTPS-forbindelsen kunne ikke oprettes. Venligst kontrollere adressen eller prøve i ukrypteret http-mode?";
+"serverConnectionError_message" = "En sikker HTTPS-forbindelsen kunne ikke oprettes. Venligst kontrollere adressen eller prøve i ukrypteret http-mode?";
 
 "serverVersionNotCompatible_title" = "Server Inkompatibel";
 "serverVersionNotCompatible_message" = "Din Piwigo serverversion er %@. Piwigo Mobile kræver mindst version 2.7. Opdater venligst din server hvis du vil bruge Piwigo Mobile. Ønsker du at fortsætte?";

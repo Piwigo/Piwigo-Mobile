@@ -24,6 +24,7 @@
 "alertAddButton" = "Tambah";
 "alertRetryButton" = "Ulangi";
 "alertNextButton" = "Gambar Berikutnya";
+"alertTryButton" = "Mencoba";
 
 // Complete views
 "Complete" = "Selesai";
@@ -68,7 +69,7 @@
 "loginEmptyServer_message" = "Silakan pilih sebuah protokol dan masukkan alamat web Piwigo untuk melanjutkan.";
 
 "serverConnectionError_title" = "Koneksi gagal";
-"serverSLLAccessError_message" = "Koneksi HTTPS aman tidak dapat ditentukan. Silakan periksa alamat atau coba dalam mode HTTP yang tidak terenkripsi?";
+"serverConnectionError_message" = "Koneksi HTTPS aman tidak dapat ditentukan. Silakan periksa alamat atau coba dalam mode HTTP yang tidak terenkripsi?";
 
 "serverVersionNotCompatible_title" = "Peladen Tidak Kompatibel";
 "serverVersionNotCompatible_message" = "Versi peladen Piwigo Anda adalah %@. Piwigo Mobile hanya mendukung minimal versi 2.7. Perbarui peladen Anda untuk menggunakan Piwigo Mobile. Apakah Anda ingin melanjutkan?";

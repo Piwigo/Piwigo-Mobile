@@ -24,6 +24,7 @@
 "alertAddButton" = "Add";
 "alertRetryButton" = "Retry";
 "alertNextButton" = "Next Image";
+"alertTryButton" = "Try";
 
 // Complete views
 "Complete" = "Complete";
@@ -68,7 +69,7 @@
 "loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
 
 "serverConnectionError_title" = "Connection Failed";
-"serverSLLAccessError_message" = "A secured HTTPS connection could not be established. Please check the address or try in unencrypted HTTP mode?";
+"serverConnectionError_message" = "A secured HTTPS connection could not be established. Please check the address or try in unencrypted HTTP mode?";
 
 "serverVersionNotCompatible_title" = "Server Incompatible";
 "serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile. Do you still want to continue?";
