@@ -656,6 +656,10 @@
                 [header addSubview:self.noImagesLabel];
                 [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.noImagesLabel amount:-40]];
                 [header addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
+            } else {
+                if (self.noImagesLabel) {
+                    [header willRemoveSubview:self.noImagesLabel];
+                }
             }
 
             return header;
