@@ -102,6 +102,8 @@
 		uploadingLabel.font = [UIFont piwigoFontNormal];
 		uploadingLabel.textColor = [UIColor piwigoRightLabelColor];
 		uploadingLabel.text = NSLocalizedString(@"imageUploadTableCell_uploading", @"Uploading...");
+        uploadingLabel.adjustsFontSizeToFitWidth = YES;
+        uploadingLabel.minimumScaleFactor = 0.6;
 		[self.uploadingView addSubview:uploadingLabel];
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:uploadingLabel]];
 		[self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-[progress]"
