@@ -112,6 +112,10 @@ static SEL extractedCDU() {
     [self getCategoryData];
     [self refreshShowingCells];
 
+    // The album title is not shown in backButtonItem to provide enough space
+    // for image title on devices of screen width <= 414 ==> Restore album title
+    self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+    
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
@@ -151,6 +155,17 @@ static SEL extractedCDU() {
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
     self.albumsTableView.alwaysBounceVertical = YES;
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Do not show album title in backButtonItem to provide enough space for image title
+    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+    if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
+        self.title = @"";
+    }
 }
 
 -(void)refresh:(UIRefreshControl*)refreshControl

@@ -66,7 +66,6 @@
 	{
 		self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.categoryId = albumId;
-		self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 		
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
@@ -108,6 +107,10 @@
     // Reload category data
     [self getCategoryData];
 
+    // The album title is not shown in backButtonItem to provide enough space
+    // for image title on devices of screen width <= 414 ==> Restore album title
+    self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
@@ -164,6 +167,17 @@
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
     if (NSClassFromString(@"SKStoreReviewController")) {
         [SKStoreReviewController requestReview];
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Do not show album title in backButtonItem to provide enough space for image title
+    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+    if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
+        self.title = @"";
     }
 }
 
