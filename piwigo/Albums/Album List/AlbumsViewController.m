@@ -241,7 +241,7 @@ static SEL extractedCDU() {
                                        OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                            [self hideCreateCategoryHUDwithSuccess:YES completion:^{
                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.categories.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                                                   [self.albumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
                                                });
                                            }];
                                        }
