@@ -1,5 +1,5 @@
 //
-//  UploadHeaderCollectionReusableView.h
+//  SortHeaderCollectionReusableView.h
 //  piwigo
 //
 //  Created by Spencer Baker on 2/19/15.

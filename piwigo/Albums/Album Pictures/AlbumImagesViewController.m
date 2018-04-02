@@ -18,6 +18,7 @@
 #import "ImageDetailViewController.h"
 #import "ImageDownloadView.h"
 #import "SortHeaderCollectionReusableView.h"
+#import "NoImagesHeaderCollectionReusableView.h"
 #import "CategorySortViewController.h"
 #import "CategoryImageSort.h"
 #import "LoadingView.h"
@@ -48,7 +49,6 @@
 @property (nonatomic, assign) NSInteger totalImagesToDownload;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
 @property (nonatomic, strong) ImageDownloadView *downloadView;
-@property (nonatomic, strong) UILabel *noImagesLabel;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) LoadingView *loadingView;
@@ -70,6 +70,7 @@
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
 		
+        // Collection of images
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
 		self.imagesCollection.backgroundColor = [UIColor clearColor];
@@ -78,12 +79,14 @@
 		self.imagesCollection.delegate = self;
 		[self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
 		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"category"];
-		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
+		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader"];
+        [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader"];
 		self.imagesCollection.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 		[self.view addSubview:self.imagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 
-		self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
+        // Bar buttons
+        self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
 		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
@@ -648,40 +651,37 @@
 {
 	if(indexPath.section == 1)
 	{
-        SortHeaderCollectionReusableView *header = nil;
-
-        if(kind == UICollectionElementKindSectionHeader)
-		{
-			header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header" forIndexPath:indexPath];
-            header.backgroundColor = [UIColor piwigoCellBackgroundColor];
-            header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
-			header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
-            header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
-			[header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
-
-            if (!self.albumData.images.count) {
-                self.noImagesLabel = [UILabel new];
-                self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
-                self.noImagesLabel.font = [UIFont piwigoFontNormal];
-                self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
-                self.noImagesLabel.textColor = [UIColor piwigoWhiteCream];
-                self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-
-                [header addSubview:self.noImagesLabel];
-                [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.noImagesLabel amount:-40]];
-                [header addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
-            } else {
-                if (self.noImagesLabel) {
-                    [header willRemoveSubview:self.noImagesLabel];
-                }
+        if (self.albumData.images.count > 0) {
+            // Display "Sort By…" header
+            SortHeaderCollectionReusableView *header = nil;
+            
+            if(kind == UICollectionElementKindSectionHeader)
+            {
+                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
+                header.backgroundColor = [UIColor piwigoCellBackgroundColor];
+                header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
+                header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
+                header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
+                [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+                
+                return header;
             }
+        } else {
+            // Display "No Images"
+            NoImagesHeaderCollectionReusableView *header = nil;
 
-            return header;
-		}
+            if(kind == UICollectionElementKindSectionHeader)
+            {
+                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
+                header.backgroundColor = [UIColor piwigoBackgroundColor];
+                header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+
+                return header;
+            }
+        }
 	}
 	
 	UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
-
 	return view;
 }
 
@@ -710,13 +710,6 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    // Displays "No Images" if needed
-    if(self.albumData.images.count > 0) {
-        self.noImagesLabel.hidden = YES;
-    } else {
-        self.noImagesLabel.hidden = NO;
-    }
-	
     // Returns number of images or albums
 	if(section == 1)
 	{

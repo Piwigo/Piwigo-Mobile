@@ -78,7 +78,7 @@
 +(UIColor*)piwigoHeaderColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
-        return [UIColor colorWithRed:128/255.0 green:128/255.0 blue:128/255.0 alpha:1.0];
+        return [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1.0];
     else
         if (@available(iOS 10, *))
             return [UIColor colorWithRed:28/255.0 green:28/255.0 blue:30/255.0 alpha:1.0];

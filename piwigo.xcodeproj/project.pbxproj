@@ -10,6 +10,7 @@
 		012561DB5152815B48FF0950 /* libPods-piwigoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */; };
 		91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */; };
 		AD0134641EBE310000F11C3F /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0134631EBE310000F11C3F /* TabBarViewController.m */; };
+		AD1F90B220724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1F90B120724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m */; };
 		AD274E271FF411D4009CD3AC /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */; };
 		AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */; };
@@ -131,6 +132,8 @@
 		AD0822731FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD0822741FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD0822751FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD1F90B020724A63004BA1AA /* NoImagesHeaderCollectionReusableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoImagesHeaderCollectionReusableView.h; sourceTree = "<group>"; };
+		AD1F90B120724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NoImagesHeaderCollectionReusableView.m; sourceTree = "<group>"; };
 		AD294B281F2CE87200CD3769 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD294B2A1F2CE87400CD3769 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultThumbnailSizeViewController.h; sourceTree = "<group>"; };
@@ -170,8 +173,8 @@
 		AD8549331FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD8549341FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD8549351FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImagesCollection.m; path = "Album Pictures/ImagesCollection.m"; sourceTree = "<group>"; };
-		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImagesCollection.h; path = "Album Pictures/ImagesCollection.h"; sourceTree = "<group>"; };
+		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesCollection.m; sourceTree = "<group>"; };
+		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesCollection.h; sourceTree = "<group>"; };
 		AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseNotesViewController.h; sourceTree = "<group>"; };
 		AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseNotesViewController.m; sourceTree = "<group>"; };
 		AD92B8FF1F200083006E5B63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -640,10 +643,16 @@
 		D82B8CED1A6790A3000E47CA /* Macros */ = {
 			isa = PBXGroup;
 			children = (
+				AD870CD81F54AE230015BFA1 /* ImagesCollection.h */,
+				AD870CD61F54AE110015BFA1 /* ImagesCollection.m */,
 				D847B83B1A7C06A500231886 /* OutlinedText.h */,
 				D847B83C1A7C06A500231886 /* OutlinedText.m */,
 				D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */,
 				D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */,
+				AD1F90B020724A63004BA1AA /* NoImagesHeaderCollectionReusableView.h */,
+				AD1F90B120724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m */,
+				D8B9BC7D1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.h */,
+				D8B9BC7E1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m */,
 				D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */,
 				D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */,
 				D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */,
@@ -763,8 +772,6 @@
 				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
 				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
 				D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */,
-				D8B9BC7D1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.h */,
-				D8B9BC7E1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m */,
 				D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */,
 				D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */,
 				D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */,
@@ -799,8 +806,6 @@
 				D818E9F41A74BEFF00733991 /* Album List */,
 				D818E9F51A74BF1100733991 /* Album Pictures */,
 				ADE535911F65C17E00372CBD /* Album Thumbnail */,
-				AD870CD81F54AE230015BFA1 /* ImagesCollection.h */,
-				AD870CD61F54AE110015BFA1 /* ImagesCollection.m */,
 			);
 			path = Albums;
 			sourceTree = "<group>";
@@ -1148,6 +1153,7 @@
 				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
+				AD1F90B220724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m in Sources */,
 				D8C71A4C1A848B070048BA33 /* ImageUploadTableViewCell.m in Sources */,
 				D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,

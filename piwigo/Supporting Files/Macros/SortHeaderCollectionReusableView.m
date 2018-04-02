@@ -1,5 +1,5 @@
 //
-//  UploadHeaderCollectionReusableView.m
+//  SortHeaderCollectionReusableView.m
 //  piwigo
 //
 //  Created by Spencer Baker on 2/19/15.
@@ -7,7 +7,6 @@
 //
 
 #import "SortHeaderCollectionReusableView.h"
-#import "Model.h"
 
 @interface SortHeaderCollectionReusableView()
 
