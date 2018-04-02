@@ -15,7 +15,7 @@
 @property (nonatomic, strong) UILabel *categoryLabel;
 @property (nonatomic, strong) PiwigoAlbumData *categoryData;
 @property (nonatomic, strong) UIView *loadTapView;
-@property (nonatomic, strong) UIImageView *loadDisclosure;
+//@property (nonatomic, strong) UIImageView *loadDisclosure;
 @property (nonatomic, strong) UILabel *cellDisclosure;
 @property (nonatomic, strong) UILabel *loadLabel;
 @property (nonatomic, strong) NSLayoutConstraint *disclosureRightConstraint;
@@ -28,9 +28,7 @@
 {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if(self)
-	{
-//		self.backgroundColor = [UIColor piwigoWhiteCream];
-		
+	{		
 		self.categoryLabel = [UILabel new];
 		self.categoryLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.categoryLabel.font = [UIFont piwigoFontNormal];
@@ -55,41 +53,26 @@
         self.cellDisclosure.minimumScaleFactor = 0.6;
         [self.contentView addSubview:self.cellDisclosure];
         [self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.cellDisclosure]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[label]-[disclosure]-10-|"
+
+        self.loadLabel = [UILabel new];
+        self.loadLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.loadLabel.font = [UIFont piwigoFontLight];
+        self.loadLabel.textColor = [UIColor piwigoOrange];
+        [self.contentView addSubview:self.loadLabel];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.loadLabel]];
+        
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[label]-[load]-[disclosure]-10-|"
                                                                                  options:kNilOptions
                                                                                  metrics:nil
                                                                                    views:@{@"label" : self.categoryLabel,
+                                                                                           @"load" : self.loadLabel,
                                                                                            @"disclosure" : self.cellDisclosure
                                                                                            }]];
-
-		self.loadLabel = [UILabel new];
-		self.loadLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.loadLabel.font = [UIFont piwigoFontNormal];
-		self.loadLabel.font = [self.loadLabel.font fontWithSize:13];
-		self.loadLabel.textColor = [UIColor lightGrayColor];
-		self.loadLabel.text = NSLocalizedString(@"categoyUpload_loadSubCategories", @"load");
-		[self.contentView addSubview:self.loadLabel];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.loadLabel]];
 		
-		self.loadDisclosure = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"down"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
-		self.loadDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-		self.loadDisclosure.tintColor = [UIColor lightGrayColor];
-		[self.contentView addSubview:self.loadDisclosure];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.loadDisclosure]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.loadDisclosure toSize:CGSizeMake(28, 28)]];
-		[self.contentView addConstraints:[NSLayoutConstraint
-                                          constraintsWithVisualFormat:@"|-10-[label]-[load]-[downDisclosure]-10-|"
-                                                               options:kNilOptions
-                                                              metrics:nil
-                                                                views:@{@"label" : self.categoryLabel,
-                                                                        @"load" : self.loadLabel,
-                                                                        @"downDisclosure" : self.loadDisclosure
-                                                                        }]];
-		
-		self.loadTapView = [UIView new];
-		self.loadTapView.translatesAutoresizingMaskIntoConstraints = NO;
-		[self.contentView addSubview:self.loadTapView];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.loadTapView]];
+        self.loadTapView = [UIView new];
+        self.loadTapView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addSubview:self.loadTapView];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.loadTapView]];
         if ([Model sharedInstance].isAppLanguageRTL) {
             [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.loadTapView amount:0]];
             [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.loadTapView
@@ -110,10 +93,9 @@
                                                                           constant:-10]];
         }
 				
-		[self.contentView bringSubviewToFront:self.loadDisclosure];
         [self.contentView bringSubviewToFront:self.loadLabel];
 
-		[self.loadTapView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedLoadView)]];
+        [self.loadTapView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedLoadView)]];
 	}
 	return self;
 }
@@ -121,11 +103,14 @@
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category
 {
 	self.categoryData = category;
+    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.tintColor = [UIColor piwigoOrange];
+    self.textLabel.font = [UIFont piwigoFontNormal];
 
     // Is this a sub-category?
     NSInteger depth = [self.categoryData getDepthOfCategory];
     if(depth <= 1) {
-        // Categories
+        // Categories in root album
         self.categoryLabel.text = self.categoryData.name;
         self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
     } else {
@@ -133,46 +118,23 @@
         self.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
 
         // Append "—" characters to sub-category names
-        NSString *subAlbumMark = [@"" stringByPaddingToLength:depth-1 withString:@"—" startingAtIndex:0];
+        NSString *subAlbumPrefix = [@"" stringByPaddingToLength:depth-1 withString:@"—" startingAtIndex:0];
         if ([Model sharedInstance].isAppLanguageRTL) {
-            self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", self.categoryData.name, subAlbumMark];
+            self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", self.categoryData.name, subAlbumPrefix];
         } else {
-            self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", subAlbumMark, self.categoryData.name];
+            self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", subAlbumPrefix, self.categoryData.name];
         }
     }
     
-    // Show upload button if sub-categories are not loaded yet
-	if(category.numberOfSubCategories <= 0 || [Model sharedInstance].loadAllCategoryInfo)
+    // Show upload button (# sub-albums) if sub-categories are not loaded yet
+	if(category.numberOfSubCategories <= 0)
 	{
-		[self hideUploadViews];
-        self.cellDisclosure.hidden = NO;
+        self.loadLabel.text = @"";
     } else {
-        [self showUploadViews];
-        self.cellDisclosure.hidden = YES;
+        self.loadLabel.text = [NSString stringWithFormat:@"(%ld %@)",
+                               (long)self.categoryData.numberOfSubCategories,
+                               self.categoryData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
-}
-
--(void)showUploadViews
-    {
-        self.loadLabel.hidden = NO;
-        self.loadTapView.hidden = NO;
-        self.loadDisclosure.hidden = NO;
-    }
-
--(void)hideUploadViews
-{
-    self.loadLabel.hidden = YES;
-	self.loadTapView.hidden = YES;
-    self.loadDisclosure.hidden = YES;
-}
-
--(void)setHasLoadedSubCategories:(BOOL)hasLoadedSubCategories
-{
-	if(hasLoadedSubCategories)
-	{
-		[self hideUploadViews];
-        self.cellDisclosure.hidden = NO;
-	}
 }
 
 -(void)tappedLoadView
@@ -188,7 +150,6 @@
 	[super prepareForReuse];
 	
     self.categoryLabel.text = @"";
-    self.loadDisclosure.image = [[UIImage imageNamed:@"down"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 }
 
 #pragma mark LocalAlbums Methods
@@ -199,9 +160,6 @@
     self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.backgroundColor = [UIColor piwigoCellBackgroundColor];
     self.tintColor = [UIColor piwigoOrange];
-
-    [self hideUploadViews];
-    self.cellDisclosure.hidden = NO;
 }
 
 @end

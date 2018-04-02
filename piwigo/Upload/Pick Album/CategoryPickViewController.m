@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import <sys/utsname.h>                    // For determining iOS device model
-
 #import "CategoryPickViewController.h"
 #import "CategoriesData.h"
 #import "LocalAlbumsViewController.h"

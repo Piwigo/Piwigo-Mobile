@@ -28,7 +28,6 @@
     {
         self.categories = [NSMutableArray new];
         self.categoriesThatHaveLoadedSubCategories = [NSMutableDictionary new];
-        [self buildCategoryArray];
         
         self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -39,7 +38,7 @@
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     }
     return self;
 }
@@ -63,14 +62,15 @@
     
     // Table view
     self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
-    [self.categoriesTableView reloadData];
-}
-
--(void)categoryDataUpdated
-{
     [self buildCategoryArray];
     [self.categoriesTableView reloadData];
 }
+
+//-(void)categoryDataUpdated
+//{
+//    [self buildCategoryArray];
+//    [self.categoriesTableView reloadData];
+//}
 
 -(void)buildCategoryArray
 {
@@ -80,7 +80,7 @@
     // Proposed list is collected in diff
     NSMutableArray *diff = [NSMutableArray new];
     
-    // Look for missing categories
+    // Look for categories which are not already displayed
     for(PiwigoAlbumData *category in allCategories)
     {
         // Non-admin Community users can only upload in specific albums
@@ -88,7 +88,7 @@
             continue;
         }
         
-        // Is this
+        // Is this category already in displayed list?
         BOOL doesNotExist = YES;
         for(PiwigoAlbumData *existingCat in self.categories)
         {
@@ -104,10 +104,60 @@
         }
     }
     
-    // Append missing categories below their parent categories
+    // Build list of categories to be displayed
     for(PiwigoAlbumData *category in diff)
     {
-        if(category.upperCategories.count > 1)
+        // Always add categories in root album
+        if (category.parentAlbumId == 0)
+        {
+            [self.categories addObject:category];
+            continue;
+        }
+    }
+}
+
+-(void)addSubCateroriesToCategoryId:(PiwigoAlbumData *)categoryTapped
+{
+    // Build list of categories from complete known list
+    NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
+    
+    // Proposed list is collected in diff
+    NSMutableArray *diff = [NSMutableArray new];
+    
+    // Look for categories which are not already displayed
+    for(PiwigoAlbumData *category in allCategories)
+    {
+        // Non-admin Community users can only upload in specific albums
+        if (![Model sharedInstance].hasAdminRights && !category.hasUploadRights) {
+            continue;
+        }
+        
+        // Only add sub-categories of tapped category
+        if (category.nearestUpperCategory != categoryTapped.albumId) {
+            continue;
+        }
+        
+        // Is this category already in displayed list?
+        BOOL doesNotExist = YES;
+        for(PiwigoAlbumData *existingCat in self.categories)
+        {
+            if(category.albumId == existingCat.albumId)
+            {
+                doesNotExist = NO;
+                break;
+            }
+        }
+        if(doesNotExist)
+        {
+            [diff addObject:category];
+        }
+    }
+
+    // Build list of categories to be displayed
+    for(PiwigoAlbumData *category in diff)
+    {
+        // Should we add sub-categories?
+        if(category.upperCategories.count > 0)
         {
             NSInteger indexOfParent = 0;
             for(PiwigoAlbumData *existingCategory in self.categories)
@@ -120,12 +170,40 @@
                 indexOfParent++;
             }
         }
-        else
+    }
+
+    // Reload table view
+    [self.categoriesTableView reloadData];
+}
+
+-(void)removeSubCategoriesToCategoryID:(PiwigoAlbumData *)categoryTapped
+{
+    // Proposed list is collected in diff
+    NSMutableArray *diff = [NSMutableArray new];
+    
+    // Look for sub-categories to remove
+    for(PiwigoAlbumData *category in self.categories)
+    {
+        // Keep the parent category
+        if (category.albumId == categoryTapped.albumId) {
+            continue;
+        }
+        
+        // Remove the sub-categories
+        NSArray *upperCategories = category.upperCategories;
+        if ([upperCategories containsObject:[NSString stringWithFormat:@"%ld", categoryTapped.albumId]])
         {
-            [self.categories addObject:category];
+            [diff addObject:category];
         }
     }
+    
+    // Remove objects from displayed list
+    [self.categories removeObjectsInArray:diff];
+
+    // Reload table view
+    [self.categoriesTableView reloadData];
 }
+
 
 #pragma mark UITableView Methods
 
@@ -145,11 +223,8 @@
     cell.categoryDelegate = self;
     
     PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-    
     [cell setupWithCategoryData:categoryData];
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    cell.tintColor = [UIColor piwigoOrange];
-    cell.textLabel.font = [UIFont piwigoFontNormal];
+    
     if([self.categoriesThatHaveLoadedSubCategories objectForKey:[NSString stringWithFormat:@"%@", @(categoryData.albumId)]])
     {
         cell.hasLoadedSubCategories = YES;
@@ -177,13 +252,56 @@
 
 -(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
 {
-    [AlbumService getAlbumListForCategory:categoryTapped.albumId
-                             OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-                                 [self.categoriesThatHaveLoadedSubCategories setValue:@(categoryTapped.albumId) forKey:[NSString stringWithFormat:@"%@", @(categoryTapped.albumId)]];
-                             } onFailure:nil];
+    // Build list of categories from complete known list
+    NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
+    NSMutableArray *subcategories = [NSMutableArray new];
     
-}
+    // Look for known requested sub-categories
+    for(PiwigoAlbumData *category in allCategories)
+    {
+        // Only add sub-categories of tapped category
+        if (category.parentAlbumId != categoryTapped.albumId) {
+            continue;
+        }
+        [subcategories addObject:category];
+    }
+    
+    // Look for sub-categories which are already displayed
+    NSInteger nberDisplayedSubCategories = 0;
+    for(PiwigoAlbumData *category in subcategories)
+    {
+        for(PiwigoAlbumData *existingCat in self.categories)
+        {
+            if(category.albumId == existingCat.albumId)
+            {
+                nberDisplayedSubCategories++;
+                break;
+            }
+        }
+    }
 
+    if (subcategories.count == nberDisplayedSubCategories)
+    {
+        // User wants to hide sub-categories
+        [self removeSubCategoriesToCategoryID:categoryTapped];
+    }
+    else if (subcategories.count > 0)
+    {
+        // Sub-categories are already known
+//        [self.categoriesThatHaveLoadedSubCategories setValue:@(categoryTapped.albumId) forKey:[NSString stringWithFormat:@"%@", @(categoryTapped.albumId)]];
+        [self addSubCateroriesToCategoryId:categoryTapped];
+    }
+    else
+    {
+        // Sub-categories are not known
+        [AlbumService getAlbumListForCategory:categoryTapped.albumId
+                                 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+//                                     [self.categoriesThatHaveLoadedSubCategories setValue:@(categoryTapped.albumId) forKey:[NSString stringWithFormat:@"%@", @(categoryTapped.albumId)]];
+                                     [self addSubCateroriesToCategoryId:categoryTapped];
+                                 } onFailure:nil
+         ];
+    }
+}
 
 @end
 
