@@ -200,8 +200,19 @@
     // Remove objects from displayed list
     [self.categories removeObjectsInArray:diff];
 
-    // Reload table view
-    [self.categoriesTableView reloadData];
+    // Sub-categories will not be known if user closes several layers at once
+    // and caching option loadAllCategoryInfo is not activated
+    if (![Model sharedInstance].loadAllCategoryInfo) {
+        [AlbumService getAlbumListForCategory:categoryTapped.albumId
+                                 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                     // Reload table view
+                                     [self.categoriesTableView reloadData];
+                                 } onFailure:nil
+         ];
+    } else {
+        // Reload table view
+        [self.categoriesTableView reloadData];
+    }
 }
 
 
@@ -252,7 +263,7 @@
 
 -(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
 {
-    // Build list of categories from complete known list
+    // Build list of categories from list of known categories
     NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
     NSMutableArray *subcategories = [NSMutableArray new];
     
@@ -280,7 +291,10 @@
         }
     }
 
-    if (subcategories.count == nberDisplayedSubCategories)
+    // This test depends on the caching option loadAllCategoryInfo…
+    // => if enabled: compare number of sub-albums inside category to be closed
+    // => if disabled: compare number of sub-sub-albums inside category to be closed
+    if ((subcategories.count > 0) && (subcategories.count == nberDisplayedSubCategories))
     {
         // User wants to hide sub-categories
         [self removeSubCategoriesToCategoryID:categoryTapped];
@@ -288,7 +302,6 @@
     else if (subcategories.count > 0)
     {
         // Sub-categories are already known
-//        [self.categoriesThatHaveLoadedSubCategories setValue:@(categoryTapped.albumId) forKey:[NSString stringWithFormat:@"%@", @(categoryTapped.albumId)]];
         [self addSubCateroriesToCategoryId:categoryTapped];
     }
     else
@@ -296,7 +309,6 @@
         // Sub-categories are not known
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-//                                     [self.categoriesThatHaveLoadedSubCategories setValue:@(categoryTapped.albumId) forKey:[NSString stringWithFormat:@"%@", @(categoryTapped.albumId)]];
                                      [self addSubCateroriesToCategoryId:categoryTapped];
                                  } onFailure:nil
          ];
