@@ -49,7 +49,7 @@
     if(self)
     {
         self.imageUploadQueue = [NSMutableArray new];
-        self.imageNamesUploadQueue = [NSMutableDictionary new];
+        self.imageNamesUploadQueue = [NSMutableArray new];
         self.imageDeleteQueue = [NSMutableArray new];
         self.cachedImages = [NSMutableArray new];
         self.cachingManager = [[PHCachingImageManager alloc] init];
@@ -91,7 +91,7 @@
     [self startUploadIfNeeded];
     
     // The file name extension may change e.g. MOV => MP4, HEIC => JPG
-    [self.imageNamesUploadQueue setObject:image.image forKey:[image.image stringByDeletingPathExtension]];
+    [self.imageNamesUploadQueue addObject:[image.image stringByDeletingPathExtension]];
 }
 
 -(void)startUploadIfNeeded
@@ -236,7 +236,7 @@
     // Remove image from queue (in both tables)
     if (self.imageUploadQueue.count > 0) {                  // Added to prevent crash
         [self.imageUploadQueue removeObjectAtIndex:0];
-        [self.imageNamesUploadQueue removeObjectForKey:[image.image stringByDeletingPathExtension]];
+        [self.imageNamesUploadQueue removeObject:[image.image stringByDeletingPathExtension]];
 
         // Update progress infos
         if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
@@ -1337,7 +1337,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                             self.onCurrentImageUpload++;
                                             ImageUpload *nextImage = [self.imageUploadQueue firstObject];
                                             [self.imageUploadQueue removeObjectAtIndex:0];
-                                            [self.imageNamesUploadQueue removeObjectForKey:[nextImage.image stringByDeletingPathExtension]];
+                                            [self.imageNamesUploadQueue removeObject:[nextImage.image stringByDeletingPathExtension]];
                                         }
                                         
                                         // Tell user how many images have been downloaded

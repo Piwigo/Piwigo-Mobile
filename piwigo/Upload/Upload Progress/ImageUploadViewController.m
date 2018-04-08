@@ -316,7 +316,7 @@
             // Remove image from upload queue (both in table and collection view) or stop iCloud download or Piwigo upload
             ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
             [[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
-            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObjectForKey:[image.image stringByDeletingPathExtension]];
+            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObject:[image.image stringByDeletingPathExtension]];
             [ImageUploadManager sharedInstance].maximumImagesForBatch--;
         }
 

@@ -99,19 +99,18 @@
         // Uploading stuff: label
 		UILabel *uploadingLabel = [UILabel new];
 		uploadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		uploadingLabel.font = [UIFont piwigoFontNormal];
-		uploadingLabel.textColor = [UIColor piwigoRightLabelColor];
+		uploadingLabel.font = [UIFont piwigoFontSmall];
+		uploadingLabel.textColor = [UIColor piwigoOrange];
 		uploadingLabel.text = NSLocalizedString(@"imageUploadTableCell_uploading", @"Uploading...");
         uploadingLabel.adjustsFontSizeToFitWidth = YES;
-        uploadingLabel.minimumScaleFactor = 0.6;
+        uploadingLabel.minimumScaleFactor = 0.4;
 		[self.uploadingView addSubview:uploadingLabel];
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:uploadingLabel]];
-		[self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-[progress]"
-																				   options:kNilOptions
-																				   metrics:nil
-																					 views:@{@"progress" : self.uploadingProgress,
-																							 @"label" : uploadingLabel}]];
-		
+        [self.uploadingView addConstraint:[NSLayoutConstraint constraintViewFromBottom:uploadingLabel amount:16]];
+        [self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[uploading]-10-|"
+                                                                                   options:kNilOptions
+                                                                                   metrics:nil
+                                                                                     views:@{@"uploading" : uploadingLabel}]];
 	}
 	return self;
 }

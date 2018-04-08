@@ -369,7 +369,7 @@
     {
         cell.cellSelected = YES;
     }
-    else if ([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:[originalFilename stringByDeletingPathExtension]])
+    else if ([[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]])
     {
         cell.cellUploading = YES;
     }
