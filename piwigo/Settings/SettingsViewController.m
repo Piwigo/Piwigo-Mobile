@@ -922,24 +922,24 @@ typedef enum {
                     cell.cellSwitchBlock = ^(BOOL switchState) {
                         // Number of rows will change accordingly
                         [Model sharedInstance].isDarkPaletteModeActive = switchState;
-//                        // Position of the row(s) that should be added/removed
-//                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
-//                                                                         inSection:SettingsSectionColor];
-//                        NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
-//                                                                         inSection:SettingsSectionColor];
-//                        if(switchState) {
-//                            // Insert row in existing table
-//                            if ([Model sharedInstance].switchPaletteAutomatically)
-//                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//                            else
-//                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//                        } else {
-//                            // Remove row in existing table
-//                            if ([Model sharedInstance].switchPaletteAutomatically)
-//                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//                            else
-//                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//                        }
+                        // Position of the row(s) that should be added/removed
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
+                                                                         inSection:SettingsSectionColor];
+                        NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
+                                                                         inSection:SettingsSectionColor];
+                        if(switchState) {
+                            // Insert row in existing table
+                            if ([Model sharedInstance].switchPaletteAutomatically)
+                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            else
+                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        } else {
+                            // Remove row in existing table
+                            if ([Model sharedInstance].switchPaletteAutomatically)
+                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            else
+                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        }
                         // Switch off auto mode if dark palette mode disabled
                         if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
                         // Store modified setting
