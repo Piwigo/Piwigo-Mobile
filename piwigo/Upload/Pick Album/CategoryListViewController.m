@@ -7,19 +7,24 @@
 //
 
 #import "CategoryListViewController.h"
-#import "CategoriesData.h"
 #import "CategoryTableViewCell.h"
+#import "CategoriesData.h"
 #import "AlbumService.h"
 #import "Model.h"
+
+static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
 
 @interface CategoryListViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
-@property (nonatomic, strong) NSMutableDictionary *categoriesThatHaveLoadedSubCategories;
+@property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
 
 @end
 
 @implementation CategoryListViewController
+
+#pragma mark -
+#pragma mark View lifecycle
 
 -(instancetype)init
 {
@@ -27,7 +32,7 @@
     if(self)
     {
         self.categories = [NSMutableArray new];
-        self.categoriesThatHaveLoadedSubCategories = [NSMutableDictionary new];
+        self.categoriesThatShowSubCategories = [NSMutableArray new];
         
         self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -37,8 +42,6 @@
         [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
-        
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryDataUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     }
     return self;
 }
@@ -65,12 +68,6 @@
     [self buildCategoryArray];
     [self.categoriesTableView reloadData];
 }
-
-//-(void)categoryDataUpdated
-//{
-//    [self buildCategoryArray];
-//    [self.categoriesTableView reloadData];
-//}
 
 -(void)buildCategoryArray
 {
@@ -116,7 +113,114 @@
     }
 }
 
--(void)addSubCateroriesToCategoryId:(PiwigoAlbumData *)categoryTapped
+#pragma mark -
+#pragma mark UITableView Methods
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.categories.count;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44.0;
+}
+
+-(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
+    if (!cell) {
+        [tableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumCell_ID];
+        cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
+    }
+    cell.categoryDelegate = self;
+    
+    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+    [cell setupWithCategoryData:categoryData];
+    
+    // Switch between Open/Close cell disclosure
+    if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
+        cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
+    } else {
+        cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
+    }
+    
+    return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if(self.categories.count > indexPath.row)
+    {
+        PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+        
+        if([self.categoryListDelegate respondsToSelector:@selector(selectedCategory:)])
+        {
+            [self.categoryListDelegate selectedCategory:categoryData];
+        }
+    }
+}
+
+#pragma mark -
+#pragma mark CategoryCellDelegate Methods
+
+-(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
+{
+    // Build list of categories from list of known categories
+    NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
+    NSMutableArray *subcategories = [NSMutableArray new];
+    
+    // Look for known requested sub-categories
+    for(PiwigoAlbumData *category in allCategories)
+    {
+        // Only add sub-categories of tapped category
+        if (category.parentAlbumId != categoryTapped.albumId) {
+            continue;
+        }
+        [subcategories addObject:category];
+    }
+    
+    // Look for sub-categories which are already displayed
+    NSInteger nberDisplayedSubCategories = 0;
+    for(PiwigoAlbumData *category in subcategories)
+    {
+        for(PiwigoAlbumData *existingCat in self.categories)
+        {
+            if(category.albumId == existingCat.albumId)
+            {
+                nberDisplayedSubCategories++;
+                break;
+            }
+        }
+    }
+
+    // This test depends on the caching option loadAllCategoryInfo:
+    // => if YES: compare number of sub-albums inside category to be closed
+    // => if NO: compare number of sub-sub-albums inside category to be closed
+    if ((subcategories.count > 0) && (subcategories.count == nberDisplayedSubCategories))
+    {
+        // User wants to hide sub-categories
+        [self removeSubCategoriesToCategoryID:categoryTapped];
+    }
+    else if (subcategories.count > 0)
+    {
+        // Sub-categories are already known
+        [self addSubCateroriesToCategoryID:categoryTapped];
+    }
+    else
+    {
+        // Sub-categories are not known
+        [AlbumService getAlbumListForCategory:categoryTapped.albumId
+                                 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                     [self addSubCateroriesToCategoryID:categoryTapped];
+                                 } onFailure:nil
+         ];
+    }
+}
+
+-(void)addSubCateroriesToCategoryID:(PiwigoAlbumData *)categoryTapped
 {
     // Build list of categories from complete known list
     NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
@@ -152,7 +256,7 @@
             [diff addObject:category];
         }
     }
-
+    
     // Build list of categories to be displayed
     for(PiwigoAlbumData *category in diff)
     {
@@ -171,7 +275,10 @@
             }
         }
     }
-
+    
+    // Add tapped category to list of categories having shown sub-categories
+    [self.categoriesThatShowSubCategories addObject:@(categoryTapped.albumId)];
+    
     // Reload table view
     [self.categoriesTableView reloadData];
 }
@@ -191,7 +298,7 @@
         
         // Remove the sub-categories
         NSArray *upperCategories = category.upperCategories;
-        if ([upperCategories containsObject:[NSString stringWithFormat:@"%ld", categoryTapped.albumId]])
+        if ([upperCategories containsObject:[NSString stringWithFormat:@"%ld", (long)categoryTapped.albumId]])
         {
             [diff addObject:category];
         }
@@ -199,7 +306,12 @@
     
     // Remove objects from displayed list
     [self.categories removeObjectsInArray:diff];
-
+    
+    // Remove tapped category from list of categories having shown sub-categories
+    if ([self.categoriesThatShowSubCategories containsObject:@(categoryTapped.albumId)]) {
+        [self.categoriesThatShowSubCategories removeObject:@(categoryTapped.albumId)];
+    }
+    
     // Sub-categories will not be known if user closes several layers at once
     // and caching option loadAllCategoryInfo is not activated
     if (![Model sharedInstance].loadAllCategoryInfo) {
@@ -212,106 +324,6 @@
     } else {
         // Reload table view
         [self.categoriesTableView reloadData];
-    }
-}
-
-
-#pragma mark UITableView Methods
-
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return self.categories.count;
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 44.0;
-}
-
--(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    cell.categoryDelegate = self;
-    
-    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-    [cell setupWithCategoryData:categoryData];
-    
-    if([self.categoriesThatHaveLoadedSubCategories objectForKey:[NSString stringWithFormat:@"%@", @(categoryData.albumId)]])
-    {
-        cell.hasLoadedSubCategories = YES;
-    }
-    
-    return cell;
-}
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    if(self.categories.count > indexPath.row)
-    {
-        PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-        
-        if([self.categoryListDelegate respondsToSelector:@selector(selectedCategory:)])
-        {
-            [self.categoryListDelegate selectedCategory:categoryData];
-        }
-    }
-}
-
-#pragma mark CategoryCellDelegate Methods
-
--(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
-{
-    // Build list of categories from list of known categories
-    NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
-    NSMutableArray *subcategories = [NSMutableArray new];
-    
-    // Look for known requested sub-categories
-    for(PiwigoAlbumData *category in allCategories)
-    {
-        // Only add sub-categories of tapped category
-        if (category.parentAlbumId != categoryTapped.albumId) {
-            continue;
-        }
-        [subcategories addObject:category];
-    }
-    
-    // Look for sub-categories which are already displayed
-    NSInteger nberDisplayedSubCategories = 0;
-    for(PiwigoAlbumData *category in subcategories)
-    {
-        for(PiwigoAlbumData *existingCat in self.categories)
-        {
-            if(category.albumId == existingCat.albumId)
-            {
-                nberDisplayedSubCategories++;
-                break;
-            }
-        }
-    }
-
-    // This test depends on the caching option loadAllCategoryInfo…
-    // => if enabled: compare number of sub-albums inside category to be closed
-    // => if disabled: compare number of sub-sub-albums inside category to be closed
-    if ((subcategories.count > 0) && (subcategories.count == nberDisplayedSubCategories))
-    {
-        // User wants to hide sub-categories
-        [self removeSubCategoriesToCategoryID:categoryTapped];
-    }
-    else if (subcategories.count > 0)
-    {
-        // Sub-categories are already known
-        [self addSubCateroriesToCategoryId:categoryTapped];
-    }
-    else
-    {
-        // Sub-categories are not known
-        [AlbumService getAlbumListForCategory:categoryTapped.albumId
-                                 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-                                     [self addSubCateroriesToCategoryId:categoryTapped];
-                                 } onFailure:nil
-         ];
     }
 }
 

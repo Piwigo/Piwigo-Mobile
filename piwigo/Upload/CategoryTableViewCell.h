@@ -19,9 +19,14 @@
 @interface CategoryTableViewCell : UITableViewCell
 
 @property (nonatomic, weak) id<CategoryCellDelegate> categoryDelegate;
-@property (nonatomic, assign) BOOL hasLoadedSubCategories;
 
+@property (weak, nonatomic) IBOutlet UILabel *categoryLabel;
+@property (weak, nonatomic) IBOutlet UILabel *subAlbumsLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *upDownImage;
+@property (nonatomic, strong) IBOutlet UIView *loadTapView;
+
+-(void)tappedLoadView;
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category;
--(void)setCellLeftLabel:(NSString*)text;
+//-(void)setCellLeftLabel:(NSString*)text;
 
 @end
