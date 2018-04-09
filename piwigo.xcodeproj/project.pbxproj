@@ -481,13 +481,13 @@
 			path = "Upload Progress";
 			sourceTree = "<group>";
 		};
-		D8172E171AB7C06200271DB0 /* Album Edit */ = {
+		D8172E171AB7C06200271DB0 /* Album Move */ = {
 			isa = PBXGroup;
 			children = (
 				D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */,
 				D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */,
 			);
-			path = "Album Edit";
+			path = "Album Move";
 			sourceTree = "<group>";
 		};
 		D818E9F41A74BEFF00733991 /* Album List */ = {
@@ -497,7 +497,6 @@
 				D8BDCB691A6F6C2D00D106A8 /* AlbumsViewController.m */,
 				D818EA001A74C7BA00733991 /* AlbumTableViewCell.h */,
 				D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */,
-				D8172E171AB7C06200271DB0 /* Album Edit */,
 			);
 			path = "Album List";
 			sourceTree = "<group>";
@@ -806,6 +805,7 @@
 				D818E9F41A74BEFF00733991 /* Album List */,
 				D818E9F51A74BF1100733991 /* Album Pictures */,
 				ADE535911F65C17E00372CBD /* Album Thumbnail */,
+				D8172E171AB7C06200271DB0 /* Album Move */,
 			);
 			path = Albums;
 			sourceTree = "<group>";

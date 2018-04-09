@@ -165,6 +165,7 @@ static SEL extractedCDU() {
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";
+        self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
     }
 }
 
