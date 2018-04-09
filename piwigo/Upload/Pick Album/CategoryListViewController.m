@@ -11,6 +11,7 @@
 #import "CategoriesData.h"
 #import "AlbumService.h"
 #import "Model.h"
+#import "AllCategoriesViewController.h"
 
 static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
 
@@ -136,7 +137,18 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     cell.categoryDelegate = self;
     
     PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-    [cell setupWithCategoryData:categoryData];
+
+    if ([self isMemberOfClass:[AllCategoriesViewController class]]) {
+        // Table requested by AllCategoriesViewController
+        if (indexPath.section == 0) {
+            [cell setupDefaultCellWithCategoryData:categoryData];
+        } else {
+            [cell setupWithCategoryData:categoryData];
+        }
+    } else {
+        // Table requested by CategoryPickViewController
+        [cell setupWithCategoryData:categoryData];
+    }
     
     // Switch between Open/Close cell disclosure
     if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {

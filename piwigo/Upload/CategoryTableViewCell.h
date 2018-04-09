@@ -27,6 +27,6 @@
 
 -(void)tappedLoadView;
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category;
-//-(void)setCellLeftLabel:(NSString*)text;
+-(void)setupDefaultCellWithCategoryData:(PiwigoAlbumData*)category;
 
 @end

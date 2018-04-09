@@ -18,6 +18,26 @@
 
 @implementation CategoryTableViewCell
 
+-(void)setupDefaultCellWithCategoryData:(PiwigoAlbumData*)category
+{
+    // General settings
+    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.tintColor = [UIColor piwigoOrange];
+    self.textLabel.font = [UIFont piwigoFontNormal];
+    
+    // Category data and name
+    self.categoryData = category;
+    self.categoryLabel.text = self.categoryData.name;
+    self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
+    
+    // Never show open/close button (# sub-albums)
+    self.subAlbumsLabel.text = @"";
+    self.upDownImage.hidden = YES;
+    
+    // Execute tappedLoadView whenever tapped
+    [self.loadTapView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedLoadView)]];
+}
+
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category
 {
     // General settings
@@ -25,7 +45,7 @@
     self.tintColor = [UIColor piwigoOrange];
     self.textLabel.font = [UIFont piwigoFontNormal];
 
-    // Category name
+    // Category data
     self.categoryData = category;
 
     // Is this a sub-category?

@@ -117,17 +117,16 @@
 	CategoryTableViewCell *cell = (CategoryTableViewCell*)[super tableView:tableView cellForRowAtIndexPath:indexPath];
 	
 	PiwigoAlbumData *albumData = nil;
-	
 	if(indexPath.section == 0)
 	{
 		albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+        [cell setupDefaultCellWithCategoryData:albumData];
 	}
 	else
 	{
 		albumData = [super.categories objectAtIndex:indexPath.row];
+        [cell setupWithCategoryData:albumData];
 	}
-	
-	[cell setupWithCategoryData:albumData];
 	
 	return cell;
 }
