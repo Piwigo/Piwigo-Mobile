@@ -203,11 +203,14 @@ typedef enum {
     
     // Header height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
-                                                       context:nil];
-    
+                                                       context:context];
+    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
+
     // Header view
     UIView *header = [[UIView alloc] initWithFrame:headerRect];
     header.backgroundColor = [UIColor clearColor];
@@ -244,13 +247,14 @@ typedef enum {
     
     // Footer height?
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
-                                             context:nil];
-//    NSLog(@"=> Rect = (%f x %f) %f width and %f height)", footerRect.origin.x, footerRect.origin.y, footerRect.size.width, ceil(footerRect.size.height));
+                                             context:context];
 
-    return ceil(footerRect.size.height);
+    return ceil(footerRect.size.height + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
@@ -277,10 +281,12 @@ typedef enum {
     
     // Footer height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                  options:NSStringDrawingUsesLineFragmentOrigin
                                               attributes:attributes
-                                                 context:nil];
+                                                 context:context];
 
     // Footer view
     UIView *footer = [[UIView alloc] initWithFrame:footerRect];
