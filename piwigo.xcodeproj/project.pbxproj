@@ -187,6 +187,11 @@
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoryTableViewCell.xib; sourceTree = "<group>"; };
+		ADF3B30F207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADF3B310207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/About.strings; sourceTree = "<group>"; };
+		ADF3B311207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		ADF3B312207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/AppStore.strings; sourceTree = "<group>"; };
+		ADF3B313207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADF88E762066D04600D1CE26 /* OpenSansBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansBold.TTF; sourceTree = "<group>"; };
 		ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansExtraBold.TTF; sourceTree = "<group>"; };
 		ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansLight.TTF; sourceTree = "<group>"; };
@@ -982,6 +987,7 @@
 				id,
 				nl,
 				ar,
+				ja,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -1264,6 +1270,7 @@
 				AD8338621FE677970072104F /* id */,
 				AD8549341FE98CE300155BA1 /* nl */,
 				AD8452621FEC70740035047B /* ar */,
+				ADF3B312207F1EEE0082C384 /* ja */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -1289,6 +1296,7 @@
 				AD83385F1FE677970072104F /* id */,
 				AD8549311FE98CE200155BA1 /* nl */,
 				AD84525F1FEC70740035047B /* ar */,
+				ADF3B30F207F1EEE0082C384 /* ja */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1305,6 +1313,7 @@
 				AD8338601FE677970072104F /* id */,
 				AD8549321FE98CE300155BA1 /* nl */,
 				AD8452601FEC70740035047B /* ar */,
+				ADF3B310207F1EEE0082C384 /* ja */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -1321,6 +1330,7 @@
 				AD8338611FE677970072104F /* id */,
 				AD8549331FE98CE300155BA1 /* nl */,
 				AD8452611FEC70740035047B /* ar */,
+				ADF3B311207F1EEE0082C384 /* ja */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
@@ -1337,6 +1347,7 @@
 				AD8338631FE677970072104F /* id */,
 				AD8549351FE98CE300155BA1 /* nl */,
 				AD8452631FEC70750035047B /* ar */,
+				ADF3B313207F1EEE0082C384 /* ja */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1393,7 +1404,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
@@ -1444,7 +1455,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
@@ -1470,7 +1481,7 @@
 					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
 				);
 				INFOPLIST_FILE = piwigo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1497,7 +1508,7 @@
 					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
 				);
 				INFOPLIST_FILE = piwigo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";

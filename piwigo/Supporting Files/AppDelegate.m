@@ -21,6 +21,9 @@
 #import "CategoriesData.h"
 #import "PhotosFetch.h"
 
+#import "AlbumsViewController.h"
+#import "AlbumImagesViewController.h"
+
 @interface AppDelegate ()
 
 @property (nonatomic, strong) LoginViewController *loginVC;
@@ -96,9 +99,13 @@
 
 -(void)loadNavigation
 {
-	TabBarViewController *navigation = [TabBarViewController new];
-	self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
-	[self.loginVC removeFromParentViewController];
+//    TabBarViewController *navigation = [TabBarViewController new];
+//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
+    AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithNibName:@"AlbumImagesViewController" bundle:nil];
+//    [[AlbumImagesViewController alloc] initWithAlbumId:0];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albumView];
+
+    [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     
     // Observe the UIScreenBrightnessDidChangeNotification.
