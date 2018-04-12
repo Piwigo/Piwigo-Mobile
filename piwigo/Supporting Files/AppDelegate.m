@@ -99,12 +99,8 @@
 
 -(void)loadNavigation
 {
-//    TabBarViewController *navigation = [TabBarViewController new];
-//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
-    AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithNibName:@"AlbumImagesViewController" bundle:nil];
-//    [[AlbumImagesViewController alloc] initWithAlbumId:0];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albumView];
-
+    TabBarViewController *navigation = [TabBarViewController new];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
     [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     
