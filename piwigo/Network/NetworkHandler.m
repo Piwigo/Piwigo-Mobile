@@ -115,7 +115,7 @@ NSInteger const loadingViewTag = 899;
         }
     }];
     
-//    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
+    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
     NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
                                 parameters:parameters
                                   progress:progress
@@ -225,6 +225,9 @@ NSInteger const loadingViewTag = 899;
     NSString *cleanPath = [path stringByReplacingOccurrencesOfString:@"http://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
+    
+    // URL may contain spaces
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     // Copy parameters in URL
     for(NSString *parameter in params)
