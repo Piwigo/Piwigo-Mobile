@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.8_text" = "Versi 2.1.8\n\n• Menambah kemampuan untuk mengubah ukuran thumbnail\n• HTTPS menjadi protokol default\n• Perbaikan bug minor dan perbaikan antarmuka\n________________________________________\n\n";
+"v2.1.8_text" = "Versi 2.1.8\n\n• Menambah kemampuan untuk mengubah ukuran thumbnail\n• HTTPS menjadi protokol default\n• Terjemahan bahasa Jepang\n• Perbaikan bug minor dan perbaikan antarmuka\n________________________________________\n\n";
 
 "v2.1.7_text" = "Versi 2.1.7\n3 Februari 2018\n\n• Perbaiki masalah upload video di beberapa server\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
