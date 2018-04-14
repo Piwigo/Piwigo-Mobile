@@ -32,12 +32,12 @@
     
     // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
-        URLParameters:@{
-                        @"categoryId" : @(categoryId),
+        URLParameters:nil
+           parameters:@{
+                        @"cat_id" : @(categoryId),
                         @"recursive" : recursiveString,
-                        @"faked" : fakedString
+                        @"faked_by_community" : fakedString
                         }
-           parameters:nil
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -158,11 +158,11 @@
                                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     return [self post:kCommunityCategoriesGetList
-        URLParameters:@{
-                        @"categoryId" : @(categoryId),
+        URLParameters:nil
+           parameters:@{
+                        @"cat_id" : @(categoryId),
                         @"recursive"  : recursive
                         }
-           parameters:nil
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -187,11 +187,11 @@
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     return [self post:kPiwigoCategoriesAdd
-		URLParameters:@{
+		URLParameters:nil
+           parameters:@{
                         @"name" : [[categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"],
                         @"status" : categoryStatus
                         }
-           parameters:nil
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -211,7 +211,7 @@
 		URLParameters:nil       // This method requires HTTP POST
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-						@"name" : categoryName
+						@"name" : categoryName 
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {

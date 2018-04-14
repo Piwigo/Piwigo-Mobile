@@ -33,11 +33,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoCategoriesGetImages
-		URLParameters:@{@"albumId" : @(albumId),
-						@"perPage" : @([Model sharedInstance].imagesPerPage),
-						@"page"    : @(page),
-						@"order"   : [order stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]}
-           parameters:nil
+		URLParameters:nil
+           parameters:@{@"cat_id"   : @(albumId),
+                        @"per_page" : @([Model sharedInstance].imagesPerPage),
+                        @"page"     : @(page),
+                        @"order"    : [order stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]
+                        }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -82,8 +83,8 @@ NSString * const kGetImageOrderDescending = @"desc";
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoImagesGetInfo
-		URLParameters:@{@"imageId" : @(imageId)}
-           parameters:nil
+		URLParameters:nil
+           parameters:@{@"image_id" : @(imageId)}
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
