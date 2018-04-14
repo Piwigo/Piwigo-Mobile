@@ -38,6 +38,7 @@
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSString *currentSort;
+@property (nonatomic, assign) BOOL loadingImages;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
@@ -66,6 +67,7 @@
 	{
 		self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.categoryId = albumId;
+        self.loadingImages = YES;
 		
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
@@ -144,7 +146,9 @@
 	}
     
     // Photos
+    self.loadingImages = YES;
     [self.albumData reloadAlbumOnCompletion:^{
+        self.loadingImages = NO;
         [self.imagesCollection reloadData];
     }];
 }
@@ -675,6 +679,11 @@
                 header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
                 header.backgroundColor = [UIColor piwigoBackgroundColor];
                 header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+                if (self.loadingImages) {
+                    header.noImagesLabel.text = NSLocalizedString(@"downloadingImages", "Downloading Images");
+                } else {
+                    header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+                }
 
                 return header;
             }
