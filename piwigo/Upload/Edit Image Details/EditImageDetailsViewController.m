@@ -114,7 +114,6 @@ typedef enum {
 // NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
 -(void)setIsEdit:(BOOL)isEdit
 {
-//    _isEdit = isEdit;
     [ImageService getImageInfoById:self.imageDetails.imageId
                   ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
