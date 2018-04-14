@@ -112,8 +112,9 @@ typedef enum {
 }
 
 // NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
--(void)setIsEdit:(BOOL)isEdit
+-(void)setIsEdit:(BOOL)isEditChoice
 {
+    _isEdit = isEditChoice;
     [ImageService getImageInfoById:self.imageDetails.imageId
                   ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
@@ -134,7 +135,7 @@ typedef enum {
                                                       actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
                                                       style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * action) {
-                                                          self.isEdit = isEdit;
+                                                          self.isEdit = isEditChoice;
                                                       }];
 
                       [alert addAction:dismissAction];
