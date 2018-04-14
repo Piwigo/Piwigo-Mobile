@@ -81,8 +81,6 @@
         }
 	}
 	
-	self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-	
 	return self;
 }
 

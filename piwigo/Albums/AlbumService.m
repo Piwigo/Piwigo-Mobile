@@ -210,7 +210,7 @@
 	return [self post:kPiwigoCategoriesSetInfo
 		URLParameters:nil       // This method requires HTTP POST
 		   parameters:@{
-						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
+						@"category_id" : @(categoryId),
 						@"name" : categoryName 
                         }
              progress:nil

@@ -116,6 +116,7 @@ NSInteger const loadingViewTag = 899;
     }];
     
 //    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
+//    NSLog(@"   parameters =%@", parameters);
     NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
                                 parameters:parameters
                                   progress:progress
@@ -238,14 +239,14 @@ NSInteger const loadingViewTag = 899;
     }
 
     // Path may not be encoded
-    NSLog(@"path (before) => %@", cleanPath);
+//    NSLog(@"path (before) => %@", cleanPath);
     NSString *decodedPath = [cleanPath stringByRemovingPercentEncoding];
     if ([cleanPath isEqualToString:decodedPath]) {
         // Path is not encoded
         NSCharacterSet *allowedCharacters = [NSCharacterSet URLPathAllowedCharacterSet];
         cleanPath = [cleanPath stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
     }
-    NSLog(@"path (after) => %@", cleanPath);
+//    NSLog(@"path (after) => %@", cleanPath);
 
     // Copy parameters in URL
     for(NSString *parameter in params)
@@ -260,7 +261,7 @@ NSInteger const loadingViewTag = 899;
                      [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName,
                      piwigo ? @"/ws.php?" : @"", prefix, cleanPath];
     
-    NSLog(@"path (final) => %@", url);
+//    NSLog(@"path (final) => %@", url);
     return url;
 }
 

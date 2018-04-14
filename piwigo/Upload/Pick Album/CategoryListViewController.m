@@ -52,9 +52,7 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     [super viewWillAppear:animated];
     
     // Background color of the view
-//    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.view.backgroundColor = [UIColor clearColor];
-//    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Navigation bar appearence
     NSDictionary *attributes = @{
