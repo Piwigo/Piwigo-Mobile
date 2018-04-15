@@ -43,9 +43,7 @@
         instance.performedHTTPauthentication = NO;      // Checked at each new session
         instance.userCancelledCommunication = NO;
         instance.deleteImageAfterUpload = NO;
-        
-        // Load all albums data at start
-		instance.loadAllCategoryInfo = YES;
+        instance.maxConnectionsPerHost = 20;            // For the shared session
         
         // Sort images by date: old to new
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
@@ -83,6 +81,7 @@
 		instance.photoResize = 100;                 // Do not resize images
         
         // Defaults caches sizes
+        instance.loadAllCategoryInfo = YES;         // Load all albums data at start
 		instance.diskCache = 80;
 		instance.memoryCache = 80;
 		

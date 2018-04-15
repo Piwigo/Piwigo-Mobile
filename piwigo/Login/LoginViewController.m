@@ -138,13 +138,6 @@
         [SAMKeychain setPassword:self.passwordTextField.text forService:[Model sharedInstance].serverName account:self.userTextField.text];
     }
 
-    // Create shared session manager
-    [Model sharedInstance].sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]]];
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [[Model sharedInstance].sessionManager setSecurityPolicy:policy];
-
     // Collect list of methods supplied by Piwigo server
     // => Determine if Community extension 2.9a or later is installed and active
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {

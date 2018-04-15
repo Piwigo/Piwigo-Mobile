@@ -30,6 +30,14 @@
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
     // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
         URLParameters:nil
@@ -157,6 +165,14 @@
                                         OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
                                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
     return [self post:kCommunityCategoriesGetList
         URLParameters:nil
            parameters:@{
@@ -186,6 +202,14 @@
                               OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
     return [self post:kPiwigoCategoriesAdd
 		URLParameters:nil
            parameters:@{
@@ -207,6 +231,14 @@
                       OnCompletion:(void (^)(NSURLSessionTask *task, BOOL renamedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	return [self post:kPiwigoCategoriesSetInfo
 		URLParameters:nil       // This method requires HTTP POST
 		   parameters:@{
@@ -227,6 +259,14 @@
                       OnCompletion:(void (^)(NSURLSessionTask *task, BOOL deletedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	return [self post:kPiwigoCategoriesDelete
 		URLParameters:nil
 		   parameters:@{
@@ -248,6 +288,14 @@
                     OnCompletion:(void (^)(NSURLSessionTask *task, BOOL movedSuccessfully))completion
                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	return [self post:kPiwigoCategoriesMove
 		URLParameters:nil
 		   parameters:@{
@@ -270,6 +318,14 @@
                                             OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setSuccessfully))completion
                                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	return [self post:kPiwigoCategoriesSetRepresentative
 		URLParameters:nil
 		   parameters:@{

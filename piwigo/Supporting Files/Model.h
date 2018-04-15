@@ -46,6 +46,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL performedHTTPauthentication;
 @property (nonatomic, assign) BOOL userCancelledCommunication;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
+@property (nonatomic, assign) NSInteger maxConnectionsPerHost;
 
 @property (nonatomic, assign) BOOL hasSquareSizeImages;
 @property (nonatomic, assign) BOOL hasThumbSizeImages;
@@ -74,15 +75,15 @@ typedef enum {
 @property (nonatomic, assign) NSInteger photoQuality;
 @property (nonatomic, assign) BOOL deleteImageAfterUpload;
 
+@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
 @property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger lastPageImageCount;
 
+@property (nonatomic, assign) BOOL loadAllCategoryInfo;
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;
 
-@property (nonatomic, assign) BOOL loadAllCategoryInfo;
-@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
 
 -(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 

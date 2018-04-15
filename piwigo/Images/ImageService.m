@@ -32,6 +32,14 @@ NSString * const kGetImageOrderDescending = @"desc";
                            OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albumImages))completion
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	return [self post:kPiwigoCategoriesGetImages
 		URLParameters:nil
            parameters:@{@"cat_id"   : @(albumId),
@@ -47,11 +55,16 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
 						  completion(task, albumImages);
 					  } else {
+#if defined(DEBUG)
+                          NSLog(@"=> getImagesForAlbumId: %@ — Success but stat not Ok!", @(albumId));
+#endif
 						  completion(task, nil);
 					  }
 				  }
 			  } failure:^(NSURLSessionTask *task, NSError *error) {
-				  
+#if defined(DEBUG)
+                  NSLog(@"=> getImagesForAlbumId: %@ — Failed!", @(albumId));
+#endif
 				  if(fail) {
 					  fail(task, error);
 				  }
@@ -82,6 +95,14 @@ NSString * const kGetImageOrderDescending = @"desc";
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	return [self post:kPiwigoImagesGetInfo
 		URLParameters:nil
            parameters:@{@"image_id" : @(imageId)}
@@ -98,11 +119,17 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  }
 						  completion(task, imageData);
 					  } else {
+#if defined(DEBUG)
+                          NSLog(@"=> getImageInfoById: %@ — Success but stat not Ok!", @(imageId));
+#endif
 						  completion(task, nil);
 					  }
 				  }
 			  }
               failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                  NSLog(@"=> getImageInfoById: %@ — Failed!", @(imageId));
+#endif
 				  if(fail) {
 					  fail(task, error);
 				  }
@@ -198,7 +225,16 @@ NSString * const kGetImageOrderDescending = @"desc";
                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	if(!image) return nil;
-	return [self post:kPiwigoImageDelete
+
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
+    return [self post:kPiwigoImageDelete
 		URLParameters:nil
 		   parameters:@{@"image_id" : @([image.imageId integerValue]),
                         @"pwg_token" : [Model sharedInstance].pwgToken}
@@ -248,26 +284,14 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString: URLRequest]];
 
-    [Model sharedInstance].sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
-    [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
-        // HTTP basic authentification credentials
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-        
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
-            return NSURLSessionAuthChallengeUseCredential;
-        } else {
-            // HTTP credentials refused!
-            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-        }
-    }];
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
     
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+
     // Download and save image
     NSString *fileName = image.fileName;
     NSURLSessionDownloadTask *task =
@@ -300,45 +324,23 @@ NSString * const kGetImageOrderDescending = @"desc";
         fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
     }
     
-    // Create session manager
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
     
-    // Ensure that SSL certificates won't be rejected
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [manager setSecurityPolicy:policy];
-
-    // Manage servers performing HTTP Basic Access Authentication
-    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
-        // HTTP basic authentification credentials
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-        
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
-            return NSURLSessionAuthChallengeUseCredential;
-        } else {
-            // HTTP credentials refused!
-            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-        }
-    }];
-
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
     // Download and save video
-    NSURLSessionDownloadTask *task =
-            [manager downloadTaskWithRequest:request
-                                    progress:progress
-                                 destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+    NSURLSessionDownloadTask *task = [[Model sharedInstance].sessionManager
+                    downloadTaskWithRequest:request
+                                   progress:progress
+                                destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
                                      NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
                                      return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
-                                 }
-                           completionHandler:completionHandler
+                                }
+                          completionHandler:completionHandler
              ];
     [task resume];
 

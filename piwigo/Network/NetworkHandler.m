@@ -65,23 +65,28 @@ NSInteger const loadingViewTag = 899;
 
 @implementation NetworkHandler
 
-// path: format={param1}
-// URLParams: {@"param1" : @"hello" }
-+(NSURLSessionTask*)post:(NSString*)path
-           URLParameters:(NSDictionary*)urlParams
-              parameters:(NSDictionary*)parameters
-                progress:(void (^)(NSProgress *))progress
-                 success:(void (^)(NSURLSessionTask *task, id responseObject))success
-                 failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
++(void)createSharedSessionManager
 {
-    // Modify session manager
-    AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-    NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-    [jsonAcceptableContentTypes addObject:@"text/plain"];
-    jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-    [Model sharedInstance].sessionManager.responseSerializer = jsonResponseSerializer;
+#if defined(DEBUG)
+    NSLog(@"=> New session manager needed");
+#endif
+    
+    // Configuration
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.allowsCellularAccess = YES;
+    config.timeoutIntervalForRequest = 30;                                                  // 60 seconds by default
+    config.HTTPMaximumConnectionsPerHost = [Model sharedInstance].maxConnectionsPerHost;    // 4 by default
+    
+    // Create session manager
+    [Model sharedInstance].sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    
+    // Security policy
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [[Model sharedInstance].sessionManager setSecurityPolicy:policy];
 
-    // Manage servers performing HTTP Authentication
+    // For servers performing HTTP Authentication
     [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
         // To remember app recieved anthentication challenge
@@ -114,7 +119,31 @@ NSInteger const loadingViewTag = 899;
             return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
-    
+}
+
++(void)setJSONandTextResponseSerializer
+{
+    AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
+    NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
+    [jsonAcceptableContentTypes addObject:@"text/plain"];
+    jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
+    [Model sharedInstance].sessionManager.responseSerializer = jsonResponseSerializer;
+}
+
+// path: format={param1}
+// URLParams: {@"param1" : @"hello" }
++(NSURLSessionTask*)post:(NSString*)path
+           URLParameters:(NSDictionary*)urlParams
+              parameters:(NSDictionary*)parameters
+                progress:(void (^)(NSProgress *))progress
+                 success:(void (^)(NSURLSessionTask *task, id responseObject))success
+                 failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [self createSharedSessionManager];
+    }
+
 //    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
 //    NSLog(@"   parameters =%@", parameters);
     NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
@@ -128,7 +157,10 @@ NSInteger const loadingViewTag = 899;
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                                       NSLog(@"NetworkHandler/post Error: %@", error);
+                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
+                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
+                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
+                                       NSLog(@"=> response= %@", task.response);
 #endif
                                        if(fail) {
                                            fail(task, error);
@@ -146,6 +178,7 @@ NSInteger const loadingViewTag = 899;
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Response serializer
     AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
     NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
     [jsonAcceptableContentTypes addObject:@"text/plain"];

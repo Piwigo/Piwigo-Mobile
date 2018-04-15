@@ -284,36 +284,6 @@
                      {
                          NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
 
-                         // Create image downloader instance
-                         AFImageDownloader *dow = [AFImageDownloader defaultInstance];
-                         dow.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
-
-                         // Ensure that SSL certificates won't be rejected
-                         AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-                         [policy setAllowInvalidCertificates:YES];
-                         [policy setValidatesDomainName:NO];
-                         [dow.sessionManager setSecurityPolicy:policy];
-                         
-                         // Manage servers performing HTTP Basic Access Authentication
-                         [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-                             
-                             // HTTP basic authentification credentials
-                             NSString *user = [Model sharedInstance].HttpUsername;
-                             NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-                             
-                             // Supply requested credentials if not provided yet
-                             if (challenge.previousFailureCount == 0) {
-                                 // Trying HTTP credentials…
-                                 *credential = [NSURLCredential credentialWithUser:user
-                                                                          password:password
-                                                                       persistence:NSURLCredentialPersistenceForSession];
-                                 return NSURLSessionAuthChallengeUseCredential;
-                             } else {
-                                 // HTTP credentials refused!
-                                 return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-                             }
-                         }];
-
                          [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
                                                      placeholderImage:[UIImage imageNamed:@"placeholder"]
                                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -322,13 +292,14 @@
 //                                                                  [weakSelf setupBgWithImage:image];
                                                               } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-                                                                  NSLog(@"fail to get imgage for album at %@", imageData.MediumPath);
+                                                                  NSLog(@"setupWithAlbumData — Fail to get imgage for album at %@", imageData.MediumPath);
 #endif
                                                               }];
                      }
                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                      NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
+                     NSLog(@"setupWithAlbumData ================================");
 #endif
                  }];
     }

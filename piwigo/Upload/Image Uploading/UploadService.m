@@ -100,6 +100,14 @@
 	NSString *tagIdList = [[[imageInformation objectForKey:kPiwigoImagesUploadParamTags]
                             valueForKey:@"description"] componentsJoinedByString:@", "];
 	
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
                              URLParameters:nil
                                 parameters:@{
@@ -126,6 +134,14 @@
                                   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	NSURLSessionTask *request = [self post:kCommunityImagesUploadCompleted
                              URLParameters:nil
                                 parameters:@{

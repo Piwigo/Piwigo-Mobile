@@ -16,6 +16,14 @@
 +(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *methodsList))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+
     return [self post:kReflectionGetMethodList
         URLParameters:nil
            parameters:nil
@@ -62,6 +70,14 @@
 {
     [[Model sharedInstance] saveToDisk];
     
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+
     return [self post:kPiwigoSessionLogin
         URLParameters:nil
            parameters:@{@"username" : user,
@@ -109,6 +125,14 @@
                               OnCompletion:(void (^)(NSDictionary *responseObject))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
     return [self post:kPiwigoSessionGetStatus
         URLParameters:nil
            parameters:nil
@@ -188,6 +212,14 @@
 +(NSURLSessionTask*)getCommunityStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
     return [self post:kCommunitySessionGetStatus
         URLParameters:nil
            parameters:nil
@@ -222,6 +254,14 @@
 +(NSURLSessionTask*)sessionLogoutOnCompletion:(void (^)(NSURLSessionTask *task, BOOL sucessfulLogout))completion
                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Create shared session manager if needed
+    if ([Model sharedInstance].sessionManager == nil) {
+        [NetworkHandler createSharedSessionManager];
+    }
+    
+    // Set response serializer
+    [NetworkHandler setJSONandTextResponseSerializer];
+    
 	return [self post:kPiwigoSessionLogout
 		URLParameters:nil
            parameters:nil

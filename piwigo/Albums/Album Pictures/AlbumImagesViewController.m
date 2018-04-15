@@ -171,9 +171,11 @@
 
     // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
+#if !defined(DEBUG)
     if (NSClassFromString(@"SKStoreReviewController")) {
         [SKStoreReviewController requestReview];
     }
+#endif
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -476,43 +478,15 @@
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
     NSString *URLRequest = [NetworkHandler getURLWithPath:downloadingImage.ThumbPath asPiwigoRequest:NO withURLParams:nil];
-
-    // Create image downloader instance
-    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
-    dow.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
-
-    // Ensure that SSL certificates won't be rejected
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [dow.sessionManager setSecurityPolicy:policy];
-
-    // Manage servers performing HTTP Basic Access Authentication
-    [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
-        // HTTP basic authentification credentials
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-        
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
-            return NSURLSessionAuthChallengeUseCredential;
-        } else {
-            // HTTP credentials refused!
-            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-        }
-    }];
     
+    // Dummy image for progress view
     [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
 					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
 							  } failure:nil];
 	
+    // Launch the download
     if(!downloadingImage.isVideo)
 	{
         [ImageService downloadImage:downloadingImage
