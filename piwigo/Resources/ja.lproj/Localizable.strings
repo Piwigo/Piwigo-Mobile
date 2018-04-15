@@ -72,7 +72,7 @@
 "serverConnectionError_message" = "セキュリティで保護された HTTPS 接続を確立できませんでした。アドレスを確認するか、暗号化されていない HTTP モードでやり直してください。";
 
 "serverVersionNotCompatible_title" = "サーバが非互換です";
-"serverVersionNotCompatible_message" = "あなたのPiwigoサーバのバージョンは%@です。Piwigo Mobileは2.7以上のみサポートしています。Piwigo Mobileを使うために、あなたのサーバをアップデートしてください。それでも継続したいですか？";
+"serverVersionNotCompatible_message" = "Piwigoサーバのバージョンは%@です。Piwigo Mobileは2.7以上のみサポートしています。Piwigo Mobileを使うには、サーバを更新してください。それでも継続しますか？";
 
 "sessionStatusError_title" = "認証に失敗しました";
 "sessionStatusError_message" = "サーバーでの認証に失敗しました。もう一度ログインしてください。";
@@ -93,7 +93,7 @@
 // ==> ALBUMS
 // ===========================================================================
 // Albums view
-"categoryMainEmtpy" = "あなたのPiwigoにはまだアルバムがありません。\nプルダウンして更新するか、再ログインしてください。";
+"categoryMainEmtpy" = "まだPiwigoにアルバムがありません。\nプルダウンして更新するか、再ログインしてください。";
 "categoryTableView_photoCount" = "写真";
 "categoryTableView_photosCount" = "写真";
 "categoryTableView_subCategoryCount" = "サブアルバム";
@@ -136,7 +136,7 @@
 
 // Album rename — Errors
 "renameCategoyError_title" = "名称の変更に失敗しました";
-"renameCategoyError_message" = "あなたのアルバムの名称変更に失敗しました";
+"renameCategoyError_message" = "アルバム名称の変更に失敗しました";
 
 // Album delete
 "deleteCategory_title" = "アルバムを削除します";
@@ -148,19 +148,19 @@
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "数が一致しません";
-"deleteCategoryMatchError_message" = "あなたが入力した画像の数は、カテゴリ内の画像の数と一致しません。もしこのアルバムを削除したいなら、もう一度挑戦して下さい。";
+"deleteCategoryMatchError_message" = "入力した画像の数は、カテゴリ内の画像の数と一致しません。もしこのアルバムを削除するなら、もう一度挑戦して下さい。";
 "deleteCategoryError_title" = "削除に失敗しました";
-"deleteCategoryError_message" = "あなたのアルバムの削除に失敗しました";
+"deleteCategoryError_message" = "アルバムの削除に失敗しました";
 
 // Album move
 "moveCategory" = "アルバムを移動します";
-"moveCategory_selectParent" = "アルバム「%@」へ移動したいアルバムを選択して下さい";
+"moveCategory_selectParent" = "アルバム「%@」へ移動するアルバムを選択して下さい";
 "moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
 "moveCategoryHUD_moving" = "アルバムを移動中...";
 
 // album move — Errors
 "moveCategoryError_title" = "移動に失敗しました";
-"moveCategoryError_message" = "あなたのアルバムを移動するのに失敗しました";
+"moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
 // Album set image thumbnail
 "categorySelection" = "アルバムを選択";
@@ -186,12 +186,12 @@
 
 // Errors
 "albumPhotoError_title" = "アルバム写真の取得エラー";
-"albumPhotoError_message" = "アルバムの写真取得に失敗しました (アルバム内の画像が破損している？)";
+"albumPhotoError_message" = "アルバム写真の取得に失敗しました (アルバム内の画像が破損している？)";
 
 // Image sort
 "sortBy" = "並び順";
 "imageSortTitle" = "画像を並べ換える";
-"imageSortMessage" = "画像を並べ替えたい方法を選択してください";
+"imageSortMessage" = "画像の並び順を選択してください";
 
 // Image options (actions)
 "imageOptions_title" = "画像オプション";
@@ -211,7 +211,7 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新に失敗しました";
-"editImageDetailsError_message" = "あなたのサーバーに変更内容を更新できませんでした。もう一度やり直しますか？";
+"editImageDetailsError_message" = "サーバーに変更内容を更新できませんでした。もう一度やり直しますか？";
 "imageDetailsFetchError_title" = "画像詳細の取得に失敗しました";
 "imageDetailsFetchError_retryMessage" = "画像データの取得に失敗しました。もう一度やり直しますか？";
 "imageDetailsFetchError_continueMessage" = "画像データの取得に失敗しました。続行しますか？";
@@ -235,18 +235,18 @@
 "deleteImageProgress_title" = "%@%% の削除が済みました";
 
 "deleteSingleImage_title" = "画像を削除";
-"deleteSingleImage_message" = "あなたは本当にこの画像を削除したいですか？この操作は元に戻せません。";
+"deleteSingleImage_message" = "この画像を本当に削除しますか？この操作は元に戻せません。";
 "deleteSeveralImages_title" = "画像を削除";
-"deleteSeveralImages_message" = "あなたは本当に選択した%@枚の画像を削除したいですか？この操作は元に戻せません。";
+"deleteSeveralImages_message" = "選択した%@枚の画像を本当に削除しますか？この操作は元に戻せません。";
 
 "deleteImageFail_title" = "削除に失敗しました";
 "deleteImageFail_message" = "画像が削除できませんでした\n%@";
 
 // Image download
 "downloadSingleImage_title" = "画像をダウンロードします";
-"downloadSingleImage_confirmation" = "あなたは選択した画像をダウンロードしたいですか？";
+"downloadSingleImage_confirmation" = "選択した画像をダウンロードしますか？";
 "downloadSeveralImages_title" = "画像をダウンロードします";
-"downloadSeveralImage_confirmation" = "あなたは選択した%@枚の画像をダウンロードしたいですか？";
+"downloadSeveralImage_confirmation" = "選択した%@枚の画像をダウンロードしますか？";
 
 "downloadingImage" = "画像をダウンロード中";
 "downloadingImages" = "画像をダウンロード中";
@@ -289,12 +289,12 @@
 "imageUploadProgressBar_nonZero" = "アップロード中 %@/%@";
 "imageUploadProgressBar_completed" = "完了しました";
 "imageUploadCompleted_title" = "アップロードが完了しました";
-"imageUploadCompleted_message" = "画像／動画が、あなたのPiwigoサーバにアップロードされました。";
-"imageUploadCompleted_message>1" = "画像／動画が、あなたのPiwigoサーバにアップロードされました。";
+"imageUploadCompleted_message" = "画像／動画が、Piwigoサーバにアップロードされました。";
+"imageUploadCompleted_message>1" = "画像／動画が、Piwigoサーバにアップロードされました。";
 
 // Image upload — Errors
 "uploadError_title" = "アップロードエラー";
-"uploadError_message" = "あなたの画像をアップロードできませんでした。エラー: %@";
+"uploadError_message" = "画像をアップロードできませんでした。エラー: %@";
 "uploadCancelled_title" = "アップロードが取り消されました";
 
 "imageUploadError_title" = "画像アップロードエラー";
@@ -326,7 +326,7 @@
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "アクセスなし";
 "localAlbums_photosNiltitle" = "写真読み出しの問題";
-"localAlbums_photosNnil_msg" = "あなたのローカル写真ライブラリの読み出しに問題があります";
+"localAlbums_photosNnil_msg" = "ローカル写真ライブラリの読み出しに問題があります";
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "ローカル写真ライブラリを開けませんでした。設定アプリのプライバシー、写真を開いてPiwigoにアクセスを許可してください。";
