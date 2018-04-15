@@ -67,7 +67,7 @@
         instance.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize]);
         
         // Default image preview size
-		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
+		instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
         
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -267,7 +267,7 @@
 	if(savedData.count > 11) {
 		self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
 	} else {
-		self.defaultImagePreviewSize = kPiwigoImageSizeMedium;
+		self.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
 	}
 	if(savedData.count > 12) {
 		self.stripGPSdataOnUpload = [[savedData objectAtIndex:12] boolValue];
