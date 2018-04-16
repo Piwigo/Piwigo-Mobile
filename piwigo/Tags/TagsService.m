@@ -20,7 +20,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	return [self post:kPiwigoTagsGetList
 		URLParameters:nil

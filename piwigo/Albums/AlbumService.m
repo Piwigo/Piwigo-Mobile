@@ -36,7 +36,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
     // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
@@ -171,7 +171,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
     return [self post:kCommunityCategoriesGetList
         URLParameters:nil
@@ -208,7 +208,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
     return [self post:kPiwigoCategoriesAdd
 		URLParameters:nil
@@ -237,7 +237,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	return [self post:kPiwigoCategoriesSetInfo
 		URLParameters:nil       // This method requires HTTP POST
@@ -265,7 +265,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	return [self post:kPiwigoCategoriesDelete
 		URLParameters:nil
@@ -294,7 +294,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	return [self post:kPiwigoCategoriesMove
 		URLParameters:nil
@@ -324,7 +324,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	return [self post:kPiwigoCategoriesSetRepresentative
 		URLParameters:nil

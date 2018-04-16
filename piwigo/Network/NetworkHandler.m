@@ -121,7 +121,7 @@ NSInteger const loadingViewTag = 899;
     }];
 }
 
-+(void)setJSONandTextResponseSerializer
++(void)addPlainTextContentTypeToResponseSerializer
 {
     AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
     NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];

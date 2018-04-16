@@ -22,7 +22,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
 
     return [self post:kReflectionGetMethodList
         URLParameters:nil
@@ -76,7 +76,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
 
     return [self post:kPiwigoSessionLogin
         URLParameters:nil
@@ -131,7 +131,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
     return [self post:kPiwigoSessionGetStatus
         URLParameters:nil
@@ -218,7 +218,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
     return [self post:kCommunitySessionGetStatus
         URLParameters:nil
@@ -260,7 +260,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	return [self post:kPiwigoSessionLogout
 		URLParameters:nil

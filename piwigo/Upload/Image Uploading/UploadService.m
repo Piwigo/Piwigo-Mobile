@@ -106,7 +106,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
                              URLParameters:nil
@@ -140,7 +140,7 @@
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	NSURLSessionTask *request = [self post:kCommunityImagesUploadCompleted
                              URLParameters:nil

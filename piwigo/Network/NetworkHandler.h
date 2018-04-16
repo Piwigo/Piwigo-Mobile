@@ -54,7 +54,7 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
 @interface NetworkHandler : NSObject
 
 +(void)createSharedSessionManager;
-+(void)setJSONandTextResponseSerializer;
++(void)addPlainTextContentTypeToResponseSerializer;
 
 +(NSURLSessionTask*)post:(NSString*)path
            URLParameters:(NSDictionary*)urlParams

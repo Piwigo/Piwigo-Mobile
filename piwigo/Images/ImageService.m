@@ -38,7 +38,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	return [self post:kPiwigoCategoriesGetImages
 		URLParameters:nil
@@ -101,7 +101,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
 	return [self post:kPiwigoImagesGetInfo
 		URLParameters:nil
@@ -232,7 +232,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
     return [self post:kPiwigoImageDelete
 		URLParameters:nil
@@ -290,7 +290,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
 
     // Download and save image
     NSString *fileName = image.fileName;
@@ -330,7 +330,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Set response serializer
-    [NetworkHandler setJSONandTextResponseSerializer];
+    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
     
     // Download and save video
     NSURLSessionDownloadTask *task = [[Model sharedInstance].sessionManager
