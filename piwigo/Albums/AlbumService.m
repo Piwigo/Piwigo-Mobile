@@ -30,14 +30,6 @@
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [NetworkHandler createSharedSessionManager];
-    }
-    
-    // Set response serializer
-    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
-    
     // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
         URLParameters:nil
@@ -120,7 +112,7 @@
             ([category objectForKey:@"representative_picture_id"] != [NSNull null]))
 		{
 			albumData.albumThumbnailId = [[category objectForKey:@"representative_picture_id"] integerValue];
-			albumData.albumThumbnailUrl = [category objectForKey:@"tn_url"];
+            albumData.albumThumbnailUrl = [NetworkHandler encodedURL:[category objectForKey:@"tn_url"]];
 		}
 		
         // When "date_last" is null or not supplied: no date
@@ -165,14 +157,6 @@
                                         OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
                                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [NetworkHandler createSharedSessionManager];
-    }
-    
-    // Set response serializer
-    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
-    
     return [self post:kCommunityCategoriesGetList
         URLParameters:nil
            parameters:@{
@@ -202,14 +186,6 @@
                               OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [NetworkHandler createSharedSessionManager];
-    }
-    
-    // Set response serializer
-    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
-    
     return [self post:kPiwigoCategoriesAdd
 		URLParameters:nil
            parameters:@{
@@ -231,14 +207,6 @@
                       OnCompletion:(void (^)(NSURLSessionTask *task, BOOL renamedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [NetworkHandler createSharedSessionManager];
-    }
-    
-    // Set response serializer
-    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
-    
 	return [self post:kPiwigoCategoriesSetInfo
 		URLParameters:nil       // This method requires HTTP POST
 		   parameters:@{
@@ -259,14 +227,6 @@
                       OnCompletion:(void (^)(NSURLSessionTask *task, BOOL deletedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [NetworkHandler createSharedSessionManager];
-    }
-    
-    // Set response serializer
-    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
-    
 	return [self post:kPiwigoCategoriesDelete
 		URLParameters:nil
 		   parameters:@{
@@ -288,14 +248,6 @@
                     OnCompletion:(void (^)(NSURLSessionTask *task, BOOL movedSuccessfully))completion
                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [NetworkHandler createSharedSessionManager];
-    }
-    
-    // Set response serializer
-    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
-    
 	return [self post:kPiwigoCategoriesMove
 		URLParameters:nil
 		   parameters:@{
@@ -318,14 +270,6 @@
                                             OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setSuccessfully))completion
                                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [NetworkHandler createSharedSessionManager];
-    }
-    
-    // Set response serializer
-    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
-    
 	return [self post:kPiwigoCategoriesSetRepresentative
 		URLParameters:nil
 		   parameters:@{

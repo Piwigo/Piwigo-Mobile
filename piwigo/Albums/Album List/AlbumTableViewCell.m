@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/AFImageDownloader.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "AlbumTableViewCell.h"
 #import "PiwigoAlbumData.h"
@@ -50,7 +51,7 @@
 		self.backgroundImage.backgroundColor = [UIColor clearColor];
 		self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
         self.backgroundImage.layer.cornerRadius = 10;
-		[self.contentView addSubview:self.backgroundImage];
+        [self.contentView addSubview:self.backgroundImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[img]-5-|"
 																				 options:kNilOptions
 																				 metrics:nil
@@ -276,15 +277,18 @@
         __weak typeof(self) weakSelf = self;
         self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+#if defined(DEBUG)
+                     NSLog(@"setupWithAlbumData — Got album bg image: %ld", albumData.albumThumbnailId);
+#endif
                      if(!imageData.MediumPath)
                      {
                          albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
                      }
                      else
                      {
-                         NSString *URLRequest = [NetworkHandler getURLWithPath:imageData.MediumPath asPiwigoRequest:NO withURLParams:nil];
-
-                         [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
+                         NSString *request = [NetworkHandler encodedURL:imageData.MediumPath];
+                         NSURLRequest *URLrequest = [NSURLRequest requestWithURL:[NSURL URLWithString:request]];
+                         [self.backgroundImage setImageWithURLRequest:URLrequest
                                                      placeholderImage:[UIImage imageNamed:@"placeholder"]
                                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                                   albumData.categoryImage = image;

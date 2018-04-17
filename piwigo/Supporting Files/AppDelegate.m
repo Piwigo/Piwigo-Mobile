@@ -7,6 +7,7 @@
 //
 
 #import <Photos/Photos.h>
+#import <AFNetworking/AFImageDownloader.h>
 
 #import "AppDelegate.h"
 #import "LoginNavigationController.h"
@@ -46,7 +47,16 @@
 														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
 															 diskPath:nil];
 	[NSURLCache setSharedURLCache:URLCache];
-	
+    
+    // Create permanent session managers
+    [NetworkHandler createJSONdataSessionManager];
+    [NetworkHandler createImageDownloaderSessionManager];
+    
+    // Create permanent image downloader
+    AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:100 * 1024*1024 preferredMemoryCapacity:60 * 1024*1024];
+    [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imageDownloaderSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:cache];
+    [UIImageView setSharedImageDownloader:[Model sharedInstance].imageDownloader];
+    
     // Login ?
     NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;

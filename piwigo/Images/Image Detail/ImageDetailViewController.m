@@ -261,12 +261,11 @@
     
     // Display the download view
     self.downloadView.hidden = NO;
-	
+
+    // Dummy image for progress view
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-    NSString *URLRequest = [NetworkHandler getURLWithPath:self.imageData.ThumbPath asPiwigoRequest:NO withURLParams:nil];
-    
-    // Dummy image for progress view
+    NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.ThumbPath];
     [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
 					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {

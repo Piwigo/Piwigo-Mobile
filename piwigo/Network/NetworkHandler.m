@@ -65,17 +65,13 @@ NSInteger const loadingViewTag = 899;
 
 @implementation NetworkHandler
 
-+(void)createSharedSessionManager
++(void)createJSONdataSessionManager
 {
-#if defined(DEBUG)
-    NSLog(@"=> New session manager needed");
-#endif
-    
     // Configuration
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.allowsCellularAccess = YES;
-    config.timeoutIntervalForRequest = 30;                                                  // 60 seconds by default
-    config.HTTPMaximumConnectionsPerHost = [Model sharedInstance].maxConnectionsPerHost;    // 4 by default
+    config.timeoutIntervalForRequest = 30;          // 60 seconds is the advised default value
+    config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
     
     // Create session manager
     [Model sharedInstance].sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
@@ -85,6 +81,11 @@ NSInteger const loadingViewTag = 899;
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
     [[Model sharedInstance].sessionManager setSecurityPolicy:policy];
+    
+    // Add "text/plain" to response serializer
+    AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
+    serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    [Model sharedInstance].sessionManager.responseSerializer = serializer;
 
     // For servers performing HTTP Authentication
     [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
@@ -119,16 +120,118 @@ NSInteger const loadingViewTag = 899;
             return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
+#if defined(DEBUG)
+    NSLog(@"=> JSON data session manager created");
+#endif
 }
 
-+(void)addPlainTextContentTypeToResponseSerializer
++(void)createImageDownloaderSessionManager
 {
-    AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-    NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-    [jsonAcceptableContentTypes addObject:@"text/plain"];
-    jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-    [Model sharedInstance].sessionManager.responseSerializer = jsonResponseSerializer;
+    // Configuration
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.allowsCellularAccess = YES;
+    config.timeoutIntervalForRequest = 30;          // 60 seconds is the advised default value
+    config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
+
+    // Create session manager
+    [Model sharedInstance].imageDownloaderSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    
+    // Security policy
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [[Model sharedInstance].imageDownloaderSessionManager setSecurityPolicy:policy];
+    
+    // Add "text/plain" to response serializer
+    AFImageResponseSerializer *serializer = [[AFImageResponseSerializer alloc] init];
+    serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    [Model sharedInstance].imageDownloaderSessionManager.responseSerializer = serializer;
+
+    // For servers performing HTTP Authentication
+    [[Model sharedInstance].imageDownloaderSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+        
+        // To remember app recieved anthentication challenge
+        [Model sharedInstance].performedHTTPauthentication = YES;
+        
+        // HTTP basic authentification credentials
+        NSString *user = [Model sharedInstance].HttpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        
+        // Without HTTP credentials available, tries Piwigo credentials
+        if ((user == nil) || (user.length <= 0) || (password == nil)) {
+            user  = [Model sharedInstance].username;
+            password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
+            
+            [Model sharedInstance].HttpUsername = user;
+            [[Model sharedInstance] saveToDisk];
+            [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        }
+        
+        // Supply requested credentials if not provided yet
+        if (challenge.previousFailureCount == 0) {
+            // Trying HTTP credentials…
+            *credential = [NSURLCredential credentialWithUser:user
+                                                     password:password
+                                                  persistence:NSURLCredentialPersistenceForSession];
+            return NSURLSessionAuthChallengeUseCredential;
+        } else {
+            // HTTP credentials refused!
+            [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        }
+    }];     
+#if defined(DEBUG)
+    NSLog(@"=> Image downloader session manager created");
+#endif
 }
+
++(NSString*)encodedURL:(NSString*)originalURL
+{
+    NSLog(@"=> %@", originalURL);
+    
+    // Servers sometimes return http://… instead of https://…
+    NSString *cleanPath = [originalURL stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
+    NSLog(@"   %@", cleanPath);
+    
+    // Remove the .php? prefix if any
+    NSString *prefix = @"";
+    NSRange pos = [cleanPath rangeOfString:@".php?"];
+    if (pos.location != NSNotFound ) {
+        // The path contains .php?
+        pos.length += pos.location;
+        pos.location = 0;
+        prefix = [cleanPath substringWithRange:pos];
+        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:prefix withString:@""];
+    }
+
+    // Path may not be encoded
+    NSLog(@"   %@", cleanPath);
+    NSString *decodedPath = [cleanPath stringByRemovingPercentEncoding];
+    if ([cleanPath isEqualToString:decodedPath]) {
+        // Path is not encoded
+        NSCharacterSet *allowedCharacters = [NSCharacterSet URLPathAllowedCharacterSet];
+        cleanPath = [cleanPath stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
+    }
+    NSLog(@"   %@", cleanPath);
+    
+    // Compile final URL
+    NSString *encodedURL = [NSString stringWithFormat:@"%@%@%@%@",
+                            [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
+    
+    NSLog(@"   %@", encodedURL);
+    return encodedURL;
+}
+
+//+(void)addPlainTextContentTypeToResponseSerializer
+//{
+//    AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
+//    NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
+//    [jsonAcceptableContentTypes addObject:@"text/plain"];
+//    jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
+//    [Model sharedInstance].sessionManager.responseSerializer = jsonResponseSerializer;
+//}
 
 // path: format={param1}
 // URLParams: {@"param1" : @"hello" }
@@ -139,11 +242,6 @@ NSInteger const loadingViewTag = 899;
                  success:(void (^)(NSURLSessionTask *task, id responseObject))success
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [self createSharedSessionManager];
-    }
-
 //    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
 //    NSLog(@"   parameters =%@", parameters);
     NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
@@ -178,33 +276,6 @@ NSInteger const loadingViewTag = 899;
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Response serializer
-    AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-    NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-    [jsonAcceptableContentTypes addObject:@"text/plain"];
-    jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-    [Model sharedInstance].sessionManager.responseSerializer = jsonResponseSerializer;
-
-    // Manage servers performing HTTP Basic Access Authentication
-    [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
-        // HTTP basic authentification credentials (may be different from Piwigo credentials)
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-        
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
-            return NSURLSessionAuthChallengeUseCredential;
-        } else {
-            // HTTP credentials refused!
-            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-        }
-    }];
-    
     NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:nil]
                                 parameters:nil
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)

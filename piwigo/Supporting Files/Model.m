@@ -43,8 +43,7 @@
         instance.performedHTTPauthentication = NO;      // Checked at each new session
         instance.userCancelledCommunication = NO;
         instance.deleteImageAfterUpload = NO;
-        instance.maxConnectionsPerHost = 20;            // For the shared session
-        
+
         // Sort images by date: old to new
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
         

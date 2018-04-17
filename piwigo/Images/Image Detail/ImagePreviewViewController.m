@@ -72,38 +72,18 @@
 
     // Thumbnail image may be used as placeholder image
     NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
-    NSURL *thumbnailURL = [NSURL URLWithString:[NetworkHandler getURLWithPath:thumbnailStr asPiwigoRequest:NO withURLParams:nil]];
+    NSURL *thumbnailURL = [NSURL URLWithString:[NetworkHandler encodedURL:thumbnailStr]];
     UIImageView *thumb = [UIImageView new];
     [thumb setImageWithURL:thumbnailURL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
     
     // Previewed image
     NSString *previewStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
-    NSURL *previewURL = [NSURL URLWithString:[NetworkHandler getURLWithPath:previewStr asPiwigoRequest:NO withURLParams:nil]];
+    NSURL *previewURL = [NSURL URLWithString:[NetworkHandler encodedURL:previewStr]];
     __weak typeof(self) weakSelf = self;
-    
-    [Model sharedInstance].sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
-    [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-
-        // HTTP basic authentification credentials
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-        
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
-            return NSURLSessionAuthChallengeUseCredential;
-        } else {
-            // HTTP credentials refused!
-            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-        }
-    }];
     
     weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
     
-    [[Model sharedInstance].sessionManager GET:previewURL.absoluteString
+    [[Model sharedInstance].imageDownloaderSessionManager GET:previewURL.absoluteString
       parameters:nil
         progress:^(NSProgress *progress) {
             dispatch_async(dispatch_get_main_queue(),
@@ -132,8 +112,7 @@
 -(void)startVideoPlayerViewWithImageData:(PiwigoImageData*)imageData
 {
     // Set URL
-    NSString *videoStr = [NetworkHandler getURLWithPath:imageData.fullResPath asPiwigoRequest:NO withURLParams:nil];
-    NSURL *videoURL = [NSURL URLWithString:[NetworkHandler getURLWithPath:videoStr asPiwigoRequest:NO withURLParams:nil]];
+    NSURL *videoURL = [NSURL URLWithString:[NetworkHandler encodedURL:imageData.fullResPath]];
 
     // Intialise video controller
     AVPlayer *videoPlayer = [AVPlayer playerWithURL:videoURL];

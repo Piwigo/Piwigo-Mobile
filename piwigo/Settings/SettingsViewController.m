@@ -1393,6 +1393,8 @@ typedef enum {
                            {
                                // Session closed
                                [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
+                               [Model sharedInstance].imageDownloader = nil;
+                               [[Model sharedInstance].imageDownloaderSessionManager invalidateSessionCancelingTasks:YES];
                                [Model sharedInstance].hadOpenedSession = NO;
                                
                                // Back to default values

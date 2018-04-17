@@ -141,12 +141,13 @@
 
 -(void)loadAllImagesOnCompletion:(void (^)(void))completion
 {
-	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
-		self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-		if(completion)
-		{
-			completion();
-		}
+	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId]
+     loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
+            self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+            if(completion)
+            {
+                completion();
+            }
 	}];
 }
 

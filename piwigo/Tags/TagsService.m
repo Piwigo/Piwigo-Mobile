@@ -14,14 +14,6 @@
 +(NSURLSessionTask*)getTagsOnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Create shared session manager if needed
-    if ([Model sharedInstance].sessionManager == nil) {
-        [NetworkHandler createSharedSessionManager];
-    }
-    
-    // Set response serializer
-    [NetworkHandler addPlainTextContentTypeToResponseSerializer];
-    
 	return [self post:kPiwigoTagsGetList
 		URLParameters:nil
            parameters:nil

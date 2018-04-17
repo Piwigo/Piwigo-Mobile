@@ -402,7 +402,7 @@ static SEL extractedCDU() {
 	
 	PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
 	
-	[cell setupWithAlbumData:albumData];
+    [cell setupWithAlbumData:albumData];
 	
 	return cell;
 }
