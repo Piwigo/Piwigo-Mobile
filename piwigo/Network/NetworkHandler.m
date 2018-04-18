@@ -193,7 +193,7 @@ NSInteger const loadingViewTag = 899;
     NSString *cleanPath = [originalURL stringByReplacingOccurrencesOfString:@"http://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
-    NSLog(@"   %@", cleanPath);
+//    NSLog(@"   %@", cleanPath);
     
     // Remove the .php? prefix if any
     NSString *prefix = @"";

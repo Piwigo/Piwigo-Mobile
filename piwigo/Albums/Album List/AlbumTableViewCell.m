@@ -274,9 +274,9 @@
         __weak typeof(self) weakSelf = self;
         self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-#if defined(DEBUG)
-                     NSLog(@"setupWithAlbumData — Got album bg image: %ld", albumData.albumThumbnailId);
-#endif
+//#if defined(DEBUG)
+//                     NSLog(@"setupWithAlbumData — Got album bg image: %ld", albumData.albumThumbnailId);
+//#endif
                      if(!imageData.MediumPath)
                      {
                          albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
