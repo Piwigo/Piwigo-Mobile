@@ -224,15 +224,6 @@ NSInteger const loadingViewTag = 899;
     return encodedURL;
 }
 
-//+(void)addPlainTextContentTypeToResponseSerializer
-//{
-//    AFJSONResponseSerializer *jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-//    NSMutableSet *jsonAcceptableContentTypes = [NSMutableSet setWithSet:jsonResponseSerializer.acceptableContentTypes];
-//    [jsonAcceptableContentTypes addObject:@"text/plain"];
-//    jsonResponseSerializer.acceptableContentTypes = jsonAcceptableContentTypes;
-//    [Model sharedInstance].sessionManager.responseSerializer = jsonResponseSerializer;
-//}
-
 // path: format={param1}
 // URLParams: {@"param1" : @"hello" }
 +(NSURLSessionTask*)post:(NSString*)path

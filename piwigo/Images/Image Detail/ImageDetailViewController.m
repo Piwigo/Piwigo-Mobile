@@ -265,8 +265,8 @@
     // Dummy image for progress view
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-    NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.ThumbPath];
-    [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
+    NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+    [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:URL]
 					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;

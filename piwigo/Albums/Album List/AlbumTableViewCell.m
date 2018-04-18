@@ -286,9 +286,8 @@
                      }
                      else
                      {
-                         NSString *request = [NetworkHandler encodedURL:imageData.MediumPath];
-                         NSURLRequest *URLrequest = [NSURLRequest requestWithURL:[NSURL URLWithString:request]];
-                         [self.backgroundImage setImageWithURLRequest:URLrequest
+                         NSURL *URL = [NSURL URLWithString:imageData.MediumPath];
+                         [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:URL]
                                                      placeholderImage:[UIImage imageNamed:@"placeholder"]
                                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                                   albumData.categoryImage = image;

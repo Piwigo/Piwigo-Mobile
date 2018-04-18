@@ -238,23 +238,23 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Download image with highest resolution possible (fullResPath image is not always available)
     NSString *URLRequest = @"";
     if ([image.fullResPath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.fullResPath];
+        URLRequest = image.fullResPath;
     } else if ([image.XXLargePath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.XXLargePath];
+        URLRequest = image.XXLargePath;
     } else if ([image.XLargePath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.XLargePath];
+        URLRequest = image.XLargePath;
     } else if ([image.LargePath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.LargePath];
+        URLRequest = image.LargePath;
     } else if ([image.MediumPath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.MediumPath];
+        URLRequest = image.MediumPath;
     } else if ([image.SmallPath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.SmallPath];
+        URLRequest = image.SmallPath;
     } else if ([image.XSmallPath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.XSmallPath];
+        URLRequest = image.XSmallPath;
     } else if ([image.XXSmallPath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.XXSmallPath];
+        URLRequest = image.XXSmallPath;
     } else if ([image.ThumbPath length] > 0) {
-        URLRequest = [NetworkHandler encodedURL:image.ThumbPath];
+        URLRequest = image.ThumbPath;
     }
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString: URLRequest]];
 
@@ -279,9 +279,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
 	if(!video) return nil;
-
-    NSString *URLRequest = [NetworkHandler encodedURL:video.fullResPath];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:video.fullResPath]];
     
     // Replace .mp4 or .m4v with .mov for compatibility with Photos.app
     NSString *fileName = video.fileName;

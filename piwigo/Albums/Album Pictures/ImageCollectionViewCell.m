@@ -162,8 +162,8 @@
     switch ([Model sharedInstance].defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
             if ([Model sharedInstance].hasSquareSizeImages && (self.imageData.SquarePath) && (self.imageData.SquarePath > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.SquarePath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.SquarePath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -171,8 +171,8 @@
             break;
         case kPiwigoImageSizeXXSmall:
             if ([Model sharedInstance].hasXXSmallSizeImages && (self.imageData.XXSmallPath.length > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.XXSmallPath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.XXSmallPath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -180,8 +180,8 @@
             break;
         case kPiwigoImageSizeXSmall:
             if ([Model sharedInstance].hasXSmallSizeImages && (self.imageData.XSmallPath.length > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.XSmallPath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.XSmallPath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -189,8 +189,8 @@
             break;
         case kPiwigoImageSizeSmall:
             if ([Model sharedInstance].hasSmallSizeImages && (self.imageData.SmallPath.length > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.SmallPath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.SmallPath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -198,8 +198,8 @@
             break;
         case kPiwigoImageSizeMedium:
             if ([Model sharedInstance].hasMediumSizeImages && (self.imageData.MediumPath.length > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.MediumPath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.MediumPath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -207,8 +207,8 @@
             break;
         case kPiwigoImageSizeLarge:
             if ([Model sharedInstance].hasLargeSizeImages && (self.imageData.LargePath.length > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.LargePath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.LargePath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -216,8 +216,8 @@
             break;
         case kPiwigoImageSizeXLarge:
             if ([Model sharedInstance].hasXLargeSizeImages && (self.imageData.XLargePath.length > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.XLargePath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.XLargePath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -225,8 +225,8 @@
             break;
         case kPiwigoImageSizeXXLarge:
             if ([Model sharedInstance].hasXXLargeSizeImages && (self.imageData.XXLargePath.length > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.XXLargePath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.XXLargePath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -236,8 +236,8 @@
         case kPiwigoImageSizeFullRes:
         default:
             if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
-                NSString *URLRequest = [NetworkHandler encodedURL:self.imageData.ThumbPath];
-                [self.cellImage setImageWithURL:[NSURL URLWithString:URLRequest] placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
