@@ -83,7 +83,7 @@
     
     weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
     
-    [[Model sharedInstance].imageDownloaderSessionManager GET:previewURL.absoluteString
+    [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
       parameters:nil
         progress:^(NSProgress *progress) {
             dispatch_async(dispatch_get_main_queue(),

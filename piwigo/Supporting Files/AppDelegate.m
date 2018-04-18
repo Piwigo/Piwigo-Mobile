@@ -48,14 +48,9 @@
 															 diskPath:nil];
 	[NSURLCache setSharedURLCache:URLCache];
     
-    // Create permanent session managers
+    // Create permanent session managers for retrieving data and downloading images
     [NetworkHandler createJSONdataSessionManager];
-    [NetworkHandler createImageDownloaderSessionManager];
-    
-    // Create permanent image downloader
-    AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:100 * 1024*1024 preferredMemoryCapacity:60 * 1024*1024];
-    [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imageDownloaderSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:cache];
-    [UIImageView setSharedImageDownloader:[Model sharedInstance].imageDownloader];
+    [NetworkHandler createImagesSessionManager];
     
     // Login ?
     NSString *user, *password;
@@ -300,6 +295,10 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+
+    // Cancel tasks and close sessions
+    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
+    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
 
     // Disable network activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;

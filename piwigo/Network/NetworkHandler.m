@@ -125,7 +125,7 @@ NSInteger const loadingViewTag = 899;
 #endif
 }
 
-+(void)createImageDownloaderSessionManager
++(void)createImagesSessionManager
 {
     // Configuration
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -134,21 +134,21 @@ NSInteger const loadingViewTag = 899;
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
 
     // Create session manager
-    [Model sharedInstance].imageDownloaderSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    [Model sharedInstance].imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
-    [[Model sharedInstance].imageDownloaderSessionManager setSecurityPolicy:policy];
+    [[Model sharedInstance].imagesSessionManager setSecurityPolicy:policy];
     
     // Add "text/plain" to response serializer
     AFImageResponseSerializer *serializer = [[AFImageResponseSerializer alloc] init];
     serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
-    [Model sharedInstance].imageDownloaderSessionManager.responseSerializer = serializer;
+    [Model sharedInstance].imagesSessionManager.responseSerializer = serializer;
 
     // For servers performing HTTP Authentication
-    [[Model sharedInstance].imageDownloaderSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+    [[Model sharedInstance].imagesSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
         // To remember app recieved anthentication challenge
         [Model sharedInstance].performedHTTPauthentication = YES;
@@ -181,13 +181,13 @@ NSInteger const loadingViewTag = 899;
         }
     }];     
 #if defined(DEBUG)
-    NSLog(@"=> Image downloader session manager created");
+    NSLog(@"=> Images session manager created");
 #endif
 }
 
 +(NSString*)encodedURL:(NSString*)originalURL
 {
-    NSLog(@"=> %@", originalURL);
+//    NSLog(@"=> %@", originalURL);
     
     // Servers sometimes return http://… instead of https://…
     NSString *cleanPath = [originalURL stringByReplacingOccurrencesOfString:@"http://" withString:@""];
@@ -207,20 +207,20 @@ NSInteger const loadingViewTag = 899;
     }
 
     // Path may not be encoded
-    NSLog(@"   %@", cleanPath);
+//    NSLog(@"   %@", cleanPath);
     NSString *decodedPath = [cleanPath stringByRemovingPercentEncoding];
     if ([cleanPath isEqualToString:decodedPath]) {
         // Path is not encoded
         NSCharacterSet *allowedCharacters = [NSCharacterSet URLPathAllowedCharacterSet];
         cleanPath = [cleanPath stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
     }
-    NSLog(@"   %@", cleanPath);
+//    NSLog(@"   %@", cleanPath);
     
     // Compile final URL
     NSString *encodedURL = [NSString stringWithFormat:@"%@%@%@%@",
                             [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
-    NSLog(@"   %@", encodedURL);
+//    NSLog(@"   %@", encodedURL);
     return encodedURL;
 }
 

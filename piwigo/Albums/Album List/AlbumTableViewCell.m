@@ -6,9 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import <AFNetworking/AFImageDownloader.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
-
 #import "AlbumTableViewCell.h"
 #import "PiwigoAlbumData.h"
 #import "ImageService.h"

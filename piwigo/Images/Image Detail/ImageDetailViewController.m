@@ -7,7 +7,6 @@
 //
 
 #import <Photos/Photos.h>
-#import <AFNetworking/AFImageDownloader.h>
 
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"

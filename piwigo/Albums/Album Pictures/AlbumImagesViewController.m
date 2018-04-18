@@ -7,7 +7,6 @@
 //
 
 #import <Photos/Photos.h>
-#import <AFNetworking/AFImageDownloader.h>
 #import <StoreKit/StoreKit.h>
 
 #import "AlbumImagesViewController.h"

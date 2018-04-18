@@ -261,7 +261,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Download and save image
     NSString *fileName = image.fileName;
     NSURLSessionDownloadTask *task =
-        [[Model sharedInstance].imageDownloaderSessionManager downloadTaskWithRequest:request
+        [[Model sharedInstance].imagesSessionManager downloadTaskWithRequest:request
                                 progress:progress
                              destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
                                  NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
@@ -289,7 +289,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Download and save video
-    NSURLSessionDownloadTask *task = [[Model sharedInstance].imageDownloaderSessionManager
+    NSURLSessionDownloadTask *task = [[Model sharedInstance].imagesSessionManager
                     downloadTaskWithRequest:request
                                    progress:progress
                                 destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
