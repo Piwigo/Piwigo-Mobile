@@ -16,7 +16,7 @@
 #import "Model.h"
 #import "MBProgressHUD.h"
 
-@interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, AlbumTableViewCellDelegate>
+@interface AlbumsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIScrollViewDelegate, AlbumTableViewCellDelegate>
 
 @property (nonatomic, strong) UITableView *albumsTableView;
 @property (nonatomic, strong) NSArray *categories;
@@ -189,6 +189,7 @@ static SEL extractedCDU() {
 	}
 }
 
+#pragma mark -
 #pragma mark -- Add album in root
 
 -(void)showCreateCategoryDialog
@@ -284,6 +285,7 @@ static SEL extractedCDU() {
 }
 
 
+#pragma mark -
 #pragma mark -- HUD methods
 
 -(void)showCreateCategoryHUD
@@ -331,6 +333,7 @@ static SEL extractedCDU() {
 }
 
 
+#pragma mark -
 #pragma mark -- UITextField Delegate Methods
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
@@ -366,6 +369,7 @@ static SEL extractedCDU() {
 }
 
 
+#pragma mark -
 #pragma mark -- UITableView Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -418,11 +422,52 @@ static SEL extractedCDU() {
 }
 
 
+#pragma mark -
 #pragma mark AlbumTableViewCellDelegate Methods
 
 -(void)pushView:(UIViewController *)viewController
 {
 	[self.navigationController pushViewController:viewController animated:YES];
+}
+
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self setTabBarVisible:NO animated:YES completion:^(BOOL finished) {
+//        NSLog(@"finished");
+    }];}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self setTabBarVisible:YES animated:YES completion:^(BOOL finished) {
+//        NSLog(@"finished");
+    }];}
+
+// pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
+- (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    
+    // bail if the current state matches the desired state
+    if ([self tabBarIsVisible] == visible) return (completion)? completion(YES) : nil;
+    
+    // get a frame calculation ready
+    CGRect frame = self.tabBarController.tabBar.frame;
+    CGFloat height = frame.size.height;
+    CGFloat offsetY = (visible)? -height : height;
+    
+    // zero duration means no animation
+    CGFloat duration = (animated)? 0.3 : 0.0;
+    
+    [UIView animateWithDuration:duration animations:^{
+        self.tabBarController.tabBar.frame = CGRectOffset(frame, 0, offsetY);
+    } completion:completion];
+}
+
+//Getter to know the current state
+- (BOOL)tabBarIsVisible {
+    return self.tabBarController.tabBar.frame.origin.y < CGRectGetMaxY(self.view.frame);
 }
 
 @end

@@ -1470,8 +1470,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_PREFIX_HEADER = piwigo/PrefixHeader.pch;
@@ -1512,8 +1512,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "410d031b-f259-4dc1-afbe-dc2053d985d7";
-				PROVISIONING_PROFILE_SPECIFIER = "eddy ios distribution";
+				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
+				PROVISIONING_PROFILE_SPECIFIER = Eddy;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

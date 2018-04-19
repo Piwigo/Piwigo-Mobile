@@ -31,7 +31,7 @@
 #import "SAMKeychain.h"
 
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -286,6 +286,7 @@
 	[self.navigationController pushViewController:localAlbums animated:YES];
 }
 
+#pragma mark -
 #pragma mark -- Delete images
 
 -(void)deleteImages
@@ -392,6 +393,7 @@
      ];
 }
 
+#pragma mark -
 #pragma mark -- Download images
 
 -(void)downloadImages
@@ -621,6 +623,7 @@
 	}];
 }
 
+#pragma mark -
 #pragma mark -- UICollectionView Methods
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -812,6 +815,7 @@
 	}
 }
 
+#pragma mark -
 #pragma mark -- ImageDetailDelegate Methods
 
 -(void)didDeleteImage:(PiwigoImageData *)image
@@ -832,6 +836,7 @@
 }
 
 
+#pragma mark -
 #pragma mark CategorySortDelegate Methods
 
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
@@ -839,11 +844,52 @@
 	self.currentSortCategory = sortType;
 }
 
+#pragma mark -
 #pragma mark CategoryCollectionViewCellDelegate Methods
 
 -(void)pushView:(UIViewController *)viewController
 {
 	[self.navigationController pushViewController:viewController animated:YES];
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+// See https://stackoverflow.com/questions/20935228/how-to-hide-tab-bar-with-animation-in-ios
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self setTabBarVisible:NO animated:YES completion:^(BOOL finished) {
+//        NSLog(@"finished");
+    }];}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self setTabBarVisible:YES animated:YES completion:^(BOOL finished) {
+//        NSLog(@"finished");
+    }];}
+
+// pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
+- (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    
+    // bail if the current state matches the desired state
+    if ([self tabBarIsVisible] == visible) return (completion)? completion(YES) : nil;
+    
+    // get a frame calculation ready
+    CGRect frame = self.tabBarController.tabBar.frame;
+    CGFloat height = frame.size.height;
+    CGFloat offsetY = (visible)? -height : height;
+    
+    // zero duration means no animation
+    CGFloat duration = (animated)? 0.3 : 0.0;
+    
+    [UIView animateWithDuration:duration animations:^{
+        self.tabBarController.tabBar.frame = CGRectOffset(frame, 0, offsetY);
+    } completion:completion];
+}
+
+//Getter to know the current state
+- (BOOL)tabBarIsVisible {
+    return self.tabBarController.tabBar.frame.origin.y < CGRectGetMaxY(self.view.frame);
 }
 
 @end
