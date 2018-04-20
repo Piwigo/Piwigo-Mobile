@@ -47,6 +47,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL userCancelledCommunication;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 @property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
+@property (nonatomic, strong) AFImageDownloader *imageDownloader;
 
 @property (nonatomic, assign) BOOL hasSquareSizeImages;
 @property (nonatomic, assign) BOOL hasThumbSizeImages;

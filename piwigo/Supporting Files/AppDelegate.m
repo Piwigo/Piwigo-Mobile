@@ -52,6 +52,11 @@
     [NetworkHandler createJSONdataSessionManager];
     [NetworkHandler createImagesSessionManager];
     
+    // Create permanent image downloader
+    AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024 preferredMemoryCapacity:([Model sharedInstance].memoryCache * 0.6) * 1024*1024];
+    [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:cache];
+    [UIImageView setSharedImageDownloader:[Model sharedInstance].imageDownloader];
+
     // Login ?
     NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;
