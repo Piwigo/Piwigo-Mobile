@@ -69,7 +69,7 @@
 "loginEmptyServer_message" = "Venligst Vælg en protokol og indtast en Piwigo web-adresse for at fortsætte.";
 
 "serverConnectionError_title" = "Forbindelsen fejlede";
-"serverConnectionError_message" = "En sikker HTTPS-forbindelsen kunne ikke oprettes. Venligst kontrollere adressen eller prøve i ukrypteret http-mode?";
+"serverConnectionError_message" = "En sikker HTTPS-forbindelsen kunne ikke oprettes. Kontroller venligst adressen eller prøv en ukrypteret http forbindelse";
 
 "serverVersionNotCompatible_title" = "Server Inkompatibel";
 "serverVersionNotCompatible_message" = "Din Piwigo serverversion er %@. Piwigo Mobile kræver mindst version 2.7. Opdater venligst din server hvis du vil bruge Piwigo Mobile. Ønsker du at fortsætte?";
@@ -268,7 +268,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Vælg et album for dette billede";
 "categoryUpload_chooseLocalAlbum" = "Vælg et album at hente biller fra";
-"categoryUpload_chooseiCloudAlbum" = "Vælg en iCloud album at hente biller fra";
+"categoryUpload_chooseiCloudAlbum" = "Vælg et iCloud album at hente biller fra";
 "categoyUpload_loadSubCategories" = "indlæs";
 "selectAll" = "Alle";
 
@@ -354,7 +354,7 @@
 
 "defaultThumbnailFile" = "Fil";
 "defaultThumbnailFile>320px" = "Miniature fil";
-"defaultThumbnailFile>414px" = "Thumbnail billedfil";
+"defaultThumbnailFile>414px" = "Miniature billedfil";
 "defaultThumbnailSize" = "Størrelse";
 "defaultThumbnailSize>320px" = "Miniaturer";
 "defaultThumbnailSize>414px" = "Standardstørrelse på Miniaturer";
@@ -379,7 +379,7 @@
 
 "defaultPreviewFile" = "Forhåndsvisning";
 "defaultPreviewFile>320px" = "Forhåndsvisning fil";
-"defaultPreviewFile>414px" = "Forhåndsvis billedfilen";
+"defaultPreviewFile>414px" = "Forhåndsvis billedfil";
 "defaultImageSize" = "Billeder";
 "defaultImageSize>320px" = "Billedstørrelse";
 "defaultImageSize>414px" = "Standardstørrelse på Billeder";

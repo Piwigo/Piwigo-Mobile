@@ -69,7 +69,7 @@
 "loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
 
 "serverConnectionError_title" = "Échec de la Connexion";
-"serverConnectionError_message" = "Une connexion HTTPS sécurisée n'a pas pu être établie. S'il vous plaît vérifier l'adresse ou essayez en mode HTTP non crypté?";
+"serverConnectionError_message" = "Une connexion HTTPS sécurisée n'a pas pu être établie. S'il vous plaît, vérifier l'adresse ou essayez en mode HTTP non crypté?";
 
 "serverVersionNotCompatible_title" = "Serveur Incompatible";
 "serverVersionNotCompatible_message" = "La version de votre serveur Piwigo est %@. Piwigo Mobile requiert une version supérieure à 2.7. Veuillez mettre à jour votre serveur pour utiliser Piwigo Mobile. Voulez-vous quand même continuer ?";
@@ -268,7 +268,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Sélectionnez l'album Piwigo qui recevra les images";
 "categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les images à envoyer";
-"categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album local iCloud qui contient les images à envoyer";
+"categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album iCloud qui contient les images à envoyer";
 "categoyUpload_loadSubCategories" = "télécharge";
 "selectAll" = "Tout";
 
@@ -353,8 +353,8 @@
 "defaultImageSort>414px" = "Tri par Défaut des Images";
 
 "defaultThumbnailFile" = "Fichier";
-"defaultThumbnailFile>320px" = "Fichier de miniature";
-"defaultThumbnailFile>414px" = "Fichier d’image miniature";
+"defaultThumbnailFile>320px" = "Fichier de Vignette";
+"defaultThumbnailFile>414px" = "Fichier de Vignette";
 "defaultThumbnailSize" = "Taille";
 "defaultThumbnailSize>320px" = "Taille des Vignettes";
 "defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";

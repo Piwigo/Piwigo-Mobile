@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.8_text" = "Version 2.1.8\n\n• Tilføjer evnen til at ændre størrelsen på miniaturebilleder\n• HTTPS bliver standardprotokollen\n• Japansk oversættelse\n• Mindre fejlrettelser og forbedringer af brugergrænsefladen\n________________________________________\n\n";
+"v2.1.8_text" = "Version 2.1.8\n\n• Tilføjet mulighed for at ændre størrelsen på miniaturebilleder\n• HTTPS bliver standardprotokollen\n• Japansk oversættelse\n• Mindre fejlrettelser og forbedringer af brugergrænsefladen\n________________________________________\n\n";
 
 "v2.1.7_text" = "Version 2.1.7\n3 februar 2018\n\n• Løst videooverførselsproblemer på nogle servere\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 

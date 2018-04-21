@@ -353,8 +353,8 @@
 "defaultImageSort>414px" = "Standardsortierung der Bilder";
 
 "defaultThumbnailFile" = "Datei";
-"defaultThumbnailFile>320px" = "Thumbnaildatei";
-"defaultThumbnailFile>414px" = "Thumbnail Image-Datei";
+"defaultThumbnailFile>320px" = "Miniaturbildergröße";
+"defaultThumbnailFile>414px" = "Miniaturbild Datei";
 "defaultThumbnailSize" = "Größe";
 "defaultThumbnailSize>320px" = "Miniaturbildergröße";
 "defaultThumbnailSize>414px" = "Standardgröße der Miniaturbilder";

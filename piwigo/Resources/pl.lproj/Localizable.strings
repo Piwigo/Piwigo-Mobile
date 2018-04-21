@@ -24,7 +24,7 @@
 "alertAddButton" = "Dodaj";
 "alertRetryButton" = "Ponów";
 "alertNextButton" = "Następne zdjęcie";
-"alertTryButton" = "Próbować";
+"alertTryButton" = "Wypróbuj";
 
 // Complete views
 "Complete" = "Zakończono";
@@ -68,7 +68,7 @@
 "loginEmptyServer_title" = "Wprowadź Adres Strony";
 "loginEmptyServer_message" = "Proszę wybrać protokół i wprowadzić adres internetowy Piwigo, aby kontynuować.";
 
-"serverConnectionError_title" = "Połączenie nie udało się";
+"serverConnectionError_title" = "Połączenie nieudane";
 "serverConnectionError_message" = "Nie można ustanowić zabezpieczonego połączenia HTTPS. Sprawdź adres lub spróbuj w trybie niezaszyfrowanego HTTP?";
 
 "serverVersionNotCompatible_title" = "Serwera Niekompatybilny";
@@ -268,7 +268,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Wybierz album, do którego przesyłać zdjęcia";
 "categoryUpload_chooseLocalAlbum" = "Wybierz album z którego chcesz pobrać zdjęcia";
-"categoryUpload_chooseiCloudAlbum" = "Wybierz iCloud album z którego chcesz pobrać zdjęcia";
+"categoryUpload_chooseiCloudAlbum" = "Wybierz album iCloud z którego chcesz pobrać zdjęcia";
 "categoyUpload_loadSubCategories" = "ładowanie";
 "selectAll" = "Wszystkie";
 
@@ -354,7 +354,7 @@
 
 "defaultThumbnailFile" = "Plik";
 "defaultThumbnailFile>320px" = "Plik miniatury";
-"defaultThumbnailFile>414px" = "Plik obrazu miniatury";
+"defaultThumbnailFile>414px" = "Plik miniatury obrazu";
 "defaultThumbnailSize" = "Rozmiar";
 "defaultThumbnailSize>320px" = "Rozmiar Miniatur";
 "defaultThumbnailSize>414px" = "Domyślny Rozmiar Miniatur";
