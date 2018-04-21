@@ -17,38 +17,55 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
 
 @implementation ImagesCollection
 
++(CGSize)sizeOfPageForView:(UIView *)view
+{
+    CGSize pageSize;
+    if (view == nil) {
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        pageSize = screenRect.size;
+    } else {
+        pageSize = view.frame.size;
+    }
+
+    return pageSize;
+}
+
 +(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
 {
     // Thumbnails should always be available on server
     // => default size of 144x144 pixels set in SettingsViewController
     // We display at least 3 thumbnails per row and images never exceed the thumbnails size
-    float viewWidth;
-    
-    if (view == nil) {
-        CGRect screenRect = [[UIScreen mainScreen] bounds];
-        viewWidth = fmin(screenRect.size.width, screenRect.size.height);
-    } else {
-        viewWidth = fmin(view.frame.size.width,view.frame.size.height);
-    }
+    CGSize pageSize = [self sizeOfPageForView:view];
+    float viewWidth = fmin(pageSize.width, pageSize.height);
     
     return fmax(3.0, roundf((viewWidth - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + maxWidth)));
 }
 
 +(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
 {
-    float imagesSizeInPortrait = floorf((fmin(view.frame.size.width,view.frame.size.height) - 2.0 * kMarginsSpacing - (imagesPerRowInPortrait - 1.0) * kCellSpacing) / imagesPerRowInPortrait);
-    float imagesPerRow = fmax(3.0, roundf((view.frame.size.width - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + imagesSizeInPortrait)));
+    // Size of view or screen
+    CGSize pageSize = [self sizeOfPageForView:view];
+
+    // Size of images determined for the portrait mode
+    float imagesSizeInPortrait = floorf((fmin(pageSize.width,pageSize.height) - 2.0 * kMarginsSpacing - (imagesPerRowInPortrait - 1.0) * kCellSpacing) / imagesPerRowInPortrait);
+    
+    // Images per row in whichever mode we are displaying them
+    float imagesPerRow = fmax(3.0, roundf((pageSize.width - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + imagesSizeInPortrait)));
     
     // Size of squared images for that number
-    return floorf((view.frame.size.width - 2.0 * kMarginsSpacing - (imagesPerRow - 1.0) * kCellSpacing) / imagesPerRow);
+    return floorf((pageSize.width - 2.0 * kMarginsSpacing - (imagesPerRow - 1.0) * kCellSpacing) / imagesPerRow);
 }
 
-+(NSInteger)numberOfImagesPerScreenForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
++(NSInteger)numberOfImagesPerPageForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
 {
+    // Size of view or screen
+    CGSize pageSize = [self sizeOfPageForView:view];
+
     // Size of squared images for that number
     float size = [self imageSizeForView:view andNberOfImagesPerRowInPortrait:imagesPerRowInPortrait];
 
-    return (NSInteger)ceilf(view.frame.size.height / (size + kCellSpacing)) * imagesPerRowInPortrait;
+    // Number of images par page
+    return (NSInteger)ceilf(pageSize.height / (size + kCellSpacing)) * imagesPerRowInPortrait;
 }
 
 @end

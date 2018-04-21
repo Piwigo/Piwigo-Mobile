@@ -736,7 +736,7 @@
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1)      // Image thumbnails
+	if(indexPath.section == 1)      // Images thumbnails
 	{
 		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 		
@@ -750,16 +750,17 @@
 			}
 		}
 		
-        // Calculate the number of thumbnails displayed on screen
-        NSInteger imagesPerScreen = [ImagesCollection numberOfImagesPerScreenForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+        // Calculate the number of thumbnails displayed per page
+        NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 
-        // Load images in advance if possible
-        if((indexPath.row >= [collectionView numberOfItemsInSection:1] - imagesPerScreen) && (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
-		{
-			[self.albumData loadMoreImagesOnCompletion:^{
-				[self.imagesCollection reloadData];
-			}];
-		}
+        // Load image data in advance if possible (page after page…)
+        if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
+            (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
+        {
+            [self.albumData loadMoreImagesOnCompletion:^{
+                [self.imagesCollection reloadData];
+            }];
+        }
 		
 		return cell;
 	}
@@ -868,7 +869,7 @@
 //        NSLog(@"finished");
     }];}
 
-// pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
+// Pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
 - (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     
     // bail if the current state matches the desired state

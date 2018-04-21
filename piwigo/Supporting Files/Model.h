@@ -77,7 +77,6 @@ typedef enum {
 @property (nonatomic, assign) BOOL deleteImageAfterUpload;
 
 @property (nonatomic, assign) kPiwigoSortCategory defaultSort;
-@property (nonatomic, assign) NSInteger imagesPerPage;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger lastPageImageCount;
 

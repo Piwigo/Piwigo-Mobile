@@ -33,7 +33,6 @@
         instance.serverName = @"";
         instance.username = @"";
         instance.HttpUsername = @"";
-		instance.imagesPerPage = 100;
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;

@@ -191,13 +191,17 @@
     
     
     __block NSDate *lastTime = [NSDate date];
-    
+
     [SortSelectViewController getSortedImageArrayFromSortType:sortType
                 forImages:self.images
               forCategory:self.categoryId
               forProgress:^(NSInteger onPage, NSInteger outOf) {
-                  NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
-                  NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
+
+                  // Calculate the number of thumbnails displayed per page
+                  NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+
+                  NSInteger lastImageCount = (onPage + 1) * imagesPerPage;
+                  NSInteger currentDownloaded = (onPage + 2) * imagesPerPage;
                   
                   NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
                   

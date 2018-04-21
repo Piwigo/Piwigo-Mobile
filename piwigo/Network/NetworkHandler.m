@@ -245,12 +245,12 @@ NSInteger const loadingViewTag = 899;
 //                                       [manager invalidateSessionCancelingTasks:YES];
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
-                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
-                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
-                                       NSLog(@"=> response= %@", task.response);
-#endif
+//#if defined(DEBUG)
+//                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
+//                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
+//                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
+//                                       NSLog(@"=> response= %@", task.response);
+//#endif
                                        if(fail) {
                                            fail(task, error);
                                        }

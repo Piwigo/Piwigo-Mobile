@@ -13,6 +13,7 @@
 #import "CategoriesData.h"
 #import "PiwigoTagData.h"
 #import "SAMKeychain.h"
+#import "ImagesCollection.h"
 
 NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
@@ -32,10 +33,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                            OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albumImages))completion
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {    
+    // Calculate the number of thumbnails displayed per page
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+
     return [self post:kPiwigoCategoriesGetImages
 		URLParameters:nil
            parameters:@{@"cat_id"   : @(albumId),
-                        @"per_page" : @([Model sharedInstance].imagesPerPage),
+                        @"per_page" : @(imagesPerPage),
                         @"page"     : @(page),
                         @"order"    : [order stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]
                         }
@@ -162,12 +166,18 @@ NSString * const kGetImageOrderDescending = @"desc";
 	}
 	
     NSDateFormatter *dateFormat = [NSDateFormatter new];
-	NSString *dateString = [imageJson objectForKey:@"date_available"];
+	NSString *dateAvailableString = [imageJson objectForKey:@"date_available"];
 	[dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-	imageData.datePosted = [dateFormat dateFromString:dateString];
-    dateString = [imageJson objectForKey:@"date_creation"];
-    if (![dateString isKindOfClass:[NSNull class]]) imageData.dateCreated = [dateFormat dateFromString:dateString];
-    
+    if (![dateAvailableString isKindOfClass:[NSNull class]]) {
+        imageData.datePosted = [dateFormat dateFromString:dateAvailableString];
+    } else {
+        imageData.datePosted = [NSDate date];
+    }
+    NSString *dateCreatedString = [imageJson objectForKey:@"date_creation"];
+    if (![dateCreatedString isKindOfClass:[NSNull class]]) {
+        imageData.dateCreated = [dateFormat dateFromString:dateCreatedString];
+    }
+
     // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
     // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
@@ -187,7 +197,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 	{
 		[categoryIds addObject:[category objectForKey:@"id"]];
 	}
-	
 	imageData.categoryIds = categoryIds;
 	
 	NSArray *tags = [imageJson objectForKey:@"tags"];
