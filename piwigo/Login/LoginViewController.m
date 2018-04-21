@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "LoginViewController.h"
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
@@ -17,9 +19,9 @@
 #import "MBProgressHUD.h"
 #import "CategoriesData.h"
 
-#ifndef DEBUG_SESSION
-#define DEBUG_SESSION
-#endif
+//#ifndef DEBUG_SESSION
+//#define DEBUG_SESSION
+//#endif
 
 @interface LoginViewController () <UITextFieldDelegate>
 
@@ -138,6 +140,20 @@
         [SAMKeychain setPassword:self.passwordTextField.text forService:[Model sharedInstance].serverName account:self.userTextField.text];
     }
 
+    // Create permanent session managers for retrieving data and downloading images
+    [NetworkHandler createJSONdataSessionManager];
+    [NetworkHandler createImagesSessionManager];
+    
+    // Create permanent image downloader
+    AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc]
+                    initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+                   preferredMemoryCapacity:([Model sharedInstance].memoryCache * 0.6) * 1024*1024];
+    [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc]
+                    initWithSessionManager:[Model sharedInstance].imagesSessionManager
+                    downloadPrioritization:AFImageDownloadPrioritizationFIFO
+                    maximumActiveDownloads:4 imageCache:cache];
+    [UIImageView setSharedImageDownloader:[Model sharedInstance].imageDownloader];
+    
     // Collect list of methods supplied by Piwigo server
     // => Determine if Community extension 2.9a or later is installed and active
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {

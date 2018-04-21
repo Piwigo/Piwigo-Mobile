@@ -7,7 +7,6 @@
 //
 
 #import <Photos/Photos.h>
-#import <AFNetworking/AFImageDownloader.h>
 
 #import "AppDelegate.h"
 #import "LoginNavigationController.h"
@@ -43,20 +42,12 @@
     // Override point for customization after application launch.
 	
     // Cache settings
-	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-															 diskPath:nil];
+	NSURLCache *URLCache = [[NSURLCache alloc]
+                            initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+								      diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                                          diskPath:nil];
 	[NSURLCache setSharedURLCache:URLCache];
     
-    // Create permanent session managers for retrieving data and downloading images
-    [NetworkHandler createJSONdataSessionManager];
-    [NetworkHandler createImagesSessionManager];
-    
-    // Create permanent image downloader
-    AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024 preferredMemoryCapacity:([Model sharedInstance].memoryCache * 0.6) * 1024*1024];
-    [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:cache];
-    [UIImageView setSharedImageDownloader:[Model sharedInstance].imageDownloader];
-
     // Login ?
     NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;
