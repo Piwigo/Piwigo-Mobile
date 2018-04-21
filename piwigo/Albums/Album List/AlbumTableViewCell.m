@@ -28,7 +28,6 @@
 @property (nonatomic, strong) UIView *textUnderlayDark;
 @property (nonatomic, strong) UIView *textUnderlayLight;
 @property (nonatomic, strong) UILabel *cellDisclosure;
-@property (nonatomic, strong) NSURLSessionTask *cellDataRequest;
 @property (nonatomic, strong) UIAlertAction *categoryAction;
 @property (nonatomic, strong) UIAlertAction *deleteAction;
 
@@ -266,18 +265,18 @@
     
     if(albumData.categoryImage && imageSize > 0)
     {
-//        [self setupBgWithImage:albumData.categoryImage];
         self.backgroundImage.image = albumData.categoryImage;
+        return;
     }
-    else if(albumData.albumThumbnailId > 0)
+    else if(albumData.albumThumbnailId <= 0)
     {
-        __weak typeof(self) weakSelf = self;
-        self.cellDataRequest = [ImageService getImageInfoById:albumData.albumThumbnailId
-                 ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-//#if defined(DEBUG)
-//                     NSLog(@"setupWithAlbumData — Got album bg image: %ld", albumData.albumThumbnailId);
-//#endif
-                     if(!imageData.MediumPath)
+        return;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    [ImageService getImageInfoById:albumData.albumThumbnailId
+              ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                  if(!imageData.MediumPath)
                      {
                          albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
                      }
@@ -289,7 +288,6 @@
                                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                                   albumData.categoryImage = image;
                                                                   weakSelf.backgroundImage.image = image;
-//                                                                  [weakSelf setupBgWithImage:image];
                                                               } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
                                                                   NSLog(@"setupWithAlbumData — Fail to get imgage for album at %@", imageData.MediumPath);
@@ -299,43 +297,14 @@
                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                      NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
-                     NSLog(@"setupWithAlbumData ================================");
 #endif
                  }];
-    }
 }
-
-//-(void)setupBgWithImage:(UIImage*)image
-//{
-//    self.backgroundImage.image = image;
-//    
-//    if(!IS_OS_8_OR_LATER)
-//    {
-//        LEColorPicker *colorPicker = [LEColorPicker new];
-//        LEColorScheme *colorScheme = [colorPicker colorSchemeFromImage:image];
-//        UIColor *backgroundColor = colorScheme.backgroundColor;
-//        //    UIColor *primaryColor = colorScheme.primaryTextColor;
-//        //    UIColor *secondaryColor = colorScheme.secondaryTextColor;
-//        
-//        CGFloat bgRed = CGColorGetComponents(backgroundColor.CGColor)[0] * 255;
-//        CGFloat bgGreen = CGColorGetComponents(backgroundColor.CGColor)[1] * 255;
-//        CGFloat bgBlue = CGColorGetComponents(backgroundColor.CGColor)[2] * 255;
-//        
-//        int threshold = 105;
-//        int bgDelta = (bgRed * 0.299) + (bgGreen * 0.587) + (bgBlue * 0.114);
-//        UIColor *bgColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
-//        self.textUnderlay.backgroundColor = bgColor;
-//        self.numberOfImages.textColor = (255 - bgDelta < threshold) ? [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1] : [UIColor colorWithRed:23/255.0 green:23/255.0 blue:23/255.0 alpha:1.0];
-//        self.date.textColor = self.numberOfImages.textColor;
-//        self.cellDisclosure.tintColor = self.numberOfImages.textColor;
-//    }
-//}
 
 -(void)prepareForReuse
 {
     [super prepareForReuse];
     
-    [self.cellDataRequest cancel];
     [self.backgroundImage cancelImageDownloadTask];
     self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
     
