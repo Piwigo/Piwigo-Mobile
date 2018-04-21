@@ -384,7 +384,8 @@
         [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
                      resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 //#if defined(DEBUG)
-//                         NSLog(@"retrieveFullSizeAssetDataFromImage \"%@\" returned info(%@)", image.image, info);
+//                         NSLog(@"retrieveFullSizeAssetDataFromImage \"%@\" returned info(%@) with orientation:%ld", image.image, info, (long)orientation);
+//                         NSLog(@"got image %f x %f", assetImage.size.width, assetImage.size.height);
 //#endif
                          if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
                              NSError *error = [info valueForKey:PHImageErrorKey];
@@ -421,9 +422,14 @@
     
     // Get metadata of image
     NSMutableDictionary *assetMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
-//#if defined(DEBUG)
-//    NSLog(@"modifyImage finds metadata :%@",assetMetadata);
-//#endif
+#if defined(DEBUG)
+    NSLog(@"modifyImage finds metadata :%@",assetMetadata);
+    NSLog(@"assetImage is %f width x %f height", assetImage.size.width, assetImage.size.height);
+#endif
+    
+    // Remove the orientation metadata as it leads to unwanted result (iOS 10.3)
+    [assetMetadata removeObjectForKey:(NSString *)kCGImagePropertyOrientation];
+//    [assetMetadata setValue:@(kCGImagePropertyOrientationUp) forKey:(NSString *)kCGImagePropertyOrientation];
     
     // Strips GPS metadata if user requested it in Settings
     if([Model sharedInstance].stripGPSdataOnUpload && (assetMetadata != nil)) {
