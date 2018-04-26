@@ -120,9 +120,9 @@ NSInteger const loadingViewTag = 899;
             return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
-#if defined(DEBUG)
-    NSLog(@"=> JSON data session manager created");
-#endif
+//#if defined(DEBUG)
+//    NSLog(@"=> JSON data session manager created");
+//#endif
 }
 
 +(void)createImagesSessionManager
@@ -180,9 +180,9 @@ NSInteger const loadingViewTag = 899;
             return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];     
-#if defined(DEBUG)
-    NSLog(@"=> Images session manager created");
-#endif
+//#if defined(DEBUG)
+//    NSLog(@"=> Images session manager created");
+//#endif
 }
 
 +(NSString*)encodedURL:(NSString*)originalURL
