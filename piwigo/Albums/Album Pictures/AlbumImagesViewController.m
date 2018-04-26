@@ -39,6 +39,9 @@
 @property (nonatomic, strong) NSString *currentSort;
 @property (nonatomic, assign) BOOL loadingImages;
 
+@property (nonatomic, assign) CGFloat previousContentYOffset;
+@property (nonatomic, assign) CGFloat minContentYOffset;
+
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
@@ -71,6 +74,9 @@
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
 		
+        // Before starting scrolling
+        self.previousContentYOffset = -INFINITY;
+        
         // Collection of images
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -127,7 +133,8 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    [self loadNavButtons];
+
     // Tab bar appearance
     self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
     self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
@@ -136,9 +143,7 @@
     }
     [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
     [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-
-    [self loadNavButtons];
-	
+    
 	// Albums
     if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
         [self.imagesCollection reloadData];
@@ -167,7 +172,7 @@
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
-
+    
     // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
 #if !defined(DEBUG)
@@ -286,8 +291,8 @@
 	[self.navigationController pushViewController:localAlbums animated:YES];
 }
 
-#pragma mark -
-#pragma mark -- Delete images
+
+#pragma mark - Delete images
 
 -(void)deleteImages
 {
@@ -393,8 +398,8 @@
      ];
 }
 
-#pragma mark -
-#pragma mark -- Download images
+
+#pragma mark - Download images
 
 -(void)downloadImages
 {
@@ -623,8 +628,8 @@
 	}];
 }
 
-#pragma mark -
-#pragma mark -- UICollectionView Methods
+
+#pragma mark - UICollectionView Methods
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
@@ -816,8 +821,8 @@
 	}
 }
 
-#pragma mark -
-#pragma mark -- ImageDetailDelegate Methods
+
+#pragma mark - ImageDetailDelegate Methods
 
 -(void)didDeleteImage:(PiwigoImageData *)image
 {
@@ -837,37 +842,85 @@
 }
 
 
-#pragma mark -
-#pragma mark CategorySortDelegate Methods
+#pragma mark - CategorySortDelegate Methods
 
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
 {
 	self.currentSortCategory = sortType;
 }
 
-#pragma mark -
-#pragma mark CategoryCollectionViewCellDelegate Methods
+
+#pragma mark - CategoryCollectionViewCellDelegate Methods
 
 -(void)pushView:(UIViewController *)viewController
 {
 	[self.navigationController pushViewController:viewController animated:YES];
 }
 
-#pragma mark -
-#pragma mark UIScrollViewDelegate Methods
-// See https://stackoverflow.com/questions/20935228/how-to-hide-tab-bar-with-animation-in-ios
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    [self setTabBarVisible:NO animated:YES completion:^(BOOL finished) {
-//        NSLog(@"finished");
-    }];}
+#pragma mark - UIScrollViewDelegate Methods
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    // NOP if content not yet complete
+    if (scrollView.contentSize.height == 0) return;
+    
+    // First time ever, set parameters
+    if (self.previousContentYOffset == -INFINITY) {
+        self.minContentYOffset = scrollView.contentOffset.y;
+    }
+    
+    // Initialisation
+    CGFloat y = scrollView.contentOffset.y - self.minContentYOffset;
+    CGFloat yMax = fmaxf(scrollView.contentSize.height - scrollView.frame.size.height + self.tabBarController.tabBar.bounds.size.height - self.minContentYOffset, self.minContentYOffset);
+//    NSLog(@"contentSize:%g, frameSize:%g", scrollView.contentSize.height, scrollView.frame.size.height);
+//    NSLog(@"offset=%3.0f, y=%3.0f, yMax=%3.0f", self.minContentYOffset, y, yMax);
+    
+    // Depends on current tab bar visibility
+    if ([self tabBarIsVisible]) {
+        // Decide whether tab bar should be hidden
+        if ((y < self.previousContentYOffset) &&            // Scrolling up
+            (y > 0.5 * yMax) && (y < yMax - 44))
+        {
+            // User scrolls content to the top, starting from the bottom
+            [self setTabBarVisible:NO animated:YES completion:nil];
+        }
+        else if ((y > self.previousContentYOffset) &&       // Scrolling down
+                 (y > 44) && (y < 0.5 * yMax - 44))
+        {
+            // User scrolls content to the bootm, starting from the top
+            [self setTabBarVisible:NO animated:YES completion:nil];
+        }
+    } else {
+        // Decide whether tab bar should be shown
+        if ((y < self.previousContentYOffset) &&            // Scrolling up
+            (y < 44))
+        {
+            // User scrolls content near the top or bottom
+            [self setTabBarVisible:YES animated:YES completion:nil];
+        }
+        else if ((y > self.previousContentYOffset) &&       // Scrolling down
+                 (y > yMax - 44))
+        {
+            // User scrolls content to the bootm, starting from the top
+            [self setTabBarVisible:YES animated:YES completion:nil];
+        }
+    }
+    
+    // Store actual position for next time
+    self.previousContentYOffset = y;
+}
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
+{
+    // User tapped the status bar
+    __weak typeof(self) weakSelf = self;
     [self setTabBarVisible:YES animated:YES completion:^(BOOL finished) {
-//        NSLog(@"finished");
-    }];}
+        weakSelf.previousContentYOffset = scrollView.contentOffset.y;
+    }];
+    
+    return YES;
+}
 
 // Pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
 - (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL))completion {
@@ -888,7 +941,7 @@
     } completion:completion];
 }
 
-//Getter to know the current state
+// Getter to know the current state
 - (BOOL)tabBarIsVisible {
     return self.tabBarController.tabBar.frame.origin.y < CGRectGetMaxY(self.view.frame);
 }

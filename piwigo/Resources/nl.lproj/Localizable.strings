@@ -423,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "Cache-instellingen (gebruikt/totaal)";
 "settings_cacheDisk" = "Schijf";
-"settings_placeholderDisk" = "Voer een schijfcache in tussen 10-200";
 "settings_cacheMemory" = "Geheugen";
-"settings_placeholderMemory" = "Voer een geheugencache in tussen 10-200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

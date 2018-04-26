@@ -423,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "Podręczna (Używany/Całkowity)";
 "settings_cacheDisk" = "Dysk";
-"settings_placeholderDisk" = "Wybierz Cache Dysku z Zakresu 10 - 200";
 "settings_cacheMemory" = "Pamięć";
-"settings_placeholderMemory" = "Wybierz Pamięć Cache z Zakresu 10 - 200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

@@ -423,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "Cache-Einstellungen (Verwendet/Total)";
 "settings_cacheDisk" = "Festplatte";
-"settings_placeholderDisk" = "Gib einen Disk-Cache von 10-200 an";
 "settings_cacheMemory" = "Speicher";
-"settings_placeholderMemory" = "Gib einen Speicher-Cache von 10-200 an";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

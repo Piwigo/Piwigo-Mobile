@@ -423,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "Cache-inställningar (använd/totalt)";
 "settings_cacheDisk" = "Disk";
-"settings_placeholderDisk" = "Ange en Disk-Cache från 10-200";
 "settings_cacheMemory" = "Minne";
-"settings_placeholderMemory" = "Ange en Minnes-Cache från 10-200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

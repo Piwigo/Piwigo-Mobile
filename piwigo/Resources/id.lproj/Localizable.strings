@@ -423,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "Pengaturan Tembolok (Terpakai/Total)";
 "settings_cacheDisk" = "Diska";
-"settings_placeholderDisk" = "Masukkan Tembolok Diska dari 10 - 200";
 "settings_cacheMemory" = "Memori";
-"settings_placeholderMemory" = "Masukkan Tembolok Memori dari 10 - 200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

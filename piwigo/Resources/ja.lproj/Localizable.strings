@@ -423,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";
 "settings_cacheDisk" = "ディスク";
-"settings_placeholderDisk" = "ディスクキャッシュを 10 - 200 の間で入力して下さい";
 "settings_cacheMemory" = "メモリ";
-"settings_placeholderMemory" = "メモリキャッシュを 10 - 200 の間で入力して下さい";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

@@ -423,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "Cacheindstillinger (Brugt/Total)";
 "settings_cacheDisk" = "Disk";
-"settings_placeholderDisk" = "Angiv en Diskcache fra 10 - 200";
 "settings_cacheMemory" = "Hukommelse";
-"settings_placeholderMemory" = "Angiv en Hukommelsescache fra 10 - 200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

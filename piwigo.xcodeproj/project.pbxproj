@@ -37,7 +37,6 @@
 		D8083AA61A82905B00A95605 /* ImageUploadProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */; };
 		D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */; };
 		D8172E201AB7D2EA00271DB0 /* AllCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */; };
-		D8172E961AB9093100271DB0 /* EditPopDownView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E951AB9093100271DB0 /* EditPopDownView.m */; };
 		D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D818B17F1AA4265D006FC32A /* CategorySortViewController.m */; };
 		D818E9FB1A74C18500733991 /* AlbumService.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FA1A74C18500733991 /* AlbumService.m */; };
 		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
@@ -216,8 +215,6 @@
 		D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveCategoryViewController.m; sourceTree = "<group>"; };
 		D8172E1E1AB7D2EA00271DB0 /* AllCategoriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllCategoriesViewController.h; sourceTree = "<group>"; };
 		D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllCategoriesViewController.m; sourceTree = "<group>"; };
-		D8172E941AB9093100271DB0 /* EditPopDownView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditPopDownView.h; sourceTree = "<group>"; };
-		D8172E951AB9093100271DB0 /* EditPopDownView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditPopDownView.m; sourceTree = "<group>"; };
 		D818B17E1AA4265D006FC32A /* CategorySortViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySortViewController.h; sourceTree = "<group>"; };
 		D818B17F1AA4265D006FC32A /* CategorySortViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySortViewController.m; sourceTree = "<group>"; };
 		D818E9F91A74C18500733991 /* AlbumService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumService.h; sourceTree = "<group>"; };
@@ -561,8 +558,6 @@
 				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
 				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
 				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
-				D8172E941AB9093100271DB0 /* EditPopDownView.h */,
-				D8172E951AB9093100271DB0 /* EditPopDownView.m */,
 				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
 				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
 				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
@@ -1211,7 +1206,6 @@
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
-				D8172E961AB9093100271DB0 /* EditPopDownView.m in Sources */,
 				D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,

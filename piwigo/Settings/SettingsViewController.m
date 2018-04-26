@@ -17,7 +17,6 @@
 #import "AboutViewController.h"
 #import "ClearCache.h"
 #import "SliderTableViewCell.h"
-#import "EditPopDownView.h"
 #import "SwitchTableViewCell.h"
 #import "AlbumService.h"
 #import "CategorySortViewController.h"
@@ -49,8 +48,9 @@ typedef enum {
 @property (nonatomic, strong) NSArray *headerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
-@property (nonatomic, strong) UIView *darkenView;
-@property (nonatomic, strong) EditPopDownView *currentPopDown;
+
+@property (nonatomic, assign) CGFloat previousContentYOffset;
+@property (nonatomic, assign) CGFloat minContentYOffset;
 
 @end
 
@@ -82,18 +82,10 @@ typedef enum {
 		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.settingsTableView amount:0]];
 		self.tableViewBottomConstraint = [NSLayoutConstraint constraintViewFromBottom:self.settingsTableView amount:0];
 		[self.view addConstraint:self.tableViewBottomConstraint];
-		
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
-		
-		self.darkenView = [UIView new];
-		self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-		self.darkenView.hidden = YES;
-		[self.darkenView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedDarkenView)]];
-		[self.view addSubview:self.darkenView];
-		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
-	}
+
+        // Before starting scrolling
+        self.previousContentYOffset = -INFINITY;
+}
 	return self;
 }
 
@@ -133,34 +125,17 @@ typedef enum {
 	[super viewWillDisappear:animated];
 }
 
--(void)keyboardWillChange:(NSNotification*)notification
-{
-	CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
-	
-	self.tableViewBottomConstraint.constant = -keyboardRect.size.height;
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    //Reload the tableview on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self.settingsTableView reloadData];
+    } completion:nil];
 }
 
--(void)keyboardWillDismiss:(NSNotification*)notification
-{
-	self.tableViewBottomConstraint.constant = 0;
-}
 
--(void)tappedDarkenView
-{
-	self.darkenView.hidden = YES;
-	if(self.currentPopDown)
-	{
-		[self.currentPopDown hide];
-	}
-}
-
-#pragma mark -- UITableView Methods, headers & footers
-
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-	return SettingsSectionCount;
-}
+#pragma mark - UITableView - headers
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -230,85 +205,13 @@ typedef enum {
     return header;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+
+#pragma mark - UITableView - rows
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // No footer by default (nil => 0 point)
-    NSString *footer;
-
-    // Any footer text?
-    switch(section)
-    {
-        case SettingsSectionLogout:
-            if (([Model sharedInstance].uploadFileTypes != nil) && ([[Model sharedInstance].uploadFileTypes length] > 0)) {
-                footer = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
-            }
-            break;
-    }
-    
-    // Footer height?
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                             options:NSStringDrawingUsesLineFragmentOrigin
-                                          attributes:attributes
-                                             context:context];
-
-    return ceil(footerRect.size.height + 10.0);
+    return SettingsSectionCount;
 }
-
--(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-{
-    // Footer label
-    UILabel *footerLabel = [UILabel new];
-    footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    footerLabel.font = [UIFont piwigoFontSmall];
-    footerLabel.textColor = [UIColor piwigoHeaderColor];
-    footerLabel.textAlignment = NSTextAlignmentCenter;
-    footerLabel.numberOfLines = 0;
-    footerLabel.adjustsFontSizeToFitWidth = NO;
-    footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
-
-    // Footer text
-    switch(section)
-    {
-        case SettingsSectionLogout:
-            if (([Model sharedInstance].uploadFileTypes != nil) && ([[Model sharedInstance].uploadFileTypes length] > 0)) {
-                footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
-            }
-            break;
-    }
-    
-    // Footer height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                 options:NSStringDrawingUsesLineFragmentOrigin
-                                              attributes:attributes
-                                                 context:context];
-
-    // Footer view
-    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
-    footer.backgroundColor = [UIColor clearColor];
-    [footer addSubview:footerLabel];
-    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
-    if (@available(iOS 11, *)) {
-        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
-                                                                   options:kNilOptions
-                                                                   metrics:nil
-                                                                     views:@{@"footer" : footerLabel}]];
-    } else {
-        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
-                                                                       options:kNilOptions
-                                                                       metrics:nil
-                                                                         views:@{@"footer" : footerLabel}]];
-    }
-
-    return footer;
-}
-
-#pragma mark -- UITableView Methods, rows
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -405,7 +308,9 @@ typedef enum {
 			tableViewCell = cell;
 			break;
 		}
-		case SettingsSectionThumbnails:     // Thumbnails
+
+#pragma mark Thumbnails
+        case SettingsSectionThumbnails:     // Thumbnails
 		{
 			switch(indexPath.row)
 			{
@@ -505,6 +410,8 @@ typedef enum {
 			}
 			break;
 		}
+
+#pragma mark Images
         case SettingsSectionImages:     // Images
         {
             switch(indexPath.row)
@@ -533,7 +440,9 @@ typedef enum {
             }
             break;
         }
-		case SettingsSectionImageUpload:     // Default Upload Settings
+
+#pragma mark Default Upload Settings
+        case SettingsSectionImageUpload:     // Default Upload Settings
 		{
 			switch(indexPath.row)
 			{
@@ -823,6 +732,8 @@ typedef enum {
 			}
 			break;
 		}
+
+#pragma mark Cache Settings
         case SettingsSectionCache:       // Cache Settings
         {
             switch(indexPath.row)
@@ -866,7 +777,7 @@ typedef enum {
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
                     cell.slider.minimumValue = 10;
-                    cell.slider.maximumValue = 200;
+                    cell.slider.maximumValue = 500;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
@@ -912,6 +823,8 @@ typedef enum {
             }
             break;
         }
+
+#pragma mark Colors
         case SettingsSectionColor:      // Colors
         {
             switch (indexPath.row)
@@ -975,15 +888,15 @@ typedef enum {
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
                         // Position of the row that should be added/removed
-//                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
-//                                                                         inSection:SettingsSectionColor];
-//                        if(switchState) {
-//                            // Insert row in existing table
-//                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//                        } else {
-//                            // Remove row in existing table
-//                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//                        }
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
+                                                                         inSection:SettingsSectionColor];
+                        if(switchState) {
+                            // Insert row in existing table
+                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        } else {
+                            // Remove row in existing table
+                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        }
                         // Refresh table
                         [self.settingsTableView reloadData];
                         // Redraw views in windows
@@ -1017,6 +930,8 @@ typedef enum {
             }
             break;
         }
+
+#pragma mark Information
         case SettingsSectionAbout:      // Information
 		{
             switch(indexPath.row)
@@ -1123,17 +1038,89 @@ typedef enum {
 	return tableViewCell;
 }
 
--(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+
+#pragma mark - UITableView - footers
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    // No footer by default (nil => 0 point)
+    NSString *footer;
     
-    //Reload the tableview on orientation change, to match the new width of the table.
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self.settingsTableView reloadData];
-    } completion:nil];
+    // Any footer text?
+    switch(section)
+    {
+        case SettingsSectionLogout:
+            if (([Model sharedInstance].uploadFileTypes != nil) && ([[Model sharedInstance].uploadFileTypes length] > 0)) {
+                footer = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
+            }
+            break;
+    }
+    
+    // Footer height?
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:context];
+    
+    return ceil(footerRect.size.height + 10.0);
 }
 
-#pragma mark -- UITableView Methods, actions
+-(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    // Footer label
+    UILabel *footerLabel = [UILabel new];
+    footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    footerLabel.font = [UIFont piwigoFontSmall];
+    footerLabel.textColor = [UIColor piwigoHeaderColor];
+    footerLabel.textAlignment = NSTextAlignmentCenter;
+    footerLabel.numberOfLines = 0;
+    footerLabel.adjustsFontSizeToFitWidth = NO;
+    footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    // Footer text
+    switch(section)
+    {
+        case SettingsSectionLogout:
+            if (([Model sharedInstance].uploadFileTypes != nil) && ([[Model sharedInstance].uploadFileTypes length] > 0)) {
+                footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
+            }
+            break;
+    }
+    
+    // Footer height
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attributes
+                                                       context:context];
+    
+    // Footer view
+    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
+    footer.backgroundColor = [UIColor clearColor];
+    [footer addSubview:footerLabel];
+    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"footer" : footerLabel}]];
+    } else {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"footer" : footerLabel}]];
+    }
+    
+    return footer;
+}
 
+
+#pragma mark - UITableViewDelegate Methods
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -1141,16 +1128,16 @@ typedef enum {
 	
 	switch(indexPath.section)
 	{
-		case SettingsSectionServer:      // Piwigo Server
+		case SettingsSectionServer:         // Piwigo Server
 			break;
-		case SettingsSectionLogout:      // Logout
+		case SettingsSectionLogout:         // Logout
 			[self logout];
 			break;
 		case SettingsSectionThumbnails:     // General Settings
 		{
 			switch(indexPath.row)
 			{
-				case 0:
+				case 0:                     // Sort method selection
 				{
 					CategorySortViewController *categoryVC = [CategorySortViewController new];
 					categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;
@@ -1158,7 +1145,7 @@ typedef enum {
 					[self.navigationController pushViewController:categoryVC animated:YES];
 					break;
 				}
-				case 1:
+				case 1:                     // Thumbnail file selection
 				{
 					DefaultThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultThumbnailSizeViewController new];
 					[self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
@@ -1167,11 +1154,11 @@ typedef enum {
 			}
 			break;
 		}
-        case SettingsSectionImages:     // Images
+        case SettingsSectionImages:         // Images
         {
             switch(indexPath.row)
             {
-                case 0:
+                case 0:                     // Image file selection
                 {
                     DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
                     [self.navigationController pushViewController:defaultImageSizeVC animated:YES];
@@ -1180,10 +1167,10 @@ typedef enum {
             }
             break;
         }
-		case SettingsSectionImageUpload:     // Default Upload Settings
+		case SettingsSectionImageUpload:     // Default upload Settings
 			switch(indexPath.row)
 			{
-				case 1:     // Privacy
+				case 1:                      // Default privacy selection
 				{
 					SelectPrivacyViewController *selectPrivacy = [SelectPrivacyViewController new];
 					selectPrivacy.delegate = self;
@@ -1191,111 +1178,12 @@ typedef enum {
 					[self.navigationController pushViewController:selectPrivacy animated:YES];
 					break;
 				}
-                case 4:     // Image Size
-                {
-//                    if(self.currentPopDown)
-//                    {
-//                        [self.currentPopDown removeFromSuperview];
-//                    }
-//                    self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderSize", @"Enter a Photo Size from 5 - 100")];
-//                    self.darkenView.hidden = NO;
-//                    [self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
-//                        self.darkenView.hidden = YES;
-//                        if(textEntered.length > 0)
-//                        {
-//                            SliderTableViewCell *photoSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SettingsSectionImageUpload]];
-//                            photoSizeCell.sliderValue = [textEntered integerValue];
-//                            if(!photoSizeCell)
-//                            {
-//                                [Model sharedInstance].photoResize = [textEntered integerValue];
-//                                [[Model sharedInstance] saveToDisk];
-//                            }
-//                        }
-//                    }];
-                    break;
-                }
-				case 6:     // Image Quality
-				{
-//                    if(self.currentPopDown)
-//                    {
-//                        [self.currentPopDown removeFromSuperview];
-//                    }
-//                    self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderQuality", @"Enter an Image Quality")];
-//                    self.darkenView.hidden = NO;
-//                    [self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
-//                        self.darkenView.hidden = YES;
-//                        if(textEntered.length > 0)
-//                        {
-//                            SliderTableViewCell *photoQualityCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SettingsSectionImageUpload]];
-//
-//                            NSInteger valueEntered = [textEntered integerValue];
-//                            if(valueEntered < 50) valueEntered = 50;
-//                            else if(valueEntered > 98) valueEntered = 98;
-//
-//                            photoQualityCell.sliderValue = valueEntered;
-//                            if(!photoQualityCell)
-//                            {
-//                                [Model sharedInstance].photoQuality = valueEntered;
-//                                [[Model sharedInstance] saveToDisk];
-//                            }
-//                        }
-//                    }];
-					break;
-				}
 			}
-			
 			break;
-		case SettingsSectionCache:       // Cache Settings
-		{
-			switch(indexPath.row)
-			{
-				case 0:
-				{
-					if(self.currentPopDown)
-					{
-						[self.currentPopDown removeFromSuperview];
-					}
-					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderDisk", @"Enter a Disk Cache from 10 - 200")];
-					self.darkenView.hidden = NO;
-					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
-						self.darkenView.hidden = YES;
-						if(textEntered.length > 0)
-						{
-							SliderTableViewCell *diskCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingsSectionCache]];
-							diskCell.sliderValue = [textEntered integerValue];
-							if(!diskCell)
-							{
-								[Model sharedInstance].diskCache = [textEntered integerValue];
-								[[Model sharedInstance] saveToDisk];
-							}
-						}
-					}];
-					break;
-				}
-				case 1:
-				{
-					if(self.currentPopDown)
-					{
-						[self.currentPopDown removeFromSuperview];
-					}
-					self.currentPopDown = [[EditPopDownView alloc] initWithPlaceHolderText:NSLocalizedString(@"settings_placeholderMemory", @"Enter a Memory Cache from 10 - 200")];
-					self.darkenView.hidden = NO;
-					[self.currentPopDown presentFromView:self.view onCompletion:^(NSString *textEntered) {
-						self.darkenView.hidden = YES;
-						if(textEntered.length > 0)
-						{
-							SliderTableViewCell *memoryCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionCache]];
-							memoryCell.sliderValue = [textEntered integerValue];
-							if(!memoryCell)
-							{
-								[Model sharedInstance].memoryCache = [textEntered integerValue];
-								[[Model sharedInstance] saveToDisk];
-							}
-						}
-					}];
-					break;
-				}
-			}
+//        case SettingsSectionCache:       // Cache Settings
+//        {
+//            switch(indexPath.row)
+//            {
 //			if(indexPath.row == 2)
 //			{
 //				[UIAlertView showWithTitle:@"DELETE IMAGE CACHE"
@@ -1318,9 +1206,9 @@ typedef enum {
 //										  [NSURLCache setSharedURLCache:URLCache];
 //									  }
 //								  }];
-//			}
-			break;
-		}
+//            }
+//            break;
+//        }
 		case SettingsSectionAbout:       // About — Informations
 		{
             switch(indexPath.row)
@@ -1358,16 +1246,8 @@ typedef enum {
 	}
 }
 
--(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-	[self.view endEditing:YES];
-	if(self.currentPopDown)
-	{
-		[self.currentPopDown hide];
-	}
-}
 
-#pragma mark -- Option Methods
+#pragma mark - Option Methods
 
 -(void)logout
 {
@@ -1447,22 +1327,37 @@ typedef enum {
 	}
 }
 
-#pragma mark UITextFieldDelegate Methods
 
--(void)textFieldDidEndEditing:(UITextField *)textField
-{
-	switch(textField.tag)
-	{
-		case kImageUploadSettingAuthor:
-		{
-			[Model sharedInstance].defaultAuthor = textField.text;
-			[[Model sharedInstance] saveToDisk];
-			break;
-		}
-	}
-}
+//#pragma mark - UITextFieldDelegate Methods
+//
+//-(void)keyboardWillChange:(NSNotification*)notification
+//{
+//    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+//
+//    self.tableViewBottomConstraint.constant = -keyboardRect.size.height;
+//}
+//
+//-(void)keyboardWillDismiss:(NSNotification*)notification
+//{
+//    self.tableViewBottomConstraint.constant = 0;
+//}
+//
+//-(void)textFieldDidEndEditing:(UITextField *)textField
+//{
+//    switch(textField.tag)
+//    {
+//        case kImageUploadSettingAuthor:
+//        {
+//            [Model sharedInstance].defaultAuthor = textField.text;
+//            [[Model sharedInstance] saveToDisk];
+//            break;
+//        }
+//    }
+//}
 
-#pragma mark SelectedPrivacyDelegate Methods
+
+#pragma mark - SelectedPrivacyDelegate Methods
 
 -(void)selectedPrivacy:(kPiwigoPrivacy)privacy
 {
@@ -1470,7 +1365,8 @@ typedef enum {
 	[[Model sharedInstance] saveToDisk];
 }
 
-#pragma mark CategorySortDelegate Methods
+
+#pragma mark - CategorySortDelegate Methods
 
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
 {
@@ -1479,7 +1375,8 @@ typedef enum {
 	[self.settingsTableView reloadData];
 }
 
-#pragma mark Sliders changed value Methods
+
+#pragma mark - Sliders changed value Methods
 
 - (IBAction)updateThumbnailSize:(id)sender
 {
@@ -1531,6 +1428,95 @@ typedef enum {
     [[Model sharedInstance] saveToDisk];
     
     [NSURLCache sharedURLCache].memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
+}
+
+
+#pragma mark - UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    // NOP if content not yet complete
+    if (scrollView.contentSize.height == 0) return;
+    
+    // First time ever, set parameters
+    if (self.previousContentYOffset == -INFINITY) {
+        self.minContentYOffset = scrollView.contentOffset.y;
+    }
+    
+    // Initialisation
+    CGFloat y = scrollView.contentOffset.y - self.minContentYOffset;
+    CGFloat yMax = fmaxf(scrollView.contentSize.height - scrollView.frame.size.height + self.tabBarController.tabBar.bounds.size.height - self.minContentYOffset, self.minContentYOffset);
+//    NSLog(@"contentSize:%g, frameSize:%g", scrollView.contentSize.height, scrollView.frame.size.height);
+//    NSLog(@"offset=%3.0f, y=%3.0f, yMax=%3.0f", self.minContentYOffset, y, yMax);
+    
+    // Depends on current tab bar visibility
+    if ([self tabBarIsVisible]) {
+        // Decide whether tab bar should be hidden
+        if ((y < self.previousContentYOffset) &&            // Scrolling up
+            (y > 0.5 * yMax) && (y < yMax - 44))
+        {
+            // User scrolls content to the top, starting from the bottom
+            [self setTabBarVisible:NO animated:YES completion:nil];
+        }
+        else if ((y > self.previousContentYOffset) &&       // Scrolling down
+                 (y > 44) && (y < 0.5 * yMax - 44))
+        {
+            // User scrolls content to the bootm, starting from the top
+            [self setTabBarVisible:NO animated:YES completion:nil];
+        }
+    } else {
+        // Decide whether tab bar should be shown
+        if ((y < self.previousContentYOffset) &&            // Scrolling up
+            (y < 44))
+        {
+            // User scrolls content near the top or bottom
+            [self setTabBarVisible:YES animated:YES completion:nil];
+        }
+        else if ((y > self.previousContentYOffset) &&       // Scrolling down
+                 (y > yMax - 44))
+        {
+            // User scrolls content to the bootm, starting from the top
+            [self setTabBarVisible:YES animated:YES completion:nil];
+        }
+    }
+    
+    // Store actual position for next time
+    self.previousContentYOffset = y;
+}
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
+{
+    // User tapped the status bar
+    __weak typeof(self) weakSelf = self;
+    [self setTabBarVisible:YES animated:YES completion:^(BOOL finished) {
+        weakSelf.previousContentYOffset = scrollView.contentOffset.y;
+    }];
+    
+    return YES;
+}
+
+// Pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
+- (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    
+    // bail if the current state matches the desired state
+    if ([self tabBarIsVisible] == visible) return (completion)? completion(YES) : nil;
+    
+    // get a frame calculation ready
+    CGRect frame = self.tabBarController.tabBar.frame;
+    CGFloat height = frame.size.height;
+    CGFloat offsetY = (visible)? -height : height;
+    
+    // zero duration means no animation
+    CGFloat duration = (animated)? 0.3 : 0.0;
+    
+    [UIView animateWithDuration:duration animations:^{
+        self.tabBarController.tabBar.frame = CGRectOffset(frame, 0, offsetY);
+    } completion:completion];
+}
+
+// Getter to know the current state
+- (BOOL)tabBarIsVisible {
+    return self.tabBarController.tabBar.frame.origin.y < CGRectGetMaxY(self.view.frame);
 }
 
 @end

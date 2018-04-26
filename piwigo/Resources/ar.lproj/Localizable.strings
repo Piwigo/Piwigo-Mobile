@@ -423,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "ذاكرة الإعدادات المؤقة (المستخدم / الإجمالي)";
 "settings_cacheDisk" = "القرص";
-"settings_placeholderDisk" = "أدخل ذاكرة التخزين المؤقت على القرص من 10 - 200";
 "settings_cacheMemory" = "الذاكرة";
-"settings_placeholderMemory" = "أدخل ذاكرة التخزين المؤقت من 10 - 200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors
