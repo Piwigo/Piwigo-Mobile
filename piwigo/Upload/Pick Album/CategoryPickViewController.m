@@ -34,7 +34,7 @@
 	}
 	else
 	{
-		self = (CategoryPickViewController*)[[UIViewController alloc] init];
+        self = (CategoryPickViewController*)[[UIViewController alloc] init];
 		
 		UILabel *adminLabel = [UILabel new];
 		adminLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -79,7 +79,10 @@
                                        options:kNilOptions metrics:nil
                                        views:@{@"admin" : adminLabel, @"description" : description}]];
         }
-	}
+
+        // Background color of the view
+        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+}
 	
 	return self;
 }
