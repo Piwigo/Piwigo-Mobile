@@ -173,6 +173,11 @@
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
     
+    // Tab bar will be visible if content does not fill the screen
+    if (![self tabBarIsVisible] && (self.navigationController.toolbar.bounds.size.height + self.navigationController.navigationBar.bounds.size.height + self.imagesCollection.collectionViewLayout.collectionViewContentSize.height < [UIScreen mainScreen].bounds.size.height)) {
+        [self setTabBarVisible:YES animated:YES completion:nil];
+    }
+    
     // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
 #if !defined(DEBUG)

@@ -97,6 +97,9 @@
 		self.automaticallyAdjustsScrollViewInsets = false;
 		self.edgesForExtendedLayout = UIRectEdgeNone;
 	}
+
+    // Hide tab bar
+    self.tabBarController.tabBar.hidden = YES;
 }
 
 -(void)imageOptions

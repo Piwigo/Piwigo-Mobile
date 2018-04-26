@@ -161,6 +161,11 @@ static SEL extractedCDU() {
 	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.albumsTableView addSubview:refreshControl];
     self.albumsTableView.alwaysBounceVertical = YES;
+
+    // Tab bar will be visible if content does not fill the screen
+    if (![self tabBarIsVisible] && (self.navigationController.toolbar.bounds.size.height + self.navigationController.navigationBar.bounds.size.height + self.albumsTableView.contentSize.height < [UIScreen mainScreen].bounds.size.height)) {
+        [self setTabBarVisible:YES animated:YES completion:nil];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
