@@ -173,7 +173,7 @@
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
     
-    // Tab bar will be visible if content does not fill the screen
+    // Tab bar must be visible if content does not fill the screen
     if (![self tabBarIsVisible] && (self.navigationController.toolbar.bounds.size.height + self.navigationController.navigationBar.bounds.size.height + self.imagesCollection.collectionViewLayout.collectionViewContentSize.height < [UIScreen mainScreen].bounds.size.height)) {
         [self setTabBarVisible:YES animated:YES completion:nil];
     }
@@ -883,29 +883,23 @@
     
     // Depends on current tab bar visibility
     if ([self tabBarIsVisible]) {
-        // Decide whether tab bar should be hidden
-        if ((y < self.previousContentYOffset) &&            // Scrolling up
-            (y > 0.5 * yMax) && (y < yMax - 44))
-        {
-            // User scrolls content to the top, starting from the bottom
-            [self setTabBarVisible:NO animated:YES completion:nil];
-        }
-        else if ((y > self.previousContentYOffset) &&       // Scrolling down
-                 (y > 44) && (y < 0.5 * yMax - 44))
+        // Hide the tab bar when scrolling down
+        if ((y > self.previousContentYOffset) &&        // Scrolling down
+            (y > 44) && (y < yMax - 44))                // from the top with margin
         {
             // User scrolls content to the bootm, starting from the top
             [self setTabBarVisible:NO animated:YES completion:nil];
         }
     } else {
         // Decide whether tab bar should be shown
-        if ((y < self.previousContentYOffset) &&            // Scrolling up
-            (y < 44))
+        if ((y < self.previousContentYOffset) &&        // Scrolling up
+            (y < yMax - 44))                            // from the bottom with margin
         {
             // User scrolls content near the top or bottom
             [self setTabBarVisible:YES animated:YES completion:nil];
         }
-        else if ((y > self.previousContentYOffset) &&       // Scrolling down
-                 (y > yMax - 44))
+        else if ((y > self.previousContentYOffset) &&   // Scrolling down
+                 (y > yMax - 44))                       // near the bottom
         {
             // User scrolls content to the bootm, starting from the top
             [self setTabBarVisible:YES animated:YES completion:nil];
