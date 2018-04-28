@@ -197,7 +197,8 @@ typedef enum {
 						}];
 }
 
-#pragma mark -- HUD methods
+
+#pragma mark - HUD methods
 
 -(void)showUpdatingImageInfoHUD
 {
@@ -244,7 +245,7 @@ typedef enum {
 }
 
 
-#pragma mark -- Keyboard Methods
+#pragma mark - Keyboard Methods
 
 -(void)updateImageDetails
 {
@@ -362,7 +363,8 @@ typedef enum {
 	
 }
 
-#pragma mark SelectPrivacyDelegate Methods
+
+#pragma mark - SelectPrivacyDelegate Methods
 
 -(void)selectedPrivacy:(kPiwigoPrivacy)privacy
 {
@@ -372,7 +374,8 @@ typedef enum {
 	[labelCell setPrivacyLevel:privacy];
 }
 
-#pragma mark TagsViewControllerDelegate Methods
+
+#pragma mark - TagsViewControllerDelegate Methods
 
 -(void)didExitWithSelectedTags:(NSArray *)selectedTags
 {

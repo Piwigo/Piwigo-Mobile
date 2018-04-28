@@ -20,7 +20,7 @@
 #import "AllCategoriesViewController.h"
 #import "SAMKeychain.h"
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate>
 
 @property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, strong) UIProgressView *progressBar;
@@ -102,6 +102,74 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
+-(void)didTapView
+{
+    [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
+    
+    if(self.navigationController.navigationBarHidden)
+    {
+        if (self.imageData.isVideo) {
+            // User wants to play/replay the video
+            ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
+            [playVideo startVideoPlayerViewWithImageData:self.imageData];
+        } else {
+            // User wants to display the image in full screen
+            [self hideTabBar:self.tabBarController];
+        }
+    }
+    else
+    {
+        [self showTabBar:self.tabBarController];
+    }
+}
+
+-(void)hideTabBar:(UITabBarController*)tabbarcontroller
+{
+    return;
+    
+    //    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    //
+    //    [UIView beginAnimations:nil context:NULL];
+    //    [UIView setAnimationDuration:0.3];
+    //    float fHeight = screenRect.size.height;
+    //
+    //    for(UIView *view in tabbarcontroller.view.subviews)
+    //    {
+    //        if([view isKindOfClass:[UITabBar class]])
+    //        {
+    //            [view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
+    //        }
+    //        else
+    //        {
+    //            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
+    //            view.backgroundColor = [UIColor blackColor];
+    //        }
+    //    }
+    //    [UIView commitAnimations];
+}
+
+-(void)showTabBar:(UITabBarController*)tabbarcontroller
+{
+    return;
+    //    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    //    float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
+    //
+    //    [UIView beginAnimations:nil context:NULL];
+    //    [UIView setAnimationDuration:0.3];
+    //    for(UIView *view in tabbarcontroller.view.subviews)
+    //    {
+    //        if([view isKindOfClass:[UITabBar class]])
+    //        {
+    //            [view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
+    //        }
+    //        else
+    //        {
+    //            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
+    //        }
+    //    }
+    //    [UIView commitAnimations];
+}
+
 -(void)imageOptions
 {
     UIAlertController* alert = [UIAlertController
@@ -136,6 +204,7 @@
                                      UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
                                      EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
                                      editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
+                                     editImageVC.delegate = self;
                                      editImageVC.isEdit = YES;
                                      UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
                                      [self.navigationController presentViewController:presentNav animated:YES completion:nil];
@@ -174,7 +243,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark -- Delete image
+#pragma mark - Delete image
 
 -(void)deleteImage
 {
@@ -238,7 +307,18 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark -- Download image
+#pragma mark - Download image
+
+-(ImageDownloadView*)downloadView
+{
+    if(_downloadView) return _downloadView;
+    
+    _downloadView = [ImageDownloadView new];
+    _downloadView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:_downloadView];
+    [self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
+    return _downloadView;
+}
 
 -(void)downloadImage
 {
@@ -426,86 +506,8 @@
 	self.downloadView.hidden = YES;
 }
 
--(void)didTapView
-{
-	[self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 
-	if(self.navigationController.navigationBarHidden)
-	{
-        if (self.imageData.isVideo) {
-            // User wants to play/replay the video
-            ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
-            [playVideo startVideoPlayerViewWithImageData:self.imageData];
-        } else {
-            // User wants to display the image in full screen
-            [self hideTabBar:self.tabBarController];
-        }
-	}
-	else
-	{
-		[self showTabBar:self.tabBarController];
-	}
-}
-
--(void)hideTabBar:(UITabBarController*)tabbarcontroller
-{
-	return;
-	
-//	CGRect screenRect = [[UIScreen mainScreen] bounds];
-//	
-//	[UIView beginAnimations:nil context:NULL];
-//	[UIView setAnimationDuration:0.3];
-//	float fHeight = screenRect.size.height;
-//	
-//	for(UIView *view in tabbarcontroller.view.subviews)
-//	{
-//		if([view isKindOfClass:[UITabBar class]])
-//		{
-//			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
-//		}
-//		else
-//		{
-//			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
-//			view.backgroundColor = [UIColor blackColor];
-//		}
-//	}
-//	[UIView commitAnimations];
-}
-
--(void)showTabBar:(UITabBarController*)tabbarcontroller
-{
-	return;
-//	CGRect screenRect = [[UIScreen mainScreen] bounds];
-//	float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
-//	
-//	[UIView beginAnimations:nil context:NULL];
-//	[UIView setAnimationDuration:0.3];
-//	for(UIView *view in tabbarcontroller.view.subviews)
-//	{
-//		if([view isKindOfClass:[UITabBar class]])
-//		{
-//			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
-//		}
-//		else
-//		{
-//			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
-//		}
-//	}
-//	[UIView commitAnimations];
-}
-
--(ImageDownloadView*)downloadView
-{
-	if(_downloadView) return _downloadView;
-	
-	_downloadView = [ImageDownloadView new];
-	_downloadView.translatesAutoresizingMaskIntoConstraints = NO;
-	[self.view addSubview:_downloadView];
-	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
-	return _downloadView;
-}
-
-#pragma mark -- UIPageViewControllerDataSource
+#pragma mark - UIPageViewControllerDataSource
 
 -(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
@@ -590,7 +592,7 @@
 	self.title = self.imageData.name;
 }
 
-#pragma mark ImagePreviewDelegate Methods
+#pragma mark - ImagePreviewDelegate Methods
 
 -(void)downloadProgress:(CGFloat)progress
 {
@@ -600,5 +602,15 @@
 		self.progressBar.hidden = YES;
 	}
 }
+
+#pragma mark — EditImageDetailsDelegate Methods
+
+-(void)didFinishEditingDetails:(ImageUpload *)details
+{
+    // Cache was updated after the image update
+    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%ld", details.imageId]];
+    self.title = details.title;
+}
+
 
 @end
