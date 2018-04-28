@@ -83,6 +83,10 @@ typedef enum {
 		self.tableViewBottomConstraint = [NSLayoutConstraint constraintViewFromBottom:self.settingsTableView amount:0];
 		[self.view addConstraint:self.tableViewBottomConstraint];
 
+        // Keyboard management
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
+
         // Before starting scrolling
         self.previousContentYOffset = -INFINITY;
 }
@@ -1328,33 +1332,42 @@ typedef enum {
 }
 
 
-//#pragma mark - UITextFieldDelegate Methods
-//
-//-(void)keyboardWillChange:(NSNotification*)notification
-//{
-//    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-//    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
-//
-//    self.tableViewBottomConstraint.constant = -keyboardRect.size.height;
-//}
-//
-//-(void)keyboardWillDismiss:(NSNotification*)notification
-//{
-//    self.tableViewBottomConstraint.constant = 0;
-//}
-//
-//-(void)textFieldDidEndEditing:(UITextField *)textField
-//{
-//    switch(textField.tag)
-//    {
-//        case kImageUploadSettingAuthor:
-//        {
-//            [Model sharedInstance].defaultAuthor = textField.text;
-//            [[Model sharedInstance] saveToDisk];
-//            break;
-//        }
-//    }
-//}
+#pragma mark - UITextFieldDelegate Methods
+
+-(void)keyboardWillChange:(NSNotification*)notification
+{
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    self.tableViewBottomConstraint.constant = -keyboardSize.height;
+}
+
+-(void)keyboardWillDismiss:(NSNotification*)notification
+{
+    self.tableViewBottomConstraint.constant = 0;
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [self.settingsTableView endEditing:YES];
+    return YES;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    switch(textField.tag)
+    {
+        case kImageUploadSettingAuthor:
+        {
+            [Model sharedInstance].defaultAuthor = textField.text;
+            [[Model sharedInstance] saveToDisk];
+            break;
+        }
+    }
+}
 
 
 #pragma mark - SelectedPrivacyDelegate Methods
