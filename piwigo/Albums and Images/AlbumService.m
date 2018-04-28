@@ -189,7 +189,7 @@
     return [self post:kPiwigoCategoriesAdd
 		URLParameters:nil
            parameters:@{
-                        @"name" : [[categoryName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"],
+                        @"name" : categoryName,
                         @"status" : categoryStatus
                         }
              progress:nil
