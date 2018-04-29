@@ -624,7 +624,7 @@
     }
 
     // Update previewed image
-    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%ld", details.imageId]];
+    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%ld", (long)details.imageId]];
     
     // Update current view
     self.title = details.title;
