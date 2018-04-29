@@ -840,7 +840,7 @@
 	[self.albumData loadMoreImagesOnCompletion:^{
 		if(self.imageDetailView != nil)
 		{
-			self.imageDetailView.images = self.albumData.images;
+			self.imageDetailView.images = [self.albumData.images mutableCopy];
 		}
 		[self.imagesCollection reloadData];
 	}];

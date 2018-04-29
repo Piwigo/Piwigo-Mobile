@@ -34,14 +34,14 @@
 
 @implementation ImageDetailViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray*)array
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray *)array
 {
 	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor blackColor];
 		self.categoryId = categoryId;
-		self.images = array;
+		self.images = [array mutableCopy];
 		
 		self.dataSource = self;
 		self.delegate = self;
@@ -603,14 +603,31 @@
 	}
 }
 
-#pragma mark — EditImageDetailsDelegate Methods
+#pragma mark - EditImageDetailsDelegate Methods
 
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {
-    // Cache was updated after the image update
+    // Update list of images
+    NSInteger index = 0;
+    for(PiwigoImageData *image in self.images)
+    {
+        if([image.imageId integerValue] == details.imageId) {
+            image.name = details.title;
+            image.author = details.author;
+            image.privacyLevel = details.privacyLevel;
+            image.imageDescription = [NSString stringWithString:details.description];
+            image.tags = [details.description copy];
+            [self.images replaceObjectAtIndex:index withObject:image];
+            break;
+        }
+        index++;
+    }
+
+    // Update previewed image
     self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%ld", details.imageId]];
+    
+    // Update current view
     self.title = details.title;
 }
-
 
 @end
