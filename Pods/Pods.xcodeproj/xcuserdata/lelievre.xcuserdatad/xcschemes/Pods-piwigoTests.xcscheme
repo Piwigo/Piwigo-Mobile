@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "0940"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "711CA58744351CA954742ED64CA099FB"
+               BlueprintIdentifier = "C0D48880D5D9360D768009AD9A8D67E6"
                BuildableName = "libPods-piwigoTests.a"
                BlueprintName = "Pods-piwigoTests"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "711CA58744351CA954742ED64CA099FB"
+            BlueprintIdentifier = "C0D48880D5D9360D768009AD9A8D67E6"
             BuildableName = "libPods-piwigoTests.a"
             BlueprintName = "Pods-piwigoTests"
             ReferencedContainer = "container:Pods.xcodeproj">

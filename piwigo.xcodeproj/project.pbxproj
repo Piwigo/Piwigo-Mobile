@@ -893,7 +893,6 @@
 				D82B8CB81A67820A000E47CA /* Frameworks */,
 				AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */,
 				D82B8CB91A67820A000E47CA /* Resources */,
-				09F78B87DE4067CFCDEF0642 /* [CP] Embed Pods Frameworks */,
 				7A9296FADB36B3093B24E071 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -913,8 +912,6 @@
 				D82B8CD01A67820A000E47CA /* Sources */,
 				D82B8CD11A67820A000E47CA /* Frameworks */,
 				D82B8CD21A67820A000E47CA /* Resources */,
-				F9F95D7B7A77ED703DAE13C9 /* [CP] Embed Pods Frameworks */,
-				9D3BD667166CF12BBE23B08D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1019,21 +1016,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		09F78B87DE4067CFCDEF0642 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		56D414D00BB0598CDED578D9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1081,26 +1063,11 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SAMKeychain.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9D3BD667166CF12BBE23B08D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */ = {
@@ -1116,21 +1083,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ $CONFIGURATION == Release ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi";
-		};
-		F9F95D7B7A77ED703DAE13C9 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
