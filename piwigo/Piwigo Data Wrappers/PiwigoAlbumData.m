@@ -11,6 +11,7 @@
 #import "Model.h"
 #import "CategoriesData.h"
 #import "ImageUpload.h"
+#import "ImagesCollection.h"
 
 @interface PiwigoAlbumData()
 
@@ -32,8 +33,8 @@
 	{
 		self.imageIds = [NSMutableDictionary new];
 		
-		self.isLoadingMoreImages = NO;
-		self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
+        self.isLoadingMoreImages = NO;
+		self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 		self.onPage = 0;
 	}
 	return self;
@@ -80,10 +81,12 @@
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion
 {
-	if(self.isLoadingMoreImages) return;
-	
+    if(self.isLoadingMoreImages) {
+        return;
+    }
+    
+    // Load more image data…
 	self.isLoadingMoreImages = YES;
-	
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
 									  forCategory:self.albumId
 										   onPage:self.onPage
@@ -225,7 +228,7 @@
 {
 	self.imageIds = [NSMutableDictionary new];
 	self.isLoadingMoreImages = NO;
-	self.lastImageBulkCount = [Model sharedInstance].imagesPerPage;
+	self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 	self.onPage = 0;
 	self.imageList = [NSArray new];
 }

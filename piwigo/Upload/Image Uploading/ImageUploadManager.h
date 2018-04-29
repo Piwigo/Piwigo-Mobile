@@ -34,7 +34,7 @@ typedef enum {
 +(ImageUploadManager*)sharedInstance;
 
 @property (nonatomic, strong) NSMutableArray *imageUploadQueue;
-@property (nonatomic, strong) NSMutableDictionary *imageNamesUploadQueue;
+@property (nonatomic, strong) NSMutableArray *imageNamesUploadQueue;
 @property (nonatomic, strong) NSMutableArray *imageDeleteQueue;
 @property (nonatomic, assign) NSInteger maximumImagesForBatch;
 @property (nonatomic, weak) id<ImageUploadDelegate> delegate;

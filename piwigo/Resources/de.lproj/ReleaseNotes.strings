@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.7_text" = "Version 2.1.7\n\n• Behebt Probleme beim dem Hochladen von Videos auf einigen Servern\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.8_text" = "Version 2.1.8\n\n• Die Größe von Miniaturbildern kann nun geändert werden\n• HTTPS wird zum Standardprotokoll\n• Japanische Übersetzung\n• Kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche\n________________________________________\n\n";
+
+"v2.1.7_text" = "Version 2.1.7\n3. Februar 2018\n\n• Behebt Probleme beim Hochladen von Videos auf einigen Servern\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.6_text" = "Version 2.1.6\n7. Januar 2018\n\n• Arabische Übersetzung\n• Verbesserte HTTP Basis Zugriffs-Authentifizierungsverwaltung\n• kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
@@ -22,7 +24,7 @@
 
 "v2.1.0_text" = "Version 2.1\n14. August 2017\n\n• Kompatibilität mit der Community Erweiterung\n• Dänische, Französische, Polnische Übersetzungen\n• Fehlerbehebungen\n________________________________________\n\n";
 
-"v2.0.4_text" = "Version 2.0.4\n28. Juli 2017\n\n• iPad - Fehlerbeseitigung für unscharfe Miniaturen und der fehlenden Bearbeitungsmöglichkeit von Fotos\n• Videos - Fehlerbehebung mein Hoch- und Herunterladen (VideoJS Erweiterung auf dem Piwigo Server erforderlich)\n• Einstellungen - Optionen hinzugefügt um Titel zu entfernen und die Auflösung von Miniaturbildern verändern zu können\n• Verbessert - Zuverlässigkeit bei der Serververbindung, Meldung wenn das Hochladen abgeschlossen wurde\n• kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche\n________________________________________\n\n";
+"v2.0.4_text" = "Version 2.0.4\n28. Juli 2017\n\n• iPad - Fehlerbeseitigung für unscharfe Miniaturen und der fehlenden Bearbeitungsmöglichkeit von Fotos\n• Videos - Fehlerbehebung mein Hoch- und Herunterladen ‎(VideoJS Erweiterung auf dem Piwigo Server erforderlich‎)\n• Einstellungen - Optionen hinzugefügt um Titel zu entfernen und die Auflösung von Miniaturbildern verändern zu können\n• Verbessert - Zuverlässigkeit bei der Serververbindung, Meldung wenn das Hochladen abgeschlossen wurde\n• Kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.0.3_text" = "Version 2.0.3\nMai 26, 2017\n\n• Option in den Einstellungen hinzugefügt um GPS-Metadaten zu löschen\n• Cache-Nutzung in den Einstellungen ersichtlich\n• Fehlerbehebung Cache Einstellungen wurden manchmal gelöscht/Reset\n• Fehlerbehebung Bild hochladen Einstellungen wurden manchmal gelöscht/Reset\n________________________________________\n\n";
 

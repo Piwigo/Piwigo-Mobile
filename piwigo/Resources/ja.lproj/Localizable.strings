@@ -1,0 +1,443 @@
+/*
+ Localizable.strings
+ piwigo
+ 
+ Created by Spencer Baker on 1/17/15.
+ Copyright (c) 2015 bakercrew. All rights reserved.
+ */
+// ===========================================================================
+// ==> GENERIC
+// ===========================================================================
+// Tab bar
+
+"tabBar_albums" = "アルバム";
+"tabBar_upload" = "アップロード";
+"tabBar_preferences" = "設定";
+
+// Alert buttons
+"alertOkButton" = "OK";
+"alertDismissButton" = "却下";
+"alertYesButton" = "はい";
+"alertNoButton" = "いいえ";
+"alertTryAgainButton" = "もう一度挑戦";
+"alertCancelButton" = "中止";
+"alertAddButton" = "追加";
+"alertRetryButton" = "再試行";
+"alertNextButton" = "次の画像";
+"alertTryButton" = "試す";
+
+// Complete views
+"Complete" = "完了";
+
+// Upload rights
+"uploadRights_title" = "アップロードする権限が必要です";
+"uploadRights_message" = "画像や動画をアップロードするには、アップロード権限が必要です。";
+
+// Errors
+"internetErrorGeneral_title" = "接続エラー";
+"internetErrorGeneral_broken" = "申し訳ありませんが、通信が途切れました。再度ログインしてください。";
+"internetCancellingConnection_button" = "接続を中止しています...";
+"internetCancelledConnection_button" = "接続を中止する";
+"internetCancelledConnection_title" = "接続が中止されました";
+
+// ===========================================================================
+// ==> LOGIN / LOGOUT
+// ===========================================================================
+// Login
+"login" = "ログイン";
+"login_serverPlaceholder" = "example.com";
+"login_userPlaceholder" = "ユーザ名 (オプション)";
+"login_passwordPlaceholder" = "パスワード (オプション)";
+"login_loggingIn" = "ログイン中...";
+"login_connecting" = "接続しています";
+"login_newSession" = "セッションを開いています";
+"login_communityParameters" = "Communityの設定";
+"login_serverParameters" = "Piwigoの設定";
+"login_connectionChanged" = "接続が変更されました！";
+"loginHTTP_title" = "HTTP証明書";
+"loginHTTP_message" = "Piwigoサーバにおいて、基本アクセス認証が必要です。";
+"loginHTTPuser_placeholder" = "ユーザ名";
+"loginHTTPpwd_placeholder" = "パスワード";
+
+// Login — Errors
+"serverMethodsError_title" = "不明なメソッド";
+"serverMethodsError_message" = "サーバーメソットの取得に失敗しました。Piwigoサーバの問題か？";
+
+"loginError_title" = "ログインに失敗しました";
+"loginError_message" = "ユーザ名とパスワードが、指定したwebアドレスで一致しません";
+"loginEmptyServer_title" = "Web アドレスを入力してください";
+"loginEmptyServer_message" = "先に進むために、プロトコルを選択してPiwigoウェブアドレスを入力して下さい。";
+
+"serverConnectionError_title" = "接続に失敗しました";
+"serverConnectionError_message" = "セキュリティで保護された HTTPS 接続を確立できませんでした。アドレスを確認するか、暗号化されていない HTTP モードでやり直してください。";
+
+"serverVersionNotCompatible_title" = "サーバが非互換です";
+"serverVersionNotCompatible_message" = "Piwigoサーバのバージョンは%@です。Piwigo Mobileは2.7以上のみサポートしています。Piwigo Mobileを使うには、サーバを更新してください。それでも継続しますか？";
+
+"sessionStatusError_title" = "認証に失敗しました";
+"sessionStatusError_message" = "サーバーでの認証に失敗しました。もう一度ログインしてください。";
+
+"serverCommunityError_title" = "Communityエラー";
+"serverCommunityError_message" = "Community拡張パラメータを取得できませんでした。もう一度ログインしてください。";
+
+// Logout
+"logoutConfirmation_title" = "ログアウト";
+"logoutConfirmation_message" = "本当にログアウトしますか？";
+
+// Logout — Errors
+"logoutFail_title" = "ログアウトに失敗しました";
+"logoutFail_message" = "ログアウトに失敗しました。もう一度やり直しますか？";
+
+
+// ===========================================================================
+// ==> ALBUMS
+// ===========================================================================
+// Albums view
+"categoryMainEmtpy" = "まだPiwigoにアルバムがありません。\nプルダウンして更新するか、再ログインしてください。";
+"categoryTableView_photoCount" = "写真";
+"categoryTableView_photosCount" = "写真";
+"categoryTableView_subCategoryCount" = "サブアルバム";
+"categoryTableView_subCategoriesCount" = "サブアルバム";
+"categoryImageList_selectButton" = "選択";
+"categoryImageList_noDataError" = "エラー データがありません";
+
+// Albums sort
+"categorySort_nameAscending" = "写真題名、A → Z";
+"categorySort_nameDescending" = "写真題名、Z → A";
+"categorySort_fileNameAscending" = "ファイル名、A → Z";
+"categorySort_fileNameDescending" = "ファイル名、Z → A";
+"categorySort_dateCreatedDescending" = "作成日、新しい → 古い";
+"categorySort_dateCreatedAscending" = "作成日、古い → 新しい";
+"categorySort_datePostedDescending" = "掲載日、新しい → 古い";
+"categorySort_datePostedAscending" = "掲載日、古い → 新しい";
+"categorySort_videosOnly" = "動画のみ";
+"categorySort_imagesOnly" = "画像のみ";
+
+// Album create
+"createNewAlbum_title" = "新規アルバム";
+"createNewAlbum_message" = "このアルバムの名称を入力してください：";
+"createNewAlbum_placeholder" = "アルバムの名称";
+"createNewAlbumHUD_label" = "アルバム作成中...";
+
+// Album create — Errors
+"createAlbumError_title" = "アルバム作成エラー";
+"createAlbumError_message" = "新規アルバムの作成に失敗しました";
+
+// Album options (actions)
+"categoryCellOption_rename" = "名称の変更";
+"categoryCellOption_move" = "移動";
+"categoryCellOption_delete" = "削除";
+
+// Album rename
+"renameCategory_title" = "アルバムの名称を変更";
+"renameCategory_message" = "このアルバムの新しい名称を入力してください";
+"renameCategory_button" = "名称の変更";
+"renameCategoryHUD_label" = "アルバムの名称を変更中...";
+
+// Album rename — Errors
+"renameCategoyError_title" = "名称の変更に失敗しました";
+"renameCategoyError_message" = "アルバム名称の変更に失敗しました";
+
+// Album delete
+"deleteCategory_title" = "アルバムを削除します";
+"deleteCategory_message" = "アルバム「%@」と%@個の画像すべてを本当に削除しますか？";
+"deleteCategoryConfirm_title" = "本当によろしいですか？";
+"deleteCategoryConfirm_message" = "このアルバムを削除するには画像の数を入力して下さい。画像の数：%@";
+"deleteCategoryConfirm_deleteButton" = "削除";
+"deleteCategoryHUD_label" = "アルバムを削除中...";
+
+// Album delete — errors
+"deleteCategoryMatchError_title" = "数が一致しません";
+"deleteCategoryMatchError_message" = "入力した画像の数は、カテゴリ内の画像の数と一致しません。もしこのアルバムを削除するなら、もう一度挑戦して下さい。";
+"deleteCategoryError_title" = "削除に失敗しました";
+"deleteCategoryError_message" = "アルバムの削除に失敗しました";
+
+// Album move
+"moveCategory" = "アルバムを移動します";
+"moveCategory_selectParent" = "アルバム「%@」へ移動するアルバムを選択して下さい";
+"moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
+"moveCategoryHUD_moving" = "アルバムを移動中...";
+
+// album move — Errors
+"moveCategoryError_title" = "移動に失敗しました";
+"moveCategoryError_message" = "アルバムを移動するのに失敗しました";
+
+// Album set image thumbnail
+"categorySelection" = "アルバムを選択";
+"categorySelection_forImage" = "この画像のためのアルバムを選択";
+"categoryImageSet_title" = "画像サムネイルを設定";
+"categoryImageSet_message" = "この画像をアルバム「%@」に設定してよろしいですか？";
+"categoryImageSetHUD_updating" = "アルバムのサムネイルを更新中...";
+
+// Album set image thumbnail — Errors
+"categoryImageSetError_title" = "画像設定エラー";
+"categoryImageSetError_message" = "アルバム画像の設定に失敗しました";
+
+
+// ===========================================================================
+// ==> IMAGES
+// ===========================================================================
+"singleImage" = "画像";
+"singleVideo" = "動画";
+"singleAudio" = "音声";
+"severalImages" = "画像";
+"noImages" = "画像がありません";
+"pullToRefresh" = "画像の再読み込み";
+
+// Errors
+"albumPhotoError_title" = "アルバム写真の取得エラー";
+"albumPhotoError_message" = "アルバム写真の取得に失敗しました (アルバム内の画像が破損している？)";
+
+// Image sort
+"sortBy" = "並び順";
+"imageSortTitle" = "画像を並べ換える";
+"imageSortMessage" = "画像の並び順を選択してください";
+
+// Image options (actions)
+"imageOptions_title" = "画像オプション";
+"imageOptions_edit" = "編集";
+"imageOptions_download" = "ダウンロード";
+"imageOptions_setAlbumImage" = "アルバムの画像に設定します";
+
+// Image details
+"imageDetailsView_title" = "画像の詳細";
+"editImageDetails_title" = "題名：";
+"editImageDetails_titlePlaceholder" = "題名";
+"editImageDetails_author" = "作成者:";
+"editImageDetails_tags" = "タグ:";
+"editImageDetails_privacyLevel" = "この写真を見ることができるのは誰ですか？";
+"editImageDetails_descriptionPlaceholder" = "説明";
+"editImageDetailsHUD_updating" = "画像情報を更新しています...";
+
+// Image details — Errors
+"editImageDetailsError_title" = "更新に失敗しました";
+"editImageDetailsError_message" = "サーバーに変更内容を更新できませんでした。もう一度やり直しますか？";
+"imageDetailsFetchError_title" = "画像詳細の取得に失敗しました";
+"imageDetailsFetchError_retryMessage" = "画像データの取得に失敗しました。もう一度やり直しますか？";
+"imageDetailsFetchError_continueMessage" = "画像データの取得に失敗しました。続行しますか？";
+
+// Image privacy levels
+"privacyLevel" = "プライバシーのレベル";
+"privacyLevel_admin" = "管理者";
+"privacyLevel_adminFamily" = "管理者、家族";
+"privacyLevel_adminsFamilyFriends" = "管理者、家族、友人";
+"privacyLevel_adminsFamilyFriendsContacts" = "管理者、家族、友人、連絡先";
+"privacyLevel_everybody" = "誰でも";
+
+// Image tags
+"none" = "なし";
+"tags" = "タグ";
+"tagsHeader_selected" = "選択済み";
+"tagsHeader_all" = "すべて";
+
+// Image delete
+"deleteImage_delete" = "削除";
+"deleteImageProgress_title" = "%@%% の削除が済みました";
+
+"deleteSingleImage_title" = "画像を削除";
+"deleteSingleImage_message" = "この画像を本当に削除しますか？この操作は元に戻せません。";
+"deleteSeveralImages_title" = "画像を削除";
+"deleteSeveralImages_message" = "選択した%@枚の画像を本当に削除しますか？この操作は元に戻せません。";
+
+"deleteImageFail_title" = "削除に失敗しました";
+"deleteImageFail_message" = "画像が削除できませんでした\n%@";
+
+// Image download
+"downloadSingleImage_title" = "画像をダウンロードします";
+"downloadSingleImage_confirmation" = "選択した画像をダウンロードしますか？";
+"downloadSeveralImages_title" = "画像をダウンロードします";
+"downloadSeveralImage_confirmation" = "選択した%@枚の画像をダウンロードしますか？";
+
+"downloadingImage" = "画像をダウンロード中";
+"downloadingImages" = "画像をダウンロード中";
+"downloadingImageInfo" = "画像情報をダウンロード中";
+"downloadingImageInfoForSort" = "並べ替えのために画像情報をダウンロード中";
+
+// Image download — Errors
+"downloadImageFail_title" = "ダウンロードに失敗しました";
+"downloadImageFail_message" = "画像のダウンロードに失敗しました！\n%@";
+"downloadVideoFail_message" = "動画のダウンロードに失敗しました！\n%@";
+"downloadVideoFail_Photos" = "動画フォーマットが写真アプリで受け入れられませんでした！";
+
+"imageSaveError_title" = "画像の保存に失敗しました";
+"imageSaveError_message" = "画像の保存に失敗しました。エラー：%@";
+
+"videoSaveError_title" = "動画の保存に失敗しました";
+"videoSaveError_message" = "動画の保存に失敗しました。エラー：%@";
+
+// Images upload
+"categoryUpload_chooseAlbum" = "画像をアップロードするアルバムを選択します";
+"categoryUpload_chooseLocalAlbum" = "画像を取得するアルバムを選択します";
+"categoryUpload_chooseiCloudAlbum" = "画像を取得するICloud アルバムを選択します";
+"categoyUpload_loadSubCategories" = "読み込む";
+"selectAll" = "すべて";
+
+"imageUploadDetails_title" = "題名：";
+"imageUploadDetails_author" = "作成者：";
+"imageUploadDetails_privacy" = "プライバシー:";
+"imageUploadDetails_tags" = "タグ：";
+"imageUploadDetails_description" = "説明：";
+
+"imageUploadDetailsView_title" = "画像";
+"imageUploadDetailsButton_title" = "アップロード";
+"imageUploadDetailsEdit_title" = "アップロードする画像を編集します";
+"imageUploadDetailsUploading_title" = "アップロード中の画像";
+"imageUploadDetailsCell_uploadComplete" = "完了！終了中...";
+
+"imageUploadTableCell_uploading" = "アップロード中...";
+"imageUploadProgressBar_zero" = "アップロード中 0/0";
+"imageUploadProgressBar_nonZero" = "アップロード中 %@/%@";
+"imageUploadProgressBar_completed" = "完了しました";
+"imageUploadCompleted_title" = "アップロードが完了しました";
+"imageUploadCompleted_message" = "画像／動画が、Piwigoサーバにアップロードされました。";
+"imageUploadCompleted_message>1" = "画像／動画が、Piwigoサーバにアップロードされました。";
+
+// Image upload — Errors
+"uploadError_title" = "アップロードエラー";
+"uploadError_message" = "画像をアップロードできませんでした。エラー: %@";
+"uploadCancelled_title" = "アップロードが取り消されました";
+
+"imageUploadError_title" = "画像アップロードエラー";
+"imageUploadError_format" = "申し訳ありませんが、このPiwigoサーバでは拡張子 %@ と .jpg の画像ファイルを受け付けていません。";
+"imageUploadError_source" = "元画像を作成できません";
+"imageUploadError_destination" = "画像の保存先を作成できません";
+"imageUploadError_iCloud" = "iCloudから画像を取得できませんでした。エラー：%@";
+
+"audioUploadError_title" = "音声アップロードのエラー";
+"audioUploadError_format" = "申し訳ありませんが、Piwigo Mobileではまだ音声ファイルをサポートしていません。";
+
+"videoUploadError_title" = "動画アップロードのエラー";
+"videoUploadError_format" = "申し訳ありませんが、このPiwigoサーバでは拡張子 %@ の動画ファイルを受け付けていません。";
+"videoUploadError_iCloud" = "iCloudから動画を取得できませんでした。エラー：%@";
+"videoUploadError_export" = "申し訳ありませんが、アップロードする動画を取得できませんでした。エラー：%@";
+"videoUploadError_unknown" = "申し訳ありませんが、動画のアップロードはMP4変換中に原因不明のエラーのため失敗しました。エラー：%@";
+"videoUploadCancelled_message" = "動画のアップロードは取り消されました。";
+
+// ===========================================================================
+// ==> LOCAL ALBUMS
+// ===========================================================================
+"localAlbums" = "ローカルアルバム";
+
+"localImageSort_newest" = "最新";
+"localImageSort_oldest" = "最古";
+"localImageSort_notUploaded" = "アップロードされていない";
+"localImageSort_undefined" = "定義されていない";
+
+// Local albums — Access not Authorized
+"localAlbums_photosNotAuthorized_title" = "アクセスなし";
+"localAlbums_photosNiltitle" = "写真読み出しの問題";
+"localAlbums_photosNnil_msg" = "ローカル写真ライブラリの読み出しに問題があります";
+
+// Local albums — Tell user to change settings, how
+"localAlbums_photosNotAuthorized_msg" = "ローカル写真ライブラリを開けませんでした。設定アプリのプライバシー、写真を開いてPiwigoにアクセスを許可してください。";
+
+// ===========================================================================
+// ==> SETTINGS
+// ===========================================================================
+// Settings — Piwigo Server
+"settingsHeader_server" = "Piwigoサーバ";
+"settings_server" = "アドレス";
+"settings_username" = "ユーザ名";
+"settings_notLoggedIn" = " - ログインしていません - ";
+"settings_logout" = "ログアウト";
+"settingsFooter_formats" = "サーバは次のファイル種類を受け付けます";
+
+// Settings — Thumbnails
+"settingsHeader_general" = "一般設定";
+"settingsHeader_thumbnails" = "サムネイル";
+"settings_loadAllCategories" = "起動時にすべてのアルバムをダウンロードします";
+"settings_loadAllCategories>320px" = "起動時にすべてのアルバムをダウンロード (トラブルの場合はチェックを外す)";
+
+"defaultImageSort" = "並び順";
+"defaultImageSort>320px" = "既定の並び順";
+"defaultImageSort>414px" = "画像の既定並び順";
+
+"defaultThumbnailFile" = "ファイル";
+"defaultThumbnailFile>320px" = "サムネイルファイル";
+"defaultThumbnailFile>414px" = "サムネイル画像ファイル";
+"defaultThumbnailSize" = "サイズ";
+"defaultThumbnailSize>320px" = "サムネイルのサイズ";
+"defaultThumbnailSize>414px" = "サムネイルの既定サイズ";
+"defaultThumbnailSizeTitle" = "既定のサイズ";
+"defaultThumbnailSizeHeader" = "サムネイルのサイズを選択してください";
+"settings_displayTitles" = "サムネイルの題名";
+"settings_displayTitles>320px" = "サムネイルに題名を表示します";
+
+"thumbnailSizeSquare" = "正方形";
+"thumbnailSizeThumbnail" = "サムネイル";
+"thumbnailSizeXXSmall" = "XXS 最小";
+"thumbnailSizeXSmall" = "XS 極小";
+"thumbnailSizeSmall" = "小";
+"thumbnailSizeMedium" = "中";
+"thumbnailSizeLarge" = "大";
+"thumbnailSizeXLarge" = "XL 特大";
+"thumbnailSizeXXLarge" = "XXL 最大";
+"thumbnailSizexFullRes" = "フル解像度";
+
+// Settings — Images
+"settingsHeader_images" = "画像";
+
+"defaultPreviewFile" = "プレビュー";
+"defaultPreviewFile>320px" = "ファイルのプレビュー";
+"defaultPreviewFile>414px" = "画像ファイルのプレビュー";
+"defaultImageSize" = "画像";
+"defaultImageSize>320px" = "画像サイズ";
+"defaultImageSize>414px" = "規定の画像サイズ";
+"defaultImageSizeTitle" = "規定のサイズ";
+"defaultImageSizeHeader" = "画像サイズを選択して下さい";
+"defaultImageSize_recommended" = " (推奨)";
+"defaultSize_disabled" = " （サーバで無効化）";
+"defaultSizeFooter" = "灰色のサイズはPiwigoサーバで非推奨または利用できません。";
+
+"imageSizeSquare" = "正方形";
+"imageSizeThumbnail" = "サムネイル";
+"imageSizeXXSmall" = "XXS 最小";
+"imageSizeXSmall" = "XS 極小";
+"imageSizeSmall" = "小";
+"imageSizeMedium" = "中";
+"imageSizeLarge" = "大";
+"imageSizeXLarge" = "XL 特大";
+"imageSizeXXLarge" = "XXL 最大";
+"imageSizexFullRes" = "フル解像度";
+
+// Settings — Upload
+"settingsHeader_upload" = "規定のアップロード設定";
+"settings_defaultAuthor" = "作成者";
+"settings_defaultAuthor>320px" = "作成者名";
+"settings_defaultAuthorPlaceholder" = "作成者名";
+"settings_defaultPrivacy" = "プライバシー";
+"settings_defaultPrivacy>414px" = "誰がこのメディアを見ることができますか？";
+"settings_stripGPSdata" = "プライベートなメタデータを取り除きます";
+"settings_stripGPSdata>375px" = "アップロードする前にプライベートなメタデータを取り除きます";
+"settings_photoResize" = "アップロードする前にサイズを変更します";
+"settings_photoResize>375px" = "アップロードする前に画像のサイズを変更します";
+"settings_photoSize" = "> サイズ   ";
+"settings_placeholderSize" = "写真のサイズを 5 - 100 の範囲で入力して下さい";
+"settings_photoCompress" = "アップロードする前に圧縮します";
+"settings_photoCompress>375px" = "アップロードする前に画像を圧縮します";
+"settings_photoQuality" = "> 画質";
+"settings_placeholderQuality" = "画像の品質を 50 - 98 の範囲で入力してください";
+"settings_deleteImage>375px" = "アップロード後に画像を削除します";
+"settings_deleteImage" = "アップロード後に削除します";
+
+// Settings — Cache
+"settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";
+"settings_cacheDisk" = "ディスク";
+"settings_cacheMemory" = "メモリ";
+"settings_cacheMegabytes" = "MB";
+
+// Settings — Colors
+"settingsHeader_colors" = "色";
+"settings_darkPalette" = "暗い色調";
+"settings_switchPalette" = "自動的に切り替える";
+"settings_brightness" = "明度";
+
+// Settings — Information
+"settings_appName" = "Piwigo Mobile";
+"settingsHeader_about" = "情報";
+"settings_supportForum" = "サポートフォーラム";
+"settings_releaseNotes" = "リリースノート";
+"settings_rateInAppStore" = "Piwigo Mobileを評価する";
+"settings_translateWithCrowdin" = "Piwigo Mobileを翻訳する";
+"settings_pwgForumURL" = "http://piwigo.org/forum";
+"settings_acknowledgements" = "謝辞";

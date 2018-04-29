@@ -23,6 +23,8 @@
 @property (nonatomic, assign) NSInteger topConstraintAmount;
 @property (nonatomic, strong) UIViewController *hudViewController;
 
+@property (nonatomic, assign) BOOL usesCommunityPluginV29;
+
 -(void)launchLogin;
 -(void)checkSessionStatusAndTryRelogin;
 

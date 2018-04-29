@@ -7,7 +7,6 @@
 //
 
 #import "NetworkHandler.h"
-#import <AFNetworking/AFImageDownloader.h>
 
 FOUNDATION_EXPORT NSString * const kGetImageOrderFileName;
 FOUNDATION_EXPORT NSString * const kGetImageOrderId;

@@ -19,6 +19,7 @@
 #import "ImageUploadViewController.h"
 #import "SortHeaderCollectionReusableView.h"
 #import "SortSelectViewController.h"
+#import "NoImagesHeaderCollectionReusableView.h"
 #import "LoadingView.h"
 #import "UICountingLabel.h"
 #import "ImagesCollection.h"
@@ -58,30 +59,23 @@
         self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
         self.sortType = kPiwigoSortByNewest;
         
+        // Collection of images
         self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
         self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
         self.localImagesCollection.backgroundColor = [UIColor clearColor];
         self.localImagesCollection.dataSource = self;
         self.localImagesCollection.delegate = self;
         [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
-        [self.localImagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
+        [self.localImagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader"];
+        [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader"];
         self.localImagesCollection.indicatorStyle = UIScrollViewIndicatorStyleDefault;
         [self.view addSubview:self.localImagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
         
-        self.noImagesLabel = [UILabel new];
-        self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.noImagesLabel.font = [UIFont piwigoFontNormal];
-        self.noImagesLabel.font = [self.noImagesLabel.font fontWithSize:20];
-        self.noImagesLabel.textColor = [UIColor piwigoGrayLight];
-        self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-        self.noImagesLabel.hidden = YES;
-        [self.view addSubview:self.noImagesLabel];
-        [self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:60]];
-        [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
-        
+        // Selected images
         self.selectedImages = [NSMutableArray new];
         
+        // Bar buttons
         self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"selectAll", @"All") style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"]
@@ -120,7 +114,10 @@
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     [self loadNavButtons];
+    
+    // Progress bar
     [ImageUploadProgressView sharedInstance].delegate = self;
+    [[ImageUploadProgressView sharedInstance] changePaletteMode];
     
     if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
     {
@@ -194,33 +191,37 @@
     
     
     __block NSDate *lastTime = [NSDate date];
-    
+
     [SortSelectViewController getSortedImageArrayFromSortType:sortType
-                                                    forImages:self.images
-                                                  forCategory:self.categoryId
-                                                  forProgress:^(NSInteger onPage, NSInteger outOf) {
-                                                      NSInteger lastImageCount = (onPage + 1) * [Model sharedInstance].imagesPerPage;
-                                                      NSInteger currentDownloaded = (onPage + 2) * [Model sharedInstance].imagesPerPage;
-                                                      
-                                                      NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
-                                                      
-                                                      if(currentDownloaded > downloadingCategory.numberOfImages)
-                                                      {
-                                                          currentDownloaded = downloadingCategory.numberOfImages;
-                                                      }
-                                                      
-                                                      [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
-                                                      
-                                                      lastTime = [NSDate date];
-                                                  } onCompletion:^(NSArray *images) {
-                                                      
-                                                      if(sortType == kPiwigoSortByNotUploaded && !self.loadingView.hidden)
-                                                      {
-                                                          [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"Complete", nil) showCheckMark:YES withDelay:0.5];
-                                                      }
-                                                      self.images = images;
-                                                      [self.localImagesCollection reloadData];
-                                                  }];
+                forImages:self.images
+              forCategory:self.categoryId
+              forProgress:^(NSInteger onPage, NSInteger outOf) {
+
+                  // Calculate the number of thumbnails displayed per page
+                  NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+
+                  NSInteger lastImageCount = (onPage + 1) * imagesPerPage;
+                  NSInteger currentDownloaded = (onPage + 2) * imagesPerPage;
+                  
+                  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
+                  
+                  if(currentDownloaded > downloadingCategory.numberOfImages)
+                  {
+                      currentDownloaded = downloadingCategory.numberOfImages;
+                  }
+                  
+                  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
+                  
+                  lastTime = [NSDate date];
+              } onCompletion:^(NSArray *images) {
+                  
+                  if(sortType == kPiwigoSortByNotUploaded && !self.loadingView.hidden)
+                  {
+                      [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"Complete", nil) showCheckMark:YES withDelay:0.5];
+                  }
+                  self.images = images;
+                  [self.localImagesCollection reloadData];
+              }];
 }
 
 -(void)selectAll
@@ -264,19 +265,37 @@
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    SortHeaderCollectionReusableView *header = nil;
-    
-    if(kind == UICollectionElementKindSectionHeader)
-    {
-        header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header" forIndexPath:indexPath];
-        header.backgroundColor = [UIColor piwigoCellBackgroundColor];
-        header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
-        header.currentSortLabel.text = [SortSelectViewController getNameForSortType:self.sortType];
-        header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
-        [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+    if (self.images.count != 0) {
+        // Display "Sort By…" header
+        SortHeaderCollectionReusableView *header = nil;
+        
+        if(kind == UICollectionElementKindSectionHeader)
+        {
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
+            header.backgroundColor = [UIColor piwigoCellBackgroundColor];
+            header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
+            header.currentSortLabel.text = [SortSelectViewController getNameForSortType:self.sortType];
+            header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
+            [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+            
+            return header;
+        }
+    } else {
+        // Display "No Images"
+        NoImagesHeaderCollectionReusableView *header = nil;
+        
+        if(kind == UICollectionElementKindSectionHeader)
+        {
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
+            header.backgroundColor = [UIColor piwigoBackgroundColor];
+            header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+            
+            return header;
+        }
     }
     
-    return header;
+    UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
+    return view;
 }
 
 -(void)didSelectCollectionViewHeader
@@ -294,7 +313,7 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    self.noImagesLabel.hidden = self.images.count != 0;
+//    self.noImagesLabel.hidden = (self.images.count != 0);
     
     return self.images.count;
 }
@@ -317,7 +336,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 
     return CGSizeMake(size, size);
 }
@@ -327,8 +346,8 @@
     LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     
     PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
-    [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForCollectionView:collectionView]];
-    
+    [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait]];
+
     // For some unknown reason, the asset resource may be empty
     NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
     NSString *originalFilename;
@@ -354,7 +373,7 @@
     {
         cell.cellSelected = YES;
     }
-    else if ([[ImageUploadManager sharedInstance].imageNamesUploadQueue objectForKey:[originalFilename stringByDeletingPathExtension]])
+    else if ([[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]])
     {
         cell.cellUploading = YES;
     }

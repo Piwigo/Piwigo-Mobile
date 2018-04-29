@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.7_text" = "Version 2.1.7\n\n• Fixa uppladdningsproblem på vissa servrar\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.8_text" = "Version 2.1.8\n\n• Lägger till förmåga att ändra storleken på miniatyrer\n• HTTPS blir standardprotokollet\n• Japansk översättning\n• Mindre buggfixar och förbättring av gränssnittet\n________________________________________\n\n";
+
+"v2.1.7_text" = "Version 2.1.7\n3 februari 2018\n\n• Fixa uppladdningsproblem på vissa servrar\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.6_text" = "Version 2.1.6\n7 januari 2018\n\n• Arabisk översättning\n• Förbättrad autentiseringshantering för HTTP-baserad åtkomst\n• Mindre buggfixar och förbättring av gränssnittet\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 

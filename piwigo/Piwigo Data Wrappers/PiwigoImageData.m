@@ -62,7 +62,7 @@
             sizeName = NSLocalizedString(@"thumbnailSizeSquare", @"Square");
             break;
         case kPiwigoImageSizeThumb:
-            sizeName = NSLocalizedString(@"thumbnailSizeThumbnail", @"Thumbnail (default)");
+            sizeName = NSLocalizedString(@"thumbnailSizeThumbnail", @"Thumbnail");
             break;
         case kPiwigoImageSizeXXSmall:
             sizeName = NSLocalizedString(@"thumbnailSizeXXSmall", @"Tiny");
@@ -95,7 +95,7 @@
     return sizeName;
 }
 
-+(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize
++(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withAdvice:(BOOL)advice
 {
 	NSString *sizeName = @"";
 	
@@ -117,43 +117,43 @@
 			break;
 		case kPiwigoImageSizeXSmall:
 			sizeName = NSLocalizedString(@"imageSizeXSmall", @"Extra Small");
-            if ((points <= 324) && [Model sharedInstance].hasXSmallSizeImages) {
+            if ((points <= 324) && [Model sharedInstance].hasXSmallSizeImages && advice) {
                 sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
             }
 			break;
 		case kPiwigoImageSizeSmall:
 			sizeName = NSLocalizedString(@"imageSizeSmall", @"Small");
-            if ((points > 324) && (points <= 432) && [Model sharedInstance].hasSmallSizeImages) {
+            if ((points > 324) && (points <= 432) && [Model sharedInstance].hasSmallSizeImages && advice) {
                 sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
             }
 			break;
 		case kPiwigoImageSizeMedium:
 			sizeName = NSLocalizedString(@"imageSizeMedium", @"Medium");
-            if ((points > 432) && (points <= 594) && [Model sharedInstance].hasMediumSizeImages) {
+            if ((points > 432) && (points <= 594) && [Model sharedInstance].hasMediumSizeImages && advice) {
                 sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
             }
 			break;
 		case kPiwigoImageSizeLarge:
 			sizeName = NSLocalizedString(@"imageSizeLarge", @"Large");
-            if ((points > 594) && (points <= 756) && [Model sharedInstance].hasLargeSizeImages) {
+            if ((points > 594) && (points <= 756) && [Model sharedInstance].hasLargeSizeImages && advice) {
                 sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
             }
 			break;
 		case kPiwigoImageSizeXLarge:
 			sizeName = NSLocalizedString(@"imageSizeXLarge", @"Extra Large");
-            if ((points > 756) && (points <= 918) &&[Model sharedInstance].hasXLargeSizeImages) {
+            if ((points > 756) && (points <= 918) &&[Model sharedInstance].hasXLargeSizeImages && advice) {
                 sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
             }
 			break;
 		case kPiwigoImageSizeXXLarge:
 			sizeName = NSLocalizedString(@"imageSizeXXLarge", @"Huge");
-            if ((points > 918) && (points <= 1242) && [Model sharedInstance].hasXXLargeSizeImages) {
+            if ((points > 918) && (points <= 1242) && [Model sharedInstance].hasXXLargeSizeImages && advice) {
                 sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
             }
 			break;
 		case kPiwigoImageSizeFullRes:
 			sizeName = NSLocalizedString(@"imageSizexFullRes", @"Full Resolution");
-            if (points > 1242) {
+            if ((points > 1242) && advice) {
                 sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
             }
 			break;

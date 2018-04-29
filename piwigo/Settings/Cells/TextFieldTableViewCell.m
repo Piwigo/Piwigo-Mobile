@@ -35,6 +35,8 @@
 		self.rightTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightTextField.font = [UIFont piwigoFontNormal];
 		self.rightTextField.textColor = [UIColor piwigoRightLabelColor];
+        self.rightTextField.keyboardType = UIKeyboardTypeDefault;
+        self.rightTextField.returnKeyType = UIReturnKeyDone;
         if ([Model sharedInstance].isAppLanguageRTL) {
             self.rightTextField.textAlignment = NSTextAlignmentLeft;
         } else {

@@ -13,6 +13,7 @@
 #import "CategoriesData.h"
 #import "PiwigoTagData.h"
 #import "SAMKeychain.h"
+#import "ImagesCollection.h"
 
 NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
@@ -31,13 +32,17 @@ NSString * const kGetImageOrderDescending = @"desc";
                                forOrder:(NSString*)order
                            OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albumImages))completion
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-	return [self post:kPiwigoCategoriesGetImages
-		URLParameters:@{@"albumId" : @(albumId),
-						@"perPage" : @([Model sharedInstance].imagesPerPage),
-						@"page"    : @(page),
-						@"order"   : [order stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]}
-           parameters:nil
+{    
+    // Calculate the number of thumbnails displayed per page
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+
+    return [self post:kPiwigoCategoriesGetImages
+		URLParameters:nil
+           parameters:@{@"cat_id"   : @(albumId),
+                        @"per_page" : @(imagesPerPage),
+                        @"page"     : @(page),
+                        @"order"    : [order stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]
+                        }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -46,11 +51,16 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
 						  completion(task, albumImages);
 					  } else {
+#if defined(DEBUG)
+                          NSLog(@"=> getImagesForAlbumId: %@ — Success but stat not Ok!", @(albumId));
+#endif
 						  completion(task, nil);
 					  }
 				  }
 			  } failure:^(NSURLSessionTask *task, NSError *error) {
-				  
+#if defined(DEBUG)
+                  NSLog(@"=> getImagesForAlbumId: %@ — Failed!", @(albumId));
+#endif
 				  if(fail) {
 					  fail(task, error);
 				  }
@@ -82,8 +92,8 @@ NSString * const kGetImageOrderDescending = @"desc";
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	return [self post:kPiwigoImagesGetInfo
-		URLParameters:@{@"imageId" : @(imageId)}
-           parameters:nil
+		URLParameters:nil
+           parameters:@{@"image_id" : @(imageId)}
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -97,11 +107,17 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  }
 						  completion(task, imageData);
 					  } else {
+#if defined(DEBUG)
+                          NSLog(@"=> getImageInfoById: %@ — Success but stat not Ok!", @(imageId));
+#endif
 						  completion(task, nil);
 					  }
 				  }
 			  }
               failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                  NSLog(@"=> getImageInfoById: %@ — Failed!", @(imageId));
+#endif
 				  if(fail) {
 					  fail(task, error);
 				  }
@@ -135,7 +151,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 	}
     // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
     // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
-    imageData.fullResPath = [[imageJson objectForKey:@"element_url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+    imageData.fullResPath = [NetworkHandler encodedURL:[[imageJson objectForKey:@"element_url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
 	
 	imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
 	imageData.author = [imageJson objectForKey:@"author"];
@@ -150,24 +166,30 @@ NSString * const kGetImageOrderDescending = @"desc";
 	}
 	
     NSDateFormatter *dateFormat = [NSDateFormatter new];
-	NSString *dateString = [imageJson objectForKey:@"date_available"];
+	NSString *dateAvailableString = [imageJson objectForKey:@"date_available"];
 	[dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-	imageData.datePosted = [dateFormat dateFromString:dateString];
-    dateString = [imageJson objectForKey:@"date_creation"];
-    if (![dateString isKindOfClass:[NSNull class]]) imageData.dateCreated = [dateFormat dateFromString:dateString];
-    
+    if (![dateAvailableString isKindOfClass:[NSNull class]]) {
+        imageData.datePosted = [dateFormat dateFromString:dateAvailableString];
+    } else {
+        imageData.datePosted = [NSDate date];
+    }
+    NSString *dateCreatedString = [imageJson objectForKey:@"date_creation"];
+    if (![dateCreatedString isKindOfClass:[NSNull class]]) {
+        imageData.dateCreated = [dateFormat dateFromString:dateCreatedString];
+    }
+
     // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
     // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
-	imageData.SquarePath = [[[imageSizes objectForKey:@"square"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-	imageData.ThumbPath = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-	imageData.MediumPath = [[[imageSizes objectForKey:@"medium"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-	imageData.XXSmallPath = [[imageSizes valueForKeyPath:@"2small.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-	imageData.XSmallPath = [[imageSizes valueForKeyPath:@"xsmall.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-	imageData.SmallPath = [[imageSizes valueForKeyPath:@"small.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-	imageData.LargePath = [[imageSizes valueForKeyPath:@"large.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-	imageData.XLargePath = [[imageSizes valueForKeyPath:@"xlarge.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-	imageData.XXLargePath = [[imageSizes valueForKeyPath:@"xxlarge.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	imageData.SquarePath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"square"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+	imageData.ThumbPath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"thumb"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+	imageData.MediumPath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"medium"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+	imageData.XXSmallPath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"2small.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+	imageData.XSmallPath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"xsmall.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+	imageData.SmallPath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"small.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+	imageData.LargePath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"large.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+	imageData.XLargePath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"xlarge.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+	imageData.XXLargePath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"xxlarge.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
 	
 	NSArray *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];
@@ -175,7 +197,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 	{
 		[categoryIds addObject:[category objectForKey:@"id"]];
 	}
-	
 	imageData.categoryIds = categoryIds;
 	
 	NSArray *tags = [imageJson objectForKey:@"tags"];
@@ -196,8 +217,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	if(!image) return nil;
-	return [self post:kPiwigoImageDelete
+    return [self post:kPiwigoImageDelete
 		URLParameters:nil
 		   parameters:@{@"image_id" : @([image.imageId integerValue]),
                         @"pwg_token" : [Model sharedInstance].pwgToken}
@@ -227,60 +247,30 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Download image with highest resolution possible (fullResPath image is not always available)
     NSString *URLRequest = @"";
     if ([image.fullResPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.fullResPath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.fullResPath;
     } else if ([image.XXLargePath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.XXLargePath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.XXLargePath;
     } else if ([image.XLargePath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.XLargePath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.XLargePath;
     } else if ([image.LargePath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.LargePath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.LargePath;
     } else if ([image.MediumPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.MediumPath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.MediumPath;
     } else if ([image.SmallPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.SmallPath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.SmallPath;
     } else if ([image.XSmallPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.XSmallPath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.XSmallPath;
     } else if ([image.XXSmallPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.XXSmallPath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.XXSmallPath;
     } else if ([image.ThumbPath length] > 0) {
-        URLRequest = [NetworkHandler getURLWithPath:image.ThumbPath asPiwigoRequest:NO withURLParams:nil];
+        URLRequest = image.ThumbPath;
     }
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString: URLRequest]];
 
-    // Create session manager
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.responseSerializer = [AFImageResponseSerializer serializer];
-
-    // Ensure that SSL certificates won't be rejected
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [manager setSecurityPolicy:policy];
-
-    // Manage servers performing HTTP Basic Access Authentication
-    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
-        // HTTP basic authentification credentials
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-        
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
-            return NSURLSessionAuthChallengeUseCredential;
-        } else {
-            // HTTP credentials refused!
-            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-        }
-    }];
-    
     // Download and save image
     NSString *fileName = image.fileName;
     NSURLSessionDownloadTask *task =
-        [manager downloadTaskWithRequest:request
+        [[Model sharedInstance].imagesSessionManager downloadTaskWithRequest:request
                                 progress:progress
                              destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
                                  NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
@@ -298,9 +288,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
 	if(!video) return nil;
-
-    NSString *URLRequest = [NetworkHandler getURLWithPath:video.fullResPath asPiwigoRequest:NO withURLParams:nil];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:video.fullResPath]];
     
     // Replace .mp4 or .m4v with .mov for compatibility with Photos.app
     NSString *fileName = video.fileName;
@@ -309,45 +297,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
     }
     
-    // Create session manager
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
-    
-    // Ensure that SSL certificates won't be rejected
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [manager setSecurityPolicy:policy];
-
-    // Manage servers performing HTTP Basic Access Authentication
-    [manager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
-        // HTTP basic authentification credentials
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-        
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
-            return NSURLSessionAuthChallengeUseCredential;
-        } else {
-            // HTTP credentials refused!
-            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-        }
-    }];
-
     // Download and save video
-    NSURLSessionDownloadTask *task =
-            [manager downloadTaskWithRequest:request
-                                    progress:progress
-                                 destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+    NSURLSessionDownloadTask *task = [[Model sharedInstance].imagesSessionManager
+                    downloadTaskWithRequest:request
+                                   progress:progress
+                                destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
                                      NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
                                      return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
-                                 }
-                           completionHandler:completionHandler
+                                }
+                          completionHandler:completionHandler
              ];
     [task resume];
 

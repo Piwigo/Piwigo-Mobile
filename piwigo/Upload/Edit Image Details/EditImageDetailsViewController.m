@@ -112,9 +112,9 @@ typedef enum {
 }
 
 // NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
--(void)setIsEdit:(BOOL)isEdit
+-(void)setIsEdit:(BOOL)isEditChoice
 {
-    _isEdit = isEdit;
+    _isEdit = isEditChoice;
     [ImageService getImageInfoById:self.imageDetails.imageId
                   ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
@@ -135,7 +135,7 @@ typedef enum {
                                                       actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
                                                       style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * action) {
-                                                          self.isEdit = _isEdit;
+                                                          self.isEdit = isEditChoice;
                                                       }];
 
                       [alert addAction:dismissAction];
@@ -197,7 +197,8 @@ typedef enum {
 						}];
 }
 
-#pragma mark -- HUD methods
+
+#pragma mark - HUD methods
 
 -(void)showUpdatingImageInfoHUD
 {
@@ -244,7 +245,7 @@ typedef enum {
 }
 
 
-#pragma mark -- Keyboard Methods
+#pragma mark - Keyboard Methods
 
 -(void)updateImageDetails
 {
@@ -362,7 +363,8 @@ typedef enum {
 	
 }
 
-#pragma mark SelectPrivacyDelegate Methods
+
+#pragma mark - SelectPrivacyDelegate Methods
 
 -(void)selectedPrivacy:(kPiwigoPrivacy)privacy
 {
@@ -372,7 +374,8 @@ typedef enum {
 	[labelCell setPrivacyLevel:privacy];
 }
 
-#pragma mark TagsViewControllerDelegate Methods
+
+#pragma mark - TagsViewControllerDelegate Methods
 
 -(void)didExitWithSelectedTags:(NSArray *)selectedTags
 {

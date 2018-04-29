@@ -27,7 +27,8 @@
         if (@available(iOS 10, *))
             return [UIColor colorWithRed:23/255.0 green:23/255.0 blue:23/255.0 alpha:1.0];
         else
-            return [UIColor colorWithRed:64/255.0 green:64/255.0 blue:64/255.0 alpha:1.0];
+            return [UIColor colorWithRed:23/255.0 green:23/255.0 blue:23/255.0 alpha:1.0];
+//            return [UIColor colorWithRed:64/255.0 green:64/255.0 blue:64/255.0 alpha:1.0];
     else
         return [UIColor colorWithRed:239/255.0 green:239/255.0 blue:244/255.0 alpha:1.0];
 }
@@ -78,9 +79,12 @@
 +(UIColor*)piwigoHeaderColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
-        return [UIColor colorWithRed:128/255.0 green:128/255.0 blue:128/255.0 alpha:1.0];
+        return [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1.0];
     else
-        return [UIColor colorWithRed:51/255.0 green:51/255.0 blue:53/255.0 alpha:1.0];
+        if (@available(iOS 10, *))
+            return [UIColor colorWithRed:28/255.0 green:28/255.0 blue:30/255.0 alpha:1.0];
+        else
+            return [UIColor colorWithRed:46/255.0 green:46/255.0 blue:46/255.0 alpha:1.0];
 }
 
 // Color of TableView Separators (was piwigoGrayXLight)

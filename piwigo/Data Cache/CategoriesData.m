@@ -8,6 +8,7 @@
 
 #import "CategoriesData.h"
 
+NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
 NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
 NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotificationCategoryImageUpdated";
 
@@ -55,38 +56,44 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 
 -(void)addAllCategories:(NSArray*)categories
 {
-	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
-	for(PiwigoAlbumData *categoryData in categories)
-	{
-		NSInteger index = -1;
-		NSInteger curr = 0;
-		for(PiwigoAlbumData *existingCategory in self.allCategories)
-		{
-			if(existingCategory.albumId == categoryData.albumId)
-			{
-				index = curr;
-				break;
-			}
-			curr++;
-		}
-		
-		if(index != -1)
-		{
-			PiwigoAlbumData *existingData = [newCategories objectAtIndex:index];
-			if(existingData.albumThumbnailId == categoryData.albumThumbnailId)
-			{
-				categoryData.categoryImage = existingData.categoryImage;
-                categoryData.hasUploadRights = existingData.hasUploadRights;
-			}
-			
-			[newCategories setObject:categoryData atIndexedSubscript:index];
-		}
-		else
-		{
-			[newCategories addObject:categoryData];
-		}
-	}
-	
+    // Create new list of categories
+    NSMutableArray *newCategories = [[NSMutableArray alloc] init];
+
+    // Loop on freshly retrieved categories
+    for(PiwigoAlbumData *categoryData in categories)
+    {
+        // Is this a known category?
+        NSInteger index = -1;
+        NSInteger curr = 0;
+        for(PiwigoAlbumData *knownCategory in self.allCategories)
+        {
+            if(knownCategory.albumId == categoryData.albumId)
+            {
+                index = curr;
+                break;
+            }
+            curr++;
+        }
+        
+        // Retrieve exisiting data if found
+        if(index != -1)
+        {
+            // Retrieve exisiting data
+            PiwigoAlbumData *existingData = [self.allCategories objectAtIndex:index];
+            categoryData.hasUploadRights = existingData.hasUploadRights;
+            
+            // Reuse the image if the URL is identical
+            if(existingData.albumThumbnailId == categoryData.albumThumbnailId)
+            {
+                categoryData.categoryImage = existingData.categoryImage;
+            }
+        }
+
+        // Append category to new list
+        [newCategories addObject:categoryData];
+    }
+    
+    // Update list of displayed categories
 	self.allCategories = newCategories;
 	
     // Post to the app that the category data has been updated (if necessary)

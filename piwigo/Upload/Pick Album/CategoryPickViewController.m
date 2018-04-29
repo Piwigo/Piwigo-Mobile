@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import <sys/utsname.h>                    // For determining iOS device model
-
 #import "CategoryPickViewController.h"
 #import "CategoriesData.h"
 #import "LocalAlbumsViewController.h"
@@ -36,7 +34,7 @@
 	}
 	else
 	{
-		self = (CategoryPickViewController*)[[UIViewController alloc] init];
+        self = (CategoryPickViewController*)[[UIViewController alloc] init];
 		
 		UILabel *adminLabel = [UILabel new];
 		adminLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -81,9 +79,10 @@
                                        options:kNilOptions metrics:nil
                                        views:@{@"admin" : adminLabel, @"description" : description}]];
         }
-	}
-	
-	self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+
+        // Background color of the view
+        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+}
 	
 	return self;
 }
@@ -129,11 +128,13 @@
     // Header height?
     NSString *header = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
-                                             context:nil];
-    return ceil(headerRect.size.height + 4.0 + 10.0);
+                                             context:context];
+    return fmax(44.0, ceil(headerRect.size.height + 10.0));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -151,11 +152,14 @@
 
     // Header height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
-                                                       context:nil];
-    
+                                                       context:context];
+    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
+
     // Header view
     UIView *header = [[UIView alloc] initWithFrame:headerRect];
 	[header addSubview:headerLabel];

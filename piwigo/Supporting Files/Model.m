@@ -10,6 +10,7 @@
 
 #import "Model.h"
 #import "PiwigoImageData.h"
+#import "ImagesCollection.h"
 
 @interface Model()
 
@@ -32,7 +33,6 @@
         instance.serverName = @"";
         instance.username = @"";
         instance.HttpUsername = @"";
-		instance.imagesPerPage = 100;
 		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
 		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
@@ -42,10 +42,7 @@
         instance.performedHTTPauthentication = NO;      // Checked at each new session
         instance.userCancelledCommunication = NO;
         instance.deleteImageAfterUpload = NO;
-        
-        // Load all albums data at start
-		instance.loadAllCategoryInfo = YES;
-        
+
         // Sort images by date: old to new
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
         
@@ -63,11 +60,12 @@
         instance.hasXLargeSizeImages = NO;
         instance.hasXXLargeSizeImages = NO;
         
-        // Default thumbnail size
+        // Default thumbnail size and number per row in portrait mode
         instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
+        instance.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize]);
         
         // Default image preview size
-		instance.defaultImagePreviewSize = kPiwigoImageSizeMedium;
+		instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
         
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -81,6 +79,7 @@
 		instance.photoResize = 100;                 // Do not resize images
         
         // Defaults caches sizes
+        instance.loadAllCategoryInfo = YES;         // Load all albums data at start
 		instance.diskCache = 80;
 		instance.memoryCache = 80;
 		
@@ -186,6 +185,7 @@
         self.switchPaletteAutomatically = modelData.switchPaletteAutomatically;
         self.switchPaletteThreshold = modelData.switchPaletteThreshold;
         self.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
+        self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
 	}
 }
 
@@ -224,6 +224,7 @@
     [saveObject addObject:[NSNumber numberWithBool:self.switchPaletteAutomatically]];
     [saveObject addObject:@(self.switchPaletteThreshold)];
     [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteModeActive]];
+    [saveObject addObject:@(self.thumbnailsPerRowInPortrait)];                      // Added in v2.1.8
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -264,7 +265,7 @@
 	if(savedData.count > 11) {
 		self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
 	} else {
-		self.defaultImagePreviewSize = kPiwigoImageSizeMedium;
+		self.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
 	}
 	if(savedData.count > 12) {
 		self.stripGPSdataOnUpload = [[savedData objectAtIndex:12] boolValue];
@@ -339,6 +340,11 @@
         self.isDarkPaletteModeActive = [[savedData objectAtIndex:22] boolValue];
     } else {
         self.isDarkPaletteModeActive = NO;
+    }
+    if(savedData.count > 23) {
+        self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
+    } else {
+        self.thumbnailsPerRowInPortrait = 4;
     }
 	return self;
 }

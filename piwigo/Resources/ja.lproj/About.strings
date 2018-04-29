@@ -1,0 +1,27 @@
+/* 
+  About.strings
+  piwigo
+
+  Created by Spencer Baker on 2/19/15.
+  Copyright (c) 2015 bakercrew. All rights reserved.
+*/
+
+"authors1" = "Spencer BakerとOlaf Greck、";
+"authors2" = "そしてEddy Lelièvre-Bernaによる";
+"version" = "バージョン：";
+
+"translators_text" = "Piwigoの翻訳するのに時間と努力を貢献してくれた以下の人達に私たちは心から感謝します：\n\n- アラビア語: Rachid Haddani,\n- デンマーク語: Thomas Christfort,\n- オランダ語: Robert Mulder と Wim Woonings,\n- フランス語: Eddy Lelièvre-Berna,\n- ドイツ語: Jörg Knörchen,\n- インドネシア語: Alfian Silaban,\n- 日本語：Takahiro Yakoh,\n- ポーランド語: Michał Majchrowicz と T00kie,\n- スウェーデン語: Elger Lindgren.\n\n";
+
+"about_text" = "このソフトウェアには、個別のライセンスの諸条件下で再配布されているサードパーティ製ソフトウェアが含まれています。\n\n";
+
+"licenceMIT_text" = "マサチューセッツ工科大学ライセンス (MIT)\n\n以下に定める条件に従い、本ソフトウェアおよび関連文書のファイル (以下「ソフトウェア」) の複製を取得するすべての人に対し、ソフトウェアを無制限に扱うことを無償で許可します。これには、ソフトウェアの複製を使用、複写、変更、結合、掲載、頒布、サブライセンス、および/または販売する権利、およびソフトウェアを提供する相手に同じことを許可する権利も無制限に含まれます。\n\n上記の著作権表示および本許諾表示を、ソフトウェアのすべての複製または重要な部分に記載するものとします。\n\nソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく提供されます。ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。 作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。\n________________________________________\n\n";
+
+"licenceAFN_text" = "AFNetworking\n\nマサチューセッツ工科大学ライセンス (MIT)\n\n著作権 © 2011-2016 Alamofireソフトウェア財団\n(http://alamofire.org/)\n________________________________________\n\n";
+
+"licenceMBProgHUD_text" = "MBProgressHUD\n\nマサチューセッツ工科大学ライセンス (MIT)\n\n著作権 © 2009-2016 Matej Bukovinski\n________________________________________\n\n";
+
+"licenceMGSTC_text" = "MGSwipeTableCell\n\nマサチューセッツ工科大学ライセンス (MIT)\n\n著作権 © 2016 Imanol Fernandez @MortimerGoro\n________________________________________\n \n\n";
+
+"licenceUICL_text" = "MBProgressHUD\n\nマサチューセッツ工科大学ライセンス (MIT)\n\n著作権 © 2009-2016 Matej Bukovinski\n________________________________________\n\n";
+
+"licenceSAM_text" = "SAMKeychain\n\nマサチューセッツ工科大学ライセンス (MIT)\n\n著作権 © 2010-2016 Sam Soffes\n(http://soff.es)";

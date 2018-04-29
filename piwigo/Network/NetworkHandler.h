@@ -53,6 +53,10 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
 
 @interface NetworkHandler : NSObject
 
++(void)createJSONdataSessionManager;
++(void)createImagesSessionManager;
++(NSString*)encodedURL:(NSString*)originalURL;
+
 +(NSURLSessionTask*)post:(NSString*)path
            URLParameters:(NSDictionary*)urlParams
               parameters:(NSDictionary*)parameters

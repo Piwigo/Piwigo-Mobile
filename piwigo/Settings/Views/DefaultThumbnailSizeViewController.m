@@ -75,11 +75,13 @@
     // Header height?
     NSString *header = NSLocalizedString(@"defaultThumbnailSizeHeader", @"Please Select a Thumbnail Size");
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
-                                             context:nil];
-    return ceil(headerRect.size.height + 4.0 + 10.0);
+                                             context:context];
+    return fmax(44.0, ceil(headerRect.size.height + 10.0));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -97,10 +99,13 @@
 
     // Header height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
-                                                       context:nil];
+                                                       context:context];
+    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
 
     // Header view
     UIView *header = [[UIView alloc] initWithFrame:headerRect];
@@ -149,7 +154,7 @@
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
-    // Disable unavailable sizes and full resolution
+    // Disable unavailable and useless sizes
     switch (indexPath.row) {
         case kPiwigoImageSizeSquare:
             if ([Model sharedInstance].hasSquareSizeImages) {
@@ -170,38 +175,30 @@
             }
             break;
         case kPiwigoImageSizeXXSmall:
-            if ([Model sharedInstance].hasXXSmallSizeImages) {
-                cell.userInteractionEnabled = YES;
-            } else {
-                cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.userInteractionEnabled = NO;
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            if (![Model sharedInstance].hasXXSmallSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXSmall:
-            if ([Model sharedInstance].hasXSmallSizeImages) {
-                cell.userInteractionEnabled = YES;
-            } else {
-                cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.userInteractionEnabled = NO;
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            if (![Model sharedInstance].hasXSmallSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeSmall:
-            if ([Model sharedInstance].hasSmallSizeImages) {
-                cell.userInteractionEnabled = YES;
-            } else {
-                cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.userInteractionEnabled = NO;
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            if (![Model sharedInstance].hasSmallSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeMedium:
-            if ([Model sharedInstance].hasMediumSizeImages) {
-                cell.userInteractionEnabled = YES;
-            } else {
-                cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.userInteractionEnabled = NO;
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            if (![Model sharedInstance].hasMediumSizeImages) {
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -243,12 +240,14 @@
     // Footer height?
     NSString *footer = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
-                                             context:nil];
+                                             context:context];
 
-    return ceil(footerRect.size.height + 4.0 + 10.0);
+    return fmax(44.0, ceil(footerRect.size.height + 10.0));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
@@ -266,10 +265,13 @@
 
     // Footer height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
-                                                       context:nil];
+                                                       context:context];
+    footerRect.size.height = fmax(44.0, ceil(footerRect.size.height + 10.0));
 
     // Footer view
     UIView *footer = [[UIView alloc] initWithFrame:footerRect];

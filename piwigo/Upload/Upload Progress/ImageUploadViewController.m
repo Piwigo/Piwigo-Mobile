@@ -83,7 +83,10 @@
     // Table view
     self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
     [self.uploadImagesTableView reloadData];
-
+    
+    // Progress bar
+    [[ImageUploadProgressView sharedInstance] changePaletteMode];
+    
     if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 	{
 		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
@@ -163,11 +166,13 @@
             break;
     }
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
-                                             context:nil];
-    return ceil(headerRect.size.height + 4.0 + 10.0);
+                                             context:context];
+    return fmax(44.0, ceil(headerRect.size.height + 10.0));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -192,11 +197,14 @@
 
     // Header height
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
     CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attributes
-                                                       context:nil];
-    
+                                                       context:context];
+    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
+
     // Header view
     UIView *header = [[UIView alloc] initWithFrame:headerRect];
     header.backgroundColor = [UIColor clearColor];
@@ -295,7 +303,7 @@
     if (direction == MGSwipeDirectionRightToLeft && index == 0) {
         // Delete button
         NSIndexPath *indexPath = [self.uploadImagesTableView indexPathForCell:cell];
-        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
+//        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
         if(indexPath.section == 0)      // Image selected for upload
         {
             // Remove image not in upload queue
@@ -313,7 +321,7 @@
             // Remove image from upload queue (both in table and collection view) or stop iCloud download or Piwigo upload
             ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
             [[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
-            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObjectForKey:[image.image stringByDeletingPathExtension]];
+            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObject:[image.image stringByDeletingPathExtension]];
             [ImageUploadManager sharedInstance].maximumImagesForBatch--;
         }
 

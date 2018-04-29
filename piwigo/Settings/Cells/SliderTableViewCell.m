@@ -73,10 +73,10 @@
 
 -(void)sliderChanged
 {
-	NSInteger value = self.slider.value;
-	NSInteger newValue = value - value % self.incrementSliderBy;
-	
-	self.slider.value = newValue;
+    NSInteger ref = (int)roundf(self.slider.minimumValue);
+    NSInteger value = self.slider.value;
+    NSInteger newValue = value - ((value - ref) % self.incrementSliderBy);
+    self.slider.value = newValue;
 	self.sliderCount.text = [NSString stringWithFormat:@"%@%@%@", self.sliderCountPrefix, @(newValue), self.sliderCountSuffix];
 }
 

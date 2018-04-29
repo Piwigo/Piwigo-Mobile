@@ -24,6 +24,7 @@
 "alertAddButton" = "Toevoegen";
 "alertRetryButton" = "Probeer opnieuw";
 "alertNextButton" = "Volgende foto";
+"alertTryButton" = "Proberen";
 
 // Complete views
 "Complete" = "Klaar";
@@ -44,7 +45,7 @@
 // ===========================================================================
 // Login
 "login" = "Aanmelden";
-"login_serverPlaceholder" = "Webadres";
+"login_serverPlaceholder" = "example.com";
 "login_userPlaceholder" = "Gebruikersnaam (optioneel)";
 "login_passwordPlaceholder" = "Wachtwoord (optioneel)";
 "login_loggingIn" = "Bezig met aanmelden...";
@@ -66,6 +67,9 @@
 "loginError_message" = "De gebruikersnaam en het wachtwoord komen niet overeen op het opgegeven webadres";
 "loginEmptyServer_title" = "Voer een webadres in";
 "loginEmptyServer_message" = "Selecteer een protocol en voeg een Piwigo webadres toe om door te gaan.";
+
+"serverConnectionError_title" = "Verbinding Mislukt";
+"serverConnectionError_message" = "Een beveiligde HTTPS-verbinding kan niet worden vastgesteld. Controleer het adres of probeer in niet-gecodeerde HTTP-modus?";
 
 "serverVersionNotCompatible_title" = "Server niet ondersteund";
 "serverVersionNotCompatible_message" = "Jouw Piwigo server versie is %@. Piwigo Mobiel ondersteunt alleen versie 2.7 of hoger. Werk jouw server bij om Piwigo Mobile te kunnen gebruiken. Wil je toch doorgaan?";
@@ -264,6 +268,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Selecteer een album om de foto's naar te uploaden";
 "categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
+"categoryUpload_chooseiCloudAlbum" = "Selecteer een album iCloud om er foto's van op te halen";
 "categoyUpload_loadSubCategories" = "laden";
 "selectAll" = "Allemaal";
 
@@ -337,8 +342,9 @@
 "settings_logout" = "Afmelden";
 "settingsFooter_formats" = "De server accepteert de volgende bestanden";
 
-// Settings — General
+// Settings — Thumbnails
 "settingsHeader_general" = "Algemene instellingen";
+"settingsHeader_thumbnails" = "Miniaturen";
 "settings_loadAllCategories" = "Download alle Albums bij opstarten";
 "settings_loadAllCategories>320px" = "Download alle Albums bij opstarten (vink uit bij problemen)";
 
@@ -346,7 +352,10 @@
 "defaultImageSort>320px" = "Standaard sorteervolgorde";
 "defaultImageSort>414px" = "Standaardsorteervolgorde van foto's";
 
-"defaultThumbnailSize" = "Miniaturen";
+"defaultThumbnailFile" = "Bestand";
+"defaultThumbnailFile>320px" = "Miniatuur bestand";
+"defaultThumbnailFile>414px" = "Miniatuurafbeelding bestand";
+"defaultThumbnailSize" = "Grootte";
 "defaultThumbnailSize>320px" = "Miniatuurgrootte";
 "defaultThumbnailSize>414px" = "Standaardgrootte van miniaturen";
 "defaultThumbnailSizeTitle" = "Standaard grootte";
@@ -365,6 +374,12 @@
 "thumbnailSizeXXLarge" = "Enorm";
 "thumbnailSizexFullRes" = "Volledige resolutie";
 
+// Settings — Images
+"settingsHeader_images" = "Foto's";
+
+"defaultPreviewFile" = "Voorbeeld";
+"defaultPreviewFile>320px" = "Voorbeeldafbeelding";
+"defaultPreviewFile>414px" = "Voorbeeld afbeeldingbestand";
 "defaultImageSize" = "Foto's";
 "defaultImageSize>320px" = "Fotogrootte";
 "defaultImageSize>414px" = "Standaardgrootte van foto's";
@@ -408,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "Cache-instellingen (gebruikt/totaal)";
 "settings_cacheDisk" = "Schijf";
-"settings_placeholderDisk" = "Voer een schijfcache in tussen 10-200";
 "settings_cacheMemory" = "Geheugen";
-"settings_placeholderMemory" = "Voer een geheugencache in tussen 10-200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

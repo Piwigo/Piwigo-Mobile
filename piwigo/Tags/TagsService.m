@@ -7,6 +7,7 @@
 //
 
 #import "TagsService.h"
+#import "Model.h"
 
 @implementation TagsService
 

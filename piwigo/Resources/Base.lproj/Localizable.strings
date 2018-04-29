@@ -24,6 +24,7 @@
 "alertAddButton" = "Add";
 "alertRetryButton" = "Retry";
 "alertNextButton" = "Next Image";
+"alertTryButton" = "Try";
 
 // Complete views
 "Complete" = "Complete";
@@ -44,7 +45,7 @@
 // ===========================================================================
 // Login
 "login" = "Login";
-"login_serverPlaceholder" = "Web Address";
+"login_serverPlaceholder" = "example.com";
 "login_userPlaceholder" = "Username (optional)";
 "login_passwordPlaceholder" = "Password (optional)";
 "login_loggingIn" = "Logging In...";
@@ -66,6 +67,9 @@
 "loginError_message" = "The username and password don't match on the given web address";
 "loginEmptyServer_title" = "Enter a Web Address";
 "loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
+
+"serverConnectionError_title" = "Connection Failed";
+"serverConnectionError_message" = "A secured HTTPS connection could not be established. Please check the address or try in unencrypted HTTP mode?";
 
 "serverVersionNotCompatible_title" = "Server Incompatible";
 "serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile. Do you still want to continue?";
@@ -264,6 +268,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "Select an album to upload images to";
 "categoryUpload_chooseLocalAlbum" = "Select an album to get images from";
+"categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get images from";
 "categoyUpload_loadSubCategories" = "load";
 "selectAll" = "All";
 
@@ -337,8 +342,9 @@
 "settings_logout" = "Logout";
 "settingsFooter_formats" = "The server accepts the following file types";
 
-// Settings — General
+// Settings — Thumbnails
 "settingsHeader_general" = "General Settings";
+"settingsHeader_thumbnails" = "Thumbnails";
 "settings_loadAllCategories" = "Download all Albums at Start";
 "settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
 
@@ -346,7 +352,10 @@
 "defaultImageSort>320px" = "Default Sort";
 "defaultImageSort>414px" = "Default Sort of Images";
 
-"defaultThumbnailSize" = "Thumbnails";
+"defaultThumbnailFile" = "File";
+"defaultThumbnailFile>320px" = "Thumbnail File";
+"defaultThumbnailFile>414px" = "Thumbnail Image File";
+"defaultThumbnailSize" = "Size";
 "defaultThumbnailSize>320px" = "Thumbnails Size";
 "defaultThumbnailSize>414px" = "Default Size of Thumbnails";
 "defaultThumbnailSizeTitle" = "Default Size";
@@ -365,6 +374,12 @@
 "thumbnailSizeXXLarge" = "Huge";
 "thumbnailSizexFullRes" = "Full Resolution";
 
+// Settings — Images
+"settingsHeader_images" = "Images";
+
+"defaultPreviewFile" = "Preview";
+"defaultPreviewFile>320px" = "Preview File";
+"defaultPreviewFile>414px" = "Preview Image File";
 "defaultImageSize" = "Images";
 "defaultImageSize>320px" = "Images Size";
 "defaultImageSize>414px" = "Default Size of Images";
@@ -408,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";
 "settings_cacheDisk" = "Disk";
-"settings_placeholderDisk" = "Enter a Disk Cache from 10 - 200";
 "settings_cacheMemory" = "Memory";
-"settings_placeholderMemory" = "Enter a Memory Cache from 10 - 200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

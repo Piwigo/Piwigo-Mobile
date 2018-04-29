@@ -18,13 +18,15 @@
 #import "KeychainAccess.h"
 #import "SAMKeychain.h"
 #import "AFNetworkActivityIndicatorManager.h"
-#import "Reachability.h"
+#import "CategoriesData.h"
 #import "PhotosFetch.h"
+
+#import "AlbumsViewController.h"
+#import "AlbumImagesViewController.h"
 
 @interface AppDelegate ()
 
 @property (nonatomic, strong) LoginViewController *loginVC;
-@property (nonatomic, strong) Reachability *internetReachability;
 
 @end
 
@@ -40,11 +42,12 @@
     // Override point for customization after application launch.
 	
     // Cache settings
-	NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-														 diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-															 diskPath:nil];
+	NSURLCache *URLCache = [[NSURLCache alloc]
+                            initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+								      diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                                          diskPath:nil];
 	[NSURLCache setSharedURLCache:URLCache];
-	
+    
     // Login ?
     NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;
@@ -88,63 +91,47 @@
 	
     // Enable network activity indicator
 	[AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-	
+    
+    // Enable network reachability monitoring
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    	
 	return YES;
 }
 
 -(void)loadNavigation
 {
-	TabBarViewController *navigation = [TabBarViewController new];
-	self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
-	[self.loginVC removeFromParentViewController];
+    TabBarViewController *navigation = [TabBarViewController new];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
+    [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     
-    // Observe the kNetworkReachabilityChangedNotification.
-    // When that notification is posted, the method reachabilityChanged will be called.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
-    
-    // Monitor Internet connection reachability
-    self.internetReachability = [Reachability reachabilityForInternetConnection];
-    [self.internetReachability startNotifier];
-
     // Observe the UIScreenBrightnessDidChangeNotification.
     // When that notification is posted, the method screenBrightnessChanged will be called.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged:) name:UIScreenBrightnessDidChangeNotification object:nil];
-}
 
-// Called by Reachability whenever Internet connection changes.
-- (void)reachabilityChanged:(NSNotification *)note
-{
-    Reachability* curReach = [note object];
-    NetworkStatus netStatus = [curReach currentReachabilityStatus];
-
-    switch (netStatus)
-    {
-        case NotReachable:
-        {
-#if defined(DEBUG)
-            NSLog(@"Access Not Available");
-#endif
-            break;
-        }
-        case ReachableViaWWAN:
-        case ReachableViaWiFi:
-        {
+    // Set network reachability status change block
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        NSLog(@"!!!!!! Network Reachability Changed!");
+        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
+              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
+              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
+              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+        
+        if ([AFNetworkReachabilityManager sharedManager].reachable) {
             // Connection changed but again reachable — Login again?
             BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
             NSString *server = [Model sharedInstance].serverName;
             NSString *user = [KeychainAccess getLoginUser];
-
+            
             if(hadOpenedSession && (server.length > 0) && (user.length > 0))
             {
 #if defined(DEBUG)
-                NSLog(@"Connection changed but again reachable — Login again?");
+                NSLog(@"       Connection changed but again reachable — Login again?");
 #endif
                 [self.loginVC checkSessionStatusAndTryRelogin];
             }
-            break;
         }
-    }
+    }];
 }
 
 // Called when the screen brightness has changed or when user changed settings
@@ -290,18 +277,30 @@
     
     // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
     // Furthermore, it will interrupt any other current audio sessions (no mixing)
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    NSArray<NSString *> *availableCategories = [audioSession availableCategories];
-    if ([availableCategories containsObject:AVAudioSessionCategoryPlayback]) {
-        [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+    if (@available(iOS 9, *)) {
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        NSArray<NSString *> *availableCategories = [audioSession availableCategories];
+        if ([availableCategories containsObject:AVAudioSessionCategoryPlayback]) {
+            [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+        }
     }
 
     // Should we change the theme ?
-    [self screenBrightnessChanged:nil];
+    [self screenBrightnessChanged:nil];    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+
+    // Cancel tasks and close sessions
+    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
+    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
+
+    // Disable network activity indicator
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;
+    
+    // Disable network reachability monitoring
+    [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
 }
 
 @end

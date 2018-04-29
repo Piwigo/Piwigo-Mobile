@@ -24,6 +24,7 @@
 "alertAddButton" = "إضافة";
 "alertRetryButton" = "إعادة المحاولة";
 "alertNextButton" = "الصورة الموالية";
+"alertTryButton" = "محاولة";
 
 // Complete views
 "Complete" = "أكتمل";
@@ -44,7 +45,7 @@
 // ===========================================================================
 // Login
 "login" = "تسجيل الدخول";
-"login_serverPlaceholder" = "عنوان الويب";
+"login_serverPlaceholder" = "example.com";
 "login_userPlaceholder" = "اسم المستخدم (اختياري)";
 "login_passwordPlaceholder" = "كلمة المرور (اختياري)";
 "login_loggingIn" = "جاري تسجيل الدخول...";
@@ -66,6 +67,9 @@
 "loginError_message" = "لا يتطابق اسم المستخدم وكلمة المرور مع عنوان الويب المحدد";
 "loginEmptyServer_title" = "أدخل عنوان ويب";
 "loginEmptyServer_message" = "يرجى تحديد بروتوكول وإدخال عنوان ويب Piwigo للمواصلة.";
+
+"serverConnectionError_title" = "فشل الإتصال";
+"serverConnectionError_message" = "تعذر إنشاء اتصال HTTPS آمن. يرجى التحقق من العنوان أو محاولة وضع HTTP غير المشفرة؟";
 
 "serverVersionNotCompatible_title" = "الخادم غير متوافق";
 "serverVersionNotCompatible_message" = "إصدار خادم Piwigo هو %@. Piwigo موبايل يدعم فقط على الأقل نسخة من 2.7. يرجى تحديث الخادم الخاص بك لاستخدام Piwigo موبايل. هل ما زلت ترغب في المتابعة؟";
@@ -264,6 +268,7 @@
 // Images upload
 "categoryUpload_chooseAlbum" = "حدد ألبوما لتحميل الصور إلى";
 "categoryUpload_chooseLocalAlbum" = "حدد ألبوما للحصول على صور من";
+"categoryUpload_chooseiCloudAlbum" = "حدد ألبوم iCloud للحصول على صور منه";
 "categoyUpload_loadSubCategories" = "تحميل";
 "selectAll" = "الكل";
 
@@ -337,8 +342,9 @@
 "settings_logout" = "الخروج";
 "settingsFooter_formats" = "يقبل الخادم أنواع الملفات التالية";
 
-// Settings — General
+// Settings — Thumbnails
 "settingsHeader_general" = "الاعدادات العامة";
+"settingsHeader_thumbnails" = "الصورة المصغرة";
 "settings_loadAllCategories" = "تحميل جميع الألبومات في البداية";
 "settings_loadAllCategories>320px" = "تحميل جميع الألبومات في البداية (إلغاء التحديد إذا تعذرت)";
 
@@ -346,7 +352,10 @@
 "defaultImageSort>320px" = "النوع الافتراضي";
 "defaultImageSort>414px" = "الفرز الافتراضي للصور";
 
-"defaultThumbnailSize" = "الصور المصغرة";
+"defaultThumbnailFile" = "الملف";
+"defaultThumbnailFile>320px" = "ملف الصورة المصغرة";
+"defaultThumbnailFile>414px" = "صورة مصغرة صورة الملف";
+"defaultThumbnailSize" = "‮الحجم";
 "defaultThumbnailSize>320px" = "حجم الصور المصغرة";
 "defaultThumbnailSize>414px" = "الحجم الافتراضي للصور المصغرة";
 "defaultThumbnailSizeTitle" = "الحجم الافتراضي";
@@ -365,6 +374,12 @@
 "thumbnailSizeXXLarge" = "ضخم";
 "thumbnailSizexFullRes" = "عرض كامل";
 
+// Settings — Images
+"settingsHeader_images" = "الصور";
+
+"defaultPreviewFile" = "عرض مسبق";
+"defaultPreviewFile>320px" = "معاينة الملف";
+"defaultPreviewFile>414px" = "معاينة ملف صورة";
 "defaultImageSize" = "الصور";
 "defaultImageSize>320px" = "حجم الصورة";
 "defaultImageSize>414px" = "الحجم الافتراضي للصور";
@@ -408,9 +423,7 @@
 // Settings — Cache
 "settingsHeader_cache" = "ذاكرة الإعدادات المؤقة (المستخدم / الإجمالي)";
 "settings_cacheDisk" = "القرص";
-"settings_placeholderDisk" = "أدخل ذاكرة التخزين المؤقت على القرص من 10 - 200";
 "settings_cacheMemory" = "الذاكرة";
-"settings_placeholderMemory" = "أدخل ذاكرة التخزين المؤقت من 10 - 200";
 "settings_cacheMegabytes" = "MB";
 
 // Settings — Colors

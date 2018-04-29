@@ -26,18 +26,21 @@
 		
 		AlbumsViewController *albums = [AlbumsViewController new];
 		albums.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+        albums.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 		albums.tabBarItem.image = [[UIImage imageNamed:@"album"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		albums.tabBarItem.selectedImage = [UIImage imageNamed:@"albumSelected"];
 		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:albums]];
 		
 		CategoryPickViewController *upload = [CategoryPickViewController new];
 		upload.title = NSLocalizedString(@"tabBar_upload", @"Upload");
+        upload.tabBarItem.title = NSLocalizedString(@"tabBar_upload", @"Upload");
 		upload.tabBarItem.image = [[UIImage imageNamed:@"cloud"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		upload.tabBarItem.selectedImage = [UIImage imageNamed:@"cloudSelected"];
 		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:upload]];
 		
 		SettingsViewController *settings = [SettingsViewController new];
 		settings.title = NSLocalizedString(@"tabBar_preferences", @"Preferences");
+        settings.tabBarItem.title = NSLocalizedString(@"tabBar_preferences", @"Preferences");
 		settings.tabBarItem.image = [[UIImage imageNamed:@"preferences"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		settings.tabBarItem.selectedImage = [UIImage imageNamed:@"preferencesSelected"];
 		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:settings]];

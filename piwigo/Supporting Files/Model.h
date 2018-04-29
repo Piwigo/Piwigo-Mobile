@@ -45,6 +45,9 @@ typedef enum {
 @property (nonatomic, assign) BOOL hadOpenedSession;
 @property (nonatomic, assign) BOOL performedHTTPauthentication;
 @property (nonatomic, assign) BOOL userCancelledCommunication;
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
+@property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
+@property (nonatomic, strong) AFImageDownloader *imageDownloader;
 
 @property (nonatomic, assign) BOOL hasSquareSizeImages;
 @property (nonatomic, assign) BOOL hasThumbSizeImages;
@@ -62,6 +65,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL switchPaletteAutomatically;
 @property (nonatomic, assign) NSInteger switchPaletteThreshold;
 @property (nonatomic, assign) BOOL isDarkPaletteModeActive;
+@property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, strong) NSString *defaultAuthor;
@@ -72,15 +76,14 @@ typedef enum {
 @property (nonatomic, assign) NSInteger photoQuality;
 @property (nonatomic, assign) BOOL deleteImageAfterUpload;
 
-@property (nonatomic, assign) NSInteger imagesPerPage;
+@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger lastPageImageCount;
 
+@property (nonatomic, assign) BOOL loadAllCategoryInfo;
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;
 
-@property (nonatomic, assign) BOOL loadAllCategoryInfo;
-@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
 
 -(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 

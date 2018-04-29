@@ -7,7 +7,6 @@
 //
 
 #import <Photos/Photos.h>
-#import <AFNetworking/AFImageDownloader.h>
 
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"
@@ -21,7 +20,7 @@
 #import "AllCategoriesViewController.h"
 #import "SAMKeychain.h"
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate>
 
 @property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, strong) UIProgressView *progressBar;
@@ -35,14 +34,14 @@
 
 @implementation ImageDetailViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray*)array
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray *)array
 {
 	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	if(self)
 	{
 		self.view.backgroundColor = [UIColor blackColor];
 		self.categoryId = categoryId;
-		self.images = array;
+		self.images = [array mutableCopy];
 		
 		self.dataSource = self;
 		self.delegate = self;
@@ -64,7 +63,7 @@
 		self.progressBar.tintColor = [UIColor piwigoOrange];
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
-		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:5]];
+		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:3]];
 		self.topProgressBarConstraint = [NSLayoutConstraint constraintWithItem:self.progressBar
 															  attribute:NSLayoutAttributeTop
 															  relatedBy:NSLayoutRelationEqual
@@ -98,6 +97,77 @@
 		self.automaticallyAdjustsScrollViewInsets = false;
 		self.edgesForExtendedLayout = UIRectEdgeNone;
 	}
+
+    // Hide tab bar
+    self.tabBarController.tabBar.hidden = YES;
+}
+
+-(void)didTapView
+{
+    [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
+    
+    if(self.navigationController.navigationBarHidden)
+    {
+        if (self.imageData.isVideo) {
+            // User wants to play/replay the video
+            ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
+            [playVideo startVideoPlayerViewWithImageData:self.imageData];
+        } else {
+            // User wants to display the image in full screen
+            [self hideTabBar:self.tabBarController];
+        }
+    }
+    else
+    {
+        [self showTabBar:self.tabBarController];
+    }
+}
+
+-(void)hideTabBar:(UITabBarController*)tabbarcontroller
+{
+    return;
+    
+    //    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    //
+    //    [UIView beginAnimations:nil context:NULL];
+    //    [UIView setAnimationDuration:0.3];
+    //    float fHeight = screenRect.size.height;
+    //
+    //    for(UIView *view in tabbarcontroller.view.subviews)
+    //    {
+    //        if([view isKindOfClass:[UITabBar class]])
+    //        {
+    //            [view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
+    //        }
+    //        else
+    //        {
+    //            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
+    //            view.backgroundColor = [UIColor blackColor];
+    //        }
+    //    }
+    //    [UIView commitAnimations];
+}
+
+-(void)showTabBar:(UITabBarController*)tabbarcontroller
+{
+    return;
+    //    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    //    float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
+    //
+    //    [UIView beginAnimations:nil context:NULL];
+    //    [UIView setAnimationDuration:0.3];
+    //    for(UIView *view in tabbarcontroller.view.subviews)
+    //    {
+    //        if([view isKindOfClass:[UITabBar class]])
+    //        {
+    //            [view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
+    //        }
+    //        else
+    //        {
+    //            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
+    //        }
+    //    }
+    //    [UIView commitAnimations];
 }
 
 -(void)imageOptions
@@ -134,6 +204,7 @@
                                      UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
                                      EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
                                      editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
+                                     editImageVC.delegate = self;
                                      editImageVC.isEdit = YES;
                                      UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
                                      [self.navigationController presentViewController:presentNav animated:YES completion:nil];
@@ -172,7 +243,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark -- Delete image
+#pragma mark - Delete image
 
 -(void)deleteImage
 {
@@ -236,7 +307,18 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark -- Download image
+#pragma mark - Download image
+
+-(ImageDownloadView*)downloadView
+{
+    if(_downloadView) return _downloadView;
+    
+    _downloadView = [ImageDownloadView new];
+    _downloadView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:_downloadView];
+    [self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
+    return _downloadView;
+}
 
 -(void)downloadImage
 {
@@ -261,47 +343,18 @@
     
     // Display the download view
     self.downloadView.hidden = NO;
-	
+
+    // Dummy image for progress view
 	UIImageView *dummyView = [UIImageView new];
 	__weak typeof(self) weakSelf = self;
-    NSString *URLRequest = [NetworkHandler getURLWithPath:self.imageData.ThumbPath asPiwigoRequest:NO withURLParams:nil];
-    
-    // Create image downloader instance
-    AFImageDownloader *dow = [AFImageDownloader defaultInstance];
-    dow.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
-
-    // Ensure that SSL certificates won't be rejected
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-    [policy setAllowInvalidCertificates:YES];
-    [policy setValidatesDomainName:NO];
-    [dow.sessionManager setSecurityPolicy:policy];
-    
-    // Manage servers performing HTTP Basic Access Authentication
-    [dow.sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
-        // HTTP basic authentification credentials
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-        
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
-            return NSURLSessionAuthChallengeUseCredential;
-        } else {
-            // HTTP credentials refused!
-            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-        }
-    }];
-    
-    [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]]
+    NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+    [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:URL]
 					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
 							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 								  weakSelf.downloadView.downloadImage = image;
 							  } failure:nil];
 
+    // Launch the download
     if(!self.imageData.isVideo)
 	{
 		[ImageService downloadImage:self.imageData
@@ -453,86 +506,8 @@
 	self.downloadView.hidden = YES;
 }
 
--(void)didTapView
-{
-	[self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 
-	if(self.navigationController.navigationBarHidden)
-	{
-        if (self.imageData.isVideo) {
-            // User wants to play/replay the video
-            ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
-            [playVideo startVideoPlayerViewWithImageData:self.imageData];
-        } else {
-            // User wants to display the image in full screen
-            [self hideTabBar:self.tabBarController];
-        }
-	}
-	else
-	{
-		[self showTabBar:self.tabBarController];
-	}
-}
-
--(void)hideTabBar:(UITabBarController*)tabbarcontroller
-{
-	return;
-	
-//	CGRect screenRect = [[UIScreen mainScreen] bounds];
-//	
-//	[UIView beginAnimations:nil context:NULL];
-//	[UIView setAnimationDuration:0.3];
-//	float fHeight = screenRect.size.height;
-//	
-//	for(UIView *view in tabbarcontroller.view.subviews)
-//	{
-//		if([view isKindOfClass:[UITabBar class]])
-//		{
-//			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
-//		}
-//		else
-//		{
-//			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
-//			view.backgroundColor = [UIColor blackColor];
-//		}
-//	}
-//	[UIView commitAnimations];
-}
-
--(void)showTabBar:(UITabBarController*)tabbarcontroller
-{
-	return;
-//	CGRect screenRect = [[UIScreen mainScreen] bounds];
-//	float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
-//	
-//	[UIView beginAnimations:nil context:NULL];
-//	[UIView setAnimationDuration:0.3];
-//	for(UIView *view in tabbarcontroller.view.subviews)
-//	{
-//		if([view isKindOfClass:[UITabBar class]])
-//		{
-//			[view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
-//		}
-//		else
-//		{
-//			[view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
-//		}
-//	}
-//	[UIView commitAnimations];
-}
-
--(ImageDownloadView*)downloadView
-{
-	if(_downloadView) return _downloadView;
-	
-	_downloadView = [ImageDownloadView new];
-	_downloadView.translatesAutoresizingMaskIntoConstraints = NO;
-	[self.view addSubview:_downloadView];
-	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
-	return _downloadView;
-}
-
-#pragma mark -- UIPageViewControllerDataSource
+#pragma mark - UIPageViewControllerDataSource
 
 -(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
@@ -617,7 +592,7 @@
 	self.title = self.imageData.name;
 }
 
-#pragma mark ImagePreviewDelegate Methods
+#pragma mark - ImagePreviewDelegate Methods
 
 -(void)downloadProgress:(CGFloat)progress
 {
@@ -626,6 +601,33 @@
 	{
 		self.progressBar.hidden = YES;
 	}
+}
+
+#pragma mark - EditImageDetailsDelegate Methods
+
+-(void)didFinishEditingDetails:(ImageUpload *)details
+{
+    // Update list of images
+    NSInteger index = 0;
+    for(PiwigoImageData *image in self.images)
+    {
+        if([image.imageId integerValue] == details.imageId) {
+            image.name = details.title;
+            image.author = details.author;
+            image.privacyLevel = details.privacyLevel;
+            image.imageDescription = [NSString stringWithString:details.description];
+            image.tags = [details.description copy];
+            [self.images replaceObjectAtIndex:index withObject:image];
+            break;
+        }
+        index++;
+    }
+
+    // Update previewed image
+    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%ld", (long)details.imageId]];
+    
+    // Update current view
+    self.title = details.title;
 }
 
 @end
