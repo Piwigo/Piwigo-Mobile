@@ -188,11 +188,16 @@ NSInteger const loadingViewTag = 899;
 +(NSString*)encodedURL:(NSString*)originalURL
 {
 //    NSLog(@"=> %@", originalURL);
+    // Return nil if originalURL is nil
+    if (originalURL == nil) return nil;
     
     // Servers sometimes return http://… instead of https://…
-    NSString *cleanPath = [originalURL stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+    NSString* cleanPath = [originalURL stringByReplacingOccurrencesOfString:@"http://" withString:@""];
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+
+    // Users usually provides DNS name in lowercase, but not always
     cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[[Model sharedInstance].serverName lowercaseString] withString:@""];
 //    NSLog(@"   %@", cleanPath);
     
     // Remove the .php? prefix if any
