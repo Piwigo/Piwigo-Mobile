@@ -70,14 +70,18 @@
     // Display "play" button if video
     self.scrollView.playImage.hidden = !(imageData.isVideo);
 
-    // Thumbnail image may be used as placeholder image
-    NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
-    NSURL *thumbnailURL = [NSURL URLWithString:thumbnailStr];
+    // Medium image will be used as placeholder image
+    NSString *mediumStr = [imageData getURLFromImageSizeType:kPiwigoImageSizeMedium];
+    NSURL *mediumURL = [NSURL URLWithString:mediumStr];
     UIImageView *thumb = [UIImageView new];
-    [thumb setImageWithURL:thumbnailURL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+    [thumb setImageWithURL:mediumURL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
     
     // Previewed image
     NSString *previewStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
+    if (previewStr == nil) {
+        // Image path unknown e.g. no high resolution image => default to placeholder image
+        previewStr = mediumStr;
+    }
     NSURL *previewURL = [NSURL URLWithString:previewStr];
     __weak typeof(self) weakSelf = self;
     
