@@ -156,6 +156,9 @@
     
     // Collect list of methods supplied by Piwigo server
     // => Determine if Community extension 2.9a or later is installed and active
+#if defined(DEBUG_SESSION)
+    NSLog(@"=> launchLogin: getMethodsList using https…");
+#endif
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
         
         if(methodsList) {
@@ -272,7 +275,44 @@
                     handler:^(UIAlertAction * action) {
                         // Proceed at their own risk
                         [Model sharedInstance].serverProtocol = @"http://";
-                        [self performLogin];
+
+                        // Collect list of methods supplied by Piwigo server
+                        // => Determine if Community extension 2.9a or later is installed and active
+#if defined(DEBUG_SESSION)
+                        NSLog(@"=> launchLogin using http: getMethodsList…");
+#endif
+                        [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
+                            
+                            if(methodsList) {
+                                // Community extension installed and active ?
+                                for (NSString *method in methodsList) {
+                                    
+                                    // Check if the Community extension is installed and active (> 2.9a)
+                                    if([method isEqualToString:@"community.session.getStatus"]) {
+                                        self.usesCommunityPluginV29 = YES;
+                                    }
+                                }
+                                // Known methods, pursue logging in…
+                                [self performLogin];
+                                
+                            } else {
+                                // Methods unknown, so we cannot reach the server, inform user
+                                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
+                                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                            }
+                            
+                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                            // If Piwigo server requires HTTP basic authentication, ask credentials
+                            if ([Model sharedInstance].performedHTTPauthentication){
+                                // Without prior knowledge, the app already tried Piwigo credentials
+                                // But unsuccessfully, so must now request HTTP credentials
+                                [self requestHttpCredentialsAfterError:error];
+                            } else {
+                                // HTTP(S) login requests failed
+                                // Display error message
+                                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                            }
+                        }];
                     }];
             
             [alert addAction:defaultAction];
