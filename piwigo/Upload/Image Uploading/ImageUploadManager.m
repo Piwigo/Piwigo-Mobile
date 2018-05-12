@@ -31,6 +31,10 @@
 
 @end
 
+#ifndef DEBUG_UPLOAD
+#define DEBUG_UPLOAD
+#endif
+
 @implementation ImageUploadManager
 
 +(ImageUploadManager*)sharedInstance
@@ -186,7 +190,7 @@
             case PHAssetMediaSubtypePhotoDepthEffect:
             default:                                            // Case of GIF image
                 // Image upload allowed — Will wait for image file download from iCloud if necessary
-                [self retrieveImageFromiCloudWithAsset:nextImageToBeUploaded];
+                [self retrieveImageFromiCloudForAsset:nextImageToBeUploaded];
                 break;
         }
     }
@@ -252,11 +256,11 @@
 
 #pragma mark -- Image, retrieve and modify before upload
 
--(void)retrieveImageFromiCloudWithAsset:(ImageUpload *)image
+-(void)retrieveImageFromiCloudForAsset:(ImageUpload *)image
 {
-//#if defined(DEBUG)
-//    NSLog(@"retrieveImageFromiCloudWithAsset starting...");
-//#endif
+#if defined(DEBUG_UPLOAD)
+    NSLog(@"retrieveImageFromiCloudForAsset starting...");
+#endif
     // Case of an image…
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     // Does not block the calling thread until image data is ready or an error occurs
@@ -267,12 +271,20 @@
     options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     // Photos can download the requested video from iCloud
     options.networkAccessAllowed = YES;
-    
+    // Requests Photos to resize the image according to user settings
+    CGSize size = PHImageManagerMaximumSize;
+    options.resizeMode = PHImageRequestOptionsResizeModeExact;
+    if ([Model sharedInstance].resizeImageOnUpload && [Model sharedInstance].photoResize < 100.0) {
+        CGFloat scale = [Model sharedInstance].photoResize / 100.0;
+        size = CGSizeMake(image.imageAsset.pixelWidth * scale, image.imageAsset.pixelHeight * scale);
+        options.resizeMode = PHImageRequestOptionsResizeModeExact;
+    }
+
     // The block Photos calls periodically while downloading the photo
     options.progressHandler = ^(double progress, NSError *error, BOOL* stop, NSDictionary* info) {
-//#if defined(DEBUG)
-//        NSLog(@"downloading Photo from iCloud — progress %lf",progress);
-//#endif
+#if defined(DEBUG_UPLOAD)
+        NSLog(@"downloading Photo from iCloud — progress %lf",progress);
+#endif
         // The handler needs to update the user interface => Dispatch to main thread
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -306,13 +318,13 @@
     
     // Requests image…
     @autoreleasepool {
-        [[PHImageManager defaultManager] requestImageForAsset:image.imageAsset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFill options:options resultHandler:
-         ^(UIImage *assetImage, NSDictionary *info) {
-//#if defined(DEBUG)
-//             NSLog(@"retrieveImageFromiCloudWithAsset \"%@\" returned info(%@)", assetImage.description, info);
-//             NSLog(@"got image %f x %f", assetImage.size.width, assetImage.size.height);
-//#endif
-             if ([info objectForKey:PHImageErrorKey] || (assetImage.size.width == 0) || (assetImage.size.height == 0)) {
+        [[PHImageManager defaultManager] requestImageForAsset:image.imageAsset targetSize:size contentMode:PHImageContentModeAspectFill options:options resultHandler:
+         ^(UIImage *imageObject, NSDictionary *info) {
+#if defined(DEBUG_UPLOAD)
+             NSLog(@"retrieveImageFromiCloudForAsset \"%@\" returned info(%@)", imageObject.description, info);
+             NSLog(@"got image %.0fw x %.0fh with orientation %ld", imageObject.size.width, imageObject.size.height, (long)imageObject.imageOrientation);
+#endif
+             if ([info objectForKey:PHImageErrorKey] || (imageObject.size.width == 0) || (imageObject.size.height == 0)) {
                  NSError *error = [info valueForKey:PHImageErrorKey];
                  // Inform user and propose to cancel or continue
                  [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
@@ -322,33 +334,36 @@
                  return;
              }
              
+             // Fix orientation if needed
+             UIImage *fixedImageObject = [self fixOrientationOfImage:imageObject];
+
              // Expected resource available
-             [self retrieveFullSizeAssetDataFromAsset:image withImage:assetImage];
+             [self retrieveFullSizeImageDataForAsset:image andObject:fixedImageObject];
          }];
     }
 }
 
--(void)retrieveFullSizeAssetDataFromAsset:(ImageUpload *)image withImage:(UIImage *)assetImage
+-(void)retrieveFullSizeImageDataForAsset:(ImageUpload *)image andObject:(UIImage *)imageObject
 {
-//#if defined(DEBUG)
-//    NSLog(@"retrieveFullSizeAssetDataFromImage starting...");
-//#endif
+#if defined(DEBUG_UPLOAD)
+    NSLog(@"retrieveFullSizeAssetDataFromImage starting...");
+#endif
     // Case of an image…
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     // Does not block the calling thread until image data is ready or an error occurs
     options.synchronous = NO;
     // Requests the most recent version of the image asset
     options.version = PHImageRequestOptionsVersionCurrent;
-    // Requests the highest-quality image available, regardless of how much time it takes to load.
-    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    // Requests a fast-loading image, possibly sacrificing image quality.
+    options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
     // Photos can download the requested video from iCloud
     options.networkAccessAllowed = YES;
 
     // The block Photos calls periodically while downloading the photo
     options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* info) {
-//#if defined(DEBUG)
-//        NSLog(@"downloading Photo from iCloud — progress %lf",progress);
-//#endif
+#if defined(DEBUG_UPLOAD)
+        NSLog(@"downloading Photo from iCloud — progress %lf",progress);
+#endif
         // The handler needs to update the user interface => Dispatch to main thread
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -383,10 +398,10 @@
     @autoreleasepool {
         [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
                      resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-//#if defined(DEBUG)
-//                         NSLog(@"retrieveFullSizeAssetDataFromImage \"%@\" returned info(%@) with orientation:%ld", image.image, info, (long)orientation);
-//                         NSLog(@"got image %f x %f", assetImage.size.width, assetImage.size.height);
-//#endif
+#if defined(DEBUG_UPLOAD)
+                         NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.image, info);
+                         NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
+#endif
                          if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
                              NSError *error = [info valueForKey:PHImageErrorKey];
                              // Inform user and propose to cancel or continue
@@ -398,20 +413,20 @@
                          }
 
                          // Expected resource available
-                         [self modifyImage:image withData:imageData andAssetImage:assetImage];
+                         [self modifyImage:image withData:imageData andObject:imageObject];
                      }
          ];
     }
 }
 
--(void)modifyImage:(ImageUpload *)image withData:(NSData *)originalData andAssetImage:(UIImage *)assetImage
+-(void)modifyImage:(ImageUpload *)image withData:(NSData *)originalData andObject:(UIImage *)originalObject
 {
-    // Create CGI reference from asset
+    // Create CGI reference from image data (to retrieve complete metadata)
     CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) originalData, NULL);
     if (!source) {
-//#if defined(DEBUG)
-//        NSLog(@"Error: Could not create source");
-//#endif
+#if defined(DEBUG_UPLOAD)
+        NSLog(@"Error: Could not create source");
+#endif
         // Inform user and propose to cancel or continue
         [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
                   andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_source", @"cannot create image source")]
@@ -420,61 +435,172 @@
         return;
     }
     
-    // Get metadata of image
-    NSMutableDictionary *assetMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
-#if defined(DEBUG)
-    NSLog(@"modifyImage finds metadata :%@",assetMetadata);
-    NSLog(@"assetImage is %f width x %f height", assetImage.size.width, assetImage.size.height);
+    // Get metadata from image data
+    NSMutableDictionary *imageMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
+#if defined(DEBUG_UPLOAD)
+    NSLog(@"modifyImage finds metadata from data:%@",imageMetadata);
+    NSLog(@"originalObject is %.0fw x %.0fh", originalObject.size.width, originalObject.size.height);
 #endif
     
-    // Remove the orientation metadata as it leads to unwanted result (iOS 10.3)
-    [assetMetadata removeObjectForKey:(NSString *)kCGImagePropertyOrientation];
-//    [assetMetadata setValue:@(kCGImagePropertyOrientationUp) forKey:(NSString *)kCGImagePropertyOrientation];
-    
     // Strips GPS metadata if user requested it in Settings
-    if([Model sharedInstance].stripGPSdataOnUpload && (assetMetadata != nil)) {
+    if([Model sharedInstance].stripGPSdataOnUpload && (imageMetadata != nil)) {
 
         // GPS dictionary
-        NSMutableDictionary *GPSDictionary = [[assetMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
+        NSMutableDictionary *GPSDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
         if (GPSDictionary) {
-//#if defined(DEBUG)
-//            NSLog(@"modifyImage: GPS metadata = %@",GPSDictionary);
-//#endif
-            [assetMetadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
+#if defined(DEBUG_UPLOAD)
+            NSLog(@"modifyImage: GPS metadata = %@",GPSDictionary);
+#endif
+            [imageMetadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
         }
 
         // EXIF dictionary
-        NSMutableDictionary *EXIFDictionary = [[assetMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+        NSMutableDictionary *EXIFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
         if (EXIFDictionary) {
-//#if defined(DEBUG)
-//            NSLog(@"modifyImage: EXIF User Comment metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifUserComment]);
-//            NSLog(@"modifyImage: EXIF Subject Location metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifSubjectLocation]);
-//#endif
+#if defined(DEBUG_UPLOAD)
+            NSLog(@"modifyImage: EXIF User Comment metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifUserComment]);
+            NSLog(@"modifyImage: EXIF Subject Location metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifSubjectLocation]);
+#endif
             [EXIFDictionary removeObjectForKey:(NSString *)kCGImagePropertyExifUserComment];
             [EXIFDictionary removeObjectForKey:(NSString *)kCGImagePropertyExifSubjectLocation];
-            [assetMetadata setObject:EXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
+            [imageMetadata setObject:EXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
         }
-
-        // Final metadata…
-//#if defined(DEBUG)
-//        NSLog(@"modifyImage: w/o private metadata => %@",assetMetadata);
-//#endif
     }
 
-    // Resize image if user requested it in Settings
-    UIImage *imageResized = nil;
-    if ([Model sharedInstance].resizeImageOnUpload && ([Model sharedInstance].photoResize < 100.0)) {
-        // Resize image
-        CGFloat scale = [Model sharedInstance].photoResize / 100.0;
-        CGSize newImageSize = CGSizeApplyAffineTransform(assetImage.size, CGAffineTransformMakeScale(scale, scale));
-        imageResized = [self scaleImage:assetImage toSize:newImageSize contentMode:UIViewContentModeScaleAspectFit];
-
-        // Change metadata for new size
-        [assetMetadata setObject:@(imageResized.size.height) forKey:(NSString *)kCGImagePropertyPixelHeight];
-        [assetMetadata setObject:@(imageResized.size.width) forKey:(NSString *)kCGImagePropertyPixelWidth];
-    } else {
-        imageResized = [assetImage copy];
+    // Extract metadata from UIImage object
+    NSData *objectNSData = UIImageJPEGRepresentation(originalObject, 1.0f);
+    CGImageSourceRef objectSource = CGImageSourceCreateWithData((__bridge CFDataRef) objectNSData, NULL);
+    NSMutableDictionary *objectMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(objectSource, 0, NULL)) mutableCopy];
+#if defined(DEBUG_UPLOAD)
+    NSLog(@"modifyImage finds metadata from object:%@",objectMetadata);
+#endif
+    
+    // Update metadata header with correct metadata
+    if ([imageMetadata valueForKey:(NSString *)kCGImagePropertyOrientation]) {
+        [imageMetadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyOrientation]
+                         forKey:(NSString *)kCGImagePropertyOrientation];
     }
+    
+    // Update metadata with correct size
+    if ([imageMetadata valueForKey:(NSString *)kCGImagePropertyPixelWidth]) {
+        [imageMetadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyPixelWidth]
+                         forKey:(NSString *)kCGImagePropertyPixelWidth];
+        [imageMetadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyPixelHeight]
+                         forKey:(NSString *)kCGImagePropertyPixelHeight];
+    }
+    
+    // Update 8BIM dictionary with correct metadata
+    NSMutableDictionary *image8BIMDictionary = [[imageMetadata objectForKey:(NSString *)kCGImageProperty8BIMDictionary] mutableCopy];
+    NSMutableDictionary *object8BIMDictionary = [[objectMetadata objectForKey:(NSString *)kCGImageProperty8BIMDictionary] mutableCopy];
+    if (image8BIMDictionary && object8BIMDictionary) {
+        [image8BIMDictionary addEntriesFromDictionary:object8BIMDictionary];
+        [imageMetadata setObject:image8BIMDictionary forKey:(NSString *)kCGImageProperty8BIMDictionary];
+    } else if (!image8BIMDictionary && object8BIMDictionary) {
+        [imageMetadata setObject:object8BIMDictionary forKey:(NSString *)kCGImageProperty8BIMDictionary];
+    }
+    
+    // Update CIFF dictionary with correct metadata
+    NSMutableDictionary *imageCIFFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyCIFFDictionary] mutableCopy];
+    NSMutableDictionary *objectCIFFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyCIFFDictionary] mutableCopy];
+    if (imageCIFFDictionary && objectCIFFDictionary) {
+        [imageCIFFDictionary addEntriesFromDictionary:objectCIFFDictionary];
+        [imageMetadata setObject:imageCIFFDictionary forKey:(NSString *)kCGImagePropertyCIFFDictionary];
+    } else if (!imageCIFFDictionary && objectCIFFDictionary) {
+        [imageMetadata setObject:objectCIFFDictionary forKey:(NSString *)kCGImagePropertyCIFFDictionary];
+    }
+    
+    // Update DNG dictionary with correct metadata
+    NSMutableDictionary *imageDNGDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyDNGDictionary] mutableCopy];
+    NSMutableDictionary *objectDNGDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyDNGDictionary] mutableCopy];
+    if (imageDNGDictionary && objectDNGDictionary) {
+        [imageDNGDictionary addEntriesFromDictionary:objectDNGDictionary];
+        [imageMetadata setObject:objectDNGDictionary forKey:(NSString *)kCGImagePropertyDNGDictionary];
+    } else if (!imageDNGDictionary && objectDNGDictionary) {
+        [imageMetadata setObject:objectDNGDictionary forKey:(NSString *)kCGImagePropertyDNGDictionary];
+    }
+    
+    // Update Exif dictionary with correct metadata
+    NSMutableDictionary *imageEXIFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+    NSMutableDictionary *objectEXIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+    if (imageEXIFDictionary && objectEXIFDictionary) {
+        [imageEXIFDictionary addEntriesFromDictionary:objectEXIFDictionary];
+        [imageMetadata setObject:imageEXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
+    } else if (!imageEXIFDictionary && objectEXIFDictionary) {
+        [imageMetadata setObject:objectEXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
+    }
+    NSMutableDictionary *imageEXIFAuxDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyExifAuxDictionary] mutableCopy];
+    NSMutableDictionary *objectEXIFAuxDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyExifAuxDictionary] mutableCopy];
+    if (imageEXIFAuxDictionary && objectEXIFAuxDictionary) {
+        [imageEXIFAuxDictionary addEntriesFromDictionary:objectEXIFAuxDictionary];
+        [imageMetadata setObject:imageEXIFAuxDictionary forKey:(NSString *)kCGImagePropertyExifAuxDictionary];
+    } else if (!imageEXIFAuxDictionary && objectEXIFAuxDictionary) {
+        [imageMetadata setObject:objectEXIFAuxDictionary forKey:(NSString *)kCGImagePropertyExifAuxDictionary];
+    }
+
+    // Update GIF dictionary with correct metadata
+    NSMutableDictionary *imageGIFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyGIFDictionary] mutableCopy];
+    NSMutableDictionary *objectGIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyGIFDictionary] mutableCopy];
+    if (imageGIFDictionary && objectGIFDictionary) {
+        [imageGIFDictionary addEntriesFromDictionary:objectGIFDictionary];
+        [imageMetadata setObject:imageGIFDictionary forKey:(NSString *)kCGImagePropertyGIFDictionary];
+    } else if (!imageGIFDictionary && objectGIFDictionary) {
+        [imageMetadata setObject:objectGIFDictionary forKey:(NSString *)kCGImagePropertyGIFDictionary];
+    }
+    
+    // Update IPTC dictionary with correct metadata
+    NSMutableDictionary *imageIPTCDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyIPTCDictionary] mutableCopy];
+    NSMutableDictionary *objectIPTCDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyIPTCDictionary] mutableCopy];
+    if (imageIPTCDictionary && objectIPTCDictionary) {
+        [imageIPTCDictionary addEntriesFromDictionary:objectIPTCDictionary];
+        [imageMetadata setObject:imageIPTCDictionary forKey:(NSString *)kCGImagePropertyIPTCDictionary];
+    } else if (!imageIPTCDictionary && objectIPTCDictionary) {
+        [imageMetadata setObject:objectIPTCDictionary forKey:(NSString *)kCGImagePropertyIPTCDictionary];
+    }
+    
+    // Update JFIF dictionary with correct metadata
+    NSMutableDictionary *imageJFIFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyJFIFDictionary] mutableCopy];
+    NSMutableDictionary *objectJFIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyJFIFDictionary] mutableCopy];
+    if (imageJFIFDictionary && objectJFIFDictionary) {
+        [imageJFIFDictionary addEntriesFromDictionary:objectJFIFDictionary];
+        [imageMetadata setObject:imageJFIFDictionary forKey:(NSString *)kCGImagePropertyJFIFDictionary];
+    } else if (!imageJFIFDictionary && objectJFIFDictionary) {
+        [imageMetadata setObject:objectJFIFDictionary forKey:(NSString *)kCGImagePropertyJFIFDictionary];
+    }
+
+    // Update PNG dictionary with correct metadata
+    NSMutableDictionary *imagePNGDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyPNGDictionary] mutableCopy];
+    NSMutableDictionary *objectPNGDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyPNGDictionary] mutableCopy];
+    if (imagePNGDictionary && objectPNGDictionary) {
+        [imagePNGDictionary addEntriesFromDictionary:objectPNGDictionary];
+        [imageMetadata setObject:imagePNGDictionary forKey:(NSString *)kCGImagePropertyPNGDictionary];
+    } else if (!imagePNGDictionary && objectPNGDictionary) {
+        [imageMetadata setObject:objectPNGDictionary forKey:(NSString *)kCGImagePropertyPNGDictionary];
+    }
+
+    // Update RAW dictionary with correct metadata
+    NSMutableDictionary *imageRawDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyRawDictionary] mutableCopy];
+    NSMutableDictionary *objectRawDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyRawDictionary] mutableCopy];
+    if (imageRawDictionary && objectRawDictionary) {
+        [imageRawDictionary addEntriesFromDictionary:objectRawDictionary];
+        [imageMetadata setObject:imageRawDictionary forKey:(NSString *)kCGImagePropertyRawDictionary];
+    } else if (!imageRawDictionary && objectRawDictionary) {
+        [imageMetadata setObject:objectRawDictionary forKey:(NSString *)kCGImagePropertyRawDictionary];
+    }
+    
+    // Update TIFF dictionary with correct metadata
+    NSMutableDictionary *imageTIFFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyTIFFDictionary] mutableCopy];
+    NSMutableDictionary *objectTIFFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyTIFFDictionary] mutableCopy];
+    if (imageTIFFDictionary && objectTIFFDictionary) {
+        [imageTIFFDictionary addEntriesFromDictionary:objectTIFFDictionary];
+        [imageMetadata setObject:imageTIFFDictionary forKey:(NSString *)kCGImagePropertyTIFFDictionary];
+    } else if (!imageTIFFDictionary && objectTIFFDictionary) {
+        [imageMetadata setObject:objectTIFFDictionary forKey:(NSString *)kCGImagePropertyTIFFDictionary];
+    }
+
+    // Final metadata…
+#if defined(DEBUG_UPLOAD)
+    NSLog(@"modifyImage: metadata for upload => %@",imageMetadata);
+#endif
     
     // Apply compression if user requested it in Settings, or convert to JPEG if necessary
     NSData *imageCompressed = nil;
@@ -482,13 +608,14 @@
     if ([Model sharedInstance].compressImageOnUpload && ([Model sharedInstance].photoQuality < 100.0)) {
         // Compress image (only possible in JPEG)
         CGFloat compressionQuality = [Model sharedInstance].photoQuality / 100.0;
-        imageCompressed = UIImageJPEGRepresentation(imageResized, compressionQuality);
+        imageCompressed = UIImageJPEGRepresentation(originalObject, compressionQuality);
 
         // Final image file will be in JPEG format
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
-    } else if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
+    }
+    else if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
         // Image in unaccepted file format for Piwigo server => convert to JPEG format
-        imageCompressed = UIImageJPEGRepresentation(imageResized, 1.0);
+        imageCompressed = UIImageJPEGRepresentation(originalObject, 1.0);
         
         // Final image file will be in JPEG format
         image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
@@ -499,11 +626,11 @@
         CFStringRef UTI = CGImageSourceGetType(source);
         CFMutableDataRef imageDataRef = CFDataCreateMutable(nil, 0);
         CGImageDestinationRef destination = CGImageDestinationCreateWithData(imageDataRef, UTI, 1, nil);
-        CGImageDestinationAddImage(destination, imageResized.CGImage, nil);
+        CGImageDestinationAddImage(destination, originalObject.CGImage, nil);
         if(!CGImageDestinationFinalize(destination)) {
-//    #if defined(DEBUG)
-//            NSLog(@"Error: Could not retrieve imageData object");
-//    #endif
+#if defined(DEBUG_UPLOAD)
+        NSLog(@"Error: Could not retrieve imageData object");
+#endif
             CFRelease(source);
             CFRelease(destination);
             CFRelease(imageDataRef);
@@ -523,11 +650,11 @@
     CFRelease(source);
     
     // Add metadata to final image
-    NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:assetMetadata];
+    NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
     
     // Release memory
-    assetMetadata = nil;
-    assetImage = nil;
+    imageMetadata = nil;
+    originalObject = nil;
 
     // Try to determine MIME type from image data
     NSString *mimeType = @"";
@@ -677,7 +804,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //        [[PHImageManager defaultManager] requestLivePhotoForAsset:image.imageAsset
 //                   targetSize:CGSizeZero contentMode:PHImageContentModeDefault
 //                      options:options resultHandler:^(PHLivePhoto *livePhoto, NSDictionary *info) {
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                          NSLog(@"retrieveFullSizeAssetDataFromLivePhoto returned info(%@)", info);
 //#endif
 //                          if ([info objectForKey:PHImageErrorKey]) {
@@ -733,7 +860,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 
     // The block Photos calls periodically while downloading the video.
     options.progressHandler = ^(double progress,NSError *error,BOOL* stop, NSDictionary* dict) {
-#if defined(DEBUG)
+#if defined(DEBUG_UPLOAD)
         NSLog(@"downloading Video from iCloud — progress %lf",progress);
 #endif
         // The handler needs to update the user interface => Dispatch to main thread
@@ -815,9 +942,9 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                           [[PHImageManager defaultManager] requestExportSessionForVideo:image.imageAsset options:options
                          exportPreset:exportPreset
                         resultHandler:^(AVAssetExportSession * _Nullable exportSession, NSDictionary * _Nullable info) {
-//#if defined(DEBUG)
-//                                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
-//#endif
+#if defined(DEBUG_UPLOAD)
+                                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
+#endif
                                   // The handler needs to update the user interface => Dispatch to main thread
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       if ([info objectForKey:PHImageErrorKey]) {
@@ -858,10 +985,10 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     // Video formats — Always export video in MP4 format
     [exportSession setOutputFileType:AVFileTypeMPEG4];
     [exportSession setShouldOptimizeForNetworkUse:YES];
-//#if defined(DEBUG)
-//    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
-//    NSLog(@"Description: %@", exportSession.description);
-//#endif
+#if defined(DEBUG_UPLOAD)
+    NSLog(@"Supported file types: %@", exportSession.supportedFileTypes);
+    NSLog(@"Description: %@", exportSession.description);
+#endif
 
     // Prepare MIME type
     NSString *mimeType = @"video/mp4";
@@ -881,12 +1008,12 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                 // Gets copy as NSData
                 assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
                 assert(assetData.length != 0);
-//#if defined(DEBUG)
-//                AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
-//                NSArray *assetMetadata = [videoAsset commonMetadata];
-//                NSLog(@"Export sucess :-)");
-//                NSLog(@"Video metadata: %@", assetMetadata);
-//#endif
+#if defined(DEBUG_UPLOAD)
+                AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
+                NSArray *assetMetadata = [videoAsset commonMetadata];
+                NSLog(@"Export sucess :-)");
+                NSLog(@"Video metadata: %@", assetMetadata);
+#endif
 
                 // Deletes temporary video file
                 [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
@@ -910,7 +1037,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                     NSMutableArray *newAssetMetadata = [NSMutableArray array];
                     for (AVMetadataItem *item in assetMetadata) {
                         if ([item.commonKey isEqualToString:AVMetadataCommonKeyLocation]){
-#if defined(DEBUG)
+#if defined(DEBUG_UPLOAD)
                             NSLog(@"Location found: %@", item.stringValue);
 #endif
                         } else {
@@ -986,13 +1113,13 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //    @autoreleasepool {
 //        [[PHImageManager defaultManager] requestAVAssetForVideo:image.imageAsset options:options
 //              resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                  NSLog(@"retrieveFullSizeAssetDataFromVideo returned info(%@)", info);
 //#endif
 //                  // Error encountered while retrieving asset?
 //                  if ([info objectForKey:PHImageErrorKey]) {
 //                      NSError *error = [info valueForKey:PHImageErrorKey];
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                      NSLog(@"=> Error : %@", error.description);
 //#endif
 //                  }
@@ -1023,7 +1150,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //                          [self modifyVideo:image atURL:fileURL withMimeType:mimeType];
 //                      } else {
 //                          // Could not copy the video file!
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                          NSLog(@"=> Error : %@", error.description);
 //#endif
 //                      }
@@ -1039,7 +1166,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 ////                          [self modifyVideo:image atURL:fileURL withMimeType:mimeType];
 ////                      } else {
 ////                          // Could not copy the video file!
-////#if defined(DEBUG)
+////#if defined(DEBUG_UPLOAD)
 ////                          NSLog(@"=> Error : %@", error.description);
 ////#endif
 ////                      }
@@ -1095,7 +1222,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //        NSMutableArray *newAssetMetadata = [NSMutableArray array];
 //        for (AVMetadataItem *item in assetMetadata) {
 //            if ([item.commonKey isEqualToString:AVMetadataCommonKeyLocation]){
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                NSLog(@"Location found: %@", item.stringValue);
 //#endif
 //            } else {
@@ -1149,7 +1276,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //            [exportSession exportAsynchronouslyWithCompletionHandler:^{
 //                if ([exportSession status] == AVAssetExportSessionStatusCompleted)
 //                {
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                    NSLog(@"Export sucess…");
 //#endif
 //                    // Gets copy as NSData
@@ -1168,7 +1295,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //                }
 //                else if ([exportSession status] == AVAssetExportSessionStatusFailed)
 //                {
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
 //#endif
 //                    // Deletes temporary video files
@@ -1178,7 +1305,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //                }
 //                else if ([exportSession status] == AVAssetExportSessionStatusCancelled)
 //                {
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                    NSLog(@"Export canceled");
 //#endif
 //                    // Deletes temporary video files
@@ -1188,7 +1315,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //                }
 //                else
 //                {
-//#if defined(DEBUG)
+//#if defined(DEBUG_UPLOAD)
 //                    NSLog(@"Export ??");
 //#endif
 //                    // Deletes temporary video files
@@ -1302,7 +1429,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                         }
                         else
                         {
-#if defined(DEBUG)
+#if defined(DEBUG_UPLOAD)
                             NSLog(@"ERROR IMAGE UPLOAD: %@", error);
 #endif
                             // Inform user and propose to cancel or continue
@@ -1458,7 +1585,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                          }
                                     }
                                         onFailure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
+#if defined(DEBUG_UPLOAD)
                                             NSLog(@"isUploadedImageModerated error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
                                         }
@@ -1485,6 +1612,184 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 
 
 #pragma mark -- Scale, crop, etc. image before upload
+
+-(UIImage *)fixOrientationOfImage:(UIImage *)image {
+    
+    // No-op if the orientation is already correct
+    if (image.imageOrientation == UIImageOrientationUp) return image;
+    
+    // We need to calculate the proper transformation to make the image upright.
+    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    switch (image.imageOrientation) {
+        case UIImageOrientationDown:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, image.size.width, image.size.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+            transform = CGAffineTransformTranslate(transform, image.size.width, 0);
+            transform = CGAffineTransformRotate(transform, M_PI_2);
+            break;
+            
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, 0, image.size.height);
+            transform = CGAffineTransformRotate(transform, -M_PI_2);
+            break;
+        case UIImageOrientationUp:
+        case UIImageOrientationUpMirrored:
+            break;
+    }
+    
+    switch (image.imageOrientation) {
+        case UIImageOrientationUpMirrored:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, image.size.width, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+            
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, image.size.height, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+        case UIImageOrientationUp:
+        case UIImageOrientationDown:
+        case UIImageOrientationLeft:
+        case UIImageOrientationRight:
+            break;
+    }
+    
+    // Now we draw the underlying CGImage into a new context, applying the transform
+    // calculated above.
+    CGContextRef ctx = CGBitmapContextCreate(NULL, image.size.width, image.size.height,
+                                             CGImageGetBitsPerComponent(image.CGImage), 0,
+                                             CGImageGetColorSpace(image.CGImage),
+                                             CGImageGetBitmapInfo(image.CGImage));
+    CGContextConcatCTM(ctx, transform);
+    switch (image.imageOrientation) {
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            // Grr...
+            CGContextDrawImage(ctx, CGRectMake(0,0,image.size.height,image.size.width), image.CGImage);
+            break;
+            
+        default:
+            CGContextDrawImage(ctx, CGRectMake(0,0,image.size.width,image.size.height), image.CGImage);
+            break;
+    }
+    
+    // And now we just create a new UIImage from the drawing context
+    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
+    UIImage *img = [UIImage imageWithCGImage:cgimg];
+    CGContextRelease(ctx);
+    CGImageRelease(cgimg);
+    return img;
+}
+
+- (UIImage *)rotateImage:(UIImage *)imageIn andScaleItTo:(CGFloat)scaleRatio
+{
+    CGImageRef        imgRef    = imageIn.CGImage;
+    CGFloat           width     = CGImageGetWidth(imgRef);
+    CGFloat           height    = CGImageGetHeight(imgRef);
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    CGRect            bounds    = CGRectMake( 0, 0, width, height );
+    bounds.size.width = width * scaleRatio;
+    bounds.size.height = height * scaleRatio;
+    
+    CGSize             imageSize    = CGSizeMake( CGImageGetWidth(imgRef),         CGImageGetHeight(imgRef) );
+    UIImageOrientation orient       = imageIn.imageOrientation;
+    CGFloat            boundHeight;
+    
+    switch(orient)
+    {
+        case UIImageOrientationUp:                                        //EXIF = 1
+            transform = CGAffineTransformIdentity;
+            break;
+            
+        case UIImageOrientationUpMirrored:                                //EXIF = 2
+            transform = CGAffineTransformMakeTranslation(imageSize.width, 0.0);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            break;
+            
+        case UIImageOrientationDown:                                      //EXIF = 3
+            transform = CGAffineTransformMakeTranslation(imageSize.width, imageSize.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationDownMirrored:                              //EXIF = 4
+            transform = CGAffineTransformMakeTranslation(0.0, imageSize.height);
+            transform = CGAffineTransformScale(transform, 1.0, -1.0);
+            break;
+            
+        case UIImageOrientationLeftMirrored:                              //EXIF = 5
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(imageSize.height, imageSize.width);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationLeft:                                      //EXIF = 6
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(0.0, imageSize.width);
+            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationRightMirrored:                             //EXIF = 7
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationRight:                                     //EXIF = 8
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(imageSize.height, 0.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            break;
+            
+        default:
+            [NSException raise: NSInternalInconsistencyException
+                        format: @"Invalid image orientation"];
+            
+    }
+    
+    UIGraphicsBeginImageContext( bounds.size );
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    if ( orient == UIImageOrientationRight || orient == UIImageOrientationLeft )
+    {
+        CGContextScaleCTM(context, -scaleRatio, scaleRatio);
+        CGContextTranslateCTM(context, -height, 0);
+    }
+    else
+    {
+        CGContextScaleCTM(context, scaleRatio, -scaleRatio);
+        CGContextTranslateCTM(context, 0, -height);
+    }
+    
+    CGContextConcatCTM( context, transform );
+    
+    CGContextDrawImage( UIGraphicsGetCurrentContext(), CGRectMake( 0, 0, width, height ), imgRef );
+    UIImage *imageCopy = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return( imageCopy );
+}
 
 -(UIImage*)scaleImage:(UIImage*)image toSize:(CGSize)newSize contentMode:(UIViewContentMode)contentMode
 {
@@ -1558,7 +1863,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     // Create an imagesourceref
     CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
     if (!source) {
-#if defined(DEBUG)
+#if defined(DEBUG_UPLOAD)
         NSLog(@"Error: Could not create source");
 #endif
     } else {
@@ -1569,7 +1874,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
         NSMutableData *dest_data = [NSMutableData data];
         CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
         if (!destination) {
-#if defined(DEBUG)
+#if defined(DEBUG_UPLOAD)
             NSLog(@"Error: Could not create image destination");
 #endif
             CFRelease(source);
@@ -1579,7 +1884,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
             BOOL success = NO;
             success = CGImageDestinationFinalize(destination);
             if (!success) {
-#if defined(DEBUG)
+#if defined(DEBUG_UPLOAD)
                 NSLog(@"Error: Could not create data from image destination");
 #endif
                 CFRelease(destination);
