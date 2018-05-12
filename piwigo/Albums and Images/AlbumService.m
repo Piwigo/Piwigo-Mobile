@@ -46,11 +46,12 @@
                       // Extract albums data from JSON message
                       NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
 
-                      // Update CategoriesData cache
-                      [[CategoriesData sharedInstance] addAllCategories:albums];
+                      // Update Categories Data cache
+                      [[CategoriesData sharedInstance] replaceAllCategories:albums];
                       
                       // Update albums if Community extension installed (not for admins)
-                      if (![Model sharedInstance].hasAdminRights && [Model sharedInstance].usesCommunityPluginV29) {
+                      if (![Model sharedInstance].hasAdminRights &&
+                           [Model sharedInstance].usesCommunityPluginV29) {
                           [AlbumService setUploadRightsForCategory:categoryId inRecursiveMode:recursiveString];
                       }
 
@@ -138,13 +139,15 @@
 {
     [self getCommunityAlbumListForCategory:categoryId
                            inRecursiveMode:recursive
-                              OnCompletion:^(NSURLSessionTask *task, NSArray *communityAlbums) {
-                                  if (communityAlbums) {
+                              OnCompletion:^(NSURLSessionTask *task, id responseObject) {
+                                  if (responseObject) {
+                                      // Extract albums data from JSON message
+                                      NSArray *albums = [AlbumService parseAlbumJSON:responseObject];
+                                      
                                       // Loop over Community albums
-                                      for(NSDictionary *category in communityAlbums)
+                                      for(PiwigoAlbumData *category in albums)
                                       {
-                                          NSInteger catId = [[category valueForKey:@"id"] integerValue];
-                                          [[CategoriesData sharedInstance] setCategoryWithId:catId hasUploadRight:YES];
+                                          [[CategoriesData sharedInstance] addCommunityCategoryWithUploadRights:category];
                                      }
                                    }
                               }

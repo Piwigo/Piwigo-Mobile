@@ -15,6 +15,7 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 @interface CategoriesData()
 
 @property (nonatomic, strong) NSArray *allCategories;
+@property (nonatomic, strong) NSArray *communityCategoriesForUploadOnly;
 
 @end
 
@@ -28,6 +29,7 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 		instance = [[self alloc] init];
 		
 		instance.allCategories = [NSArray new];
+        instance.communityCategoriesForUploadOnly = [NSArray new];
 		
 	});
 	return instance;
@@ -36,6 +38,7 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 -(void)clearCache
 {
 	self.allCategories = [NSArray new];
+    self.communityCategoriesForUploadOnly = [NSArray new];
 }
 
 -(void)deleteCategory:(NSInteger)categoryId
@@ -54,7 +57,7 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
 	self.allCategories = newCategories;
 }
 
--(void)addAllCategories:(NSArray*)categories
+-(void)replaceAllCategories:(NSArray*)categories
 {
     // Create new list of categories
     NSMutableArray *newCategories = [[NSMutableArray alloc] init];
@@ -101,27 +104,55 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
         [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
--(void)setCategoryWithId:(NSInteger)categoryId hasUploadRight:(BOOL)canUpload
+-(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
 {
     NSMutableArray *existingCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+    NSMutableArray *existingComCategories = [[NSMutableArray alloc] initWithArray:self.communityCategoriesForUploadOnly];
     NSInteger index = -1;
+    NSInteger curr = 0;
     for(PiwigoAlbumData *existingCategory in existingCategories)
     {
-        index++;
-        if(existingCategory.albumId == categoryId)
+        if(existingCategory.albumId == category.albumId)
         {
+            index = curr;
             break;
         }
+        curr++;
     }
     
     if(index != -1)
     {
         PiwigoAlbumData *categoryData = [existingCategories objectAtIndex:index];
-        categoryData.hasUploadRights = canUpload;
+        categoryData.hasUploadRights = YES;
         [existingCategories setObject:categoryData atIndexedSubscript:index];
+    } else {
+        // This album was not returned by pwg.categories.getList
+        category.hasUploadRights = YES;
+
+        NSInteger indexCom = -1;
+        NSInteger currCom = 0;
+        for(PiwigoAlbumData *existingComCategory in existingComCategories)
+        {
+            if(existingComCategory.albumId == category.albumId)
+            {
+                indexCom = currCom;
+                break;
+            }
+            currCom++;
+        }
+
+        if(indexCom != -1)
+        {
+            PiwigoAlbumData *categoryComData = [existingComCategories objectAtIndex:indexCom];
+            categoryComData.hasUploadRights = YES;
+            [existingComCategories setObject:categoryComData atIndexedSubscript:indexCom];
+        } else {
+            [existingComCategories addObject:category];
+        }
     }
     
     self.allCategories = existingCategories;
+    self.communityCategoriesForUploadOnly = existingComCategories;
 
     // Post to the app that the category data has been updated
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];

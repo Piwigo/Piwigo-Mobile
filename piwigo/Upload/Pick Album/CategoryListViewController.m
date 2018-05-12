@@ -72,8 +72,9 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
 
 -(void)buildCategoryArray
 {
-    // Build list of categories from complete known list
+    // Build list of categories from complete known lists
     NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
+    NSArray *comCategories = [CategoriesData sharedInstance].communityCategoriesForUploadOnly;
     
     // Proposed list is collected in diff
     NSMutableArray *diff = [NSMutableArray new];
@@ -110,6 +111,26 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
         {
             [self.categories addObject:category];
             continue;
+        }
+    }
+
+    // Add Community private categories
+    for(PiwigoAlbumData *category in comCategories)
+    {
+        // Is this category already in displayed list?
+        BOOL doesNotExist = YES;
+        for(PiwigoAlbumData *existingCat in self.categories)
+        {
+            if(category.albumId == existingCat.albumId)
+            {
+                doesNotExist = NO;
+                break;
+            }
+        }
+        
+        if(doesNotExist)
+        {
+            [self.categories addObject:category];
         }
     }
 }

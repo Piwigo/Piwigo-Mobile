@@ -18,9 +18,9 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryImageUpdated;
 +(CategoriesData*)sharedInstance;
 
 @property (nonatomic, readonly) NSArray *allCategories;
+@property (nonatomic, readonly) NSArray *communityCategoriesForUploadOnly;
 
--(void)addAllCategories:(NSArray*)categories;
--(void)setCategoryWithId:(NSInteger)categoryId hasUploadRight:(BOOL)canUpload;
+-(void)replaceAllCategories:(NSArray*)categories;
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId;
@@ -28,6 +28,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryImageUpdated;
 
 -(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory;
 
+-(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
 -(void)deleteCategory:(NSInteger)categoryId;
 -(void)clearCache;
 
