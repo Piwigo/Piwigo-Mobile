@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.8_text" = "Version 2.1.8\n\n• Ajoute la possibilité de changer la taille des vignettes\n• HTTPS devient le protocole par défaut\n• Traduction japonaise\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
+"v2.1.9_text" = "Version 2.1.9\n\n• Correction de bugs\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+
+"v2.1.8_text" = "Version 2.1.8\n29 Avril 2018\n\n• Ajoute la possibilité de changer la taille des vignettes\n• HTTPS devient le protocole par défaut\n• Traduction japonaise\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
 
 "v2.1.7_text" = "Version 2.1.7\n3 Février 2018\n\n• Résoud les problèmes de téléchargement de vidéos sur certains serveurs\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
