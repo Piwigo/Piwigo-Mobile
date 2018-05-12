@@ -204,7 +204,6 @@
 
 -(void)imageUpdated
 {
-//    [self setupBgWithImage:self.albumData.categoryImage];
     self.backgroundImage.image = self.albumData.categoryImage;
 }
 
