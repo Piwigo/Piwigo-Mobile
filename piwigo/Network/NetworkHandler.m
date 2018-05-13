@@ -210,9 +210,9 @@ NSInteger const loadingViewTag = 899;
         prefix = [cleanPath substringWithRange:pos];
         cleanPath = [cleanPath stringByReplacingOccurrencesOfString:prefix withString:@""];
     }
+//    NSLog(@"   %@", cleanPath);
 
     // Path may not be encoded
-//    NSLog(@"   %@", cleanPath);
     NSString *decodedPath = [cleanPath stringByRemovingPercentEncoding];
     if ([cleanPath isEqualToString:decodedPath]) {
         // Path is not encoded
@@ -309,7 +309,10 @@ NSInteger const loadingViewTag = 899;
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                                       NSLog(@"NetworkHandler/post Error: %@", error);
+                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
+                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
+                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
+                                       NSLog(@"=> response= %@", task.response);
 #endif
                                        if(fail) {
                                            fail(task, error);
@@ -322,11 +325,19 @@ NSInteger const loadingViewTag = 899;
 
 +(NSString*)getURLWithPath:(NSString*)path asPiwigoRequest:(BOOL)piwigo withURLParams:(NSDictionary*)params
 {
-    // Servers sometimes return http://… instead of https://…
-    NSString *cleanPath = [path stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
-    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
+//    NSLog(@"=> %@ (%@:%@)", path, piwigo ? @"YES" : @"NO", params);
+    // Return nil if path is nil
+    if (path == nil) return nil;
     
+    // Servers sometimes return http://… instead of https://…
+    NSString* cleanPath = [path stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+    
+    // Users usually provides DNS name in lowercase, but not always
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
+    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[[Model sharedInstance].serverName lowercaseString] withString:@""];
+//    NSLog(@"   %@", cleanPath);
+
     // Remove the .php? prefix if any
     NSString *prefix = @"";
     NSRange pos = [cleanPath rangeOfString:@".php?"];
@@ -337,16 +348,16 @@ NSInteger const loadingViewTag = 899;
         prefix = [cleanPath substringWithRange:pos];
         cleanPath = [cleanPath stringByReplacingOccurrencesOfString:prefix withString:@""];
     }
+//    NSLog(@"   %@", cleanPath);
 
     // Path may not be encoded
-//    NSLog(@"path (before) => %@", cleanPath);
     NSString *decodedPath = [cleanPath stringByRemovingPercentEncoding];
     if ([cleanPath isEqualToString:decodedPath]) {
         // Path is not encoded
         NSCharacterSet *allowedCharacters = [NSCharacterSet URLPathAllowedCharacterSet];
         cleanPath = [cleanPath stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
     }
-//    NSLog(@"path (after) => %@", cleanPath);
+//    NSLog(@"   %@", cleanPath);
 
     // Copy parameters in URL
     for(NSString *parameter in params)
@@ -355,13 +366,14 @@ NSInteger const loadingViewTag = 899;
         NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
         cleanPath = [cleanPath stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
     }
-    
+//    NSLog(@"   %@", cleanPath);
+
     // Compile final URL
     NSString *url = [NSString stringWithFormat:@"%@%@%@%@%@",
                      [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName,
                      piwigo ? @"/ws.php?" : @"", prefix, cleanPath];
     
-//    NSLog(@"path (final) => %@", url);
+//    NSLog(@"   %@", url);
     return url;
 }
 
