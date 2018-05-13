@@ -31,9 +31,9 @@
 
 @end
 
-#ifndef DEBUG_UPLOAD
-#define DEBUG_UPLOAD
-#endif
+//#ifndef DEBUG_UPLOAD
+//#define DEBUG_UPLOAD
+//#endif
 
 @implementation ImageUploadManager
 
