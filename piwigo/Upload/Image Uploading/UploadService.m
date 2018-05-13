@@ -103,7 +103,6 @@
 	NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
                              URLParameters:nil
                                 parameters:@{
-                                             @"method" : @"pwg.images.setInfo",
                                              @"image_id" : imageId,
                                              @"file" : [imageInformation objectForKey:kPiwigoImagesUploadParamFileName],
                                              @"name" : [imageInformation objectForKey:kPiwigoImagesUploadParamTitle],
