@@ -36,8 +36,11 @@
 {
 	[super viewWillAppear:animated];
 
-    // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    // Background color depends on the navigation bar visibility
+    if (self.navigationController.navigationBarHidden)
+        self.view.backgroundColor = [UIColor blackColor];
+    else
+        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
     // Navigation bar appearence
     self.navigationBarHidden = YES;

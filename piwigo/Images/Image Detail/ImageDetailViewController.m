@@ -39,7 +39,6 @@
 	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor blackColor];
 		self.categoryId = categoryId;
 		self.images = [array mutableCopy];
 		
@@ -104,70 +103,33 @@
 
 -(void)didTapView
 {
-    [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
-    
-    if(self.navigationController.navigationBarHidden)
-    {
-        if (self.imageData.isVideo) {
-            // User wants to play/replay the video
-            ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
-            [playVideo startVideoPlayerViewWithImageData:self.imageData];
-        } else {
-            // User wants to display the image in full screen
-            [self hideTabBar:self.tabBarController];
+    // Should we do something else?
+    if (self.imageData.isVideo) {
+        // User wants to play/replay the video
+        ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
+        [playVideo startVideoPlayerViewWithImageData:self.imageData];
+    } else {
+        // Display/hide the navigation bar
+        [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
+
+        // Set background color according to navigation bar visibility
+        NSArray *viewControllers = self.childViewControllers;
+        for (UIViewController *viewController in viewControllers) {
+            if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
+                if (self.navigationController.navigationBarHidden)
+                    viewController.view.backgroundColor = [UIColor blackColor];
+                else
+                    viewController.view.backgroundColor = [UIColor piwigoBackgroundColor];
+            }
         }
     }
+}
+
+- (BOOL)prefersStatusBarHidden {
+    if (self.navigationController.navigationBarHidden)
+        return YES;     // Hide the status bar with the navigation bar
     else
-    {
-        [self showTabBar:self.tabBarController];
-    }
-}
-
--(void)hideTabBar:(UITabBarController*)tabbarcontroller
-{
-    return;
-    
-    //    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    //
-    //    [UIView beginAnimations:nil context:NULL];
-    //    [UIView setAnimationDuration:0.3];
-    //    float fHeight = screenRect.size.height;
-    //
-    //    for(UIView *view in tabbarcontroller.view.subviews)
-    //    {
-    //        if([view isKindOfClass:[UITabBar class]])
-    //        {
-    //            [view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
-    //        }
-    //        else
-    //        {
-    //            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
-    //            view.backgroundColor = [UIColor blackColor];
-    //        }
-    //    }
-    //    [UIView commitAnimations];
-}
-
--(void)showTabBar:(UITabBarController*)tabbarcontroller
-{
-    return;
-    //    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    //    float fHeight = screenRect.size.height - tabbarcontroller.tabBar.frame.size.height;
-    //
-    //    [UIView beginAnimations:nil context:NULL];
-    //    [UIView setAnimationDuration:0.3];
-    //    for(UIView *view in tabbarcontroller.view.subviews)
-    //    {
-    //        if([view isKindOfClass:[UITabBar class]])
-    //        {
-    //            [view setFrame:CGRectMake(view.frame.origin.x, fHeight, view.frame.size.width, view.frame.size.height)];
-    //        }
-    //        else
-    //        {
-    //            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, fHeight)];
-    //        }
-    //    }
-    //    [UIView commitAnimations];
+        return NO;      // Show the status bar with the navigation bar
 }
 
 -(void)imageOptions
