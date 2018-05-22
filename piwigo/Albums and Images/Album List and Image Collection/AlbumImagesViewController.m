@@ -38,6 +38,7 @@
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSString *currentSort;
 @property (nonatomic, assign) BOOL loadingImages;
+@property (nonatomic, assign) BOOL displayImageTitles;
 
 @property (nonatomic, assign) CGFloat previousContentYOffset;
 @property (nonatomic, assign) CGFloat minContentYOffset;
@@ -73,6 +74,7 @@
 		
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
+        self.displayImageTitles = [Model sharedInstance].displayImageTitles;
 		
         // Before starting scrolling
         self.previousContentYOffset = -INFINITY;
@@ -149,12 +151,21 @@
         [self.imagesCollection reloadData];
 	}
     
-    // Photos
+    // Images
     self.loadingImages = YES;
-    [self.albumData reloadAlbumOnCompletion:^{
+    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
         self.loadingImages = NO;
         [self.imagesCollection reloadData];
     }];
+    
+    // Refresh image collection if displayImageTitles option changed
+    if (self.displayImageTitles != [Model sharedInstance].displayImageTitles) {
+        self.displayImageTitles = [Model sharedInstance].displayImageTitles;
+        [self.albumData reloadAlbumOnCompletion:^{
+            self.loadingImages = NO;
+            [self.imagesCollection reloadData];
+        }];
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -625,14 +636,6 @@
 	return _downloadView;
 }
 
--(void)setCurrentSortCategory:(kPiwigoSortCategory)currentSortCategory
-{
-	_currentSortCategory = currentSortCategory;
-	[self.albumData updateImageSort:currentSortCategory OnCompletion:^{
-		[self.imagesCollection reloadData];
-	}];
-}
-
 
 #pragma mark - UICollectionView Methods
 
@@ -852,6 +855,9 @@
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
 {
 	self.currentSortCategory = sortType;
+    [self.albumData updateImageSort:sortType OnCompletion:^{
+        [self.imagesCollection reloadData];
+    }];
 }
 
 
