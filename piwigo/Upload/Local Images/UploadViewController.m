@@ -24,7 +24,7 @@
 #import "UICountingLabel.h"
 #import "ImagesCollection.h"
 
-@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate, SortSelectViewControllerDelegate>
+@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate, SortSelectViewControllerDelegate, PHPhotoLibraryChangeObserver>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
@@ -55,7 +55,6 @@
         self.categoryId = categoryId;
         self.groupAsset = groupAsset;
         self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-        
         self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
         self.sortType = kPiwigoSortByNewest;
         
@@ -82,6 +81,9 @@
                                                                 style:UIBarButtonItemStylePlain
                                                                target:self
                                                                action:@selector(uploadSelected)];
+        
+        // Register Photo Library changes
+        [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     }
     return self;
 }
@@ -123,8 +125,6 @@
     {
         [[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
     }
-    
-    self.sortType = self.sortType;
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -261,7 +261,7 @@
     self.selectedImages = [NSMutableArray new];
 }
 
-#pragma mark UICollectionView Methods
+#pragma mark - UICollectionView Methods
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
@@ -401,7 +401,7 @@
     [self loadNavButtons];
 }
 
-#pragma mark ImageUploadProgressDelegate Methods
+#pragma mark - ImageUploadProgressDelegate Methods
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
@@ -446,12 +446,29 @@
 }
 
 
-#pragma mark SortSelectViewControllerDelegate Methods
+#pragma mark - SortSelectViewControllerDelegate Methods
 
 -(void)didSelectSortTypeOf:(kPiwigoSortBy)sortType
 {
     self.sortType = sortType;
 }
 
+
+#pragma mark - Changes occured in the Photo library
+
+- (void)photoLibraryDidChange:(PHChange *)changeInfo {
+    // Photos may call this method on a background queue;
+    // switch to the main queue to update the UI.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Collect new list of images
+        self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
+
+        // Sort images according to current choice
+        [self setSortType:self.sortType];
+        
+        // Refresh collection view
+        [self.localImagesCollection reloadData];
+    });
+}
 @end
 
