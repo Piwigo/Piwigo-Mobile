@@ -54,6 +54,8 @@
 }
 
 
+#pragma mark - tableView methods
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     // Header height?
@@ -111,6 +113,9 @@
 	
 	return cell;
 }
+
+
+#pragma mark - Move album methods
 
 -(void)selectedCategory:(PiwigoAlbumData *)category
 {
@@ -194,7 +199,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-#pragma mark -- HUD methods
+#pragma mark - HUD methods
 
 -(void)showMoveCategoryHUD
 {
