@@ -112,64 +112,82 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    // Header height?
-    NSString *header;
+    // Header strings
+    NSString *titleString, *textString;
     switch (section) {
         case 0:
-            header = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
+            titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"categoryUpload_LocalAlbums", @"Local Albums")];
+            textString = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
             break;
         case 1:
-            header = NSLocalizedString(@"categoryUpload_chooseiCloudAlbum", @"Select an iCloud album to get images from");
+            titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"categoryUpload_iCloudAlbums", @"iCloud Albums")];
+            textString = NSLocalizedString(@"categoryUpload_chooseiCloudAlbum", @"Select an iCloud album to get images from");
             break;
 
         default:
             break;
     }
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    
+    // Header height
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                             options:NSStringDrawingUsesLineFragmentOrigin
-                                          attributes:attributes
-                                             context:context];
-    return fmax(44.0, ceil(headerRect.size.height + 10.0));
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:titleAttributes
+                                                 context:context];
+    NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:textAttributes
+                                               context:context];
+
+    return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    // Header label
-    UILabel *headerLabel = [UILabel new];
-    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontNormal];
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
-    headerLabel.textAlignment = NSTextAlignmentCenter;
-    headerLabel.numberOfLines = 0;
-    headerLabel.adjustsFontSizeToFitWidth = NO;
-    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    // Header strings
+    NSString *titleString, *textString;
     switch (section) {
         case 0:
-            headerLabel.text = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
+            titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"categoryUpload_LocalAlbums", @"Local Albums")];
+            textString = NSLocalizedString(@"categoryUpload_chooseLocalAlbum", @"Select an album to get images from");
             break;
         case 1:
-            headerLabel.text = NSLocalizedString(@"categoryUpload_chooseiCloudAlbum", @"Select an iCloud album to get images from");
+            titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"categoryUpload_iCloudAlbums", @"iCloud Albums")];
+            textString = NSLocalizedString(@"categoryUpload_chooseiCloudAlbum", @"Select an iCloud album to get images from");
             break;
             
         default:
             break;
     }
-
-    // Header frame
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
     
+    NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    // Title
+    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                  range:NSMakeRange(0, [titleString length])];
+    [headerAttributedString appendAttributedString:titleAttributedString];
+    
+    // Text
+    NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+    [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                 range:NSMakeRange(0, [textString length])];
+    [headerAttributedString appendAttributedString:textAttributedString];
+
+    // Header label
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    headerLabel.attributedText = headerAttributedString;
+
     // Header view
-    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    UIView *header = [[UIView alloc] init];
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
     if (@available(iOS 11, *)) {

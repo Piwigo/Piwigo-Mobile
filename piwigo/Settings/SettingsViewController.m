@@ -45,7 +45,6 @@ typedef enum {
 @interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
-@property (nonatomic, strong) NSArray *headerHeights;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
 
@@ -61,17 +60,6 @@ typedef enum {
 	self = [super init];
 	if(self)
 	{
-        self.headerHeights = @[
-							   @44.0,
-							   @14.0,
-							   @44.0,
-                               @44.0,
-							   @44.0,
-                               @44.0,
-							   @44.0,
-							   @44.0
-							   ];
-		
         self.settingsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.settingsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.settingsTableView.backgroundColor = [UIColor clearColor];
@@ -143,55 +131,128 @@ typedef enum {
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return [self.headerHeights[section] floatValue];
+    // Header strings
+    NSString *titleString, *textString = @"";
+    switch(section)
+    {
+        case SettingsSectionServer:
+            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"]) {
+                titleString = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+            } else {
+                titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server")];
+                textString = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
+            }
+            break;
+        case SettingsSectionLogout:
+            return 14;
+        case SettingsSectionThumbnails:
+            titleString = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
+            break;
+        case SettingsSectionImages:
+            titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
+            break;
+        case SettingsSectionImageUpload:
+            titleString = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
+            break;
+        case SettingsSectionCache:
+            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
+            break;
+        case SettingsSectionColor:
+            titleString = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            break;
+        case SettingsSectionAbout:
+            titleString = NSLocalizedString(@"settingsHeader_about", @"Information");
+            break;
+    }
+
+    // Header height
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:titleAttributes
+                                                 context:context];
+
+    // Header height
+    NSInteger headerHeight;
+    if ([textString length] > 0) {
+        NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+        CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                attributes:textAttributes
+                                                   context:context];
+        headerHeight = fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+    } else {
+        headerHeight = fmax(44.0, ceil(titleRect.size.height));
+    }
+
+    return headerHeight;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    // Header label
-    UILabel *headerLabel = [UILabel new];
-    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontBold];
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
-
-    // Header text
+    // Header strings
+    NSString *titleString, *textString = @"";
     switch(section)
     {
         case SettingsSectionServer:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"]) {
+                titleString = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+            } else {
+                titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server")];
+                textString = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
+            }
             break;
+        case SettingsSectionLogout:
+            return nil;
         case SettingsSectionThumbnails:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
+            titleString = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
             break;
         case SettingsSectionImages:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_images", @"Images");
+            titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
             break;
         case SettingsSectionImageUpload:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
+            titleString = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
             break;
         case SettingsSectionCache:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
+            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
             break;
         case SettingsSectionColor:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            titleString = NSLocalizedString(@"settingsHeader_colors", @"Colors");
             break;
         case SettingsSectionAbout:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"Information");
+            titleString = NSLocalizedString(@"settingsHeader_about", @"Information");
             break;
     }
     
-    // Header height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
+    NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    // Title
+    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                  range:NSMakeRange(0, [titleString length])];
+    [headerAttributedString appendAttributedString:titleAttributedString];
+    
+    // Text
+    if ([textString length] > 0) {
+        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                     range:NSMakeRange(0, [textString length])];
+        [headerAttributedString appendAttributedString:textAttributedString];
+    }
+    
+    // Header label
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    headerLabel.attributedText = headerAttributedString;
 
     // Header view
-    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    UIView *header = [[UIView alloc] init];
     header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
@@ -1069,7 +1130,7 @@ typedef enum {
                                           attributes:attributes
                                              context:context];
     
-    return ceil(footerRect.size.height + 10.0);
+    return ceil(footerRect.size.height);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
@@ -1094,17 +1155,8 @@ typedef enum {
             break;
     }
     
-    // Footer height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    
     // Footer view
-    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
+    UIView *footer = [[UIView alloc] init];
     footer.backgroundColor = [UIColor clearColor];
     [footer addSubview:footerLabel];
     [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];

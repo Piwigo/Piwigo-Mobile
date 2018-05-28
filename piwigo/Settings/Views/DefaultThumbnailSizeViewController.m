@@ -74,14 +74,14 @@
 {
     // Header height?
     NSString *header = NSLocalizedString(@"defaultThumbnailSizeHeader", @"Please Select a Thumbnail Size");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
                                              context:context];
-    return fmax(44.0, ceil(headerRect.size.height + 10.0));
+    return fmax(44.0, ceil(headerRect.size.height));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -89,26 +89,15 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.font = [UIFont piwigoFontSmall];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
-    headerLabel.textAlignment = NSTextAlignmentCenter;
     headerLabel.text = NSLocalizedString(@"defaultThumbnailSizeHeader", @"Please Select a Thumbnail Size");
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
-    // Header height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
-
     // Header view
-    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    UIView *header = [[UIView alloc] init];
     header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
@@ -239,7 +228,7 @@
 {
     // Footer height?
     NSString *footer = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -247,7 +236,7 @@
                                           attributes:attributes
                                              context:context];
 
-    return fmax(44.0, ceil(footerRect.size.height + 10.0));
+    return fmax(44.0, ceil(footerRect.size.height));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
@@ -255,7 +244,7 @@
     // Footer label
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    footerLabel.font = [UIFont piwigoFontNormal];
+    footerLabel.font = [UIFont piwigoFontSmall];
     footerLabel.textColor = [UIColor piwigoHeaderColor];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
@@ -263,18 +252,8 @@
     footerLabel.adjustsFontSizeToFitWidth = NO;
     footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
-    // Footer height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    footerRect.size.height = fmax(44.0, ceil(footerRect.size.height + 10.0));
-
     // Footer view
-    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
+    UIView *footer = [[UIView alloc] init];
     footer.backgroundColor = [UIColor clearColor];
     [footer addSubview:footerLabel];
     [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];

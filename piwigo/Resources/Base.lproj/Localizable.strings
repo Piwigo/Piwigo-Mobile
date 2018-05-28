@@ -267,7 +267,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Select an album to upload images to";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Select an album to get images from";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get images from";
 "categoyUpload_loadSubCategories" = "load";
 "selectAll" = "All";
@@ -336,6 +338,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "Address";
 "settings_username" = "Username";
 "settings_notLoggedIn" = " - Not Logged In - ";

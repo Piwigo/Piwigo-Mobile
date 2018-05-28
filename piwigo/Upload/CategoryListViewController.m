@@ -24,8 +24,8 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
 
 @implementation CategoryListViewController
 
-#pragma mark -
-#pragma mark View lifecycle
+
+#pragma mark - View lifecycle
 
 -(instancetype)init
 {
@@ -135,8 +135,8 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     }
 }
 
-#pragma mark -
-#pragma mark UITableView Methods
+
+#pragma mark - UITableView Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -196,8 +196,8 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     }
 }
 
-#pragma mark -
-#pragma mark CategoryCellDelegate Methods
+
+#pragma mark - CategoryCellDelegate Methods
 
 -(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
 {

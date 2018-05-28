@@ -125,43 +125,56 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    // Header height?
-    NSString *header = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                             options:NSStringDrawingUsesLineFragmentOrigin
-                                          attributes:attributes
-                                             context:context];
-    return fmax(44.0, ceil(headerRect.size.height + 10.0));
+    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:titleAttributes
+                                                 context:context];
+
+    // Text
+    NSString *textString = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
+    NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:textAttributes
+                                               context:context];
+    return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                  range:NSMakeRange(0, [titleString length])];
+    [headerAttributedString appendAttributedString:titleAttributedString];
+    
+    // Text
+    NSString *textString = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
+    NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+    [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                 range:NSMakeRange(0, [textString length])];
+    [headerAttributedString appendAttributedString:textAttributedString];
+
     // Header label
-	UILabel *headerLabel = [UILabel new];
-	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	headerLabel.font = [UIFont piwigoFontNormal];
-	headerLabel.textColor = [UIColor piwigoHeaderColor];
-	headerLabel.text = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select an album to upload images to");
-    headerLabel.textAlignment = NSTextAlignmentCenter;
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
-
-    // Header height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
+    headerLabel.attributedText = headerAttributedString;
 
     // Header view
-    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    UIView *header = [[UIView alloc] init];
 	[header addSubview:headerLabel];
 	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
     if (@available(iOS 11, *)) {

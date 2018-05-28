@@ -755,8 +755,6 @@
 			children = (
 				D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */,
 				D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */,
-				D8EAC8C51AD773FD00D9D15E /* CategoryListViewController.h */,
-				D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */,
 			);
 			path = "Pick Album";
 			sourceTree = "<group>";
@@ -808,6 +806,8 @@
 				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
 				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
+				D8EAC8C51AD773FD00D9D15E /* CategoryListViewController.h */,
+				D8EAC8C61AD773FD00D9D15E /* CategoryListViewController.m */,
 				D8A5014A1A7B3D4200C04C17 /* Pick Album */,
 				D8A5014E1A7B432600C04C17 /* Local Images */,
 				D8F325111A875939007CBDAC /* Edit Image Details */,
