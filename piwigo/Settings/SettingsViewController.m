@@ -1130,7 +1130,7 @@ typedef enum {
                                           attributes:attributes
                                              context:context];
     
-    return ceil(footerRect.size.height);
+    return ceil(footerRect.size.height + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
