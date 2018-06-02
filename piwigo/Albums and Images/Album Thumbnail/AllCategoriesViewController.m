@@ -38,6 +38,8 @@
 	return 2;
 }
 
+#pragma mark - TableView methods
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	if(section == 0)
@@ -49,56 +51,96 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	if(section == 1)
-	{
-		return 0;
-	}
-    
-    // Header height?
-    NSString *header = NSLocalizedString(@"categorySelection_forImage", @"Select an album for this image");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                             options:NSStringDrawingUsesLineFragmentOrigin
-                                          attributes:attributes
-                                             context:context];
-    return fmax(44.0, ceil(headerRect.size.height));
+
+    if (section == 0)
+	{
+        // Title
+        NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+        NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+        CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                  attributes:titleAttributes
+                                                     context:context];
+        
+        // Text
+        NSString *textString = NSLocalizedString(@"categorySelection_current", @"Select the current album for this image");
+        NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+        CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                attributes:textAttributes
+                                                   context:context];
+        return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+	}
+    
+    // Text
+    NSString *textString = NSLocalizedString(@"categorySelection_other", @"or select another album for this image");
+    NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:textAttributes
+                                               context:context];
+    return ceil(textRect.size.height + 10.0);
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	if(section == 0)
-	{
-        // Header label
-		UILabel *headerLabel = [UILabel new];
-		headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		headerLabel.font = [UIFont piwigoFontSmall];
-		headerLabel.textColor = [UIColor piwigoHeaderColor];
-		headerLabel.text = NSLocalizedString(@"categorySelection_forImage", @"Select an album for this image");
-        headerLabel.numberOfLines = 0;
-        headerLabel.adjustsFontSizeToFitWidth = NO;
-        headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
 
-        // Header view
-        UIView *header = [[UIView alloc] init];
-		[header addSubview:headerLabel];
-		[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
-        if (@available(iOS 11, *)) {
-            [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
-																	   options:kNilOptions
-																	   metrics:nil
-																		 views:@{@"header" : headerLabel}]];
-        } else {
-            [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
-                                                                           options:kNilOptions
-                                                                           metrics:nil
-                                                                             views:@{@"header" : headerLabel}]];
-        }
-		
-		return header;
-	}
-	return nil;
+    if (section == 0)   // Current album
+	{
+        // Title
+        NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+        NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+        [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                      range:NSMakeRange(0, [titleString length])];
+        [headerAttributedString appendAttributedString:titleAttributedString];
+        
+        // Text
+        NSString *textString = NSLocalizedString(@"categorySelection_current", @"Select the current album for this image");
+        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                     range:NSMakeRange(0, [textString length])];
+        [headerAttributedString appendAttributedString:textAttributedString];
+    }
+    else                // Or other albums
+    {
+        // Text
+        NSString *textString = NSLocalizedString(@"categorySelection_other", @"or select another album for this image");
+        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                     range:NSMakeRange(0, [textString length])];
+        [headerAttributedString appendAttributedString:textAttributedString];
+    }
+        
+    // Header label
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.font = [UIFont piwigoFontNormal];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    headerLabel.attributedText = headerAttributedString;
+    
+    // Header view
+    UIView *header = [[UIView alloc] init];
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
+                                                                   options:kNilOptions
+                                                                   metrics:nil
+                                                                     views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"header" : headerLabel}]];
+    }
+    
+    return header;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
