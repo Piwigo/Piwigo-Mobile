@@ -18,6 +18,7 @@
 @property (nonatomic, strong) PiwigoTextField *userTextField;
 @property (nonatomic, strong) PiwigoTextField *passwordTextField;
 @property (nonatomic, strong) PiwigoButton *loginButton;
+@property (nonatomic, strong) UILabel *websiteNotSecure;
 
 @property (nonatomic, strong) NSLayoutConstraint *logoTopConstraint;
 @property (nonatomic, assign) NSInteger topConstraintAmount;
