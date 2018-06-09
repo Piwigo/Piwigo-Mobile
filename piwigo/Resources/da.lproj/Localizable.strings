@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "Vælg Album";
-"categorySelection_forImage" = "Vælg et album for dette billede";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Vælg Miniaturebilledet";
 "categoryImageSet_message" = "Er du sikker på, at du vil bruge dette billede som miniaturebillede for albummet \"%@\"?";
 "categoryImageSetHUD_updating" = "Opdaterer Album miniature…";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Vælg et album for dette billede";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Vælg et album at hente biller fra";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Vælg et iCloud album at hente biller fra";
 "categoyUpload_loadSubCategories" = "indlæs";
 "selectAll" = "Alle";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "Upload af video er annulleret.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Lokale Album";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "Nyeste";
 "localImageSort_oldest" = "Ældste";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "Server";
 "settings_username" = "Brugernavn";
 "settings_notLoggedIn" = " - Ikke logget ind - ";

@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "Sélectionnez l’Album";
-"categorySelection_forImage" = "Sélectionnez un album pour cette image";
+"categorySelection_current" = "Sélectionnez l’album en cours pour cette image";
+"categorySelection_other" = "ou sélectionnez un autre album pour cette image";
 "categoryImageSet_title" = "Affecter une Vignette";
 "categoryImageSet_message" = "Êtes-vous certain de vouloir affecter cette image à l’album \"%@\" ?";
 "categoryImageSetHUD_updating" = "Modification de la Vignette…";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Sélectionnez l'album Piwigo qui recevra les images";
+"categoryUpload_LocalAlbums" = "Albums Locaux";
 "categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les images à envoyer";
+"categoryUpload_iCloudAlbums" = "Albums iCloud";
 "categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album iCloud qui contient les images à envoyer";
 "categoyUpload_loadSubCategories" = "télécharge";
 "selectAll" = "Tout";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "Le transfert de la vidéo vers votre Piwigo a été annulé.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Albums Locaux";
+"localAlbums" = "Bibliothèque de Photos";
 
 "localImageSort_newest" = "Plus Récentes";
 "localImageSort_oldest" = "Plus Anciennes";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Serveur Piwigo";
+"settingsHeader_notSecure" = "Site Web Non Sécurisé !";
 "settings_server" = "Adresse";
 "settings_username" = "Identifiant";
 "settings_notLoggedIn" = " - Non Connecté - ";

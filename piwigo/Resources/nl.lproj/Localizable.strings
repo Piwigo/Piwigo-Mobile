@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "Selecteer album";
-"categorySelection_forImage" = "Selecteer een album voor deze foto";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Stel foto-miniatuur in";
 "categoryImageSet_message" = "Weet je zeker dat je deze foto wilt gebruiken voor album \"%@\"?";
 "categoryImageSetHUD_updating" = "Bijwerken album-miniatuur…";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Selecteer een album om de foto's naar te uploaden";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Selecteer een album iCloud om er foto's van op te halen";
 "categoyUpload_loadSubCategories" = "laden";
 "selectAll" = "Allemaal";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "De upload van de video is afgebroken.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Lokale albums";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "Nieuwste";
 "localImageSort_oldest" = "Oudste";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "Adres";
 "settings_username" = "Gebruikersnaam";
 "settings_notLoggedIn" = " - Niet aangemeld - ";

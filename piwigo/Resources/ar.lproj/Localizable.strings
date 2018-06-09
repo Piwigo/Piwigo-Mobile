@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "حدد الألبوم";
-"categorySelection_forImage" = "حدد ألبوم لهذه الصورة";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "تعيين صورة مصغرة";
 "categoryImageSet_message" = "هل تريد بالتأكيد تعيين هذه الصورة للألبوم \"%@\"؟";
 "categoryImageSetHUD_updating" = "جار تحديث الصورة المصغرة للألبوم…";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "حدد ألبوما لتحميل الصور إلى";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "حدد ألبوما للحصول على صور من";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "حدد ألبوم iCloud للحصول على صور منه";
 "categoyUpload_loadSubCategories" = "تحميل";
 "selectAll" = "الكل";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "تم إلغاء تحميل الفيديو.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "الألبومات المحلية";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "الأحدث";
 "localImageSort_oldest" = "الأقدم";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "خادم Piwigo";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "العنوان";
 "settings_username" = "اسم المستخدم";
 "settings_notLoggedIn" = " - لم تقم بتسجيل الدخول - ";

@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "Album auswählen";
-"categorySelection_forImage" = "Wähle ein Album für dieses Bild";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Miniaturbild setzen";
 "categoryImageSet_message" = "Möchtest Du wirklich dieses Miniaturbild für das Album \"%@\" festlegen?";
 "categoryImageSetHUD_updating" = "Album Miniaturbild wird aktualisiert…";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Wähle ein Album zum Hochladen der Bilder";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Wähle ein Album um Bilder zu erhalten";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Wähle ein iCloud Album um Bilder zu erhalten";
 "categoyUpload_loadSubCategories" = "Laden";
 "selectAll" = "Alle";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "Das Hochladen des Videos wurde abgebrochen.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Lokale Alben";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "Neueste";
 "localImageSort_oldest" = "Älteste";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "Webadresse";
 "settings_username" = "Benutzername";
 "settings_notLoggedIn" = " -Nicht eingeloggt- ";

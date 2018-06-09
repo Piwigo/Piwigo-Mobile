@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "Välj ett album";
-"categorySelection_forImage" = "Välj ett album för denna bild";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Sätt miniatyrbild";
 "categoryImageSet_message" = "Är du säker du vill använda denna bild miniatyrbild för albumet ”%@”?";
 "categoryImageSetHUD_updating" = "Uppdaterar albumets miniatyrbilder…";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Välj ett album att ladda upp bilder till";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Välj ett album att hämta bilder från";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Välj ett iCloud-album att hämta bilder från";
 "categoyUpload_loadSubCategories" = "ladda";
 "selectAll" = "Alla";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "Uppladdning av videon har avbrutits.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Lokala album";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "Nyaste";
 "localImageSort_oldest" = "Äldst";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "Adress";
 "settings_username" = "Användarnamn";
 "settings_notLoggedIn" = " -Inte inloggad- ";

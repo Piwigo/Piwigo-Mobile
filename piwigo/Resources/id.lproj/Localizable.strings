@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "Pilih Album";
-"categorySelection_forImage" = "Pilih album untuk gambar ini";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Atur Gambar untuk Gambar Mini";
 "categoryImageSet_message" = "Anda yakin ingin membuat gambar ini sebagai gambar untuk album \"%@\"?";
 "categoryImageSetHUD_updating" = "Memperbarui Gambar Mini Album…";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Pilih album untuk mengunggah gambar";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Pilih album untuk mendapatkan gambar";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Pilih album iCloud untuk mendapatkan gambar dari";
 "categoyUpload_loadSubCategories" = "muat";
 "selectAll" = "Semua";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "Pengunggahan video telah dibatalkan.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Album Lokal";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "Terbaru";
 "localImageSort_oldest" = "Terlama";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Peladen Piwigo";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "Alamat";
 "settings_username" = "Nama Pengguna";
 "settings_notLoggedIn" = " - Tidak Masuk - ";

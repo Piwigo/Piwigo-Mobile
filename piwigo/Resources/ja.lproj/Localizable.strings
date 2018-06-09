@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "アルバムを選択";
-"categorySelection_forImage" = "この画像のためのアルバムを選択";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "画像サムネイルを設定";
 "categoryImageSet_message" = "この画像をアルバム「%@」に設定してよろしいですか？";
 "categoryImageSetHUD_updating" = "アルバムのサムネイルを更新中...";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "画像をアップロードするアルバムを選択します";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "画像を取得するアルバムを選択します";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "画像を取得するICloud アルバムを選択します";
 "categoyUpload_loadSubCategories" = "読み込む";
 "selectAll" = "すべて";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "動画のアップロードは取り消されました。";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "ローカルアルバム";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "最新";
 "localImageSort_oldest" = "最古";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigoサーバ";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "アドレス";
 "settings_username" = "ユーザ名";
 "settings_notLoggedIn" = " - ログインしていません - ";

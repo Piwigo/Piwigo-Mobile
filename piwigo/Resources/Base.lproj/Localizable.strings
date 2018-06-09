@@ -317,9 +317,9 @@
 "videoUploadCancelled_message" = "The upload of the video has been cancelled.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Local Albums";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "Newest";
 "localImageSort_oldest" = "Oldest";

@@ -164,7 +164,8 @@
 
 // Album set image thumbnail
 "categorySelection" = "Wybierz Album";
-"categorySelection_forImage" = "Wybierz album dla tego zdjęcia";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Ustaw Miniaturę Zdjęcia";
 "categoryImageSet_message" = "Czy na pewno chcesz ustawić to zdjęcie dla albumu \"%@\"?";
 "categoryImageSetHUD_updating" = "Aktualizowanie miniatury albumu…";
@@ -267,7 +268,9 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Wybierz album, do którego przesyłać zdjęcia";
+"categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Wybierz album z którego chcesz pobrać zdjęcia";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Wybierz album iCloud z którego chcesz pobrać zdjęcia";
 "categoyUpload_loadSubCategories" = "ładowanie";
 "selectAll" = "Wszystkie";
@@ -314,9 +317,9 @@
 "videoUploadCancelled_message" = "Wysyłanie wideo zostało anulowane.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Albumy Lokalne";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "Najnowsze";
 "localImageSort_oldest" = "Najstarsze";
@@ -336,6 +339,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Serwer Piwigo";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "Adres";
 "settings_username" = "Nazwa Użytkownika";
 "settings_notLoggedIn" = " - Nie jesteś zalogowany - ";
