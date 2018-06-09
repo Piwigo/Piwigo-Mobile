@@ -153,8 +153,8 @@
     }
 
     // Create permanent session managers for retrieving data and downloading images
-    [NetworkHandler createJSONdataSessionManager];
-    [NetworkHandler createImagesSessionManager];
+    [NetworkHandler createJSONdataSessionManager];      // 30s timeout, 4 connections max
+    [NetworkHandler createImagesSessionManager];        // 60s timeout, 4 connections max
     
     // Create permanent image downloader
     AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc]
@@ -171,8 +171,12 @@
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin: getMethodsList using %@", [Model sharedInstance].serverProtocol);
 #endif
+    [Model sharedInstance].sessionManager.session.configuration.timeoutIntervalForRequest = 10;
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
         
+        // Back to default timeout
+        [Model sharedInstance].sessionManager.session.configuration.timeoutIntervalForRequest = 30;
+
         if(methodsList) {
             // Community extension installed and active ?
             for (NSString *method in methodsList) {
@@ -184,7 +188,6 @@
             }
             // Known methods, pursue logging in…
             [self performLogin];
-        
         } else {
             // Methods unknown, so we cannot reach the server, inform user
             NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
@@ -275,6 +278,9 @@
 #endif
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
         
+        // Back to default timeout
+        [Model sharedInstance].sessionManager.session.configuration.timeoutIntervalForRequest = 30;
+
         if(methodsList) {
             // Community extension installed and active ?
             for (NSString *method in methodsList) {
