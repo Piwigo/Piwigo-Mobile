@@ -14,7 +14,7 @@
 #import "PhotosFetch.h"
 #import "UploadViewController.h"
 
-@interface LocalAlbumsViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface LocalAlbumsViewController () <UITableViewDelegate, UITableViewDataSource, PHPhotoLibraryChangeObserver>
 
 @property (nonatomic, strong) UITableView *localAlbumsTableView;
 @property (nonatomic, assign) NSInteger categoryId;
@@ -36,36 +36,7 @@
         
         self.localGroups = [NSArray new];
         self.iCloudGroups = [NSArray new];
-        [[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject1, id responseObject2) {
-            if([responseObject1 isKindOfClass:[NSNumber class]])
-            {    // make view disappear
-                [self.navigationController popToRootViewControllerAnimated:YES];
-            }
-            else if(responseObject1 == nil)
-            {
-                UIAlertController* alert = [UIAlertController
-                            alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
-                            message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
-                            preferredStyle:UIAlertControllerStyleAlert];
-                
-                UIAlertAction* dismissAction = [UIAlertAction
-                                                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                                style:UIAlertActionStyleCancel
-                                                handler:^(UIAlertAction * action) {
-                                                    // make view disappear
-                                                    [self.navigationController popViewControllerAnimated:YES];
-                                                }];
-                
-                [alert addAction:dismissAction];
-                [self presentViewController:alert animated:YES completion:nil];
-            }
-            else
-            {
-                self.localGroups = responseObject1;
-                self.iCloudGroups = responseObject2;
-                [self.localAlbumsTableView reloadData];
-            }
-        }];
+        [self getLocalAlbums];
         
         self.localAlbumsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.localAlbumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -76,8 +47,44 @@
         [self.view addSubview:self.localAlbumsTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
         
+        // Register Photo Library changes
+        [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     }
     return self;
+}
+
+-(void)getLocalAlbums
+{
+    [[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:^(id responseObject1, id responseObject2) {
+        if([responseObject1 isKindOfClass:[NSNumber class]])
+        {    // make view disappear
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        }
+        else if(responseObject1 == nil)
+        {
+            UIAlertController* alert = [UIAlertController
+                                        alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
+                                        message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
+                                        preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* dismissAction = [UIAlertAction
+                                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                            style:UIAlertActionStyleCancel
+                                            handler:^(UIAlertAction * action) {
+                                                // make view disappear
+                                                [self.navigationController popViewControllerAnimated:YES];
+                                            }];
+            
+            [alert addAction:dismissAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+        else
+        {
+            self.localGroups = responseObject1;
+            self.iCloudGroups = responseObject2;
+            [self.localAlbumsTableView reloadData];
+        }
+    }];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -103,7 +110,7 @@
 }
 
 
-#pragma mark UITableView Methods
+#pragma mark - UITableView Methods
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -268,6 +275,20 @@
     }
     [self.navigationController pushViewController:uploadVC animated:YES];
     
+}
+
+#pragma mark - Changes occured in the Photo library
+
+- (void)photoLibraryDidChange:(PHChange *)changeInfo {
+    // Photos may call this method on a background queue;
+    // switch to the main queue to update the UI.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Collect new list of albums
+        [self getLocalAlbums];
+        
+        // Refresh list
+        [self.localAlbumsTableView reloadData];
+    });
 }
 
 @end

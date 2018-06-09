@@ -470,5 +470,6 @@
         [self.localImagesCollection reloadData];
     });
 }
+
 @end
 
