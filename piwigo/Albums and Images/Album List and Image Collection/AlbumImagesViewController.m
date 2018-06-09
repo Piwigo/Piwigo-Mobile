@@ -152,7 +152,6 @@
 	}
     
     // Images
-    self.loadingImages = YES;
     [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
         self.loadingImages = NO;
         [self.imagesCollection reloadData];
