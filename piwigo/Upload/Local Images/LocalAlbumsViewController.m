@@ -32,7 +32,7 @@
     {
         self.categoryId = categoryId;
         
-        self.title = NSLocalizedString(@"localAlbums", @"Local Albums");
+        self.title = NSLocalizedString(@"localAlbums", @"Photos library");
         
         self.localGroups = [NSArray new];
         self.iCloudGroups = [NSArray new];
