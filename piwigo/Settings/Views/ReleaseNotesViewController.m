@@ -70,6 +70,13 @@
         // Release notes attributed string
         NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
                 
+        // Release 2.2.0 — Bundle string
+        NSString *v220String = NSLocalizedStringFromTableInBundle(@"v2.2.0_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.2.0 Release Notes text");
+        NSRange v220Range = NSMakeRange(0, [v220String rangeOfString:@"\n"].location);
+        NSMutableAttributedString *v220AttributedString = [[NSMutableAttributedString alloc] initWithString:v220String];
+        [v220AttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:v220Range];
+        [notesAttributedString appendAttributedString:v220AttributedString];
+        
         // Release 2.1.9 — Bundle string
         NSString *v219String = NSLocalizedStringFromTableInBundle(@"v2.1.9_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.9 Release Notes text");
         NSRange v219Range = NSMakeRange(0, [v219String rangeOfString:@"\n"].location);
