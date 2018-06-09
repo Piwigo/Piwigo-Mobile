@@ -271,6 +271,9 @@
     // Proceed at their own risk
     [Model sharedInstance].serverProtocol = @"http://";
 
+    // Display security message below credentials if needed
+    self.websiteNotSecure.hidden = NO;
+
     // Collect list of methods supplied by Piwigo server
     // => Determine if Community extension 2.9a or later is installed and active
 #if defined(DEBUG_SESSION)
