@@ -130,7 +130,7 @@ NSInteger const loadingViewTag = 899;
     // Configuration
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.allowsCellularAccess = YES;
-    config.timeoutIntervalForRequest = 30;          // 60 seconds is the advised default value
+    config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
 
     // Create session manager
