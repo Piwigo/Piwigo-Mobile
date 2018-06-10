@@ -43,6 +43,7 @@
 @property (nonatomic, assign) CGFloat previousContentYOffset;
 @property (nonatomic, assign) CGFloat minContentYOffset;
 
+//@property (nonatomic, strong) UIBarButtonItem *backBarButton;
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
@@ -95,6 +96,7 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 
         // Bar buttons
+//        self.backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backButton"] style:UIBarButtonItemStylePlain target:self action:@selector(backToParent)];
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
@@ -121,7 +123,11 @@
 
     // The album title is not shown in backButtonItem to provide enough space
     // for image title on devices of screen width <= 414 ==> Restore album title
-    self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    if (self.categoryId == 0) {
+        self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+    } else {
+        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    }
     
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -201,7 +207,7 @@
 {
     [super viewWillDisappear:animated];
     
-    // Do not show album title in backButtonItem to provide enough space for image title
+    // Do not show album title in backButtonItem of child view to provide enough space for image title
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";
@@ -253,6 +259,15 @@
 
 -(void)loadNavButtons
 {
+    // Left Button
+//    if (self.categoryId != 0) {
+//        [self.navigationItem setLeftBarButtonItem:self.backBarButton animated:YES];
+//    } else {
+//        // No back button when at root
+//        [self.navigationItem setLeftBarButtonItem:nil];
+//    }
+    
+    // Right buttons
 	if(!self.isSelect) {
         // Selection mode not active
         if([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) {
@@ -279,6 +294,47 @@
             }
 		}
 	}
+}
+
+-(void)backToParent
+{
+    // Determine parent category Id
+    NSInteger parentAlbumId = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] parentAlbumId];
+
+    // Does this view controller already exists?
+    NSInteger cur = 0, index = 0;
+    AlbumImagesViewController *parentAlbumViewController = nil;
+    for (UIViewController *viewController in self.navigationController.viewControllers) {
+
+        // Look for AlbumImagesViewControllers
+        if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
+            AlbumImagesViewController *thisViewController = (AlbumImagesViewController *) viewController;
+
+            // Is this the view controller of the parent category?
+            if (thisViewController.categoryId == parentAlbumId) {
+                // The view controller of the parent category already exist
+                parentAlbumViewController = thisViewController;
+            }
+            
+            // Is this the current view controller?
+            if (thisViewController.categoryId == self.categoryId) {
+                // This current view controller will become the child view controller
+                index = cur;
+            }
+        }
+        cur++;
+    }
+
+    // The view controller of the parent album does not exist yet
+    if (!parentAlbumViewController) {
+        parentAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:parentAlbumId];
+        NSMutableArray *arrayOfVC = [[NSMutableArray alloc] initWithArray:self.navigationController.viewControllers];
+        [arrayOfVC insertObject:parentAlbumViewController atIndex:index];
+        self.navigationController.viewControllers = arrayOfVC;
+    }
+    
+    // Present the parent album
+    [self.navigationController popToViewController:parentAlbumViewController animated:YES];
 }
 
 -(void)select
@@ -658,9 +714,9 @@
                 return header;
             }
         } else {
-            // Display "No Images"
+            // Display "No Images" except in root album
             NoImagesHeaderCollectionReusableView *header = nil;
-
+            
             if(kind == UICollectionElementKindSectionHeader)
             {
                 header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
@@ -669,7 +725,11 @@
                 if (self.loadingImages) {
                     header.noImagesLabel.text = NSLocalizedString(@"downloadingImages", "Downloading Images");
                 } else {
-                    header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+                    if (self.categoryId != 0) {
+                        header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+                    } else {
+                        header.noImagesLabel.text = @"";
+                    }
                 }
 
                 return header;
@@ -742,7 +802,9 @@
 	}
 	else
 	{
-		return CGSizeMake(collectionView.frame.size.width, 188);       // Albums
+        float nberAlbumsPerRow = [ImagesCollection numberOfAlbumsPerRowForViewInPortrait:collectionView withMaxWidth:384];
+        CGFloat size = (CGFloat)[ImagesCollection albumSizeForView:collectionView andNberOfAlbumsPerRowInPortrait:nberAlbumsPerRow];
+        return CGSizeMake(size, 188);                                   // Albums
 	}
 }
 

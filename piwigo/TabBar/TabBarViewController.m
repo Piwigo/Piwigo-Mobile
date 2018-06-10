@@ -7,7 +7,8 @@
 //
 
 #import "TabBarViewController.h"
-#import "AlbumsViewController.h"
+//#import "AlbumsViewController.h"
+#import "AlbumImagesViewController.h"
 #import "CategoryPickViewController.h"
 #import "SettingsViewController.h"
 
@@ -24,14 +25,14 @@
 	{
 		NSMutableArray *tabs = [NSMutableArray new];
 		
-		AlbumsViewController *albums = [AlbumsViewController new];
-		albums.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+        AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:0];
+        albums.title = NSLocalizedString(@"tabBar_albums", @"Albums");
         albums.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-		albums.tabBarItem.image = [[UIImage imageNamed:@"album"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-		albums.tabBarItem.selectedImage = [UIImage imageNamed:@"albumSelected"];
-		[tabs addObject:[[UINavigationController alloc] initWithRootViewController:albums]];
-		
-		CategoryPickViewController *upload = [CategoryPickViewController new];
+        albums.tabBarItem.image = [[UIImage imageNamed:@"album"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        albums.tabBarItem.selectedImage = [UIImage imageNamed:@"albumSelected"];
+        [tabs addObject:[[UINavigationController alloc] initWithRootViewController:albums]];
+
+        CategoryPickViewController *upload = [CategoryPickViewController new];
 		upload.title = NSLocalizedString(@"tabBar_upload", @"Upload");
         upload.tabBarItem.title = NSLocalizedString(@"tabBar_upload", @"Upload");
 		upload.tabBarItem.image = [[UIImage imageNamed:@"cloud"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];

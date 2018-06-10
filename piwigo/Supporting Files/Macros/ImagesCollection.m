@@ -68,4 +68,28 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     return (NSInteger)ceilf(pageSize.height / (size + kCellSpacing)) * imagesPerRowInPortrait;
 }
 
++(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
+{
+    // Size of view or screen
+    CGSize pageSize = [self sizeOfPageForView:view];
+    float viewWidth = fmin(pageSize.width, pageSize.height);
+    
+    return roundf((viewWidth - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + maxWidth));
+}
+
++(float)albumSizeForView:(UIView *)view andNberOfAlbumsPerRowInPortrait:(NSInteger)albumsPerRowInPortrait
+{
+    // Size of view or screen
+    CGSize pageSize = [self sizeOfPageForView:view];
+    
+    // Size of album cells determined for the portrait mode
+    float albumsSizeInPortrait = floorf((fmin(pageSize.width,pageSize.height) - 2.0 * kMarginsSpacing - (albumsPerRowInPortrait - 1.0) * kCellSpacing) / albumsPerRowInPortrait);
+
+    // Album cells per row in whichever mode we are displaying them
+    float albumsPerRow = roundf((pageSize.width - 2.0 * kMarginsSpacing + kCellSpacing) / (kCellSpacing + albumsSizeInPortrait));
+
+    // Width of albums for that number
+    return floorf((pageSize.width - 2.0 * kMarginsSpacing - (albumsPerRow - 1.0) * kCellSpacing) / albumsPerRow);
+}
+
 @end
