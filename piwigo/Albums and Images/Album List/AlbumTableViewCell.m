@@ -349,6 +349,7 @@
         textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
+        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         textField.returnKeyType = UIReturnKeyContinue;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.delegate = self;
@@ -461,6 +462,7 @@
              
              [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
                  textField.placeholder = [NSString stringWithFormat:@"%@", @(self.albumData.numberOfImages)];
+                 textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
                  textField.clearButtonMode = UITextFieldViewModeAlways;
                  textField.keyboardType = UIKeyboardTypeNumberPad;
                  textField.delegate = self;
