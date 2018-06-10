@@ -206,19 +206,30 @@ static SEL extractedCDU() {
 -(void)showCreateCategoryDialog
 {
     UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:NSLocalizedString(@"createNewAlbum_title", @"New Album")
-                                message:NSLocalizedString(@"createNewAlbum_message", @"Enter a name for this album:")
-                                preferredStyle:UIAlertControllerStyleAlert];
+        alertControllerWithTitle:NSLocalizedString(@"createNewAlbum_title", @"New Album")
+                         message:NSLocalizedString(@"createNewAlbum_message", @"Enter a name for this album:")
+                  preferredStyle:UIAlertControllerStyleAlert];
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
+        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         textField.returnKeyType = UIReturnKeyContinue;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.delegate = self;
     }];
-    
+
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = NSLocalizedString(@"createNewAlbumComment_placeholder", @"Comment");
+        textField.clearButtonMode = UITextFieldViewModeAlways;
+        textField.keyboardType = UIKeyboardTypeDefault;
+        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.returnKeyType = UIReturnKeyContinue;
+        textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        textField.delegate = self;
+    }];
+
     UIAlertAction* cancelAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                                    style:UIAlertActionStyleCancel
@@ -229,7 +240,9 @@ static SEL extractedCDU() {
                               style:UIAlertActionStyleDefault
                               handler:^(UIAlertAction * action) {
                                   // Create album
-                                  [self addCategoryWithName:alert.textFields.firstObject.text];
+                                  [self addCategoryWithName:alert.textFields.firstObject.text
+                                                 andComment:alert.textFields.lastObject.text
+                                                   inParent:0];
                               }];
     
     [alert addAction:cancelAction];
@@ -237,7 +250,7 @@ static SEL extractedCDU() {
     [self presentViewController:alert animated:YES completion:nil];
 }
 
--(void)addCategoryWithName:(NSString *)albumName
+-(void)addCategoryWithName:(NSString *)albumName andComment:(NSString *)albumComment inParent:(NSInteger)parentId
 {
     // Display HUD during the update
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -246,7 +259,9 @@ static SEL extractedCDU() {
     
     // Create album
     [AlbumService createCategoryWithName:albumName
-                            withStatus:@"public"
+                              withStatus:@"public"
+                              andComment:albumComment
+                                inParent:parentId
                           OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
                               if(createdSuccessfully)
                               {
@@ -348,22 +363,31 @@ static SEL extractedCDU() {
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     // Disable Add Category action
-    [self.createAlbumAction setEnabled:NO];
+    if ([textField.placeholder isEqualToString:NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name")])
+    {
+        [self.createAlbumAction setEnabled:(textField.text.length >= 1)];
+    }
     return YES;
 }
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     // Enable Add Category action if album name is non null
-    NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    [self.createAlbumAction setEnabled:(finalString.length >= 1)];
+    if ([textField.placeholder isEqualToString:NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name")])
+    {
+        NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self.createAlbumAction setEnabled:(finalString.length >= 1)];
+    }
     return YES;
 }
 
 -(BOOL)textFieldShouldClear:(UITextField *)textField
 {
     // Disable Add Category action
-    [self.createAlbumAction setEnabled:NO];
+    if ([textField.placeholder isEqualToString:NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name")])
+    {
+        [self.createAlbumAction setEnabled:NO];
+    }
     return YES;
 }
 

@@ -186,23 +186,27 @@
 
 +(NSURLSessionTask*)createCategoryWithName:(NSString*)categoryName
                                 withStatus:(NSString*)categoryStatus
+                                andComment:(NSString*)categoryComment
+                                  inParent:(NSInteger)categoryId
                               OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     return [self post:kPiwigoCategoriesAdd
-		URLParameters:nil
+        URLParameters:nil
            parameters:@{
                         @"name" : categoryName,
+                        @"parent" : @(categoryId),
+                        @"comment" : categoryComment,
                         @"status" : categoryStatus
                         }
              progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject) {
-				  
-				  if(completion)
-				  {
-					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-				  }
-			  } failure:fail];
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  
+                  if(completion)
+                  {
+                      completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+                  }
+              } failure:fail];
 }
 
 +(NSURLSessionTask*)renameCategory:(NSInteger)categoryId

@@ -18,6 +18,8 @@
 
 +(NSURLSessionTask*)createCategoryWithName:(NSString*)categoryName
                                 withStatus:(NSString*)categoryStatus
+                                andComment:(NSString*)categoryComment
+                                  inParent:(NSInteger)categoryId
                               OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
