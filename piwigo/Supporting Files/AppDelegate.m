@@ -20,8 +20,6 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import "CategoriesData.h"
 #import "PhotosFetch.h"
-
-#import "AlbumsViewController.h"
 #import "AlbumImagesViewController.h"
 
 @interface AppDelegate ()
