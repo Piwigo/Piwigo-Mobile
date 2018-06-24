@@ -821,7 +821,7 @@ typedef enum {
                     cell.cellSwitchBlock = ^(BOOL switchState) {
                         if(![Model sharedInstance].loadAllCategoryInfo && switchState)
                         {
-                            [AlbumService getAlbumListForCategory:-1 OnCompletion:nil onFailure:nil];
+                            [AlbumService getAlbumListForCategory:0 usingCacheIfPossible:NO inRecursiveMode:YES OnCompletion:nil onFailure:nil];
                         }
                         
                         [Model sharedInstance].loadAllCategoryInfo = switchState;

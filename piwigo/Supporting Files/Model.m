@@ -41,7 +41,9 @@
         instance.usesCommunityPluginV29 = NO;           // Checked at each new session
         instance.performedHTTPauthentication = NO;      // Checked at each new session
         instance.userCancelledCommunication = NO;
-        instance.deleteImageAfterUpload = NO;
+
+        // Album/category settings
+        instance.defaultCategory = 0;                   // Root album bu default
 
         // Sort images by date: old to new
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
@@ -67,18 +69,19 @@
         // Default image preview size
 		instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
         
+        // Default image upload settings
+        instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
+        instance.photoQuality = 95;                 // 95% image quality at compression
+        instance.photoResize = 100;                 // Do not resize images
+        instance.deleteImageAfterUpload = NO;
+
         // Default palette mode
         instance.isDarkPaletteActive = NO;
         instance.switchPaletteAutomatically = NO;
         instance.switchPaletteThreshold = 50;
         instance.isDarkPaletteModeActive = NO;
         
-        // Default image upload setting
-        instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
-		instance.photoQuality = 95;                 // 95% image quality at compression
-		instance.photoResize = 100;                 // Do not resize images
-        
-        // Defaults caches sizes
+        // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
 		instance.diskCache = 80;
 		instance.memoryCache = 80;
@@ -186,6 +189,7 @@
         self.switchPaletteThreshold = modelData.switchPaletteThreshold;
         self.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
         self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
+        self.defaultCategory = modelData.defaultCategory;
 	}
 }
 
@@ -225,6 +229,7 @@
     [saveObject addObject:@(self.switchPaletteThreshold)];
     [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteModeActive]];
     [saveObject addObject:@(self.thumbnailsPerRowInPortrait)];                      // Added in v2.1.8
+    [saveObject addObject:@(self.defaultCategory)];                                 // Added in v2.2.0
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -345,6 +350,11 @@
         self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
     } else {
         self.thumbnailsPerRowInPortrait = 4;
+    }
+    if(savedData.count > 24) {
+        self.defaultCategory = [[savedData objectAtIndex:24] integerValue];
+    } else {
+        self.defaultCategory = 0;
     }
 	return self;
 }

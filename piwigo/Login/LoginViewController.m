@@ -142,8 +142,8 @@
         [self showLoadingWithSubtitle:NSLocalizedString(@"login_connecting", @"Connecting")];
     });
     
-    // Save server address and username to disk
-    [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
+//    // Save server address and username to disk
+//    [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
     
     // Save credentials in Keychain (needed before login when using HTTP Authentication)
     if(self.userTextField.text.length > 0)
@@ -594,7 +594,7 @@
                             }];
 }
 
-#pragma mark -- HUD methods
+#pragma mark - HUD methods
 
 -(void)showLoadingWithSubtitle:(NSString *)subtitle
 {
@@ -713,13 +713,30 @@
 }
 
 
-#pragma mark -- UITextField Delegate Methods
+#pragma mark - UITextField Delegate Methods
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     // Disable HTTP login action
     [self.httpLoginAction setEnabled:NO];
     return YES;
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if(self.view.frame.size.height > 500) return;
+    
+    NSInteger amount = 0;
+    if (textField == self.userTextField)
+    {
+        amount = -self.topConstraintAmount;
+    }
+    else if (textField == self.passwordTextField)
+    {
+        amount = -self.topConstraintAmount * 2;
+    }
+    
+    [self moveTextFieldsBy:amount];
 }
 
 -(BOOL)textFieldShouldClear:(UITextField *)textField
@@ -740,45 +757,41 @@
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	if(textField == self.serverTextField) {
+        // Save server address and username to disk
+        [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
         // User entered server address
 		[self.userTextField becomeFirstResponder];
-	} else if (textField == self.userTextField) {
+	}
+    else if (textField == self.userTextField) {
         // User entered username
         NSString *pwd = [SAMKeychain passwordForService:self.serverTextField.text account:self.userTextField.text];
         if (pwd != nil) {
             self.passwordTextField.text = pwd;
         }
         [self.passwordTextField becomeFirstResponder];
-	} else if (textField == self.passwordTextField) {
-        
+	}
+    else if (textField == self.passwordTextField) {
+        // User entered password
 		if(self.view.frame.size.height > 320)
 		{
 			[self moveTextFieldsBy:self.topConstraintAmount];
 		}
-		[self launchLogin];
+        // Launch login
+        [self launchLogin];
 	}
 	return YES;
 }
 
--(void)textFieldDidBeginEditing:(UITextField *)textField
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
-	if(self.view.frame.size.height > 500) return;
-	
-	NSInteger amount = 0;
-	if (textField == self.userTextField)
-	{
-		amount = -self.topConstraintAmount;
-	}
-	else if (textField == self.passwordTextField)
-	{
-		amount = -self.topConstraintAmount * 2;
-	}
-	
-	[self moveTextFieldsBy:amount];
+    if(textField == self.serverTextField) {
+        // Save server address and username to disk
+        [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
+    }
+    return YES;
 }
 
-
-#pragma mark -- Utilities
+#pragma mark - Utilities
 
 -(void)saveServerAddress:(NSString *)serverString andUsername:(NSString *)user
 {

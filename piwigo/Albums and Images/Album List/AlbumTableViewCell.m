@@ -48,10 +48,11 @@
 		self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
         self.backgroundImage.layer.cornerRadius = 10;
         [self.contentView addSubview:self.backgroundImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[img]-5-|"
-																				 options:kNilOptions
-																				 metrics:nil
-																				   views:@{@"img" : self.backgroundImage}]];
+		[self.contentView addConstraints:[NSLayoutConstraint
+                                          constraintsWithVisualFormat:@"|-5-[img]-5-|"
+                                          options:kNilOptions
+                                          metrics:nil
+                                          views:@{@"img" : self.backgroundImage}]];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.backgroundImage]];
 		
         UIBlurEffect *blurEffect;
@@ -119,31 +120,7 @@
 		[self.contentView addSubview:self.date];
 				
 		[self setupAutoLayout];
-		
-        // Add renaming, moving and deleting capabilities when user has admin rights
-		if([Model sharedInstance].hasAdminRights)
-		{
-			self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
-            self.rightButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeRename.png"]
-                                                 backgroundColor:[UIColor piwigoOrange]
-                                                        callback:^BOOL(MGSwipeTableCell *sender) {
-                                                            [self renameCategory];
-                                                            return YES;
-                                                        }],
-								  [MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeMove.png"]
-												 backgroundColor:[UIColor piwigoBrown]
-														callback:^BOOL(MGSwipeTableCell *sender) {
-															[self moveCategory];
-															return YES;
-														}],
-                                   [MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"SwipeTrash.png"]
-												 backgroundColor:[UIColor redColor]
-														callback:^BOOL(MGSwipeTableCell *sender) {
-															[self deleteCategory];
-															return YES;
-														}]];
-		}
-		
+				
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUpdated) name:kPiwigoNotificationCategoryImageUpdated object:nil];
 		
 	}
@@ -159,47 +136,46 @@
 							@"date" : self.date
 							};
 	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[name]-5-[numImages]-15-|"
-																			 options:kNilOptions
-																			 metrics:nil
-																			   views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[name]-[disclosure]-20-|"
-                                                                             options:kNilOptions
-                                                                             metrics:nil
-                                                                               views:views]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintViewToSameBase:self.cellDisclosure equalToView:self.albumName]];
+	[self.contentView addConstraints:[NSLayoutConstraint
+                  constraintsWithVisualFormat:@"V:[name]-5-[numImages]-15-|"
+                                      options:kNilOptions metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint
+                  constraintsWithVisualFormat:@"|-20-[name]-[disclosure]-20-|"
+                                      options:kNilOptions metrics:nil views:views]];
+    [self.contentView addConstraint:[NSLayoutConstraint
+                 constraintViewToSameBase:self.cellDisclosure equalToView:self.albumName]];
 	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[numImages]-[date]-20-|"
-																			 options:kNilOptions
-																			 metrics:nil
-																			   views:views]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintViewToSameBase:self.date equalToView:self.numberOfImages]];
+	[self.contentView addConstraints:[NSLayoutConstraint
+                  constraintsWithVisualFormat:@"|-20-[numImages]-[date]-20-|"
+                                      options:kNilOptions metrics:nil views:views]];
+	[self.contentView addConstraint:[NSLayoutConstraint
+                 constraintViewToSameBase:self.date equalToView:self.numberOfImages]];
 	
-	[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[bg]-5-|"
-																			 options:kNilOptions
-																			 metrics:nil
-																			   views:@{@"bg" : self.textUnderlayDark}]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.textUnderlayDark amount:0]];
-	[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.textUnderlayDark
-																 attribute:NSLayoutAttributeTop
-																 relatedBy:NSLayoutRelationEqual
-																	toItem:self.albumName
-																 attribute:NSLayoutAttributeTop
-																multiplier:1.0
-																  constant:-5]];
+	[self.contentView addConstraints:[NSLayoutConstraint
+                  constraintsWithVisualFormat:@"|-5-[bg]-5-|"
+                                      options:kNilOptions metrics:nil
+                                      views:@{@"bg" : self.textUnderlayDark}]];
+	[self.contentView addConstraint:[NSLayoutConstraint
+                 constraintViewFromBottom:self.textUnderlayDark amount:0]];
+	[self.contentView addConstraint:[NSLayoutConstraint
+                 constraintWithItem:self.textUnderlayDark
+                                     attribute:NSLayoutAttributeTop
+                                     relatedBy:NSLayoutRelationEqual toItem:self.albumName
+                                     attribute:NSLayoutAttributeTop
+                                     multiplier:1.0 constant:-5]];
 
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[bg]-5-|"
-                                                                             options:kNilOptions
-                                                                             metrics:nil
-                                                                               views:@{@"bg" : self.textUnderlayLight}]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.textUnderlayLight amount:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.textUnderlayLight
-                                                                 attribute:NSLayoutAttributeTop
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.albumName
-                                                                 attribute:NSLayoutAttributeTop
-                                                                multiplier:1.0
-                                                                  constant:-5]];
+    [self.contentView addConstraints:[NSLayoutConstraint
+                  constraintsWithVisualFormat:@"|-5-[bg]-5-|"
+                                      options:kNilOptions metrics:nil
+                                      views:@{@"bg" : self.textUnderlayLight}]];
+    [self.contentView addConstraint:[NSLayoutConstraint
+                 constraintViewFromBottom:self.textUnderlayLight amount:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint
+                 constraintWithItem:self.textUnderlayLight
+                                     attribute:NSLayoutAttributeTop
+                                     relatedBy:NSLayoutRelationEqual toItem:self.albumName
+                                     attribute:NSLayoutAttributeTop
+                                     multiplier:1.0 constant:-5]];
 }
 
 -(void)imageUpdated
@@ -228,6 +204,48 @@
     // Album name
     self.albumName.text = self.albumData.name;
     
+    // Add renaming, moving and deleting capabilities when user has admin rights
+    if([Model sharedInstance].hasAdminRights)
+    {
+        self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
+        NSMutableArray *rightButtons = [NSMutableArray
+            arrayWithObjects:[MGSwipeButton buttonWithTitle:@""
+                                                       icon:[UIImage imageNamed:@"SwipeRename.png"]
+                                            backgroundColor:[UIColor piwigoOrange]
+                                                   callback:^BOOL(MGSwipeTableCell *sender) {
+                                                          [self renameCategory];
+                                                          return YES;
+                                                   }],
+                            [MGSwipeButton buttonWithTitle:@""
+                                                      icon:[UIImage imageNamed:@"SwipeMove.png"]
+                                           backgroundColor:[UIColor piwigoBrown]
+                                                  callback:^BOOL(MGSwipeTableCell *sender) {
+                                                      [self moveCategory];
+                                                      return YES;
+                                                  }], nil];
+  
+        if (self.albumData.numberOfImages > 0) {
+            [rightButtons addObject:[MGSwipeButton
+                                         buttonWithTitle:@""
+                                                    icon:[UIImage imageNamed:@"SwipeRefresh.png"]
+                                         backgroundColor:[UIColor blueColor]
+                                                 callback:^BOOL(MGSwipeTableCell *sender) {
+                                                     [self resfreshRepresentative];
+                                                     return YES;
+                                                 }]];
+        }
+        self.rightButtons = [[NSArray arrayWithArray:rightButtons] copy];
+        
+        self.leftSwipeSettings.transition = MGSwipeTransitionBorder;
+        self.leftButtons = @[[MGSwipeButton buttonWithTitle:@""
+                                                       icon:[UIImage imageNamed:@"SwipeTrash.png"]
+                                            backgroundColor:[UIColor redColor]
+                                                   callback:^BOOL(MGSwipeTableCell *sender) {
+                                                       [self deleteCategory];
+                                                       return YES;
+                                                   }]];
+    }
+
     // Display number of images and sub-albums
     if (self.albumData.numberOfSubCategories == 0) {
         
@@ -318,7 +336,7 @@
 }
 
 
-#pragma mark -- Move Category
+#pragma mark - Move Category
 
 -(void)moveCategory
 {
@@ -330,7 +348,7 @@
 }
 
 
-#pragma mark -- Rename Category
+#pragma mark - Rename Category
 
 -(void)renameCategory
 {
@@ -347,6 +365,7 @@
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
+        textField.text = self.albumData.name;
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
         textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
@@ -355,6 +374,17 @@
         textField.delegate = self;
     }];
 
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = NSLocalizedString(@"createNewAlbumComment_placeholder", @"Comment");
+        textField.text = self.albumData.comment;
+        textField.clearButtonMode = UITextFieldViewModeAlways;
+        textField.keyboardType = UIKeyboardTypeDefault;
+        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.returnKeyType = UIReturnKeyContinue;
+        textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        textField.delegate = self;
+    }];
+    
     UIAlertAction* cancelAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
         style:UIAlertActionStyleCancel
@@ -366,7 +396,7 @@
         handler:^(UIAlertAction * action) {
             // Rename album if possible
             if(alert.textFields.firstObject.text.length > 0) {
-                [self renameCategoryWithName:alert.textFields.firstObject.text andViewController:topViewController];
+                [self renameCategoryWithName:alert.textFields.firstObject.text comment:alert.textFields.lastObject.text andViewController:topViewController];
             }
         }];
     
@@ -375,35 +405,37 @@
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
--(void)renameCategoryWithName:(NSString *)albumName andViewController:(UIViewController *)topViewController
+-(void)renameCategoryWithName:(NSString *)albumName comment:(NSString *)albumComment andViewController:(UIViewController *)topViewController
 {
     // Display HUD during the update
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showCreateCategoryHUDwithLabel:NSLocalizedString(@"renameCategoryHUD_label", @"Renaming Album…") inView:topViewController.view];
+        [self showHUDwithLabel:NSLocalizedString(@"renameCategoryHUD_label", @"Renaming Album…") inView:topViewController.view];
     });
     
     // Rename album
     [AlbumService renameCategory:self.albumData.albumId
                          forName:albumName
+                     withComment:albumComment
                     OnCompletion:^(NSURLSessionTask *task, BOOL renamedSuccessfully) {
                         
                         if(renamedSuccessfully)
                         {
-                            [self hideCreateCategoryHUDwithSuccess:YES inView:topViewController.view completion:^{
+                            [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     self.albumData.name = albumName;
+                                    self.albumData.comment = albumComment;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
                                 });
                             }];
                         }
                         else
                         {
-                            [self hideCreateCategoryHUDwithSuccess:NO inView:topViewController.view completion:^{
+                            [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
                                 [self showRenameErrorWithMessage:nil andViewController:topViewController];
                             }];
                         }
                     } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                        [self hideCreateCategoryHUDwithSuccess:NO inView:topViewController.view completion:^{
+                        [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
                             [self showRenameErrorWithMessage:[error localizedDescription] andViewController:topViewController];
                         }];
                     }];
@@ -419,18 +451,93 @@
     UIAlertController* alert = [UIAlertController
                 alertControllerWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
                 message:errorMessage
-                preferredStyle:UIAlertControllerStyleAlert];
+                preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* defaultAction = [UIAlertAction
                 actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                 style:UIAlertActionStyleCancel
                 handler:^(UIAlertAction * action) {}];
     
+    // Add actions
     [alert addAction:defaultAction];
+
+    // Present list of actions
+    alert.popoverPresentationController.sourceView = self.contentView;
+    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
+    alert.popoverPresentationController.sourceRect = self.contentView.frame;
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark -- Delete Category
+
+#pragma mark - Refresh Representative
+
+-(void)resfreshRepresentative
+{
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    
+    // Display HUD during the update
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithLabel:NSLocalizedString(@"refreshCategoryHUD_label", @"Refreshing Representative…") inView:topViewController.view];
+    });
+    
+    // Refresh album representative
+    [AlbumService refreshCategoryRepresentativeForCategory:self.albumData.albumId
+          OnCompletion:^(NSURLSessionTask *task, BOOL refreshedSuccessfully) {
+              if (refreshedSuccessfully)
+              {
+                  [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                      });
+                  }];
+              }
+              else
+              {
+                  [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
+                      [self showRefreshErrorWithMessage:nil andViewController:topViewController];
+                  }];
+              }
+          } onFailure:^(NSURLSessionTask *task, NSError *error) {
+              [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
+                  [self showRefreshErrorWithMessage:[error localizedDescription] andViewController:topViewController];
+              }];
+          }
+    ];
+}
+
+-(void)showRefreshErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
+{
+    NSString *errorMessage = NSLocalizedString(@"refreshCategoyError_message", @"Failed to refresh your album representative");
+    if(message)
+    {
+        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+    }
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"refreshCategoyError_title", @"Refresh Fail")
+                                message:errorMessage
+                                preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+    
+    // Add actions
+    [alert addAction:defaultAction];
+
+    // Present list of actions
+    alert.popoverPresentationController.sourceView = self.contentView;
+    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
+    alert.popoverPresentationController.sourceRect = self.contentView.frame;
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
+
+#pragma mark - Delete Category
 
 -(void)deleteCategory
 {
@@ -443,71 +550,113 @@
     UIAlertController* alert = [UIAlertController
         alertControllerWithTitle:NSLocalizedString(@"deleteCategory_title", @"DELETE ALBUM")
         message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_message", @"ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), self.albumData.name, @(self.albumData.totalNumberOfImages)]
-        preferredStyle:UIAlertControllerStyleAlert];
+        preferredStyle:UIAlertControllerStyleActionSheet];
     
-    UIAlertAction* defaultAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+    UIAlertAction* cancelAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
         style:UIAlertActionStyleCancel
         handler:^(UIAlertAction * action) {}];
     
-    UIAlertAction* nextAlertAction = [UIAlertAction
-         actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-         style:UIAlertActionStyleDestructive
-         handler:^(UIAlertAction * action) {
-             // Are you sure?
-             UIAlertController* alert = [UIAlertController
-                 alertControllerWithTitle:NSLocalizedString(@"deleteCategoryConfirm_title", @"Are you sure?")
-                 message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategoryConfirm_message", @"Please enter the number of images in order to delete this album\nNumber of images: %@"), @(self.albumData.numberOfImages)]
-                 preferredStyle:UIAlertControllerStyleAlert];
-             
-             [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-                 textField.placeholder = [NSString stringWithFormat:@"%@", @(self.albumData.numberOfImages)];
-                 textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-                 textField.clearButtonMode = UITextFieldViewModeAlways;
-                 textField.keyboardType = UIKeyboardTypeNumberPad;
-                 textField.delegate = self;
-             }];
-             
-             UIAlertAction* defaultAction = [UIAlertAction
-                        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                        style:UIAlertActionStyleCancel
-                        handler:^(UIAlertAction * action) {}];
-             
-             self.deleteAction = [UIAlertAction
-                        actionWithTitle:NSLocalizedString(@"deleteCategoryConfirm_deleteButton", @"DELETE")
-                        style:UIAlertActionStyleDestructive
-                        handler:^(UIAlertAction * action) {
-                            if(alert.textFields.firstObject.text.length > 0)
-                            {
-                                [self deleteCategoryWithNumberOfImages:[alert.textFields.firstObject.text integerValue] andViewController:topViewController];
-                            }
-                        }];
-             
-             [alert addAction:defaultAction];
-             [alert addAction:self.deleteAction];
-             [topViewController presentViewController:alert animated:YES completion:nil];
+    UIAlertAction* emptyCategoryAction = [UIAlertAction
+       actionWithTitle:NSLocalizedString(@"deleteCategory_empty", @"Delete Empty Album")
+       style:UIAlertActionStyleDefault
+       handler:^(UIAlertAction * action) {
+           [self deleteCategoryWithNumberOfImages:0  deletionMode:kCategoryDeletionModeNone andViewController:topViewController];
     }];
     
-    [alert addAction:defaultAction];
-    [alert addAction:nextAlertAction];
+    UIAlertAction* keepImagesAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"deleteCategory_noImages", @"Keep Images")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            [self confirmCategoryDeletionWithNumberOfImages:self.albumData.totalNumberOfImages deletionMode:kCategoryDeletionModeNone andViewController:topViewController];
+    }];
+
+    UIAlertAction* orphanImagesAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"deleteCategory_orphanedImages", @"Delete Orphans")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            [self confirmCategoryDeletionWithNumberOfImages:self.albumData.totalNumberOfImages deletionMode:kCategoryDeletionModeOrphaned andViewController:topViewController];
+    }];
+
+    UIAlertAction* allImagesAction = [UIAlertAction
+        actionWithTitle:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_allImages", @"Delete %@ Images"), @(self.albumData.totalNumberOfImages)]
+        style:UIAlertActionStyleDestructive
+        handler:^(UIAlertAction * action) {
+            [self confirmCategoryDeletionWithNumberOfImages:self.albumData.totalNumberOfImages deletionMode:kCategoryDeletionModeAll andViewController:topViewController];
+     }];
+
+    // Add actions
+    switch (self.albumData.totalNumberOfImages) {
+        case 0:
+            [alert addAction:emptyCategoryAction];
+            break;
+            
+        default:
+            [alert addAction:cancelAction];
+            [alert addAction:keepImagesAction];
+            [alert addAction:orphanImagesAction];
+            [alert addAction:allImagesAction];
+            break;
+    }
+    
+    // Present list of actions
+    alert.popoverPresentationController.sourceView = self.contentView;
+    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
+    alert.popoverPresentationController.sourceRect = self.contentView.frame;
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
--(void)deleteCategoryWithNumberOfImages:(NSInteger)number andViewController:(UIViewController *)topViewController
+-(void)confirmCategoryDeletionWithNumberOfImages:(NSInteger)number deletionMode:(NSString *)deletionMode andViewController:(UIViewController *)topViewController
+{
+    // Are you sure?
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"deleteCategoryConfirm_title", @"Are you sure?")
+               message:[NSString stringWithFormat:NSLocalizedString(@"deleteCategoryConfirm_message", @"Please enter the number of images in order to delete this album\nNumber of images: %@"), @(self.albumData.numberOfImages)]
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = [NSString stringWithFormat:@"%@", @(self.albumData.numberOfImages)];
+        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.clearButtonMode = UITextFieldViewModeAlways;
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+        textField.delegate = self;
+    }];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+    
+    self.deleteAction = [UIAlertAction
+                         actionWithTitle:NSLocalizedString(@"deleteCategoryConfirm_deleteButton", @"DELETE")
+                         style:UIAlertActionStyleDestructive
+                         handler:^(UIAlertAction * action) {
+                             if(alert.textFields.firstObject.text.length > 0)
+                             {
+                                 [self deleteCategoryWithNumberOfImages:[alert.textFields.firstObject.text integerValue]  deletionMode:deletionMode andViewController:topViewController];
+                             }
+                         }];
+    
+    [alert addAction:defaultAction];
+    [alert addAction:self.deleteAction];
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)deleteCategoryWithNumberOfImages:(NSInteger)number deletionMode:(NSString *)deletionMode andViewController:(UIViewController *)topViewController
 {
     // Delete album?
     if(number == self.albumData.totalNumberOfImages)
     {
         // Display HUD during the update
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self showCreateCategoryHUDwithLabel:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") inView:topViewController.view];
+            [self showHUDwithLabel:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") inView:topViewController.view];
         });
         
         [AlbumService deleteCategory:self.albumData.albumId
+                      inMode:deletionMode
                 OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
                         if(deletedSuccessfully)
                         {
-                            [self hideCreateCategoryHUDwithSuccess:YES inView:topViewController.view completion:^{
+                            [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
                                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
@@ -516,12 +665,12 @@
                         }
                         else
                         {
-                            [self hideCreateCategoryHUDwithSuccess:NO inView:topViewController.view completion:^{
+                            [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
                                 [self showDeleteCategoryErrorWithMessage:nil andViewController:topViewController];
                             }];
                         }
                 }  onFailure:^(NSURLSessionTask *task, NSError *error) {
-                    [self hideCreateCategoryHUDwithSuccess:NO inView:topViewController.view completion:^{
+                    [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
                         [self showDeleteCategoryErrorWithMessage:[error localizedDescription] andViewController:topViewController];
                     }];
                 }];
@@ -538,7 +687,10 @@
                 style:UIAlertActionStyleDefault
                 handler:^(UIAlertAction * action) {}];
         
+        // Add actions
         [alert addAction:defaultAction];
+
+        // Present list of actions
         [topViewController presentViewController:alert animated:YES completion:nil];
     }
 }
@@ -554,20 +706,26 @@
     UIAlertController* alert = [UIAlertController
             alertControllerWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail")
             message:errorMessage
-            preferredStyle:UIAlertControllerStyleAlert];
+            preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* defaultAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
             style:UIAlertActionStyleCancel
             handler:^(UIAlertAction * action) {}];
     
+    // Add actions
     [alert addAction:defaultAction];
+
+    // Present list of actions
+    alert.popoverPresentationController.sourceView = self.contentView;
+    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
+    alert.popoverPresentationController.sourceRect = self.contentView.frame;
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark -- HUD methods
+#pragma mark - HUD methods
 
--(void)showCreateCategoryHUDwithLabel:(NSString *)label inView:(UIView *)topView
+-(void)showHUDwithLabel:(NSString *)label inView:(UIView *)topView
 {
     // Create the loading HUD if needed
     MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
@@ -588,7 +746,7 @@
     hud.label.font = [UIFont piwigoFontNormal];
 }
 
--(void)hideCreateCategoryHUDwithSuccess:(BOOL)success inView:(UIView *)topView completion:(void (^)(void))completion
+-(void)hideHUDwithSuccess:(BOOL)success inView:(UIView *)topView completion:(void (^)(void))completion
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         // Hide and remove the HUD
@@ -600,7 +758,7 @@
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
                 hud.label.text = NSLocalizedString(@"Complete", nil);
-                [hud hideAnimated:YES afterDelay:3.f];
+                [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];
             }
@@ -612,7 +770,7 @@
 }
 
 
-#pragma mark -- UITextField Delegate Methods
+#pragma mark - UITextField Delegate Methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {

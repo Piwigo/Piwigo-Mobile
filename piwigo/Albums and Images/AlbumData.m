@@ -113,12 +113,13 @@
 	self.sortString = sort;
 }
 
--(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)(void))completion
+-(void)updateImageSort:(kPiwigoSortCategory)imageSort
+          OnCompletion:(void (^)(void))completion
 {
-	if(imageSort == self.sortType)
-	{	// nothing changed, return
-		return;
-	}
+//    if(imageSort == self.sortType)
+//    {    // nothing changed, return
+//        return;
+//    }
 	self.sortType = imageSort;
 	
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;

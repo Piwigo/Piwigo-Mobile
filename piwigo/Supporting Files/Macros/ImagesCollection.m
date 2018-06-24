@@ -13,8 +13,6 @@ NSInteger const kCellSpacing = 1;               // Spacing between items (horizo
 NSInteger const kMarginsSpacing = 0;            // Left and right margins
 NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file size
 
-#pragma mark Determine number of images per row
-
 @implementation ImagesCollection
 
 +(CGSize)sizeOfPageForView:(UIView *)view
@@ -29,6 +27,8 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
 
     return pageSize;
 }
+
+#pragma mark - Images
 
 +(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
 {
@@ -67,6 +67,9 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     // Number of images par page
     return (NSInteger)ceilf(pageSize.height / (size + kCellSpacing)) * imagesPerRowInPortrait;
 }
+
+
+#pragma mark - Categories
 
 +(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
 {

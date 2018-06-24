@@ -233,7 +233,7 @@ typedef enum {
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
                 hud.label.text = NSLocalizedString(@"Complete", nil);
-                [hud hideAnimated:YES afterDelay:3.f];
+                [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];
             }
@@ -272,7 +272,7 @@ typedef enum {
 	self.tableViewBottomConstraint.constant = 0;
 }
 
-#pragma mark UITableView methods
+#pragma mark - UITableView methods
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {

@@ -10,6 +10,8 @@
 #import "PiwigoAlbumData.h"
 #import "Model.h"
 
+NSString * const kAlbumCell_ID = @"CategoryTableViewCell";
+
 @interface CategoryTableViewCell()
 
 @property (nonatomic, strong) PiwigoAlbumData *categoryData;
@@ -38,7 +40,7 @@
     [self.loadTapView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedLoadView)]];
 }
 
--(void)setupWithCategoryData:(PiwigoAlbumData*)category
+-(void)setupWithCategoryData:(PiwigoAlbumData*)category atDepth:(NSInteger)depth
 {
     // General settings
     self.backgroundColor = [UIColor piwigoCellBackgroundColor];
@@ -49,8 +51,7 @@
     self.categoryData = category;
 
     // Is this a sub-category?
-    NSInteger depth = [self.categoryData getDepthOfCategory];
-    if(depth <= 1) {
+    if(depth < 1) {
         // Categories in root album
         self.categoryLabel.text = self.categoryData.name;
         self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
@@ -59,7 +60,7 @@
         self.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
 
         // Append "—" characters to sub-category names
-        NSString *subAlbumPrefix = [@"" stringByPaddingToLength:depth-1 withString:@"—" startingAtIndex:0];
+        NSString *subAlbumPrefix = [@"" stringByPaddingToLength:depth withString:@"…" startingAtIndex:0];
         if ([Model sharedInstance].isAppLanguageRTL) {
             self.categoryLabel.text = [NSString stringWithFormat:@"%@ %@", self.categoryData.name, subAlbumPrefix];
         } else {

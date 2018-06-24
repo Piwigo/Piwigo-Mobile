@@ -49,6 +49,18 @@ typedef enum {
 @property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
 @property (nonatomic, strong) AFImageDownloader *imageDownloader;
 
+// Album/category settings
+@property (nonatomic, assign) NSInteger defaultCategory;
+
+// Sort images by date: old to new
+@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) NSInteger lastPageImageCount;
+
+// Display images titles in collection views
+@property (nonatomic, assign) BOOL displayImageTitles;
+
+// Default available Piwigo sizes
 @property (nonatomic, assign) BOOL hasSquareSizeImages;
 @property (nonatomic, assign) BOOL hasThumbSizeImages;
 @property (nonatomic, assign) BOOL hasXXSmallSizeImages;
@@ -58,17 +70,17 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasLargeSizeImages;
 @property (nonatomic, assign) BOOL hasXLargeSizeImages;
 @property (nonatomic, assign) BOOL hasXXLargeSizeImages;
+
+// Default thumbnail size and number per row in portrait mode
 @property (nonatomic, assign) NSInteger defaultThumbnailSize;
-@property (nonatomic, assign) NSInteger defaultImagePreviewSize;
-@property (nonatomic, assign) BOOL displayImageTitles;
-@property (nonatomic, assign) BOOL isDarkPaletteActive;
-@property (nonatomic, assign) BOOL switchPaletteAutomatically;
-@property (nonatomic, assign) NSInteger switchPaletteThreshold;
-@property (nonatomic, assign) BOOL isDarkPaletteModeActive;
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
-@property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
+// Default image preview size
+@property (nonatomic, assign) NSInteger defaultImagePreviewSize;
+
+// Default image upload settings
 @property (nonatomic, strong) NSString *defaultAuthor;
+@property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, assign) BOOL stripGPSdataOnUpload;
 @property (nonatomic, assign) BOOL resizeImageOnUpload;
 @property (nonatomic, assign) NSInteger photoResize;
@@ -76,10 +88,13 @@ typedef enum {
 @property (nonatomic, assign) NSInteger photoQuality;
 @property (nonatomic, assign) BOOL deleteImageAfterUpload;
 
-@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
-@property (nonatomic, assign) NSInteger currentPage;
-@property (nonatomic, assign) NSInteger lastPageImageCount;
+// Default palette mode
+@property (nonatomic, assign) BOOL isDarkPaletteActive;
+@property (nonatomic, assign) BOOL switchPaletteAutomatically;
+@property (nonatomic, assign) NSInteger switchPaletteThreshold;
+@property (nonatomic, assign) BOOL isDarkPaletteModeActive;
 
+// Default cache settings
 @property (nonatomic, assign) BOOL loadAllCategoryInfo;
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;

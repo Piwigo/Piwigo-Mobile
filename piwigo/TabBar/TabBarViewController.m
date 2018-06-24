@@ -11,6 +11,7 @@
 #import "AlbumImagesViewController.h"
 #import "CategoryPickViewController.h"
 #import "SettingsViewController.h"
+#import "Model.h"
 
 @interface TabBarViewController ()
 
@@ -25,7 +26,7 @@
 	{
 		NSMutableArray *tabs = [NSMutableArray new];
 		
-        AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:0];
+        AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory];
         albums.title = NSLocalizedString(@"tabBar_albums", @"Albums");
         albums.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
         albums.tabBarItem.image = [[UIImage imageNamed:@"album"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];

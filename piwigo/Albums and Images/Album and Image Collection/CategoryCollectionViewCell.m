@@ -59,7 +59,7 @@
 	[self.tableView reloadData];
 }
 
-#pragma mark UITableViewDataSource Methods
+#pragma mark UITableView Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -85,7 +85,8 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	if([self.categoryDelegate respondsToSelector:@selector(pushView:)])
+    // Push new album view
+    if([self.categoryDelegate respondsToSelector:@selector(pushView:)])
 	{
 		AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithAlbumId:self.albumData.albumId];
 		[self.categoryDelegate pushView:albumView];

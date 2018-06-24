@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationRefreshCategoryList;
+
 @class PiwigoAlbumData;
 
 @protocol CategoryListDelegate <NSObject>

@@ -163,7 +163,7 @@
 "moveCategoryError_message" = "Nie można przenieść Twojego albumu";
 
 // Album set image thumbnail
-"categorySelection" = "Wybierz Album";
+"categorySelection_select" = "Wybierz Album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Ustaw Miniaturę Zdjęcia";

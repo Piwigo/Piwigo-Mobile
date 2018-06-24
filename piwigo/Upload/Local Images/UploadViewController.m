@@ -313,8 +313,6 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-//    self.noImagesLabel.hidden = (self.images.count != 0);
-    
     return self.images.count;
 }
 
@@ -417,21 +415,25 @@
         uploadProgress = 1;
     }
     
+    cell.cellUploading = YES;
     if (iCloudProgress < 0) {
         cell.progress = uploadProgress;
-        //        NSLog(@"UploadViewController[ImageProgress]: %.2f", uploadProgress);
+//        NSLog(@"UploadViewController[ImageProgress]: %.2f", uploadProgress);
     } else {
         cell.progress = (iCloudProgress + uploadProgress) / 2.0;
-        //    NSLog(@"UploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
+//        NSLog(@"UploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
     }
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-    //    NSLog(@"UploadViewController[imageUploaded]");
+//    NSLog(@"UploadViewController[imageUploaded]");
     NSInteger row = [self.images indexOfObject:image.imageAsset];
     LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+    
+    // Image upload ended, deselect cell
     cell.cellUploading = NO;
+    cell.cellSelected = NO;
     
     // Update list of "Not Uploaded" images
     if(self.sortType == kPiwigoSortByNotUploaded)

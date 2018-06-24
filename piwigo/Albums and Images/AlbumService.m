@@ -11,22 +11,36 @@
 #import "Model.h"
 #import "CategoriesData.h"
 
+NSString * const kCategoryDeletionModeNone = @"no_delete";
+NSString * const kCategoryDeletionModeOrphaned = @"delete_orphans";
+NSString * const kCategoryDeletionModeAll = @"force_delete";
+
 @implementation AlbumService
 
 +(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
+                       usingCacheIfPossible:(BOOL)cached
+                            inRecursiveMode:(BOOL)recursive
                                OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    if(categoryId != -1 && [Model sharedInstance].loadAllCategoryInfo && categoryId != 0) return  nil;
-    
-    // Recursive option ?
-    NSString *recursiveString = [Model sharedInstance].loadAllCategoryInfo ? @"true" : @"false";
-    if(categoryId == -1)
-    {	// hack-ish way to force load all albums -- send a categoyId as -1
-        recursiveString = @"true";
-        categoryId = 0;
+    // Use cache when "loadAllCategoryInfo" setting is active and category is not the default one
+    if (cached && [Model sharedInstance].loadAllCategoryInfo && categoryId != [Model sharedInstance].defaultCategory) {
+        if(completion) {
+            completion(nil, nil);
+            return nil;
+        } else {
+            return nil;
+        }
     }
-    
+
+    // When loadAllCategoryInfo activated, load category data at default category level
+    if ([Model sharedInstance].loadAllCategoryInfo && categoryId != [Model sharedInstance].defaultCategory) {
+        categoryId = [Model sharedInstance].defaultCategory;
+    }
+
+    // Recursive option ?
+    NSString *recursiveString = ([Model sharedInstance].loadAllCategoryInfo || recursive) ? @"true" : @"false";
+
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
@@ -201,16 +215,22 @@
                         }
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
-                  
                   if(completion)
                   {
                       completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
                   }
-              } failure:fail];
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  if (fail)
+                  {
+                      fail(task, error);
+                  }
+              }
+            ];
 }
 
 +(NSURLSessionTask*)renameCategory:(NSInteger)categoryId
-                           forName:(NSString*)categoryName
+                           forName:(NSString *)categoryName
+                       withComment:(NSString *)categoryComment
                       OnCompletion:(void (^)(NSURLSessionTask *task, BOOL renamedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
@@ -218,19 +238,26 @@
 		URLParameters:nil       // This method requires HTTP POST
 		   parameters:@{
 						@"category_id" : @(categoryId),
-						@"name" : categoryName 
+						@"name" : categoryName,
+                        @"comment" : categoryComment
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
-				  
 				  if(completion)
 				  {
 					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
-			  } failure:fail];
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  if (fail)
+                  {
+                      fail(task, error);
+                  }
+              }
+            ];
 }
 
 +(NSURLSessionTask*)deleteCategory:(NSInteger)categoryId
+                            inMode:(NSString *)deletionMode
                       OnCompletion:(void (^)(NSURLSessionTask *task, BOOL deletedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
@@ -238,16 +265,22 @@
 		URLParameters:nil
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
+                        @"photo_deletion_mode" : deletionMode,
 						@"pwg_token" : [Model sharedInstance].pwgToken
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
-				  
 				  if(completion)
 				  {
 					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
-			  } failure:fail];
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  if (fail)
+                  {
+                      fail(task, error);
+                  }
+              }
+            ];
 }
 
 +(NSURLSessionTask*)moveCategory:(NSInteger)categoryId
@@ -264,12 +297,17 @@
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
-				  
 				  if(completion)
 				  {
 					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
-			  } failure:fail];
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  if (fail)
+                  {
+                      fail(task, error);
+                  }
+              }
+            ];
 }
 
 +(NSURLSessionTask*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
@@ -285,12 +323,41 @@
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
-				  
 				  if(completion)
 				  {
 					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
-			  } failure:fail];
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  if (fail)
+                  {
+                      fail(task, error);
+                  }
+              }
+            ];
+}
+
++(NSURLSessionTask*)refreshCategoryRepresentativeForCategory:(NSInteger)categoryId
+                                                OnCompletion:(void (^)(NSURLSessionTask *task, BOOL refreshedSuccessfully))completion
+                                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    return [self post:kPiwigoCategoriesRefreshRepresentative
+        URLParameters:nil
+           parameters:@{
+                        @"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)]
+                        }
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  if(completion)
+                  {
+                      completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  if (fail)
+                  {
+                      fail(task, error);
+                  }
+              }
+            ];
 }
 
 @end

@@ -163,7 +163,7 @@
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
 // Album set image thumbnail
-"categorySelection" = "アルバムを選択";
+"categorySelection_select" = "アルバムを選択";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "画像サムネイルを設定";

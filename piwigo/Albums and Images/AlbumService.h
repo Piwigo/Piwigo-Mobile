@@ -8,11 +8,17 @@
 
 #import "NetworkHandler.h"
 
+FOUNDATION_EXPORT NSString * const kCategoryDeletionModeNone;
+FOUNDATION_EXPORT NSString * const kCategoryDeletionModeOrphaned;
+FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
+
 @class PiwigoImageData;
 
 @interface AlbumService : NetworkHandler
 
 +(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
+                       usingCacheIfPossible:(BOOL)cached
+                            inRecursiveMode:(BOOL)recursive
                                OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
@@ -24,11 +30,13 @@
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)renameCategory:(NSInteger)categoryId
-                           forName:(NSString*)categoryName
+                           forName:(NSString *)categoryName
+                       withComment:(NSString *)categoryComment
                       OnCompletion:(void (^)(NSURLSessionTask *task, BOOL renamedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)deleteCategory:(NSInteger)categoryId
+                            inMode:(NSString *)deletionMode
                       OnCompletion:(void (^)(NSURLSessionTask *task, BOOL deletedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
@@ -41,5 +49,9 @@
                                               forImageId:(NSInteger)imageId
                                             OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setSuccessfully))completion
                                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)refreshCategoryRepresentativeForCategory:(NSInteger)categoryId
+                                                OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setSuccessfully))completion
+                                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end

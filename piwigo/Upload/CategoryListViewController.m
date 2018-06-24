@@ -12,13 +12,15 @@
 #import "AlbumService.h"
 #import "Model.h"
 #import "AllCategoriesViewController.h"
+#import "MBProgressHUD.h"
 
-static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
+NSString * const kPiwigoNotificationRefreshCategoryList = @"kPiwigoNotificationRefreshCategoryList";
 
 @interface CategoryListViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
+@property (nonatomic, strong) UIViewController *hudViewController;
 
 @end
 
@@ -38,11 +40,15 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
         self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.categoriesTableView.backgroundColor = [UIColor clearColor];
+        self.categoriesTableView.alwaysBounceVertical = YES;
+        self.categoriesTableView.showsVerticalScrollIndicator = YES;
         self.categoriesTableView.delegate = self;
         self.categoriesTableView.dataSource = self;
         [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCategoryList) name:kPiwigoNotificationRefreshCategoryList object:nil];
     }
     return self;
 }
@@ -66,19 +72,79 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     
     // Table view
     self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
-    [self buildCategoryArray];
-    [self.categoriesTableView reloadData];
+    [self buildCategoryArrayUsingCache:YES UntilCompletion:^(BOOL result) {
+        [self.categoriesTableView reloadData];
+    } orFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Invite users to refresh?
+    }];
+    
+}
+
+-(void)refreshCategoryList
+{
+    // Rebuild list of categories
+    [self buildCategoryArrayUsingCache:NO UntilCompletion:^(BOOL result) {
+        [self.categoriesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    } orFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Invite users to refresh?
+    }];
+}
+
+-(void)buildCategoryArrayUsingCache:(BOOL)useCache
+                    UntilCompletion:(void (^)(BOOL result))completion
+                          orFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    // Show loading HUD when not using cache option,
+    // or when the default album is not the one requested for building the list
+    if (!(useCache && [Model sharedInstance].loadAllCategoryInfo)) {
+        // Show loading HD
+        [self showLoading];
+    
+        // Reload category data and set current category
+        [AlbumService getAlbumListForCategory:[Model sharedInstance].defaultCategory
+                     usingCacheIfPossible:NO
+                          inRecursiveMode:YES
+                             OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                 // Build category array
+                                 [self buildCategoryArray];
+                                 
+                                 // Hide loading HUD
+                                 [self hideLoading];
+
+                                 if (completion) {
+                                     completion(YES);
+                                 }
+                             }
+                                onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                                    NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
+                                    if(fail) {
+                                        fail(task, error);
+                                    }
+                                }
+         ];
+    } else {
+        // Build category array from cache
+        [self buildCategoryArray];
+        
+        if (completion) {
+            completion(YES);
+        }
+    }
 }
 
 -(void)buildCategoryArray
 {
+    self.categories = [NSMutableArray new];
+
     // Build list of categories from complete known lists
     NSArray *allCategories = [CategoriesData sharedInstance].allCategories;
     NSArray *comCategories = [CategoriesData sharedInstance].communityCategoriesForUploadOnly;
-    
+
     // Proposed list is collected in diff
     NSMutableArray *diff = [NSMutableArray new];
-    
+
     // Look for categories which are not already displayed
     for(PiwigoAlbumData *category in allCategories)
     {
@@ -102,12 +168,12 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
             [diff addObject:category];
         }
     }
-    
+
     // Build list of categories to be displayed
     for(PiwigoAlbumData *category in diff)
     {
-        // Always add categories in root album
-        if (category.parentAlbumId == 0)
+        // Always add categories in default album
+        if (category.parentAlbumId == [Model sharedInstance].defaultCategory)
         {
             [self.categories addObject:category];
             continue;
@@ -135,7 +201,6 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     }
 }
 
-
 #pragma mark - UITableView Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -158,17 +223,20 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     cell.categoryDelegate = self;
     
     PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+    NSInteger depth = [categoryData getDepthOfCategory];
+    PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
+    depth -= [defaultCategoryData getDepthOfCategory];
 
     if ([self isMemberOfClass:[AllCategoriesViewController class]]) {
         // Table requested by AllCategoriesViewController
         if (indexPath.section == 0) {
             [cell setupDefaultCellWithCategoryData:categoryData];
         } else {
-            [cell setupWithCategoryData:categoryData];
+            [cell setupWithCategoryData:categoryData atDepth:depth];
         }
     } else {
         // Table requested by CategoryPickViewController
-        [cell setupWithCategoryData:categoryData];
+        [cell setupWithCategoryData:categoryData atDepth:depth];
     }
     
     // Switch between Open/Close cell disclosure
@@ -193,6 +261,53 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
         {
             [self.categoryListDelegate selectedCategory:categoryData];
         }
+    }
+}
+
+
+#pragma mark - HUD methods
+
+-(void)showLoading
+{
+    // Determine the present view controller if needed (not necessarily self.view)
+    if (!self.hudViewController) {
+        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (self.hudViewController.presentedViewController) {
+            self.hudViewController = self.hudViewController.presentedViewController;
+        }
+    }
+    
+    // Create the login HUD if needed
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+    if (!hud) {
+        // Create the HUD
+        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
+        [hud setTag:loadingViewTag];
+        
+        // Change the background view shape, style and color.
+        hud.square = NO;
+        hud.animationType = MBProgressHUDAnimationFade;
+        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+        hud.contentColor = [UIColor piwigoHudContentColor];
+        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        
+        // Set title
+        hud.label.text = NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…");
+        hud.label.font = [UIFont piwigoFontNormal];
+        
+        // Will look best, if we set a minimum size.
+        hud.minSize = CGSizeMake(200.f, 100.f);
+    }
+}
+
+-(void)hideLoading
+{
+    // Hide and remove login HUD
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+    if (hud) {
+        [hud hideAnimated:YES];
+        self.hudViewController = nil;
     }
 }
 
@@ -246,6 +361,8 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     {
         // Sub-categories are not known
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
+                         usingCacheIfPossible:NO
+                              inRecursiveMode:NO
                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                      [self addSubCateroriesToCategoryID:categoryTapped];
                                  } onFailure:nil
@@ -349,6 +466,8 @@ static NSString *kAlbumCell_ID = @"CategoryTableViewCell";
     // and caching option loadAllCategoryInfo is not activated
     if (![Model sharedInstance].loadAllCategoryInfo) {
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
+                         usingCacheIfPossible:NO
+                              inRecursiveMode:NO
                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                      // Reload table view
                                      [self.categoriesTableView reloadData];

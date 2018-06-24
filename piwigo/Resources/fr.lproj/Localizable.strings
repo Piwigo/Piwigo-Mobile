@@ -163,7 +163,7 @@
 "moveCategoryError_message" = "Impossible de déplacer votre album";
 
 // Album set image thumbnail
-"categorySelection" = "Sélectionnez l’Album";
+"categorySelection_select" = "Sélectionnez l’Album";
 "categorySelection_current" = "Sélectionnez l’album en cours pour cette image";
 "categorySelection_other" = "ou sélectionnez un autre album pour cette image";
 "categoryImageSet_title" = "Affecter une Vignette";

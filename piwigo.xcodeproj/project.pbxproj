@@ -598,7 +598,6 @@
 				AD0134611EBE310000F11C3F /* TabBar */,
 				D863EEBE1A6A440D00C0A6E9 /* Login */,
 				D8BDCB5F1A6F6B4200D106A8 /* Albums and Images */,
-				ADE535901F65C01000372CBD /* Images */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D89045B31A9469FF00A306FE /* Tags */,
 				D8F113541A9E403E000EC0A6 /* Loading View */,
@@ -804,6 +803,7 @@
 				ADE535911F65C17E00372CBD /* Album Thumbnail */,
 				D8172E171AB7C06200271DB0 /* Album Move */,
 				ADF65A1D20CD2C5C001C567F /* Image Sort */,
+				ADE535901F65C01000372CBD /* Images */,
 			);
 			path = "Albums and Images";
 			sourceTree = "<group>";

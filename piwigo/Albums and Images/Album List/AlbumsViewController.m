@@ -74,10 +74,11 @@ static SEL extractedCDU() {
 
 -(void)getCategoryData
 {
-    [AlbumService getAlbumListForCategory:0
-							 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-								 
-							 } onFailure:^(NSURLSessionTask *task, NSError *error) {
+    [AlbumService getAlbumListForCategory:[Model sharedInstance].defaultCategory
+                     usingCacheIfPossible:YES
+                          inRecursiveMode:NO
+							 OnCompletion:nil
+							    onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
 								 NSLog(@"getCategoryData error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
@@ -182,7 +183,9 @@ static SEL extractedCDU() {
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-	[AlbumService getAlbumListForCategory:0
+	[AlbumService getAlbumListForCategory:[Model sharedInstance].defaultCategory
+                     usingCacheIfPossible:NO
+                          inRecursiveMode:NO
 							 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                  [refreshControl endRefreshing];
                              }  onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -265,7 +268,9 @@ static SEL extractedCDU() {
                           OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
                               if(createdSuccessfully)
                               {
-                                  [AlbumService getAlbumListForCategory:0
+                                  [AlbumService getAlbumListForCategory:[Model sharedInstance].defaultCategory
+                                    usingCacheIfPossible:NO
+                                         inRecursiveMode:NO
                                        OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                            [self hideCreateCategoryHUDwithSuccess:YES completion:^{
                                                dispatch_async(dispatch_get_main_queue(), ^{
@@ -346,7 +351,7 @@ static SEL extractedCDU() {
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
                 hud.label.text = NSLocalizedString(@"Complete", nil);
-                [hud hideAnimated:YES afterDelay:3.f];
+                [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];
             }
@@ -448,7 +453,11 @@ static SEL extractedCDU() {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
 	PiwigoAlbumData *albumData = [self.categories objectAtIndex:indexPath.row];
-	
+
+    // Inform Upload view controllers that user selected a new category
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:@(albumData.albumId)];
+
+    // Push view controller
 	AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:albumData.albumId];
 	[self.navigationController pushViewController:album animated:YES];
 }

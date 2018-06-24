@@ -29,9 +29,10 @@
 #import "NetworkHandler.h"
 #import "ImagesCollection.h"
 #import "SAMKeychain.h"
+#import "CategoryPickViewController.h"
 
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITabBarControllerDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -43,12 +44,11 @@
 @property (nonatomic, assign) CGFloat previousContentYOffset;
 @property (nonatomic, assign) CGFloat minContentYOffset;
 
-//@property (nonatomic, strong) UIBarButtonItem *backBarButton;
+@property (nonatomic, strong) UIBarButtonItem *rootAlbumBarButton;
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
-@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
-@property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger startDeleteTotalImages;
 @property (nonatomic, assign) NSInteger totalImagesToDownload;
@@ -66,13 +66,13 @@
 
 -(instancetype)initWithAlbumId:(NSInteger)albumId
 {
-	self = [super init];
+    self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.categoryId = albumId;
-        self.loadingImages = YES;
-		
+        self.loadingImages = (albumId != 0);
+        
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
@@ -85,6 +85,7 @@
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
 		self.imagesCollection.backgroundColor = [UIColor clearColor];
 		self.imagesCollection.alwaysBounceVertical = YES;
+        self.imagesCollection.showsVerticalScrollIndicator = YES;
 		self.imagesCollection.dataSource = self;
 		self.imagesCollection.delegate = self;
 		[self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
@@ -96,38 +97,36 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 
         // Bar buttons
-//        self.backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backButton"] style:UIBarButtonItemStylePlain target:self action:@selector(backToParent)];
+        self.rootAlbumBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rootAlbum"] style:UIBarButtonItemStylePlain target:self action:@selector(setRootAlbumAsDefaultCategory)];
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
-		self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
-		self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadToThisCategory)];
 		self.isSelect = NO;
 		self.selectedImageIds = [NSMutableArray new];
 		
 		self.downloadView.hidden = YES;
 
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData) name:kPiwigoNotificationGetCategoryData object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData) name:kPiwigoNotificationGetCategoryData object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
 	}
 	return self;
 }
 
+#pragma mark - View Lifecycle
+
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 	
-    // Reload category data
+    // Reload category data and refresh showing cells
     [self getCategoryData];
+    [self refreshShowingCells];
 
-    // The album title is not shown in backButtonItem to provide enough space
-    // for image title on devices of screen width <= 414 ==> Restore album title
-    if (self.categoryId == 0) {
-        self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-    } else {
-        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-    }
+    // Inform Upload view controllers that user selected this category
+    NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
     
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -141,35 +140,30 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+
+    // Set navigation bar buttons
     [self loadNavButtons];
 
     // Tab bar appearance
+    self.tabBarController.delegate = self;
     self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
     self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
+    self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
     if (@available(iOS 10, *)) {
         self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
     }
     [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
     [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-    
-	// Albums
-    if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
-        [self.imagesCollection reloadData];
-	}
-    
-    // Images
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-        self.loadingImages = NO;
-        [self.imagesCollection reloadData];
-    }];
-    
+
     // Refresh image collection if displayImageTitles option changed
     if (self.displayImageTitles != [Model sharedInstance].displayImageTitles) {
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
-        [self.albumData reloadAlbumOnCompletion:^{
-            self.loadingImages = NO;
-            [self.imagesCollection reloadData];
-        }];
+        if (self.categoryId != 0) {
+            [self.albumData reloadAlbumOnCompletion:^{
+                self.loadingImages = NO;
+                [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+            }];
+        }
     }
 }
 
@@ -211,8 +205,8 @@
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";
-        self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
     }
+    self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -220,100 +214,191 @@
     
     //Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self.imagesCollection reloadData];
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)]];
     } completion:nil];
 }
 
--(void)refresh:(UIRefreshControl*)refreshControl
+-(void)loadNavButtons
 {
-    [self getCategoryData];
-    
-    [self.albumData loadAllImagesOnCompletion:^{
-        [self.imagesCollection reloadData];
-    }];
-
-    [refreshControl endRefreshing];
+    if(!self.isSelect) {    // Image selection mode inactive
+        
+        // Left side of navigation bar
+        if (([Model sharedInstance].defaultCategory != 0) &&
+            ([Model sharedInstance].defaultCategory == self.categoryId)) {
+            
+            // Button for resetting default album Id to 0 i.e. root album
+            [self.navigationItem setLeftBarButtonItems:@[self.rootAlbumBarButton] animated:YES];
+            [self.navigationItem setHidesBackButton:YES];
+        }
+        else {
+            // Back button to parent album
+            [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
+            [self.navigationItem setHidesBackButton:NO];
+        }
+        
+        // Right side of navigation bar
+        if ((self.categoryId != 0) &&
+            (self.albumData.images.count > 0)){
+            
+            // Button for activating the selection mode
+            [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
+        }
+        else {
+            // No images: no button
+            [self.navigationItem setRightBarButtonItems:@[] animated:YES];
+        }
+    }
+    else {                  // Image selection mode active
+        
+        // Left side of navigation bar: first hides back button item
+        [self.navigationItem setHidesBackButton:YES];
+        
+        if([Model sharedInstance].hasAdminRights)
+        {
+            // Only admins have delete rights
+            if (self.selectedImageIds.count > 0) {
+                // Images selected
+                [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton, self.deleteBarButton] animated:YES];
+            } else {
+                // No images selected
+                [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
+            }
+        }
+        else {
+            // No admin rights
+            if (self.selectedImageIds.count > 0) {
+                // Images selected
+                [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton] animated:YES];
+            } else {
+                // No images selected
+                [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
+            }
+        }
+        
+        // Right side of navigation bar
+        [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
+    }
 }
+
+#pragma mark - Category Data
 
 -(void)getCategoryData
 {
+    // Reload category data
     [AlbumService getAlbumListForCategory:self.categoryId
+                     usingCacheIfPossible:NO
+                          inRecursiveMode:NO
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-                                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+                                 if (![Model sharedInstance].loadAllCategoryInfo)
+                                     [self.imagesCollection reloadData];
                              }
                                 onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                                     NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
-                                }];
+                                }
+     ];
+}
+
+-(void)refresh:(UIRefreshControl*)refreshControl
+{
+    // Refresh albums collection
+    [AlbumService getAlbumListForCategory:self.categoryId
+                     usingCacheIfPossible:NO
+                          inRecursiveMode:NO
+                             OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                 [refreshControl endRefreshing];
+                             }  onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                 [refreshControl endRefreshing];
+                             }
+     ];
+}
+
+-(void)refreshShowingCells
+{
+    for(UICollectionViewCell *cell in self.imagesCollection.visibleCells)
+    {
+        // Case of a category
+        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
+            CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
+            PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:[self.imagesCollection indexPathForCell:cell].row];
+            [categoryCell setupWithAlbumData:albumData];
+            return;
+        }
+
+        // Case of an image
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+            PiwigoImageData *imageData = [self.albumData.images objectAtIndex:[self.imagesCollection indexPathForCell:cell].row];
+            [imageCell setupWithImageData:imageData];
+            
+            if([self.selectedImageIds containsObject:imageData.imageId])
+            {
+                imageCell.isSelected = YES;
+            }
+            return;
+        }
+    }
 }
 
 -(void)categoriesUpdated
 {
-    // Added to fix potential crash (19 Dec. 2017 - v2.1.5)
-    if ([self.imagesCollection numberOfItemsInSection:0] > 0) {
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-    }
+     // Reload albums collection view
+     [self.imagesCollection reloadData];
+
+     // Images
+     if (self.categoryId != 0) {
+         [self.albumData loadAllImagesOnCompletion:^{
+            
+             // Sort images
+            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+                
+                // Reload images collection view
+                self.loadingImages = NO;
+                [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                
+                // Set navigation bar buttons
+                [self loadNavButtons];
+
+                // The album title is not shown in backButtonItem to provide enough space
+                // for image title on devices of screen width <= 414 ==> Restore album title
+                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+                self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+            }];
+        }];
+     }
+     else {
+         // The album title is not shown in backButtonItem to provide enough space
+         // for image title on devices of screen width <= 414 ==> Restore album title
+         self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+         self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+
+         // Set navigation bar buttons
+         [self loadNavButtons];
+     }
 }
 
--(void)loadNavButtons
+#pragma mark - Default Category Management
+
+-(void)setRootAlbumAsDefaultCategory
 {
-    // Left Button
-//    if (self.categoryId != 0) {
-//        [self.navigationItem setLeftBarButtonItem:self.backBarButton animated:YES];
-//    } else {
-//        // No back button when at root
-//        [self.navigationItem setLeftBarButtonItem:nil];
-//    }
+    // Root album becomes default category
+    [Model sharedInstance].defaultCategory = 0;
+    [[Model sharedInstance] saveToDisk];
     
-    // Right buttons
-	if(!self.isSelect) {
-        // Selection mode not active
-        if([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) {
-            [self.navigationItem setRightBarButtonItems:@[self.selectBarButton, self.uploadBarButton] animated:YES];
-        } else {
-            [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
-        }
-	} else {
-        // Selection mode active (only admins have delete rights)
-        if([Model sharedInstance].hasAdminRights)
-		{
-            if (self.selectedImageIds.count > 0) {
-                [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton, self.downloadBarButton, self.deleteBarButton] animated:YES];
-            } else {
-                [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
-            }
-		}
-		else
-		{
-            if (self.selectedImageIds.count > 0) {
-                [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton, self.downloadBarButton] animated:YES];
-            } else {
-                [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
-            }
-		}
-	}
-}
-
--(void)backToParent
-{
-    // Determine parent category Id
-    NSInteger parentAlbumId = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] parentAlbumId];
-
     // Does this view controller already exists?
     NSInteger cur = 0, index = 0;
-    AlbumImagesViewController *parentAlbumViewController = nil;
+    AlbumImagesViewController *rootAlbumViewController = nil;
     for (UIViewController *viewController in self.navigationController.viewControllers) {
 
         // Look for AlbumImagesViewControllers
         if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
             AlbumImagesViewController *thisViewController = (AlbumImagesViewController *) viewController;
 
-            // Is this the view controller of the parent category?
-            if (thisViewController.categoryId == parentAlbumId) {
+            // Is this the view controller of the root album?
+            if (thisViewController.categoryId == 0) {
                 // The view controller of the parent category already exist
-                parentAlbumViewController = thisViewController;
+                rootAlbumViewController = thisViewController;
             }
             
             // Is this the current view controller?
@@ -325,22 +410,59 @@
         cur++;
     }
 
-    // The view controller of the parent album does not exist yet
-    if (!parentAlbumViewController) {
-        parentAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:parentAlbumId];
+    // The view controller of the root album does not exist yet
+    if (!rootAlbumViewController) {
+        rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:0];
         NSMutableArray *arrayOfVC = [[NSMutableArray alloc] initWithArray:self.navigationController.viewControllers];
-        [arrayOfVC insertObject:parentAlbumViewController atIndex:index];
+        [arrayOfVC insertObject:rootAlbumViewController atIndex:index];
         self.navigationController.viewControllers = arrayOfVC;
     }
     
-    // Present the parent album
-    [self.navigationController popToViewController:parentAlbumViewController animated:YES];
+    // Present the root album
+    [self.navigationController popToViewController:rootAlbumViewController animated:YES];
 }
+
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController;
+{
+    // Do not return to root album if user's root album being used
+    if (([Model sharedInstance].defaultCategory != 0) &&
+        (viewController == [self.tabBarController.viewControllers objectAtIndex:0]) &&
+        (viewController == self.tabBarController.selectedViewController)) {
+        
+        if (self.categoryId != [Model sharedInstance].defaultCategory) {
+            AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory];
+            [self.navigationController pushViewController:album animated:NO];
+        } else {
+            [self refresh:nil];
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
+
+#pragma mark - Select Images
 
 -(void)select
 {
 	self.isSelect = YES;
 	[self loadNavButtons];
+
+    // Update title
+    switch (self.selectedImageIds.count) {
+        case 0:
+            self.title = NSLocalizedString(@"selectImages", @"Select Images");
+            break;
+            
+        case 1:
+            self.title = NSLocalizedString(@"selectImageSelected", @"1 Image Selected");
+            break;
+            
+        default:
+            self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Images Selected"), @(self.selectedImageIds.count)];
+            break;
+    }
 }
 
 -(void)cancelSelect
@@ -356,6 +478,9 @@
 	[UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
+
+#pragma mark - Upload images
+
 -(void)uploadToThisCategory
 {
 	LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:self.categoryId];
@@ -370,26 +495,40 @@
 	if(self.selectedImageIds.count <= 0) return;
 	
     // Do we really want to delete these images?
+    NSString *titleString, *messageString;
+    if (self.selectedImageIds.count > 1) {
+        titleString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_title", @"Delete %@ Images"), @(self.selectedImageIds.count)];
+        messageString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImageIds.count)];
+    } else {
+        titleString = NSLocalizedString(@"deleteSingleImage_title", @"Delete Image");
+        messageString = NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?");
+    }
+
+    // Do we really want to delete these images?
     UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:(self.selectedImageIds.count > 1) ? NSLocalizedString(@"deleteSeveralImages_title", @"Delete Images") : NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
-                                message:(self.selectedImageIds.count > 1) ? [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImageIds.count)] : NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?")
-                                preferredStyle:UIAlertControllerStyleAlert];
+                                alertControllerWithTitle:titleString
+                                message:messageString
+                                preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                                    style:UIAlertActionStyleCancel
                                    handler:^(UIAlertAction * action) {}];
     
     UIAlertAction* deleteAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                   actionWithTitle:titleString
                                    style:UIAlertActionStyleDestructive
                                    handler:^(UIAlertAction * action) {
                                        self.startDeleteTotalImages = self.selectedImageIds.count;
                                        [self deleteSelected];
                                    }];
     
+    // Add actions
     [alert addAction:cancelAction];
     [alert addAction:deleteAction];
+    
+    // Present list of actions
+    alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -438,9 +577,12 @@
                                               [self deleteSelected];
                                           }];
                               
-                              [alert addAction:dismissAction];
-                              [alert addAction:retryAction];
-                              [self presentViewController:alert animated:YES completion:nil];
+                               // Add actions
+                               [alert addAction:dismissAction];
+                               [alert addAction:retryAction];
+                               
+                               // Present list of actions
+                               [self presentViewController:alert animated:YES completion:nil];
                            }];
 
               } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -462,8 +604,11 @@
                                   [self deleteSelected];
                               }];
                   
+                  // Add actions
                   [alert addAction:cancelAction];
                   [alert addAction:continueAction];
+                  
+                  // Present list of actions
                   [self presentViewController:alert animated:YES completion:nil];
               }
      ];
@@ -489,14 +634,18 @@
         UIAlertController* alert = [UIAlertController
                                     alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
                                     message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                                    preferredStyle:UIAlertControllerStyleAlert];
+                                    preferredStyle:UIAlertControllerStyleActionSheet];
         
         UIAlertAction* dismissAction = [UIAlertAction
                                         actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                                         style:UIAlertActionStyleCancel
                                         handler:^(UIAlertAction * action) {}];
         
+        // Add actions
         [alert addAction:dismissAction];
+
+        // Present list of actions
+        alert.popoverPresentationController.barButtonItem = self.downloadBarButton;
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
@@ -504,7 +653,7 @@
     // Do we really want to download these images?
     NSString *titleString, *messageString;
     if (self.selectedImageIds.count > 1) {
-        titleString = NSLocalizedString(@"downloadSeveralImages_title", @"Download Images");
+        titleString = [NSString stringWithFormat:NSLocalizedString(@"downloadSeveralImages_title", @"Download %@ Images"), @(self.selectedImageIds.count)];
         messageString = [NSString stringWithFormat:NSLocalizedString(@"downloadSeveralImage_confirmation", @"Are you sure you want to download the selected %@ images?"), @(self.selectedImageIds.count)];
     } else {
         titleString = NSLocalizedString(@"downloadSingleImage_title", @"Download Image");
@@ -514,23 +663,27 @@
     UIAlertController* alert = [UIAlertController
                                 alertControllerWithTitle:titleString
                                 message:messageString
-                                preferredStyle:UIAlertControllerStyleAlert];
+                                preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                                    style:UIAlertActionStyleCancel
                                    handler:^(UIAlertAction * action) {}];
     
     UIAlertAction* deleteAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                   actionWithTitle:titleString
                                    style:UIAlertActionStyleDefault
                                    handler:^(UIAlertAction * action) {
                                        self.totalImagesToDownload = self.selectedImageIds.count;
                                        [self downloadImage];
                                    }];
     
+    // Add actions
     [alert addAction:cancelAction];
     [alert addAction:deleteAction];
+
+    // Present list of actions
+    alert.popoverPresentationController.barButtonItem = self.downloadBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -720,7 +873,7 @@
             if(kind == UICollectionElementKindSectionHeader)
             {
                 header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
-                header.backgroundColor = [UIColor piwigoBackgroundColor];
+                header.backgroundColor = [UIColor clearColor];
                 header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
                 if (self.loadingImages) {
                     header.noImagesLabel.text = NSLocalizedString(@"downloadingImages", "Downloading Images");
@@ -874,7 +1027,7 @@
 		}
 		else
 		{
-			// Selection mode active => add image to selection
+			// Selection mode active => add/remove image from selection
             if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
 				[self.selectedImageIds addObject:selectedCell.imageData.imageId];
 				selectedCell.isSelected = YES;

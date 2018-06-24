@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CategoryListViewController.h"
 
 @class PiwigoAlbumData;
 
-@interface MoveCategoryViewController : CategoryListViewController
+@interface MoveCategoryViewController : UIViewController
 
 -(instancetype)initWithSelectedCategory:(PiwigoAlbumData*)category;
 

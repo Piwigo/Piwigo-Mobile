@@ -163,7 +163,7 @@
 "moveCategoryError_message" = "Fehler beim Verschieben Deines Albums";
 
 // Album set image thumbnail
-"categorySelection" = "Album auswählen";
+"categorySelection_select" = "Album auswählen";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Miniaturbild setzen";

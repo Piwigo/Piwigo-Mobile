@@ -163,7 +163,7 @@
 "moveCategoryError_message" = "Verplaatsen van jouw album is mislukt";
 
 // Album set image thumbnail
-"categorySelection" = "Selecteer album";
+"categorySelection_select" = "Selecteer album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Stel foto-miniatuur in";

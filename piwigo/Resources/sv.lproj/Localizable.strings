@@ -163,7 +163,7 @@
 "moveCategoryError_message" = "Kunde inte flytta ditt album";
 
 // Album set image thumbnail
-"categorySelection" = "Välj ett album";
+"categorySelection_select" = "Välj ett album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Sätt miniatyrbild";
