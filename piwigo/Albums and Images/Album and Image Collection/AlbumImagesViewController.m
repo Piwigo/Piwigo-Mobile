@@ -122,6 +122,9 @@
 {
 	[super viewWillAppear:animated];
 	
+    // Title of the album
+    self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+
     // Reload category data and refresh showing cells
     [self getCategoryData];
     [self refreshShowingCells];
@@ -141,14 +144,17 @@
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
-        NSDictionary *attributesLarge = @{
-                                     NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                     NSFontAttributeName: [UIFont piwigoFontLargeTitle],
-                                     };
-        self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
-        self.navigationController.navigationBar.prefersLargeTitles = YES;
-    } else {
-        // Fallback on earlier versions
+        if (self.categoryId == [Model sharedInstance].defaultCategory) {
+            NSDictionary *attributesLarge = @{
+                                         NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                         NSFontAttributeName: [UIFont piwigoFontLargeTitle],
+                                         };
+            self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
+            self.navigationController.navigationBar.prefersLargeTitles = YES;
+        }
+        else {
+            self.navigationController.navigationBar.prefersLargeTitles = NO;
+        }
     }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
@@ -184,7 +190,8 @@
 {
 	[super viewDidAppear:animated];
 	
-	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+	// Refresh controller
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
 	refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
 	refreshControl.tintColor = [UIColor piwigoOrange];
     NSDictionary *attributes = @{
@@ -299,7 +306,7 @@
 {
     // Reload category data
     [AlbumService getAlbumListForCategory:self.categoryId
-                     usingCacheIfPossible:NO
+                     usingCacheIfPossible:YES
                           inRecursiveMode:NO
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                  if (![Model sharedInstance].loadAllCategoryInfo)
@@ -320,6 +327,7 @@
                      usingCacheIfPossible:NO
                           inRecursiveMode:NO
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                 [self.imagesCollection reloadData];
                                  [refreshControl endRefreshing];
                              }  onFailure:^(NSURLSessionTask *task, NSError *error) {
                                  [refreshControl endRefreshing];
@@ -459,8 +467,32 @@
 
 -(void)select
 {
-	self.isSelect = YES;
-	[self loadNavButtons];
+    if (!self.isSelect) {
+        
+        // Activate Images Selection mode
+        self.isSelect = YES;
+        
+        // Disable interaction with category cells and scroll to first image cell if needed
+        NSInteger numberOfImageCells = 0;
+        for (ImageCollectionViewCell *cell in self.imagesCollection.visibleCells) {
+
+            // Will scroll to position of no visible image cell
+            if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+                numberOfImageCells++;
+                break;
+            }
+        }
+
+        // Scroll to position of images if needed
+        if (numberOfImageCells == 0)
+            [self.imagesCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+        
+        // Refresh collection view
+        [self.imagesCollection setNeedsDisplay];
+    }
+    
+    // Update navigation items
+    [self loadNavButtons];
 
     // Update title
     switch (self.selectedImageIds.count) {
@@ -480,13 +512,37 @@
 
 -(void)cancelSelect
 {
-	self.isSelect = NO;
+	// Disable Images Selection mode
+    self.isSelect = NO;
+    
+    // Refresh button items
 	[self loadNavButtons];
+    
+    // Put back the name of the category
 	self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-	for(ImageCollectionViewCell *cell in self.imagesCollection.visibleCells) {
-		if(cell.isSelected) cell.isSelected = NO;
-	}
-	self.downloadView.hidden = YES;
+    
+    // Enable interaction with category cells and deselect image cells
+    for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
+        
+        // Enable user interaction with category cell
+//        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
+//            CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
+//            [categoryCell setAlpha:1.0];
+//            [categoryCell setUserInteractionEnabled:YES];
+//        }
+        
+        // Deselect image cell
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+            if(imageCell.isSelected) imageCell.isSelected = NO;
+        }
+    }
+    
+    // Refresh collection view
+    [self.imagesCollection setNeedsDisplay];
+
+    // Hide download view, clear array of selected images and allow iOS device to sleep
+    self.downloadView.hidden = YES;
 	self.selectedImageIds = [NSMutableArray new];
 	[UIApplication sharedApplication].idleTimerDisabled = NO;
 }
@@ -1021,11 +1077,7 @@
 		if(self.albumData.images.count > indexPath.row) {
 			PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 			[cell setupWithImageData:imageData];
-			
-			if([self.selectedImageIds containsObject:imageData.imageId])
-			{
-				cell.isSelected = YES;
-			}
+            cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
 		}
 		
         // Calculate the number of thumbnails displayed per page
@@ -1039,8 +1091,8 @@
                 [self.imagesCollection reloadData];
             }];
         }
-		
-		return cell;
+
+        return cell;
 	}
 	else        // Albums
 	{
@@ -1048,9 +1100,17 @@
 		cell.categoryDelegate = self;
 		
 		PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
-		
 		[cell setupWithAlbumData:albumData];
-		
+        
+        // Disable category cells in Image selection mode
+        if (self.isSelect) {
+            [cell setAlpha:0.5];
+            [cell setUserInteractionEnabled:NO];
+        } else {
+            [cell setAlpha:1.0];
+            [cell setUserInteractionEnabled:YES];
+        }
+        
 		return cell;
 	}
 }
