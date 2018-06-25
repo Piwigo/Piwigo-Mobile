@@ -19,6 +19,7 @@
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
 		AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
+		AD7B4C1F20E0D6D9003E403A /* CategoryHeaderReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7B4C1C20E0D6D8003E403A /* CategoryHeaderReusableView.m */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
 		AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
@@ -156,6 +157,8 @@
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
 		AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansRegular.TTF; sourceTree = "<group>"; };
+		AD7B4C1C20E0D6D8003E403A /* CategoryHeaderReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryHeaderReusableView.m; sourceTree = "<group>"; };
+		AD7B4C1D20E0D6D8003E403A /* CategoryHeaderReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryHeaderReusableView.h; sourceTree = "<group>"; };
 		AD83385F1FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
 		AD8338611FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -402,6 +405,17 @@
 			path = TabBar;
 			sourceTree = "<group>";
 		};
+		AD7B4C2120E0E0AC003E403A /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				AD7B4C1D20E0D6D8003E403A /* CategoryHeaderReusableView.h */,
+				AD7B4C1C20E0D6D8003E403A /* CategoryHeaderReusableView.m */,
+				AD1F90B020724A63004BA1AA /* NoImagesHeaderCollectionReusableView.h */,
+				AD1F90B120724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
 		ADE535901F65C01000372CBD /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -508,6 +522,7 @@
 				D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */,
 				D8D3F71E1A785DF800AEA7F1 /* AlbumImagesViewController.h */,
 				D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */,
+				AD7B4C2120E0E0AC003E403A /* Headers */,
 			);
 			path = "Album and Image Collection";
 			sourceTree = "<group>";
@@ -640,8 +655,6 @@
 				D847B83C1A7C06A500231886 /* OutlinedText.m */,
 				D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */,
 				D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */,
-				AD1F90B020724A63004BA1AA /* NoImagesHeaderCollectionReusableView.h */,
-				AD1F90B120724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m */,
 				D8B9BC7D1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.h */,
 				D8B9BC7E1A969CC400C1B0E5 /* SortHeaderCollectionReusableView.m */,
 				D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */,
@@ -1151,6 +1164,7 @@
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
 				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
 				D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */,
+				AD7B4C1F20E0D6D9003E403A /* CategoryHeaderReusableView.m in Sources */,
 				D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */,
 				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,
 				D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */,

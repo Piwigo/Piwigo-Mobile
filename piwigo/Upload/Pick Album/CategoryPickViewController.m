@@ -129,7 +129,8 @@
     
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
+    self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],

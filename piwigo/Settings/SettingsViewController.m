@@ -87,6 +87,7 @@ typedef enum {
 
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
 
     // Navigation bar appearence
     NSDictionary *attributes = @{

@@ -30,7 +30,7 @@
 #import "ImagesCollection.h"
 #import "SAMKeychain.h"
 #import "CategoryPickViewController.h"
-
+#import "CategoryHeaderReusableView.h"
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITabBarControllerDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
@@ -88,11 +88,13 @@
         self.imagesCollection.showsVerticalScrollIndicator = YES;
 		self.imagesCollection.dataSource = self;
 		self.imagesCollection.delegate = self;
-		[self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+
+        [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
 		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"category"];
+        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"categoryHeader"];
 		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader"];
         [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader"];
-		self.imagesCollection.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+
 		[self.view addSubview:self.imagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 
@@ -130,13 +132,24 @@
     
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
+    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        NSDictionary *attributesLarge = @{
+                                     NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                     NSFontAttributeName: [UIFont piwigoFontLargeTitle],
+                                     };
+        self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
+        self.navigationController.navigationBar.prefersLargeTitles = YES;
+    } else {
+        // Fallback on earlier versions
+    }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
@@ -849,47 +862,65 @@
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1)
-	{
-        if (self.albumData.images.count > 0) {
-            // Display "Sort By…" header
-            SortHeaderCollectionReusableView *header = nil;
+    switch (indexPath.section) {
+        case 0:     // Section 0 — Album collection
+        {
+            CategoryHeaderReusableView *header = nil;
             
-            if(kind == UICollectionElementKindSectionHeader)
-            {
-                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
-                header.backgroundColor = [UIColor piwigoCellBackgroundColor];
-                header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
-                header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
-                header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
-                [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
-                
-                return header;
-            }
-        } else {
-            // Display "No Images" except in root album
-            NoImagesHeaderCollectionReusableView *header = nil;
-            
-            if(kind == UICollectionElementKindSectionHeader)
-            {
-                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
-                header.backgroundColor = [UIColor clearColor];
-                header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
-                if (self.loadingImages) {
-                    header.noImagesLabel.text = NSLocalizedString(@"downloadingImages", "Downloading Images");
-                } else {
-                    if (self.categoryId != 0) {
-                        header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-                    } else {
-                        header.noImagesLabel.text = @"";
-                    }
+            if (kind == UICollectionElementKindSectionHeader) {
+                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"categoryHeader" forIndexPath:indexPath];
+                PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+                if ([albumData.comment length] > 0) {
+                    header.commentLabel.text = albumData.comment;
                 }
-
+                header.commentLabel.textColor = [UIColor piwigoHeaderColor];
                 return header;
             }
+            break;
         }
-	}
-	
+            
+        default:    // Section 1 — Image collection
+        {
+            if (self.albumData.images.count > 0) {
+                // Display "Sort By…" header
+                SortHeaderCollectionReusableView *header = nil;
+                
+                if(kind == UICollectionElementKindSectionHeader)
+                {
+                    header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
+                    header.backgroundColor = [UIColor piwigoCellBackgroundColor];
+                    header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
+                    header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
+                    header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
+                    [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+                    
+                    return header;
+                }
+            } else {
+                // Display "No Images" except in root album
+                NoImagesHeaderCollectionReusableView *header = nil;
+                
+                if(kind == UICollectionElementKindSectionHeader)
+                {
+                    header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
+                    header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+                    if (self.loadingImages) {
+                        header.noImagesLabel.text = NSLocalizedString(@"downloadingImages", "Downloading Images");
+                    } else {
+                        if (self.categoryId != 0) {
+                            header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+                        } else {
+                            header.noImagesLabel.text = @"";
+                        }
+                    }
+                    
+                    return header;
+                }
+            }
+            break;
+        }
+    }
+
 	UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
 	return view;
 }
@@ -904,12 +935,32 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
-	if(section == 1)
-	{
-		return CGSizeMake(collectionView.frame.size.width, 44.0);
-	}
-	
-	return CGSizeZero;
+    switch (section) {
+        case 0:     // Section 0 — Album collection
+        {
+            // Header height?
+            PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+            if ([albumData.comment length] > 0) {
+                NSString *header = albumData.comment;
+                NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+                NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+                context.minimumScaleFactor = 1.0;
+                CGRect headerRect = [header boundingRectWithSize:CGSizeMake(collectionView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                                      attributes:attributes
+                                                         context:context];
+                return CGSizeMake(collectionView.frame.size.width, ceil(headerRect.size.height));
+            }
+            break;
+        }
+        default:    // Section 1 — Image collection
+        {
+            return CGSizeMake(collectionView.frame.size.width, 44.0);
+            break;
+        }
+    }
+
+    return CGSizeZero;
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView

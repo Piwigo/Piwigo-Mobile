@@ -21,9 +21,11 @@
     if(self)
     {
         self.noImagesLabel = [UILabel new];
+        self.noImagesLabel.backgroundColor = [UIColor clearColor];
         self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.noImagesLabel.font = [UIFont piwigoFontBold];
         self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+
         [self addSubview:self.noImagesLabel];
         [self addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
         [self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.noImagesLabel]];
