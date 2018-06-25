@@ -122,6 +122,7 @@ CGFloat const kRadius = 25.0;
         self.uploadButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
         self.uploadButton.layer.cornerRadius = kRadius;
         self.uploadButton.layer.masksToBounds = NO;
+        [self.uploadButton.layer setOpacity:0.9];
         [self.uploadButton.layer setShadowColor:[UIColor piwigoGray].CGColor];
         [self.uploadButton.layer setShadowOpacity:1.0];
         [self.uploadButton.layer setShadowRadius:5.0];
