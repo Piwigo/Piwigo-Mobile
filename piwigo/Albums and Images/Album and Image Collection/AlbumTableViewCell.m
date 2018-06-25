@@ -559,7 +559,7 @@
     
     UIAlertAction* emptyCategoryAction = [UIAlertAction
        actionWithTitle:NSLocalizedString(@"deleteCategory_empty", @"Delete Empty Album")
-       style:UIAlertActionStyleDefault
+       style:UIAlertActionStyleDestructive
        handler:^(UIAlertAction * action) {
            [self deleteCategoryWithNumberOfImages:0  deletionMode:kCategoryDeletionModeNone andViewController:topViewController];
     }];
@@ -588,6 +588,7 @@
     // Add actions
     switch (self.albumData.totalNumberOfImages) {
         case 0:
+            [alert addAction:cancelAction];
             [alert addAction:emptyCategoryAction];
             break;
             

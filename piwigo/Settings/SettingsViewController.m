@@ -47,6 +47,7 @@ typedef enum {
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
 @property (nonatomic, assign) CGFloat previousContentYOffset;
 @property (nonatomic, assign) CGFloat minContentYOffset;
@@ -60,6 +61,7 @@ typedef enum {
 	self = [super init];
 	if(self)
 	{
+        // Table view
         self.settingsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.settingsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.settingsTableView.backgroundColor = [UIColor clearColor];
@@ -71,6 +73,9 @@ typedef enum {
 		self.tableViewBottomConstraint = [NSLayoutConstraint constraintViewFromBottom:self.settingsTableView amount:0];
 		[self.view addConstraint:self.tableViewBottomConstraint];
 
+        // Button for returning to albums/images
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitSettings)];
+        
         // Keyboard management
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
@@ -98,6 +103,7 @@ typedef enum {
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 
     // Tab bar appearance
     self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
@@ -125,6 +131,11 @@ typedef enum {
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [self.settingsTableView reloadData];
     } completion:nil];
+}
+
+-(void)quitSettings
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -934,6 +945,33 @@ typedef enum {
                         // Redraw views in windows
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate screenBrightnessChanged:nil];
+
+                        // Background color of the view
+                        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+                        self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+                        
+                        // Navigation bar appearence
+                        NSDictionary *attributes = @{
+                                                     NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                                     NSFontAttributeName: [UIFont piwigoFontNormal],
+                                                     };
+                        self.navigationController.navigationBar.titleTextAttributes = attributes;
+                        [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+                        [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+                        self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+                        [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+                        
+                        // Tab bar appearance
+                        self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
+                        self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
+                        if (@available(iOS 10, *)) {
+                            self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
+                        }
+                        [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
+                        [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
+                        
+                        // Table view
+                        self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
                     };
                     
                     tableViewCell = cell;
@@ -968,6 +1006,33 @@ typedef enum {
                         // Redraw views in windows
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate screenBrightnessChanged:nil];
+
+                        // Background color of the view
+                        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+                        self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+                        
+                        // Navigation bar appearence
+                        NSDictionary *attributes = @{
+                                                     NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                                     NSFontAttributeName: [UIFont piwigoFontNormal],
+                                                     };
+                        self.navigationController.navigationBar.titleTextAttributes = attributes;
+                        [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+                        [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+                        self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+                        [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+                        
+                        // Tab bar appearance
+                        self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
+                        self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
+                        if (@available(iOS 10, *)) {
+                            self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
+                        }
+                        [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
+                        [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
+                        
+                        // Table view
+                        self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
                     };
                     
                     tableViewCell = cell;

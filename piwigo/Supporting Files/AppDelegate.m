@@ -98,8 +98,8 @@
 
 -(void)loadNavigation
 {
-    TabBarViewController *navigation = [TabBarViewController new];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
+    AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albums];
     [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     

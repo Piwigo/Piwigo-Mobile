@@ -25,12 +25,13 @@
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
 @property (nonatomic, strong) UIAlertAction *createAlbumAction;
 @property (nonatomic, strong) UIViewController *hudViewController;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
 @end
 
 @implementation CategoryPickViewController
 
--(instancetype)init
+-(instancetype)initWithCategoryId:(NSInteger)categoryId;
 {
 	// User can upload images/videos if he/she has:
     // — admin rights
@@ -38,6 +39,10 @@
     if(([Model sharedInstance].hasAdminRights) ||
        ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
 	{
+        // Current category
+        self.currentCategoryId = categoryId;
+        self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
+        
         // List of categories to present in 2nd section
         self.categories = [NSMutableArray new];
         self.categoriesThatShowSubCategories = [NSMutableArray new];
@@ -56,6 +61,9 @@
 
 		[[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:nil];
 
+        // Button for returning to albums/images
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
+        
         // Current category updated by Albums section
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoNotificationChangedCurrentCategory object:nil];
     }
@@ -140,6 +148,7 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 
     // Tab bar appearance
     self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
@@ -157,6 +166,11 @@
     } orFailure:^(NSURLSessionTask *task, NSError *error) {
         // Invite users to refresh?
     }];
+}
+
+-(void)quitUpload
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

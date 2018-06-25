@@ -31,6 +31,9 @@
 #import "SAMKeychain.h"
 #import "CategoryPickViewController.h"
 #import "CategoryHeaderReusableView.h"
+#import "SettingsViewController.h"
+
+CGFloat const kRadius = 25.0;
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITabBarControllerDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
@@ -45,10 +48,13 @@
 @property (nonatomic, assign) CGFloat minContentYOffset;
 
 @property (nonatomic, strong) UIBarButtonItem *rootAlbumBarButton;
+@property (nonatomic, strong) UIBarButtonItem *settingsBarButton;
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
+@property (nonatomic, strong) UIButton *uploadButton;
+
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger startDeleteTotalImages;
 @property (nonatomic, assign) NSInteger totalImagesToDownload;
@@ -92,6 +98,7 @@
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
 		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"category"];
         [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"categoryHeader"];
+        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"categoryHeader"];
 		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader"];
         [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader"];
 
@@ -100,6 +107,7 @@
 
         // Bar buttons
         self.rootAlbumBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rootAlbum"] style:UIBarButtonItemStylePlain target:self action:@selector(setRootAlbumAsDefaultCategory)];
+        self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
@@ -107,6 +115,26 @@
 		self.isSelect = NO;
 		self.selectedImageIds = [NSMutableArray new];
 		
+        // Upload button above collection view
+        self.uploadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
+        CGFloat yPos = [UIScreen mainScreen].bounds.size.height - 3*kRadius;
+        self.uploadButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
+        self.uploadButton.layer.cornerRadius = kRadius;
+        self.uploadButton.layer.masksToBounds = NO;
+        [self.uploadButton.layer setShadowColor:[UIColor piwigoGray].CGColor];
+        [self.uploadButton.layer setShadowOpacity:1.0];
+        [self.uploadButton.layer setShadowRadius:5.0];
+        [self.uploadButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        self.uploadButton.backgroundColor = [UIColor piwigoOrange];
+        self.uploadButton.tintColor = [UIColor whiteColor];
+        [self.uploadButton setImage:[UIImage imageNamed:@"cloud"] forState:UIControlStateNormal];
+        [self.uploadButton addTarget:self action:@selector(displayUpload)
+               forControlEvents:UIControlEventTouchUpInside];
+        self.uploadButton.hidden = YES;
+        [self.view addSubview:self.uploadButton];
+        
+        // No download at start
 		self.downloadView.hidden = YES;
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData) name:kPiwigoNotificationGetCategoryData object:nil];
@@ -227,6 +255,9 @@
         self.title = @"";
     }
     self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+
+    // Hide upload button during transition
+    [self.uploadButton setHidden:NO];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -234,6 +265,9 @@
     
     //Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
+        CGFloat yPos = [UIScreen mainScreen].bounds.size.height - 3*kRadius;
+        self.uploadButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)]];
     } completion:nil];
 }
@@ -242,12 +276,26 @@
 {
     if(!self.isSelect) {    // Image selection mode inactive
         
+        // User can upload images/videos if he/she has:
+        // — admin rights
+        // — opened a session on a server having Community extension installed
+        if(([Model sharedInstance].hasAdminRights) ||
+           ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
+        {
+            [self.uploadButton setHidden:NO];
+        }
+
         // Left side of navigation bar
-        if (([Model sharedInstance].defaultCategory != 0) &&
+        if (self.categoryId == 0) {
+            // Button for accessing settings
+            [self.navigationItem setLeftBarButtonItems:@[self.settingsBarButton] animated:YES];
+            [self.navigationItem setHidesBackButton:YES];
+        }
+        else if (([Model sharedInstance].defaultCategory != 0) &&
             ([Model sharedInstance].defaultCategory == self.categoryId)) {
             
-            // Button for resetting default album Id to 0 i.e. root album
-            [self.navigationItem setLeftBarButtonItems:@[self.rootAlbumBarButton] animated:YES];
+            // Buttons for resetting default album Id to 0 and accessing settings
+            [self.navigationItem setLeftBarButtonItems:@[self.rootAlbumBarButton, self.settingsBarButton] animated:YES];
             [self.navigationItem setHidesBackButton:YES];
         }
         else {
@@ -270,8 +318,9 @@
     }
     else {                  // Image selection mode active
         
-        // Left side of navigation bar: first hides back button item
+        // First hide back button item and upload button
         [self.navigationItem setHidesBackButton:YES];
+        [self.uploadButton setHidden:YES];
         
         if([Model sharedInstance].hasAdminRights)
         {
@@ -337,27 +386,34 @@
 
 -(void)refreshShowingCells
 {
+    NSArray *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
+
     for(UICollectionViewCell *cell in self.imagesCollection.visibleCells)
     {
+        // Get indexPath for visible cell in collection
+        NSIndexPath *indexPath = [self.imagesCollection indexPathForCell:cell];
+        
         // Case of a category
         if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
-            CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
-            PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:[self.imagesCollection indexPathForCell:cell].row];
-            [categoryCell setupWithAlbumData:albumData];
-            return;
+            if ([categories count] > indexPath.row) {
+                PiwigoAlbumData *albumData = [categories objectAtIndex:indexPath.row];
+                CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
+                [categoryCell setupWithAlbumData:albumData];
+            }
         }
 
         // Case of an image
         if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
-            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
-            PiwigoImageData *imageData = [self.albumData.images objectAtIndex:[self.imagesCollection indexPathForCell:cell].row];
-            [imageCell setupWithImageData:imageData];
-            
-            if([self.selectedImageIds containsObject:imageData.imageId])
-            {
-                imageCell.isSelected = YES;
+            if ([self.albumData.images count] > indexPath.row) {
+                PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
+                ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+                [imageCell setupWithImageData:imageData];
+
+                if([self.selectedImageIds containsObject:imageData.imageId])
+                {
+                    imageCell.isSelected = YES;
+                }
             }
-            return;
         }
     }
 }
@@ -462,6 +518,30 @@
     return YES;
 }
 
+
+#pragma mark - Display Preferences / Upload views
+
+-(void)displayPreferences
+{
+    SettingsViewController *settingsViewController = [SettingsViewController new];
+    settingsViewController.title = NSLocalizedString(@"tabBar_preferences", @"Preferences");
+
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:navController animated:YES completion:nil];
+}
+
+-(void)displayUpload
+{
+    CategoryPickViewController *uploadViewController = [[CategoryPickViewController alloc] initWithCategoryId:self.categoryId];
+    uploadViewController.title = NSLocalizedString(@"tabBar_upload", @"Upload");
+
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:uploadViewController];
+    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:navController animated:YES completion:nil];
+}
 
 #pragma mark - Select Images
 
@@ -937,41 +1017,29 @@
             
         default:    // Section 1 — Image collection
         {
-            if (self.albumData.images.count > 0) {
-                // Display "Sort By…" header
-                SortHeaderCollectionReusableView *header = nil;
-                
-                if(kind == UICollectionElementKindSectionHeader)
-                {
-                    header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
-                    header.backgroundColor = [UIColor piwigoCellBackgroundColor];
-                    header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
-                    header.currentSortLabel.text = [CategorySortViewController getNameForCategorySortType:self.currentSortCategory];
-                    header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
-                    [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
-                    
-                    return header;
-                }
-            } else {
-                // Display "No Images" except in root album
-                NoImagesHeaderCollectionReusableView *header = nil;
-                
-                if(kind == UICollectionElementKindSectionHeader)
-                {
-                    header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
-                    header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+            // Display "No Images" except in root album
+            NoImagesHeaderCollectionReusableView *header = nil;
+            
+            if(kind == UICollectionElementKindSectionHeader)
+            {
+                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
+                header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+
+                if (self.albumData.images.count == 0) {
+                    // No images ?
                     if (self.loadingImages) {
+                        // Currently trying to load images…
                         header.noImagesLabel.text = NSLocalizedString(@"downloadingImages", "Downloading Images");
-                    } else {
-                        if (self.categoryId != 0) {
-                            header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-                        } else {
-                            header.noImagesLabel.text = @"";
-                        }
+                        return header;
                     }
-                    
-                    return header;
+                    else if (self.categoryId != 0) {
+                        // Not loading —> No images
+                        header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+                        return header;
+                    }
                 }
+                header.noImagesLabel.text = @"";
+                return header;
             }
             break;
         }
@@ -1005,13 +1073,35 @@
                                                          options:NSStringDrawingUsesLineFragmentOrigin
                                                       attributes:attributes
                                                          context:context];
-                return CGSizeMake(collectionView.frame.size.width, ceil(headerRect.size.height));
+                return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(headerRect.size.height));
             }
             break;
         }
         default:    // Section 1 — Image collection
         {
-            return CGSizeMake(collectionView.frame.size.width, 44.0);
+            NSString *header = @"";
+            if (self.albumData.images.count == 0) {
+                // No images ?
+                if (self.loadingImages) {
+                    // Currently trying to load images…
+                    header = NSLocalizedString(@"downloadingImages", "Downloading Images");
+                }
+                else if (self.categoryId != 0) {
+                    // Not loading —> No images
+                    header = NSLocalizedString(@"noImages", @"No Images");
+                }
+            }
+
+            if ([header length] > 0) {
+                NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+                NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+                context.minimumScaleFactor = 1.0;
+                CGRect headerRect = [header boundingRectWithSize:CGSizeMake(collectionView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                                      attributes:attributes
+                                                         context:context];
+                return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(headerRect.size.height));
+            }
             break;
         }
     }
@@ -1027,18 +1117,23 @@
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     // Returns number of images or albums
-	if(section == 1)
-	{
-		return self.albumData.images.count;
-	}
-	else
-	{
-		return [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
-	}
+    switch (section) {
+        case 0:             // Albums
+            return [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
+            break;
+            
+        default:            // Images
+            return self.albumData.images.count;
+            break;
+    }
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
+    // Avoid unwanted spaces
+    if ([collectionView numberOfItemsInSection:section] == 0)
+        return UIEdgeInsetsMake(0, kMarginsSpacing, 0, kMarginsSpacing);
+    
     return UIEdgeInsetsMake(10, kMarginsSpacing, 10, kMarginsSpacing);
 }
 

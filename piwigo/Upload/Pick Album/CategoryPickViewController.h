@@ -10,4 +10,6 @@
 
 @interface CategoryPickViewController : UIViewController
 
+-(instancetype)initWithCategoryId:(NSInteger)categoryId;
+
 @end
