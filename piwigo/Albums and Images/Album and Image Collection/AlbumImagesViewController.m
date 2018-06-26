@@ -258,7 +258,7 @@ CGFloat const kRadius = 25.0;
     self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 
     // Hide upload button during transition
-    [self.uploadButton setHidden:NO];
+    [self.uploadButton setHidden:YES];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
