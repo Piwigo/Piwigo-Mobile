@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import <sys/utsname.h>                    // For determining iOS device model
 #import "LoginViewController_iPhone.h"
 #import "Model.h"
 
@@ -30,6 +29,10 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    // Register for keyboard notifications
+    [super viewWillAppear:YES];
+
+    // Inform user if the connection is not secure
     self.websiteNotSecure.hidden = [[Model sharedInstance].serverProtocol isEqualToString:@"https://"];
 }
 
@@ -40,79 +43,57 @@
 
 -(void)setupAutoLayout
 {
-    NSInteger textFieldHeight = 64;
-    NSInteger alertLabelHeight = 24;
-    
+    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+    self.textFieldHeight = 48 + 8 * (([UIScreen mainScreen].bounds.size.height - 480) / (812 - 480));
+    NSInteger margin = 36;
+
     NSDictionary *views = @{
                             @"logo" : self.piwigoLogo,
                             @"login" : self.loginButton,
                             @"server" : self.serverTextField,
                             @"user" : self.userTextField,
                             @"password" : self.passwordTextField,
-                            @"notSecure" : self.websiteNotSecure
-                            };
-    // iPhone X ?
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    NSString* deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-
-    if ([deviceModel isEqualToString:@"iPhone10,3"] || [deviceModel isEqualToString:@"iPhone10,6"]) {
-        // Add 25px for iPhone X (not great in landscape mode but temporary solution)
-        self.topConstraintAmount = 65;
-    } else {
-        self.topConstraintAmount = 40;
-    }
+                            @"notSecure" : self.websiteNotSecure,
+                            @"by1" : self.byLabel1,
+                            @"by2" : self.byLabel2,
+                            @"usu" : self.versionLabel
+                           };
 
     NSDictionary *metrics = @{
-                              @"imageSide" : @25,
-                              @"imageTop" : @40,
-                              @"imageBottom" : @20,
-                              @"side" : @35,
+                              @"height" : @(self.textFieldHeight),
+                              @"side" : @(margin)
                               };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[logo]-imageBottom-[server]-[user]-[password]-[login]-10-[notSecure]"
-                                                                      options:kNilOptions
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    self.logoTopConstraint = [NSLayoutConstraint constraintViewFromTop:self.piwigoLogo amount:self.topConstraintAmount];
-    [self.view addConstraint:self.logoTopConstraint];
-    
-    [self.piwigoLogo addConstraint:[NSLayoutConstraint constraintView:self.piwigoLogo toHeight:textFieldHeight + 36]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-imageSide-[logo]-imageSide-|"
-                                                                      options:kNilOptions
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    [self.serverTextField addConstraint:[NSLayoutConstraint constraintView:self.serverTextField toHeight:textFieldHeight]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[server]-side-|"
-                                                                      options:kNilOptions
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    [self.userTextField addConstraint:[NSLayoutConstraint constraintView:self.userTextField toHeight:textFieldHeight]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[user]-side-|"
-                                                                      options:kNilOptions
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    [self.passwordTextField addConstraint:[NSLayoutConstraint constraintView:self.passwordTextField toHeight:textFieldHeight]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[password]-side-|"
-                                                                      options:kNilOptions
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    [self.loginButton addConstraint:[NSLayoutConstraint constraintView:self.loginButton toHeight:textFieldHeight]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[login]-side-|"
-                                                                      options:kNilOptions
-                                                                      metrics:metrics
-                                                                        views:views]];
+    // Vertically
+    [self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:([UIScreen mainScreen].bounds.size.height / 2.0 + self.textFieldHeight + 2 * 10.0)]];
+    [self.view addConstraints:[NSLayoutConstraint
+            constraintsWithVisualFormat:@"V:|-(>=50,<=100)-[logo(height)]-(>=20)-[server(==logo)]-10-[user(==logo)]-10-[password(==logo)]-10-[login(==logo)]-10-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
+                                options:kNilOptions metrics:metrics views:views]];
 
-    [self.websiteNotSecure addConstraint:[NSLayoutConstraint constraintView:self.websiteNotSecure toHeight:alertLabelHeight]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-side-[notSecure]-side-|"
-                                                                      options:kNilOptions
-                                                                      metrics:metrics
-                                                                        views:views]];
+    // Piwigo logo
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoLogo]];
+
+    // Server
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.serverTextField]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-side-[server]-side-|" options:kNilOptions metrics:metrics views:views]];
+
+    // Username
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.userTextField]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-side-[user]-side-|" options:kNilOptions metrics:metrics views:views]];
+
+    // Password
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.passwordTextField]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-side-[password]-side-|" options:kNilOptions metrics:metrics views:views]];
+
+    // Login button
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.loginButton]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-side-[login]-side-|" options:kNilOptions metrics:metrics views:views]];
+    
+    // Information
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.websiteNotSecure]];
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel1]];
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
 }
 
 @end

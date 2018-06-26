@@ -92,8 +92,32 @@
         self.websiteNotSecure.adjustsFontSizeToFitWidth = YES;
         self.websiteNotSecure.minimumScaleFactor = 0.8;
         self.websiteNotSecure.lineBreakMode = NSLineBreakByTruncatingTail;
-        self.websiteNotSecure.hidden = YES;
         [self.view addSubview:self.websiteNotSecure];
+        
+        self.byLabel1 = [UILabel new];
+        self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
+        self.byLabel1.font = [UIFont piwigoFontSmall];
+//        self.byLabel1.font = [self.byLabel1.font fontWithSize:16];
+        self.byLabel1.textColor = [UIColor piwigoOrangeLight];
+        self.byLabel1.text = NSLocalizedStringFromTableInBundle(@"authors1", @"About", [NSBundle mainBundle], @"By Spencer Baker, Olaf Greck,");
+        [self.view addSubview:self.byLabel1];
+        
+        self.byLabel2 = [UILabel new];
+        self.byLabel2.translatesAutoresizingMaskIntoConstraints = NO;
+        self.byLabel2.font = [UIFont piwigoFontSmall];
+        self.byLabel2.textColor = [UIColor piwigoOrangeLight];
+        self.byLabel2.text = NSLocalizedStringFromTableInBundle(@"authors2", @"About", [NSBundle mainBundle], @"and Eddy Lelièvre-Berna");
+        [self.view addSubview:self.byLabel2];
+        
+        self.versionLabel = [UILabel new];
+        self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.versionLabel.font = [UIFont piwigoFontTiny];
+        self.versionLabel.textColor = [UIColor piwigoOrangeLight];
+        [self.view addSubview:self.versionLabel];
+        
+        NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+        self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
 
         [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)]];
 		
@@ -101,6 +125,28 @@
     }
 	return self;
 }
+
+
+#pragma mark - View Lifecycle
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+
+    // Register for keyboard notifications
+    [self registerForKeyboardNotifications];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Unregister for keyboard notifications while not visible.
+    [self unregisterKeyboardNotifications];
+}
+
+
+#pragma mark - Login business
 
 -(void)launchLogin
 {
@@ -713,30 +759,72 @@
 }
 
 
+#pragma mark - Keyboard Notifications
+
+- (void)registerForKeyboardNotifications {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+}
+
+// Called when the UIKeyboardWillShowNotification is sent.
+- (void)keyboardWillShow:(NSNotification*)aNotification {
+    
+    NSDictionary* info = [aNotification userInfo];
+    CGRect kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey]
+                     CGRectValue];
+    NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey]
+                       doubleValue];
+    
+    // If needed, animate the current view out of the way
+    // so that the login button appears above the keyboard
+    CGFloat amount = [UIScreen mainScreen].bounds.size.height / 2.0 + 2 * self.textFieldHeight + 3*10.0 - kbSize.origin.y;
+    if ((amount > 0) && (self.view.frame.origin.y >= 0))
+        [self moveTextFieldsBy:amount inDuration:duration];
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillHide:(NSNotification*)aNotification {
+    
+    NSDictionary* info = [aNotification userInfo];
+    CGRect kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey]
+                     CGRectValue];
+    NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey]
+                       doubleValue];
+    
+    // If needed, animate the current view out of the way
+    // so that the login button appears above the keyboard
+    CGFloat amount = [UIScreen mainScreen].bounds.size.height / 2.0 + 2 * self.textFieldHeight + 3*10.0 - kbSize.origin.y;
+    if ((amount > 0) && (self.view.frame.origin.y < 0))
+        [self moveTextFieldsBy:(-amount) inDuration:duration];
+}
+
+- (void)unregisterKeyboardNotifications {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillShowNotification
+                                                  object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillHideNotification
+                                                  object:nil];
+}
+
+
 #pragma mark - UITextField Delegate Methods
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    // Disable HTTP login action
+    // Disable HTTP login action until user provides infos
     [self.httpLoginAction setEnabled:NO];
     return YES;
-}
-
--(void)textFieldDidBeginEditing:(UITextField *)textField
-{
-    if(self.view.frame.size.height > 500) return;
-    
-    NSInteger amount = 0;
-    if (textField == self.userTextField)
-    {
-        amount = -self.topConstraintAmount;
-    }
-    else if (textField == self.passwordTextField)
-    {
-        amount = -self.topConstraintAmount * 2;
-    }
-    
-    [self moveTextFieldsBy:amount];
 }
 
 -(BOOL)textFieldShouldClear:(UITextField *)textField
@@ -771,12 +859,7 @@
         [self.passwordTextField becomeFirstResponder];
 	}
     else if (textField == self.passwordTextField) {
-        // User entered password
-		if(self.view.frame.size.height > 320)
-		{
-			[self moveTextFieldsBy:self.topConstraintAmount];
-		}
-        // Launch login
+        // User entered password —> Launch login
         [self launchLogin];
 	}
 	return YES;
@@ -790,6 +873,7 @@
     }
     return YES;
 }
+
 
 #pragma mark - Utilities
 
@@ -823,17 +907,22 @@
     [[Model sharedInstance] saveToDisk];
 }
 
--(void)moveTextFieldsBy:(NSInteger)amount
+-(void)moveTextFieldsBy:(CGFloat)amount inDuration:(NSTimeInterval)duration
 {
-    self.logoTopConstraint.constant = amount;
-    [UIView animateWithDuration:0.3 animations:^{
+    // 1. move the view's origin up so that the text field that will be hidden come above the keyboard
+    // 2. increase the size of the view so that the area behind the keyboard is covered up.
+    CGRect rect = self.view.frame;
+    rect.origin.y -= amount;
+    rect.size.height += amount;
+    self.view.frame = rect;
+
+    [UIView animateWithDuration:duration animations:^{
         [self.view layoutIfNeeded];
     }];
 }
 
 -(void)dismissKeyboard
 {
-    [self moveTextFieldsBy:self.topConstraintAmount];
     [self.view endEditing:YES];
 }
 
