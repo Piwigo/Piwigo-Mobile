@@ -417,6 +417,11 @@ CGFloat const kRadius = 25.0;
             }
         }
     }
+    
+    // Refresh headers on palette color change
+    if (self.imagesCollection.visibleCells.count > 0) {
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0,2)]];
+    }
 }
 
 -(void)categoriesUpdated

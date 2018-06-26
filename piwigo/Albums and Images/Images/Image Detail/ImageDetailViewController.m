@@ -521,7 +521,6 @@
 {
     ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
 	[removedVC.scrollView.imageView cancelImageDownloadTask];
-//    [removedVC.scrollView.imageView cancelImageRequestOperation];
 	
 	ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
 	view.imagePreviewDelegate = self;
