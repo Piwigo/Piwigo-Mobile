@@ -23,8 +23,12 @@
         self.noImagesLabel = [UILabel new];
         self.noImagesLabel.backgroundColor = [UIColor clearColor];
         self.noImagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.noImagesLabel.numberOfLines = 0;
+        self.noImagesLabel.adjustsFontSizeToFitWidth = NO;
+        self.noImagesLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        self.noImagesLabel.textAlignment = NSTextAlignmentCenter;
         self.noImagesLabel.font = [UIFont piwigoFontBold];
-        self.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+        self.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
 
         [self addSubview:self.noImagesLabel];
         [self addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];

@@ -202,7 +202,19 @@ CGFloat const kRadius = 25.0;
     }
     [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
     [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-
+    
+	// Albums
+    if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
+        [self.imagesCollection reloadData];
+	}
+    
+    // Images
+    self.loadingImages = YES;
+    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+        self.loadingImages = NO;
+        [self.imagesCollection reloadData];
+    }];
+    
     // Refresh image collection if displayImageTitles option changed
     if (self.displayImageTitles != [Model sharedInstance].displayImageTitles) {
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
@@ -355,12 +367,12 @@ CGFloat const kRadius = 25.0;
 -(void)getCategoryData
 {
     // Reload category data
+//    NSLog(@"getCategoryData => getAlbumListForCategory(%ld,YES,NO)", (long)self.categoryId);
     [AlbumService getAlbumListForCategory:self.categoryId
                      usingCacheIfPossible:YES
                           inRecursiveMode:NO
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-                                 if (![Model sharedInstance].loadAllCategoryInfo)
-                                     [self.imagesCollection reloadData];
+                                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
                              }
                                 onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
@@ -372,7 +384,7 @@ CGFloat const kRadius = 25.0;
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-    // Refresh albums collection
+//    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", (long)self.categoryId);
     [AlbumService getAlbumListForCategory:self.categoryId
                      usingCacheIfPossible:NO
                           inRecursiveMode:NO
@@ -387,6 +399,7 @@ CGFloat const kRadius = 25.0;
 
 -(void)refreshShowingCells
 {
+//    NSLog(@"refreshShowingCells…");
     NSArray *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
 
     for(UICollectionViewCell *cell in self.imagesCollection.visibleCells)
@@ -426,7 +439,8 @@ CGFloat const kRadius = 25.0;
 
 -(void)categoriesUpdated
 {
-     // Reload albums collection view
+//    NSLog(@"categoriesUpdated => loadAllImagesOnCompletion…");
+    // Reload albums collection view
      [self.imagesCollection reloadData];
 
      // Images
@@ -1035,7 +1049,7 @@ CGFloat const kRadius = 25.0;
                     // No images ?
                     if (self.loadingImages) {
                         // Currently trying to load images…
-                        header.noImagesLabel.text = NSLocalizedString(@"downloadingImages", "Downloading Images");
+                        header.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
                         return header;
                     }
                     else if (self.categoryId != 0) {
@@ -1055,13 +1069,13 @@ CGFloat const kRadius = 25.0;
 	return view;
 }
 
--(void)didSelectCollectionViewHeader
-{
-	CategorySortViewController *categorySort = [CategorySortViewController new];
-	categorySort.currentCategorySortType = self.currentSortCategory;
-	categorySort.sortDelegate = self;
-	[self.navigationController pushViewController:categorySort animated:YES];
-}
+//-(void)didSelectCollectionViewHeader
+//{
+//    CategorySortViewController *categorySort = [CategorySortViewController new];
+//    categorySort.currentCategorySortType = self.currentSortCategory;
+//    categorySort.sortDelegate = self;
+//    [self.navigationController pushViewController:categorySort animated:YES];
+//}
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
@@ -1090,7 +1104,7 @@ CGFloat const kRadius = 25.0;
                 // No images ?
                 if (self.loadingImages) {
                     // Currently trying to load images…
-                    header = NSLocalizedString(@"downloadingImages", "Downloading Images");
+                    header = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
                 }
                 else if (self.categoryId != 0) {
                     // Not loading —> No images

@@ -23,6 +23,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                                OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+//    NSLog(@"                => getAlbumListForCategory(%ld,%d,%d)", (long)categoryId, cached, recursive);
     // Use cache when "loadAllCategoryInfo" setting is active and category is not the default one
     if (cached && [Model sharedInstance].loadAllCategoryInfo && categoryId != [Model sharedInstance].defaultCategory) {
         if(completion) {
@@ -44,6 +45,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
+//    NSLog(@"                => getAlbumListForCategory(%ld,%@)", (long)categoryId, recursiveString);
     // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
         URLParameters:nil
@@ -60,6 +62,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       // Extract albums data from JSON message
                       NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
 
+//                      NSLog(@"                => %ld albums returned", (long)[albums count]);
                       // Update Categories Data cache
                       [[CategoriesData sharedInstance] replaceAllCategories:albums];
                       
