@@ -334,6 +334,7 @@ typedef enum {
     UITableViewCell *tableViewCell = [UITableViewCell new];
 	switch(indexPath.section)
 	{
+#pragma mark Server
 		case SettingsSectionServer:      // Piwigo Server
 		{
 			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
@@ -1379,7 +1380,7 @@ typedef enum {
         UIAlertController* alert = [UIAlertController
                     alertControllerWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
                     message:NSLocalizedString(@"logoutConfirmation_message", @"Are you sure you want to logout?")
-                    preferredStyle:UIAlertControllerStyleAlert];
+                    preferredStyle:UIAlertControllerStyleActionSheet];
         
         UIAlertAction* cancelAction = [UIAlertAction
                     actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -1412,22 +1413,23 @@ typedef enum {
                            {
                                // Failed, retry ?
                                UIAlertController* alert = [UIAlertController
-                                                           alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
-                                                           message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
-                                                           preferredStyle:UIAlertControllerStyleAlert];
+                                       alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
+                                       message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
+                                       preferredStyle:UIAlertControllerStyleAlert];
                                
                                UIAlertAction* dismissAction = [UIAlertAction
-                                                               actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                                               style:UIAlertActionStyleCancel
-                                                               handler:^(UIAlertAction * action) {}];
-                               
+                                           actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                           style:UIAlertActionStyleCancel
+                                           handler:^(UIAlertAction * action) {}];
+                           
                                UIAlertAction* retryAction = [UIAlertAction
-                                                               actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                                               style:UIAlertActionStyleDestructive
-                                                               handler:^(UIAlertAction * action) {
-                                                                   [self logout];
-                                                               }];
+                                           actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                           style:UIAlertActionStyleDestructive
+                                           handler:^(UIAlertAction * action) {
+                                               [self logout];
+                                           }];
                                
+                               // Add actions
                                [alert addAction:dismissAction];
                                [alert addAction:retryAction];
                                [self presentViewController:alert animated:YES completion:nil];
@@ -1437,8 +1439,18 @@ typedef enum {
                        }];
                     }];
         
+        // Add actions
         [alert addAction:cancelAction];
         [alert addAction:logoutAction];
+        
+        // Determine position of cell in table view
+        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:0 inSection:SettingsSectionLogout];
+        CGRect rectOfCellInTableView = [self.settingsTableView rectForRowAtIndexPath:rowAtIndexPath];
+        
+        // Present list of actions
+        alert.popoverPresentationController.sourceView = self.settingsTableView;
+        alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+        alert.popoverPresentationController.sourceRect = rectOfCellInTableView;
         [self presentViewController:alert animated:YES completion:nil];
 	}
 	else
