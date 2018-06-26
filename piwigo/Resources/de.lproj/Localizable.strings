@@ -113,17 +113,29 @@
 "categorySort_videosOnly" = "Nur Videos";
 "categorySort_imagesOnly" = "Nur Bilder";
 
+// Album selection
+"categorySelection_title" = "Album";
+"categorySelection_titleSub" = "Sub-Albums";
+"categorySelection_root" = "Root Album";
+"categorySelection_action" = "Select an action for this album";
+"categorySelectionHUD_label" = "Retrieving Albums Data…";
+
+// Default album
+"setDefaultCategory_title" = "Default Album";
+"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+
 // Album create
 "createNewAlbum_title" = "Neues Album";
 "createNewAlbum_message" = "Gib einen Namen für dieses Album ein:";
 "createNewAlbum_placeholder" = "Albumname";
+"createNewAlbumComment_placeholder" = "Comment";
 "createNewAlbumHUD_label" = "Erstelle Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Fehler: Album erstellen";
 "createAlbumError_message" = "Erstellen eines neuen Albums fehlgeschlagen";
 
-// Album options (actions)
+// Album options (swipe actions)
 "categoryCellOption_rename" = "Umbenennen";
 "categoryCellOption_move" = "Verschieben";
 "categoryCellOption_delete" = "Löschen";
@@ -138,9 +150,20 @@
 "renameCategoyError_title" = "Umbenennung fehlgeschlagen";
 "renameCategoyError_message" = "Umbenennung Deines Albums fehlgeschlagen";
 
+// Album refresh representative
+"refreshCategoryHUD_label" = "Refreshing Representative…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Refresh Fail";
+"refreshCategoyError_message" = "Failed to refresh your album representative";
+
 // Album delete
 "deleteCategory_title" = "ALBUM LÖSCHEN";
 "deleteCategory_message" = "BIST DU SICHER, DASS DU DAS ALBUM \"%@\" UND DESSEN %@ BILDER LÖSCHEN MÖCHTEST?";
+"deleteCategory_empty" = "Delete Empty Album";
+"deleteCategory_noImages" = "Keep Images";
+"deleteCategory_orphanedImages" = "Delete Orphans";
+"deleteCategory_allImages" = "Delete %@ Images";
 "deleteCategoryConfirm_title" = "Bist du sicher?";
 "deleteCategoryConfirm_message" = "Gib bitte die Anzahl der Bilder an um dieses Album zu löschen. Anzahl der Bilder: %@";
 "deleteCategoryConfirm_deleteButton" = "LÖSCHEN";
@@ -158,14 +181,14 @@
 "moveCategory_message" = "Möchtest Du wirklich das Album \"%@\" in das Album \"%@\" verschieben?";
 "moveCategoryHUD_moving" = "Album wird verschoben…";
 
-// album move — Errors
+// Album move — Errors
 "moveCategoryError_title" = "Verschieben fehlgeschlagen";
 "moveCategoryError_message" = "Fehler beim Verschieben Deines Albums";
 
 // Album set image thumbnail
-"categorySelection_select" = "Album auswählen";
-"categorySelection_current" = "Select the current album for this image";
-"categorySelection_other" = "or select another album for this image";
+"categorySelection_select" = "Select Album";
+"categorySelection_current" = "Wähle das aktuelle Album für dieses Bild";
+"categorySelection_other" = "oder wähle ein anderes Album für dieses Bild";
 "categoryImageSet_title" = "Miniaturbild setzen";
 "categoryImageSet_message" = "Möchtest Du wirklich dieses Miniaturbild für das Album \"%@\" festlegen?";
 "categoryImageSetHUD_updating" = "Album Miniaturbild wird aktualisiert…";
@@ -231,6 +254,12 @@
 "tagsHeader_selected" = "Ausgewählt";
 "tagsHeader_all" = "Alle";
 
+// Image select
+"selectImages" = "Select Images";
+"selectImageSelected" = "1 Image Selected";
+"selectImagesSelected" = "%@ Images Selected";
+"selectAll" = "Alle";
+
 // Image delete
 "deleteImage_delete" = "Löschen";
 "deleteImageProgress_title" = "Löschen von %@%% erledigt";
@@ -268,12 +297,14 @@
 
 // Images upload
 "categoryUpload_chooseAlbum" = "Wähle ein Album zum Hochladen der Bilder";
-"categoryUpload_LocalAlbums" = "Local Albums";
+"categoryUpload_LocalAlbums" = "Lokale Alben";
 "categoryUpload_chooseLocalAlbum" = "Wähle ein Album um Bilder zu erhalten";
-"categoryUpload_iCloudAlbums" = "iCloud Albums";
+"categoryUpload_iCloudAlbums" = "iCloud Alben";
 "categoryUpload_chooseiCloudAlbum" = "Wähle ein iCloud Album um Bilder zu erhalten";
 "categoyUpload_loadSubCategories" = "Laden";
-"selectAll" = "Alle";
+"categoryUpload_images" = "Upload Images";
+"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_defaultAlbum" = "Set as Default Album";
 
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Autor:";
@@ -319,7 +350,7 @@
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Photos library";
+"localAlbums" = "Foto-Bibliothek";
 
 "localImageSort_newest" = "Neueste";
 "localImageSort_oldest" = "Älteste";
@@ -339,7 +370,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
-"settingsHeader_notSecure" = "Website Not Secure!";
+"settingsHeader_notSecure" = "Webseite nicht sicher!";
 "settings_server" = "Webadresse";
 "settings_username" = "Benutzername";
 "settings_notLoggedIn" = " -Nicht eingeloggt- ";

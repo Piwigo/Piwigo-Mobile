@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.0_text" = "Version 2.2\n\n• Detects Photos library changes\n• Bug fixes and other minor improvements\n________________________________________\n\n";
+"v2.2.0_text" = "Version 2.2\n\n• Sub-album creations from any album\n• Improved management with Default Album\n• Improved albums presentation on iPad (and iPhone)\n• Detection of Photo Library changes\n• Minor bug fixes and improvement of the interface\n________________________________________\n\n";
 
 "v2.1.9_text" = "الإصدار 2.1.9\n14 مايو 2018\n\n• اصلاحات الشوائب\n________________________________________\n\n";
 

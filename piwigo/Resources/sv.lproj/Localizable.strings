@@ -113,17 +113,29 @@
 "categorySort_videosOnly" = "Endast filmer";
 "categorySort_imagesOnly" = "Endast bilder";
 
+// Album selection
+"categorySelection_title" = "Album";
+"categorySelection_titleSub" = "Sub-Albums";
+"categorySelection_root" = "Root Album";
+"categorySelection_action" = "Select an action for this album";
+"categorySelectionHUD_label" = "Retrieving Albums Data…";
+
+// Default album
+"setDefaultCategory_title" = "Default Album";
+"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+
 // Album create
 "createNewAlbum_title" = "Nytt Album";
 "createNewAlbum_message" = "Ange ett namn för albumet:";
 "createNewAlbum_placeholder" = "Albumnamn";
+"createNewAlbumComment_placeholder" = "Comment";
 "createNewAlbumHUD_label" = "Skapar Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Fel vid albumskapande";
 "createAlbumError_message" = "Kunde inte skapa nytt album";
 
-// Album options (actions)
+// Album options (swipe actions)
 "categoryCellOption_rename" = "Byt namn";
 "categoryCellOption_move" = "Flytta";
 "categoryCellOption_delete" = "Radera";
@@ -138,9 +150,20 @@
 "renameCategoyError_title" = "Misslyckat namnbyte";
 "renameCategoyError_message" = "Kunde inte byta namn på ditt album";
 
+// Album refresh representative
+"refreshCategoryHUD_label" = "Refreshing Representative…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Refresh Fail";
+"refreshCategoyError_message" = "Failed to refresh your album representative";
+
 // Album delete
 "deleteCategory_title" = "RADERA ALBUM";
 "deleteCategory_message" = "VILL DU VERKLIGEN TA BORT ALBUMET ”%@” OCH ALLA %@ BILDERNA?";
+"deleteCategory_empty" = "Delete Empty Album";
+"deleteCategory_noImages" = "Keep Images";
+"deleteCategory_orphanedImages" = "Delete Orphans";
+"deleteCategory_allImages" = "Delete %@ Images";
 "deleteCategoryConfirm_title" = "Är du säker?";
 "deleteCategoryConfirm_message" = "Ange antalet bilder för att kunna radera detta album. Antal bilder: %@";
 "deleteCategoryConfirm_deleteButton" = "RADERA";
@@ -158,12 +181,12 @@
 "moveCategory_message" = "Är du säker du vill flytta ”%@” in i album ”%@”?";
 "moveCategoryHUD_moving" = "Flyttar Album…";
 
-// album move — Errors
+// Album move — Errors
 "moveCategoryError_title" = "Flytt misslyckades";
 "moveCategoryError_message" = "Kunde inte flytta ditt album";
 
 // Album set image thumbnail
-"categorySelection_select" = "Välj ett album";
+"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Sätt miniatyrbild";
@@ -231,6 +254,12 @@
 "tagsHeader_selected" = "Valda";
 "tagsHeader_all" = "Alla";
 
+// Image select
+"selectImages" = "Select Images";
+"selectImageSelected" = "1 Image Selected";
+"selectImagesSelected" = "%@ Images Selected";
+"selectAll" = "Alla";
+
 // Image delete
 "deleteImage_delete" = "Radera";
 "deleteImageProgress_title" = "Radering av %@%% utförd";
@@ -273,7 +302,9 @@
 "categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Välj ett iCloud-album att hämta bilder från";
 "categoyUpload_loadSubCategories" = "ladda";
-"selectAll" = "Alla";
+"categoryUpload_images" = "Upload Images";
+"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_defaultAlbum" = "Set as Default Album";
 
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Författare:";

@@ -113,17 +113,29 @@
 "categorySort_videosOnly" = "動画のみ";
 "categorySort_imagesOnly" = "画像のみ";
 
+// Album selection
+"categorySelection_title" = "Album";
+"categorySelection_titleSub" = "Sub-Albums";
+"categorySelection_root" = "Root Album";
+"categorySelection_action" = "Select an action for this album";
+"categorySelectionHUD_label" = "Retrieving Albums Data…";
+
+// Default album
+"setDefaultCategory_title" = "Default Album";
+"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+
 // Album create
 "createNewAlbum_title" = "新規アルバム";
 "createNewAlbum_message" = "このアルバムの名称を入力してください：";
 "createNewAlbum_placeholder" = "アルバムの名称";
+"createNewAlbumComment_placeholder" = "Comment";
 "createNewAlbumHUD_label" = "アルバム作成中...";
 
 // Album create — Errors
 "createAlbumError_title" = "アルバム作成エラー";
 "createAlbumError_message" = "新規アルバムの作成に失敗しました";
 
-// Album options (actions)
+// Album options (swipe actions)
 "categoryCellOption_rename" = "名称の変更";
 "categoryCellOption_move" = "移動";
 "categoryCellOption_delete" = "削除";
@@ -138,9 +150,20 @@
 "renameCategoyError_title" = "名称の変更に失敗しました";
 "renameCategoyError_message" = "アルバム名称の変更に失敗しました";
 
+// Album refresh representative
+"refreshCategoryHUD_label" = "Refreshing Representative…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Refresh Fail";
+"refreshCategoyError_message" = "Failed to refresh your album representative";
+
 // Album delete
 "deleteCategory_title" = "アルバムを削除します";
 "deleteCategory_message" = "アルバム「%@」と%@個の画像すべてを本当に削除しますか？";
+"deleteCategory_empty" = "Delete Empty Album";
+"deleteCategory_noImages" = "Keep Images";
+"deleteCategory_orphanedImages" = "Delete Orphans";
+"deleteCategory_allImages" = "Delete %@ Images";
 "deleteCategoryConfirm_title" = "本当によろしいですか？";
 "deleteCategoryConfirm_message" = "このアルバムを削除するには画像の数を入力して下さい。画像の数：%@";
 "deleteCategoryConfirm_deleteButton" = "削除";
@@ -158,12 +181,12 @@
 "moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
 "moveCategoryHUD_moving" = "アルバムを移動中...";
 
-// album move — Errors
+// Album move — Errors
 "moveCategoryError_title" = "移動に失敗しました";
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
 // Album set image thumbnail
-"categorySelection_select" = "アルバムを選択";
+"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "画像サムネイルを設定";
@@ -231,6 +254,12 @@
 "tagsHeader_selected" = "選択済み";
 "tagsHeader_all" = "すべて";
 
+// Image select
+"selectImages" = "Select Images";
+"selectImageSelected" = "1 Image Selected";
+"selectImagesSelected" = "%@ Images Selected";
+"selectAll" = "すべて";
+
 // Image delete
 "deleteImage_delete" = "削除";
 "deleteImageProgress_title" = "%@%% の削除が済みました";
@@ -273,7 +302,9 @@
 "categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "画像を取得するICloud アルバムを選択します";
 "categoyUpload_loadSubCategories" = "読み込む";
-"selectAll" = "すべて";
+"categoryUpload_images" = "Upload Images";
+"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_defaultAlbum" = "Set as Default Album";
 
 "imageUploadDetails_title" = "題名：";
 "imageUploadDetails_author" = "作成者：";

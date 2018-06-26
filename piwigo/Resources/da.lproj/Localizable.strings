@@ -113,17 +113,29 @@
 "categorySort_videosOnly" = "Kun Videoer";
 "categorySort_imagesOnly" = "Kun Billeder";
 
+// Album selection
+"categorySelection_title" = "Album";
+"categorySelection_titleSub" = "Sub-Albums";
+"categorySelection_root" = "Root Album";
+"categorySelection_action" = "Select an action for this album";
+"categorySelectionHUD_label" = "Retrieving Albums Data…";
+
+// Default album
+"setDefaultCategory_title" = "Default Album";
+"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+
 // Album create
 "createNewAlbum_title" = "Nyt Album";
 "createNewAlbum_message" = "Indtast navm for dette album:";
 "createNewAlbum_placeholder" = "Navn på album";
+"createNewAlbumComment_placeholder" = "Comment";
 "createNewAlbumHUD_label" = "Opretter album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Opret Album Fejl";
 "createAlbumError_message" = "Kunne ikke oprette nyt album";
 
-// Album options (actions)
+// Album options (swipe actions)
 "categoryCellOption_rename" = "Omdøb";
 "categoryCellOption_move" = "Flyt";
 "categoryCellOption_delete" = "Slet";
@@ -138,9 +150,20 @@
 "renameCategoyError_title" = "Kunne ikke omdøbe album";
 "renameCategoyError_message" = "Kunne ikke omdøbe dit album";
 
+// Album refresh representative
+"refreshCategoryHUD_label" = "Refreshing Representative…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Refresh Fail";
+"refreshCategoyError_message" = "Failed to refresh your album representative";
+
 // Album delete
 "deleteCategory_title" = "SLET ALBUM";
 "deleteCategory_message" = "ER DU SIKKER PÅ DU VIL SLETTE ALBUM \"%@\" OG ALLE %@ BILLEDER?";
+"deleteCategory_empty" = "Delete Empty Album";
+"deleteCategory_noImages" = "Keep Images";
+"deleteCategory_orphanedImages" = "Delete Orphans";
+"deleteCategory_allImages" = "Delete %@ Images";
 "deleteCategoryConfirm_title" = "Er du sikker?";
 "deleteCategoryConfirm_message" = "Angiv antallet af billeder for at slette dette album. Antal billeder: %@";
 "deleteCategoryConfirm_deleteButton" = "SLET";
@@ -158,12 +181,12 @@
 "moveCategory_message" = "Er du sikker på du vil flytte \"%@\" til albummet \"%@\"?";
 "moveCategoryHUD_moving" = "Flytter album…";
 
-// album move — Errors
+// Album move — Errors
 "moveCategoryError_title" = "Kunne ikke flytte album";
 "moveCategoryError_message" = "Kunne ikke flytte dit album";
 
 // Album set image thumbnail
-"categorySelection_select" = "Vælg Album";
+"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Vælg Miniaturebilledet";
@@ -231,6 +254,12 @@
 "tagsHeader_selected" = "Valgte";
 "tagsHeader_all" = "Alle";
 
+// Image select
+"selectImages" = "Select Images";
+"selectImageSelected" = "1 Image Selected";
+"selectImagesSelected" = "%@ Images Selected";
+"selectAll" = "Alle";
+
 // Image delete
 "deleteImage_delete" = "Slet";
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";
@@ -273,7 +302,9 @@
 "categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Vælg et iCloud album at hente biller fra";
 "categoyUpload_loadSubCategories" = "indlæs";
-"selectAll" = "Alle";
+"categoryUpload_images" = "Upload Images";
+"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_defaultAlbum" = "Set as Default Album";
 
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Forfatter:";

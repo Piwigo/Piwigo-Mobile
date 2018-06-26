@@ -113,17 +113,29 @@
 "categorySort_videosOnly" = "Hanya Video";
 "categorySort_imagesOnly" = "Hanya Gambar";
 
+// Album selection
+"categorySelection_title" = "Album";
+"categorySelection_titleSub" = "Sub-Albums";
+"categorySelection_root" = "Root Album";
+"categorySelection_action" = "Select an action for this album";
+"categorySelectionHUD_label" = "Retrieving Albums Data…";
+
+// Default album
+"setDefaultCategory_title" = "Default Album";
+"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+
 // Album create
 "createNewAlbum_title" = "Album Baru";
 "createNewAlbum_message" = "Masukkan nama untuk album ini:";
 "createNewAlbum_placeholder" = "Nama Album";
+"createNewAlbumComment_placeholder" = "Comment";
 "createNewAlbumHUD_label" = "Membuat Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Galat Membuat Album";
 "createAlbumError_message" = "Gagal untuk membuat album baru";
 
-// Album options (actions)
+// Album options (swipe actions)
 "categoryCellOption_rename" = "Ganti Nama";
 "categoryCellOption_move" = "Pindah";
 "categoryCellOption_delete" = "Hapus";
@@ -138,9 +150,20 @@
 "renameCategoyError_title" = "Gagal Mengganti Nama";
 "renameCategoyError_message" = "Gagal untuk mengganti nama album Anda";
 
+// Album refresh representative
+"refreshCategoryHUD_label" = "Refreshing Representative…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Refresh Fail";
+"refreshCategoyError_message" = "Failed to refresh your album representative";
+
 // Album delete
 "deleteCategory_title" = "HAPUS ALBUM";
 "deleteCategory_message" = "ANDA YAKIN INGIN MENGHAPUS ALBUM \"%@\" DAN SEMUA %@ GAMBAR?";
+"deleteCategory_empty" = "Delete Empty Album";
+"deleteCategory_noImages" = "Keep Images";
+"deleteCategory_orphanedImages" = "Delete Orphans";
+"deleteCategory_allImages" = "Delete %@ Images";
 "deleteCategoryConfirm_title" = "Anda yakin?";
 "deleteCategoryConfirm_message" = "Masukkan jumlah gambar untuk menghapus album ini. Jumlah gambar: %@";
 "deleteCategoryConfirm_deleteButton" = "HAPUS";
@@ -158,12 +181,12 @@
 "moveCategory_message" = "Anda yakin ingin memindahkan \"%@\" ke dalam album \"%@\"?";
 "moveCategoryHUD_moving" = "Memindahkan Album…";
 
-// album move — Errors
+// Album move — Errors
 "moveCategoryError_title" = "Gagal Memindahkan";
 "moveCategoryError_message" = "Gagal untuk memindahkan album Anda";
 
 // Album set image thumbnail
-"categorySelection_select" = "Pilih Album";
+"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Atur Gambar untuk Gambar Mini";
@@ -231,6 +254,12 @@
 "tagsHeader_selected" = "Dipilih";
 "tagsHeader_all" = "Semua";
 
+// Image select
+"selectImages" = "Select Images";
+"selectImageSelected" = "1 Image Selected";
+"selectImagesSelected" = "%@ Images Selected";
+"selectAll" = "Semua";
+
 // Image delete
 "deleteImage_delete" = "Hapus";
 "deleteImageProgress_title" = "Menghapus %@%% Selesai";
@@ -273,7 +302,9 @@
 "categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Pilih album iCloud untuk mendapatkan gambar dari";
 "categoyUpload_loadSubCategories" = "muat";
-"selectAll" = "Semua";
+"categoryUpload_images" = "Upload Images";
+"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_defaultAlbum" = "Set as Default Album";
 
 "imageUploadDetails_title" = "Judul:";
 "imageUploadDetails_author" = "Penulis:";

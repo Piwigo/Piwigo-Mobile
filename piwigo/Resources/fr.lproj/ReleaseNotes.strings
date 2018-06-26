@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.0_text" = "Version 2.2\n\n• Détecte les changements dans la bibliothèque de Photos\n• Corrections de bugs et améliorations mineures\n________________________________________\n\n";
+"v2.2.0_text" = "Version 2.2\n\n• Création de sous-albums à partir de n'importe quel album\n• Gestion améliorée avec l'Album par Défaut\n• Amélioration de la présentation des albums sur iPad (et iPhone)\n• Détection des modifications de la photothèque de l'app Photos\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
 
 "v2.1.9_text" = "Version 2.1.9\n14 Mai 2018\n\n• Correction de bugs\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 

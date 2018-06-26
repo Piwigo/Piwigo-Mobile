@@ -113,17 +113,29 @@
 "categorySort_videosOnly" = "Vidéos Uniquement";
 "categorySort_imagesOnly" = "Images Uniquement";
 
+// Album selection
+"categorySelection_title" = "Album";
+"categorySelection_titleSub" = "Sous-Albums";
+"categorySelection_root" = "Album à la Racince";
+"categorySelection_action" = "Choisissez une action pour cet album";
+"categorySelectionHUD_label" = "Récupération des Données d'Albums…";
+
+// Default album
+"setDefaultCategory_title" = "Album par Défaut";
+"setDefaultCategory_message" = "Etes-vous sûr de vouloir définir l'album \"%@\" comme Album par Défaut ?";
+
 // Album create
 "createNewAlbum_title" = "Nouvel Album";
 "createNewAlbum_message" = "Entrez un nom pour cet album :";
 "createNewAlbum_placeholder" = "Nom de l’Album";
+"createNewAlbumComment_placeholder" = "Commentaire";
 "createNewAlbumHUD_label" = "Création de l'Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Echec de la Création d'Album";
 "createAlbumError_message" = "Impossible de créer un nouvel album";
 
-// Album options (actions)
+// Album options (swipe actions)
 "categoryCellOption_rename" = "Renomer";
 "categoryCellOption_move" = "Déplacer";
 "categoryCellOption_delete" = "Effacer";
@@ -138,9 +150,20 @@
 "renameCategoyError_title" = "Echec du Changement";
 "renameCategoyError_message" = "Impossible de renommer votre album";
 
+// Album refresh representative
+"refreshCategoryHUD_label" = "Rafraichir l'Image d'Album…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Echec du Rafraichissement";
+"refreshCategoyError_message" = "Le rafraichissement de l'image d'album a échoué";
+
 // Album delete
 "deleteCategory_title" = "EFFACER L'ALBUM";
 "deleteCategory_message" = "ÊTES-VOUS SÛR DE VOULOIR SUPPRIMER L’ALBUM \"%@\" ET LES %@ IMAGES ?";
+"deleteCategory_empty" = "Effacer Album Vide";
+"deleteCategory_noImages" = "Conserver les Images";
+"deleteCategory_orphanedImages" = "Effacer Images Orphelines";
+"deleteCategory_allImages" = "Supprimer %@ Images";
 "deleteCategoryConfirm_title" = "Etes-vous sûr ?";
 "deleteCategoryConfirm_message" = "Veuillez entrer le nombre d’images afin de supprimer cet album. Nombre d’images : %@";
 "deleteCategoryConfirm_deleteButton" = "SUPPRIMER";
@@ -158,7 +181,7 @@
 "moveCategory_message" = "Êtes-vous certain de vouloir déplacer \"%@\" dans l’album \"%@\" ?";
 "moveCategoryHUD_moving" = "Déplacement de l'Album…";
 
-// album move — Errors
+// Album move — Errors
 "moveCategoryError_title" = "Echec";
 "moveCategoryError_message" = "Impossible de déplacer votre album";
 
@@ -231,13 +254,19 @@
 "tagsHeader_selected" = "Sélectionné";
 "tagsHeader_all" = "Tous";
 
+// Image select
+"selectImages" = "Sélectionner des Images";
+"selectImageSelected" = "1 Image Sélectionnée";
+"selectImagesSelected" = "%@ Images Sélectionnées";
+"selectAll" = "Tout";
+
 // Image delete
 "deleteImage_delete" = "Supprimer";
 "deleteImageProgress_title" = "Suppression %@%%";
 
 "deleteSingleImage_title" = "Supprimer l’Image";
 "deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ? Opération irréversible !";
-"deleteSeveralImages_title" = "Supprimer les Images";
+"deleteSeveralImages_title" = "Supprimer %@ Images";
 "deleteSeveralImages_message" = "Êtes-vous sûr de vouloir supprimer la sélection de %@ images ? Opération irréversible !";
 
 "deleteImageFail_title" = "Echec de la Suppression";
@@ -246,7 +275,7 @@
 // Image download
 "downloadSingleImage_title" = "Télécharger Image";
 "downloadSingleImage_confirmation" = "Êtes-vous sûr de vouloir télécharger la sélection de %@ images ?";
-"downloadSeveralImages_title" = "Télécharger Images";
+"downloadSeveralImages_title" = "Télécharger %@ Images";
 "downloadSeveralImage_confirmation" = "Êtes-vous sûr de vouloir télécharger la sélection de %@ images ?";
 
 "downloadingImage" = "Téléchargement d’Image";
@@ -267,13 +296,15 @@
 "videoSaveError_message" = "Impossible d’enregistrer la vidéo. Erreur : %@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "Sélectionnez l'album Piwigo qui recevra les images";
+"categoryUpload_chooseAlbum" = "Sélectionnez un sous-album Piwigo qui recevra les images";
 "categoryUpload_LocalAlbums" = "Albums Locaux";
 "categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les images à envoyer";
 "categoryUpload_iCloudAlbums" = "Albums iCloud";
 "categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album iCloud qui contient les images à envoyer";
 "categoyUpload_loadSubCategories" = "télécharge";
-"selectAll" = "Tout";
+"categoryUpload_images" = "Envoyer des Images";
+"categoryUpload_subAlbum" = "Créer un sous-album";
+"categoryUpload_defaultAlbum" = "Définir comme Album par Défaut";
 
 "imageUploadDetails_title" = "Titre :";
 "imageUploadDetails_author" = "Auteur :";
