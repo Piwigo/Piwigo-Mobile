@@ -566,14 +566,14 @@
     
     UIAlertAction* keepImagesAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"deleteCategory_noImages", @"Keep Images")
-        style:UIAlertActionStyleDefault
+        style:UIAlertActionStyleDestructive
         handler:^(UIAlertAction * action) {
             [self confirmCategoryDeletionWithNumberOfImages:self.albumData.totalNumberOfImages deletionMode:kCategoryDeletionModeNone andViewController:topViewController];
     }];
 
     UIAlertAction* orphanImagesAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"deleteCategory_orphanedImages", @"Delete Orphans")
-        style:UIAlertActionStyleDefault
+        style:UIAlertActionStyleDestructive
         handler:^(UIAlertAction * action) {
             [self confirmCategoryDeletionWithNumberOfImages:self.albumData.totalNumberOfImages deletionMode:kCategoryDeletionModeOrphaned andViewController:topViewController];
     }];
