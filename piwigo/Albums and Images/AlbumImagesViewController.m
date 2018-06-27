@@ -18,7 +18,7 @@
 #import "ImageDownloadView.h"
 #import "SortHeaderCollectionReusableView.h"
 #import "NoImagesHeaderCollectionReusableView.h"
-#import "CategorySortViewController.h"
+//#import "CategorySortViewController.h"
 #import "CategoryImageSort.h"
 #import "LoadingView.h"
 #import "UICountingLabel.h"
@@ -190,9 +190,6 @@ CGFloat const kRadius = 25.0;
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 
-    // Set navigation bar buttons
-    [self loadNavButtons];
-
     // Tab bar appearance
     self.tabBarController.delegate = self;
     self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
@@ -212,6 +209,10 @@ CGFloat const kRadius = 25.0;
     // Images
     self.loadingImages = YES;
     [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+
+        // Set navigation bar buttons
+        [self loadNavButtons];
+
         self.loadingImages = NO;
         [self.imagesCollection reloadData];
     }];
@@ -226,6 +227,9 @@ CGFloat const kRadius = 25.0;
             }];
         }
     }
+
+    // Set navigation bar buttons
+    [self loadNavButtons];
 }
 
 -(void)viewDidAppear:(BOOL)animated

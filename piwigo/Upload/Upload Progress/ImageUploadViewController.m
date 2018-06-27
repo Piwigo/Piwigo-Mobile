@@ -20,6 +20,9 @@
 @property (nonatomic, strong) UITableView *uploadImagesTableView;
 @property (nonatomic, strong) NSMutableArray *imagesToEdit;
 
+@property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
+
 @end
 
 @implementation ImageUploadViewController
@@ -38,17 +41,23 @@
         self.uploadImagesTableView.backgroundColor = [UIColor clearColor];
 		self.uploadImagesTableView.delegate = self;
 		self.uploadImagesTableView.dataSource = self;
-		UINib *cellNib = [UINib nibWithNibName:@"ImageUploadCell" bundle:nil];
-		[self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:@"Cell"];
-		[self.view addSubview:self.uploadImagesTableView];
+
+        UINib *cellNib = [UINib nibWithNibName:@"ImageUploadCell" bundle:nil];
+        [self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:@"Cell"];
+
+        [self.view addSubview:self.uploadImagesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.uploadImagesTableView]];
 		
 		[ImageUploadProgressView sharedInstance].delegate = self;
-		
 		if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 		{
 			[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
-		}
+        }
+        
+        // Bar buttons
+        self.uploadBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"imageUploadDetailsButton_title", @"Upload")
+            style:UIBarButtonItemStylePlain target:self action:@selector(startUpload)];
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
 	}
 	return self;
 }
@@ -71,14 +80,7 @@
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 
     // Navigation bar buttons
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(cancel)];
-	self.navigationItem.leftBarButtonItem = back;
-	
-	UIBarButtonItem *upload = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"imageUploadDetailsButton_title", @"Upload")
-															   style:UIBarButtonItemStylePlain
-															  target:self
-															  action:@selector(startUpload)];
-	self.navigationItem.rightBarButtonItem = upload;
+    self.navigationItem.rightBarButtonItem = self.uploadBarButton;
 	
     // Table view
     self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
@@ -86,25 +88,37 @@
     
     // Progress bar
     [[ImageUploadProgressView sharedInstance] changePaletteMode];
-    
     if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 	{
 		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
 	}
 }
 
--(void)cancel
-{
-	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
-}
-
 -(void)startUpload
 {
-	[[ImageUploadManager sharedInstance] addImages:self.imagesToEdit];
+	// Launch the upload
+    [[ImageUploadManager sharedInstance] addImages:self.imagesToEdit];
+    
+    // Display the progress bar
 	[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
+    
+    // Empty list of images and refresh table to show progress
 	self.imagesToEdit = [NSMutableArray new];
 	[self.uploadImagesTableView reloadData];
+    
+    // Update navigation items
+    [self.navigationItem setHidesBackButton:YES];
+    self.navigationItem.rightBarButtonItem = self.doneBarButton;
 }
+
+-(void)quitUpload
+{
+    // Leave Upload action and return to Albums and Images
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+#pragma mark - Image Management
 
 -(void)setImagesSelected:(NSArray *)imagesSelected
 {
@@ -138,19 +152,8 @@
 	}
 }
 
--(void)updateImage:(ImageUpload*)image withProgress:(CGFloat)progress
-{
-	// the image being uploaded is always the first object in the array
-	ImageUploadTableViewCell *cell = (ImageUploadTableViewCell*)[self.uploadImagesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
-	cell.imageProgress = progress;
-}
 
-#pragma mark — UITableView Methods
-
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-	return 2;
-}
+#pragma mark - UITableView - Header
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -177,11 +180,11 @@
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	// Header label
-	UILabel *headerLabel = [UILabel new];
-	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    // Header label
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontSmall];
-	headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -194,25 +197,33 @@
             headerLabel.text = NSLocalizedString(@"imageUploadDetailsUploading_title", @"Images that are Being Uploaded");
             break;
     }
-
+    
     // Header view
     UIView *header = [[UIView alloc] init];
     header.backgroundColor = [UIColor clearColor];
-	[header addSubview:headerLabel];
-	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
     if (@available(iOS 11, *)) {
-        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
-                                                                       options:kNilOptions
-                                                                       metrics:nil
-                                                                         views:@{@"header" : headerLabel}]];
+        [header addConstraints:[NSLayoutConstraint
+                                constraintsWithVisualFormat:@"|-[header]-|"
+                                options:kNilOptions metrics:nil
+                                views:@{@"header" : headerLabel}]];
     } else {
-        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
-                                                                       options:kNilOptions
-                                                                       metrics:nil
-                                                                         views:@{@"header" : headerLabel}]];
+        [header addConstraints:[NSLayoutConstraint
+                                constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                options:kNilOptions metrics:nil
+                                views:@{@"header" : headerLabel}]];
     }
-	
-	return header;
+    
+    return header;
+}
+
+
+#pragma mark - UITableView - Rows
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+	return 2;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -222,9 +233,10 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	if(self.imagesToEdit.count == 0 && [ImageUploadManager sharedInstance].imageUploadQueue.count == 0)
+	if(self.imagesToEdit.count == 0 &&
+       [ImageUploadManager sharedInstance].imageUploadQueue.count == 0)
 	{
-		[self cancel];
+		[self quitUpload];
 	}
 	if(section == 0)
 	{
@@ -259,6 +271,9 @@
 	return cell;
 }
 
+
+#pragma mark - UITableViewDelegate Methods
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -282,7 +297,7 @@
 	return YES;
 }
 
-#pragma mark — MGSwipeTableCellDelegate Methods
+#pragma mark - MGSwipeTableCellDelegate Methods
 
 -(BOOL)swipeTableCell:(MGSwipeTableCell *)cell tappedButtonAtIndex:(NSInteger)index
              direction:(MGSwipeDirection)direction fromExpansion:(BOOL) fromExpansion
@@ -293,7 +308,6 @@
     if (direction == MGSwipeDirectionRightToLeft && index == 0) {
         // Delete button
         NSIndexPath *indexPath = [self.uploadImagesTableView indexPathForCell:cell];
-//        NSLog(@"Delete button pressed at indexPath: %@",indexPath);
         if(indexPath.section == 0)      // Image selected for upload
         {
             // Remove image not in upload queue
@@ -323,7 +337,7 @@
 }
 
 
-#pragma mark — ImageUploadProgressDelegate Methods
+#pragma mark - ImageUploadProgressDelegate Methods
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
@@ -346,8 +360,15 @@
 	[self.uploadImagesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+-(void)updateImage:(ImageUpload*)image withProgress:(CGFloat)progress
+{
+    // The image being uploaded is always the first object in the array
+    ImageUploadTableViewCell *cell = (ImageUploadTableViewCell*)[self.uploadImagesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+    cell.imageProgress = progress;
+}
 
-#pragma mark — EditImageDetailsDelegate Methods
+
+#pragma mark - EditImageDetailsDelegate Methods
 
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {

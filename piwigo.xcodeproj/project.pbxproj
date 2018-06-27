@@ -415,6 +415,68 @@
 			path = Headers;
 			sourceTree = "<group>";
 		};
+		AD7B4C2220E360C3003E403A /* Album Data */ = {
+			isa = PBXGroup;
+			children = (
+				D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */,
+				D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */,
+				D818E9F91A74C18500733991 /* AlbumService.h */,
+				D818E9FA1A74C18500733991 /* AlbumService.m */,
+			);
+			path = "Album Data";
+			sourceTree = "<group>";
+		};
+		AD7B4C2320E361AE003E403A /* Progress View */ = {
+			isa = PBXGroup;
+			children = (
+				D8083AA41A82905B00A95605 /* ImageUploadProgressView.h */,
+				D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */,
+			);
+			path = "Progress View";
+			sourceTree = "<group>";
+		};
+		AD7B4C2420E361C6003E403A /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				D8C71A4A1A848B070048BA33 /* ImageUploadTableViewCell.h */,
+				D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */,
+				D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		AD7B4C2520E36328003E403A /* Pick Photos Album */ = {
+			isa = PBXGroup;
+			children = (
+				D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */,
+				D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */,
+			);
+			path = "Pick Photos Album";
+			sourceTree = "<group>";
+		};
+		AD7B4C2620E3638A003E403A /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
+				D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		AD7B4C2720E3639B003E403A /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */,
+				D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */,
+				D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */,
+				D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */,
+				D8B9BC7A1A95B1F600C1B0E5 /* NotUploadedYet.h */,
+				D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */,
+				D8F113541A9E403E000EC0A6 /* Loading View */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		ADE535901F65C01000372CBD /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -490,13 +552,10 @@
 		D8083AA71A82905F00A95605 /* Upload Progress */ = {
 			isa = PBXGroup;
 			children = (
-				D8083AA41A82905B00A95605 /* ImageUploadProgressView.h */,
-				D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */,
 				D8C71A451A8489CF0048BA33 /* ImageUploadViewController.h */,
 				D8C71A461A8489CF0048BA33 /* ImageUploadViewController.m */,
-				D8C71A4A1A848B070048BA33 /* ImageUploadTableViewCell.h */,
-				D8C71A4B1A848B070048BA33 /* ImageUploadTableViewCell.m */,
-				D8C71A481A848AC80048BA33 /* ImageUploadCell.xib */,
+				AD7B4C2420E361C6003E403A /* Cells */,
+				AD7B4C2320E361AE003E403A /* Progress View */,
 			);
 			path = "Upload Progress";
 			sourceTree = "<group>";
@@ -510,7 +569,7 @@
 			path = "Album Move";
 			sourceTree = "<group>";
 		};
-		D818E9F51A74BF1100733991 /* Album and Image Collection */ = {
+		D818E9F51A74BF1100733991 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				D818EA001A74C7BA00733991 /* AlbumTableViewCell.h */,
@@ -519,11 +578,8 @@
 				D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */,
 				D8D3F7221A785E1B00AEA7F1 /* ImageCollectionViewCell.h */,
 				D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */,
-				D8D3F71E1A785DF800AEA7F1 /* AlbumImagesViewController.h */,
-				D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */,
-				AD7B4C2120E0E0AC003E403A /* Headers */,
 			);
-			path = "Album and Image Collection";
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */ = {
@@ -599,7 +655,6 @@
 				D8BDCB5F1A6F6B4200D106A8 /* Albums and Images */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D89045B31A9469FF00A306FE /* Tags */,
-				D8F113541A9E403E000EC0A6 /* Loading View */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
 				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
@@ -753,52 +808,36 @@
 			path = Tags;
 			sourceTree = "<group>";
 		};
-		D8A5014A1A7B3D4200C04C17 /* Pick Album */ = {
+		D8A5014A1A7B3D4200C04C17 /* Pick Piwigo Album */ = {
 			isa = PBXGroup;
 			children = (
 				D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */,
 				D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */,
 			);
-			path = "Pick Album";
+			path = "Pick Piwigo Album";
 			sourceTree = "<group>";
 		};
 		D8A5014E1A7B432600C04C17 /* Local Images */ = {
 			isa = PBXGroup;
 			children = (
-				D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */,
-				D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */,
 				D8BDCB651A6F6BEA00D106A8 /* UploadViewController.h */,
 				D8BDCB661A6F6BEA00D106A8 /* UploadViewController.m */,
-				D8D3F75F1A7A08E300AEA7F1 /* LocalImageCollectionViewCell.h */,
-				D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */,
-				D8D3F75C1A7A011A00AEA7F1 /* PhotosFetch.h */,
-				D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */,
-				D8B9BC801A96ACA800C1B0E5 /* SortSelectViewController.h */,
-				D8B9BC811A96ACA800C1B0E5 /* SortSelectViewController.m */,
+				AD7B4C2620E3638A003E403A /* Cells */,
+				AD7B4C2720E3639B003E403A /* Services */,
 			);
 			path = "Local Images";
-			sourceTree = "<group>";
-		};
-		D8B9BC791A95B1CE00C1B0E5 /* Not Uploaded Yet */ = {
-			isa = PBXGroup;
-			children = (
-				D8B9BC7A1A95B1F600C1B0E5 /* NotUploadedYet.h */,
-				D8B9BC7B1A95B1F600C1B0E5 /* NotUploadedYet.m */,
-			);
-			path = "Not Uploaded Yet";
 			sourceTree = "<group>";
 		};
 		D8BDCB5F1A6F6B4200D106A8 /* Albums and Images */ = {
 			isa = PBXGroup;
 			children = (
-				D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */,
-				D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */,
-				D818E9F91A74C18500733991 /* AlbumService.h */,
-				D818E9FA1A74C18500733991 /* AlbumService.m */,
-				D818E9F51A74BF1100733991 /* Album and Image Collection */,
+				D8D3F71E1A785DF800AEA7F1 /* AlbumImagesViewController.h */,
+				D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */,
+				AD7B4C2220E360C3003E403A /* Album Data */,
+				D818E9F51A74BF1100733991 /* Cells */,
+				AD7B4C2120E0E0AC003E403A /* Headers */,
 				ADE535911F65C17E00372CBD /* Album Thumbnail */,
 				D8172E171AB7C06200271DB0 /* Album Move */,
-				ADF65A1D20CD2C5C001C567F /* Image Sort */,
 				ADE535901F65C01000372CBD /* Images */,
 			);
 			path = "Albums and Images";
@@ -810,11 +849,11 @@
 				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
 				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
-				D8A5014A1A7B3D4200C04C17 /* Pick Album */,
+				D8A5014A1A7B3D4200C04C17 /* Pick Piwigo Album */,
+				AD7B4C2520E36328003E403A /* Pick Photos Album */,
 				D8A5014E1A7B432600C04C17 /* Local Images */,
-				D8F325111A875939007CBDAC /* Edit Image Details */,
-				D8B9BC791A95B1CE00C1B0E5 /* Not Uploaded Yet */,
 				D8083AA71A82905F00A95605 /* Upload Progress */,
+				D8F325111A875939007CBDAC /* Edit Image Details */,
 				D8083AA31A81B34C00A95605 /* Image Uploading */,
 			);
 			path = Upload;
@@ -827,6 +866,7 @@
 				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
 				D8083A641A7FF30B00A95605 /* Cells */,
 				D81C993E1B02DA190081C976 /* Views */,
+				ADF65A1D20CD2C5C001C567F /* Image Sort */,
 			);
 			path = Settings;
 			sourceTree = "<group>";

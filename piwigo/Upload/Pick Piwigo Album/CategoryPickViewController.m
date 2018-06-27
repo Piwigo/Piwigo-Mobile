@@ -182,6 +182,7 @@
 
 -(void)quitUpload
 {
+    // Leave Upload action and return to Albums and Images
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

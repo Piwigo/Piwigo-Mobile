@@ -34,7 +34,6 @@
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
 @property (nonatomic, strong) UIBarButtonItem *doneBarButton;
-//@property (nonatomic, strong) UIBarButtonItem *selectAllBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
@@ -78,7 +77,6 @@
         self.selectedImages = [NSMutableArray new];
         
         // Bar buttons
-//        self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"selectAll", @"All") style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(presentImageUploadView)];
@@ -119,6 +117,7 @@
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
+    // Update navigation bar and title
     [self loadNavButtons];
     
     // Progress bar
@@ -129,6 +128,9 @@
     {
         [[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
     }
+    
+    // Reload collection (and display those being uploaded)
+    [self.localImagesCollection reloadData];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -141,8 +143,16 @@
     } completion:nil];
 }
 
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    self.title = NSLocalizedString(@"alertCancelButton", @"Cancel");
+}
+
 -(void)quitUpload
 {
+    // Leave Upload action and return to Albums and Images
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -192,20 +202,24 @@
         }
     }
     
-    // Clear the list of selected images
+    // Clear list of selected images
     self.selectedImages = [NSMutableArray new];
     
-    // Update the navigation bar
+    // Update navigation bar
     [self loadNavButtons];
 }
 
 -(void)presentImageUploadView
 {
-    ImageUploadViewController *vc = [ImageUploadViewController new];
-    vc.selectedCategory = self.categoryId;
-    vc.imagesSelected = self.selectedImages;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
+    // Present Image Upload View
+    ImageUploadViewController *imageUploadVC = [ImageUploadViewController new];
+    imageUploadVC.selectedCategory = self.categoryId;
+    imageUploadVC.imagesSelected = self.selectedImages;
+    [self.navigationController pushViewController:imageUploadVC animated:YES];
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+//    [self.navigationController presentViewController:nav animated:YES completion:nil];
+
+    // Clear list of selected images
     self.selectedImages = [NSMutableArray new];
 }
 
