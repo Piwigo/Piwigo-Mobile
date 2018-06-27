@@ -20,6 +20,7 @@
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSArray *localGroups;
 @property (nonatomic, strong) NSArray *iCloudGroups;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
 @end
 
@@ -46,6 +47,9 @@
         [self.localAlbumsTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
         [self.view addSubview:self.localAlbumsTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
+        
+        // Button for returning to albums/images
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
@@ -104,10 +108,17 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 
     // Table view
     self.localAlbumsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     [self.localAlbumsTableView reloadData];
+}
+
+
+-(void)quitUpload
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
