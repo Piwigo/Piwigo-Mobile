@@ -77,7 +77,7 @@ CGFloat const kRadius = 25.0;
 	{
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.categoryId = albumId;
-        self.loadingImages = (albumId != 0);
+        self.loadingImages = NO;
         
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
@@ -207,15 +207,17 @@ CGFloat const kRadius = 25.0;
 	}
     
     // Images
-    self.loadingImages = YES;
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+    if (self.categoryId != 0) {
+        self.loadingImages = YES;
+        [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
-        // Set navigation bar buttons
-        [self loadNavButtons];
+            // Set navigation bar buttons
+            [self loadNavButtons];
 
-        self.loadingImages = NO;
-        [self.imagesCollection reloadData];
-    }];
+            self.loadingImages = NO;
+            [self.imagesCollection reloadData];
+        }];
+    }
     
     // Refresh image collection if displayImageTitles option changed
     if (self.displayImageTitles != [Model sharedInstance].displayImageTitles) {
@@ -450,6 +452,7 @@ CGFloat const kRadius = 25.0;
 
      // Images
      if (self.categoryId != 0) {
+         self.loadingImages = YES;
          [self.albumData loadAllImagesOnCompletion:^{
             
              // Sort images
@@ -1050,20 +1053,21 @@ CGFloat const kRadius = 25.0;
                 header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
                 header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
 
-                if (self.albumData.images.count == 0) {
-                    // No images ?
+                if (self.categoryId == 0) {
+                    // Only albums in Root Album
+                    header.noImagesLabel.text = @"";
+                }
+                else if (self.albumData.images.count == 0) {
+                    // Still loading images…
                     if (self.loadingImages) {
                         // Currently trying to load images…
                         header.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
-                        return header;
                     }
                     else if (self.categoryId != 0) {
                         // Not loading —> No images
                         header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-                        return header;
                     }
                 }
-                header.noImagesLabel.text = @"";
                 return header;
             }
             break;
@@ -1073,15 +1077,6 @@ CGFloat const kRadius = 25.0;
 	UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
 	return view;
 }
-
-//-(void)didSelectCollectionViewHeader
-//{
-//    CategorySortViewController *categorySort = [CategorySortViewController new];
-//    categorySort.currentCategorySortType = self.currentSortCategory;
-//    categorySort.sortDelegate = self;
-//    [self.navigationController pushViewController:categorySort animated:YES];
-//}
-
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
@@ -1106,8 +1101,12 @@ CGFloat const kRadius = 25.0;
         default:    // Section 1 — Image collection
         {
             NSString *header = @"";
-            if (self.albumData.images.count == 0) {
-                // No images ?
+            if (self.categoryId == 0) {
+                // Only albums in Root Album
+                header = @"";
+            }
+            else if (self.albumData.images.count == 0) {
+                // Still loading images…
                 if (self.loadingImages) {
                     // Currently trying to load images…
                     header = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
@@ -1117,7 +1116,7 @@ CGFloat const kRadius = 25.0;
                     header = NSLocalizedString(@"noImages", @"No Images");
                 }
             }
-
+ 
             if ([header length] > 0) {
                 NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
                 NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
