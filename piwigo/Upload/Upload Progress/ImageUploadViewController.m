@@ -36,7 +36,7 @@
 		
 		self.title = NSLocalizedString(@"imageUploadDetailsView_title", @"Images");
 		
-		self.uploadImagesTableView = [UITableView new];
+		self.uploadImagesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.uploadImagesTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.uploadImagesTableView.backgroundColor = [UIColor clearColor];
 		self.uploadImagesTableView.delegate = self;
@@ -168,7 +168,7 @@
             header = NSLocalizedString(@"imageUploadDetailsUploading_title", @"Images that are Being Uploaded");
             break;
     }
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -183,8 +183,9 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontSmall];
+    headerLabel.font = [UIFont piwigoFontBold];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.backgroundColor = [UIColor piwigoBackgroundColor];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
