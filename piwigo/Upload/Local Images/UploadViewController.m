@@ -81,7 +81,7 @@
 //        self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"selectAll", @"All") style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
-        self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadSelected)];
+        self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(presentImageUploadView)];
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
@@ -199,12 +199,7 @@
     [self loadNavButtons];
 }
 
--(void)uploadSelected
-{
-    [self showImageUpload];
-}
-
--(void)showImageUpload
+-(void)presentImageUploadView
 {
     ImageUploadViewController *vc = [ImageUploadViewController new];
     vc.selectedCategory = self.categoryId;

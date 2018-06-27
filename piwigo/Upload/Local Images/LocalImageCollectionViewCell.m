@@ -92,9 +92,9 @@
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgress]];
         [self.uploadingView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.uploadingProgress amount:10]];
 		[self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[progress]-10-|"
-																				   options:kNilOptions
-																				   metrics:nil
-																					 views:@{@"progress" : self.uploadingProgress}]];
+                   options:kNilOptions
+                   metrics:nil
+                     views:@{@"progress" : self.uploadingProgress}]];
 		
         // Uploading stuff: label
 		UILabel *uploadingLabel = [UILabel new];
@@ -108,9 +108,9 @@
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:uploadingLabel]];
         [self.uploadingView addConstraint:[NSLayoutConstraint constraintViewFromBottom:uploadingLabel amount:16]];
         [self.uploadingView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[uploading]-10-|"
-                                                                                   options:kNilOptions
-                                                                                   metrics:nil
-                                                                                     views:@{@"uploading" : uploadingLabel}]];
+                   options:kNilOptions
+                   metrics:nil
+                     views:@{@"uploading" : uploadingLabel}]];
 	}
 	return self;
 }
@@ -126,30 +126,30 @@
     CGFloat cropSideLength = MIN(imageAsset.pixelWidth, imageAsset.pixelHeight);
     CGRect square = CGRectMake(0, 0, cropSideLength, cropSideLength);
     CGRect cropRect = CGRectApplyAffineTransform(square,
-                                                 CGAffineTransformMakeScale(1.0 / imageAsset.pixelWidth,
-                                                                            1.0 / imageAsset.pixelHeight));
+                             CGAffineTransformMakeScale(1.0 / imageAsset.pixelWidth,
+                                                        1.0 / imageAsset.pixelHeight));
     cropToSquare.normalizedCropRect = cropRect;
     
     @autoreleasepool {
         [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)imageAsset
-                                                   targetSize:retinaSquare
-                                                  contentMode:PHImageContentModeAspectFit
-                                                      options:cropToSquare
-                                                resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                        if ([info objectForKey:PHImageErrorKey]) {
-                                                            NSError *error = [info valueForKey:PHImageErrorKey];
-                                                            NSLog(@"=> Error : %@", error.description);
-                                                            self.cellImage.image = [UIImage imageNamed:@"placeholder"];
-                                                        } else {
-                                                            self.cellImage.image = result;
-                                                            if(imageAsset.mediaType == PHAssetMediaTypeVideo)
-                                                            {
-                                                                self.playImage.hidden = NO;
-                                                            }
-                                                        }
-                                                    });
-                                                }
+                       targetSize:retinaSquare
+                      contentMode:PHImageContentModeAspectFit
+                          options:cropToSquare
+                    resultHandler:^(UIImage *result, NSDictionary *info) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            if ([info objectForKey:PHImageErrorKey]) {
+                                NSError *error = [info valueForKey:PHImageErrorKey];
+                                NSLog(@"=> Error : %@", error.description);
+                                self.cellImage.image = [UIImage imageNamed:@"placeholder"];
+                            } else {
+                                self.cellImage.image = result;
+                                if(imageAsset.mediaType == PHAssetMediaTypeVideo)
+                                {
+                                    self.playImage.hidden = NO;
+                                }
+                            }
+                        });
+                    }
          ];
     }
 }
