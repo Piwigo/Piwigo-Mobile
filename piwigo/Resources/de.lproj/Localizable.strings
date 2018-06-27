@@ -115,20 +115,20 @@
 
 // Album selection
 "categorySelection_title" = "Album";
-"categorySelection_titleSub" = "Sub-Albums";
-"categorySelection_root" = "Root Album";
-"categorySelection_action" = "Select an action for this album";
-"categorySelectionHUD_label" = "Retrieving Albums Data…";
+"categorySelection_titleSub" = "Unter-Alben";
+"categorySelection_root" = "Haupt-Album";
+"categorySelection_action" = "Wähle eine Aktion für dieses Album";
+"categorySelectionHUD_label" = "Albumdaten abrufen…";
 
 // Default album
-"setDefaultCategory_title" = "Default Album";
-"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+"setDefaultCategory_title" = "Standard-Album";
+"setDefaultCategory_message" = "Sind Sie sicher, dass Sie das Album \"%@\" als Standard-Album festlegen möchten?";
 
 // Album create
 "createNewAlbum_title" = "Neues Album";
 "createNewAlbum_message" = "Gib einen Namen für dieses Album ein:";
 "createNewAlbum_placeholder" = "Albumname";
-"createNewAlbumComment_placeholder" = "Comment";
+"createNewAlbumComment_placeholder" = "Kommentar";
 "createNewAlbumHUD_label" = "Erstelle Album…";
 
 // Album create — Errors
@@ -151,19 +151,19 @@
 "renameCategoyError_message" = "Umbenennung Deines Albums fehlgeschlagen";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Refreshing Representative…";
+"refreshCategoryHUD_label" = "Aktualisiere Referenzfoto…";
 
 // Album refresh representative — Errors
-"refreshCategoyError_title" = "Refresh Fail";
-"refreshCategoyError_message" = "Failed to refresh your album representative";
+"refreshCategoyError_title" = "Aktualisierung fehlgeschlagen";
+"refreshCategoyError_message" = "Fehler beim Aktualisieren des Referenzfotos";
 
 // Album delete
 "deleteCategory_title" = "ALBUM LÖSCHEN";
 "deleteCategory_message" = "BIST DU SICHER, DASS DU DAS ALBUM \"%@\" UND DESSEN %@ BILDER LÖSCHEN MÖCHTEST?";
-"deleteCategory_empty" = "Delete Empty Album";
-"deleteCategory_noImages" = "Keep Images";
-"deleteCategory_orphanedImages" = "Delete Orphans";
-"deleteCategory_allImages" = "Delete %@ Images";
+"deleteCategory_empty" = "Lösche leeres Album";
+"deleteCategory_noImages" = "Behalte Bilder";
+"deleteCategory_orphanedImages" = "Lösche verwaiste";
+"deleteCategory_allImages" = "Lösche %@ Bilder";
 "deleteCategoryConfirm_title" = "Bist du sicher?";
 "deleteCategoryConfirm_message" = "Gib bitte die Anzahl der Bilder an um dieses Album zu löschen. Anzahl der Bilder: %@";
 "deleteCategoryConfirm_deleteButton" = "LÖSCHEN";
@@ -186,7 +186,7 @@
 "moveCategoryError_message" = "Fehler beim Verschieben Deines Albums";
 
 // Album set image thumbnail
-"categorySelection_select" = "Select Album";
+"categorySelection_select" = "Wähle Album";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Bild";
 "categorySelection_other" = "oder wähle ein anderes Album für dieses Bild";
 "categoryImageSet_title" = "Miniaturbild setzen";
@@ -255,9 +255,9 @@
 "tagsHeader_all" = "Alle";
 
 // Image select
-"selectImages" = "Select Images";
-"selectImageSelected" = "1 Image Selected";
-"selectImagesSelected" = "%@ Images Selected";
+"selectImages" = "Wähle Bilder aus";
+"selectImageSelected" = "1 Bild ausgewählt";
+"selectImagesSelected" = "%@ Bilder ausgewählt";
 "selectAll" = "Alle";
 
 // Image delete
@@ -266,7 +266,7 @@
 
 "deleteSingleImage_title" = "Bild löschen";
 "deleteSingleImage_message" = "Möchtest Du dieses Bild wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
-"deleteSeveralImages_title" = "Bilder löschen";
+"deleteSeveralImages_title" = "Lösche %@ Bilder";
 "deleteSeveralImages_message" = "Möchtest Du die %@ ausgewählten Bilder wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
 
 "deleteImageFail_title" = "Löschen fehlgeschlagen";
@@ -275,7 +275,7 @@
 // Image download
 "downloadSingleImage_title" = "Bild herunterladen";
 "downloadSingleImage_confirmation" = "Möchtest Du wirklich die markierten Bilder herunterladen?";
-"downloadSeveralImages_title" = "Bilder herunterladen";
+"downloadSeveralImages_title" = "Lade %@ Bilder herunter";
 "downloadSeveralImage_confirmation" = "Möchtest Du wirklich die %@ markierten Bilder herunterladen?";
 
 "downloadingImage" = "Bild herunterladen";
@@ -296,15 +296,15 @@
 "videoSaveError_message" = "Video speichern fehlgeschlagen. Fehler: %@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "Wähle ein Album zum Hochladen der Bilder";
+"categoryUpload_chooseAlbum" = "Wähle ein Unter-Album zum Hochladen der Bilder";
 "categoryUpload_LocalAlbums" = "Lokale Alben";
 "categoryUpload_chooseLocalAlbum" = "Wähle ein Album um Bilder zu erhalten";
 "categoryUpload_iCloudAlbums" = "iCloud Alben";
 "categoryUpload_chooseiCloudAlbum" = "Wähle ein iCloud Album um Bilder zu erhalten";
 "categoyUpload_loadSubCategories" = "Laden";
-"categoryUpload_images" = "Upload Images";
-"categoryUpload_subAlbum" = "Create Sub-Album";
-"categoryUpload_defaultAlbum" = "Set as Default Album";
+"categoryUpload_images" = "Lade Bilder hoch";
+"categoryUpload_subAlbum" = "Erstelle Unter-Album";
+"categoryUpload_defaultAlbum" = "Als Standard-Album festlegen";
 
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Autor:";

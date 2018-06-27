@@ -151,7 +151,7 @@
 "renameCategoyError_message" = "Impossible de renommer votre album";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Rafraichir l'Image d'Album…";
+"refreshCategoryHUD_label" = "Rafraichissement en cours…";
 
 // Album refresh representative — Errors
 "refreshCategoyError_title" = "Echec du Rafraichissement";
@@ -186,7 +186,7 @@
 "moveCategoryError_message" = "Impossible de déplacer votre album";
 
 // Album set image thumbnail
-"categorySelection_select" = "Sélectionnez l’Album";
+"categorySelection_select" = "Sélectionnez";
 "categorySelection_current" = "Sélectionnez l’album en cours pour cette image";
 "categorySelection_other" = "ou sélectionnez un autre album pour cette image";
 "categoryImageSet_title" = "Affecter une Vignette";
@@ -255,9 +255,9 @@
 "tagsHeader_all" = "Tous";
 
 // Image select
-"selectImages" = "Sélectionner des Images";
-"selectImageSelected" = "1 Image Sélectionnée";
-"selectImagesSelected" = "%@ Images Sélectionnées";
+"selectImages" = "Sélectionnez";
+"selectImageSelected" = "1 Image";
+"selectImagesSelected" = "%@ Images";
 "selectAll" = "Tout";
 
 // Image delete
