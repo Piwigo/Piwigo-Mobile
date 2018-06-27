@@ -317,8 +317,10 @@
     switch (section) {
         case 0:                 // List of actions for the current album
             // Upload images only in non-root album and if user has admin or upload rights
-            nberRows = (self.currentCategoryId != 0) && ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights]);
-            
+            nberRows = (self.currentCategoryId != 0) &&
+                       ([Model sharedInstance].hasAdminRights ||
+                        [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights]);
+
             // Only admins can create sub-albums
             nberRows += ([Model sharedInstance].hasAdminRights ? 1 : 0);
             
@@ -355,7 +357,8 @@
                         cell = [LabelTableViewCell new];
                     }
                     
-                    if ((self.currentCategoryId != 0) && ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) {
+                    if ((self.currentCategoryId != 0) &&
+                        ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) {
                         cell.leftText = NSLocalizedString(@"categoryUpload_images", @"Upload Images");
                         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     }
@@ -379,7 +382,9 @@
                         cell = [LabelTableViewCell new];
                     }
                     
-                    if ((self.currentCategoryId != 0) && ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) {
+                    if (((self.currentCategoryId != 0) &&
+                         ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) &&
+                        ([Model sharedInstance].hasAdminRights)) {
                         cell.leftText = NSLocalizedString(@"categoryUpload_subAlbum", @"Create Sub-Album");
                         cell.accessoryType = UITableViewCellAccessoryNone;
                     }
@@ -459,7 +464,8 @@
             switch (indexPath.row) {
                 case 0:
                 {
-                    if ((self.currentCategoryId != 0) && ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) {
+                    if ((self.currentCategoryId != 0) &&
+                        ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) {
                         // Upload images in the current category
                         [self selectedCategory:categoryData];
                     }
@@ -475,7 +481,8 @@
                 }
                 case 1:
                 {
-                    if (((self.currentCategoryId != 0) && ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) &&
+                    if (((self.currentCategoryId != 0) &&
+                         ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) &&
                         ([Model sharedInstance].hasAdminRights)) {
                         // Create Sub-Album
                         [self showCreateCategoryDialog];

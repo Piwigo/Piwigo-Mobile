@@ -54,7 +54,7 @@
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
         self.categoryId = categoryId;
         self.groupAsset = groupAsset;
-        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+        self.title = [self.groupAsset localizedTitle];
         self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
         self.sortType = kPiwigoSortByNewest;
         
