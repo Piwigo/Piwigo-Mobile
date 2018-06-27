@@ -139,7 +139,7 @@ typedef enum {
 }
 
 
-#pragma mark - UITableView - headers
+#pragma mark - UITableView - Headers
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -283,7 +283,7 @@ typedef enum {
 }
 
 
-#pragma mark - UITableView - rows
+#pragma mark - UITableView - Rows
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -1171,7 +1171,7 @@ typedef enum {
 }
 
 
-#pragma mark - UITableView - footers
+#pragma mark - UITableView - Footers
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {

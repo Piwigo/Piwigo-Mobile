@@ -129,6 +129,7 @@ CGFloat const kRadius = 25.0;
         [self.uploadButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
         self.uploadButton.backgroundColor = [UIColor piwigoOrange];
         self.uploadButton.tintColor = [UIColor whiteColor];
+        self.uploadButton.showsTouchWhenHighlighted = YES;
         [self.uploadButton setImage:[UIImage imageNamed:@"cloud"] forState:UIControlStateNormal];
         [self.uploadButton addTarget:self action:@selector(displayUpload)
                forControlEvents:UIControlEventTouchUpInside];
@@ -1014,7 +1015,7 @@ CGFloat const kRadius = 25.0;
 }
 
 
-#pragma mark - UICollectionView Methods
+#pragma mark - UICollectionView Headers
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
@@ -1077,6 +1078,7 @@ CGFloat const kRadius = 25.0;
 //    [self.navigationController pushViewController:categorySort animated:YES];
 //}
 
+
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
     switch (section) {
@@ -1128,6 +1130,9 @@ CGFloat const kRadius = 25.0;
 
     return CGSizeZero;
 }
+
+
+#pragma mark - UICollectionView - Rows
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
@@ -1229,6 +1234,9 @@ CGFloat const kRadius = 25.0;
 		return cell;
 	}
 }
+
+
+#pragma mark - UICollectionViewDelegate Methods
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {

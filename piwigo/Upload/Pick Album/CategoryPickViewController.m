@@ -41,7 +41,6 @@
 	{
         // Current category
         self.currentCategoryId = categoryId;
-        self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
         
         // List of categories to present in 2nd section
         self.categories = [NSMutableArray new];
@@ -135,6 +134,8 @@
 {
     [super viewWillAppear:animated];
     
+    self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
+
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
@@ -166,6 +167,17 @@
     } orFailure:^(NSURLSessionTask *task, NSError *error) {
         // Invite users to refresh?
     }];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Do not show album title in backButtonItem of child view to provide enough space for image title
+    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+    if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
+        self.title = @"";
+    }
 }
 
 -(void)quitUpload

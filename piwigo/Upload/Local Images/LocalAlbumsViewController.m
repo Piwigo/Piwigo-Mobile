@@ -33,12 +33,12 @@
     {
         self.categoryId = categoryId;
         
-        self.title = NSLocalizedString(@"localAlbums", @"Photos library");
-        
+        // Get groups of Photos library albums
         self.localGroups = [NSArray new];
         self.iCloudGroups = [NSArray new];
         [self getLocalAlbums];
         
+        // Table view
         self.localAlbumsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.localAlbumsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.localAlbumsTableView.backgroundColor = [UIColor clearColor];
@@ -67,17 +67,17 @@
         else if(responseObject1 == nil)
         {
             UIAlertController* alert = [UIAlertController
-                                        alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
-                                        message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
-                                        preferredStyle:UIAlertControllerStyleAlert];
+                alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
+                message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
+                preferredStyle:UIAlertControllerStyleAlert];
             
             UIAlertAction* dismissAction = [UIAlertAction
-                                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                            style:UIAlertActionStyleCancel
-                                            handler:^(UIAlertAction * action) {
-                                                // make view disappear
-                                                [self.navigationController popViewControllerAnimated:YES];
-                                            }];
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                style:UIAlertActionStyleCancel
+                handler:^(UIAlertAction * action) {
+                    // make view disappear
+                    [self.navigationController popViewControllerAnimated:YES];
+                }];
             
             [alert addAction:dismissAction];
             [self presentViewController:alert animated:YES completion:nil];
@@ -91,10 +91,14 @@
     }];
 }
 
+#pragma mark - View Lifecycle
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
+    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
+
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     self.localAlbumsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
@@ -115,6 +119,17 @@
     [self.localAlbumsTableView reloadData];
 }
 
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Do not show album title in backButtonItem of child view to provide enough space for image title
+    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+    if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
+        self.title = @"";
+    }
+}
 
 -(void)quitUpload
 {

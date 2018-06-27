@@ -33,7 +33,8 @@
 
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
-@property (nonatomic, strong) UIBarButtonItem *selectAllBarButton;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
+//@property (nonatomic, strong) UIBarButtonItem *selectAllBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
@@ -54,7 +55,6 @@
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
         self.categoryId = categoryId;
         self.groupAsset = groupAsset;
-        self.title = [self.groupAsset localizedTitle];
         self.images = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset];
         self.sortType = kPiwigoSortByNewest;
         
@@ -62,31 +62,34 @@
         self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
         self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
         self.localImagesCollection.backgroundColor = [UIColor clearColor];
+        self.localImagesCollection.alwaysBounceVertical = YES;
+        self.localImagesCollection.showsVerticalScrollIndicator = YES;
         self.localImagesCollection.dataSource = self;
         self.localImagesCollection.delegate = self;
+
         [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
         [self.localImagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader"];
         [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader"];
-        self.localImagesCollection.indicatorStyle = UIScrollViewIndicatorStyleDefault;
+
         [self.view addSubview:self.localImagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
-        
+
         // Selected images
         self.selectedImages = [NSMutableArray new];
         
         // Bar buttons
-        self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"selectAll", @"All") style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
+//        self.selectAllBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"selectAll", @"All") style:UIBarButtonItemStylePlain target:self action:@selector(selectAll)];
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
-        self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"]
-                                                                style:UIBarButtonItemStylePlain
-                                                               target:self
-                                                               action:@selector(uploadSelected)];
+        self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadSelected)];
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     }
     return self;
 }
+
+#pragma mark - View Lifecycle
 
 -(void)viewDidLoad
 {
@@ -138,16 +141,128 @@
     } completion:nil];
 }
 
+-(void)quitUpload
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 -(void)loadNavButtons
 {
-    if(self.selectedImages.count > 0)
-    {
-        self.navigationItem.rightBarButtonItems = @[self.cancelBarButton, self.uploadBarButton];
+    switch (self.selectedImages.count) {
+        case 0:
+            self.navigationItem.leftBarButtonItems = @[];
+            self.navigationItem.rightBarButtonItems = @[self.doneBarButton];
+            self.title = NSLocalizedString(@"selectImages", @"Select Images");
+            break;
+            
+        case 1:
+            self.navigationItem.leftBarButtonItems = @[self.cancelBarButton];
+            self.navigationItem.rightBarButtonItems = @[self.uploadBarButton];
+            self.title = NSLocalizedString(@"selectImageSelected", @"1 Image Selected");
+            break;
+            
+        default:
+            self.navigationItem.leftBarButtonItems = @[self.cancelBarButton];
+            self.navigationItem.rightBarButtonItems = @[self.uploadBarButton];
+            self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Images Selected"), @(self.selectedImages.count)];
+            break;
     }
-    else
+}
+
+
+#pragma mark - Select Images
+
+//-(void)selectAll
+//{
+//    self.selectedImages = [self.images mutableCopy];
+//    [self loadNavButtons];
+//    [self.localImagesCollection reloadData];
+//}
+
+-(void)cancelSelect
+{
+    // Deselect the cells
+    for(PHAsset *selectedImageAsset in self.selectedImages)
     {
-        self.navigationItem.rightBarButtonItems = @[self.selectAllBarButton];
+        NSInteger row = [self.images indexOfObject:selectedImageAsset];
+        if(row != NSNotFound)
+        {
+            LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+            cell.cellSelected = NO;
+        }
     }
+    
+    // Clear the list of selected images
+    self.selectedImages = [NSMutableArray new];
+    
+    // Update the navigation bar
+    [self loadNavButtons];
+}
+
+-(void)uploadSelected
+{
+    [self showImageUpload];
+}
+
+-(void)showImageUpload
+{
+    ImageUploadViewController *vc = [ImageUploadViewController new];
+    vc.selectedCategory = self.categoryId;
+    vc.imagesSelected = self.selectedImages;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self.navigationController presentViewController:nav animated:YES completion:nil];
+    self.selectedImages = [NSMutableArray new];
+}
+
+
+#pragma mark - UICollectionView - Header for changing sort option
+
+-(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.images.count != 0) {
+        // Display "Sort By…" header
+        SortHeaderCollectionReusableView *header = nil;
+        
+        if(kind == UICollectionElementKindSectionHeader)
+        {
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
+            header.backgroundColor = [UIColor piwigoCellBackgroundColor];
+            header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
+            header.currentSortLabel.text = [SortSelectViewController getNameForSortType:self.sortType];
+            header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
+            [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
+            
+            return header;
+        }
+    } else {
+        // Display "No Images"
+        NoImagesHeaderCollectionReusableView *header = nil;
+        
+        if(kind == UICollectionElementKindSectionHeader)
+        {
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
+            header.backgroundColor = [UIColor piwigoBackgroundColor];
+            header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+            
+            return header;
+        }
+    }
+    
+    UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
+    return view;
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    return CGSizeMake(collectionView.frame.size.width, 44.0);
+}
+
+-(void)didSelectCollectionViewHeader
+{
+    SortSelectViewController *sortSelectVC = [SortSelectViewController new];
+    sortSelectVC.delegate = self;
+    sortSelectVC.currentSortType = self.sortType;
+    [self.navigationController pushViewController:sortSelectVC animated:YES];
 }
 
 -(void)setSortType:(kPiwigoSortBy)sortType
@@ -190,17 +305,16 @@
         }
     }
     
-    
     __block NSDate *lastTime = [NSDate date];
-
+    
     [SortSelectViewController getSortedImageArrayFromSortType:sortType
                 forImages:self.images
               forCategory:self.categoryId
               forProgress:^(NSInteger onPage, NSInteger outOf) {
-
+                  
                   // Calculate the number of thumbnails displayed per page
                   NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-
+                  
                   NSInteger lastImageCount = (onPage + 1) * imagesPerPage;
                   NSInteger currentDownloaded = (onPage + 2) * imagesPerPage;
                   
@@ -225,92 +339,9 @@
               }];
 }
 
--(void)selectAll
-{
-    self.selectedImages = [self.images mutableCopy];
-    [self loadNavButtons];
-    [self.localImagesCollection reloadData];
-}
 
--(void)cancelSelect
-{
-    for(PHAsset *selectedImageAsset in self.selectedImages)
-    {
-        NSInteger row = [self.images indexOfObject:selectedImageAsset];
-        if(row != NSNotFound)
-        {
-            LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-            cell.cellSelected = NO;
-        }
-    }
-    self.selectedImages = [NSMutableArray new];
-    [self loadNavButtons];
-}
 
--(void)uploadSelected
-{
-    [self showImageUpload];
-}
-
--(void)showImageUpload
-{
-    ImageUploadViewController *vc = [ImageUploadViewController new];
-    vc.selectedCategory = self.categoryId;
-    vc.imagesSelected = self.selectedImages;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
-    self.selectedImages = [NSMutableArray new];
-}
-
-#pragma mark - UICollectionView Methods
-
--(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    if (self.images.count != 0) {
-        // Display "Sort By…" header
-        SortHeaderCollectionReusableView *header = nil;
-        
-        if(kind == UICollectionElementKindSectionHeader)
-        {
-            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
-            header.backgroundColor = [UIColor piwigoCellBackgroundColor];
-            header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
-            header.currentSortLabel.text = [SortSelectViewController getNameForSortType:self.sortType];
-            header.currentSortLabel.textColor = [UIColor piwigoRightLabelColor];
-            [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectCollectionViewHeader)]];
-            
-            return header;
-        }
-    } else {
-        // Display "No Images"
-        NoImagesHeaderCollectionReusableView *header = nil;
-        
-        if(kind == UICollectionElementKindSectionHeader)
-        {
-            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
-            header.backgroundColor = [UIColor piwigoBackgroundColor];
-            header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
-            
-            return header;
-        }
-    }
-    
-    UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
-    return view;
-}
-
--(void)didSelectCollectionViewHeader
-{
-    SortSelectViewController *sortSelectVC = [SortSelectViewController new];
-    sortSelectVC.delegate = self;
-    sortSelectVC.currentSortType = self.sortType;
-    [self.navigationController pushViewController:sortSelectVC animated:YES];
-}
-
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
-{
-    return CGSizeMake(collectionView.frame.size.width, 44.0);
-}
+#pragma mark - UICollectionView - Rows
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
@@ -319,7 +350,11 @@
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(10, kMarginsSpacing, 40, kMarginsSpacing);
+    // Avoid unwanted spaces
+    if ([collectionView numberOfItemsInSection:section] == 0)
+        return UIEdgeInsetsMake(0, kMarginsSpacing, 0, kMarginsSpacing);
+    
+    return UIEdgeInsetsMake(10, kMarginsSpacing, 10, kMarginsSpacing);
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
@@ -380,6 +415,9 @@
     return cell;
 }
 
+
+#pragma mark - UICollectionViewDelegate Methods
+
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
@@ -387,7 +425,7 @@
     PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
     
     if(selectedCell.cellSelected)
-    {    // The cell is selected, remove it
+    {    // Deselect the cell
         [self.selectedImages removeObject:imageAsset];
         selectedCell.cellSelected = NO;
     }
@@ -399,6 +437,7 @@
     
     [self loadNavButtons];
 }
+
 
 #pragma mark - ImageUploadProgressDelegate Methods
 
