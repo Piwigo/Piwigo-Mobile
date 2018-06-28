@@ -6,7 +6,8 @@ target 'piwigo' do
   # use_frameworks!
 
   # Pods for piwigo
-  pod 'AFNetworking', '~> 3.1'
+  pod 'AFNetworking', '~> 3.2'
+  pod 'EAIntroView'
   pod 'MBProgressHUD', '~> 1.1.0'
   pod 'MGSwipeTableCell'
   pod 'SAMKeychain'

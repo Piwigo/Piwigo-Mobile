@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "586F2DFA9BDCC6675C2546793A69E5CC"
-               BuildableName = "libMBProgressHUD.a"
-               BlueprintName = "MBProgressHUD"
+               BlueprintIdentifier = "15771CDB60DFAA769E27961D321E12C2"
+               BuildableName = "libEARestrictedScrollView.a"
+               BlueprintName = "EARestrictedScrollView"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "586F2DFA9BDCC6675C2546793A69E5CC"
-            BuildableName = "libMBProgressHUD.a"
-            BlueprintName = "MBProgressHUD"
+            BlueprintIdentifier = "15771CDB60DFAA769E27961D321E12C2"
+            BuildableName = "libEARestrictedScrollView.a"
+            BlueprintName = "EARestrictedScrollView"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
