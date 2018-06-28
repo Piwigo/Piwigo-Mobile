@@ -6,12 +6,12 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"description" = "Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software in de cloud Piwigo (v2.7 of hoger):\n\n• Blader door jouw albums,\n• Maak nieuwe albums,\n• Albums verwijderen, verplaatsen en naam wijzigen,\n• Bewerk, download en verwijder foto's en video's,\n• Een foto instellen als albumfoto,\n• Foto's uploaden:\n  - van aanpasbare grootte en kwaliteit,\n  - met beschrijving, fotograaf, labels, EXIF-metadata,\n  - met of zonder GPS-metadata.\n• Upload video's.\n\nPiwigo stelt je in staat om jouw eigen fotogalerij op het web te maken. Het bevat veel krachtige functies zoals albums, labels, geolocatie, vele niveaus van aanpassing, uploaden door bezoekers, privacy, kalender of statistieken.\n\nPiwigo is gratis en opensource.";
+"description" = "Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software in de cloud Piwigo (v2.7 of hoger):\n\n• Blader door jouw albums,\n• Maak nieuwe albums,\n• Albums verwijderen, verplaatsen en naam van albums wijzigen,\n• Bewerk, download en verwijder foto's en video's,\n• Een foto instellen als albumfoto,\n• Foto's uploaden:\n  - van aanpasbare grootte en kwaliteit,\n  - met beschrijving, fotograaf, labels, EXIF-metadata,\n  - met of zonder GPS-metadata.\n• Upload video's.\n\nPiwigo stelt je in staat om jouw eigen fotogalerij op het web te maken. Het heeft veel krachtige functies zoals albums, labels, geolocatie, veel niveaus van aanpassing, uploaden door bezoekers, privacy, kalender of statistieken.\n\nPiwigo is gratis en opensource.";
 
 "feedback" = "Feedback of vragen?\nPiwigo biedt gratis ondersteuning bij %@ en we horen graag van je.";
 
 "promotional_text" = "Jouw gratis Piwigo cloud-fotobibliotheek bij de hand!";
 
-"subtitle" = "Jouw foto's in jpuw Cloud";
+"subtitle" = "Jouw foto's in jouw Cloud";
 
 "keywords" = "Piwigo, Cloud, album, foto, video, beeld, uploaden, downloaden";

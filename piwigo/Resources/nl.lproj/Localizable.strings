@@ -45,7 +45,7 @@
 // ===========================================================================
 // Login
 "login" = "Aanmelden";
-"login_serverPlaceholder" = "example.com";
+"login_serverPlaceholder" = "voorbeeld.com";
 "login_userPlaceholder" = "Gebruikersnaam (optioneel)";
 "login_passwordPlaceholder" = "Wachtwoord (optioneel)";
 "login_loggingIn" = "Bezig met aanmelden...";
@@ -68,7 +68,7 @@
 "loginEmptyServer_title" = "Voer een webadres in";
 "loginEmptyServer_message" = "Selecteer een protocol en voeg een Piwigo webadres toe om door te gaan.";
 
-"serverConnectionError_title" = "Verbinding Mislukt";
+"serverConnectionError_title" = "Verbinding mislukt";
 "serverConnectionError_message" = "Een beveiligde HTTPS-verbinding kan niet worden vastgesteld. Controleer het adres of probeer in niet-gecodeerde HTTP-modus?";
 
 "serverVersionNotCompatible_title" = "Server niet ondersteund";
@@ -115,20 +115,20 @@
 
 // Album selection
 "categorySelection_title" = "Album";
-"categorySelection_titleSub" = "Sub-Albums";
-"categorySelection_root" = "Root Album";
-"categorySelection_action" = "Select an action for this album";
-"categorySelectionHUD_label" = "Retrieving Albums Data…";
+"categorySelection_titleSub" = "Sub-album";
+"categorySelection_root" = "Root-album";
+"categorySelection_action" = "Selecteer een actie voor dit album";
+"categorySelectionHUD_label" = "Terugvinden van album-gegevens…";
 
 // Default album
-"setDefaultCategory_title" = "Default Album";
-"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+"setDefaultCategory_title" = "Standaard album";
+"setDefaultCategory_message" = "Weet je zeker dat je het album \"%@\" als standaard album wilt instellen?";
 
 // Album create
 "createNewAlbum_title" = "Nieuw album";
 "createNewAlbum_message" = "Voer een naam in voor dit album:";
 "createNewAlbum_placeholder" = "Albumnaam";
-"createNewAlbumComment_placeholder" = "Comment";
+"createNewAlbumComment_placeholder" = "Opmerking";
 "createNewAlbumHUD_label" = "Bezig album te maken…";
 
 // Album create — Errors
@@ -151,19 +151,19 @@
 "renameCategoyError_message" = "Naam wijzigen van jouw album is mislukt";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Refreshing Representative…";
+"refreshCategoryHUD_label" = "Vernieuwen huidige…";
 
 // Album refresh representative — Errors
-"refreshCategoyError_title" = "Refresh Fail";
-"refreshCategoyError_message" = "Failed to refresh your album representative";
+"refreshCategoyError_title" = "Vernieuwing mislukt";
+"refreshCategoyError_message" = "Vernieuwing van jouw representatieve album niet gelukt";
 
 // Album delete
 "deleteCategory_title" = "ALBUM VERWIJDEREN";
 "deleteCategory_message" = "WEET JE ZEKER DAT JE HET ALBUM \"%@\" EN ALLE %@ FOTO'S WILT VERWIJDEREN?";
-"deleteCategory_empty" = "Delete Empty Album";
-"deleteCategory_noImages" = "Keep Images";
-"deleteCategory_orphanedImages" = "Delete Orphans";
-"deleteCategory_allImages" = "Delete %@ Images";
+"deleteCategory_empty" = "Verwijder leeg album";
+"deleteCategory_noImages" = "Foto's houden";
+"deleteCategory_orphanedImages" = "Verwijder wezen";
+"deleteCategory_allImages" = "Verwijder %@ foto's";
 "deleteCategoryConfirm_title" = "Weet je het zeker?";
 "deleteCategoryConfirm_message" = "Voer het juiste aantal foto's in om het album te kunnen verwijderen. Aantal foto's: %@";
 "deleteCategoryConfirm_deleteButton" = "VERWIJDEREN";
@@ -186,8 +186,8 @@
 "moveCategoryError_message" = "Verplaatsen van jouw album is mislukt";
 
 // Album set image thumbnail
-"categorySelection_select" = "Select Album";
-"categorySelection_current" = "Selecteer het huidig album voor deze foto";
+"categorySelection_select" = "Selecteer album";
+"categorySelection_current" = "Selecteer voor deze foto het huidig album";
 "categorySelection_other" = "of selecteer een ander album voor deze foto";
 "categoryImageSet_title" = "Stel foto-miniatuur in";
 "categoryImageSet_message" = "Weet je zeker dat je deze foto wilt gebruiken voor album \"%@\"?";
@@ -255,9 +255,9 @@
 "tagsHeader_all" = "Alles";
 
 // Image select
-"selectImages" = "Select Images";
-"selectImageSelected" = "1 Image Selected";
-"selectImagesSelected" = "%@ Images Selected";
+"selectImages" = "Selecteer foto's";
+"selectImageSelected" = "1 foto geselecteerd";
+"selectImagesSelected" = "%@ foto's geselecteerd";
 "selectAll" = "Allemaal";
 
 // Image delete
@@ -266,7 +266,7 @@
 
 "deleteSingleImage_title" = "Foto verwijderen";
 "deleteSingleImage_message" = "Weet je zeker dat je dit bestand wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
-"deleteSeveralImages_title" = "Verwijder foto's";
+"deleteSeveralImages_title" = "Verwijder %@ foto's";
 "deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
 
 "deleteImageFail_title" = "Verwijderen is mislukt";
@@ -275,7 +275,7 @@
 // Image download
 "downloadSingleImage_title" = "Download foto";
 "downloadSingleImage_confirmation" = "Weet je zeker dat je deze foto wilt downloaden?";
-"downloadSeveralImages_title" = "Download foto's";
+"downloadSeveralImages_title" = "Download %@ foto's";
 "downloadSeveralImage_confirmation" = "Weet je zeker dat je de geselecteerde %@ foto's wilt downloaden?";
 
 "downloadingImage" = "Download foto";
@@ -296,15 +296,15 @@
 "videoSaveError_message" = "Opslaan video is mislukt. Fout: %@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "Selecteer een album om de foto's naar te uploaden";
+"categoryUpload_chooseAlbum" = "Selecteer een album om foto's naar up te loaden";
 "categoryUpload_LocalAlbums" = "Lokale albums";
 "categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
 "categoryUpload_iCloudAlbums" = "iCloud albums";
-"categoryUpload_chooseiCloudAlbum" = "Selecteer een album iCloud om er foto's van op te halen";
+"categoryUpload_chooseiCloudAlbum" = "Selecteer een  iCloud album om er foto's van op te halen";
 "categoyUpload_loadSubCategories" = "laden";
-"categoryUpload_images" = "Upload Images";
-"categoryUpload_subAlbum" = "Create Sub-Album";
-"categoryUpload_defaultAlbum" = "Set as Default Album";
+"categoryUpload_images" = "Foto's uploaden";
+"categoryUpload_subAlbum" = "Maak sub-album";
+"categoryUpload_defaultAlbum" = "Stel in als standaard-album";
 
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Fotograaf:";
@@ -414,7 +414,7 @@
 
 "defaultPreviewFile" = "Voorbeeld";
 "defaultPreviewFile>320px" = "Voorbeeldafbeelding";
-"defaultPreviewFile>414px" = "Voorbeeld afbeeldingbestand";
+"defaultPreviewFile>414px" = "Voorbeeld fotobestand";
 "defaultImageSize" = "Foto's";
 "defaultImageSize>320px" = "Fotogrootte";
 "defaultImageSize>414px" = "Standaardgrootte van foto's";
