@@ -116,7 +116,7 @@
 // Album selection
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Sous-Albums";
-"categorySelection_root" = "Album à la Racince";
+"categorySelection_root" = "Album à la Racine";
 "categorySelection_action" = "Choisissez une action pour cet album";
 "categorySelectionHUD_label" = "Récupération des Données d'Albums…";
 
