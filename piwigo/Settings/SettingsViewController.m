@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "SettingsViewController.h"
 #import "SessionService.h"
-#import "AppDelegate.h"
 #import "Model.h"
 #import "SelectPrivacyViewController.h"
 #import "TextFieldTableViewCell.h"
@@ -82,41 +82,53 @@ typedef enum {
 
         // Before starting scrolling
         self.previousContentYOffset = -INFINITY;
-}
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+    }
 	return self;
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear:animated];
+#pragma mark - View Lifecycle
 
+-(void)paletteChanged
+{
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        NSDictionary *attributesLarge = @{
+                                          NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                          NSFontAttributeName: [UIFont piwigoFontLargeTitle],
+                                          };
+        self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
+        self.navigationController.navigationBar.prefersLargeTitles = YES;
+    }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
-
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
     
     // Table view
     self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.settingsTableView reloadData];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+
+    // Set colors, fonts, etc.
+    [self paletteChanged];
+    
+    // Set navigation buttons
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -917,8 +929,10 @@ typedef enum {
                     cell.leftLabel.text = NSLocalizedString(@"settings_darkPalette", @"Dark Palette");
                     [cell.cellSwitch setOn:[Model sharedInstance].isDarkPaletteModeActive];
                     cell.cellSwitchBlock = ^(BOOL switchState) {
+
                         // Number of rows will change accordingly
                         [Model sharedInstance].isDarkPaletteModeActive = switchState;
+
                         // Position of the row(s) that should be added/removed
                         NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
                                                                          inSection:SettingsSectionColor];
@@ -939,40 +953,13 @@ typedef enum {
                         }
                         // Switch off auto mode if dark palette mode disabled
                         if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
+
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
-                        // Refresh table
-                        [self.settingsTableView reloadData];
-                        // Redraw views in windows
+ 
+                        // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate screenBrightnessChanged:nil];
-
-                        // Background color of the view
-                        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-                        self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-                        
-                        // Navigation bar appearence
-                        NSDictionary *attributes = @{
-                                                     NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                                     NSFontAttributeName: [UIFont piwigoFontNormal],
-                                                     };
-                        self.navigationController.navigationBar.titleTextAttributes = attributes;
-                        [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-                        [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-                        self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-                        [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
-                        
-                        // Tab bar appearance
-                        self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-                        self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-                        if (@available(iOS 10, *)) {
-                            self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-                        }
-                        [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-                        [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-                        
-                        // Table view
-                        self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
                     };
                     
                     tableViewCell = cell;
@@ -988,10 +975,13 @@ typedef enum {
                     cell.leftLabel.text = NSLocalizedString(@"settings_switchPalette", @"Switch Automatically");
                     [cell.cellSwitch setOn:[Model sharedInstance].switchPaletteAutomatically];
                     cell.cellSwitchBlock = ^(BOOL switchState) {
+
                         // Number of rows will change accordingly
                         [Model sharedInstance].switchPaletteAutomatically = switchState;
+
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
+
                         // Position of the row that should be added/removed
                         NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
                                                                          inSection:SettingsSectionColor];
@@ -1002,38 +992,10 @@ typedef enum {
                             // Remove row in existing table
                             [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                         }
-                        // Refresh table
-                        [self.settingsTableView reloadData];
-                        // Redraw views in windows
+                        
+                        // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate screenBrightnessChanged:nil];
-
-                        // Background color of the view
-                        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-                        self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-                        
-                        // Navigation bar appearence
-                        NSDictionary *attributes = @{
-                                                     NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                                     NSFontAttributeName: [UIFont piwigoFontNormal],
-                                                     };
-                        self.navigationController.navigationBar.titleTextAttributes = attributes;
-                        [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-                        [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-                        self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-                        [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
-                        
-                        // Tab bar appearance
-                        self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-                        self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-                        if (@available(iOS 10, *)) {
-                            self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-                        }
-                        [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-                        [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-                        
-                        // Table view
-                        self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
                     };
                     
                     tableViewCell = cell;
@@ -1571,88 +1533,6 @@ typedef enum {
     [[Model sharedInstance] saveToDisk];
     
     [NSURLCache sharedURLCache].memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
-}
-
-#pragma mark - UIScrollViewDelegate Methods
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    // NOP if content not yet complete
-    if (scrollView.contentSize.height == 0) return;
-    
-    // First time ever, set parameters
-    if (self.previousContentYOffset == -INFINITY) {
-        self.minContentYOffset = scrollView.contentOffset.y;
-    }
-    
-    // Initialisation
-    CGFloat y = scrollView.contentOffset.y - self.minContentYOffset;
-    CGFloat yMax = fmaxf(scrollView.contentSize.height - scrollView.frame.size.height + self.tabBarController.tabBar.bounds.size.height - self.minContentYOffset, self.minContentYOffset);
-    //    NSLog(@"contentSize:%g, frameSize:%g", scrollView.contentSize.height, scrollView.frame.size.height);
-    //    NSLog(@"offset=%3.0f, y=%3.0f, yMax=%3.0f", self.minContentYOffset, y, yMax);
-    
-    // Depends on current tab bar visibility
-    if ([self tabBarIsVisible]) {
-        // Hide the tab bar when scrolling down
-        if ((y > self.previousContentYOffset) &&        // Scrolling down
-            (y > 44) && (y < yMax - 44))                // from the top
-        {
-            // User scrolls content to the bootm, starting from the top
-            [self setTabBarVisible:NO animated:YES completion:nil];
-        }
-    } else {
-        // Decide whether tab bar should be shown
-        if ((y < self.previousContentYOffset) &&        // Scrolling up
-            (y < yMax - 44))                            // above the bottom
-        {
-            // User scrolls content near the top or bottom
-            [self setTabBarVisible:YES animated:YES completion:nil];
-        }
-        else if ((y > self.previousContentYOffset) &&   // Scrolling down
-                 (y > yMax - 44))                       // near the bottom
-        {
-            // User scrolls content to the bootm, starting from the top
-            [self setTabBarVisible:YES animated:YES completion:nil];
-        }
-    }
-    
-    // Store actual position for next time
-    self.previousContentYOffset = y;
-}
-
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
-{
-    // User tapped the status bar
-    __weak typeof(self) weakSelf = self;
-    [self setTabBarVisible:YES animated:YES completion:^(BOOL finished) {
-        weakSelf.previousContentYOffset = scrollView.contentOffset.y;
-    }];
-    
-    return YES;
-}
-
-// Pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
-- (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    
-    // bail if the current state matches the desired state
-    if ([self tabBarIsVisible] == visible) return (completion)? completion(YES) : nil;
-    
-    // get a frame calculation ready
-    CGRect frame = self.tabBarController.tabBar.frame;
-    CGFloat height = frame.size.height;
-    CGFloat offsetY = (visible)? -height : height;
-    
-    // zero duration means no animation
-    CGFloat duration = (animated)? 0.3 : 0.0;
-    
-    [UIView animateWithDuration:duration animations:^{
-        self.tabBarController.tabBar.frame = CGRectOffset(frame, 0, offsetY);
-    } completion:completion];
-}
-
-// Getter to know the current state
-- (BOOL)tabBarIsVisible {
-    return self.tabBarController.tabBar.frame.origin.y < CGRectGetMaxY(self.view.frame);
 }
 
 @end

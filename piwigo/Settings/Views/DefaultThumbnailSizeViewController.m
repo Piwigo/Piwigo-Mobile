@@ -6,6 +6,7 @@
 //  Copyright © 2017 Piwigo.org. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "DefaultThumbnailSizeViewController.h"
 #import "PiwigoImageData.h"
 #import "Model.h"
@@ -21,51 +22,56 @@
 -(instancetype)init
 {
     self = [super init];
-    
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.title = NSLocalizedString(@"defaultThumbnailSizeTitle", @"Default Size");
-    
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    self.tableView.backgroundColor = [UIColor clearColor];
-    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    [self.view addSubview:self.tableView];
-    [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
-    
+    if(self)
+    {
+        self.title = NSLocalizedString(@"defaultThumbnailSizeTitle", @"Default Size");
+        
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        self.tableView.backgroundColor = [UIColor clearColor];
+        self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.tableView.dataSource = self;
+        self.tableView.delegate = self;
+        [self.view addSubview:self.tableView];
+        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
+        
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+    }
     return self;
 }
 
--(void)viewWillAppear:(BOOL)animated
+#pragma mark - View Lifecycle
+
+-(void)paletteChanged
 {
-    [super viewWillAppear:animated];
-    
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.tableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-
     // Table view
     self.tableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.tableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.tableView reloadData];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Set colors, fonts, etc.
+    [self paletteChanged];
 }
 
 

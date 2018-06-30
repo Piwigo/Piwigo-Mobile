@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface ImageScrollView : UIScrollView
+//@interface ImageView : UIView
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *playImage;

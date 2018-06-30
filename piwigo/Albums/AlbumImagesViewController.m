@@ -9,6 +9,7 @@
 #import <Photos/Photos.h>
 #import <StoreKit/StoreKit.h>
 
+#import "AppDelegate.h"
 #import "AlbumImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageService.h"
@@ -18,7 +19,6 @@
 #import "ImageDownloadView.h"
 #import "SortHeaderCollectionReusableView.h"
 #import "NoImagesHeaderCollectionReusableView.h"
-//#import "CategorySortViewController.h"
 #import "CategoryImageSort.h"
 #import "LoadingView.h"
 #import "UICountingLabel.h"
@@ -35,7 +35,7 @@
 
 CGFloat const kRadius = 25.0;
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITabBarControllerDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -54,11 +54,13 @@ CGFloat const kRadius = 25.0;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
 @property (nonatomic, strong) UIButton *uploadButton;
+@property (nonatomic, strong) UIButton *rootAlbumButton;
 
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger startDeleteTotalImages;
 @property (nonatomic, assign) NSInteger totalImagesToDownload;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
+@property (nonatomic, strong) NSMutableArray *touchedImageIds;
 @property (nonatomic, strong) ImageDownloadView *downloadView;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
@@ -89,7 +91,6 @@ CGFloat const kRadius = 25.0;
         // Collection of images
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
-		self.imagesCollection.backgroundColor = [UIColor clearColor];
 		self.imagesCollection.alwaysBounceVertical = YES;
         self.imagesCollection.showsVerticalScrollIndicator = YES;
 		self.imagesCollection.dataSource = self;
@@ -114,6 +115,7 @@ CGFloat const kRadius = 25.0;
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
 		self.isSelect = NO;
 		self.selectedImageIds = [NSMutableArray new];
+        self.touchedImageIds = [NSMutableArray new];
 		
         // Upload button above collection view
         self.uploadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -135,37 +137,50 @@ CGFloat const kRadius = 25.0;
                forControlEvents:UIControlEventTouchUpInside];
         self.uploadButton.hidden = YES;
         [self.view addSubview:self.uploadButton];
-        
+
+        // Root album button above collection view
+        self.rootAlbumButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        self.rootAlbumButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
+        self.rootAlbumButton.layer.cornerRadius = kRadius;
+        self.rootAlbumButton.layer.masksToBounds = NO;
+        [self.rootAlbumButton.layer setOpacity:0.9];
+        [self.rootAlbumButton.layer setShadowColor:[UIColor piwigoGray].CGColor];
+        [self.rootAlbumButton.layer setShadowOpacity:1.0];
+        [self.rootAlbumButton.layer setShadowRadius:5.0];
+        [self.rootAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        self.rootAlbumButton.backgroundColor = [UIColor piwigoBackgroundColor];
+        self.rootAlbumButton.tintColor = [UIColor piwigoRightLabelColor];
+        self.rootAlbumButton.showsTouchWhenHighlighted = YES;
+        [self.rootAlbumButton setImage:[UIImage imageNamed:@"rootAlbum"] forState:UIControlStateNormal];
+        [self.rootAlbumButton addTarget:self action:@selector(setRootAlbumAsDefaultCategory)
+                    forControlEvents:UIControlEventTouchUpInside];
+        self.rootAlbumButton.hidden = YES;
+        [self.view addSubview:self.rootAlbumButton];
+
         // No download at start
 		self.downloadView.hidden = YES;
 
+        // Register category data upadtes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData) name:kPiwigoNotificationGetCategoryData object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
-	}
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+    }
 	return self;
 }
 
 #pragma mark - View Lifecycle
 
--(void)viewWillAppear:(BOOL)animated
+-(void)paletteChanged
 {
-	[super viewWillAppear:animated];
-	
-    // Title of the album
-    self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-
-    // Reload category data and refresh showing cells
-    [self getCategoryData];
-    [self refreshShowingCells];
-
-    // Inform Upload view controllers that user selected this category
-    NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
-    
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    
+    // Buttons
+    self.rootAlbumButton.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.rootAlbumButton.tintColor = [UIColor piwigoRightLabelColor];
 
     // Navigation bar appearence
     NSDictionary *attributes = @{
@@ -176,9 +191,9 @@ CGFloat const kRadius = 25.0;
     if (@available(iOS 11.0, *)) {
         if (self.categoryId == [Model sharedInstance].defaultCategory) {
             NSDictionary *attributesLarge = @{
-                                         NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                         NSFontAttributeName: [UIFont piwigoFontLargeTitle],
-                                         };
+                                              NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                              NSFontAttributeName: [UIFont piwigoFontLargeTitle],
+                                              };
             self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
             self.navigationController.navigationBar.prefersLargeTitles = YES;
         }
@@ -189,17 +204,39 @@ CGFloat const kRadius = 25.0;
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    
+    // Collection view
+    self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
+    [self refreshShowingCells];
+}
 
-    // Tab bar appearance
-    self.tabBarController.delegate = self;
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
+-(void)viewDidLoad
+{
+    // Register gesture recognizer
+//    UITapGestureRecognizer *tappedImageRocognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedImage:)];
+//    tappedImageRocognizer.cancelsTouchesInView = NO;
+//    tappedImageRocognizer.numberOfTouchesRequired = 1;
+//    [self.imagesCollection addGestureRecognizer:tappedImageRocognizer];
+    [self.imagesCollection setUserInteractionEnabled:YES];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+    // Set colors, fonts, etc.
+    [self paletteChanged];
+    
+    // Title of the album
+    self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+
+    // Reload category data and refresh showing cells
+    [self getCategoryData];
+    [self refreshShowingCells];
+
+    // Inform Upload view controllers that user selected this category
+    NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
     
 	// Albums
     if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
@@ -212,7 +249,7 @@ CGFloat const kRadius = 25.0;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
             // Set navigation bar buttons
-            [self loadNavButtons];
+            [self updateNavBar];
 
             self.loadingImages = NO;
             [self.imagesCollection reloadData];
@@ -231,7 +268,7 @@ CGFloat const kRadius = 25.0;
     }
 
     // Set navigation bar buttons
-    [self loadNavButtons];
+    [self updateNavBar];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -251,11 +288,6 @@ CGFloat const kRadius = 25.0;
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
     
-    // Tab bar must be visible if content does not fill the screen
-    if (![self tabBarIsVisible] && (self.navigationController.toolbar.bounds.size.height + self.navigationController.navigationBar.bounds.size.height + self.imagesCollection.collectionViewLayout.collectionViewContentSize.height < [UIScreen mainScreen].bounds.size.height)) {
-        [self setTabBarVisible:YES animated:YES completion:nil];
-    }
-    
     // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
 #if !defined(DEBUG)
@@ -274,7 +306,6 @@ CGFloat const kRadius = 25.0;
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";
     }
-    self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 
     // Hide upload button during transition
     [self.uploadButton setHidden:YES];
@@ -288,34 +319,50 @@ CGFloat const kRadius = 25.0;
         CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
         CGFloat yPos = [UIScreen mainScreen].bounds.size.height - 3*kRadius;
         self.uploadButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
+        self.rootAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)]];
     } completion:nil];
 }
 
--(void)loadNavButtons
+-(void)updateNavBar
 {
+    // Update buttons
     if(!self.isSelect) {    // Image selection mode inactive
         
+        // Title is name of the category
+        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+
         // User can upload images/videos if he/she has:
         // — admin rights
         // — opened a session on a server having Community extension installed
         if(([Model sharedInstance].hasAdminRights) ||
            ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
         {
+            // Show Upload button
             [self.uploadButton setHidden:NO];
+            
+            // Show Home button if needed
+            if (([Model sharedInstance].defaultCategory != 0) &&
+                ([Model sharedInstance].defaultCategory == self.categoryId)) {
+                CGFloat xPos = self.uploadButton.frame.origin.x;
+                CGFloat yPos = self.uploadButton.frame.origin.y;
+                self.rootAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
+                [self.rootAlbumButton setHidden:NO];
+            }
+        }
+        else if (([Model sharedInstance].defaultCategory != 0) &&
+                 ([Model sharedInstance].defaultCategory == self.categoryId)) {
+            CGFloat xPos = self.uploadButton.frame.origin.x;
+            CGFloat yPos = self.uploadButton.frame.origin.y;
+            self.rootAlbumButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
+            [self.rootAlbumButton setHidden:NO];
         }
 
         // Left side of navigation bar
-        if (self.categoryId == 0) {
+        if ((self.categoryId == 0) ||
+            (self.categoryId == [Model sharedInstance].defaultCategory)){
             // Button for accessing settings
             [self.navigationItem setLeftBarButtonItems:@[self.settingsBarButton] animated:YES];
-            [self.navigationItem setHidesBackButton:YES];
-        }
-        else if (([Model sharedInstance].defaultCategory != 0) &&
-            ([Model sharedInstance].defaultCategory == self.categoryId)) {
-            
-            // Buttons for resetting default album Id to 0 and accessing settings
-            [self.navigationItem setLeftBarButtonItems:@[self.rootAlbumBarButton, self.settingsBarButton] animated:YES];
             [self.navigationItem setHidesBackButton:YES];
         }
         else {
@@ -338,10 +385,27 @@ CGFloat const kRadius = 25.0;
     }
     else {                  // Image selection mode active
         
-        // First hide back button item and upload button
+        // Hide back button item and upload button
         [self.navigationItem setHidesBackButton:YES];
         [self.uploadButton setHidden:YES];
+        [self.rootAlbumButton setHidden:YES];
         
+        // Update title
+        switch (self.selectedImageIds.count) {
+            case 0:
+                self.title = NSLocalizedString(@"selectImages", @"Select Images");
+                break;
+                
+            case 1:
+                self.title = NSLocalizedString(@"selectImageSelected", @"1 Image Selected");
+                break;
+                
+            default:
+                self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Images Selected"), @(self.selectedImageIds.count)];
+                break;
+        }
+
+        // Update buttons
         if([Model sharedInstance].hasAdminRights)
         {
             // Only admins have delete rights
@@ -368,6 +432,7 @@ CGFloat const kRadius = 25.0;
         [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
     }
 }
+
 
 #pragma mark - Category Data
 
@@ -463,12 +528,11 @@ CGFloat const kRadius = 25.0;
                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
                 
                 // Set navigation bar buttons
-                [self loadNavButtons];
+                [self updateNavBar];
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
                 self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-                self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
             }];
         }];
      }
@@ -476,10 +540,9 @@ CGFloat const kRadius = 25.0;
          // The album title is not shown in backButtonItem to provide enough space
          // for image title on devices of screen width <= 414 ==> Restore album title
          self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-         self.tabBarItem.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 
          // Set navigation bar buttons
-         [self loadNavButtons];
+         [self updateNavBar];
      }
 }
 
@@ -527,25 +590,6 @@ CGFloat const kRadius = 25.0;
     [self.navigationController popToViewController:rootAlbumViewController animated:YES];
 }
 
-- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController;
-{
-    // Do not return to root album if user's root album being used
-    if (([Model sharedInstance].defaultCategory != 0) &&
-        (viewController == [self.tabBarController.viewControllers objectAtIndex:0]) &&
-        (viewController == self.tabBarController.selectedViewController)) {
-        
-        if (self.categoryId != [Model sharedInstance].defaultCategory) {
-            AlbumImagesViewController *album = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory];
-            [self.navigationController pushViewController:album animated:NO];
-        } else {
-            [self refresh:nil];
-        }
-        return NO;
-    }
-    
-    return YES;
-}
-
 
 #pragma mark - Display Preferences / Upload views
 
@@ -582,9 +626,16 @@ CGFloat const kRadius = 25.0;
         
         // Disable interaction with category cells and scroll to first image cell if needed
         NSInteger numberOfImageCells = 0;
-        for (ImageCollectionViewCell *cell in self.imagesCollection.visibleCells) {
+        for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
 
-            // Will scroll to position of no visible image cell
+            // Disable user interaction with category cell
+            if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
+                CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
+                [categoryCell setAlpha:0.5];
+                [categoryCell setUserInteractionEnabled:NO];
+            }
+
+            // Will scroll to position if no visible image cell
             if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
                 numberOfImageCells++;
                 break;
@@ -592,30 +643,15 @@ CGFloat const kRadius = 25.0;
         }
 
         // Scroll to position of images if needed
-        if (numberOfImageCells == 0)
+        if (!numberOfImageCells)
             [self.imagesCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
         
         // Refresh collection view
         [self.imagesCollection setNeedsDisplay];
     }
     
-    // Update navigation items
-    [self loadNavButtons];
-
-    // Update title
-    switch (self.selectedImageIds.count) {
-        case 0:
-            self.title = NSLocalizedString(@"selectImages", @"Select Images");
-            break;
-            
-        case 1:
-            self.title = NSLocalizedString(@"selectImageSelected", @"1 Image Selected");
-            break;
-            
-        default:
-            self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Images Selected"), @(self.selectedImageIds.count)];
-            break;
-    }
+    // Update navigation bar
+    [self updateNavBar];
 }
 
 -(void)cancelSelect
@@ -623,23 +659,20 @@ CGFloat const kRadius = 25.0;
 	// Disable Images Selection mode
     self.isSelect = NO;
     
-    // Refresh button items
-	[self loadNavButtons];
-    
-    // Put back the name of the category
-	self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    // Update navigation bar
+	[self updateNavBar];
     
     // Enable interaction with category cells and deselect image cells
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
         
         // Enable user interaction with category cell
-//        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
-//            CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
-//            [categoryCell setAlpha:1.0];
-//            [categoryCell setUserInteractionEnabled:YES];
-//        }
+        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
+            CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
+            [categoryCell setAlpha:1.0];
+            [categoryCell setUserInteractionEnabled:YES];
+        }
         
-        // Deselect image cell
+        // Deselect image cell and disable interaction
         if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
             ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
             if(imageCell.isSelected) imageCell.isSelected = NO;
@@ -653,6 +686,48 @@ CGFloat const kRadius = 25.0;
     self.downloadView.hidden = YES;
 	self.selectedImageIds = [NSMutableArray new];
 	[UIApplication sharedApplication].idleTimerDisabled = NO;
+}
+
+-(void)touchesImages:(UIPanGestureRecognizer *)recognizer
+{
+    if (self.isSelect)
+    {
+        // Get cell at touch position
+        CGPoint point = [recognizer locationInView:self.imagesCollection];
+        NSIndexPath *indexPath = [self.imagesCollection indexPathForItemAtPoint:point];
+        UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:indexPath];
+        
+        // Only consider image cells
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]])
+        {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+            
+            // Update the selection if not already done
+            if (![self.touchedImageIds containsObject:imageCell.imageData.imageId]) {
+                
+                // Store that the user touched this cell during this gesture
+                [self.touchedImageIds addObject:imageCell.imageData.imageId];
+
+                // Update the selection state
+                if(![self.selectedImageIds containsObject:imageCell.imageData.imageId]) {
+                    [self.selectedImageIds addObject:imageCell.imageData.imageId];
+                    imageCell.isSelected = YES;
+                } else {
+                    imageCell.isSelected = NO;
+                    [self.selectedImageIds removeObject:imageCell.imageData.imageId];
+                }
+
+                // Reload the cell and update the navigation bar
+                [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+                [self updateNavBar];
+            }
+            
+            // Is this the end of the gesture?
+            if ([recognizer state] == UIGestureRecognizerStateEnded) {
+                self.touchedImageIds = [NSMutableArray new];
+            }
+        }
+    }
 }
 
 
@@ -1193,14 +1268,23 @@ CGFloat const kRadius = 25.0;
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1)      // Images thumbnails
+	if(indexPath.section == 1)      // Images
 	{
 		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
 		
 		if(self.albumData.images.count > indexPath.row) {
-			PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
+			// Create cell from Piwigo data
+            PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 			[cell setupWithImageData:imageData];
             cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
+
+            // Add pan gesture recognition
+            UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchesImages:)];
+            imageSeriesRocognizer.minimumNumberOfTouches = 1;
+            imageSeriesRocognizer.maximumNumberOfTouches = 1;
+            imageSeriesRocognizer.cancelsTouchesInView = NO;
+            [cell addGestureRecognizer:imageSeriesRocognizer];
+            cell.userInteractionEnabled = YES;
 		}
 		
         // Calculate the number of thumbnails displayed per page
@@ -1243,41 +1327,41 @@ CGFloat const kRadius = 25.0;
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1)
-	{
-		ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
-        
+    if(indexPath.section == 1)
+    {
+        ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+
         // Avoid rare crashes…
         if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
             // forget this call!
             return;
         }
-		
+
         // Action depends on mode
         if(!self.isSelect)
-		{
-			// Selection mode not active => display full screen image
+        {
+            // Selection mode not active => display full screen image
             self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
-			self.imageDetailView.hidesBottomBarWhenPushed = YES;
-			self.imageDetailView.imgDetailDelegate = self;
-			[self.navigationController pushViewController:self.imageDetailView animated:YES];
-		}
-		else
-		{
-			// Selection mode active => add/remove image from selection
+            self.imageDetailView.hidesBottomBarWhenPushed = YES;
+            self.imageDetailView.imgDetailDelegate = self;
+            [self.navigationController pushViewController:self.imageDetailView animated:YES];
+        }
+        else
+        {
+            // Selection mode active => add/remove image from selection
             if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
-				[self.selectedImageIds addObject:selectedCell.imageData.imageId];
-				selectedCell.isSelected = YES;
-			} else {
-				selectedCell.isSelected = NO;
-				[self.selectedImageIds removeObject:selectedCell.imageData.imageId];
-			}
-			[collectionView reloadItemsAtIndexPaths:@[indexPath]];
+                [self.selectedImageIds addObject:selectedCell.imageData.imageId];
+                selectedCell.isSelected = YES;
+            } else {
+                selectedCell.isSelected = NO;
+                [self.selectedImageIds removeObject:selectedCell.imageData.imageId];
+            }
+            [collectionView reloadItemsAtIndexPaths:@[indexPath]];
 
             // and display nav buttons
-            [self select];
+            [self updateNavBar];
         }
-	}
+    }
 }
 
 
@@ -1317,89 +1401,6 @@ CGFloat const kRadius = 25.0;
 -(void)pushView:(UIViewController *)viewController
 {
 	[self.navigationController pushViewController:viewController animated:YES];
-}
-
-
-#pragma mark - UIScrollViewDelegate Methods
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    // NOP if content not yet complete
-    if (scrollView.contentSize.height == 0) return;
-    
-    // First time ever, set parameters
-    if (self.previousContentYOffset == -INFINITY) {
-        self.minContentYOffset = scrollView.contentOffset.y;
-    }
-    
-    // Initialisation
-    CGFloat y = scrollView.contentOffset.y - self.minContentYOffset;
-    CGFloat yMax = fmaxf(scrollView.contentSize.height - scrollView.frame.size.height + self.tabBarController.tabBar.bounds.size.height - self.minContentYOffset, self.minContentYOffset);
-//    NSLog(@"contentSize:%g, frameSize:%g", scrollView.contentSize.height, scrollView.frame.size.height);
-//    NSLog(@"offset=%3.0f, y=%3.0f, yMax=%3.0f", self.minContentYOffset, y, yMax);
-    
-    // Depends on current tab bar visibility
-    if ([self tabBarIsVisible]) {
-        // Hide the tab bar when scrolling down
-        if ((y > self.previousContentYOffset) &&        // Scrolling down
-            (y > 44) && (y < yMax - 44))                // from the top with margin
-        {
-            // User scrolls content to the bootm, starting from the top
-            [self setTabBarVisible:NO animated:YES completion:nil];
-        }
-    } else {
-        // Decide whether tab bar should be shown
-        if ((y < self.previousContentYOffset) &&        // Scrolling up
-            (y < yMax - 44))                            // from the bottom with margin
-        {
-            // User scrolls content near the top or bottom
-            [self setTabBarVisible:YES animated:YES completion:nil];
-        }
-        else if ((y > self.previousContentYOffset) &&   // Scrolling down
-                 (y > yMax - 44))                       // near the bottom
-        {
-            // User scrolls content to the bootm, starting from the top
-            [self setTabBarVisible:YES animated:YES completion:nil];
-        }
-    }
-    
-    // Store actual position for next time
-    self.previousContentYOffset = y;
-}
-
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
-{
-    // User tapped the status bar
-    __weak typeof(self) weakSelf = self;
-    [self setTabBarVisible:YES animated:YES completion:^(BOOL finished) {
-        weakSelf.previousContentYOffset = scrollView.contentOffset.y;
-    }];
-    
-    return YES;
-}
-
-// Pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
-- (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    
-    // bail if the current state matches the desired state
-    if ([self tabBarIsVisible] == visible) return (completion)? completion(YES) : nil;
-    
-    // get a frame calculation ready
-    CGRect frame = self.tabBarController.tabBar.frame;
-    CGFloat height = frame.size.height;
-    CGFloat offsetY = (visible)? -height : height;
-    
-    // zero duration means no animation
-    CGFloat duration = (animated)? 0.3 : 0.0;
-    
-    [UIView animateWithDuration:duration animations:^{
-        self.tabBarController.tabBar.frame = CGRectOffset(frame, 0, offsetY);
-    } completion:completion];
-}
-
-// Getter to know the current state
-- (BOOL)tabBarIsVisible {
-    return self.tabBarController.tabBar.frame.origin.y < CGRectGetMaxY(self.view.frame);
 }
 
 @end

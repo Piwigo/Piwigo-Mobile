@@ -12,15 +12,17 @@
 #import "LoginNavigationController.h"
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
-#import "TabBarViewController.h"
-#import "SessionService.h"
+
 #import "Model.h"
+#import "SessionService.h"
 #import "KeychainAccess.h"
 #import "SAMKeychain.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "CategoriesData.h"
 #import "PhotosFetch.h"
 #import "AlbumImagesViewController.h"
+
+NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
 
 @interface AppDelegate ()
 
@@ -187,20 +189,9 @@
     
     // Store modified settings
     [[Model sharedInstance] saveToDisk];
-    // Redraw current views
-    [self reLoadNavigation];
-}
 
-// Called when changing theme
--(void)reLoadNavigation
-{
-    NSArray *windows = [UIApplication sharedApplication].windows;
-    for (UIWindow *window in windows) {
-        for (UIView *view in window.subviews) {
-            [view removeFromSuperview];
-            [window addSubview:view];
-        }
-    }
+    // Notify palette change
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
 }
 
 -(void)loadLoginView

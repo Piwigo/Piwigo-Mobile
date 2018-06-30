@@ -123,8 +123,6 @@
 		7C4B704898B5BF42D1A475AB /* Pods-piwigo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigo.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigo/Pods-piwigo.release.xcconfig"; sourceTree = "<group>"; };
 		9AEB39308966C4B773F67234 /* Pods-piwigoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests.release.xcconfig"; sourceTree = "<group>"; };
 		A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD0134621EBE310000F11C3F /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
-		AD0134631EBE310000F11C3F /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
 		AD0822711FA06B090005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD0822721FA06B090005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/About.strings; sourceTree = "<group>"; };
 		AD0822731FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -395,15 +393,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		AD0134611EBE310000F11C3F /* TabBar */ = {
-			isa = PBXGroup;
-			children = (
-				AD0134621EBE310000F11C3F /* TabBarViewController.h */,
-				AD0134631EBE310000F11C3F /* TabBarViewController.m */,
-			);
-			path = TabBar;
-			sourceTree = "<group>";
-		};
 		AD7B4C2120E0E0AC003E403A /* Headers */ = {
 			isa = PBXGroup;
 			children = (
@@ -650,7 +639,6 @@
 		D82B8CBD1A67820A000E47CA /* piwigo */ = {
 			isa = PBXGroup;
 			children = (
-				AD0134611EBE310000F11C3F /* TabBar */,
 				D863EEBE1A6A440D00C0A6E9 /* Login */,
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,

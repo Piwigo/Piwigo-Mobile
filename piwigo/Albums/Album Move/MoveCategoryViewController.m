@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "MoveCategoryViewController.h"
 #import "CategoriesData.h"
 #import "AlbumService.h"
@@ -48,47 +49,50 @@
         [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
 
 #pragma mark - View Lifecycle
 
--(void)viewWillAppear:(BOOL)animated
+-(void)paletteChanged
 {
-    [super viewWillAppear:animated];
-	
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-    
     // Table view
     self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self buildCategoryArrayUsingCache:YES UntilCompletion:^(BOOL result) {
         // Build complete list
         [self.categoriesTableView reloadData];
     } orFailure:^(NSURLSessionTask *task, NSError *error) {
         // Invite users to refresh?
     }];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+	
+    // Set colors, fonts, etc.
+    [self paletteChanged];
 }
 
 

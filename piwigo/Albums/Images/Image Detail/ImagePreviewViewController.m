@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "ImagePreviewViewController.h"
 #import "PiwigoImageData.h"
 #import "ImageScrollView.h"
@@ -25,42 +26,37 @@
 	self = [super init];
 	if(self)
 	{
-		self.scrollView = [ImageScrollView new];
+        self.scrollView = [ImageScrollView new];
+//        self.imageView = [ImageView new];
+
+        // Video previewed
         self.videoView = [VideoView new];
-		self.view = self.scrollView;
-	}
+        self.view = self.scrollView;
+//        self.view = self.imageView;
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+}
 	return self;
+}
+
+#pragma mark - View Lifecycle
+
+-(void)paletteChanged
+{
+    // Background color depends on the navigation bar visibility
+    if (self.navigationController.navigationBarHidden)
+        self.view.backgroundColor = [UIColor blackColor];
+    else
+        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 
-    // Background color depends on the navigation bar visibility
-    if (self.navigationController.navigationBarHidden)
-        self.view.backgroundColor = [UIColor blackColor];
-    else
-        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
-    self.navigationBarHidden = YES;
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
+    // Set colors, fonts, etc.
+    [self paletteChanged];    
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -72,6 +68,7 @@
 {
     // Display "play" button if video
     self.scrollView.playImage.hidden = !(imageData.isVideo);
+//    self.imageView.playImage.hidden = !(imageData.isVideo);
 
     // Thumbnail image may be used as placeholder image
     NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
@@ -89,7 +86,8 @@
     __weak typeof(self) weakSelf = self;
     
     weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
-    
+//    weakSelf.imageView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
+
     [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
       parameters:nil
         progress:^(NSProgress *progress) {
@@ -106,6 +104,7 @@
         }
          success:^(NSURLSessionTask *task, UIImage *image) {
              weakSelf.scrollView.imageView.image = image;
+//             weakSelf.imageView.imageView.image = image;
              weakSelf.imageLoaded = YES;                        // Hide progress bar
          }
          failure:^(NSURLSessionTask *task, NSError *error) {

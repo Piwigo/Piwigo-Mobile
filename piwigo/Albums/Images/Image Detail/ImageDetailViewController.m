@@ -8,6 +8,7 @@
 
 #import <Photos/Photos.h>
 
+#import "AppDelegate.h"
 #import "ImageDetailViewController.h"
 #import "CategoriesData.h"
 #import "ImageService.h"
@@ -30,6 +31,9 @@
 
 @property (nonatomic, strong) ImageDownloadView *downloadView;
 
+//@property (nonatomic, assign) CGFloat imageScale;
+//@property (nonatomic, assign) CGFloat previousImageScale;
+//
 @end
 
 @implementation ImageDetailViewController
@@ -72,15 +76,42 @@
 															   constant:0];
 		[self.view addConstraint:self.topProgressBarConstraint];
 		
+        // For managing taps
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView)]];
+
+        // For managing pinches
+//        self.imageScale = 1.0; self.previousImageScale = 1.0;
+//        [self.view addGestureRecognizer:[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(didPinchView:)]];
+        
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
 	}
 	return self;
+}
+
+-(void)paletteChanged
+{
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 	
+    // Set colors, fonts, etc.
+    [self paletteChanged];
+
     // Image options button
 	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
 	self.navigationItem.rightBarButtonItem = imageOptionsButton;
@@ -96,10 +127,12 @@
 		self.automaticallyAdjustsScrollViewInsets = false;
 		self.edgesForExtendedLayout = UIRectEdgeNone;
 	}
-
-    // Hide tab bar
-    self.tabBarController.tabBar.hidden = YES;
 }
+
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+//{
+//    return YES;
+//}
 
 -(void)didTapView
 {
@@ -124,6 +157,40 @@
         }
     }
 }
+
+//-(void)didPinchView:(UIPinchGestureRecognizer *)recognizer
+//{
+//    UIGestureRecognizerState state = [recognizer state];
+//    CGFloat scale = [recognizer scale];
+//    CGFloat newImageScale = self.imageScale * scale;
+//
+//    // Scale cannot be less than 1.0 and more than 5.0
+//    if (newImageScale < 1.0) scale = 1.0 / self.imageScale;
+//    if (newImageScale > 5.0) scale = 5.0 / self.imageScale;
+//
+//    // Pinch in progress
+//    if (state == UIGestureRecognizerStateBegan || state == UIGestureRecognizerStateChanged)
+//    {
+//        [recognizer.view setTransform:CGAffineTransformScale(recognizer.view.transform, scale, scale)];
+//        self.previousImageScale = self.imageScale;
+//        self.imageScale *= scale;
+//        [recognizer setScale:1.0];
+//        return;
+//    }
+//
+//    // Pinch ended
+//    if (state == UIGestureRecognizerStateEnded)
+//    {
+//        if ((self.imageScale == 1.0) && (self.previousImageScale == 1.0))
+//        {
+//            // The user scaled down twice the image => back to collection of images
+//            NSLog(@"didPinchView! newScale=%f", newImageScale);
+//            [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+//        } else {
+//            self.previousImageScale = scale;
+//        }
+//    }
+//}
 
 - (BOOL)prefersStatusBarHidden {
     if (self.navigationController.navigationBarHidden)
@@ -520,8 +587,9 @@
 -(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
 {
     ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
-	[removedVC.scrollView.imageView cancelImageDownloadTask];
-	
+    [removedVC.scrollView.imageView cancelImageDownloadTask];
+//    [removedVC.imageView.imageView cancelImageDownloadTask];
+
 	ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
 	view.imagePreviewDelegate = self;
 

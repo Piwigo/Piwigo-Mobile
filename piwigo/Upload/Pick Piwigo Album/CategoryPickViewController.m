@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "CategoryPickViewController.h"
 #import "CategoriesData.h"
 #import "CategoryTableViewCell.h"
@@ -39,6 +40,8 @@
     if(([Model sharedInstance].hasAdminRights) ||
        ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
 	{
+        self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
+        
         // Current category
         self.currentCategoryId = categoryId;
         
@@ -63,8 +66,11 @@
         // Button for returning to albums/images
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
         
-        // Current category updated by Albums section
+        // Register category changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoNotificationChangedCurrentCategory object:nil];
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	else
 	{
@@ -113,9 +119,6 @@
                                        options:kNilOptions metrics:nil
                                        views:@{@"admin" : adminLabel, @"description" : description}]];
         }
-
-        // Background color of the view
-        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 }
 	
 	return self;
@@ -130,16 +133,11 @@
     self.currentCategoryId = [[userInfo objectForKey:@"currentCategoryId"] integerValue];
 }
 
--(void)viewWillAppear:(BOOL)animated
+-(void)paletteChanged
 {
-    [super viewWillAppear:animated];
-    
-    self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
-
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -150,23 +148,23 @@
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
-
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-
+    
     // Table view
     self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self buildCategoryArrayUsingCache:YES UntilCompletion:^(BOOL result) {
         [self.categoriesTableView reloadData];
     } orFailure:^(NSURLSessionTask *task, NSError *error) {
         // Invite users to refresh?
     }];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Set colors, fonts, etc.
+    [self paletteChanged];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
