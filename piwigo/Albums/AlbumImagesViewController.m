@@ -148,8 +148,6 @@ CGFloat const kRadius = 25.0;
         [self.rootAlbumButton.layer setShadowOpacity:1.0];
         [self.rootAlbumButton.layer setShadowRadius:5.0];
         [self.rootAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
-        self.rootAlbumButton.backgroundColor = [UIColor piwigoBackgroundColor];
-        self.rootAlbumButton.tintColor = [UIColor piwigoRightLabelColor];
         self.rootAlbumButton.showsTouchWhenHighlighted = YES;
         [self.rootAlbumButton setImage:[UIImage imageNamed:@"rootAlbum"] forState:UIControlStateNormal];
         [self.rootAlbumButton addTarget:self action:@selector(setRootAlbumAsDefaultCategory)
@@ -179,8 +177,8 @@ CGFloat const kRadius = 25.0;
     self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     
     // Buttons
-    self.rootAlbumButton.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.rootAlbumButton.tintColor = [UIColor piwigoRightLabelColor];
+    self.rootAlbumButton.backgroundColor = [UIColor piwigoRightLabelColor];
+    self.rootAlbumButton.tintColor = [UIColor piwigoBackgroundColor];
 
     // Navigation bar appearence
     NSDictionary *attributes = @{
