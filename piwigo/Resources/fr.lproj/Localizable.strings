@@ -273,10 +273,10 @@
 "deleteImageFail_message" = "L'Image n’a pas pu être supprimée\n%@";
 
 // Image download
-"downloadSingleImage_title" = "Télécharger Image";
-"downloadSingleImage_confirmation" = "Êtes-vous sûr de vouloir télécharger la sélection de %@ images ?";
-"downloadSeveralImages_title" = "Télécharger %@ Images";
-"downloadSeveralImage_confirmation" = "Êtes-vous sûr de vouloir télécharger la sélection de %@ images ?";
+"downloadSingleImage_title" = "Télécharger l'image";
+"downloadSingleImage_confirmation" = "Êtes-vous sûr de vouloir télécharger l'image sélectionnée ?";
+"downloadSeveralImages_title" = "Télécharger %@ images";
+"downloadSeveralImage_confirmation" = "Êtes-vous sûr de vouloir télécharger les %@ images sélectionnées ?";
 
 "downloadingImage" = "Téléchargement d’Image";
 "downloadingImages" = "Téléchargement des Images";
