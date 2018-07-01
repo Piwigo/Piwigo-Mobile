@@ -44,9 +44,6 @@ CGFloat const kRadius = 25.0;
 @property (nonatomic, assign) BOOL loadingImages;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
-@property (nonatomic, assign) CGFloat previousContentYOffset;
-@property (nonatomic, assign) CGFloat minContentYOffset;
-
 @property (nonatomic, strong) UIBarButtonItem *rootAlbumBarButton;
 @property (nonatomic, strong) UIBarButtonItem *settingsBarButton;
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
@@ -86,8 +83,10 @@ CGFloat const kRadius = 25.0;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
 		
         // Before starting scrolling
-        self.previousContentYOffset = -INFINITY;
-        
+        self.isSelect = NO;
+        self.touchedImageIds = [NSMutableArray new];
+        self.selectedImageIds = [NSMutableArray new];
+
         // Collection of images
 		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
 		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -113,9 +112,6 @@ CGFloat const kRadius = 25.0;
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
-		self.isSelect = NO;
-		self.selectedImageIds = [NSMutableArray new];
-        self.touchedImageIds = [NSMutableArray new];
 		
         // Upload button above collection view
         self.uploadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -666,24 +662,58 @@ CGFloat const kRadius = 25.0;
             if(imageCell.isSelected) imageCell.isSelected = NO;
         }
     }
-    
-    // Refresh collection view
-    [self.imagesCollection reloadData];
 
     // Hide download view, clear array of selected images and allow iOS device to sleep
     self.downloadView.hidden = YES;
-	self.selectedImageIds = [NSMutableArray new];
+    self.touchedImageIds = [NSMutableArray new];
+    self.selectedImageIds = [NSMutableArray new];
 	[UIApplication sharedApplication].idleTimerDisabled = NO;
+    
+    // Refresh collection view
+    [self.imagesCollection reloadData];
 }
 
--(void)touchesImages:(UIPanGestureRecognizer *)recognizer
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-    if (self.isSelect)
-    {
+    // Will examine touchs only in select mode
+    if (self.isSelect) {
+       return YES;
+    }
+    return NO;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer;
+{
+    // Will interpret touches only in horizontal direction
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        UIPanGestureRecognizer *gPR = (UIPanGestureRecognizer *)gestureRecognizer;
+        CGPoint translation = [gPR translationInView:self.imagesCollection];
+//        NSLog(@"shouldBegin: => translation at %.1f, %.1f", translation.x, translation.y);
+        if (fabs(translation.x) > fabs(translation.y))
+            return YES;
+    }
+    return NO;
+}
+
+-(void)touchesImages:(UIPanGestureRecognizer *)gestureRecognizer
+{
+    // To prevent a crash
+    if (gestureRecognizer.view == nil) return;
+    
+    // Select/deselect the cell or scroll the view
+    if ((gestureRecognizer.state == UIGestureRecognizerStateBegan) ||
+        (gestureRecognizer.state == UIGestureRecognizerStateChanged)) {
+        
+        // Point and direction
+        CGPoint point = [gestureRecognizer locationInView:self.imagesCollection];
+//        CGPoint translation = [gestureRecognizer translationInView:self.imagesCollection];
+//        NSLog(@"translation = %.1f,%.1f", translation.x, translation.y);
+        
         // Get cell at touch position
-        CGPoint point = [recognizer locationInView:self.imagesCollection];
         NSIndexPath *indexPath = [self.imagesCollection indexPathForItemAtPoint:point];
+        if ((indexPath.section != 1) || (indexPath.row == NSNotFound)) return;
         UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:indexPath];
+        if (cell == nil) return;
         
         // Only consider image cells
         if ([cell isKindOfClass:[ImageCollectionViewCell class]])
@@ -695,7 +725,7 @@ CGFloat const kRadius = 25.0;
                 
                 // Store that the user touched this cell during this gesture
                 [self.touchedImageIds addObject:imageCell.imageData.imageId];
-
+                
                 // Update the selection state
                 if(![self.selectedImageIds containsObject:imageCell.imageData.imageId]) {
                     [self.selectedImageIds addObject:imageCell.imageData.imageId];
@@ -704,17 +734,18 @@ CGFloat const kRadius = 25.0;
                     imageCell.isSelected = NO;
                     [self.selectedImageIds removeObject:imageCell.imageData.imageId];
                 }
-
+                
                 // Reload the cell and update the navigation bar
                 [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
                 [self updateNavBar];
             }
-            
-            // Is this the end of the gesture?
-            if ([recognizer state] == UIGestureRecognizerStateEnded) {
-                self.touchedImageIds = [NSMutableArray new];
-            }
         }
+    }
+    
+    // Is this the end of the gesture?
+    if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) {
+//        NSLog(@"gestureEnded!");
+        self.touchedImageIds = [NSMutableArray new];
     }
 }
 
@@ -1271,6 +1302,7 @@ CGFloat const kRadius = 25.0;
             imageSeriesRocognizer.minimumNumberOfTouches = 1;
             imageSeriesRocognizer.maximumNumberOfTouches = 1;
             imageSeriesRocognizer.cancelsTouchesInView = NO;
+            imageSeriesRocognizer.delegate = self;
             [cell addGestureRecognizer:imageSeriesRocognizer];
             cell.userInteractionEnabled = YES;
 		}
