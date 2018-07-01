@@ -38,6 +38,7 @@
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
 @property (nonatomic, strong) NSMutableArray *selectedImages;
+@property (nonatomic, strong) NSMutableArray *touchedImages;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
 @property (nonatomic, strong) LoadingView *loadingView;
@@ -75,6 +76,7 @@
 
         // Selected images
         self.selectedImages = [NSMutableArray new];
+        self.touchedImages = [NSMutableArray new];
         
         // Bar buttons
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
@@ -118,7 +120,7 @@
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Update navigation bar and title
-    [self loadNavButtons];
+    [self updateNavBar];
     
     // Progress bar
     [ImageUploadProgressView sharedInstance].delegate = self;
@@ -156,7 +158,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)loadNavButtons
+-(void)updateNavBar
 {
     switch (self.selectedImages.count) {
         case 0:
@@ -182,13 +184,6 @@
 
 #pragma mark - Select Images
 
-//-(void)selectAll
-//{
-//    self.selectedImages = [self.images mutableCopy];
-//    [self loadNavButtons];
-//    [self.localImagesCollection reloadData];
-//}
-
 -(void)cancelSelect
 {
     // Deselect the cells
@@ -206,7 +201,41 @@
     self.selectedImages = [NSMutableArray new];
     
     // Update navigation bar
-    [self loadNavButtons];
+    [self updateNavBar];
+}
+
+-(void)touchesImages:(UIPanGestureRecognizer *)recognizer
+{
+    // Get cell at touch position
+    CGPoint point = [recognizer locationInView:self.localImagesCollection];
+    NSIndexPath *indexPath = [self.localImagesCollection indexPathForItemAtPoint:point];
+    LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:indexPath];
+    PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
+        
+    // Update the selection if not already done
+    if (![self.touchedImages containsObject:imageAsset]) {
+
+        // Store that the user touched this cell during this gesture
+        [self.touchedImages addObject:imageAsset];
+
+        // Update the selection state
+        if(![self.selectedImages containsObject:imageAsset]) {
+            [self.selectedImages addObject:imageAsset];
+            selectedCell.cellSelected = YES;
+        } else {
+            selectedCell.cellSelected = NO;
+            [self.selectedImages removeObject:imageAsset];
+        }
+
+        // Reload the cell and update the navigation bar
+        [self.localImagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+        [self updateNavBar];
+    }
+
+    // Is this the end of the gesture?
+    if ([recognizer state] == UIGestureRecognizerStateEnded) {
+        self.touchedImages = [NSMutableArray new];
+    }
 }
 
 -(void)presentImageUploadView
@@ -412,14 +441,26 @@
             originalFilename = [originalFilename stringByAppendingPathExtension:@"m4a"];
         }
     }
-    if([self.selectedImages containsObject:imageAsset])
-    {
-        cell.cellSelected = YES;
-    }
-    else if ([[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]])
-    {
-        cell.cellUploading = YES;
-    }
+
+    // Add pan gesture recognition
+    UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchesImages:)];
+    imageSeriesRocognizer.minimumNumberOfTouches = 1;
+    imageSeriesRocognizer.maximumNumberOfTouches = 1;
+    imageSeriesRocognizer.cancelsTouchesInView = NO;
+    [cell addGestureRecognizer:imageSeriesRocognizer];
+    cell.userInteractionEnabled = YES;
+
+    // Cell state
+    cell.cellSelected = [self.selectedImages containsObject:imageAsset];
+    cell.cellUploading = [[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]];
+//    if([self.selectedImages containsObject:imageAsset])
+//    {
+//        cell.cellSelected = YES;
+//    }
+//    else if ([[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]])
+//    {
+//        cell.cellUploading = YES;
+//    }
     
     return cell;
 }
@@ -444,7 +485,7 @@
         selectedCell.cellSelected = YES;
     }
     
-    [self loadNavButtons];
+    [self updateNavBar];
 }
 
 

@@ -208,16 +208,6 @@ CGFloat const kRadius = 25.0;
     [self refreshShowingCells];
 }
 
--(void)viewDidLoad
-{
-    // Register gesture recognizer
-//    UITapGestureRecognizer *tappedImageRocognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedImage:)];
-//    tappedImageRocognizer.cancelsTouchesInView = NO;
-//    tappedImageRocognizer.numberOfTouchesRequired = 1;
-//    [self.imagesCollection addGestureRecognizer:tappedImageRocognizer];
-    [self.imagesCollection setUserInteractionEnabled:YES];
-}
-
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
@@ -225,9 +215,6 @@ CGFloat const kRadius = 25.0;
     // Set colors, fonts, etc.
     [self paletteChanged];
     
-    // Title of the album
-    self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-
     // Reload category data and refresh showing cells
     [self getCategoryData];
     [self refreshShowingCells];
@@ -328,7 +315,11 @@ CGFloat const kRadius = 25.0;
     if(!self.isSelect) {    // Image selection mode inactive
         
         // Title is name of the category
-        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+        if (self.categoryId == 0) {
+            self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+        } else {
+            self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+        }
 
         // User can upload images/videos if he/she has:
         // — admin rights
@@ -636,7 +627,6 @@ CGFloat const kRadius = 25.0;
             // Will scroll to position if no visible image cell
             if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
                 numberOfImageCells++;
-                break;
             }
         }
 
@@ -645,7 +635,7 @@ CGFloat const kRadius = 25.0;
             [self.imagesCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
         
         // Refresh collection view
-        [self.imagesCollection setNeedsDisplay];
+        [self.imagesCollection reloadData];
     }
     
     // Update navigation bar
@@ -678,7 +668,7 @@ CGFloat const kRadius = 25.0;
     }
     
     // Refresh collection view
-    [self.imagesCollection setNeedsDisplay];
+    [self.imagesCollection reloadData];
 
     // Hide download view, clear array of selected images and allow iOS device to sleep
     self.downloadView.hidden = YES;
@@ -1354,7 +1344,7 @@ CGFloat const kRadius = 25.0;
                 selectedCell.isSelected = NO;
                 [self.selectedImageIds removeObject:selectedCell.imageData.imageId];
             }
-            [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            [collectionView reloadData];
 
             // and display nav buttons
             [self updateNavBar];
