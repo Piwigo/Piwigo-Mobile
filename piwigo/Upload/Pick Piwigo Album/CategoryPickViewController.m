@@ -252,6 +252,7 @@
     
     switch (section) {
         case 0:                 // List of actions for the current album
+        {
             // Title
             if (self.currentCategoryId == 0) {
                 titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"categorySelection_root", @"Root Album")];
@@ -270,8 +271,10 @@
                                          range:NSMakeRange(0, [textString length])];
             [headerAttributedString appendAttributedString:textAttributedString];
             break;
+        }
             
         default:                // List of albums to upload images to
+        {
             // Title
             titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"categorySelection_titleSub", @"Sub-Albums")];
             titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
@@ -280,11 +283,16 @@
             [headerAttributedString appendAttributedString:titleAttributedString];
             
             // Text
-            textString = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select a sub-album to upload images to");
+            if (self.categories.count == 0) {
+                textString = NSLocalizedString(@"categoryUpload_noSubAlbum", @"There is no sub-album to upload images to");
+            } else {
+                textString = NSLocalizedString(@"categoryUpload_chooseAlbum", @"Select a sub-album to upload images to");
+            }
             textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
             [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
                                          range:NSMakeRange(0, [textString length])];
             [headerAttributedString appendAttributedString:textAttributedString];
+        }
     }
 
     // Header label
@@ -339,7 +347,7 @@
             nberRows += (self.currentCategoryId != [Model sharedInstance].defaultCategory);
             break;
             
-        default:                // List of albums to upload images to
+        default:                // List of sub-albums to upload images to
             nberRows = self.categories.count;
             break;
     }
