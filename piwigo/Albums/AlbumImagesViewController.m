@@ -35,7 +35,7 @@
 
 CGFloat const kRadius = 25.0;
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -82,7 +82,7 @@ CGFloat const kRadius = 25.0;
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
 		
-        // Before starting scrolling
+        // Initialise selection mode
         self.isSelect = NO;
         self.touchedImageIds = [NSMutableArray new];
         self.selectedImageIds = [NSMutableArray new];
@@ -1299,6 +1299,7 @@ CGFloat const kRadius = 25.0;
             imageSeriesRocognizer.minimumNumberOfTouches = 1;
             imageSeriesRocognizer.maximumNumberOfTouches = 1;
             imageSeriesRocognizer.cancelsTouchesInView = NO;
+            imageSeriesRocognizer.delegate = self;
             [cell addGestureRecognizer:imageSeriesRocognizer];
             cell.userInteractionEnabled = YES;
 		}

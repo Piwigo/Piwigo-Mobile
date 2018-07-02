@@ -24,7 +24,7 @@
 #import "UICountingLabel.h"
 #import "ImagesCollection.h"
 
-@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ImageUploadProgressDelegate, SortSelectViewControllerDelegate, PHPhotoLibraryChangeObserver>
+@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, SortSelectViewControllerDelegate>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
@@ -477,6 +477,7 @@
     imageSeriesRocognizer.minimumNumberOfTouches = 1;
     imageSeriesRocognizer.maximumNumberOfTouches = 1;
     imageSeriesRocognizer.cancelsTouchesInView = NO;
+    imageSeriesRocognizer.delegate = self;
     [cell addGestureRecognizer:imageSeriesRocognizer];
     cell.userInteractionEnabled = YES;
 
