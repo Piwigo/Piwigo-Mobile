@@ -111,12 +111,14 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
 
     // Set network reachability status change block
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        NSLog(@"!!!!!! Network Reachability Changed!");
-        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
-              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
-              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
-        
+//#if defined(DEBUG)
+//        NSLog(@"!!!!!! Network Reachability Changed!");
+//        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
+//              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
+//              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
+//              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+//#endif
+
         if ([AFNetworkReachabilityManager sharedManager].reachable) {
             // Connection changed but again reachable — Login again?
             BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
@@ -125,9 +127,9 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
             
             if(hadOpenedSession && (server.length > 0) && (user.length > 0))
             {
-#if defined(DEBUG)
-                NSLog(@"       Connection changed but again reachable — Login again?");
-#endif
+//#if defined(DEBUG)
+//                NSLog(@"       Connection changed but again reachable — Login again?");
+//#endif
                 [self.loginVC checkSessionStatusAndTryRelogin];
             }
         }

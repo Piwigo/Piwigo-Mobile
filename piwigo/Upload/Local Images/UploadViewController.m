@@ -204,36 +204,66 @@
     [self updateNavBar];
 }
 
--(void)touchesImages:(UIPanGestureRecognizer *)recognizer
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer;
 {
-    // Get cell at touch position
-    CGPoint point = [recognizer locationInView:self.localImagesCollection];
-    NSIndexPath *indexPath = [self.localImagesCollection indexPathForItemAtPoint:point];
-    LocalImageCollectionViewCell *selectedCell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:indexPath];
-    PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
+    // Will interpret touches only in horizontal direction
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        UIPanGestureRecognizer *gPR = (UIPanGestureRecognizer *)gestureRecognizer;
+        CGPoint translation = [gPR translationInView:self.localImagesCollection];
+        if (fabs(translation.x) > fabs(translation.y))
+            return YES;
+    }
+    return NO;
+}
+
+-(void)touchedImages:(UIPanGestureRecognizer *)gestureRecognizer
+{
+    // To prevent a crash
+    if (gestureRecognizer.view == nil) return;
+    
+    // Select/deselect the cell or scroll the view
+    if ((gestureRecognizer.state == UIGestureRecognizerStateBegan) ||
+        (gestureRecognizer.state == UIGestureRecognizerStateChanged)) {
         
-    // Update the selection if not already done
-    if (![self.touchedImages containsObject:imageAsset]) {
-
-        // Store that the user touched this cell during this gesture
-        [self.touchedImages addObject:imageAsset];
-
-        // Update the selection state
-        if(![self.selectedImages containsObject:imageAsset]) {
-            [self.selectedImages addObject:imageAsset];
-            selectedCell.cellSelected = YES;
-        } else {
-            selectedCell.cellSelected = NO;
-            [self.selectedImages removeObject:imageAsset];
+        // Point and direction
+        CGPoint point = [gestureRecognizer locationInView:self.localImagesCollection];
+        
+        // Get cell at touch position
+        NSIndexPath *indexPath = [self.localImagesCollection indexPathForItemAtPoint:point];
+        if ((indexPath.section != 0) || (indexPath.row == NSNotFound)) return;
+        UICollectionViewCell *cell = [self.localImagesCollection cellForItemAtIndexPath:indexPath];
+        PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
+        if ((cell == nil) || (imageAsset == nil)) return;
+    
+        // Only consider image cells
+        if ([cell isKindOfClass:[LocalImageCollectionViewCell class]])
+        {
+            LocalImageCollectionViewCell *imageCell = (LocalImageCollectionViewCell *)cell;
+            
+            // Update the selection if not already done
+            if (![self.touchedImages containsObject:imageAsset]) {
+                
+                // Store that the user touched this cell during this gesture
+                [self.touchedImages addObject:imageAsset];
+                
+                // Update the selection state
+                if(![self.selectedImages containsObject:imageAsset]) {
+                    [self.selectedImages addObject:imageAsset];
+                    imageCell.cellSelected = YES;
+                } else {
+                    imageCell.cellSelected = NO;
+                    [self.selectedImages removeObject:imageAsset];
+                }
+                
+                // Reload the cell and update the navigation bar
+                [self.localImagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+                [self updateNavBar];
+            }
         }
-
-        // Reload the cell and update the navigation bar
-        [self.localImagesCollection reloadItemsAtIndexPaths:@[indexPath]];
-        [self updateNavBar];
     }
 
     // Is this the end of the gesture?
-    if ([recognizer state] == UIGestureRecognizerStateEnded) {
+    if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) {
         self.touchedImages = [NSMutableArray new];
     }
 }
@@ -443,7 +473,7 @@
     }
 
     // Add pan gesture recognition
-    UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchesImages:)];
+    UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
     imageSeriesRocognizer.minimumNumberOfTouches = 1;
     imageSeriesRocognizer.maximumNumberOfTouches = 1;
     imageSeriesRocognizer.cancelsTouchesInView = NO;
