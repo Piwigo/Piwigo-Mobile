@@ -120,6 +120,18 @@
 "categorySelection_action" = "Wähle eine Aktion für dieses Album";
 "categorySelectionHUD_label" = "Albumdaten abrufen…";
 
+// Album upload
+"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_chooseAlbum" = "Wähle ein Unter-Album zum Hochladen der Bilder";
+"categoryUpload_LocalAlbums" = "Lokale Alben";
+"categoryUpload_chooseLocalAlbum" = "Wähle ein Album um Bilder zu erhalten";
+"categoryUpload_iCloudAlbums" = "iCloud Alben";
+"categoryUpload_chooseiCloudAlbum" = "Wähle ein iCloud Album um Bilder zu erhalten";
+"categoyUpload_loadSubCategories" = "Laden";
+"categoryUpload_images" = "Lade Bilder hoch";
+"categoryUpload_subAlbum" = "Erstelle Unter-Album";
+"categoryUpload_defaultAlbum" = "Als Standard-Album festlegen";
+
 // Default album
 "setDefaultCategory_title" = "Standard-Album";
 "setDefaultCategory_message" = "Sind Sie sicher, dass Sie das Album \"%@\" als Standard-Album festlegen möchten?";
@@ -296,16 +308,6 @@
 "videoSaveError_message" = "Video speichern fehlgeschlagen. Fehler: %@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "Wähle ein Unter-Album zum Hochladen der Bilder";
-"categoryUpload_LocalAlbums" = "Lokale Alben";
-"categoryUpload_chooseLocalAlbum" = "Wähle ein Album um Bilder zu erhalten";
-"categoryUpload_iCloudAlbums" = "iCloud Alben";
-"categoryUpload_chooseiCloudAlbum" = "Wähle ein iCloud Album um Bilder zu erhalten";
-"categoyUpload_loadSubCategories" = "Laden";
-"categoryUpload_images" = "Lade Bilder hoch";
-"categoryUpload_subAlbum" = "Erstelle Unter-Album";
-"categoryUpload_defaultAlbum" = "Als Standard-Album festlegen";
-
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Autor:";
 "imageUploadDetails_privacy" = "Sicherheitsstufe:";

@@ -120,6 +120,18 @@
 "categorySelection_action" = "Selecteer een actie voor dit album";
 "categorySelectionHUD_label" = "Terugvinden van album-gegevens…";
 
+// Album upload
+"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_chooseAlbum" = "Selecteer een album om foto's naar up te loaden";
+"categoryUpload_LocalAlbums" = "Lokale albums";
+"categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
+"categoryUpload_iCloudAlbums" = "iCloud albums";
+"categoryUpload_chooseiCloudAlbum" = "Selecteer een  iCloud album om er foto's van op te halen";
+"categoyUpload_loadSubCategories" = "laden";
+"categoryUpload_images" = "Foto's uploaden";
+"categoryUpload_subAlbum" = "Maak sub-album";
+"categoryUpload_defaultAlbum" = "Stel in als standaard-album";
+
 // Default album
 "setDefaultCategory_title" = "Standaard album";
 "setDefaultCategory_message" = "Weet je zeker dat je het album \"%@\" als standaard album wilt instellen?";
@@ -296,16 +308,6 @@
 "videoSaveError_message" = "Opslaan video is mislukt. Fout: %@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "Selecteer een album om foto's naar up te loaden";
-"categoryUpload_LocalAlbums" = "Lokale albums";
-"categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
-"categoryUpload_iCloudAlbums" = "iCloud albums";
-"categoryUpload_chooseiCloudAlbum" = "Selecteer een  iCloud album om er foto's van op te halen";
-"categoyUpload_loadSubCategories" = "laden";
-"categoryUpload_images" = "Foto's uploaden";
-"categoryUpload_subAlbum" = "Maak sub-album";
-"categoryUpload_defaultAlbum" = "Stel in als standaard-album";
-
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Fotograaf:";
 "imageUploadDetails_privacy" = "Privacy:";

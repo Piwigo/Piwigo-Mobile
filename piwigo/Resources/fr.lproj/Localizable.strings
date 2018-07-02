@@ -120,6 +120,18 @@
 "categorySelection_action" = "Choisissez une action pour cet album";
 "categorySelectionHUD_label" = "Récupération des Données d'Albums…";
 
+// Album upload
+"categoryUpload_noSubAlbum" = "Il n'y a pas de sous-album qui puisse recevoir des images";
+"categoryUpload_chooseAlbum" = "Sélectionnez le sous-album recevant les images";
+"categoryUpload_LocalAlbums" = "Albums Locaux";
+"categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les images à envoyer";
+"categoryUpload_iCloudAlbums" = "Albums iCloud";
+"categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album iCloud qui contient les images à envoyer";
+"categoyUpload_loadSubCategories" = "télécharge";
+"categoryUpload_images" = "Envoyer des Images";
+"categoryUpload_subAlbum" = "Créer un sous-album";
+"categoryUpload_defaultAlbum" = "Définir comme Album par Défaut";
+
 // Default album
 "setDefaultCategory_title" = "Album par Défaut";
 "setDefaultCategory_message" = "Etes-vous sûr de vouloir définir l'album \"%@\" comme Album par Défaut ?";
@@ -296,16 +308,6 @@
 "videoSaveError_message" = "Impossible d’enregistrer la vidéo. Erreur : %@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "Sélectionnez un sous-album Piwigo qui recevra les images";
-"categoryUpload_LocalAlbums" = "Albums Locaux";
-"categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les images à envoyer";
-"categoryUpload_iCloudAlbums" = "Albums iCloud";
-"categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album iCloud qui contient les images à envoyer";
-"categoyUpload_loadSubCategories" = "télécharge";
-"categoryUpload_images" = "Envoyer des Images";
-"categoryUpload_subAlbum" = "Créer un sous-album";
-"categoryUpload_defaultAlbum" = "Définir comme Album par Défaut";
-
 "imageUploadDetails_title" = "Titre :";
 "imageUploadDetails_author" = "Auteur :";
 "imageUploadDetails_privacy" = "Qui :";

@@ -120,6 +120,18 @@
 "categorySelection_action" = "Select an action for this album";
 "categorySelectionHUD_label" = "Retrieving Albums Data…";
 
+// Album upload
+"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_chooseAlbum" = "حدد ألبوما لتحميل الصور إلى";
+"categoryUpload_LocalAlbums" = "Local Albums";
+"categoryUpload_chooseLocalAlbum" = "حدد ألبوما للحصول على صور من";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
+"categoryUpload_chooseiCloudAlbum" = "حدد ألبوم iCloud للحصول على صور منه";
+"categoyUpload_loadSubCategories" = "تحميل";
+"categoryUpload_images" = "Upload Images";
+"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_defaultAlbum" = "Set as Default Album";
+
 // Default album
 "setDefaultCategory_title" = "Default Album";
 "setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
@@ -296,16 +308,6 @@
 "videoSaveError_message" = "أخفق حفظ الفيديو. خطأ:%@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "حدد ألبوما لتحميل الصور إلى";
-"categoryUpload_LocalAlbums" = "Local Albums";
-"categoryUpload_chooseLocalAlbum" = "حدد ألبوما للحصول على صور من";
-"categoryUpload_iCloudAlbums" = "iCloud Albums";
-"categoryUpload_chooseiCloudAlbum" = "حدد ألبوم iCloud للحصول على صور منه";
-"categoyUpload_loadSubCategories" = "تحميل";
-"categoryUpload_images" = "Upload Images";
-"categoryUpload_subAlbum" = "Create Sub-Album";
-"categoryUpload_defaultAlbum" = "Set as Default Album";
-
 "imageUploadDetails_title" = "العنوان:";
 "imageUploadDetails_author" = "الكاتب:";
 "imageUploadDetails_privacy" = "الخصوصية:";
