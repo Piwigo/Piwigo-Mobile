@@ -35,7 +35,7 @@
 
 CGFloat const kRadius = 25.0;
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -600,6 +600,7 @@ CGFloat const kRadius = 25.0;
     [self presentViewController:navController animated:YES completion:nil];
 }
 
+
 #pragma mark - Select Images
 
 -(void)select
@@ -688,14 +689,13 @@ CGFloat const kRadius = 25.0;
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *gPR = (UIPanGestureRecognizer *)gestureRecognizer;
         CGPoint translation = [gPR translationInView:self.imagesCollection];
-//        NSLog(@"shouldBegin: => translation at %.1f, %.1f", translation.x, translation.y);
         if (fabs(translation.x) > fabs(translation.y))
             return YES;
     }
     return NO;
 }
 
--(void)touchesImages:(UIPanGestureRecognizer *)gestureRecognizer
+-(void)touchedImages:(UIPanGestureRecognizer *)gestureRecognizer
 {
     // To prevent a crash
     if (gestureRecognizer.view == nil) return;
@@ -706,8 +706,6 @@ CGFloat const kRadius = 25.0;
         
         // Point and direction
         CGPoint point = [gestureRecognizer locationInView:self.imagesCollection];
-//        CGPoint translation = [gestureRecognizer translationInView:self.imagesCollection];
-//        NSLog(@"translation = %.1f,%.1f", translation.x, translation.y);
         
         // Get cell at touch position
         NSIndexPath *indexPath = [self.imagesCollection indexPathForItemAtPoint:point];
@@ -744,7 +742,6 @@ CGFloat const kRadius = 25.0;
     
     // Is this the end of the gesture?
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) {
-//        NSLog(@"gestureEnded!");
         self.touchedImageIds = [NSMutableArray new];
     }
 }
@@ -1298,11 +1295,10 @@ CGFloat const kRadius = 25.0;
             cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
 
             // Add pan gesture recognition
-            UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchesImages:)];
+            UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
             imageSeriesRocognizer.minimumNumberOfTouches = 1;
             imageSeriesRocognizer.maximumNumberOfTouches = 1;
             imageSeriesRocognizer.cancelsTouchesInView = NO;
-            imageSeriesRocognizer.delegate = self;
             [cell addGestureRecognizer:imageSeriesRocognizer];
             cell.userInteractionEnabled = YES;
 		}
