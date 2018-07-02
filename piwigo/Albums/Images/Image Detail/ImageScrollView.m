@@ -30,7 +30,7 @@
         self.decelerationRate = UIScrollViewDecelerationRateFast;
         self.delegate = self;
         
-        self.maximumZoomScale = 2.5;
+        self.maximumZoomScale = 4.0;
         self.minimumZoomScale = 1.0;
 //        self.previousScale = 1.0;
 		
