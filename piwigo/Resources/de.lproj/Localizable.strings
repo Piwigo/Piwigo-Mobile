@@ -121,7 +121,7 @@
 "categorySelectionHUD_label" = "Albumdaten abrufen…";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_noSubAlbum" = "Es gibt kein Unter-Album um Bilder hochzuladen";
 "categoryUpload_chooseAlbum" = "Wähle ein Unter-Album zum Hochladen der Bilder";
 "categoryUpload_LocalAlbums" = "Lokale Alben";
 "categoryUpload_chooseLocalAlbum" = "Wähle ein Album um Bilder zu erhalten";

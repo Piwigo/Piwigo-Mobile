@@ -114,33 +114,33 @@
 "categorySort_imagesOnly" = "画像のみ";
 
 // Album selection
-"categorySelection_title" = "Album";
-"categorySelection_titleSub" = "Sub-Albums";
-"categorySelection_root" = "Root Album";
-"categorySelection_action" = "Select an action for this album";
-"categorySelectionHUD_label" = "Retrieving Albums Data…";
+"categorySelection_title" = "アルバム";
+"categorySelection_titleSub" = "サブアルバム";
+"categorySelection_root" = "ルートアルバム";
+"categorySelection_action" = "このアルバムのためのアクションを選択します";
+"categorySelectionHUD_label" = "アルバムのデータを取得しています...";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_noSubAlbum" = "画像をアップロードするサブアルバムがありません";
 "categoryUpload_chooseAlbum" = "画像をアップロードするアルバムを選択します";
-"categoryUpload_LocalAlbums" = "Local Albums";
+"categoryUpload_LocalAlbums" = "ローカルアルバム";
 "categoryUpload_chooseLocalAlbum" = "画像を取得するアルバムを選択します";
-"categoryUpload_iCloudAlbums" = "iCloud Albums";
+"categoryUpload_iCloudAlbums" = "iCloudのアルバム";
 "categoryUpload_chooseiCloudAlbum" = "画像を取得するICloud アルバムを選択します";
 "categoyUpload_loadSubCategories" = "読み込む";
-"categoryUpload_images" = "Upload Images";
-"categoryUpload_subAlbum" = "Create Sub-Album";
-"categoryUpload_defaultAlbum" = "Set as Default Album";
+"categoryUpload_images" = "画像をアップロードする";
+"categoryUpload_subAlbum" = "サブアルバムを作成します";
+"categoryUpload_defaultAlbum" = "規定のアルバムとして設定します";
 
 // Default album
-"setDefaultCategory_title" = "Default Album";
-"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+"setDefaultCategory_title" = "既定のアルバム";
+"setDefaultCategory_message" = "アルバム「%@」を規定のアルバムに設定してよろしいですか？";
 
 // Album create
 "createNewAlbum_title" = "新規アルバム";
 "createNewAlbum_message" = "このアルバムの名称を入力してください：";
 "createNewAlbum_placeholder" = "アルバムの名称";
-"createNewAlbumComment_placeholder" = "Comment";
+"createNewAlbumComment_placeholder" = "コメント";
 "createNewAlbumHUD_label" = "アルバム作成中...";
 
 // Album create — Errors
@@ -163,19 +163,19 @@
 "renameCategoyError_message" = "アルバム名称の変更に失敗しました";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Refreshing Representative…";
+"refreshCategoryHUD_label" = "代表画像を更新しています...";
 
 // Album refresh representative — Errors
-"refreshCategoyError_title" = "Refresh Fail";
-"refreshCategoyError_message" = "Failed to refresh your album representative";
+"refreshCategoyError_title" = "失敗を更新します";
+"refreshCategoyError_message" = "アルバム代表画像の更新に失敗しました";
 
 // Album delete
 "deleteCategory_title" = "アルバムを削除します";
 "deleteCategory_message" = "アルバム「%@」と%@個の画像すべてを本当に削除しますか？";
-"deleteCategory_empty" = "Delete Empty Album";
-"deleteCategory_noImages" = "Keep Images";
-"deleteCategory_orphanedImages" = "Delete Orphans";
-"deleteCategory_allImages" = "Delete %@ Images";
+"deleteCategory_empty" = "空のアルバムを削除します";
+"deleteCategory_noImages" = "画像を保存します";
+"deleteCategory_orphanedImages" = "孤立画像を削除します";
+"deleteCategory_allImages" = "画像%@を削除します";
 "deleteCategoryConfirm_title" = "本当によろしいですか？";
 "deleteCategoryConfirm_message" = "このアルバムを削除するには画像の数を入力して下さい。画像の数：%@";
 "deleteCategoryConfirm_deleteButton" = "削除";
@@ -198,9 +198,9 @@
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
 // Album set image thumbnail
-"categorySelection_select" = "Select Album";
-"categorySelection_current" = "Select the current album for this image";
-"categorySelection_other" = "or select another album for this image";
+"categorySelection_select" = "アルバムを選択します";
+"categorySelection_current" = "この画像のためのアルバムを選択します";
+"categorySelection_other" = "または、この画像のために別のアルバムを選択します";
 "categoryImageSet_title" = "画像サムネイルを設定";
 "categoryImageSet_message" = "この画像をアルバム「%@」に設定してよろしいですか？";
 "categoryImageSetHUD_updating" = "アルバムのサムネイルを更新中...";
@@ -267,9 +267,9 @@
 "tagsHeader_all" = "すべて";
 
 // Image select
-"selectImages" = "Select Images";
-"selectImageSelected" = "1 Image Selected";
-"selectImagesSelected" = "%@ Images Selected";
+"selectImages" = "画像を選択します";
+"selectImageSelected" = "1画像が選択されています";
+"selectImagesSelected" = "%@枚の画像が選択されています";
 "selectAll" = "すべて";
 
 // Image delete
@@ -278,7 +278,7 @@
 
 "deleteSingleImage_title" = "画像を削除";
 "deleteSingleImage_message" = "この画像を本当に削除しますか？この操作は元に戻せません。";
-"deleteSeveralImages_title" = "画像を削除";
+"deleteSeveralImages_title" = "%@枚の画像を削除";
 "deleteSeveralImages_message" = "選択した%@枚の画像を本当に削除しますか？この操作は元に戻せません。";
 
 "deleteImageFail_title" = "削除に失敗しました";
@@ -287,7 +287,7 @@
 // Image download
 "downloadSingleImage_title" = "画像をダウンロードします";
 "downloadSingleImage_confirmation" = "選択した画像をダウンロードしますか？";
-"downloadSeveralImages_title" = "画像をダウンロードします";
+"downloadSeveralImages_title" = "%@イメージをダウンロード";
 "downloadSeveralImage_confirmation" = "選択した%@枚の画像をダウンロードしますか？";
 
 "downloadingImage" = "画像をダウンロード中";
@@ -352,7 +352,7 @@
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Photos library";
+"localAlbums" = "フォトライブラリ";
 
 "localImageSort_newest" = "最新";
 "localImageSort_oldest" = "最古";
@@ -372,7 +372,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigoサーバ";
-"settingsHeader_notSecure" = "Website Not Secure!";
+"settingsHeader_notSecure" = "ウェブサイトは安全ではありません！";
 "settings_server" = "アドレス";
 "settings_username" = "ユーザ名";
 "settings_notLoggedIn" = " - ログインしていません - ";

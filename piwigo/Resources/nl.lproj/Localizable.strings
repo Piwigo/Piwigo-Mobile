@@ -10,7 +10,7 @@
 // ===========================================================================
 // Tab bar
 
-"tabBar_albums" = "Albums";
+"tabBar_albums" = "Tabtoets_albums";
 "tabBar_upload" = "Uploaden";
 "tabBar_preferences" = "Voorkeuren";
 
@@ -121,7 +121,7 @@
 "categorySelectionHUD_label" = "Terugvinden van album-gegevens…";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_noSubAlbum" = "Er is geen sub-album om foto's naar up te loaden";
 "categoryUpload_chooseAlbum" = "Selecteer een album om foto's naar up te loaden";
 "categoryUpload_LocalAlbums" = "Lokale albums";
 "categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
