@@ -207,43 +207,42 @@
     // Add renaming, moving and deleting capabilities when user has admin rights
     if([Model sharedInstance].hasAdminRights)
     {
+        // Right => Left swipe
         self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
-        NSMutableArray *rightButtons = [NSMutableArray
-            arrayWithObjects:[MGSwipeButton buttonWithTitle:@""
+        self.rightButtons = @[[MGSwipeButton buttonWithTitle:@""
                                                        icon:[UIImage imageNamed:@"SwipeRename.png"]
                                             backgroundColor:[UIColor piwigoOrange]
                                                    callback:^BOOL(MGSwipeTableCell *sender) {
                                                           [self renameCategory];
                                                           return YES;
                                                    }],
-                            [MGSwipeButton buttonWithTitle:@""
+                               [MGSwipeButton buttonWithTitle:@""
                                                       icon:[UIImage imageNamed:@"SwipeMove.png"]
                                            backgroundColor:[UIColor piwigoBrown]
                                                   callback:^BOOL(MGSwipeTableCell *sender) {
                                                       [self moveCategory];
                                                       return YES;
-                                                  }], nil];
+                                                  }],
+                               [MGSwipeButton buttonWithTitle:@""
+                                                      icon:[UIImage imageNamed:@"SwipeTrash.png"]
+                                           backgroundColor:[UIColor redColor]
+                                                  callback:^BOOL(MGSwipeTableCell *sender) {
+                                                      [self deleteCategory];
+                                                      return YES;
+                                                  }]];
   
+        // Left => Right swipe (only if there are images in the album)
         if (self.albumData.numberOfImages > 0) {
-            [rightButtons addObject:[MGSwipeButton
-                                         buttonWithTitle:@""
-                                                    icon:[UIImage imageNamed:@"SwipeRefresh.png"]
-                                         backgroundColor:[UIColor blueColor]
-                                                 callback:^BOOL(MGSwipeTableCell *sender) {
-                                                     [self resfreshRepresentative];
-                                                     return YES;
-                                                 }]];
+            
+            self.leftSwipeSettings.transition = MGSwipeTransitionBorder;
+            self.leftButtons = @[[MGSwipeButton buttonWithTitle:@""
+                                                           icon:[UIImage imageNamed:@"SwipeRefresh.png"]
+                                                backgroundColor:[UIColor blueColor]
+                                                       callback:^BOOL(MGSwipeTableCell *sender) {
+                                                           [self resfreshRepresentative];
+                                                           return YES;
+                                                       }]];
         }
-        self.rightButtons = [[NSArray arrayWithArray:rightButtons] copy];
-        
-        self.leftSwipeSettings.transition = MGSwipeTransitionBorder;
-        self.leftButtons = @[[MGSwipeButton buttonWithTitle:@""
-                                                       icon:[UIImage imageNamed:@"SwipeTrash.png"]
-                                            backgroundColor:[UIColor redColor]
-                                                   callback:^BOOL(MGSwipeTableCell *sender) {
-                                                       [self deleteCategory];
-                                                       return YES;
-                                                   }]];
     }
 
     // Display number of images and sub-albums
