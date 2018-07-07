@@ -525,7 +525,8 @@
                             [appDelegate loadNavigation];
                         } else {
                             // Refresh category data
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil];
+                            NSDictionary *userInfo = @{@"fromCache" : @"NO"};
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
                         }
                     }];
                 }
