@@ -69,7 +69,7 @@
 "loginEmptyServer_message" = "Välj ett protokoll och ange en Piwigo webbadress för att gå vidare.";
 
 "serverConnectionError_title" = "Anslutningen misslyckades";
-"serverConnectionError_message" = "En säker HTTPS-anslutning kunde inte fastställas. Kontrollera adressen eller försök i okrypterat HTTP-läge?";
+"serverConnectionError_message" = "En säker HTTPS-anslutning kunde inte upprättas. Kontrollera adressen eller försök i okrypterat HTTP-läge?";
 
 "serverVersionNotCompatible_title" = "Servern är inkompatibel";
 "serverVersionNotCompatible_message" = "Din Piwigo serverversion är %@. Piwigo Mobile stöder endast en version av minst 2,7. Uppdatera din server för att använda Piwigo Mobile. Vill du ändå fortsätta?";
@@ -115,32 +115,32 @@
 
 // Album selection
 "categorySelection_title" = "Album";
-"categorySelection_titleSub" = "Sub-Albums";
-"categorySelection_root" = "Root Album";
-"categorySelection_action" = "Select an action for this album";
-"categorySelectionHUD_label" = "Retrieving Albums Data…";
+"categorySelection_titleSub" = "Underalbum";
+"categorySelection_root" = "Rotalbum";
+"categorySelection_action" = "Välj en åtgärd för detta album";
+"categorySelectionHUD_label" = "Hämta albumdata…";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_noSubAlbum" = "Det finns ingen underalbum att ladda upp bilder till";
 "categoryUpload_chooseAlbum" = "Välj ett album att ladda upp bilder till";
-"categoryUpload_LocalAlbums" = "Local Albums";
+"categoryUpload_LocalAlbums" = "Lokala album";
 "categoryUpload_chooseLocalAlbum" = "Välj ett album att hämta bilder från";
-"categoryUpload_iCloudAlbums" = "iCloud Albums";
+"categoryUpload_iCloudAlbums" = "iCloudalbum";
 "categoryUpload_chooseiCloudAlbum" = "Välj ett iCloud-album att hämta bilder från";
 "categoyUpload_loadSubCategories" = "ladda";
-"categoryUpload_images" = "Upload Images";
-"categoryUpload_subAlbum" = "Create Sub-Album";
-"categoryUpload_defaultAlbum" = "Set as Default Album";
+"categoryUpload_images" = "Ladda upp bilder";
+"categoryUpload_subAlbum" = "Skapa underalbum";
+"categoryUpload_defaultAlbum" = "Ange som standardalbum";
 
 // Default album
-"setDefaultCategory_title" = "Default Album";
-"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+"setDefaultCategory_title" = "Standardalbum";
+"setDefaultCategory_message" = "Är du säker att du vill sätta album \"%@\" som standardalbum?";
 
 // Album create
 "createNewAlbum_title" = "Nytt Album";
 "createNewAlbum_message" = "Ange ett namn för albumet:";
 "createNewAlbum_placeholder" = "Albumnamn";
-"createNewAlbumComment_placeholder" = "Comment";
+"createNewAlbumComment_placeholder" = "Kommentar";
 "createNewAlbumHUD_label" = "Skapar Album…";
 
 // Album create — Errors
@@ -163,19 +163,19 @@
 "renameCategoyError_message" = "Kunde inte byta namn på ditt album";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Refreshing Representative…";
+"refreshCategoryHUD_label" = "Uppdaterar Representant…";
 
 // Album refresh representative — Errors
-"refreshCategoyError_title" = "Refresh Fail";
-"refreshCategoyError_message" = "Failed to refresh your album representative";
+"refreshCategoyError_title" = "Uppdatering misslyckades";
+"refreshCategoyError_message" = "Kunde inte att uppdatera din album-representant";
 
 // Album delete
 "deleteCategory_title" = "RADERA ALBUM";
 "deleteCategory_message" = "VILL DU VERKLIGEN TA BORT ALBUMET ”%@” OCH ALLA %@ BILDERNA?";
-"deleteCategory_empty" = "Delete Empty Album";
-"deleteCategory_noImages" = "Keep Images";
-"deleteCategory_orphanedImages" = "Delete Orphans";
-"deleteCategory_allImages" = "Delete %@ Images";
+"deleteCategory_empty" = "Radera tomma album";
+"deleteCategory_noImages" = "Behåll bilderna";
+"deleteCategory_orphanedImages" = "Radera föräldralösa";
+"deleteCategory_allImages" = "Radera %@ bilder";
 "deleteCategoryConfirm_title" = "Är du säker?";
 "deleteCategoryConfirm_message" = "Ange antalet bilder för att kunna radera detta album. Antal bilder: %@";
 "deleteCategoryConfirm_deleteButton" = "RADERA";
@@ -198,9 +198,9 @@
 "moveCategoryError_message" = "Kunde inte flytta ditt album";
 
 // Album set image thumbnail
-"categorySelection_select" = "Select Album";
-"categorySelection_current" = "Select the current album for this image";
-"categorySelection_other" = "or select another album for this image";
+"categorySelection_select" = "Välj Album";
+"categorySelection_current" = "Välj det aktuella albumet för denna bild";
+"categorySelection_other" = "eller välj ett annat album för denna bild";
 "categoryImageSet_title" = "Sätt miniatyrbild";
 "categoryImageSet_message" = "Är du säker du vill använda denna bild miniatyrbild för albumet ”%@”?";
 "categoryImageSetHUD_updating" = "Uppdaterar albumets miniatyrbilder…";
@@ -267,9 +267,9 @@
 "tagsHeader_all" = "Alla";
 
 // Image select
-"selectImages" = "Select Images";
-"selectImageSelected" = "1 Image Selected";
-"selectImagesSelected" = "%@ Images Selected";
+"selectImages" = "Välj bilder";
+"selectImageSelected" = "1 bild vald";
+"selectImagesSelected" = "%@ bilder valda";
 "selectAll" = "Alla";
 
 // Image delete
@@ -278,7 +278,7 @@
 
 "deleteSingleImage_title" = "Radera bild";
 "deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";
-"deleteSeveralImages_title" = "Radera bilder";
+"deleteSeveralImages_title" = "Radera %@ bilder";
 "deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna? Åtgärden kan inte ångras!";
 
 "deleteImageFail_title" = "Raderingen misslyckades";
@@ -287,7 +287,7 @@
 // Image download
 "downloadSingleImage_title" = "Hämta bild";
 "downloadSingleImage_confirmation" = "Är du säker att du vill hämta den markerade bilden?";
-"downloadSeveralImages_title" = "Hämta bild";
+"downloadSeveralImages_title" = "Hämta %@ bilder";
 "downloadSeveralImage_confirmation" = "Är du säker att du vill hämta de valda %@ bilderna?";
 
 "downloadingImage" = "Hämtar bild";
@@ -352,7 +352,7 @@
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Photos library";
+"localAlbums" = "Bildbibliotek";
 
 "localImageSort_newest" = "Nyaste";
 "localImageSort_oldest" = "Äldst";
@@ -372,7 +372,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
-"settingsHeader_notSecure" = "Website Not Secure!";
+"settingsHeader_notSecure" = "Hemsidan inte säker!";
 "settings_server" = "Adress";
 "settings_username" = "Användarnamn";
 "settings_notLoggedIn" = " -Inte inloggad- ";
