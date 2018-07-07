@@ -187,7 +187,7 @@
                                     // Delete images from the library
                                     [PHAssetChangeRequest deleteAssets:[ImageUploadManager sharedInstance].imageDeleteQueue];
                                 } completionHandler:^(BOOL success, NSError *error) {
-                                    NSLog(@"Finished deleting asset. %@", (success ? @"Success." : error));
+//                                    NSLog(@"Finished deleting asset. %@", (success ? @"Success." : error));
                                 }];
                             });
                         }

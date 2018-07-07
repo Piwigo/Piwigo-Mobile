@@ -1603,8 +1603,9 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
         // Read image information and update cache
         [ImageService getImageInfoById:[imageId integerValue]
                       ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-                          // Post to the app that the category data has been updated (if necessary)
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                          // Post to the app that the category data has been updated
+                          NSDictionary *userInfo = @{@"NoHUD" : @"YES",@"fromCache" : @"NO"};
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
                           //
                       }];

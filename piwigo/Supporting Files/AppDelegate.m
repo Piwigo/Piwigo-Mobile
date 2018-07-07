@@ -100,7 +100,7 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
 
 -(void)loadNavigation
 {
-    AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory];
+    AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albums];
     [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;

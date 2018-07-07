@@ -878,9 +878,10 @@
         [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
         
         // Reload category data and set current category
+        NSLog(@"buildCategoryPk => getAlbumListForCategory(%ld,NO,YES)", (long)self.currentCategoryId);
         [AlbumService getAlbumListForCategory:self.currentCategoryId
-                         usingCacheIfPossible:NO
-                              inRecursiveMode:YES
+                                   usingCache:NO
+                              inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                      // Build category array
                                      [self buildCategoryArray];
@@ -896,6 +897,9 @@
 #if defined(DEBUG)
                                         NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
+                                        // Hide loading HUD
+                                        [self hideHUD];
+                                        
                                         if(fail) {
                                             fail(task, error);
                                         }
@@ -1027,12 +1031,28 @@
     else
     {
         // Sub-categories are not known
+        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
+
+        // Show loading HD
+        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+        
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
-                         usingCacheIfPossible:NO
+                                   usingCache:[Model sharedInstance].loadAllCategoryInfo
                               inRecursiveMode:NO
                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                     // Add sub-categories
                                      [self addSubCateroriesToCategoryID:categoryTapped];
-                                 } onFailure:nil
+                                     
+                                     // Hide loading HUD
+                                     [self hideHUD];
+                                 }
+                                    onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                                        NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
+                                        // Hide loading HUD
+                                        [self hideHUD];
+                                    }
          ];
     }
 }
@@ -1129,21 +1149,39 @@
         [self.categoriesThatShowSubCategories removeObject:@(categoryTapped.albumId)];
     }
     
+    // Reload table view
+    [self.categoriesTableView reloadData];
+
     // Sub-categories will not be known if user closes several layers at once
     // and caching option loadAllCategoryInfo is not activated
-    if (![Model sharedInstance].loadAllCategoryInfo) {
-        [AlbumService getAlbumListForCategory:categoryTapped.albumId
-                         usingCacheIfPossible:NO
-                              inRecursiveMode:NO
-                                 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-                                     // Reload table view
-                                     [self.categoriesTableView reloadData];
-                                 } onFailure:nil
-         ];
-    } else {
-        // Reload table view
-        [self.categoriesTableView reloadData];
-    }
+//    if (![Model sharedInstance].loadAllCategoryInfo) {
+//        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
+//
+//        // Show loading HD
+//        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+//        
+//        [AlbumService getAlbumListForCategory:categoryTapped.albumId
+//                                   usingCache:[Model sharedInstance].loadAllCategoryInfo
+//                              inRecursiveMode:NO
+//                                 OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+//                                     // Reload table view
+//                                     [self.categoriesTableView reloadData];
+//                                     
+//                                     // Hide loading HUD
+//                                     [self hideHUD];
+//                                 }
+//                                    onFailure:^(NSURLSessionTask *task, NSError *error) {
+//#if defined(DEBUG)
+//                                        NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
+//#endif
+//                                        // Hide loading HUD
+//                                        [self hideHUD];
+//                                    }
+//         ];
+//    } else {
+//        // Reload table view
+//        [self.categoriesTableView reloadData];
+//    }
 }
 
 @end

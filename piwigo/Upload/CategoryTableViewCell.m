@@ -51,14 +51,11 @@ NSString * const kAlbumCell_ID = @"CategoryTableViewCell";
     self.categoryData = category;
 
     // Is this a sub-category?
+    self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
     if(depth < 1) {
         // Categories in root album
         self.categoryLabel.text = self.categoryData.name;
-        self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
     } else {
-        // Sub-categories are presented in another color
-        self.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
-
         // Append "—" characters to sub-category names
         NSString *subAlbumPrefix = [@"" stringByPaddingToLength:depth withString:@"…" startingAtIndex:0];
         if ([Model sharedInstance].isAppLanguageRTL) {

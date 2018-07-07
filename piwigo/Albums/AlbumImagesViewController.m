@@ -32,6 +32,7 @@
 #import "CategoryPickViewController.h"
 #import "CategoryHeaderReusableView.h"
 #import "SettingsViewController.h"
+#import "MBProgressHUD.h"
 
 CGFloat const kRadius = 25.0;
 
@@ -39,19 +40,19 @@ CGFloat const kRadius = 25.0;
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
-@property (nonatomic, assign) NSInteger categoryId;
+@property (nonatomic, assign) BOOL isCachedAtInit;
 @property (nonatomic, strong) NSString *currentSort;
 @property (nonatomic, assign) BOOL loadingImages;
 @property (nonatomic, assign) BOOL displayImageTitles;
+@property (nonatomic, strong) UIViewController *hudViewController;
 
-@property (nonatomic, strong) UIBarButtonItem *rootAlbumBarButton;
 @property (nonatomic, strong) UIBarButtonItem *settingsBarButton;
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
 @property (nonatomic, strong) UIButton *uploadButton;
-@property (nonatomic, strong) UIButton *rootAlbumButton;
+@property (nonatomic, strong) UIButton *homeAlbumButton;
 
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger startDeleteTotalImages;
@@ -69,7 +70,7 @@ CGFloat const kRadius = 25.0;
 
 @implementation AlbumImagesViewController
 
--(instancetype)initWithAlbumId:(NSInteger)albumId
+-(instancetype)initWithAlbumId:(NSInteger)albumId inCache:(BOOL)isCached
 {
     self = [super init];
 	if(self)
@@ -77,6 +78,7 @@ CGFloat const kRadius = 25.0;
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.categoryId = albumId;
         self.loadingImages = NO;
+        self.isCachedAtInit = isCached;
         
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
@@ -106,7 +108,6 @@ CGFloat const kRadius = 25.0;
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 
         // Bar buttons
-        self.rootAlbumBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rootAlbum"] style:UIBarButtonItemStylePlain target:self action:@selector(setRootAlbumAsDefaultCategory)];
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
@@ -134,28 +135,28 @@ CGFloat const kRadius = 25.0;
         self.uploadButton.hidden = YES;
         [self.view addSubview:self.uploadButton];
 
-        // Root album button above collection view
-        self.rootAlbumButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        self.rootAlbumButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
-        self.rootAlbumButton.layer.cornerRadius = kRadius;
-        self.rootAlbumButton.layer.masksToBounds = NO;
-        [self.rootAlbumButton.layer setOpacity:0.9];
-        [self.rootAlbumButton.layer setShadowColor:[UIColor piwigoGray].CGColor];
-        [self.rootAlbumButton.layer setShadowOpacity:1.0];
-        [self.rootAlbumButton.layer setShadowRadius:5.0];
-        [self.rootAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
-        self.rootAlbumButton.showsTouchWhenHighlighted = YES;
-        [self.rootAlbumButton setImage:[UIImage imageNamed:@"rootAlbum"] forState:UIControlStateNormal];
-        [self.rootAlbumButton addTarget:self action:@selector(setRootAlbumAsDefaultCategory)
+        // Home album button above collection view
+        self.homeAlbumButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        self.homeAlbumButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
+        self.homeAlbumButton.layer.cornerRadius = kRadius;
+        self.homeAlbumButton.layer.masksToBounds = NO;
+        [self.homeAlbumButton.layer setOpacity:0.9];
+        [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoGray].CGColor];
+        [self.homeAlbumButton.layer setShadowOpacity:1.0];
+        [self.homeAlbumButton.layer setShadowRadius:5.0];
+        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        self.homeAlbumButton.showsTouchWhenHighlighted = YES;
+        [self.homeAlbumButton setImage:[UIImage imageNamed:@"rootAlbum"] forState:UIControlStateNormal];
+        [self.homeAlbumButton addTarget:self action:@selector(returnToDefaultCategory)
                     forControlEvents:UIControlEventTouchUpInside];
-        self.rootAlbumButton.hidden = YES;
-        [self.view addSubview:self.rootAlbumButton];
+        self.homeAlbumButton.hidden = YES;
+        [self.view addSubview:self.homeAlbumButton];
 
         // No download at start
 		self.downloadView.hidden = YES;
 
-        // Register category data upadtes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData) name:kPiwigoNotificationGetCategoryData object:nil];
+        // Register category data updates
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoNotificationGetCategoryData object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
         // Register palette changes
@@ -173,8 +174,8 @@ CGFloat const kRadius = 25.0;
     self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     
     // Buttons
-    self.rootAlbumButton.backgroundColor = [UIColor piwigoRightLabelColor];
-    self.rootAlbumButton.tintColor = [UIColor piwigoBackgroundColor];
+    self.homeAlbumButton.backgroundColor = [UIColor piwigoRightLabelColor];
+    self.homeAlbumButton.tintColor = [UIColor piwigoBackgroundColor];
 
     // Navigation bar appearence
     NSDictionary *attributes = @{
@@ -212,7 +213,7 @@ CGFloat const kRadius = 25.0;
     [self paletteChanged];
     
     // Reload category data and refresh showing cells
-    [self getCategoryData];
+    [self getCategoryData:nil];
     [self refreshShowingCells];
 
     // Inform Upload view controllers that user selected this category
@@ -300,7 +301,7 @@ CGFloat const kRadius = 25.0;
         CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
         CGFloat yPos = [UIScreen mainScreen].bounds.size.height - 3*kRadius;
         self.uploadButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
-        self.rootAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
+        self.homeAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)]];
     } completion:nil];
 }
@@ -325,22 +326,21 @@ CGFloat const kRadius = 25.0;
         {
             // Show Upload button
             [self.uploadButton setHidden:NO];
-            
-            // Show Home button if needed
-            if (([Model sharedInstance].defaultCategory != 0) &&
-                ([Model sharedInstance].defaultCategory == self.categoryId)) {
-                CGFloat xPos = self.uploadButton.frame.origin.x;
-                CGFloat yPos = self.uploadButton.frame.origin.y;
-                self.rootAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
-                [self.rootAlbumButton setHidden:NO];
-            }
         }
-        else if (([Model sharedInstance].defaultCategory != 0) &&
-                 ([Model sharedInstance].defaultCategory == self.categoryId)) {
+        
+        // Show navigation button if not in root or default album
+        if ((self.categoryId == 0) ||
+            (self.categoryId == [Model sharedInstance].defaultCategory)) {
+            // Hide Home button
+            [self.homeAlbumButton setHidden:YES];
+        }
+        else
+        {
+            // Display Home button
             CGFloat xPos = self.uploadButton.frame.origin.x;
             CGFloat yPos = self.uploadButton.frame.origin.y;
-            self.rootAlbumButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
-            [self.rootAlbumButton setHidden:NO];
+            self.homeAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
+            [self.homeAlbumButton setHidden:NO];
         }
 
         // Left side of navigation bar
@@ -373,8 +373,8 @@ CGFloat const kRadius = 25.0;
         // Hide back button item and upload button
         [self.navigationItem setHidesBackButton:YES];
         [self.uploadButton setHidden:YES];
-        [self.rootAlbumButton setHidden:YES];
-        
+        [self.homeAlbumButton setHidden:YES];
+
         // Update title
         switch (self.selectedImageIds.count) {
             case 0:
@@ -421,35 +421,72 @@ CGFloat const kRadius = 25.0;
 
 #pragma mark - Category Data
 
--(void)getCategoryData
+-(void)getCategoryData:(NSNotification *)notification
 {
     // Reload category data
-//    NSLog(@"getCategoryData => getAlbumListForCategory(%ld,YES,NO)", (long)self.categoryId);
+    NSLog(@"getCategoryData => getAlbumListForCategory(%ld,%d,%d)", (long)self.categoryId,([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit),[Model sharedInstance].loadAllCategoryInfo);
+
+    // Display HUD if requested
+    BOOL noHUD = NO;
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+        noHUD = [[userInfo objectForKey:@"NoHUD"] boolValue];
+    }
+    if (!([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) && !noHUD) {
+        // Show loading HD
+        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+    }
+    
+    // Disable cache if requested
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+        self.isCachedAtInit = [[userInfo objectForKey:@"fromCache"] boolValue];
+    }
+
+    // Load category data
     [AlbumService getAlbumListForCategory:self.categoryId
-                     usingCacheIfPossible:YES
-                          inRecursiveMode:NO
+                               usingCache:([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit)
+                          inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                                 self.isCachedAtInit = YES;
                                  [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                             }
+                                 
+                                 // Hide loading HUD
+                                 [self hideHUD];
+                            }
                                 onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                                     NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
+                                    // Hide loading HUD
+                                    [self hideHUD];
                                 }
      ];
 }
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-//    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", (long)self.categoryId);
-    [AlbumService getAlbumListForCategory:self.categoryId
-                     usingCacheIfPossible:NO
-                          inRecursiveMode:NO
+    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", [Model sharedInstance].loadAllCategoryInfo ? (long)0 : (long)self.categoryId);
+
+    // Show loading HD
+    [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+
+    [AlbumService getAlbumListForCategory:[Model sharedInstance].loadAllCategoryInfo ? 0 : self.categoryId
+                               usingCache:NO
+                          inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                  [self.imagesCollection reloadData];
-                                 [refreshControl endRefreshing];
+
+                                 if (refreshControl) [refreshControl endRefreshing];
+
+                                 // Hide loading HUD
+                                 [self hideHUD];
+                             
                              }  onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                 [refreshControl endRefreshing];
+                                 if (refreshControl) [refreshControl endRefreshing];
+
+                                 // Hide loading HUD
+                                 [self hideHUD];
                              }
      ];
 }
@@ -496,22 +533,22 @@ CGFloat const kRadius = 25.0;
 
 -(void)categoriesUpdated
 {
-//    NSLog(@"categoriesUpdated => loadAllImagesOnCompletion…");
-    // Reload albums collection view
-     [self.imagesCollection reloadData];
+    NSLog(@"=> categoriesUpdated…");
+    // Albums
+    [self.imagesCollection reloadData];
 
-     // Images
-     if (self.categoryId != 0) {
-         self.loadingImages = YES;
-         [self.albumData loadAllImagesOnCompletion:^{
-            
+    // Images
+    if (self.categoryId != 0) {
+        self.loadingImages = YES;
+        [self.albumData loadAllImagesOnCompletion:^{
+
              // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-                
+            
                 // Reload images collection view
                 self.loadingImages = NO;
                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-                
+            
                 // Set navigation bar buttons
                 [self updateNavBar];
 
@@ -520,7 +557,7 @@ CGFloat const kRadius = 25.0;
                 self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
             }];
         }];
-     }
+    }
      else {
          // The album title is not shown in backButtonItem to provide enough space
          // for image title on devices of screen width <= 414 ==> Restore album title
@@ -533,23 +570,19 @@ CGFloat const kRadius = 25.0;
 
 #pragma mark - Default Category Management
 
--(void)setRootAlbumAsDefaultCategory
+-(void)returnToDefaultCategory
 {
-    // Root album becomes default category
-    [Model sharedInstance].defaultCategory = 0;
-    [[Model sharedInstance] saveToDisk];
-    
     // Does this view controller already exists?
     NSInteger cur = 0, index = 0;
     AlbumImagesViewController *rootAlbumViewController = nil;
     for (UIViewController *viewController in self.navigationController.viewControllers) {
-
+        
         // Look for AlbumImagesViewControllers
         if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
             AlbumImagesViewController *thisViewController = (AlbumImagesViewController *) viewController;
-
-            // Is this the view controller of the root album?
-            if (thisViewController.categoryId == 0) {
+            
+            // Is this the view controller of the default album?
+            if (thisViewController.categoryId == [Model sharedInstance].defaultCategory) {
                 // The view controller of the parent category already exist
                 rootAlbumViewController = thisViewController;
             }
@@ -562,10 +595,10 @@ CGFloat const kRadius = 25.0;
         }
         cur++;
     }
-
-    // The view controller of the root album does not exist yet
+    
+    // The view controller of the default album does not exist yet
     if (!rootAlbumViewController) {
-        rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:0];
+        rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
         NSMutableArray *arrayOfVC = [[NSMutableArray alloc] initWithArray:self.navigationController.viewControllers];
         [arrayOfVC insertObject:rootAlbumViewController atIndex:index];
         self.navigationController.viewControllers = arrayOfVC;
@@ -1402,6 +1435,76 @@ CGFloat const kRadius = 25.0;
 }
 
 
+#pragma mark - HUD methods
+
+-(void)showHUDwithTitle:(NSString *)title
+{
+    // Determine the present view controller if needed (not necessarily self.view)
+    if (!self.hudViewController) {
+        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (self.hudViewController.presentedViewController) {
+            self.hudViewController = self.hudViewController.presentedViewController;
+        }
+    }
+    
+    // Create the login HUD if needed
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+    if (!hud) {
+        // Create the HUD
+        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
+        [hud setTag:loadingViewTag];
+        
+        // Change the background view shape, style and color.
+        hud.square = NO;
+        hud.animationType = MBProgressHUDAnimationFade;
+        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+        hud.contentColor = [UIColor piwigoHudContentColor];
+        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        
+        // Will look best, if we set a minimum size.
+        hud.minSize = CGSizeMake(200.f, 100.f);
+    }
+    
+    // Set title
+    hud.label.text = title;
+    hud.label.font = [UIFont piwigoFontNormal];
+}
+
+-(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Hide and remove the HUD
+        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+        if (hud) {
+            if (success) {
+                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"Complete", nil);
+                [hud hideAnimated:YES afterDelay:2.f];
+            } else {
+                [hud hideAnimated:YES];
+            }
+        }
+        if (completion) {
+            completion();
+        }
+    });
+}
+
+-(void)hideHUD
+{
+    // Hide and remove the HUD
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+    if (hud) {
+        [hud hideAnimated:YES];
+        self.hudViewController = nil;
+    }
+}
+
+
 #pragma mark - CategorySortDelegate Methods
 
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
@@ -1418,6 +1521,14 @@ CGFloat const kRadius = 25.0;
 -(void)pushView:(UIViewController *)viewController
 {
 	[self.navigationController pushViewController:viewController animated:YES];
+}
+
+-(void)presentView:(UIViewController *)viewController
+{
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:viewController animated:YES completion:nil];
 }
 
 @end

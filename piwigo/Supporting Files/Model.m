@@ -43,7 +43,7 @@
         instance.userCancelledCommunication = NO;
 
         // Album/category settings
-        instance.defaultCategory = 0;                   // Root album bu default
+        instance.defaultCategory = 0;                   // Root album by default
 
         // Sort images by date: old to new
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;

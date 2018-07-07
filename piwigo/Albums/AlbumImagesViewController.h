@@ -10,6 +10,8 @@
 
 @interface AlbumImagesViewController : UIViewController
 
--(instancetype)initWithAlbumId:(NSInteger)albumId;
+@property (nonatomic, assign) NSInteger categoryId;
+
+-(instancetype)initWithAlbumId:(NSInteger)albumId inCache:(BOOL)isCached;
 
 @end

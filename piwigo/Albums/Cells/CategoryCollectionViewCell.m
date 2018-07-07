@@ -35,7 +35,7 @@
 		[self.contentView addSubview:self.tableView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
 	}
 	return self;
@@ -54,10 +54,10 @@
 	self.albumData = nil;
 }
 
--(void)categoriesUpdated
-{
-	[self.tableView reloadData];
-}
+//-(void)categoriesUpdated
+//{
+//    [self.tableView reloadData];
+//}
 
 #pragma mark UITableView Methods
 
@@ -88,7 +88,7 @@
     // Push new album view
     if([self.categoryDelegate respondsToSelector:@selector(pushView:)])
 	{
-		AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithAlbumId:self.albumData.albumId];
+		AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithAlbumId:self.albumData.albumId inCache:YES];
 		[self.categoryDelegate pushView:albumView];
 	}
 }

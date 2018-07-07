@@ -14,6 +14,7 @@
 		AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */; };
 		AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
+		AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
@@ -149,6 +150,8 @@
 		AD591A3B1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD591A3C1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD591A3D1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DefaultCategoryViewController.m; sourceTree = "<group>"; };
+		AD5E8F0F20EEA06B00E93426 /* DefaultCategoryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultCategoryViewController.h; sourceTree = "<group>"; };
 		AD6B2E741F0930B40040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E771F0930CE0040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/About.strings; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -602,6 +605,8 @@
 		D81C993E1B02DA190081C976 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AD5E8F0F20EEA06B00E93426 /* DefaultCategoryViewController.h */,
+				AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */,
 				AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */,
 				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
 				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
@@ -1136,6 +1141,7 @@
 				D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D89045BF1A950FF700A306FE /* TagsTableViewCell.m in Sources */,
+				AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */,
 				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,

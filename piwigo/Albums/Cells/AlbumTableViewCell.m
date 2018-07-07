@@ -232,17 +232,18 @@
                                                   }]];
   
         // Left => Right swipe (only if there are images in the album)
-        if (self.albumData.numberOfImages > 0) {
-            
-            self.leftSwipeSettings.transition = MGSwipeTransitionBorder;
-            self.leftButtons = @[[MGSwipeButton buttonWithTitle:@""
-                                                           icon:[UIImage imageNamed:@"SwipeRefresh.png"]
-                                                backgroundColor:[UIColor blueColor]
-                                                       callback:^BOOL(MGSwipeTableCell *sender) {
-                                                           [self resfreshRepresentative];
-                                                           return YES;
-                                                       }]];
-        }
+        // Disabled because it does not work reliably on the server side
+//        if (self.albumData.numberOfImages > 0) {
+//
+//            self.leftSwipeSettings.transition = MGSwipeTransitionBorder;
+//            self.leftButtons = @[[MGSwipeButton buttonWithTitle:@""
+//                                                           icon:[UIImage imageNamed:@"SwipeRefresh.png"]
+//                                                backgroundColor:[UIColor blueColor]
+//                                                       callback:^BOOL(MGSwipeTableCell *sender) {
+//                                                           [self resfreshRepresentative];
+//                                                           return YES;
+//                                                       }]];
+//        }
     }
 
     // Display number of images and sub-albums
@@ -578,7 +579,7 @@
     }];
 
     UIAlertAction* allImagesAction = [UIAlertAction
-        actionWithTitle:[NSString stringWithFormat:NSLocalizedString(@"deleteCategory_allImages", @"Delete %@ Images"), @(self.albumData.totalNumberOfImages)]
+        actionWithTitle:self.albumData.totalNumberOfImages > 1 ? [NSString stringWithFormat:NSLocalizedString(@"deleteCategory_allImages", @"Delete %@ Images"), @(self.albumData.totalNumberOfImages)] : NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
         style:UIAlertActionStyleDestructive
         handler:^(UIAlertAction * action) {
             [self confirmCategoryDeletionWithNumberOfImages:self.albumData.totalNumberOfImages deletionMode:kCategoryDeletionModeAll andViewController:topViewController];

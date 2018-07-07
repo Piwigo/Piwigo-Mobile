@@ -23,13 +23,15 @@
 #import "PiwigoImageData.h"
 #import "DefaultImageSizeViewController.h"
 #import "DefaultThumbnailSizeViewController.h"
+#import "DefaultCategoryViewController.h"
 #import "ReleaseNotesViewController.h"
 #import "ImagesCollection.h"
+#import "CategoriesData.h"
 
 typedef enum {
 	SettingsSectionServer,
 	SettingsSectionLogout,
-	SettingsSectionThumbnails,
+    SettingsSectionAlbums,
     SettingsSectionImages,
 	SettingsSectionImageUpload,
     SettingsSectionCache,
@@ -45,12 +47,8 @@ typedef enum {
 @interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
-@property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
 @property (nonatomic, strong) UIBarButtonItem *doneBarButton;
-
-@property (nonatomic, assign) CGFloat previousContentYOffset;
-@property (nonatomic, assign) CGFloat minContentYOffset;
 
 @end
 
@@ -79,9 +77,6 @@ typedef enum {
         // Keyboard management
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
-
-        // Before starting scrolling
-        self.previousContentYOffset = -INFINITY;
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -169,8 +164,8 @@ typedef enum {
             break;
         case SettingsSectionLogout:
             return 14;
-        case SettingsSectionThumbnails:
-            titleString = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
+        case SettingsSectionAlbums:
+            titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
             break;
         case SettingsSectionImages:
             titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
@@ -230,8 +225,8 @@ typedef enum {
             break;
         case SettingsSectionLogout:
             return nil;
-        case SettingsSectionThumbnails:
-            titleString = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
+        case SettingsSectionAlbums:
+            titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
             break;
         case SettingsSectionImages:
             titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
@@ -313,8 +308,8 @@ typedef enum {
         case SettingsSectionLogout:
             nberOfRows = 1;
             break;
-        case SettingsSectionThumbnails:
-            nberOfRows = 4;
+        case SettingsSectionAlbums:
+            nberOfRows = 5;
             break;
         case SettingsSectionImages:
             nberOfRows = 1;
@@ -399,12 +394,31 @@ typedef enum {
 			break;
 		}
 
-#pragma mark Thumbnails
-        case SettingsSectionThumbnails:     // Thumbnails
+#pragma mark Albums
+        case SettingsSectionAlbums:         // Albums
 		{
 			switch(indexPath.row)
 			{
-				case 0:     // Default Sort
+                case 0:     // Default album
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultAlbum"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"setDefaultCategory_title", @"Default Album";);
+                    if ([Model sharedInstance].defaultCategory == 0) {
+                        cell.rightText = NSLocalizedString(@"categorySelection_root", @"Root Album");
+                    } else {
+                        cell.rightText = [[[CategoriesData sharedInstance] getCategoryById:[Model sharedInstance].defaultCategory] name];
+                    }
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+				case 1:     // Default Sort
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultSort"];
 					if(!cell)
@@ -426,7 +440,7 @@ typedef enum {
                     tableViewCell = cell;
 					break;
 				}
-				case 1:     // Default Thumbnail File
+				case 2:     // Default Thumbnail File
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailFile"];
 					if(!cell) {
@@ -447,7 +461,7 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-                case 2:     // Default Thumbnail Size
+                case 3:     // Default Thumbnail Size
                 {
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailSize"];
                     if(!cell)
@@ -474,7 +488,7 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 3:     // Display titles on thumbnails
+                case 4:     // Display titles on thumbnails
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titles"];
                     if(!cell)
@@ -846,7 +860,11 @@ typedef enum {
                     cell.cellSwitchBlock = ^(BOOL switchState) {
                         if(![Model sharedInstance].loadAllCategoryInfo && switchState)
                         {
-                            [AlbumService getAlbumListForCategory:0 usingCacheIfPossible:NO inRecursiveMode:YES OnCompletion:nil onFailure:nil];
+                            NSLog(@"settingsResetCa => getAlbumListForCategory(%ld,NO,YES)", (long)0);
+                            [AlbumService getAlbumListForCategory:0
+                                                       usingCache:NO
+                                                  inRecursiveMode:YES
+                                                     OnCompletion:nil onFailure:nil];
                         }
                         
                         [Model sharedInstance].loadAllCategoryInfo = switchState;
@@ -1218,11 +1236,18 @@ typedef enum {
 		case SettingsSectionLogout:         // Logout
 			[self logout];
 			break;
-		case SettingsSectionThumbnails:     // General Settings
+        case SettingsSectionAlbums:         // Albums
 		{
 			switch(indexPath.row)
 			{
-				case 0:                     // Sort method selection
+				case 0:                     // Default album
+                {
+                    DefaultCategoryViewController *categoryVC = [[DefaultCategoryViewController alloc] initWithSelectedCategory:[[CategoriesData sharedInstance] getCategoryById:[Model sharedInstance].defaultCategory]];
+                    [self.navigationController pushViewController:categoryVC animated:YES];
+                    break;
+                   break;
+                }
+                case 1:                     // Sort method selection
 				{
 					CategorySortViewController *categoryVC = [CategorySortViewController new];
 					categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;
@@ -1230,7 +1255,7 @@ typedef enum {
 					[self.navigationController pushViewController:categoryVC animated:YES];
 					break;
 				}
-				case 1:                     // Thumbnail file selection
+				case 2:                     // Thumbnail file selection
 				{
 					DefaultThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultThumbnailSizeViewController new];
 					[self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
@@ -1485,7 +1510,7 @@ typedef enum {
 
 - (IBAction)updateThumbnailSize:(id)sender
 {
-    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingsSectionThumbnails]];
+    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingsSectionAlbums]];
     NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:self.view withMaxWidth:kThumbnailFileSize];
     [Model sharedInstance].thumbnailsPerRowInPortrait = 2 * minNberOfImages - ([thumbnailsSizeCell getCurrentSliderValue] - 1);
     [[Model sharedInstance] saveToDisk];

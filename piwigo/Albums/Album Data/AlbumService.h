@@ -17,7 +17,7 @@ FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
 @interface AlbumService : NetworkHandler
 
 +(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
-                       usingCacheIfPossible:(BOOL)cached
+                                 usingCache:(BOOL)cached
                             inRecursiveMode:(BOOL)recursive
                                OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

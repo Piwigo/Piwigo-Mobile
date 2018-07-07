@@ -1,38 +1,38 @@
 //
-//  MoveCategoryViewController.m
+//  DefaultCategoryViewController
 //  piwigo
 //
-//  Created by Spencer Baker on 3/16/15.
-//  Copyright (c) 2015 bakercrew. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 05/07/2018.
+//  Copyright © 2018 Piwigo.org. All rights reserved.
 //
 
 #import "AppDelegate.h"
-#import "MoveCategoryViewController.h"
+#import "DefaultCategoryViewController.h"
 #import "CategoriesData.h"
 #import "AlbumService.h"
 #import "Model.h"
 #import "CategoryTableViewCell.h"
 #import "MBProgressHUD.h"
+#import "AlbumImagesViewController.h"
 
-@interface MoveCategoryViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
+@interface DefaultCategoryViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
 @property (nonatomic, strong) PiwigoAlbumData *selectedCategory;
 @property (nonatomic, strong) UIViewController *hudViewController;
-@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
 @end
 
-@implementation MoveCategoryViewController
+@implementation DefaultCategoryViewController
 
 -(instancetype)initWithSelectedCategory:(PiwigoAlbumData*)category
 {
 	self = [super init];
 	if(self)
 	{
-		self.title = NSLocalizedString(@"moveCategory", @"Move Album");
+		self.title = NSLocalizedString(@"categorySelection_select", @"Select Album");
 		self.selectedCategory = category;
 
         // List of categories to present in 2nd section
@@ -50,9 +50,6 @@
         [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
-
-        // Button for returning to albums/images
-        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitMoveCategory)];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -99,12 +96,6 @@
     [self paletteChanged];
 }
 
--(void)quitMoveCategory
-{
-    // Leave Move Category action and return to Albums and Images
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 
 #pragma mark - UITableView - Headers
 
@@ -121,7 +112,7 @@
                                                  context:context];
     
     // Text
-    NSString *textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectParent", @"Select an album to move album \"%@\" into"), self.selectedCategory.name];
+    NSString *textString = NSLocalizedString(@"categoryUpload_defaultAlbum", @"Set as Default Album");
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                options:NSStringDrawingUsesLineFragmentOrigin
@@ -142,7 +133,7 @@
     [headerAttributedString appendAttributedString:titleAttributedString];
     
     // Text
-    NSString *textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectParent", @"Select an album to move album \"%@\" into"), self.selectedCategory.name];
+    NSString *textString = NSLocalizedString(@"categoryUpload_defaultAlbum", @"Set as Default Album");
     NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
     [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
                                  range:NSMakeRange(0, [textString length])];
@@ -163,15 +154,17 @@
     [header addSubview:headerLabel];
 	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
     if (@available(iOS 11, *)) {
-        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
-																   options:kNilOptions
-																   metrics:nil
-																	 views:@{@"header" : headerLabel}]];
+        [header addConstraints:[NSLayoutConstraint
+                   constraintsWithVisualFormat:@"|-[header]-|"
+                                       options:kNilOptions
+                                       metrics:nil
+                                         views:@{@"header" : headerLabel}]];
     } else {
-        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
-                                                                       options:kNilOptions
-                                                                       metrics:nil
-                                                                         views:@{@"header" : headerLabel}]];
+        [header addConstraints:[NSLayoutConstraint
+                   constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                       options:kNilOptions
+                                       metrics:nil
+                                         views:@{@"header" : headerLabel}]];
     }
 	
 	return header;
@@ -209,8 +202,8 @@
     depth -= [defaultCategoryData getDepthOfCategory];
     [cell setupWithCategoryData:categoryData atDepth:depth];
     
-    // Cell is parent category?
-    if(categoryData.albumId == self.selectedCategory.parentAlbumId)
+    // Cell accessory
+    if(categoryData.albumId == self.selectedCategory.albumId)
     {
         cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
     }
@@ -236,31 +229,45 @@
     PiwigoAlbumData *categoryData;
     categoryData = [self.categories objectAtIndex:indexPath.row];
     
-    // User cannot move album at current place
-    if (categoryData.albumId == self.selectedCategory.parentAlbumId) return;
+    if(categoryData.albumId == self.selectedCategory.albumId) return;
+    
+    NSString *message;
+    if (categoryData.albumId == 0) {
+        message = [NSString stringWithFormat:NSLocalizedString(@"setDefaultCategory_message", @"Are you sure you want to set the album \"%@\" as default album?"), NSLocalizedString(@"categorySelection_root", @"Root Album")];
+    } else {
+        message = [NSString stringWithFormat:NSLocalizedString(@"setDefaultCategory_message", @"Are you sure you want to set the album \"%@\" as default album?"), [[[CategoriesData sharedInstance] getCategoryById:categoryData.albumId] name]];
+    }
+    
+    UIAlertController *alert = [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"setDefaultCategory_title", @"Default Album")
+                             message:message
+                      preferredStyle:UIAlertControllerStyleActionSheet];
 
-    UIAlertController* alert = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"moveCategory", @"Move Album")
-        message:[NSString stringWithFormat:NSLocalizedString(@"moveCategory_message", @"Are you sure you want to move \"%@\" into the album \"%@\"?"), self.selectedCategory.name, categoryData.name]
-        preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *cancelAction = [UIAlertAction
+                     actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                               style:UIAlertActionStyleCancel
+                             handler:^(UIAlertAction * action) { }];
     
-    UIAlertAction* cancelAction = [UIAlertAction
-       actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-       style:UIAlertActionStyleCancel
-       handler:^(UIAlertAction * action) {
-//           [self.navigationController popViewControllerAnimated:YES];
-       }];
-    
-    UIAlertAction* setImageAction = [UIAlertAction
-         actionWithTitle:NSLocalizedString(@"moveCategory", @"Move Album")
-         style:UIAlertActionStyleDefault
-         handler:^(UIAlertAction * action) {
-             [self makeSelectedCategoryAChildOf:categoryData.albumId];
-         }];
+    UIAlertAction *setCategoryAction = [UIAlertAction
+                     actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                               style:UIAlertActionStyleDefault
+                             handler:^(UIAlertAction * action) {
+                                 // Set as Default Album
+                                 [Model sharedInstance].defaultCategory = categoryData.albumId;
+                                
+                                 // Store modified setting
+                                 [[Model sharedInstance] saveToDisk];
+
+                                 // Prepare Default album view
+                                 [self changedDefaultCategory];
+                                 
+                                 // Return to Settings
+                                 [self.navigationController popViewControllerAnimated:YES];
+                             }];
     
     // Add actions
     [alert addAction:cancelAction];
-    [alert addAction:setImageAction];
+    [alert addAction:setCategoryAction];
     
     // Determine position of cell in table view
     CGRect rectOfCellInTableView = [tableView rectForRowAtIndexPath:indexPath];
@@ -286,65 +293,44 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-
-#pragma mark - Move album methods
-
--(void)makeSelectedCategoryAChildOf:(NSInteger)categoryId
+-(void)changedDefaultCategory
 {
-    // Display HUD during the update
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"moveCategoryHUD_moving", @"Moving Album…")];
-    });
-    
-	[AlbumService moveCategory:self.selectedCategory.albumId
-				  intoCategory:categoryId
-				  OnCompletion:^(NSURLSessionTask *task, BOOL movedSuccessfully) {
-					  if(movedSuccessfully)
-					  {
-                          [self hideHUDwithSuccess:YES completion:^{
-                              dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                                  self.selectedCategory.parentAlbumId = categoryId;
-//                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
-                                  [self.navigationController popViewControllerAnimated:YES];
-                              });
-                          }];
-					  }
-					  else
-					  {
-                          [self hideHUDwithSuccess:NO completion:^{
-                              [self showMoveCategoryErrorWithMessage:nil];
-                          }];
-					  }
-				  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                      [self hideHUDwithSuccess:NO completion:^{
-                          [self showMoveCategoryErrorWithMessage:[error localizedDescription]];
-                      }];
-				  }];
-}
-
--(void)showMoveCategoryErrorWithMessage:(NSString*)message
-{
-    NSString *errorMessage = NSLocalizedString(@"moveCategoryError_message", @"Failed to move your album");
-    if(message)
-    {
-        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+    // Does this view controller already exists?
+    NSInteger cur = 0, index = 0;
+    AlbumImagesViewController *rootAlbumViewController = nil;
+    for (UIViewController *viewController in self.navigationController.viewControllers) {
+        
+        // Look for AlbumImagesViewControllers
+        if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
+            AlbumImagesViewController *thisViewController = (AlbumImagesViewController *) viewController;
+            
+            // Is this the view controller of the default album?
+            if (thisViewController.categoryId == [Model sharedInstance].defaultCategory) {
+                // The view controller of the parent category already exist
+                rootAlbumViewController = thisViewController;
+            }
+            
+            // Is this the current view controller?
+            if (thisViewController.categoryId == self.selectedCategory.albumId) {
+                // This current view controller will become the child view controller
+                index = cur;
+            }
+        }
+        cur++;
     }
     
-    UIAlertController* alert = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"moveCategoryError_title", @"Move Fail")
-        message:errorMessage
-        preferredStyle:UIAlertControllerStyleAlert];
+    // The view controller of the default album does not exist yet
+    if (!rootAlbumViewController) {
+        rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
+        NSMutableArray *arrayOfVC = [[NSMutableArray alloc] initWithArray:self.navigationController.viewControllers];
+        [arrayOfVC insertObject:rootAlbumViewController atIndex:index];
+        self.navigationController.viewControllers = arrayOfVC;
+    }
     
-    UIAlertAction* dismissAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-        style:UIAlertActionStyleCancel
-        handler:^(UIAlertAction * action) {}];
-    
-    [alert addAction:dismissAction];
-    [self presentViewController:alert animated:YES completion:nil];
-
-    [self.navigationController popViewControllerAnimated:YES];
+    // Present the root album
+    [self.navigationController popToViewController:rootAlbumViewController animated:YES];
 }
+
 
 #pragma mark - HUD methods
 
@@ -429,7 +415,7 @@
         [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
         
         // Reload category data and set current category
-        NSLog(@"buildCategoryMv => getAlbumListForCategory(%ld,NO,YES)", (long)0);
+        NSLog(@"buildCategoryDf => getAlbumListForCategory(%ld,NO,YES)", (long)0);
         [AlbumService getAlbumListForCategory:0
                                    usingCache:NO
                               inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
@@ -482,11 +468,6 @@
     {
         // Non-admin Community users can only upload in specific albums
         if (![Model sharedInstance].hasAdminRights && !category.hasUploadRights) {
-            continue;
-        }
-        
-        // The category to be moved must not be presented
-        if (category.albumId == self.selectedCategory.albumId) {
             continue;
         }
         
@@ -605,10 +586,9 @@
                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                      // Add sub-categories
                                      [self addSubCateroriesToCategoryID:categoryTapped];
-
+                                     
                                      // Hide loading HUD
                                      [self hideHUD];
-                                     
                                  }
                                     onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
@@ -723,15 +703,14 @@
         [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
 
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
-                                   usingCache:[Model sharedInstance].loadAllCategoryInfo
-                              inRecursiveMode:NO
+                                   usingCache:NO
+                              inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                      // Reload table view
                                      [self.categoriesTableView reloadData];
-
+                                     
                                      // Hide loading HUD
                                      [self hideHUD];
-                                     
                                  }
                                     onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
