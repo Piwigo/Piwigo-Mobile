@@ -178,6 +178,13 @@
     }
 }
 
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    // Reload tableview on orientation change, to add/remove disclosure indicators
+    [self.categoriesTableView reloadData];
+}
+
 -(void)quitUpload
 {
     // Leave Upload action and return to Albums and Images
@@ -384,7 +391,6 @@
                     else if ([Model sharedInstance].hasAdminRights) {
                         cell.leftText = NSLocalizedString(@"categoryUpload_subAlbum", @"Create Sub-Album");
                         cell.accessoryType = UITableViewCellAccessoryNone;
-                        cell.accessoryType = UITableViewCellAccessoryNone;
                     }
                     else {
                         cell.leftText = NSLocalizedString(@"categoryUpload_defaultAlbum", @"Set as Default Album");
@@ -441,6 +447,14 @@
                 cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
             }
             
+            // Display disclosure indicator on large screens
+            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+            if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 Plus
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            } else {
+                cell.accessoryType = UITableViewCellAccessoryNone;
+            }
+
             // Determine the depth before setting up the cell
             PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
             NSInteger depth = [categoryData getDepthOfCategory];
