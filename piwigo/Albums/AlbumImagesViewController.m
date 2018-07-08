@@ -319,11 +319,11 @@ CGFloat const kRadius = 25.0;
     CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
     CGFloat yPos = [UIScreen mainScreen].bounds.size.height - 3*kRadius;
 
-    // Update buttons
+    // Selection mode active ?
     if(!self.isSelect) {    // Image selection mode inactive
         
         // Hide toolbar
-        self.navigationController.toolbarHidden = NO;
+        self.navigationController.toolbarHidden = YES;
 
         // Title is name of the category
         if (self.categoryId == 0) {
@@ -334,28 +334,45 @@ CGFloat const kRadius = 25.0;
 
         // User can upload images/videos if he/she has:
         // — admin rights
-        // — opened a session on a server having Community extension installed
-        if(([Model sharedInstance].hasAdminRights) ||
-           ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
+        // — upload access to the current category
+        if ([Model sharedInstance].hasAdminRights ||
+                [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
             // Show Upload button
             self.uploadButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
             [self.uploadButton setHidden:NO];
+            
+            // Show Home button if not in root or default album
+            if ((self.categoryId == 0) ||
+                (self.categoryId == [Model sharedInstance].defaultCategory))
+            {
+                // Hide Home button
+                [self.homeAlbumButton setHidden:YES];
+            }
+            else {
+                // Display Home button
+                self.homeAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
+                [self.homeAlbumButton setHidden:NO];
+            }
+        }
+        else    // No upload rights => No Upload button
+        {
+            // Hide Upload button
+            [self.uploadButton setHidden:YES];
+            
+            // Show navigation button if not in root or default album
+            if ((self.categoryId == 0) ||
+                (self.categoryId == [Model sharedInstance].defaultCategory)) {
+                // Hide Home button
+                [self.homeAlbumButton setHidden:YES];
+            }
+            else {
+                // Display Home button
+                self.homeAlbumButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
+                [self.homeAlbumButton setHidden:NO];
+            }
         }
         
-        // Show navigation button if not in root or default album
-        if ((self.categoryId == 0) ||
-            (self.categoryId == [Model sharedInstance].defaultCategory)) {
-            // Hide Home button
-            [self.homeAlbumButton setHidden:YES];
-        }
-        else
-        {
-            // Display Home button
-            self.homeAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
-            [self.homeAlbumButton setHidden:NO];
-        }
-
         // Left side of navigation bar
         if ((self.categoryId == 0) ||
             (self.categoryId == [Model sharedInstance].defaultCategory)){
@@ -380,11 +397,8 @@ CGFloat const kRadius = 25.0;
             // No images: no button
             [self.navigationItem setRightBarButtonItems:@[] animated:YES];
         }
-
-        // No toolbar
-        self.navigationController.toolbarHidden = YES;
     }
-    else {                  // Image selection mode active
+    else {         // Image selection mode active
         
         // Update title
         switch (self.selectedImageIds.count) {
@@ -406,50 +420,51 @@ CGFloat const kRadius = 25.0;
         [self.uploadButton setHidden:YES];
         [self.homeAlbumButton setHidden:YES];
 
-        // Interface depends on device and orientation
-        if ( UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]) &&
-            ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)) {
-    
-            // Hide navigation bar buttons and use a toolbar
-            [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
+        // User can upload images/videos if he/she has:
+        // — admin rights
+        // — upload access to the current category
+        if ([Model sharedInstance].hasAdminRights ||
+             [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        {
+            // Interface depends on device and orientation
+            if ( UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]) &&
+                ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)) {
+        
+                // Hide navigation bar left buttons and use a toolbar
+                [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
 
-            // Redefine bar buttons (definition lost after rotation of the device)
-            self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:@selector(deleteImages)];
-            self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
-            self.deleteBarButton.tintColor = [UIColor redColor];
-            self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
-            self.downloadBarButton.tintColor = [UIColor piwigoOrange];
+                // Redefine bar buttons (definition lost after rotation of device)
+                self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:@selector(deleteImages)];
+                self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
+                self.deleteBarButton.tintColor = [UIColor redColor];
+                self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
+                self.downloadBarButton.tintColor = [UIColor piwigoOrange];
 
-            // Present toolbar
-            self.navigationController.toolbarHidden = NO;
-            if([Model sharedInstance].hasAdminRights)
-            {
-                // Only admins have delete rights
+                // Present toolbar
+                self.navigationController.toolbarHidden = NO;
                 self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.deleteBarButton];
                 self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
             }
-            else {
-                // No admin rights
-                self.toolbarItems = @[self.spaceBetweenButtons, self.downloadBarButton, self.spaceBetweenButtons];
-                self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
-            }
-        }
-        else        // iPhone in landscape mode, iPad in any orientation
-        {
-            // Present buttons in the navigation bar
-            if([Model sharedInstance].hasAdminRights)
+            else    // iPhone in landscape mode, iPad in any orientation
             {
-                // Only admins have delete rights
+                // Hide toolbar
+                self.navigationController.toolbarHidden = YES;
+
+                // Present buttons in the navigation bar
                 [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton, self.deleteBarButton] animated:YES];
                 self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
             }
-            else {
-                // No admin rights
-                [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton] animated:YES];
-                self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
-            }
+        }
+        else    // No upload rights => No Delete button and navigation bar (no toolbar)
+        {
+            // Hide toolbar
+            self.navigationController.toolbarHidden = YES;
+
+            // Present buttons in the navigation bar
+            [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton] animated:YES];
+            self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
         }
         
         // Right side of navigation bar
@@ -769,10 +784,10 @@ CGFloat const kRadius = 25.0;
 
 -(void)touchedImages:(UIPanGestureRecognizer *)gestureRecognizer
 {
-    // To prevent a crash
+    // Just in case…
     if (gestureRecognizer.view == nil) return;
     
-    // Select/deselect the cell or scroll the view
+    // Select/deselect cells
     if ((gestureRecognizer.state == UIGestureRecognizerStateBegan) ||
         (gestureRecognizer.state == UIGestureRecognizerStateChanged)) {
         
@@ -806,7 +821,7 @@ CGFloat const kRadius = 25.0;
                 }
                 
                 // Reload the cell and update the navigation bar
-                [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+                [self.imagesCollection reloadData];
                 [self updateNavBar];
             }
         }
