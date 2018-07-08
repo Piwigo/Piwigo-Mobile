@@ -49,6 +49,9 @@
         self.view.backgroundColor = [UIColor blackColor];
     else
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+
+    // Navigation bar appearence
+    self.navigationBarHidden = YES;
 }
 
 -(void)viewWillAppear:(BOOL)animated
