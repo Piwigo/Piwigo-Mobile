@@ -121,7 +121,7 @@ CGFloat const kRadius = 25.0;
         self.navigationController.toolbarHidden = YES;
 
         // Upload button above collection view
-        self.uploadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        self.uploadButton = [UIButton buttonWithType:UIButtonTypeSystem];
         CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
         CGFloat yPos = [UIScreen mainScreen].bounds.size.height - 3*kRadius;
         self.uploadButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
@@ -135,14 +135,14 @@ CGFloat const kRadius = 25.0;
         self.uploadButton.backgroundColor = [UIColor piwigoOrange];
         self.uploadButton.tintColor = [UIColor whiteColor];
         self.uploadButton.showsTouchWhenHighlighted = YES;
-        [self.uploadButton setImage:[UIImage imageNamed:@"upload"] forState:UIControlStateNormal];
+        [self.uploadButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
         [self.uploadButton addTarget:self action:@selector(displayUpload)
                forControlEvents:UIControlEventTouchUpInside];
         self.uploadButton.hidden = YES;
         [self.view addSubview:self.uploadButton];
 
         // Home album button above collection view
-        self.homeAlbumButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        self.homeAlbumButton = [UIButton buttonWithType:UIButtonTypeSystem];
         self.homeAlbumButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
         self.homeAlbumButton.layer.cornerRadius = kRadius;
         self.homeAlbumButton.layer.masksToBounds = NO;
