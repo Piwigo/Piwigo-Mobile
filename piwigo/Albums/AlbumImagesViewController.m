@@ -206,6 +206,10 @@ CGFloat const kRadius = 25.0;
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
+    // Toolbar
+    [self.navigationController.toolbar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
     [self refreshShowingCells];
