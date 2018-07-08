@@ -135,7 +135,7 @@ CGFloat const kRadius = 25.0;
         self.uploadButton.backgroundColor = [UIColor piwigoOrange];
         self.uploadButton.tintColor = [UIColor whiteColor];
         self.uploadButton.showsTouchWhenHighlighted = YES;
-        [self.uploadButton setImage:[UIImage imageNamed:@"cloud"] forState:UIControlStateNormal];
+        [self.uploadButton setImage:[UIImage imageNamed:@"upload"] forState:UIControlStateNormal];
         [self.uploadButton addTarget:self action:@selector(displayUpload)
                forControlEvents:UIControlEventTouchUpInside];
         self.uploadButton.hidden = YES;
