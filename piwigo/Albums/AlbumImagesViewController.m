@@ -420,11 +420,9 @@ CGFloat const kRadius = 25.0;
         [self.uploadButton setHidden:YES];
         [self.homeAlbumButton setHidden:YES];
 
-        // User can upload images/videos if he/she has:
+        // User can delete images/videos if he/she has:
         // — admin rights
-        // — upload access to the current category
-        if ([Model sharedInstance].hasAdminRights ||
-             [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        if ([Model sharedInstance].hasAdminRights)
         {
             // Interface depends on device and orientation
             if ( UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]) &&
@@ -457,7 +455,7 @@ CGFloat const kRadius = 25.0;
                 self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
             }
         }
-        else    // No upload rights => No Delete button and navigation bar (no toolbar)
+        else    // No delete rights => No Delete button and navigation bar (no toolbar)
         {
             // Hide toolbar
             self.navigationController.toolbarHidden = YES;
