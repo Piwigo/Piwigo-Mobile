@@ -129,22 +129,21 @@ typedef enum {
                       [self.editImageDetailsTableView reloadData];
                   } onFailure:^(NSURLSessionTask *task, NSError *error) {
                       // Failed — Ask user if he/she wishes to retry
-                      UIAlertController* alert = [UIAlertController
-                                                  alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                                                  message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-                                                  preferredStyle:UIAlertControllerStyleAlert];
+                      UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+                            message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+                            preferredStyle:UIAlertControllerStyleAlert];
                       
                       UIAlertAction* dismissAction = [UIAlertAction
-                                                      actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                                      style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction * action) {}];
-                      
+                              actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                              style:UIAlertActionStyleCancel
+                              handler:^(UIAlertAction * action) {}];
+                  
                       UIAlertAction* retryAction = [UIAlertAction
-                                                      actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                                      style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction * action) {
-                                                          self.isEdit = isEditChoice;
-                                                      }];
+                              actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                              style:UIAlertActionStyleDefault
+                              handler:^(UIAlertAction * action) {
+                                  self.isEdit = isEditChoice;
+                              }];
 
                       [alert addAction:dismissAction];
                       [alert addAction:retryAction];
@@ -267,12 +266,13 @@ typedef enum {
 	self.imageDetails.imageDescription = textViewCell.getTextViewText;
 }
 
+// Called when the UIKeyboardWillShowNotification is sent.
 -(void)keyboardWillChange:(NSNotification*)notification
 {
-	CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
-	
-	self.tableViewBottomConstraint.constant = keyboardRect.size.height;
+    // Unused — interface to be improved !!
+    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+    self.tableViewBottomConstraint.constant = -100;
 }
 
 -(void)keyboardWillDismiss:(NSNotification*)notification
