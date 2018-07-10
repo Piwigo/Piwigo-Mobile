@@ -463,13 +463,14 @@
                           orFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Show loading HUD when not using cache option,
-    if (!(useCache && [Model sharedInstance].loadAllCategoryInfo)) {
+    if (!(useCache && [Model sharedInstance].loadAllCategoryInfo
+          && ([Model sharedInstance].defaultCategory == 0))) {
         // Show loading HD
         [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
         
         // Reload category data and set current category
-        NSLog(@"buildCategoryTh => getAlbumListForCategory(%ld,NO,YES)", (long)[Model sharedInstance].defaultCategory);
-        [AlbumService getAlbumListForCategory:[Model sharedInstance].defaultCategory
+        NSLog(@"buildCategoryTh => getAlbumListForCategory(%ld,NO,YES)", (long)0);
+        [AlbumService getAlbumListForCategory:0
                                    usingCache:NO
                               inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
                                  OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
@@ -544,7 +545,7 @@
     for(PiwigoAlbumData *category in diff)
     {
         // Always add categories in default album
-        if (category.parentAlbumId == [Model sharedInstance].defaultCategory)
+        if (category.parentAlbumId == 0)
         {
             [self.categories addObject:category];
             continue;
