@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.0_text" = "Version 2.2\n\n• Sub-album creations from any album\n• Improved management with Default Album\n• Improved albums presentation on iPad (and iPhone)\n• Detection of Photo Library changes\n• Minor bug fixes and improvement of the interface\n________________________________________\n\n";
+"v2.2.0_text" = "Version 2.2\n\n• Oprettelse af underalbum fra ethvert album\n• Forbedret administration med standard album\n• Forbedret visning af album på iPad (og iPhone)\n• Registrering af ændringer i billedarkiv\n• Mindre fejlrettelser og forbedringer af brugerflade\n________________________________________\n\n";
 
-"v2.1.9_text" = "Version 2.1.9\n14 maj 2018\n\n• Fejlrettelser\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.9_text" = "Version 2.1.9\n14 maj 2018\n\n• Fejlrettelser\n‎________________________________________\n\n";
 
 "v2.1.8_text" = "Version 2.1.8\n29 April 2018 \n\n• Tilføjet mulighed for at ændre størrelsen på miniaturebilleder\n• HTTPS bliver standardprotokollen\n• Japansk oversættelse\n• Mindre fejlrettelser og forbedringer af brugergrænsefladen\n________________________________________\n\n";
 

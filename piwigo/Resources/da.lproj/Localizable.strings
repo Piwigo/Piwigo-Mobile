@@ -115,32 +115,32 @@
 
 // Album selection
 "categorySelection_title" = "Album";
-"categorySelection_titleSub" = "Sub-Albums";
-"categorySelection_root" = "Root Album";
-"categorySelection_action" = "Select an action for this album";
-"categorySelectionHUD_label" = "Retrieving Albums Data…";
+"categorySelection_titleSub" = "Under album";
+"categorySelection_root" = "Rodalbum";
+"categorySelection_action" = "Vælg en handling for dette album";
+"categorySelectionHUD_label" = "Henter albumdata…";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_noSubAlbum" = "Der er ikke noget underalbum at uploade billeder til";
 "categoryUpload_chooseAlbum" = "Vælg et album for dette billede";
-"categoryUpload_LocalAlbums" = "Local Albums";
+"categoryUpload_LocalAlbums" = "Lokale album";
 "categoryUpload_chooseLocalAlbum" = "Vælg et album at hente biller fra";
-"categoryUpload_iCloudAlbums" = "iCloud Albums";
+"categoryUpload_iCloudAlbums" = "iCloud album";
 "categoryUpload_chooseiCloudAlbum" = "Vælg et iCloud album at hente biller fra";
 "categoyUpload_loadSubCategories" = "indlæs";
-"categoryUpload_images" = "Upload Images";
-"categoryUpload_subAlbum" = "Create Sub-Album";
-"categoryUpload_defaultAlbum" = "Set as Default Album";
+"categoryUpload_images" = "Upload billeder";
+"categoryUpload_subAlbum" = "Opret underalbum";
+"categoryUpload_defaultAlbum" = "Marker som standardalbum";
 
 // Default album
-"setDefaultCategory_title" = "Default Album";
-"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+"setDefaultCategory_title" = "Standardalbum";
+"setDefaultCategory_message" = "Er du sikker på at du vil markere album “%@“ som standardalbum?";
 
 // Album create
 "createNewAlbum_title" = "Nyt Album";
 "createNewAlbum_message" = "Indtast navm for dette album:";
 "createNewAlbum_placeholder" = "Navn på album";
-"createNewAlbumComment_placeholder" = "Comment";
+"createNewAlbumComment_placeholder" = "Bemærkning";
 "createNewAlbumHUD_label" = "Opretter album…";
 
 // Album create — Errors
@@ -163,19 +163,19 @@
 "renameCategoyError_message" = "Kunne ikke omdøbe dit album";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Refreshing Representative…";
+"refreshCategoryHUD_label" = "Opdaterer…";
 
 // Album refresh representative — Errors
-"refreshCategoyError_title" = "Refresh Fail";
-"refreshCategoyError_message" = "Failed to refresh your album representative";
+"refreshCategoyError_title" = "Opdatering mislykkedes";
+"refreshCategoyError_message" = "Kunne ikke opdatere dit album";
 
 // Album delete
 "deleteCategory_title" = "SLET ALBUM";
 "deleteCategory_message" = "ER DU SIKKER PÅ DU VIL SLETTE ALBUM \"%@\" OG ALLE %@ BILLEDER?";
-"deleteCategory_empty" = "Delete Empty Album";
-"deleteCategory_noImages" = "Keep Images";
-"deleteCategory_orphanedImages" = "Delete Orphans";
-"deleteCategory_allImages" = "Delete %@ Images";
+"deleteCategory_empty" = "Slet tomt album";
+"deleteCategory_noImages" = "Behold billeder";
+"deleteCategory_orphanedImages" = "Slet forældreløse";
+"deleteCategory_allImages" = "Slet %@ billeder";
 "deleteCategoryConfirm_title" = "Er du sikker?";
 "deleteCategoryConfirm_message" = "Angiv antallet af billeder for at slette dette album. Antal billeder: %@";
 "deleteCategoryConfirm_deleteButton" = "SLET";
@@ -198,9 +198,9 @@
 "moveCategoryError_message" = "Kunne ikke flytte dit album";
 
 // Album set image thumbnail
-"categorySelection_select" = "Select Album";
-"categorySelection_current" = "Select the current album for this image";
-"categorySelection_other" = "or select another album for this image";
+"categorySelection_select" = "Vælg album";
+"categorySelection_current" = "Vælg aktuelle album for dette billede";
+"categorySelection_other" = "eller vælg et andet album";
 "categoryImageSet_title" = "Vælg Miniaturebilledet";
 "categoryImageSet_message" = "Er du sikker på, at du vil bruge dette billede som miniaturebillede for albummet \"%@\"?";
 "categoryImageSetHUD_updating" = "Opdaterer Album miniature…";
@@ -267,9 +267,9 @@
 "tagsHeader_all" = "Alle";
 
 // Image select
-"selectImages" = "Select Images";
-"selectImageSelected" = "1 Image Selected";
-"selectImagesSelected" = "%@ Images Selected";
+"selectImages" = "Vælg billeder";
+"selectImageSelected" = "1 billede valgt";
+"selectImagesSelected" = "%@ billeder valgt";
 "selectAll" = "Alle";
 
 // Image delete
@@ -278,7 +278,7 @@
 
 "deleteSingleImage_title" = "Slet Billede";
 "deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede? Dette kan ikke fortrydes!";
-"deleteSeveralImages_title" = "Slet Billeder";
+"deleteSeveralImages_title" = "Slet %@ Billeder";
 "deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder? Dette kan ikke fortrydes!";
 
 "deleteImageFail_title" = "Sletning Mislykkedes";
@@ -287,7 +287,7 @@
 // Image download
 "downloadSingleImage_title" = "Hent Billede";
 "downloadSingleImage_confirmation" = "Er du sikker på du ønsker at hente det valgte billede?";
-"downloadSeveralImages_title" = "Hent Billeder";
+"downloadSeveralImages_title" = "Hent %@ billeder";
 "downloadSeveralImage_confirmation" = "Er du sikker på du ønsker at hente de valgte %@ billeder?";
 
 "downloadingImage" = "Henter Billede";
@@ -352,7 +352,7 @@
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Photos library";
+"localAlbums" = "Billedarkiv";
 
 "localImageSort_newest" = "Nyeste";
 "localImageSort_oldest" = "Ældste";
@@ -372,7 +372,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
-"settingsHeader_notSecure" = "Website Not Secure!";
+"settingsHeader_notSecure" = "Websted er ikke sikkert!";
 "settings_server" = "Server";
 "settings_username" = "Brugernavn";
 "settings_notLoggedIn" = " - Ikke logget ind - ";
