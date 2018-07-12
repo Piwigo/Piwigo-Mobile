@@ -29,7 +29,7 @@
     [super viewWillAppear:YES];
     
     // Inform user if the connection is not secure
-    self.websiteNotSecure.hidden = [[Model sharedInstance].serverProtocol isEqualToString:@"https://"];
+    self.websiteNotSecure.hidden = ![[Model sharedInstance].serverProtocol isEqualToString:@"https://"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -45,10 +45,11 @@
     
     NSDictionary *views = @{
                             @"logo" : self.piwigoLogo,
-                            @"login" : self.loginButton,
+                            @"url" : self.piwigoButton,
                             @"server" : self.serverTextField,
                             @"user" : self.userTextField,
                             @"password" : self.passwordTextField,
+                            @"login" : self.loginButton,
                             @"notSecure" : self.websiteNotSecure,
                             @"by1" : self.byLabel1,
                             @"by2" : self.byLabel2,
@@ -69,16 +70,21 @@
     [portrait addObject:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(fmax([UIScreen mainScreen].bounds.size.height,[UIScreen mainScreen].bounds.size.width) / 2.0 + self.textFieldHeight + 2 * 10.0)]];
 
     [portrait addObjectsFromArray:[NSLayoutConstraint
-          constraintsWithVisualFormat:@"V:|-(>=30,<=100)-[logo(height)]-(>=20)-[server(==logo)]-15-[user(==logo)]-15-[password(==logo)]-15-[login(==logo)]-15-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
+          constraintsWithVisualFormat:@"V:|-(>=30,<=100)-[logo(height)]-(>=20)-[url(==logo)]-15-[server(==logo)]-15-[user(==logo)]-15-[password(==logo)]-15-[login(==logo)]-15-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
                                options:kNilOptions metrics:metrics views:views]];
 
     // Horizontally
-    [portrait addObject:[NSLayoutConstraint constraintCenterVerticalView:self.serverTextField]];
+    [portrait addObject:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoLogo]];
     [portrait addObjectsFromArray:[NSLayoutConstraint
           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-(>=side)-|"
                               options:kNilOptions metrics:metrics views:views]];
 
-    [portrait addObject:[NSLayoutConstraint constraintCenterVerticalView:self.userTextField]];
+    [portrait addObject:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoButton]];
+    [portrait addObjectsFromArray:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"H:|-(>=side)-[url(width)]-(>=side)-|"
+                                   options:kNilOptions metrics:metrics views:views]];
+    
+    [portrait addObject:[NSLayoutConstraint constraintCenterVerticalView:self.serverTextField]];
     [portrait addObjectsFromArray:[NSLayoutConstraint
           constraintsWithVisualFormat:@"H:|-(>=side)-[server(width)]-(>=side)-|"
                               options:kNilOptions metrics:metrics views:views]];
@@ -151,6 +157,9 @@
            constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-side-[notSecure(==server)]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];
 
+    [landscape addObjectsFromArray:[NSLayoutConstraint
+           constraintsWithVisualFormat:@"H:|-(>=side)-[url(==logo)]-side-[user]-(>=side)-|"
+                               options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
     [landscape addObjectsFromArray:[NSLayoutConstraint
            constraintsWithVisualFormat:@"H:|-(>=side)-[by1]-side-[login]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];

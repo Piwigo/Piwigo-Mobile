@@ -44,7 +44,16 @@
 		self.piwigoLogo.contentMode = UIViewContentModeScaleAspectFit;
 		[self.view addSubview:self.piwigoLogo];
 		
-		self.serverTextField = [PiwigoTextField new];
+        self.piwigoButton = [UIButton new];
+        self.piwigoButton.backgroundColor = [UIColor clearColor];
+        self.piwigoButton.translatesAutoresizingMaskIntoConstraints = NO;
+        self.piwigoButton.titleLabel.font = [UIFont piwigoFontNormal];
+        [self.piwigoButton setTitleColor:[UIColor piwigoOrange] forState:UIControlStateNormal];
+        [self.piwigoButton setTitle:@"— https://piwigo.org —" forState:UIControlStateNormal];
+        [self.piwigoButton addTarget:self action:@selector(openPiwigoURL) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:self.piwigoButton];
+
+        self.serverTextField = [PiwigoTextField new];
 		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"example.com");
 		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverName];
@@ -97,7 +106,6 @@
         self.byLabel1 = [UILabel new];
         self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
         self.byLabel1.font = [UIFont piwigoFontSmall];
-//        self.byLabel1.font = [self.byLabel1.font fontWithSize:16];
         self.byLabel1.textColor = [UIColor piwigoOrangeLight];
         self.byLabel1.text = NSLocalizedStringFromTableInBundle(@"authors1", @"About", [NSBundle mainBundle], @"By Spencer Baker, Olaf Greck,");
         [self.view addSubview:self.byLabel1];
@@ -925,6 +933,11 @@
 -(void)dismissKeyboard
 {
     [self.view endEditing:YES];
+}
+
+-(void)openPiwigoURL
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://piwigo.org"]];
 }
 
 @end

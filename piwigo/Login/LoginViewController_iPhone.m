@@ -49,10 +49,11 @@
 
     NSDictionary *views = @{
                             @"logo" : self.piwigoLogo,
-                            @"login" : self.loginButton,
+                            @"url" : self.piwigoButton,
                             @"server" : self.serverTextField,
                             @"user" : self.userTextField,
                             @"password" : self.passwordTextField,
+                            @"login" : self.loginButton,
                             @"notSecure" : self.websiteNotSecure,
                             @"by1" : self.byLabel1,
                             @"by2" : self.byLabel2,
@@ -66,12 +67,23 @@
     
     // Vertically
     [self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:([UIScreen mainScreen].bounds.size.height / 2.0 + self.textFieldHeight + 2 * 10.0)]];
-    [self.view addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:@"V:|-(>=50,<=100)-[logo(height)]-(>=20)-[server(==logo)]-10-[user(==logo)]-10-[password(==logo)]-10-[login(==logo)]-10-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
-                                options:kNilOptions metrics:metrics views:views]];
+    
+    if ([UIScreen mainScreen].bounds.size.height > 500) {
+        [self.view addConstraints:[NSLayoutConstraint
+                constraintsWithVisualFormat:@"V:|-(>=50,<=100)-[logo(height)]-(>=20)-[url(==logo)]-10-[server(==logo)]-10-[user(==logo)]-10-[password(==logo)]-10-[login(==logo)]-10-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
+                                   options:kNilOptions metrics:metrics views:views]];
+    } else {
+        [self.view addConstraints:[NSLayoutConstraint
+                constraintsWithVisualFormat:@"V:|-(>=30,<=50)-[logo(height)]-(>=20)-[url(==logo)]-10-[server(==logo)]-10-[user(==logo)]-10-[password(==logo)]-10-[login(==logo)]-10-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
+                                   options:kNilOptions metrics:metrics views:views]];
+    }
 
     // Piwigo logo
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoLogo]];
+
+    // URL button
+    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoButton]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-side-[url]-side-|" options:kNilOptions metrics:metrics views:views]];
 
     // Server
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.serverTextField]];
