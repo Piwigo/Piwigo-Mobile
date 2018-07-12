@@ -15,7 +15,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 - Set a photo as album image,
 - Upload photos:
    - of modifiable size and quality,
-   - with description, author, tags, EXIF metadata,
+   - with description, author, tags/keywords, EXIF metadata,
    - with or without GPS metadata,
 - Upload videos.
 
