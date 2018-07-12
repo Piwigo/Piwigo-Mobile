@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.9_text" = "Version 2.1.9\n\n• Buggfixar\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.2.0_text" = "Version 2.2\n\n• Underalbum skapelser från alla album\n• Förbättrad hantering med standardalbum\n• Förbättrad albumpresentation på iPad (och iPhone)\n• Detektion av bildbibliotekets ändringar\n• Mindre buggfixar och förbättring av gränssnittet\n________________________________________\n\n";
+
+"v2.1.9_text" = "Version 2.1.9\n14 maj 2018\n\n• Buggfixar\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.8_text" = "Version 2.1.8\n29 april 2018\n\n• Lägger till förmåga att ändra storleken på miniatyrer\n• HTTPS blir standardprotokollet\n• Japansk översättning\n• Mindre buggfixar och förbättring av gränssnittet\n________________________________________\n\n";
 
@@ -30,7 +32,7 @@
 
 "v2.0.3_text" = "Version 2.0.3\n26 maj 2017\n\n• Lagt till alternativ för att ta bort GPS-metadata på inställningssidan\n• Lagt till aktuell cache-användning på inställningssidan\n• Fixat cache-inställningar som ibland var glömda/återställda\n• Fixat uppladdning av bildinställningar som ibland blev förlorade/återställda\n________________________________________\n\n";
 
-"v2.0.2_text" = "Version 2.0.2\n8 maj 2017\n\n• Sorteringskriterier som nu är identiska med webapplikation\n• Fixat sorteringsproblem\n• Fixat en krasch som uppstod när du lägger till taggar i en bild före uppladdning\n• Fixat situationer där radering av ett urval bilder inte fungerade\n• Fixat situationer där ett album inte visades efter flyttning\n• Fixat ett kompatibilitetsproblem med IOS 10 - utfasad kod\n________________________________________\n\n";
+"v2.0.2_text" = "Version 2.0.2\n8 maj 2017\n\n• Sorteringskriterier som nu är identiska med webapplikation\n• Fixat sorteringsproblem\n• Fixat en krasch som uppstod när du lägger till taggar i en bild före uppladdning\n• Fixat situationer där radering av ett urval bilder inte fungerade\n• Fixat situationer där ett album inte visades efter flyttning\n• Fixat ett kompatibilitetsproblem med iOS 10 - utfasad kod\n________________________________________\n\n";
 
 "v2.0.1_text" = "Version 2.0.1\n26 juni 2015\n\nNya inställningar:\n  - Alternativ för att ändra storlek på bilder vid uppladdning\n    + Bildkvaliteten är från ett område på 50 - 98%\n  - Möjlighet att ställa in en standardbildsförhandsgranskningstorlek\nBug fixar\n________________________________________\n\n";
 

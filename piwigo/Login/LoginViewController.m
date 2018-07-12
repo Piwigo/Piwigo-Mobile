@@ -83,12 +83,70 @@
 		[self.loginButton addTarget:self action:@selector(launchLogin) forControlEvents:UIControlEventTouchUpInside];
 		[self.view addSubview:self.loginButton];
 		
-		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)]];
+        self.websiteNotSecure = [UILabel new];
+        self.websiteNotSecure.translatesAutoresizingMaskIntoConstraints = NO;
+        self.websiteNotSecure.font = [UIFont piwigoFontSmall];
+        self.websiteNotSecure.text = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
+        self.websiteNotSecure.textAlignment = NSTextAlignmentCenter;
+        self.websiteNotSecure.textColor = [UIColor whiteColor];
+        self.websiteNotSecure.adjustsFontSizeToFitWidth = YES;
+        self.websiteNotSecure.minimumScaleFactor = 0.8;
+        self.websiteNotSecure.lineBreakMode = NSLineBreakByTruncatingTail;
+        [self.view addSubview:self.websiteNotSecure];
+        
+        self.byLabel1 = [UILabel new];
+        self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
+        self.byLabel1.font = [UIFont piwigoFontSmall];
+//        self.byLabel1.font = [self.byLabel1.font fontWithSize:16];
+        self.byLabel1.textColor = [UIColor piwigoOrangeLight];
+        self.byLabel1.text = NSLocalizedStringFromTableInBundle(@"authors1", @"About", [NSBundle mainBundle], @"By Spencer Baker, Olaf Greck,");
+        [self.view addSubview:self.byLabel1];
+        
+        self.byLabel2 = [UILabel new];
+        self.byLabel2.translatesAutoresizingMaskIntoConstraints = NO;
+        self.byLabel2.font = [UIFont piwigoFontSmall];
+        self.byLabel2.textColor = [UIColor piwigoOrangeLight];
+        self.byLabel2.text = NSLocalizedStringFromTableInBundle(@"authors2", @"About", [NSBundle mainBundle], @"and Eddy Lelièvre-Berna");
+        [self.view addSubview:self.byLabel2];
+        
+        self.versionLabel = [UILabel new];
+        self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.versionLabel.font = [UIFont piwigoFontTiny];
+        self.versionLabel.textColor = [UIColor piwigoOrangeLight];
+        [self.view addSubview:self.versionLabel];
+        
+        NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+        self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
+
+        [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)]];
 		
 		[self performSelector:@selector(setupAutoLayout) withObject:nil]; // now located in child VC, thus import .h files
     }
 	return self;
 }
+
+
+#pragma mark - View Lifecycle
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+
+    // Register for keyboard notifications
+    [self registerForKeyboardNotifications];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Unregister for keyboard notifications while not visible.
+    [self unregisterKeyboardNotifications];
+}
+
+
+#pragma mark - Login business
 
 -(void)launchLogin
 {
@@ -130,8 +188,8 @@
         [self showLoadingWithSubtitle:NSLocalizedString(@"login_connecting", @"Connecting")];
     });
     
-    // Save server address and username to disk
-    [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
+//    // Save server address and username to disk
+//    [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
     
     // Save credentials in Keychain (needed before login when using HTTP Authentication)
     if(self.userTextField.text.length > 0)
@@ -141,8 +199,8 @@
     }
 
     // Create permanent session managers for retrieving data and downloading images
-    [NetworkHandler createJSONdataSessionManager];
-    [NetworkHandler createImagesSessionManager];
+    [NetworkHandler createJSONdataSessionManager];      // 30s timeout, 4 connections max
+    [NetworkHandler createImagesSessionManager];        // 60s timeout, 4 connections max
     
     // Create permanent image downloader
     AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc]
@@ -157,10 +215,14 @@
     // Collect list of methods supplied by Piwigo server
     // => Determine if Community extension 2.9a or later is installed and active
 #if defined(DEBUG_SESSION)
-    NSLog(@"=> launchLogin: getMethodsList using https…");
+    NSLog(@"=> launchLogin: getMethodsList using %@", [Model sharedInstance].serverProtocol);
 #endif
+    [Model sharedInstance].sessionManager.session.configuration.timeoutIntervalForRequest = 10;
     [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
         
+        // Back to default timeout
+        [Model sharedInstance].sessionManager.session.configuration.timeoutIntervalForRequest = 30;
+
         if(methodsList) {
             // Community extension installed and active ?
             for (NSString *method in methodsList) {
@@ -172,7 +234,6 @@
             }
             // Known methods, pursue logging in…
             [self performLogin];
-        
         } else {
             // Methods unknown, so we cannot reach the server, inform user
             NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
@@ -186,7 +247,7 @@
             // But unsuccessfully, so must now request HTTP credentials
             [self requestHttpCredentialsAfterError:error];
         } else {
-            // HTTPS login request failed
+            // HTTPS login request failed ?
             if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"])
             {
                 // Suggest HTTP connection if HTTPS attempt failed
@@ -253,72 +314,51 @@
     // Retrieve the HTTP status code (see http://www.ietf.org/rfc/rfc2616.txt)
 //    NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
 
-    [self hideLoadingWithCompletion:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIAlertController* alert = [UIAlertController
-                    alertControllerWithTitle:NSLocalizedString(@"serverConnectionError_title", @"Security Issue")
-                    message:[NSString stringWithFormat:NSLocalizedString(@"serverConnectionError_message", @"A secured HTTPS connection could not be established. Do you want to continue with non-encrypted HTTP communications?"), [Model sharedInstance].version]
-                    preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* defaultAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                    style:UIAlertActionStyleCancel
-                    handler:^(UIAlertAction * action) {
-                        // We cannot reach the server, inform user
-                        NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
-                        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
-                    }];
-            
-            UIAlertAction* continueAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertTryButton", @"Try")
-                    style:UIAlertActionStyleDestructive
-                    handler:^(UIAlertAction * action) {
-                        // Proceed at their own risk
-                        [Model sharedInstance].serverProtocol = @"http://";
+    // Proceed at their own risk
+    [Model sharedInstance].serverProtocol = @"http://";
 
-                        // Collect list of methods supplied by Piwigo server
-                        // => Determine if Community extension 2.9a or later is installed and active
+    // Display security message below credentials if needed
+    self.websiteNotSecure.hidden = NO;
+
+    // Collect list of methods supplied by Piwigo server
+    // => Determine if Community extension 2.9a or later is installed and active
 #if defined(DEBUG_SESSION)
-                        NSLog(@"=> launchLogin using http: getMethodsList…");
+    NSLog(@"=> launchLogin using http: getMethodsList…");
 #endif
-                        [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
-                            
-                            if(methodsList) {
-                                // Community extension installed and active ?
-                                for (NSString *method in methodsList) {
-                                    
-                                    // Check if the Community extension is installed and active (> 2.9a)
-                                    if([method isEqualToString:@"community.session.getStatus"]) {
-                                        self.usesCommunityPluginV29 = YES;
-                                    }
-                                }
-                                // Known methods, pursue logging in…
-                                [self performLogin];
-                                
-                            } else {
-                                // Methods unknown, so we cannot reach the server, inform user
-                                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
-                                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
-                            }
-                            
-                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                            // If Piwigo server requires HTTP basic authentication, ask credentials
-                            if ([Model sharedInstance].performedHTTPauthentication){
-                                // Without prior knowledge, the app already tried Piwigo credentials
-                                // But unsuccessfully, so must now request HTTP credentials
-                                [self requestHttpCredentialsAfterError:error];
-                            } else {
-                                // HTTP(S) login requests failed
-                                // Display error message
-                                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
-                            }
-                        }];
-                    }];
+    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
+        
+        // Back to default timeout
+        [Model sharedInstance].sessionManager.session.configuration.timeoutIntervalForRequest = 30;
+
+        if(methodsList) {
+            // Community extension installed and active ?
+            for (NSString *method in methodsList) {
+                
+                // Check if the Community extension is installed and active (> 2.9a)
+                if([method isEqualToString:@"community.session.getStatus"]) {
+                    self.usesCommunityPluginV29 = YES;
+                }
+            }
+            // Known methods, pursue logging in…
+            [self performLogin];
             
-            [alert addAction:defaultAction];
-            [alert addAction:continueAction];
-            [self presentViewController:alert animated:YES completion:nil];
-        });
+        } else {
+            // Methods unknown, so we cannot reach the server, inform user
+            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+        }
+        
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // If Piwigo server requires HTTP basic authentication, ask credentials
+        if ([Model sharedInstance].performedHTTPauthentication){
+            // Without prior knowledge, the app already tried Piwigo credentials
+            // But unsuccessfully, so must now request HTTP credentials
+            [self requestHttpCredentialsAfterError:error];
+        } else {
+            // HTTP(S) login requests failed
+            // Display error message
+            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+        }
     }];
 }
 
@@ -359,7 +399,7 @@
                          [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                      }
                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                     // HTTPS login request failed
+                     // HTTPS login request failed ?
                      if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"])
                      {
                          // Suggest HTTP connection if HTTPS attempt failed
@@ -485,7 +525,8 @@
                             [appDelegate loadNavigation];
                         } else {
                             // Refresh category data
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil];
+                            NSDictionary *userInfo = @{@"fromCache" : @"NO"};
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
                         }
                     }];
                 }
@@ -600,7 +641,7 @@
                             }];
 }
 
-#pragma mark -- HUD methods
+#pragma mark - HUD methods
 
 -(void)showLoadingWithSubtitle:(NSString *)subtitle
 {
@@ -719,11 +760,70 @@
 }
 
 
-#pragma mark -- UITextField Delegate Methods
+#pragma mark - Keyboard Notifications
+
+- (void)registerForKeyboardNotifications {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+}
+
+// Called when the UIKeyboardWillShowNotification is sent.
+- (void)keyboardWillShow:(NSNotification*)aNotification {
+    
+    NSDictionary* info = [aNotification userInfo];
+    CGRect kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey]
+                     CGRectValue];
+    NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey]
+                       doubleValue];
+    
+    // If needed, animate the current view out of the way
+    // so that the login button appears above the keyboard
+    CGFloat amount = [UIScreen mainScreen].bounds.size.height / 2.0 + 2 * self.textFieldHeight + 3*10.0 - kbSize.origin.y;
+    if ((amount > 0) && (self.view.frame.origin.y >= 0))
+        [self moveTextFieldsBy:amount inDuration:duration];
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillHide:(NSNotification*)aNotification {
+    
+    NSDictionary* info = [aNotification userInfo];
+    CGRect kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey]
+                     CGRectValue];
+    NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey]
+                       doubleValue];
+    
+    // If needed, animate the current view out of the way
+    // so that the login button appears above the keyboard
+    CGFloat amount = [UIScreen mainScreen].bounds.size.height / 2.0 + 2 * self.textFieldHeight + 3*10.0 - kbSize.origin.y;
+    if ((amount > 0) && (self.view.frame.origin.y < 0))
+        [self moveTextFieldsBy:(-amount) inDuration:duration];
+}
+
+- (void)unregisterKeyboardNotifications {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillShowNotification
+                                                  object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillHideNotification
+                                                  object:nil];
+}
+
+
+#pragma mark - UITextField Delegate Methods
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    // Disable HTTP login action
+    // Disable HTTP login action until user provides infos
     [self.httpLoginAction setEnabled:NO];
     return YES;
 }
@@ -746,45 +846,37 @@
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	if(textField == self.serverTextField) {
+        // Save server address and username to disk
+        [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
         // User entered server address
 		[self.userTextField becomeFirstResponder];
-	} else if (textField == self.userTextField) {
+	}
+    else if (textField == self.userTextField) {
         // User entered username
         NSString *pwd = [SAMKeychain passwordForService:self.serverTextField.text account:self.userTextField.text];
         if (pwd != nil) {
             self.passwordTextField.text = pwd;
         }
         [self.passwordTextField becomeFirstResponder];
-	} else if (textField == self.passwordTextField) {
-        
-		if(self.view.frame.size.height > 320)
-		{
-			[self moveTextFieldsBy:self.topConstraintAmount];
-		}
-		[self launchLogin];
+	}
+    else if (textField == self.passwordTextField) {
+        // User entered password —> Launch login
+        [self launchLogin];
 	}
 	return YES;
 }
 
--(void)textFieldDidBeginEditing:(UITextField *)textField
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
-	if(self.view.frame.size.height > 500) return;
-	
-	NSInteger amount = 0;
-	if (textField == self.userTextField)
-	{
-		amount = -self.topConstraintAmount;
-	}
-	else if (textField == self.passwordTextField)
-	{
-		amount = -self.topConstraintAmount * 2;
-	}
-	
-	[self moveTextFieldsBy:amount];
+    if(textField == self.serverTextField) {
+        // Save server address and username to disk
+        [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
+    }
+    return YES;
 }
 
 
-#pragma mark -- Utilities
+#pragma mark - Utilities
 
 -(void)saveServerAddress:(NSString *)serverString andUsername:(NSString *)user
 {
@@ -816,17 +908,22 @@
     [[Model sharedInstance] saveToDisk];
 }
 
--(void)moveTextFieldsBy:(NSInteger)amount
+-(void)moveTextFieldsBy:(CGFloat)amount inDuration:(NSTimeInterval)duration
 {
-    self.logoTopConstraint.constant = amount;
-    [UIView animateWithDuration:0.3 animations:^{
+    // 1. move the view's origin up so that the text field that will be hidden come above the keyboard
+    // 2. increase the size of the view so that the area behind the keyboard is covered up.
+    CGRect rect = self.view.frame;
+    rect.origin.y -= amount;
+    rect.size.height += amount;
+    self.view.frame = rect;
+
+    [UIView animateWithDuration:duration animations:^{
         [self.view layoutIfNeeded];
     }];
 }
 
 -(void)dismissKeyboard
 {
-    [self moveTextFieldsBy:self.topConstraintAmount];
     [self.view endEditing:YES];
 }
 

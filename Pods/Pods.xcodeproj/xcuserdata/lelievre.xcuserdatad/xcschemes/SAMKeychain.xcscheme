@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E375EC282BC4B280A1426C990A7ADDAA"
+               BlueprintIdentifier = "F1B9464C0C8553F4283680A881376E91"
                BuildableName = "libSAMKeychain.a"
                BlueprintName = "SAMKeychain"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E375EC282BC4B280A1426C990A7ADDAA"
+            BlueprintIdentifier = "F1B9464C0C8553F4283680A881376E91"
             BuildableName = "libSAMKeychain.a"
             BlueprintName = "SAMKeychain"
             ReferencedContainer = "container:Pods.xcodeproj">

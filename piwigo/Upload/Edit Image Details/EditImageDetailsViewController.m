@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EditImageDetailsViewController.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
@@ -43,14 +44,18 @@ typedef enum {
 	
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
+	// Register keyboard events
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
+
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
 }
 
--(void)viewWillAppear:(BOOL)animated
+#pragma mark - View Lifecycle
+
+-(void)paletteChanged
 {
-	[super viewWillAppear:animated];
-	
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
@@ -60,25 +65,28 @@ typedef enum {
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBarHidden = NO;
-
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-
+    
     // Table view
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     [self.editImageDetailsTableView reloadData];
-    
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+    // Set colors, fonts, etc.
+    [self paletteChanged];
+
+    // Navigation buttons
     if(self.isEdit)
 	{
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
@@ -121,22 +129,21 @@ typedef enum {
                       [self.editImageDetailsTableView reloadData];
                   } onFailure:^(NSURLSessionTask *task, NSError *error) {
                       // Failed — Ask user if he/she wishes to retry
-                      UIAlertController* alert = [UIAlertController
-                                                  alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                                                  message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-                                                  preferredStyle:UIAlertControllerStyleAlert];
+                      UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+                            message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+                            preferredStyle:UIAlertControllerStyleAlert];
                       
                       UIAlertAction* dismissAction = [UIAlertAction
-                                                      actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                                      style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction * action) {}];
-                      
+                              actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                              style:UIAlertActionStyleCancel
+                              handler:^(UIAlertAction * action) {}];
+                  
                       UIAlertAction* retryAction = [UIAlertAction
-                                                      actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                                      style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction * action) {
-                                                          self.isEdit = isEditChoice;
-                                                      }];
+                              actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                              style:UIAlertActionStyleDefault
+                              handler:^(UIAlertAction * action) {
+                                  self.isEdit = isEditChoice;
+                              }];
 
                       [alert addAction:dismissAction];
                       [alert addAction:retryAction];
@@ -233,7 +240,7 @@ typedef enum {
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
                 hud.label.text = NSLocalizedString(@"Complete", nil);
-                [hud hideAnimated:YES afterDelay:3.f];
+                [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];
             }
@@ -259,12 +266,13 @@ typedef enum {
 	self.imageDetails.imageDescription = textViewCell.getTextViewText;
 }
 
+// Called when the UIKeyboardWillShowNotification is sent.
 -(void)keyboardWillChange:(NSNotification*)notification
 {
-	CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
-	
-	self.tableViewBottomConstraint.constant = keyboardRect.size.height;
+    // Unused — interface to be improved !!
+    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+    self.tableViewBottomConstraint.constant = -100;
 }
 
 -(void)keyboardWillDismiss:(NSNotification*)notification
@@ -272,7 +280,7 @@ typedef enum {
 	self.tableViewBottomConstraint.constant = 0;
 }
 
-#pragma mark UITableView methods
+#pragma mark - UITableView methods
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {

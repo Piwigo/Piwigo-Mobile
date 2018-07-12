@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "SettingsViewController.h"
 #import "SessionService.h"
-#import "AppDelegate.h"
 #import "Model.h"
 #import "SelectPrivacyViewController.h"
 #import "TextFieldTableViewCell.h"
@@ -23,13 +23,15 @@
 #import "PiwigoImageData.h"
 #import "DefaultImageSizeViewController.h"
 #import "DefaultThumbnailSizeViewController.h"
+#import "DefaultCategoryViewController.h"
 #import "ReleaseNotesViewController.h"
 #import "ImagesCollection.h"
+#import "CategoriesData.h"
 
 typedef enum {
 	SettingsSectionServer,
 	SettingsSectionLogout,
-	SettingsSectionThumbnails,
+    SettingsSectionAlbums,
     SettingsSectionImages,
 	SettingsSectionImageUpload,
     SettingsSectionCache,
@@ -45,12 +47,8 @@ typedef enum {
 @interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
-@property (nonatomic, strong) NSArray *headerHeights;
-@property (nonatomic, strong) NSLayoutConstraint *topConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
-
-@property (nonatomic, assign) CGFloat previousContentYOffset;
-@property (nonatomic, assign) CGFloat minContentYOffset;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
 @end
 
@@ -61,17 +59,7 @@ typedef enum {
 	self = [super init];
 	if(self)
 	{
-        self.headerHeights = @[
-							   @44.0,
-							   @14.0,
-							   @44.0,
-                               @44.0,
-							   @44.0,
-                               @44.0,
-							   @44.0,
-							   @44.0
-							   ];
-		
+        // Table view
         self.settingsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.settingsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.settingsTableView.backgroundColor = [UIColor clearColor];
@@ -83,45 +71,59 @@ typedef enum {
 		self.tableViewBottomConstraint = [NSLayoutConstraint constraintViewFromBottom:self.settingsTableView amount:0];
 		[self.view addConstraint:self.tableViewBottomConstraint];
 
+        // Button for returning to albums/images
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitSettings)];
+        
         // Keyboard management
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
 
-        // Before starting scrolling
-        self.previousContentYOffset = -INFINITY;
-}
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+    }
 	return self;
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear:animated];
+#pragma mark - View Lifecycle
 
+-(void)paletteChanged
+{
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        NSDictionary *attributesLarge = @{
+                                          NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                          NSFontAttributeName: [UIFont piwigoFontLargeTitle],
+                                          };
+        self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
+        self.navigationController.navigationBar.prefersLargeTitles = YES;
+    }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
     
     // Table view
     self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.settingsTableView reloadData];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+
+    // Set colors, fonts, etc.
+    [self paletteChanged];
+    
+    // Set navigation buttons
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -138,60 +140,138 @@ typedef enum {
     } completion:nil];
 }
 
+-(void)quitSettings
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
-#pragma mark - UITableView - headers
+
+#pragma mark - UITableView - Headers
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return [self.headerHeights[section] floatValue];
+    // Header strings
+    NSString *titleString, *textString = @"";
+    switch(section)
+    {
+        case SettingsSectionServer:
+            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"]) {
+                titleString = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+            } else {
+                titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server")];
+                textString = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
+            }
+            break;
+        case SettingsSectionLogout:
+            return 14;
+        case SettingsSectionAlbums:
+            titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
+            break;
+        case SettingsSectionImages:
+            titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
+            break;
+        case SettingsSectionImageUpload:
+            titleString = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
+            break;
+        case SettingsSectionCache:
+            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
+            break;
+        case SettingsSectionColor:
+            titleString = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            break;
+        case SettingsSectionAbout:
+            titleString = NSLocalizedString(@"settingsHeader_about", @"Information");
+            break;
+    }
+
+    // Header height
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:titleAttributes
+                                                 context:context];
+
+    // Header height
+    NSInteger headerHeight;
+    if ([textString length] > 0) {
+        NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+        CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                attributes:textAttributes
+                                                   context:context];
+        headerHeight = fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+    } else {
+        headerHeight = fmax(44.0, ceil(titleRect.size.height));
+    }
+
+    return headerHeight;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    // Header label
-    UILabel *headerLabel = [UILabel new];
-    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontBold];
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
-
-    // Header text
+    // Header strings
+    NSString *titleString, *textString = @"";
     switch(section)
     {
         case SettingsSectionServer:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"]) {
+                titleString = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+            } else {
+                titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server")];
+                textString = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
+            }
             break;
-        case SettingsSectionThumbnails:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
+        case SettingsSectionLogout:
+            return nil;
+        case SettingsSectionAlbums:
+            titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
             break;
         case SettingsSectionImages:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_images", @"Images");
+            titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
             break;
         case SettingsSectionImageUpload:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
+            titleString = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
             break;
         case SettingsSectionCache:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
+            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
             break;
         case SettingsSectionColor:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            titleString = NSLocalizedString(@"settingsHeader_colors", @"Colors");
             break;
         case SettingsSectionAbout:
-            headerLabel.text = NSLocalizedString(@"settingsHeader_about", @"Information");
+            titleString = NSLocalizedString(@"settingsHeader_about", @"Information");
             break;
     }
     
-    // Header height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
+    NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    // Title
+    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                  range:NSMakeRange(0, [titleString length])];
+    [headerAttributedString appendAttributedString:titleAttributedString];
+    
+    // Text
+    if ([textString length] > 0) {
+        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                     range:NSMakeRange(0, [textString length])];
+        [headerAttributedString appendAttributedString:textAttributedString];
+    }
+    
+    // Header label
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    headerLabel.attributedText = headerAttributedString;
 
     // Header view
-    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    UIView *header = [[UIView alloc] init];
     header.backgroundColor = [UIColor clearColor];
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
@@ -210,7 +290,7 @@ typedef enum {
 }
 
 
-#pragma mark - UITableView - rows
+#pragma mark - UITableView - Rows
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -228,8 +308,8 @@ typedef enum {
         case SettingsSectionLogout:
             nberOfRows = 1;
             break;
-        case SettingsSectionThumbnails:
-            nberOfRows = 4;
+        case SettingsSectionAlbums:
+            nberOfRows = 5;
             break;
         case SettingsSectionImages:
             nberOfRows = 1;
@@ -261,6 +341,7 @@ typedef enum {
     UITableViewCell *tableViewCell = [UITableViewCell new];
 	switch(indexPath.section)
 	{
+#pragma mark Server
 		case SettingsSectionServer:      // Piwigo Server
 		{
 			LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server"];
@@ -313,12 +394,31 @@ typedef enum {
 			break;
 		}
 
-#pragma mark Thumbnails
-        case SettingsSectionThumbnails:     // Thumbnails
+#pragma mark Albums
+        case SettingsSectionAlbums:         // Albums
 		{
 			switch(indexPath.row)
 			{
-				case 0:     // Default Sort
+                case 0:     // Default album
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultAlbum"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"setDefaultCategory_title", @"Default Album";);
+                    if ([Model sharedInstance].defaultCategory == 0) {
+                        cell.rightText = NSLocalizedString(@"categorySelection_root", @"Root Album");
+                    } else {
+                        cell.rightText = [[[CategoriesData sharedInstance] getCategoryById:[Model sharedInstance].defaultCategory] name];
+                    }
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+				case 1:     // Default Sort
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultSort"];
 					if(!cell)
@@ -340,7 +440,7 @@ typedef enum {
                     tableViewCell = cell;
 					break;
 				}
-				case 1:     // Default Thumbnail File
+				case 2:     // Default Thumbnail File
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailFile"];
 					if(!cell) {
@@ -361,7 +461,7 @@ typedef enum {
 					tableViewCell = cell;
 					break;
 				}
-                case 2:     // Default Thumbnail Size
+                case 3:     // Default Thumbnail Size
                 {
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailSize"];
                     if(!cell)
@@ -388,7 +488,7 @@ typedef enum {
                     tableViewCell = cell;
                     break;
                 }
-                case 3:     // Display titles on thumbnails
+                case 4:     // Display titles on thumbnails
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titles"];
                     if(!cell)
@@ -760,7 +860,11 @@ typedef enum {
                     cell.cellSwitchBlock = ^(BOOL switchState) {
                         if(![Model sharedInstance].loadAllCategoryInfo && switchState)
                         {
-                            [AlbumService getAlbumListForCategory:-1 OnCompletion:nil onFailure:nil];
+                            NSLog(@"settingsResetCa => getAlbumListForCategory(%ld,NO,YES)", (long)0);
+                            [AlbumService getAlbumListForCategory:0
+                                                       usingCache:NO
+                                                  inRecursiveMode:YES
+                                                     OnCompletion:nil onFailure:nil];
                         }
                         
                         [Model sharedInstance].loadAllCategoryInfo = switchState;
@@ -843,8 +947,10 @@ typedef enum {
                     cell.leftLabel.text = NSLocalizedString(@"settings_darkPalette", @"Dark Palette");
                     [cell.cellSwitch setOn:[Model sharedInstance].isDarkPaletteModeActive];
                     cell.cellSwitchBlock = ^(BOOL switchState) {
+
                         // Number of rows will change accordingly
                         [Model sharedInstance].isDarkPaletteModeActive = switchState;
+
                         // Position of the row(s) that should be added/removed
                         NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
                                                                          inSection:SettingsSectionColor];
@@ -865,11 +971,11 @@ typedef enum {
                         }
                         // Switch off auto mode if dark palette mode disabled
                         if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
+
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
-                        // Refresh table
-                        [self.settingsTableView reloadData];
-                        // Redraw views in windows
+ 
+                        // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate screenBrightnessChanged:nil];
                     };
@@ -887,10 +993,13 @@ typedef enum {
                     cell.leftLabel.text = NSLocalizedString(@"settings_switchPalette", @"Switch Automatically");
                     [cell.cellSwitch setOn:[Model sharedInstance].switchPaletteAutomatically];
                     cell.cellSwitchBlock = ^(BOOL switchState) {
+
                         // Number of rows will change accordingly
                         [Model sharedInstance].switchPaletteAutomatically = switchState;
+
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
+
                         // Position of the row that should be added/removed
                         NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
                                                                          inSection:SettingsSectionColor];
@@ -901,9 +1010,8 @@ typedef enum {
                             // Remove row in existing table
                             [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                         }
-                        // Refresh table
-                        [self.settingsTableView reloadData];
-                        // Redraw views in windows
+                        
+                        // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate screenBrightnessChanged:nil];
                     };
@@ -1043,7 +1151,7 @@ typedef enum {
 }
 
 
-#pragma mark - UITableView - footers
+#pragma mark - UITableView - Footers
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
@@ -1094,17 +1202,8 @@ typedef enum {
             break;
     }
     
-    // Footer height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    
     // Footer view
-    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
+    UIView *footer = [[UIView alloc] init];
     footer.backgroundColor = [UIColor clearColor];
     [footer addSubview:footerLabel];
     [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
@@ -1137,11 +1236,18 @@ typedef enum {
 		case SettingsSectionLogout:         // Logout
 			[self logout];
 			break;
-		case SettingsSectionThumbnails:     // General Settings
+        case SettingsSectionAlbums:         // Albums
 		{
 			switch(indexPath.row)
 			{
-				case 0:                     // Sort method selection
+				case 0:                     // Default album
+                {
+                    DefaultCategoryViewController *categoryVC = [[DefaultCategoryViewController alloc] initWithSelectedCategory:[[CategoriesData sharedInstance] getCategoryById:[Model sharedInstance].defaultCategory]];
+                    [self.navigationController pushViewController:categoryVC animated:YES];
+                    break;
+                   break;
+                }
+                case 1:                     // Sort method selection
 				{
 					CategorySortViewController *categoryVC = [CategorySortViewController new];
 					categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;
@@ -1149,7 +1255,7 @@ typedef enum {
 					[self.navigationController pushViewController:categoryVC animated:YES];
 					break;
 				}
-				case 1:                     // Thumbnail file selection
+				case 2:                     // Thumbnail file selection
 				{
 					DefaultThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultThumbnailSizeViewController new];
 					[self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
@@ -1261,7 +1367,7 @@ typedef enum {
         UIAlertController* alert = [UIAlertController
                     alertControllerWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
                     message:NSLocalizedString(@"logoutConfirmation_message", @"Are you sure you want to logout?")
-                    preferredStyle:UIAlertControllerStyleAlert];
+                    preferredStyle:UIAlertControllerStyleActionSheet];
         
         UIAlertAction* cancelAction = [UIAlertAction
                     actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -1294,22 +1400,23 @@ typedef enum {
                            {
                                // Failed, retry ?
                                UIAlertController* alert = [UIAlertController
-                                                           alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
-                                                           message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
-                                                           preferredStyle:UIAlertControllerStyleAlert];
+                                       alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
+                                       message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
+                                       preferredStyle:UIAlertControllerStyleAlert];
                                
                                UIAlertAction* dismissAction = [UIAlertAction
-                                                               actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                                               style:UIAlertActionStyleCancel
-                                                               handler:^(UIAlertAction * action) {}];
-                               
+                                           actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                           style:UIAlertActionStyleCancel
+                                           handler:^(UIAlertAction * action) {}];
+                           
                                UIAlertAction* retryAction = [UIAlertAction
-                                                               actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                                               style:UIAlertActionStyleDestructive
-                                                               handler:^(UIAlertAction * action) {
-                                                                   [self logout];
-                                                               }];
+                                           actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                           style:UIAlertActionStyleDestructive
+                                           handler:^(UIAlertAction * action) {
+                                               [self logout];
+                                           }];
                                
+                               // Add actions
                                [alert addAction:dismissAction];
                                [alert addAction:retryAction];
                                [self presentViewController:alert animated:YES completion:nil];
@@ -1319,8 +1426,18 @@ typedef enum {
                        }];
                     }];
         
+        // Add actions
         [alert addAction:cancelAction];
         [alert addAction:logoutAction];
+        
+        // Determine position of cell in table view
+        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:0 inSection:SettingsSectionLogout];
+        CGRect rectOfCellInTableView = [self.settingsTableView rectForRowAtIndexPath:rowAtIndexPath];
+        
+        // Present list of actions
+        alert.popoverPresentationController.sourceView = self.settingsTableView;
+        alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+        alert.popoverPresentationController.sourceRect = rectOfCellInTableView;
         [self presentViewController:alert animated:YES completion:nil];
 	}
 	else
@@ -1393,7 +1510,7 @@ typedef enum {
 
 - (IBAction)updateThumbnailSize:(id)sender
 {
-    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingsSectionThumbnails]];
+    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingsSectionAlbums]];
     NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:self.view withMaxWidth:kThumbnailFileSize];
     [Model sharedInstance].thumbnailsPerRowInPortrait = 2 * minNberOfImages - ([thumbnailsSizeCell getCurrentSliderValue] - 1);
     [[Model sharedInstance] saveToDisk];
@@ -1441,88 +1558,6 @@ typedef enum {
     [[Model sharedInstance] saveToDisk];
     
     [NSURLCache sharedURLCache].memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
-}
-
-#pragma mark - UIScrollViewDelegate Methods
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    // NOP if content not yet complete
-    if (scrollView.contentSize.height == 0) return;
-    
-    // First time ever, set parameters
-    if (self.previousContentYOffset == -INFINITY) {
-        self.minContentYOffset = scrollView.contentOffset.y;
-    }
-    
-    // Initialisation
-    CGFloat y = scrollView.contentOffset.y - self.minContentYOffset;
-    CGFloat yMax = fmaxf(scrollView.contentSize.height - scrollView.frame.size.height + self.tabBarController.tabBar.bounds.size.height - self.minContentYOffset, self.minContentYOffset);
-    //    NSLog(@"contentSize:%g, frameSize:%g", scrollView.contentSize.height, scrollView.frame.size.height);
-    //    NSLog(@"offset=%3.0f, y=%3.0f, yMax=%3.0f", self.minContentYOffset, y, yMax);
-    
-    // Depends on current tab bar visibility
-    if ([self tabBarIsVisible]) {
-        // Hide the tab bar when scrolling down
-        if ((y > self.previousContentYOffset) &&        // Scrolling down
-            (y > 44) && (y < yMax - 44))                // from the top
-        {
-            // User scrolls content to the bootm, starting from the top
-            [self setTabBarVisible:NO animated:YES completion:nil];
-        }
-    } else {
-        // Decide whether tab bar should be shown
-        if ((y < self.previousContentYOffset) &&        // Scrolling up
-            (y < yMax - 44))                            // above the bottom
-        {
-            // User scrolls content near the top or bottom
-            [self setTabBarVisible:YES animated:YES completion:nil];
-        }
-        else if ((y > self.previousContentYOffset) &&   // Scrolling down
-                 (y > yMax - 44))                       // near the bottom
-        {
-            // User scrolls content to the bootm, starting from the top
-            [self setTabBarVisible:YES animated:YES completion:nil];
-        }
-    }
-    
-    // Store actual position for next time
-    self.previousContentYOffset = y;
-}
-
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
-{
-    // User tapped the status bar
-    __weak typeof(self) weakSelf = self;
-    [self setTabBarVisible:YES animated:YES completion:^(BOOL finished) {
-        weakSelf.previousContentYOffset = scrollView.contentOffset.y;
-    }];
-    
-    return YES;
-}
-
-// Pass a param to describe the state change, an animated flag and a completion block matching UIView animations completion
-- (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    
-    // bail if the current state matches the desired state
-    if ([self tabBarIsVisible] == visible) return (completion)? completion(YES) : nil;
-    
-    // get a frame calculation ready
-    CGRect frame = self.tabBarController.tabBar.frame;
-    CGFloat height = frame.size.height;
-    CGFloat offsetY = (visible)? -height : height;
-    
-    // zero duration means no animation
-    CGFloat duration = (animated)? 0.3 : 0.0;
-    
-    [UIView animateWithDuration:duration animations:^{
-        self.tabBarController.tabBar.frame = CGRectOffset(frame, 0, offsetY);
-    } completion:completion];
-}
-
-// Getter to know the current state
-- (BOOL)tabBarIsVisible {
-    return self.tabBarController.tabBar.frame.origin.y < CGRectGetMaxY(self.view.frame);
 }
 
 @end

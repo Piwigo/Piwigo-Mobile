@@ -12,17 +12,17 @@
 #import "LoginNavigationController.h"
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
-#import "TabBarViewController.h"
-#import "SessionService.h"
+
 #import "Model.h"
+#import "SessionService.h"
 #import "KeychainAccess.h"
 #import "SAMKeychain.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "CategoriesData.h"
 #import "PhotosFetch.h"
-
-#import "AlbumsViewController.h"
 #import "AlbumImagesViewController.h"
+
+NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
 
 @interface AppDelegate ()
 
@@ -100,8 +100,8 @@
 
 -(void)loadNavigation
 {
-    TabBarViewController *navigation = [TabBarViewController new];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:navigation];
+    AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albums];
     [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     
@@ -111,12 +111,14 @@
 
     // Set network reachability status change block
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        NSLog(@"!!!!!! Network Reachability Changed!");
-        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
-              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
-              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
-        
+//#if defined(DEBUG)
+//        NSLog(@"!!!!!! Network Reachability Changed!");
+//        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
+//              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
+//              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
+//              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+//#endif
+
         if ([AFNetworkReachabilityManager sharedManager].reachable) {
             // Connection changed but again reachable — Login again?
             BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
@@ -125,9 +127,9 @@
             
             if(hadOpenedSession && (server.length > 0) && (user.length > 0))
             {
-#if defined(DEBUG)
-                NSLog(@"       Connection changed but again reachable — Login again?");
-#endif
+//#if defined(DEBUG)
+//                NSLog(@"       Connection changed but again reachable — Login again?");
+//#endif
                 [self.loginVC checkSessionStatusAndTryRelogin];
             }
         }
@@ -189,20 +191,9 @@
     
     // Store modified settings
     [[Model sharedInstance] saveToDisk];
-    // Redraw current views
-    [self reLoadNavigation];
-}
 
-// Called when changing theme
--(void)reLoadNavigation
-{
-    NSArray *windows = [UIApplication sharedApplication].windows;
-    for (UIWindow *window in windows) {
-        for (UIView *view in window.subviews) {
-            [view removeFromSuperview];
-            [window addSubview:view];
-        }
-    }
+    // Notify palette change
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
 }
 
 -(void)loadLoginView

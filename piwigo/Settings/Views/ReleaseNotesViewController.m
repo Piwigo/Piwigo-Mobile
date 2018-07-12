@@ -6,6 +6,7 @@
 //  Copyright © 2017 Piwigo.org. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "ReleaseNotesViewController.h"
 #import "Model.h"
 
@@ -70,6 +71,13 @@
         // Release notes attributed string
         NSMutableAttributedString *notesAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
                 
+        // Release 2.2.0 — Bundle string
+        NSString *v220String = NSLocalizedStringFromTableInBundle(@"v2.2.0_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.2.0 Release Notes text");
+        NSRange v220Range = NSMakeRange(0, [v220String rangeOfString:@"\n"].location);
+        NSMutableAttributedString *v220AttributedString = [[NSMutableAttributedString alloc] initWithString:v220String];
+        [v220AttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:v220Range];
+        [notesAttributedString appendAttributedString:v220AttributedString];
+        
         // Release 2.1.9 — Bundle string
         NSString *v219String = NSLocalizedStringFromTableInBundle(@"v2.1.9_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.1.9 Release Notes text");
         NSRange v219Range = NSMakeRange(0, [v219String rangeOfString:@"\n"].location);
@@ -189,14 +197,17 @@
         [self.view addSubview:self.textView];
         
         [self addConstraints];
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
 
--(void)viewWillAppear:(BOOL)animated
+#pragma mark - View Lifecycle
+
+-(void)paletteChanged
 {
-    [super viewWillAppear:animated];
-    
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
@@ -206,23 +217,25 @@
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-
     // Text color depdending on background color
     self.byLabel1.textColor = [UIColor piwigoTextColor];
     self.byLabel2.textColor = [UIColor piwigoTextColor];
     self.versionLabel.textColor = [UIColor piwigoTextColor];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Set colors, fonts, etc.
+    [self paletteChanged];
 }
 
 -(void)addConstraints

@@ -6,19 +6,21 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.9_text" = "Version 2.1.9\n\n• Correction de bugs\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.2.0_text" = "Version 2.2\n\n• Création de sous-albums à partir de n'importe quel album\n• Gestion améliorée avec l'Album par Défaut\n• Amélioration de la présentation des albums sur iPad (et iPhone)\n• Détection des modifications de la photothèque de l'app Photos\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
 
-"v2.1.8_text" = "Version 2.1.8\n29 Avril 2018\n\n• Ajoute la possibilité de changer la taille des vignettes\n• HTTPS devient le protocole par défaut\n• Traduction japonaise\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n\n";
+"v2.1.9_text" = "Version 2.1.9\n14 Mai 2018\n\n• Correction de bugs\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+
+"v2.1.8_text" = "Version 2.1.8\n29 Avril 2018\n\n• Ajoute la possibilité de changer la taille des vignettes\n• HTTPS devient le protocole par défaut\n• Traduction japonaise\n• Corrections de bugs mineurs et amélioration de l'interface\n________________________________________\n";
 
 "v2.1.7_text" = "Version 2.1.7\n3 Février 2018\n\n• Résoud les problèmes de téléchargement de vidéos sur certains serveurs\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.6_text" = "Version 2.1.6\n7 Janvier 2018\n\n• Traduction en Arabe\n• Amélioration de la gestion de l'authentification HTTP\n• Corrections de bugs mineurs et amélioration de l'interface\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
-"v2.1.5_text" = "Version 2.1.5\n21 Décembre 2017\n\n• Ajoute la possibilité d'annuler des transferts vers Piwigo\n• Ajoute une option pour effacer les images après un transfert\n• Ajoute la compatibilité avec l'option Optimiser le Stockage (iCloud)\n• Préserve si possible le format d'image après redimensionnement\n• Traductions en Danois et en Indonésien\n• Règle la perte partielle des métadonnées pendant un téléchargement\n• Règle le remplacement du format PNG par JPEG au cours d'un transfert\n• Règle quelques problèmes rencontrés avec iOS 11 et l'iPhone X\n• Règle quelques bugs mineurs\n• Modernisation du code\n________________________________________\n\n";
+"v2.1.5_text" = "Version 2.1.5\n21 Décembre 2017\n\n• Ajoute la possibilité d'annuler des transferts vers Piwigo\n• Ajoute une option pour effacer les images après un transfert\n• Ajoute la compatibilité avec l'option Optimiser le Stockage (iCloud)\n• Préserve si possible le format d'image après redimensionnement\n• Traductions en Danois et en Indonésien\n• Règle la perte partielle des métadonnées pendant un téléchargement\n• Règle le remplacement du format PNG par JPEG au cours d'un transfert\n• Règle quelques problèmes rencontrés avec iOS 11 et l'iPhone X\n• Règle quelques bugs mineurs\n• Modernisation du code\n________________________________________\n";
 
-"v2.1.4_text" = "Version 2.1.4\n31 octobre 2017\n\n• Traduction en Suédois\n• Correction de bugs\n________________________________________\n\n";
+"v2.1.4_text" = "Version 2.1.4\n31 octobre 2017\n\n• Traduction en Suédois\n• Correction de bugs\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
-"v2.1.3_text" = "Version 2.1.3\n19 octobre 2017\n\n• Ajoute l'accès par authentification HTTP(S)\n• Permet de stopper l'auto-connexion\n• Améliore l'interface et la gestion des téléversements\n• Améliore les traductions et la compatibilité avec iOS 11\n• Règle un bug rencontré avec le filtre \"Pas Encore Envoyées\"\n• Modernisation du code\n________________________________________\n\n";
+"v2.1.3_text" = "Version 2.1.3\n19 octobre 2017\n\n• Ajoute l'accès par authentification Http(S)\n• Permet de stopper l'auto-connexion\n• Améliore l'interface et la gestion des téléversements\n• Améliore les traductions et la compatibilité avec iOS 11\n• Règle un bug rencontré avec le filtre \"Pas Encore Envoyées\"\n• Modernisation du code\n________________________________________\n\n";
 
 "v2.1.2_text" = "Version 2.1.2\n7 Septembre 2017\n\n• Règle un problème de connexion refusée avec les versions <2.9 de l'extension Community\n• Amélioration des traductions\n• Maintenance du code\n________________________________________\n\n";
 
@@ -32,7 +34,7 @@
 
 "v2.0.2_text" = "Version 2.0.2\n8 Mai 2017\n\n• Critères de tri maintenant identiques à ceux de l'application web\n• Règle des problèmes de tri\n• Règle un problème de crash rencontré à l'ajout de tags avant l'envoi de photos\n• Règle des situations où l'effacement d'une sélection de photos ne fonctionnait pas\n• Règle des situations où un album n'apparaissait pas après son déplacement\n• Règle des problème d'incompatibilité avec iOS 10\n________________________________________\n\n";
 
-"v2.0.1_text" = "Version 2.0.1\n26 Juin 2015\n\nNouveaux réglages:\n - Option pour redimensionner les images avant envoi au serveur\n  + Qualité d'image entre 50 et 98%\n - Possibilité de fixer une taille par défaut des images affichées\n________________________________________\n\n";
+"v2.0.1_text" = "Version 2.0.1\n26 Juin 2015\n\nNouveaux réglages:\n - Option pour redimensionner les images avant envoi au serveur\n  + Qualité d'image entre 50 et 98%\n - Possibilité de fixer une taille par défaut des images affichées\n________________________________________\n";
 
 "v2.0.0_text" = "Version 2.0\n24 Avril 2015\n\nApplication entièrement réécrite :\n - Naviguez dans votre Piwigo, avec affichage des photos\n - Gérez vos albums (création, édition, déplacement)\n - Sélectionnez vos photos par lot\n - Ajout de vidéos (le plugin VideoJS doit être activé sur votre Piwigo)\n________________________________________\n\n";
 

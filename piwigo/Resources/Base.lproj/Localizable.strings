@@ -113,17 +113,41 @@
 "categorySort_videosOnly" = "Videos Only";
 "categorySort_imagesOnly" = "Images Only";
 
+// Album selection
+"categorySelection_title" = "Album";
+"categorySelection_titleSub" = "Sub-Albums";
+"categorySelection_root" = "Root Album";
+"categorySelection_action" = "Select an action for this album";
+"categorySelectionHUD_label" = "Retrieving Albums Data…";
+
+// Album upload
+"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_chooseAlbum" = "Select a sub-album to upload images to";
+"categoryUpload_LocalAlbums" = "Local Albums";
+"categoryUpload_chooseLocalAlbum" = "Select an album to get images from";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
+"categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get images from";
+"categoyUpload_loadSubCategories" = "load";
+"categoryUpload_images" = "Upload Images";
+"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_defaultAlbum" = "Set as Default Album";
+
+// Default album
+"setDefaultCategory_title" = "Default Album";
+"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+
 // Album create
 "createNewAlbum_title" = "New Album";
 "createNewAlbum_message" = "Enter a name for this album:";
 "createNewAlbum_placeholder" = "Album Name";
+"createNewAlbumComment_placeholder" = "Comment";
 "createNewAlbumHUD_label" = "Creating Album…";
 
 // Album create — Errors
 "createAlbumError_title" = "Create Album Error";
 "createAlbumError_message" = "Failed to create a new album";
 
-// Album options (actions)
+// Album options (swipe actions)
 "categoryCellOption_rename" = "Rename";
 "categoryCellOption_move" = "Move";
 "categoryCellOption_delete" = "Delete";
@@ -138,9 +162,20 @@
 "renameCategoyError_title" = "Rename Fail";
 "renameCategoyError_message" = "Failed to rename your album";
 
+// Album refresh representative
+"refreshCategoryHUD_label" = "Refreshing Representative…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Refresh Fail";
+"refreshCategoyError_message" = "Failed to refresh your album representative";
+
 // Album delete
 "deleteCategory_title" = "DELETE ALBUM";
 "deleteCategory_message" = "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?";
+"deleteCategory_empty" = "Delete Empty Album";
+"deleteCategory_noImages" = "Keep Images";
+"deleteCategory_orphanedImages" = "Delete Orphans";
+"deleteCategory_allImages" = "Delete %@ Images";
 "deleteCategoryConfirm_title" = "Are you sure?";
 "deleteCategoryConfirm_message" = "Please enter the number of images in order to delete this album. Number of images: %@";
 "deleteCategoryConfirm_deleteButton" = "DELETE";
@@ -158,13 +193,14 @@
 "moveCategory_message" = "Are you sure you want to move \"%@\" into the album \"%@\"?";
 "moveCategoryHUD_moving" = "Moving Album…";
 
-// album move — Errors
+// Album move — Errors
 "moveCategoryError_title" = "Move Fail";
 "moveCategoryError_message" = "Failed to move your album";
 
 // Album set image thumbnail
-"categorySelection" = "Select Album";
-"categorySelection_forImage" = "Select an album for this image";
+"categorySelection_select" = "Select Album";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Set Image Thumbnail";
 "categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";
 "categoryImageSetHUD_updating" = "Updating Album Thumbnail…";
@@ -230,13 +266,19 @@
 "tagsHeader_selected" = "Selected";
 "tagsHeader_all" = "All";
 
+// Image select
+"selectImages" = "Select Images";
+"selectImageSelected" = "1 Image Selected";
+"selectImagesSelected" = "%@ Images Selected";
+"selectAll" = "All";
+
 // Image delete
 "deleteImage_delete" = "Delete";
 "deleteImageProgress_title" = "Deleting %@%% Done";
 
 "deleteSingleImage_title" = "Delete Image";
 "deleteSingleImage_message" = "Are you sure you want to delete this image? This cannot be undone!";
-"deleteSeveralImages_title" = "Delete Images";
+"deleteSeveralImages_title" = "Delete %@ Images";
 "deleteSeveralImages_message" = "Are you sure you want to delete the selected %@ images? This cannot be undone!";
 
 "deleteImageFail_title" = "Delete Failed";
@@ -245,7 +287,7 @@
 // Image download
 "downloadSingleImage_title" = "Download Image";
 "downloadSingleImage_confirmation" = "Are you sure you want to download the selected image?";
-"downloadSeveralImages_title" = "Download Images";
+"downloadSeveralImages_title" = "Download %@ Images";
 "downloadSeveralImage_confirmation" = "Are you sure you want to download the selected %@ images?";
 
 "downloadingImage" = "Downloading Image";
@@ -266,12 +308,6 @@
 "videoSaveError_message" = "Failed to save video. Error: %@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "Select an album to upload images to";
-"categoryUpload_chooseLocalAlbum" = "Select an album to get images from";
-"categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get images from";
-"categoyUpload_loadSubCategories" = "load";
-"selectAll" = "All";
-
 "imageUploadDetails_title" = "Title:";
 "imageUploadDetails_author" = "Author:";
 "imageUploadDetails_privacy" = "Privacy:";
@@ -314,9 +350,9 @@
 "videoUploadCancelled_message" = "The upload of the video has been cancelled.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Local Albums";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "Newest";
 "localImageSort_oldest" = "Oldest";
@@ -336,6 +372,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "Address";
 "settings_username" = "Username";
 "settings_notLoggedIn" = " - Not Logged In - ";

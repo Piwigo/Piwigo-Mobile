@@ -15,6 +15,7 @@
 
 +(UIColor*)piwigoBrown;
 +(UIColor*)piwigoOrange;
++(UIColor*)piwigoOrangeLight;
 +(UIColor*)piwigoOrangeSelected;
 
 +(UIColor*)piwigoHudContentColor;

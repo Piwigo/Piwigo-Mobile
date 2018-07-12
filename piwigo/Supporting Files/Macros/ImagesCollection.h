@@ -16,4 +16,7 @@ extern NSInteger const kThumbnailFileSize;
 +(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
 +(NSInteger)numberOfImagesPerPageForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
 
++(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth;
++(float)albumSizeForView:(UIView *)view andNberOfAlbumsPerRowInPortrait:(NSInteger)albumsPerRowInPortrait;
+
 @end

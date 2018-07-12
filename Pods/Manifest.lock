@@ -1,42 +1,50 @@
 PODS:
-  - AFNetworking (3.2.0):
-    - AFNetworking/NSURLSession (= 3.2.0)
-    - AFNetworking/Reachability (= 3.2.0)
-    - AFNetworking/Security (= 3.2.0)
-    - AFNetworking/Serialization (= 3.2.0)
-    - AFNetworking/UIKit (= 3.2.0)
-  - AFNetworking/NSURLSession (3.2.0):
+  - AFNetworking (3.2.1):
+    - AFNetworking/NSURLSession (= 3.2.1)
+    - AFNetworking/Reachability (= 3.2.1)
+    - AFNetworking/Security (= 3.2.1)
+    - AFNetworking/Serialization (= 3.2.1)
+    - AFNetworking/UIKit (= 3.2.1)
+  - AFNetworking/NSURLSession (3.2.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.2.0)
-  - AFNetworking/Security (3.2.0)
-  - AFNetworking/Serialization (3.2.0)
-  - AFNetworking/UIKit (3.2.0):
+  - AFNetworking/Reachability (3.2.1)
+  - AFNetworking/Security (3.2.1)
+  - AFNetworking/Serialization (3.2.1)
+  - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
+  - EAIntroView (2.12.0):
+    - EARestrictedScrollView (~> 1.1.0)
+  - EARestrictedScrollView (1.1.0)
   - MBProgressHUD (1.1.0)
-  - MGSwipeTableCell (1.6.6)
+  - MGSwipeTableCell (1.6.7)
   - SAMKeychain (1.5.3)
 
 DEPENDENCIES:
-  - AFNetworking (~> 3.1)
+  - AFNetworking (~> 3.2)
+  - EAIntroView
   - MBProgressHUD (~> 1.1.0)
   - MGSwipeTableCell
   - SAMKeychain
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - AFNetworking
+    - EAIntroView
+    - EARestrictedScrollView
     - MBProgressHUD
     - MGSwipeTableCell
     - SAMKeychain
 
 SPEC CHECKSUMS:
-  AFNetworking: 8ac6017b94ea105479f7776e5288e48ae9c59bb4
+  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  EAIntroView: 249559079ddfdbe80e5bcb755c04c3b964b2ac27
+  EARestrictedScrollView: b0c2a3f92fb2610bb44d71c5e4893777c89e45ef
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
-  MGSwipeTableCell: c3bc6e261e7bc06c112909fe3fb8205de286082c
+  MGSwipeTableCell: fb20e983988bde2b8d0df29c2d9e1d8ffd10b74a
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
 
-PODFILE CHECKSUM: 2c1545b8b87b63de9364d23454ce30a13181fd59
+PODFILE CHECKSUM: 09e5ea75b65aa1eadf7b05541fa660be2d73eb29
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

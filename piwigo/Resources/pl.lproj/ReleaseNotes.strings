@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.9_text" = "Wersja 2.1.9\n\n• Poprawki błędów\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.2.0_text" = "Wersja 2.2 \n\n• Tworzenie podalbumów z dowolnego albumu\n• Poprawa zarządzania poprzez wprowadzenie domyślnego Albumu\n• Usprawniono prezentację albumów na iPad-ie (i iPhone-ie) \n• Wykrywanie zmian w Bibliotece zdjęć \n• Drobne poprawki błędów i ulepszenia interfejsu\n________________________________________\n\n";
+
+"v2.1.9_text" = "Wersja 2.1.9\n14 maja 2018\n\n• Poprawki błędów\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
 
 "v2.1.8_text" = "Wersja 2.1.8\n29 kwiecień 2018\n\n• Dodaje możliwość zmiany wielkości miniatur\n• HTTPS staje się domyślnym protokołem\n• Japońskie tłumaczenie\n• Poprawki błędów i usprawnienia interfejsu\n________________________________________\n\n";
 

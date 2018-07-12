@@ -28,6 +28,7 @@ NSString * const kPiwigoCategoriesSetInfo = @"format=json&method=pwg.categories.
 NSString * const kPiwigoCategoriesDelete = @"format=json&method=pwg.categories.delete";
 NSString * const kPiwigoCategoriesMove = @"format=json&method=pwg.categories.move";
 NSString * const kPiwigoCategoriesSetRepresentative = @"format=json&method=pwg.categories.setRepresentative";
+NSString * const kPiwigoCategoriesRefreshRepresentative = @"format=json&method=pwg.categories.refreshRepresentative";
 
 NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
 NSString * const kCommunityImagesUploadCompleted = @"format=json&method=community.images.uploadCompleted";
@@ -130,7 +131,7 @@ NSInteger const loadingViewTag = 899;
     // Configuration
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.allowsCellularAccess = YES;
-    config.timeoutIntervalForRequest = 30;          // 60 seconds is the advised default value
+    config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
 
     // Create session manager

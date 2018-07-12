@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "43D4904DF594137A279871AE44F319BC"
+               BlueprintIdentifier = "233683F7FDD16862E72E6B241656724E"
                BuildableName = "libPods-piwigo.a"
                BlueprintName = "Pods-piwigo"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "43D4904DF594137A279871AE44F319BC"
+            BlueprintIdentifier = "233683F7FDD16862E72E6B241656724E"
             BuildableName = "libPods-piwigo.a"
             BlueprintName = "Pods-piwigo"
             ReferencedContainer = "container:Pods.xcodeproj">

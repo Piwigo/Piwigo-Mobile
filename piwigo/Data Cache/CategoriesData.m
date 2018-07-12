@@ -11,6 +11,7 @@
 NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
 NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
 NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotificationCategoryImageUpdated";
+NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
 
 @interface CategoriesData()
 
@@ -66,20 +67,16 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
     for(PiwigoAlbumData *categoryData in categories)
     {
         // Is this a known category?
-        NSInteger index = -1;
-        NSInteger curr = 0;
-        for(PiwigoAlbumData *knownCategory in self.allCategories)
-        {
+        NSInteger index = [self.allCategories indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            PiwigoAlbumData *knownCategory = (PiwigoAlbumData *)obj;
             if(knownCategory.albumId == categoryData.albumId)
-            {
-                index = curr;
-                break;
-            }
-            curr++;
-        }
+                return YES;
+            else
+                return NO;
+        }];
         
-        // Retrieve exisiting data if found
-        if(index != -1)
+        // Update exisiting data with new ones
+        if (index != NSNotFound)
         {
             // Retrieve exisiting data
             PiwigoAlbumData *existingData = [self.allCategories objectAtIndex:index];
@@ -99,6 +96,67 @@ NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotification
     // Update list of displayed categories
 	self.allCategories = newCategories;
 	
+    // Post to the app that the category data has been updated (if necessary)
+    if (self.allCategories.count > 0)
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+}
+
+-(void)updateCategories:(NSArray*)categories
+{
+    // Create new list of categories
+    NSMutableArray *newCategories = [[NSMutableArray alloc] init];
+    
+    // First add freshly retrieved categories
+    for(PiwigoAlbumData *categoryData in categories)
+    {
+        // Is this a known category?
+        NSInteger index = [self.allCategories indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            PiwigoAlbumData *knownCategory = (PiwigoAlbumData *)obj;
+            if(knownCategory.albumId == categoryData.albumId)
+                return YES;
+            else
+                return NO;
+        }];
+
+        // Update exisiting data with new ones
+        if (index != NSNotFound)
+        {
+            // Retrieve exisiting data
+            PiwigoAlbumData *existingData = [self.allCategories objectAtIndex:index];
+            categoryData.hasUploadRights = existingData.hasUploadRights;
+
+            // Reuse the image if the URL is identical
+            if(existingData.albumThumbnailId == categoryData.albumThumbnailId)
+            {
+                categoryData.categoryImage = existingData.categoryImage;
+            }
+        }
+        
+        // Append category to new list
+        [newCategories addObject:categoryData];
+    }
+    
+    // Second, keep other known categories
+    for(PiwigoAlbumData *categoryData in self.allCategories)
+    {
+        // Look for updated categories
+        NSInteger index = [newCategories indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            PiwigoAlbumData *newCategory = (PiwigoAlbumData *)obj;
+            if(newCategory.albumId == categoryData.albumId)
+                return YES;
+            else
+                return NO;
+        }];
+        
+        // Add category which was not updated
+        if (index == NSNotFound) {
+            [newCategories addObject:categoryData];
+        }
+    }
+    
+    // Update list of displayed categories
+    self.allCategories = newCategories;
+    
     // Post to the app that the category data has been updated (if necessary)
     if (self.allCategories.count > 0)
         [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];

@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "DefaultImageSizeViewController.h"
 #import "PiwigoImageData.h"
 #import "Model.h"
@@ -21,25 +22,28 @@
 -(instancetype)init
 {
 	self = [super init];
-	
-	self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-	self.title = NSLocalizedString(@"defaultImageSizeTitle", @"Default Size");
-	
-	self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    self.tableView.backgroundColor = [UIColor clearColor];
-	self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-	self.tableView.dataSource = self;
-	self.tableView.delegate = self;
-	[self.view addSubview:self.tableView];
-	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
-	
+    if(self)
+    {
+        self.title = NSLocalizedString(@"defaultImageSizeTitle", @"Default Size");
+        
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        self.tableView.backgroundColor = [UIColor clearColor];
+        self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.tableView.dataSource = self;
+        self.tableView.delegate = self;
+        [self.view addSubview:self.tableView];
+        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
+        
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+    }
 	return self;
 }
 
--(void)viewWillAppear:(BOOL)animated
+#pragma mark - View Lifecycle
+
+-(void)paletteChanged
 {
-    [super viewWillAppear:animated];
-    
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
@@ -49,22 +53,25 @@
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
-    // Tab bar appearance
-    self.tabBarController.tabBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.tabBarController.tabBar.tintColor = [UIColor piwigoOrange];
-    if (@available(iOS 10, *)) {
-        self.tabBarController.tabBar.unselectedItemTintColor = [UIColor piwigoTextColor];
-    }
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoTextColor]} forState:UIControlStateNormal];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor piwigoOrange]} forState:UIControlStateSelected];
-
     // Table view
     self.tableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.tableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.tableView reloadData];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Set colors, fonts, etc.
+    [self paletteChanged];
 }
 
 
@@ -74,40 +81,29 @@
 {
     // Header height?
     NSString *header = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:attributes
                                              context:context];
-    return fmax(44.0, ceil(headerRect.size.height + 10.0));
+    return fmax(44.0, ceil(headerRect.size.height));
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     // Header label
 	UILabel *headerLabel = [UILabel new];
 	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	headerLabel.font = [UIFont piwigoFontNormal];
+	headerLabel.font = [UIFont piwigoFontSmall];
 	headerLabel.textColor = [UIColor piwigoHeaderColor];
-    headerLabel.textAlignment = NSTextAlignmentCenter;
 	headerLabel.text = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
-    // Header height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [headerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    headerRect.size.height = fmax(44.0, ceil(headerRect.size.height + 10.0));
-
     // Header view
-    UIView *header = [[UIView alloc] initWithFrame:headerRect];
+    UIView *header = [[UIView alloc] init];
     header.backgroundColor = [UIColor clearColor];
 	[header addSubview:headerLabel];
 	[header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
@@ -252,7 +248,7 @@
                                           attributes:attributes
                                              context:context];
     
-    return fmax(44.0, ceil(footerRect.size.height + 10.0));
+    return fmax(44.0, ceil(footerRect.size.height));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
@@ -260,7 +256,7 @@
     // Footer label
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    footerLabel.font = [UIFont piwigoFontNormal];
+    footerLabel.font = [UIFont piwigoFontSmall];
     footerLabel.textColor = [UIColor piwigoHeaderColor];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
@@ -268,18 +264,8 @@
     footerLabel.adjustsFontSizeToFitWidth = NO;
     footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    // Footer height
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect footerRect = [footerLabel.text boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:attributes
-                                                       context:context];
-    footerRect.size.height = fmax(44.0, ceil(footerRect.size.height + 10.0));
-
     // Footer view
-    UIView *footer = [[UIView alloc] initWithFrame:footerRect];
+    UIView *footer = [[UIView alloc] init];
     footer.backgroundColor = [UIColor clearColor];
     [footer addSubview:footerLabel];
     [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];

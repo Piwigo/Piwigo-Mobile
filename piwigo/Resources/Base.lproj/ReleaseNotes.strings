@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.1.9_text" = "Version 2.1.9\n\n• Bug fixes\n________________________________________\n\n";
+"v2.2.0_text" = "Version 2.2\n\n• Sub-album creations from any album\n• Improved management with Default Album\n• Improved albums presentation on iPad (and iPhone)\n• Detection of Photo Library changes\n• Minor bug fixes and improvement of the interface\n________________________________________\n\n";
+
+"v2.1.9_text" = "Version 2.1.9\nMay 14, 2018\n\n• Bug fixes\n________________________________________\n\n";
 
 "v2.1.8_text" = "Version 2.1.8\nApril 29, 2018\n\n• Adds ability to change the size of thumbnails\n• HTTPS becomes the default protocol\n• Japanese translation\n• Minor bug fixes and improvement of the interface\n________________________________________\n\n";
 

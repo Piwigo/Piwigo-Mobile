@@ -113,17 +113,41 @@
 "categorySort_videosOnly" = "مقاطع الفيديو فقط";
 "categorySort_imagesOnly" = "الصور فقط";
 
+// Album selection
+"categorySelection_title" = "Album";
+"categorySelection_titleSub" = "Sub-Albums";
+"categorySelection_root" = "Root Album";
+"categorySelection_action" = "Select an action for this album";
+"categorySelectionHUD_label" = "Retrieving Albums Data…";
+
+// Album upload
+"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_chooseAlbum" = "حدد ألبوما لتحميل الصور إلى";
+"categoryUpload_LocalAlbums" = "Local Albums";
+"categoryUpload_chooseLocalAlbum" = "حدد ألبوما للحصول على صور من";
+"categoryUpload_iCloudAlbums" = "iCloud Albums";
+"categoryUpload_chooseiCloudAlbum" = "حدد ألبوم iCloud للحصول على صور منه";
+"categoyUpload_loadSubCategories" = "تحميل";
+"categoryUpload_images" = "Upload Images";
+"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_defaultAlbum" = "Set as Default Album";
+
+// Default album
+"setDefaultCategory_title" = "Default Album";
+"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+
 // Album create
 "createNewAlbum_title" = "البوم جديد";
 "createNewAlbum_message" = "أدخل اسم لهذا الألبوم:";
 "createNewAlbum_placeholder" = "اسم الألبوم";
+"createNewAlbumComment_placeholder" = "Comment";
 "createNewAlbumHUD_label" = "جار إنشاء الألبوم…";
 
 // Album create — Errors
 "createAlbumError_title" = "خطأ في إنشاء ألبوم";
 "createAlbumError_message" = "فشل إنشاء ألبوم جديد";
 
-// Album options (actions)
+// Album options (swipe actions)
 "categoryCellOption_rename" = "إعادة التسمية";
 "categoryCellOption_move" = "نقل";
 "categoryCellOption_delete" = "حذف";
@@ -138,9 +162,20 @@
 "renameCategoyError_title" = "فشلت إعادة التسمية";
 "renameCategoyError_message" = "فشل إعادة تسمية الألبوم الخاص بك";
 
+// Album refresh representative
+"refreshCategoryHUD_label" = "Refreshing Representative…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Refresh Fail";
+"refreshCategoyError_message" = "Failed to refresh your album representative";
+
 // Album delete
 "deleteCategory_title" = "حذف الألبوم";
 "deleteCategory_message" = "هل أنت متأكد من رغبتك في حذف الألبوم \"%@\" وجميع %@ من الصور؟";
+"deleteCategory_empty" = "Delete Empty Album";
+"deleteCategory_noImages" = "Keep Images";
+"deleteCategory_orphanedImages" = "Delete Orphans";
+"deleteCategory_allImages" = "Delete %@ Images";
 "deleteCategoryConfirm_title" = "هل أنت واثق؟";
 "deleteCategoryConfirm_message" = "الرجاء إدخال عدد الصور لحذف هذا الألبوم. عدد الصور: %@";
 "deleteCategoryConfirm_deleteButton" = "حذف";
@@ -158,13 +193,14 @@
 "moveCategory_message" = "هل تريد بالتأكيد نقل \"%@\" إلى الألبوم \"%@\"؟";
 "moveCategoryHUD_moving" = "جار نقل الألبوم…";
 
-// album move — Errors
+// Album move — Errors
 "moveCategoryError_title" = "فشل النقل";
 "moveCategoryError_message" = "فشل في نقل الألبوم الخاص بك";
 
 // Album set image thumbnail
-"categorySelection" = "حدد الألبوم";
-"categorySelection_forImage" = "حدد ألبوم لهذه الصورة";
+"categorySelection_select" = "Select Album";
+"categorySelection_current" = "Select the current album for this image";
+"categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "تعيين صورة مصغرة";
 "categoryImageSet_message" = "هل تريد بالتأكيد تعيين هذه الصورة للألبوم \"%@\"؟";
 "categoryImageSetHUD_updating" = "جار تحديث الصورة المصغرة للألبوم…";
@@ -230,6 +266,12 @@
 "tagsHeader_selected" = "تم تحديدها";
 "tagsHeader_all" = "الكل";
 
+// Image select
+"selectImages" = "Select Images";
+"selectImageSelected" = "1 Image Selected";
+"selectImagesSelected" = "%@ Images Selected";
+"selectAll" = "الكل";
+
 // Image delete
 "deleteImage_delete" = "حذف";
 "deleteImageProgress_title" = "تم حذف %@%%";
@@ -266,12 +308,6 @@
 "videoSaveError_message" = "أخفق حفظ الفيديو. خطأ:%@";
 
 // Images upload
-"categoryUpload_chooseAlbum" = "حدد ألبوما لتحميل الصور إلى";
-"categoryUpload_chooseLocalAlbum" = "حدد ألبوما للحصول على صور من";
-"categoryUpload_chooseiCloudAlbum" = "حدد ألبوم iCloud للحصول على صور منه";
-"categoyUpload_loadSubCategories" = "تحميل";
-"selectAll" = "الكل";
-
 "imageUploadDetails_title" = "العنوان:";
 "imageUploadDetails_author" = "الكاتب:";
 "imageUploadDetails_privacy" = "الخصوصية:";
@@ -314,9 +350,9 @@
 "videoUploadCancelled_message" = "تم إلغاء تحميل الفيديو.";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "الألبومات المحلية";
+"localAlbums" = "Photos library";
 
 "localImageSort_newest" = "الأحدث";
 "localImageSort_oldest" = "الأقدم";
@@ -336,6 +372,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "خادم Piwigo";
+"settingsHeader_notSecure" = "Website Not Secure!";
 "settings_server" = "العنوان";
 "settings_username" = "اسم المستخدم";
 "settings_notLoggedIn" = " - لم تقم بتسجيل الدخول - ";

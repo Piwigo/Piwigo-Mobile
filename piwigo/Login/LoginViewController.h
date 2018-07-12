@@ -18,9 +18,12 @@
 @property (nonatomic, strong) PiwigoTextField *userTextField;
 @property (nonatomic, strong) PiwigoTextField *passwordTextField;
 @property (nonatomic, strong) PiwigoButton *loginButton;
+@property (nonatomic, strong) UILabel *websiteNotSecure;
+@property (nonatomic, strong) UILabel *byLabel1;
+@property (nonatomic, strong) UILabel *byLabel2;
+@property (nonatomic, strong) UILabel *versionLabel;
 
-@property (nonatomic, strong) NSLayoutConstraint *logoTopConstraint;
-@property (nonatomic, assign) NSInteger topConstraintAmount;
+@property (nonatomic, assign) NSInteger textFieldHeight;
 @property (nonatomic, strong) UIViewController *hudViewController;
 
 @property (nonatomic, assign) BOOL usesCommunityPluginV29;
