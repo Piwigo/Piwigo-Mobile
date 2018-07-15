@@ -49,6 +49,9 @@ typedef enum {
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
 @property (nonatomic, strong) UIBarButtonItem *doneBarButton;
+@property (nonatomic, strong) NSString *nberCategories;
+@property (nonatomic, strong) NSString *nberImages;
+@property (nonatomic, strong) NSString *nberTags;
 
 @end
 
@@ -115,6 +118,13 @@ typedef enum {
     [self.settingsTableView reloadData];
 }
 
+-(void)viewDidLoad
+{
+    // Get Server Infos if possible
+    if ([Model sharedInstance].hasAdminRights)
+        [self getInfos];
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
@@ -156,9 +166,9 @@ typedef enum {
     {
         case SettingsSectionServer:
             if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"]) {
-                titleString = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+                titleString = [NSString stringWithFormat:@"%@ v%@", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
             } else {
-                titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server")];
+                titleString = [NSString stringWithFormat:@"%@ v%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
                 textString = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
             }
             break;
@@ -217,9 +227,9 @@ typedef enum {
     {
         case SettingsSectionServer:
             if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"]) {
-                titleString = NSLocalizedString(@"settingsHeader_server", @"Piwigo Server");
+                titleString = [NSString stringWithFormat:@"%@ v%@", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
             } else {
-                titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server")];
+                titleString = [NSString stringWithFormat:@"%@ v%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
                 textString = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
             }
             break;
@@ -1162,10 +1172,19 @@ typedef enum {
     switch(section)
     {
         case SettingsSectionLogout:
+        {
             if (([Model sharedInstance].uploadFileTypes != nil) && ([[Model sharedInstance].uploadFileTypes length] > 0)) {
                 footer = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
             }
             break;
+        }
+        case SettingsSectionAbout:
+        {
+            if ([self.nberImages length] > 0) {
+                footer = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags")];
+            }
+            break;
+        }
     }
     
     // Footer height?
@@ -1196,10 +1215,19 @@ typedef enum {
     switch(section)
     {
         case SettingsSectionLogout:
+        {
             if (([Model sharedInstance].uploadFileTypes != nil) && ([[Model sharedInstance].uploadFileTypes length] > 0)) {
                 footerLabel.text = [NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"settingsFooter_formats", @"The server accepts the following file formats"), [[Model sharedInstance].uploadFileTypes stringByReplacingOccurrencesOfString:@"," withString:@", "]];
             }
             break;
+        }
+        case SettingsSectionAbout:
+        {
+            if ([self.nberImages length] > 0) {
+                footerLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags")];
+            }
+            break;
+        }
     }
     
     // Footer view
@@ -1560,6 +1588,52 @@ typedef enum {
     [NSURLCache sharedURLCache].memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
 }
 
+#pragma mark - Get Server Infos
+
+-(void)getInfos
+{
+    [AlbumService getInfosOnCompletion:^(NSURLSessionTask *task, NSArray *infos) {
+        
+        // Check returned infos
+        if (infos == nil) {
+            self.nberCategories = @"";
+            self.nberImages = @"";
+            return;
+        }
+        
+        // Update infos
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setPositiveFormat:@"#,##0"];
+        for(NSDictionary *info in infos)
+        {
+            if ([[info objectForKey:@"name"] isEqualToString:@"nb_elements"]) {
+                self.nberImages = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[[info objectForKey:@"value"] integerValue]]];
+            }
+            if ([[info objectForKey:@"name"] isEqualToString:@"nb_categories"]) {
+                self.nberCategories = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[[info objectForKey:@"value"] integerValue]]];
+            }
+            if ([[info objectForKey:@"name"] isEqualToString:@"nb_tags"]) {
+                self.nberTags = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[[info objectForKey:@"value"] integerValue]]];
+            }
+//            if ([[info objectForKey:@"name"] isEqualToString:@"nb_users"]) {
+//                self.nberUsers = [[info objectForKey:@"value"] integerValue];
+//            }
+//            if ([[info objectForKey:@"name"] isEqualToString:@"nb_groups"]) {
+//                self.nberGroups = [[info objectForKey:@"value"] integerValue];
+//            }
+//            if ([[info objectForKey:@"name"] isEqualToString:@"nb_comments"]) {
+//                self.nberComments = [[info objectForKey:@"value"] integerValue];
+//            }
+        }
+        
+        // Refresh table with infos
+        [self.settingsTableView reloadData];
+    }
+                             onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                 self.nberCategories = @"";
+                                 self.nberImages = @"";
+                             }];
+}
 @end
 
 

@@ -18,6 +18,7 @@ FOUNDATION_EXPORT NSString * const kCommunitySessionGetStatus;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionGetPluginsList;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionLogout;
 
+FOUNDATION_EXPORT NSString * const kPiwigoGetInfos;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetList;
 FOUNDATION_EXPORT NSString * const kCommunityCategoriesGetList;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetImages;

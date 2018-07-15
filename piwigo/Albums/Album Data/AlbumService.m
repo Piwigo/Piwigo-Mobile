@@ -17,6 +17,43 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
 @implementation AlbumService
 
++(NSURLSessionTask*)getInfosOnCompletion:(void (^)(NSURLSessionTask *task, NSArray *infos))completion
+                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    // Get albums list for category
+    return [self post:kPiwigoGetInfos
+        URLParameters:nil
+           parameters:nil
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  
+                  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                  {
+                      // Extract infos from JSON message
+                      NSArray *infos = [[responseObject objectForKey:@"result"] objectForKey:@"infos"];
+                      
+                      if(completion)
+                      {
+                          completion(task, infos);
+                      }
+                  }
+                  else
+                  {
+                      if(completion)
+                      {
+                          completion(task, nil);
+                      }
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                  NSLog(@"getInfos — Fail: %@", [error description]);
+#endif
+                  if(fail) {
+                      fail(task, error);
+                  }
+              }];
+}
+
 +(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
                                  usingCache:(BOOL)cached
                             inRecursiveMode:(BOOL)recursive

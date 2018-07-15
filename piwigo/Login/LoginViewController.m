@@ -196,9 +196,6 @@
         [self showLoadingWithSubtitle:NSLocalizedString(@"login_connecting", @"Connecting")];
     });
     
-//    // Save server address and username to disk
-//    [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
-    
     // Save credentials in Keychain (needed before login when using HTTP Authentication)
     if(self.userTextField.text.length > 0)
     {
