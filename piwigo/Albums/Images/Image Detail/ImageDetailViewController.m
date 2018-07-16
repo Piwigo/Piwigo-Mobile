@@ -54,6 +54,7 @@
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
 		[startingImage setImageScrollViewWithImageData:self.imageData];
 		startingImage.imageIndex = imageIndex;
+        startingImage.imagePreviewDelegate = self;
 		
 		[self setViewControllers:@[startingImage]
 					   direction:UIPageViewControllerNavigationDirectionForward
@@ -62,7 +63,7 @@
 		
 		self.progressBar = [UIProgressView new];
 		self.progressBar.translatesAutoresizingMaskIntoConstraints = NO;
-		self.progressBar.hidden = YES;
+		self.progressBar.hidden = NO;
 		self.progressBar.tintColor = [UIColor piwigoOrange];
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];

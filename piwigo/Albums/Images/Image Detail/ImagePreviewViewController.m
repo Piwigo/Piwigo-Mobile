@@ -88,8 +88,8 @@
     NSURL *previewURL = [NSURL URLWithString:previewStr];
     __weak typeof(self) weakSelf = self;
     
-    weakSelf.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
-//    weakSelf.imageView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
+    self.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
+//    self.imageView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
 
     [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
       parameters:nil
