@@ -109,7 +109,7 @@ CGFloat const kRadius = 25.0;
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
 
         // Bar buttons
-        self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
+        self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] landscapeImagePhone:[UIImage imageNamed:@"preferencesCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:@selector(deleteImages)];
