@@ -52,6 +52,9 @@ typedef enum {
 @property (nonatomic, strong) NSString *nberCategories;
 @property (nonatomic, strong) NSString *nberImages;
 @property (nonatomic, strong) NSString *nberTags;
+@property (nonatomic, strong) NSString *nberUsers;
+@property (nonatomic, strong) NSString *nberGroups;
+@property (nonatomic, strong) NSString *nberComments;
 
 @end
 
@@ -1181,7 +1184,7 @@ typedef enum {
         case SettingsSectionAbout:
         {
             if ([self.nberImages length] > 0) {
-                footer = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags")];
+                footer = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
             }
             break;
         }
@@ -1224,7 +1227,7 @@ typedef enum {
         case SettingsSectionAbout:
         {
             if ([self.nberImages length] > 0) {
-                footerLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags")];
+                footerLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
             }
             break;
         }
@@ -1615,15 +1618,15 @@ typedef enum {
             if ([[info objectForKey:@"name"] isEqualToString:@"nb_tags"]) {
                 self.nberTags = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[[info objectForKey:@"value"] integerValue]]];
             }
-//            if ([[info objectForKey:@"name"] isEqualToString:@"nb_users"]) {
-//                self.nberUsers = [[info objectForKey:@"value"] integerValue];
-//            }
-//            if ([[info objectForKey:@"name"] isEqualToString:@"nb_groups"]) {
-//                self.nberGroups = [[info objectForKey:@"value"] integerValue];
-//            }
-//            if ([[info objectForKey:@"name"] isEqualToString:@"nb_comments"]) {
-//                self.nberComments = [[info objectForKey:@"value"] integerValue];
-//            }
+            if ([[info objectForKey:@"name"] isEqualToString:@"nb_users"]) {
+                self.nberUsers = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[[info objectForKey:@"value"] integerValue]]];
+            }
+            if ([[info objectForKey:@"name"] isEqualToString:@"nb_groups"]) {
+                self.nberGroups = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[[info objectForKey:@"value"] integerValue]]];
+            }
+            if ([[info objectForKey:@"name"] isEqualToString:@"nb_comments"]) {
+                self.nberComments = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[[info objectForKey:@"value"] integerValue]]];
+            }
         }
         
         // Refresh table with infos
@@ -1635,5 +1638,3 @@ typedef enum {
                              }];
 }
 @end
-
-

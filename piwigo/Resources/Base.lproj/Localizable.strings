@@ -243,6 +243,7 @@
 "editImageDetails_tags" = "Tags:";
 "editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
+"editImageDetails_comments" = "Comments";
 "editImageDetailsHUD_updating" = "Updating Image Info…";
 
 // Image details — Errors
@@ -478,4 +479,5 @@
 "settings_translateWithCrowdin" = "Translate Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Acknowledgements";
-
+"settings_users" = "Users";
+"settings_groups" = "Groups";
