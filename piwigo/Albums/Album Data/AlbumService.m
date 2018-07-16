@@ -63,7 +63,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     // Use cache with care!
     NSArray *parentCategories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:categoryId];
     if (cached && (parentCategories != nil)) {
-        NSLog(@"                => use cache");
+//        NSLog(@"                => use cache");
         if(completion) {
             completion(nil, nil);
             return nil;
@@ -78,7 +78,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
-    NSLog(@"                => getAlbumListForCategory(%ld,%@)", (long)categoryId, recursiveString);
+//    NSLog(@"                => getAlbumListForCategory(%ld,%@)", (long)categoryId, recursiveString);
     // Get albums list for category
     return [self post:kPiwigoCategoriesGetList
         URLParameters:nil
@@ -95,7 +95,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       // Extract albums data from JSON message
                       NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
 
-                      NSLog(@"                => %ld albums returned", (long)[albums count]);
+//                      NSLog(@"                => %ld albums returned", (long)[albums count]);
                       // Update Categories Data cache
                       if ([Model sharedInstance].loadAllCategoryInfo)
                       {

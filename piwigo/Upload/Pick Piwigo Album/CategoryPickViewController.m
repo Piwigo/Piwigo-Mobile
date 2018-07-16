@@ -892,7 +892,7 @@
         [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
         
         // Reload category data and set current category
-        NSLog(@"buildCategoryPk => getAlbumListForCategory(%ld,NO,YES)", (long)self.currentCategoryId);
+//        NSLog(@"buildCategoryPk => getAlbumListForCategory(%ld,NO,YES)", (long)self.currentCategoryId);
         [AlbumService getAlbumListForCategory:self.currentCategoryId
                                    usingCache:NO
                               inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
@@ -1045,7 +1045,7 @@
     else
     {
         // Sub-categories are not known
-        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
+//        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 
         // Show loading HD
         [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];

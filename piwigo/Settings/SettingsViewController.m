@@ -873,7 +873,7 @@ typedef enum {
                     cell.cellSwitchBlock = ^(BOOL switchState) {
                         if(![Model sharedInstance].loadAllCategoryInfo && switchState)
                         {
-                            NSLog(@"settingsResetCa => getAlbumListForCategory(%ld,NO,YES)", (long)0);
+//                            NSLog(@"settingsResetCa => getAlbumListForCategory(%ld,NO,YES)", (long)0);
                             [AlbumService getAlbumListForCategory:0
                                                        usingCache:NO
                                                   inRecursiveMode:YES

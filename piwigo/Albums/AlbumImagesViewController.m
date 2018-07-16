@@ -425,8 +425,9 @@ CGFloat const kRadius = 25.0;
         if ([Model sharedInstance].hasAdminRights)
         {
             // Interface depends on device and orientation
-            if ( UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]) &&
-                ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)) {
+            if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
+                (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
+                 ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
         
                 // Hide navigation bar left buttons and use a toolbar
                 [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
@@ -476,7 +477,7 @@ CGFloat const kRadius = 25.0;
 -(void)getCategoryData:(NSNotification *)notification
 {
     // Reload category data
-    NSLog(@"getCategoryData => getAlbumListForCategory(%ld,%d,%d)", (long)self.categoryId,([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit),[Model sharedInstance].loadAllCategoryInfo);
+//    NSLog(@"getCategoryData => getAlbumListForCategory(%ld,%d,%d)", (long)self.categoryId,([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit),[Model sharedInstance].loadAllCategoryInfo);
 
     // Display HUD if requested
     BOOL noHUD = NO;
@@ -518,7 +519,7 @@ CGFloat const kRadius = 25.0;
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", [Model sharedInstance].loadAllCategoryInfo ? (long)0 : (long)self.categoryId);
+//    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", [Model sharedInstance].loadAllCategoryInfo ? (long)0 : (long)self.categoryId);
 
     // Show loading HD
     [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
@@ -585,7 +586,7 @@ CGFloat const kRadius = 25.0;
 
 -(void)categoriesUpdated
 {
-    NSLog(@"=> categoriesUpdated…");
+//    NSLog(@"=> categoriesUpdated…");
     // Albums
     [self.imagesCollection reloadData];
 
