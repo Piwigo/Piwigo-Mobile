@@ -7,16 +7,15 @@
 //
 
 #import "ImageScrollView.h"
+#import "ImageDetailViewController.h"
 
 @interface ImageScrollView() <UIScrollViewDelegate>
-//@interface ImageView()
 
-//@property (nonatomic, assign) CGFloat previousScale;
+@property (nonatomic, assign) CGFloat previousScale;
 
 @end
 
 @implementation ImageScrollView
-//@implementation ImageView
 
 -(instancetype)init
 {
@@ -29,16 +28,16 @@
         self.bouncesZoom = YES;
         self.decelerationRate = UIScrollViewDecelerationRateFast;
         self.delegate = self;
-        
-        self.maximumZoomScale = 4.0;
+
+        self.maximumZoomScale = 5.0;
         self.minimumZoomScale = 1.0;
-//        self.previousScale = 1.0;
+        self.previousScale = 1.0;
 		
         // Image previewed
 		self.imageView = [UIImageView new];
 		self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-//        self.imageView.userInteractionEnabled = YES;
+        self.imageView.userInteractionEnabled = YES;
         [self addSubview:self.imageView];
         
         // Play button above posters of movie
@@ -61,16 +60,16 @@
 	return self.imageView;
 }
 
-//- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale
-//{
-//    if ((scale == 1.0) && (self.previousScale == 1.0))
-//    {
-//        // The user scaled down twice the image => back to collection of images
-//        NSLog(@"scrollViewDidEndZooming");
-//
-//    } else {
-//        self.previousScale = scale;
-//    }
-//}
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale
+{
+    if ((scale == 1.0) && (self.previousScale == 1.0))
+    {
+        // The user scaled down twice the image => back to collection of images
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPinchedImage object:nil];
+
+    } else {
+        self.previousScale = scale;
+    }
+}
 
 @end

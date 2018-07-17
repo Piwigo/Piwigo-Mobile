@@ -26,13 +26,12 @@
 	self = [super init];
 	if(self)
 	{
+        // Image
         self.scrollView = [ImageScrollView new];
-//        self.imageView = [ImageView new];
-
-        // Video previewed
-        self.videoView = [VideoView new];
         self.view = self.scrollView;
-//        self.view = self.imageView;
+
+        // Video
+        self.videoView = [VideoView new];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -71,7 +70,6 @@
 {
     // Display "play" button if video
     self.scrollView.playImage.hidden = !(imageData.isVideo);
-//    self.imageView.playImage.hidden = !(imageData.isVideo);
 
     // Thumbnail image may be used as placeholder image
     NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
@@ -89,7 +87,6 @@
     __weak typeof(self) weakSelf = self;
     
     self.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
-//    self.imageView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
 
     [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
       parameters:nil
@@ -107,8 +104,7 @@
         }
          success:^(NSURLSessionTask *task, UIImage *image) {
              weakSelf.scrollView.imageView.image = image;
-//             weakSelf.imageView.imageView.image = image;
-             weakSelf.imageLoaded = YES;                        // Hide progress bar
+             weakSelf.imageLoaded = YES;                      // Hide progress bar
          }
          failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)

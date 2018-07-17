@@ -11,7 +11,6 @@
 
 @class PiwigoImageData;
 @class ImageScrollView;
-//@class ImageView;
 @class VideoView;
 
 @protocol ImagePreviewDelegate <NSObject>
@@ -25,7 +24,6 @@
 @property (nonatomic, weak) id<ImagePreviewDelegate> imagePreviewDelegate;
 
 @property (nonatomic, strong) ImageScrollView *scrollView;
-//@property (nonatomic, strong) ImageView *imageView;
 @property (nonatomic, strong) VideoView *videoView;
 
 @property (nonatomic, assign) NSInteger imageIndex;

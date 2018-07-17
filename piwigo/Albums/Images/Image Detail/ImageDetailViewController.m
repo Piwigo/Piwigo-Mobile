@@ -21,6 +21,8 @@
 #import "AllCategoriesViewController.h"
 #import "SAMKeychain.h"
 
+NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
+
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate>
 
 @property (nonatomic, strong) PiwigoImageData *imageData;
@@ -31,9 +33,6 @@
 
 @property (nonatomic, strong) ImageDownloadView *downloadView;
 
-//@property (nonatomic, assign) CGFloat imageScale;
-//@property (nonatomic, assign) CGFloat previousImageScale;
-//
 @end
 
 @implementation ImageDetailViewController
@@ -68,22 +67,21 @@
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
 		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:3]];
-		self.topProgressBarConstraint = [NSLayoutConstraint constraintWithItem:self.progressBar
-															  attribute:NSLayoutAttributeTop
-															  relatedBy:NSLayoutRelationEqual
-																 toItem:self.view
-															  attribute:NSLayoutAttributeTop
-															 multiplier:1.0
-															   constant:0];
+		self.topProgressBarConstraint = [NSLayoutConstraint
+                                constraintWithItem:self.progressBar
+                                         attribute:NSLayoutAttributeTop
+                                         relatedBy:NSLayoutRelationEqual
+                                toItem:self.view
+                                         attribute:NSLayoutAttributeTop
+                                         multiplier:1.0 constant:0];
 		[self.view addConstraint:self.topProgressBarConstraint];
 		
         // For managing taps
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView)]];
 
-        // For managing pinches
-//        self.imageScale = 1.0; self.previousImageScale = 1.0;
-//        [self.view addGestureRecognizer:[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(didPinchView:)]];
-        
+        // Register image pinches
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPinchView) name:kPiwigoNotificationPinchedImage object:nil];
+
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
 	}
@@ -130,10 +128,98 @@
 	}
 }
 
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-//{
-//    return YES;
-//}
+
+#pragma mark - UIPageViewControllerDataSource
+
+-(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
+{
+    NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
+    
+    // Check to see if they've scroll beyond a certain threshold, then load more image data
+    if(currentIndex >= self.images.count - 21 && self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+    {
+        if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
+        {
+            [self.imgDetailDelegate needToLoadMoreImages];
+        }
+    }
+    
+    
+    if(currentIndex >= self.images.count - 1)
+    {
+        return nil;
+    }
+    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
+    
+    ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
+    [nextImage setImageScrollViewWithImageData:imageData];
+    nextImage.imageIndex = currentIndex + 1;
+    return nextImage;
+}
+
+-(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
+{
+    NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
+    
+    if(currentIndex <= 0)
+    {
+        // return nil;
+        // Crash reported by AppStore here on May 25th, 2017
+        // Should return 0 when the user reaches the first image of the album
+        return 0;
+    }
+    
+    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
+    
+    ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
+    [prevImage setImageScrollViewWithImageData:imageData];
+    prevImage.imageIndex = currentIndex - 1;
+    return prevImage;
+}
+
+-(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
+{
+    ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
+    [removedVC.scrollView.imageView cancelImageDownloadTask];
+    
+    ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
+    view.imagePreviewDelegate = self;
+    
+    self.progressBar.hidden = view.imageLoaded;
+    [self.progressBar setProgress:0];
+    
+    NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
+    
+    if (currentIndex < 0)
+    {
+        // Crash reported by AppStore here on August 26th, 2017
+        currentIndex = 0;
+    }
+    if (currentIndex >= self.images.count)
+    {
+        // Crash reported by AppleStore in November 2017
+        currentIndex = self.images.count - 1;
+    }
+    
+    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex];
+    
+    if(self.imageData.isVideo)
+    {
+        self.progressBar.hidden = YES;
+    }
+    
+    self.imageData = [self.images objectAtIndex:currentIndex];
+    
+    self.title = self.imageData.name;
+}
+
+
+#pragma mark - User Interaction
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
 
 -(void)didTapView
 {
@@ -142,7 +228,8 @@
         // User wants to play/replay the video
         ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
         [playVideo startVideoPlayerViewWithImageData:self.imageData];
-    } else {
+    }
+    else {
         // Display/hide the navigation bar
         [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 
@@ -159,39 +246,11 @@
     }
 }
 
-//-(void)didPinchView:(UIPinchGestureRecognizer *)recognizer
-//{
-//    UIGestureRecognizerState state = [recognizer state];
-//    CGFloat scale = [recognizer scale];
-//    CGFloat newImageScale = self.imageScale * scale;
-//
-//    // Scale cannot be less than 1.0 and more than 5.0
-//    if (newImageScale < 1.0) scale = 1.0 / self.imageScale;
-//    if (newImageScale > 5.0) scale = 5.0 / self.imageScale;
-//
-//    // Pinch in progress
-//    if (state == UIGestureRecognizerStateBegan || state == UIGestureRecognizerStateChanged)
-//    {
-//        [recognizer.view setTransform:CGAffineTransformScale(recognizer.view.transform, scale, scale)];
-//        self.previousImageScale = self.imageScale;
-//        self.imageScale *= scale;
-//        [recognizer setScale:1.0];
-//        return;
-//    }
-//
-//    // Pinch ended
-//    if (state == UIGestureRecognizerStateEnded)
-//    {
-//        if ((self.imageScale == 1.0) && (self.previousImageScale == 1.0))
-//        {
-//            // The user scaled down twice the image => back to collection of images
-//            NSLog(@"didPinchView! newScale=%f", newImageScale);
-//            [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-//        } else {
-//            self.previousImageScale = scale;
-//        }
-//    }
-//}
+-(void)didPinchView
+{
+    // Return to image collection (called by ImageScrollView)
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (BOOL)prefersStatusBarHidden {
     if (self.navigationController.navigationBarHidden)
@@ -536,91 +595,6 @@
 	self.downloadView.hidden = YES;
 }
 
-
-#pragma mark - UIPageViewControllerDataSource
-
--(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
-{
-	NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
-	
-	// Check to see if they've scroll beyond a certain threshold, then load more image data
-	if(currentIndex >= self.images.count - 21 && self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
-	{
-        if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
-		{
-            [self.imgDetailDelegate needToLoadMoreImages];
-		}
-	}
-	
-	
-	if(currentIndex >= self.images.count - 1)
-	{
-		return nil;
-	}
-	PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
-	
-	ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
-	[nextImage setImageScrollViewWithImageData:imageData];
-	nextImage.imageIndex = currentIndex + 1;
-	return nextImage;
-}
-
--(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
-{
-	NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
-	
-	if(currentIndex <= 0)
-	{
-        // return nil;
-        // Crash reported by AppStore here on May 25th, 2017
-        // Should return 0 when the user reaches the first image of the album
-        return 0;
-	}
-	
-	PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
-		
-	ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
-	[prevImage setImageScrollViewWithImageData:imageData];
-	prevImage.imageIndex = currentIndex - 1;
-	return prevImage;
-}
-
--(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
-{
-    ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
-    [removedVC.scrollView.imageView cancelImageDownloadTask];
-//    [removedVC.imageView.imageView cancelImageDownloadTask];
-
-	ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
-	view.imagePreviewDelegate = self;
-
-    self.progressBar.hidden = view.imageLoaded;
-	[self.progressBar setProgress:0];
-
-    NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
-    
-    if (currentIndex < 0)
-    {
-        // Crash reported by AppStore here on August 26th, 2017
-        currentIndex = 0;
-    }
-    if (currentIndex >= self.images.count)
-    {
-        // Crash reported by AppleStore in November 2017
-        currentIndex = self.images.count - 1;
-    }
-
-    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex];
-
-	if(self.imageData.isVideo)
-	{
-		self.progressBar.hidden = YES;
-	}
-
-	self.imageData = [self.images objectAtIndex:currentIndex];
-	
-	self.title = self.imageData.name;
-}
 
 #pragma mark - ImagePreviewDelegate Methods
 
