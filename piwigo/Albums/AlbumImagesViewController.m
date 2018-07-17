@@ -112,7 +112,7 @@ CGFloat const kRadius = 25.0;
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] landscapeImagePhone:[UIImage imageNamed:@"preferencesCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
-        self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:@selector(deleteImages)];
+        self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
         self.deleteBarButton.tintColor = [UIColor redColor];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
@@ -323,7 +323,7 @@ CGFloat const kRadius = 25.0;
     if(!self.isSelect) {    // Image selection mode inactive
         
         // Hide toolbar
-        self.navigationController.toolbarHidden = YES;
+        [self.navigationController setToolbarHidden:YES animated:YES];
 
         // Title is name of the category
         if (self.categoryId == 0) {
@@ -433,14 +433,14 @@ CGFloat const kRadius = 25.0;
                 [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
 
                 // Redefine bar buttons (definition lost after rotation of device)
-                self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:@selector(deleteImages)];
+                self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
                 self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
                 self.deleteBarButton.tintColor = [UIColor redColor];
                 self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
                 self.downloadBarButton.tintColor = [UIColor piwigoOrange];
 
                 // Present toolbar
-                self.navigationController.toolbarHidden = NO;
+                [self.navigationController setToolbarHidden:NO animated:YES];
                 self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.deleteBarButton];
                 self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
@@ -448,7 +448,7 @@ CGFloat const kRadius = 25.0;
             else    // iPhone in landscape mode, iPad in any orientation
             {
                 // Hide toolbar
-                self.navigationController.toolbarHidden = YES;
+                [self.navigationController setToolbarHidden:YES animated:YES];
 
                 // Present buttons in the navigation bar
                 [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton, self.deleteBarButton] animated:YES];
@@ -459,7 +459,7 @@ CGFloat const kRadius = 25.0;
         else    // No delete rights => No Delete button and navigation bar (no toolbar)
         {
             // Hide toolbar
-            self.navigationController.toolbarHidden = YES;
+            [self.navigationController setToolbarHidden:YES animated:YES];
 
             // Present buttons in the navigation bar
             [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton] animated:YES];

@@ -23,13 +23,18 @@
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, UIToolbarDelegate>
 
+@property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, strong) UIProgressView *progressBar;
 @property (nonatomic, strong) NSLayoutConstraint *topProgressBarConstraint;
 
-@property (nonatomic, assign) NSInteger categoryId;
+@property (nonatomic, strong) UIBarButtonItem *editBarButton;
+@property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
+@property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
+@property (nonatomic, strong) UIBarButtonItem *setThumbnailBarButton;
+@property (nonatomic, strong) UIBarButtonItem *spaceBetweenButtons;
 
 @property (nonatomic, strong) ImageDownloadView *downloadView;
 
@@ -60,6 +65,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 						animated:NO
 					  completion:nil];
 		
+        // Progress bar
 		self.progressBar = [UIProgressView new];
 		self.progressBar.translatesAutoresizingMaskIntoConstraints = NO;
 		self.progressBar.hidden = NO;
@@ -76,6 +82,18 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                                          multiplier:1.0 constant:0];
 		[self.view addConstraint:self.topProgressBarConstraint];
 		
+        // Bar buttons
+        self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
+        self.deleteBarButton.tintColor = [UIColor redColor];
+        self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImage)];
+        self.downloadBarButton.tintColor = [UIColor piwigoOrange];
+        self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize target:self action:@selector(setAsAlbumImage)];
+        self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
+        self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbarHidden = YES;
+
         // For managing taps
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView)]];
 
@@ -111,9 +129,8 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Set colors, fonts, etc.
     [self paletteChanged];
 
-    // Image options button
-	UIBarButtonItem *imageOptionsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(imageOptions)];
-	self.navigationItem.rightBarButtonItem = imageOptionsButton;
+    // Image options buttons
+    [self updateNavBar];
 	
     // Never present video poster in full screen
     if (self.imageData.isVideo) {
@@ -126,6 +143,137 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		self.automaticallyAdjustsScrollViewInsets = false;
 		self.edgesForExtendedLayout = UIRectEdgeNone;
 	}
+}
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    //Reload the tableview on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self updateNavBar];
+    } completion:nil];
+}
+
+-(void)updateNavBar
+{
+    // Interface depends on device and orientation
+    if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
+        (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
+         ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
+            
+            // Redefine bar buttons (definition lost after rotation of device)
+            self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
+            self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
+            self.deleteBarButton.tintColor = [UIColor redColor];
+            self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImage)];
+            self.downloadBarButton.tintColor = [UIColor piwigoOrange];
+            self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize target:self action:@selector(setAsAlbumImage)];
+            self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
+            self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+
+            if ([Model sharedInstance].hasAdminRights)
+            {
+                // User with admin rights can edit, delete images and set as album image
+                [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
+                
+                // Present toolbar
+                [self.navigationController setToolbarHidden:NO animated:YES];
+                self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+            }
+            else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+            {
+                // User with upload access to the current category can edit images
+                [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
+                
+                // Present toolbar
+                [self.navigationController setToolbarHidden:NO animated:YES];
+                self.toolbarItems = @[self.spaceBetweenButtons, self.downloadBarButton,  self.spaceBetweenButtons];
+            }
+            else
+            {
+            // User with no special access rights can only download images
+            [self.navigationItem setRightBarButtonItems:@[self.downloadBarButton]];
+            
+            // Hide toolbar
+            [self.navigationController setToolbarHidden:YES animated:NO];
+            }
+        }
+    else    // iPhone in landscape mode, iPad in any orientation
+    {
+        // Hide toolbar
+        [self.navigationController setToolbarHidden:YES animated:YES];
+
+        if ([Model sharedInstance].hasAdminRights)
+        {
+            // User with admin rights can edit, delete images and set as album image
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.deleteBarButton, self.setThumbnailBarButton, self.downloadBarButton]];
+        }
+        else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        {
+            // User with upload access to the current category can edit images
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.downloadBarButton]];
+        }
+        else
+        {
+            // User with no special access rights can only download images
+            [self.navigationItem setRightBarButtonItems:@[self.downloadBarButton]];
+            
+            // Hide toolbar
+            [self.navigationController setToolbarHidden:YES animated:NO];
+        }
+    }
+}
+
+#pragma mark - User Interaction
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+-(void)didTapView
+{
+    // Should we do something else?
+    if (self.imageData.isVideo) {
+        // User wants to play/replay the video
+        ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
+        [playVideo startVideoPlayerViewWithImageData:self.imageData];
+    }
+    else {
+        // Display/hide the navigation bar
+        [self.navigationController setNavigationBarHidden:!self.navigationController.isNavigationBarHidden animated:YES];
+        
+        // Display/hide the toolbar on iPhone in portrait
+        if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
+            (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
+             ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
+                [self.navigationController setToolbarHidden:!self.navigationController.isToolbarHidden animated:YES];
+            }
+
+        // Set background color according to navigation bar visibility
+        NSArray *viewControllers = self.childViewControllers;
+        for (UIViewController *viewController in viewControllers) {
+            if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
+                if (self.navigationController.navigationBarHidden)
+                    viewController.view.backgroundColor = [UIColor blackColor];
+                else
+                    viewController.view.backgroundColor = [UIColor piwigoBackgroundColor];
+            }
+        }
+    }
+}
+
+-(void)didPinchView
+{
+    // Return to image collection (called by ImageScrollView)
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (BOOL)prefersStatusBarHidden {
+    if (self.navigationController.navigationBarHidden)
+        return YES;     // Hide the status bar with the navigation bar
+    else
+        return NO;      // Show the status bar with the navigation bar
 }
 
 
@@ -214,125 +362,23 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 }
 
 
-#pragma mark - User Interaction
+#pragma mark - Edit Image
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+-(void)editImage
 {
-    return YES;
+    // Present EditImageDetails view
+    UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
+    EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
+    editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
+    editImageVC.delegate = self;
+    editImageVC.isEdit = YES;
+    
+    UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
+    [self.navigationController presentViewController:presentNav animated:YES completion:nil];
 }
 
--(void)didTapView
-{
-    // Should we do something else?
-    if (self.imageData.isVideo) {
-        // User wants to play/replay the video
-        ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
-        [playVideo startVideoPlayerViewWithImageData:self.imageData];
-    }
-    else {
-        // Display/hide the navigation bar
-        [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 
-        // Set background color according to navigation bar visibility
-        NSArray *viewControllers = self.childViewControllers;
-        for (UIViewController *viewController in viewControllers) {
-            if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
-                if (self.navigationController.navigationBarHidden)
-                    viewController.view.backgroundColor = [UIColor blackColor];
-                else
-                    viewController.view.backgroundColor = [UIColor piwigoBackgroundColor];
-            }
-        }
-    }
-}
-
--(void)didPinchView
-{
-    // Return to image collection (called by ImageScrollView)
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (BOOL)prefersStatusBarHidden {
-    if (self.navigationController.navigationBarHidden)
-        return YES;     // Hide the status bar with the navigation bar
-    else
-        return NO;      // Show the status bar with the navigation bar
-}
-
--(void)imageOptions
-{
-    UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:NSLocalizedString(@"imageOptions_title", @"Image Options")
-                                message:nil
-                                preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction* cancelAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                                   style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {}];
-    
-    UIAlertAction* deleteAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"deleteImage_delete", @"Delete")
-                                   style:UIAlertActionStyleDestructive
-                                   handler:^(UIAlertAction * action) {
-                                       [self deleteImage];
-                                   }];
-    
-    UIAlertAction* downloadAction = [UIAlertAction
-                                     actionWithTitle:NSLocalizedString(@"imageOptions_download", @"Download")
-                                     style:UIAlertActionStyleDefault
-                                     handler:^(UIAlertAction * action) {
-                                         [self downloadImage];
-                                     }];
-
-    UIAlertAction* editAction = [UIAlertAction
-                                 actionWithTitle:NSLocalizedString(@"imageOptions_edit",  @"Edit")
-                                 style:UIAlertActionStyleDefault
-                                 handler:^(UIAlertAction * action) {
-                                     // Present EditImageDetails view
-                                     UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
-                                     EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-                                     editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
-                                     editImageVC.delegate = self;
-                                     editImageVC.isEdit = YES;
-                                     UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
-                                     [self.navigationController presentViewController:presentNav animated:YES completion:nil];
-                                 }];
-
-    UIAlertAction* setAsAlbumImageAction = [UIAlertAction
-                                            actionWithTitle:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")
-                                            style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * action) {
-                                                // Present CategoriesSelector view
-                                                AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
-                                                [self.navigationController pushViewController:allCategoriesPickVC animated:YES];
-                                            }];
-
-    // Admins users can delete images/videos
-    if([Model sharedInstance].hasAdminRights) {
-        [alert addAction:deleteAction];
-    }
-    
-    // Admins and Community users having upload rights can edit images/videos in selected albums
-    if([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]) {
-        [alert addAction:editAction];
-    }
-    
-    // Admin users can "Set As Album Image"
-    if ([Model sharedInstance].hasAdminRights) {
-        [alert addAction:setAsAlbumImageAction];
-    }
-    
-    // Add default actions
-    [alert addAction:downloadAction];
-    [alert addAction:cancelAction];
-    
-    // Present list of actions
-    alert.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-#pragma mark - Delete image
+#pragma mark - Delete Image
 
 -(void)deleteImage
 {
@@ -396,18 +442,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - Download image
-
--(ImageDownloadView*)downloadView
-{
-    if(_downloadView) return _downloadView;
-    
-    _downloadView = [ImageDownloadView new];
-    _downloadView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:_downloadView];
-    [self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
-    return _downloadView;
-}
+#pragma mark - Download Image
 
 -(void)downloadImage
 {
@@ -548,6 +583,17 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 	}
 }
 
+-(ImageDownloadView*)downloadView
+{
+    if(_downloadView) return _downloadView;
+    
+    _downloadView = [ImageDownloadView new];
+    _downloadView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:_downloadView];
+    [self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
+    return _downloadView;
+}
+
 -(void)saveImageToCameraRoll:(NSURL *)filePath
 {
     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
@@ -593,6 +639,16 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         [self presentViewController:alert animated:YES completion:nil];
 	}
 	self.downloadView.hidden = YES;
+}
+
+
+#pragma mark - Set as Album Image
+
+-(void)setAsAlbumImage
+{
+    // Present CategoriesSelector view
+    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+    [self.navigationController pushViewController:allCategoriesPickVC animated:YES];
 }
 
 
