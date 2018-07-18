@@ -259,6 +259,10 @@ CGFloat const kRadius = 25.0;
         }
     }
 
+    // Always open this view with a navigation bar
+    // (might have been hidden during Image Previewing)
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+
     // Set navigation bar buttons
     [self updateNavBar];
 }
