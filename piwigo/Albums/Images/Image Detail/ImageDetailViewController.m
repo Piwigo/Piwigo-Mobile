@@ -436,7 +436,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     [alert addAction:deleteAction];
 
     // Present list of actions
-    alert.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
+    alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
