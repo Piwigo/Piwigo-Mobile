@@ -147,7 +147,6 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
     
     // Table view
     self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
@@ -165,6 +164,9 @@
     
     // Set colors, fonts, etc.
     [self paletteChanged];
+    
+    // Add Done button
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 }
 
 -(void)viewWillDisappear:(BOOL)animated

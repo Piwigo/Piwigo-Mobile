@@ -23,6 +23,7 @@
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoAlbumData *categoryData;
 @property (nonatomic, strong) UIViewController *hudViewController;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
@@ -33,7 +34,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.title = NSLocalizedString(@"categorySelection_select", @"Select Album");
+        self.title = NSLocalizedString(@"categoryImageSet_title", @"Set Image Thumbnail");
 		self.imageId = imageId;
 		self.categoryId = categoryId;
         self.categoryData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
@@ -53,6 +54,9 @@
         [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
+
+        // Button for returning to albums/images
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitAllCategories)];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -96,6 +100,15 @@
     
     // Set colors, fonts, etc.
     [self paletteChanged];
+
+    // Add Done button
+    [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
+}
+
+-(void)quitAllCategories
+{
+    // Leave action and return to Albums and Images
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -343,7 +356,7 @@
                       // Close HUD
                       [self hideHUDwithSuccess:YES completion:^{
                           dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 700 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                              [self.navigationController popViewControllerAnimated:YES];
+                              [self quitAllCategories];
                           });
                       }];
                   }
