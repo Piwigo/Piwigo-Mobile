@@ -169,9 +169,9 @@ typedef enum {
     {
         case SettingsSectionServer:
             if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"]) {
-                titleString = [NSString stringWithFormat:@"%@ v%@", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
+                titleString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
             } else {
-                titleString = [NSString stringWithFormat:@"%@ v%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
+                titleString = [NSString stringWithFormat:@"%@ %@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
                 textString = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
             }
             break;
@@ -230,9 +230,9 @@ typedef enum {
     {
         case SettingsSectionServer:
             if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"]) {
-                titleString = [NSString stringWithFormat:@"%@ v%@", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
+                titleString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
             } else {
-                titleString = [NSString stringWithFormat:@"%@ v%@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
+                titleString = [NSString stringWithFormat:@"%@ %@\n", NSLocalizedString(@"settingsHeader_server", @"Piwigo Server"), [Model sharedInstance].version];
                 textString = NSLocalizedString(@"settingsHeader_notSecure", @"Website Not Secure!");
             }
             break;
