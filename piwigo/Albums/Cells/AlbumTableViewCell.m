@@ -247,27 +247,29 @@
     }
 
     // Display number of images and sub-albums
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setPositiveFormat:@"#,##0"];
     if (self.albumData.numberOfSubCategories == 0) {
         
         // There are no sub-albums
-        self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@",
-                                    (long)self.albumData.numberOfImages,
+        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@",
+                                    [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfImages]],
                                     self.albumData.numberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
         
     } else if (self.albumData.totalNumberOfImages == 0) {
         
         // There are no images but sub-albums
-        self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@",
-                                    (long)self.albumData.numberOfSubCategories,
+        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@",
+                                    [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]],
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
         
     } else {
         
         // There are images and sub-albums
-        self.numberOfImages.text = [NSString stringWithFormat:@"%ld %@, %ld %@",
-                                    (long)self.albumData.totalNumberOfImages,
+        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@ %@",
+                                    [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.totalNumberOfImages]],
                                     self.albumData.totalNumberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo"),
-                                    (long)self.albumData.numberOfSubCategories,
+                                    [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]],
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
     
