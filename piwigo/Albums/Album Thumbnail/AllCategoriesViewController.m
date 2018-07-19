@@ -34,7 +34,7 @@
 	self = [super init];
 	if(self)
 	{
-        self.title = NSLocalizedString(@"categoryImageSet_title", @"Set Image Thumbnail");
+        self.title = NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image");
 		self.imageId = imageId;
 		self.categoryId = categoryId;
         self.categoryData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
