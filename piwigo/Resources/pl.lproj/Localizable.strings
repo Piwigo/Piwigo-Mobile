@@ -163,11 +163,11 @@
 "renameCategoyError_message" = "Nie można zmienić nazwy albumu";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Refreshing Representative…";
+"refreshCategoryHUD_label" = "Odświeżanie miniaturki albumu…";
 
 // Album refresh representative — Errors
 "refreshCategoyError_title" = "Odświeżanie nie powiodło się";
-"refreshCategoyError_message" = "Failed to refresh your album representative";
+"refreshCategoyError_message" = "Nie można odświeżyć miniaturki albumu";
 
 // Album delete
 "deleteCategory_title" = "USUŃ ALBUM";
@@ -278,7 +278,7 @@
 
 "deleteSingleImage_title" = "Usuń Zdjęcie";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
-"deleteSeveralImages_title" = "Usuwanie Zdjęć";
+"deleteSeveralImages_title" = "Usuń %@ zdjęcia";
 "deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia %@? Nie można tego cofnąć!";
 
 "deleteImageFail_title" = "Błąd Usunięcia";
@@ -287,7 +287,7 @@
 // Image download
 "downloadSingleImage_title" = "Pobierz Zdjęcie";
 "downloadSingleImage_confirmation" = "Czy na pewno chcesz pobrać wybrane zdjęcie?";
-"downloadSeveralImages_title" = "Pobierz Zdjęcia";
+"downloadSeveralImages_title" = "Pobierz %@ obrazów";
 "downloadSeveralImage_confirmation" = "Czy na pewno chcesz pobrać wybrane %@ zdjęcia?";
 
 "downloadingImage" = "Pobieranie Zdjęcia";
