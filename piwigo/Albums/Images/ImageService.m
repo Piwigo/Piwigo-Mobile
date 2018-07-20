@@ -185,15 +185,41 @@ NSString * const kGetImageOrderDescending = @"desc";
     // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
 	imageData.SquarePath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"square"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	imageData.ThumbPath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"thumb"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    imageData.SquareWidth = [[[imageSizes objectForKey:@"square"] objectForKey:@"width"] integerValue];
+    imageData.SquareHeight = [[[imageSizes objectForKey:@"square"] objectForKey:@"height"] integerValue];
+
+    imageData.ThumbPath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"thumb"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    imageData.ThumbWidth = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"width"] integerValue];
+    imageData.ThumbHeight = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"height"] integerValue];
+
 	imageData.MediumPath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"medium"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	imageData.XXSmallPath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"2small.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	imageData.XSmallPath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"xsmall.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	imageData.SmallPath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"small.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	imageData.LargePath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"large.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	imageData.XLargePath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"xlarge.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	imageData.XXLargePath = [NetworkHandler encodedURL:[[imageSizes valueForKeyPath:@"xxlarge.url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	
+    imageData.MediumWidth = [[[imageSizes objectForKey:@"medium"] objectForKey:@"width"] integerValue];
+    imageData.MediumHeight = [[[imageSizes objectForKey:@"medium"] objectForKey:@"height"] integerValue];
+
+	imageData.XXSmallPath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"2small"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    imageData.XXSmallWidth = [[[imageSizes objectForKey:@"2small"] objectForKey:@"width"] integerValue];
+    imageData.XXSmallHeight = [[[imageSizes objectForKey:@"2small"] objectForKey:@"height"] integerValue];
+
+	imageData.XSmallPath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"xsmall"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    imageData.XSmallWidth = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"width"] integerValue];
+    imageData.XSmallHeight = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"height"] integerValue];
+
+	imageData.SmallPath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"small"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    imageData.SmallWidth = [[[imageSizes objectForKey:@"small"] objectForKey:@"width"] integerValue];
+    imageData.SmallHeight = [[[imageSizes objectForKey:@"small"] objectForKey:@"height"] integerValue];
+
+    imageData.LargePath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"large"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    imageData.LargeWidth = [[[imageSizes objectForKey:@"large"] objectForKey:@"width"] integerValue];
+    imageData.LargeHeight = [[[imageSizes objectForKey:@"large"] objectForKey:@"height"] integerValue];
+
+    imageData.XLargePath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"xlarge"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    imageData.XLargeWidth = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"width"] integerValue];
+    imageData.XLargeHeight = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"height"] integerValue];
+
+    imageData.XXLargePath = [NetworkHandler encodedURL:[[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    imageData.XXLargeWidth = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"width"] integerValue];
+    imageData.XXLargeHeight = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"height"] integerValue];
+
 	NSArray *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];
 	for(NSDictionary *category in categories)
