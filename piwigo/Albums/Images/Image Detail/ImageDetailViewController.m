@@ -384,7 +384,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)deleteImage
 {
     UIAlertController* alert = [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"deleteImage_delete", @"Delete")
+            alertControllerWithTitle:@""
             message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
             preferredStyle:UIAlertControllerStyleActionSheet];
     

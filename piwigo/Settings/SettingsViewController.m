@@ -1396,17 +1396,17 @@ typedef enum {
 	{
         // Ask user for confirmation
         UIAlertController* alert = [UIAlertController
-                    alertControllerWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
+                    alertControllerWithTitle:@""
                     message:NSLocalizedString(@"logoutConfirmation_message", @"Are you sure you want to logout?")
                     preferredStyle:UIAlertControllerStyleActionSheet];
         
         UIAlertAction* cancelAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                    actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                     style:UIAlertActionStyleCancel
                     handler:^(UIAlertAction * action) {}];
         
         UIAlertAction* logoutAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                    actionWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
                     style:UIAlertActionStyleDestructive
                     handler:^(UIAlertAction * action) {
                        [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {

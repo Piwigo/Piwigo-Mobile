@@ -240,7 +240,7 @@
     if (categoryData.albumId == self.selectedCategory.parentAlbumId) return;
 
     UIAlertController* alert = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"moveCategory", @"Move Album")
+        alertControllerWithTitle:@""
         message:[NSString stringWithFormat:NSLocalizedString(@"moveCategory_message", @"Are you sure you want to move \"%@\" into the album \"%@\"?"), self.selectedCategory.name, categoryData.name]
         preferredStyle:UIAlertControllerStyleActionSheet];
     

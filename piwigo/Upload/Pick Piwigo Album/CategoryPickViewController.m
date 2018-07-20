@@ -581,7 +581,7 @@
     }
     
     UIAlertController *alert = [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"setDefaultCategory_title", @"Default Album")
+            alertControllerWithTitle:@""
             message:message
             preferredStyle:UIAlertControllerStyleActionSheet];
     

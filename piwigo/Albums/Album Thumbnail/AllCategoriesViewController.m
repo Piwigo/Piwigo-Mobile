@@ -282,7 +282,7 @@
 	}
 	
     UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Album Thumbnail")
+                alertControllerWithTitle:@""
                 message:[NSString stringWithFormat:NSLocalizedString(@"categoryImageSet_message", @"Are you sure you want to set this image for the album \"%@\"?"), categoryData.name]
                 preferredStyle:UIAlertControllerStyleActionSheet];
     
