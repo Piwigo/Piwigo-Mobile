@@ -48,6 +48,8 @@
 	return self;
 }
 
+#pragma mark - View Lifecycle
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -67,7 +69,8 @@
 	}
 }
 
-#pragma mark - Abcindex -
+
+#pragma mark - Abcindex
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
     return self.letterIndex;
@@ -95,7 +98,9 @@
     return 0;
 }
 
-#pragma mark UITableView Methods
+
+#pragma mark - UITableView - Headers
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     // Header height?
@@ -105,7 +110,7 @@
     } else {
         header = NSLocalizedString(@"tagsHeader_all", @"All");
     }
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -120,7 +125,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontSmall];
+    headerLabel.font = [UIFont piwigoFontBold];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
     if (section == 0) {
         headerLabel.text = NSLocalizedString(@"tagsHeader_selected", @"Selected");
@@ -137,19 +142,24 @@
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
     if (@available(iOS 11, *)) {
-        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
-                                                                   options:kNilOptions
-                                                                   metrics:nil
-                                                                     views:@{@"header" : headerLabel}]];
+        [header addConstraints:[NSLayoutConstraint
+                                constraintsWithVisualFormat:@"|-[header]-|"
+                                options:kNilOptions
+                                metrics:nil
+                                views:@{@"header" : headerLabel}]];
     } else {
-        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
-                                                                       options:kNilOptions
-                                                                       metrics:nil
-                                                                         views:@{@"header" : headerLabel}]];
+        [header addConstraints:[NSLayoutConstraint
+                                constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                options:kNilOptions
+                                metrics:nil
+                                views:@{@"header" : headerLabel}]];
     }
     
     return header;
 }
+
+
+#pragma mark - UITableView - Rows
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
@@ -192,6 +202,9 @@
 
     return cell;
 }
+
+
+#pragma mark - UITableViewDelegate Methods
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
