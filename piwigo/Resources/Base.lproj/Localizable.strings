@@ -201,7 +201,7 @@
 "categorySelection_select" = "Select Album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_other" = "or select another album for this image";
-"categoryImageSet_title" = "Set Image Thumbnail";
+"categoryImageSet_title" = "Album Thumbnail";
 "categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";
 "categoryImageSetHUD_updating" = "Updating Album Thumbnail…";
 
