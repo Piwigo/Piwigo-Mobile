@@ -36,6 +36,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
 @property (nonatomic, strong) UIBarButtonItem *setThumbnailBarButton;
 @property (nonatomic, strong) UIBarButtonItem *spaceBetweenButtons;
+@property (nonatomic, assign) BOOL isToolbarRequired;
 
 @end
 
@@ -176,6 +177,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                 self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
 
                 // Present toolbar
+                self.isToolbarRequired = YES;
                 [self.navigationController setToolbarHidden:self.navigationController.isNavigationBarHidden animated:YES];
             }
             else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
@@ -185,6 +187,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                 self.toolbarItems = @[self.spaceBetweenButtons, self.downloadBarButton,  self.spaceBetweenButtons];
 
                 // Present toolbar
+                self.isToolbarRequired = YES;
                 [self.navigationController setToolbarHidden:self.navigationController.isNavigationBarHidden animated:YES];
             }
             else
@@ -193,12 +196,14 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             [self.navigationItem setRightBarButtonItems:@[self.downloadBarButton]];
             
             // Hide toolbar
+            self.isToolbarRequired = NO;
             [self.navigationController setToolbarHidden:YES animated:NO];
             }
         }
     else    // iPhone in landscape mode, iPad in any orientation
     {
         // Hide toolbar
+        self.isToolbarRequired = NO;
         [self.navigationController setToolbarHidden:YES animated:YES];
 
         if ([Model sharedInstance].hasAdminRights)
@@ -239,15 +244,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
     else {
         // Display/hide the navigation bar
-        [self.navigationController setNavigationBarHidden:!self.navigationController.isNavigationBarHidden animated:YES];
+        BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
+        [self.navigationController setNavigationBarHidden:!isNavigationBarHidden animated:YES];
         
-        // Display/hide the toolbar on iPhone in portrait
-        if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
-            (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
-             ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
-                [self.navigationController setToolbarHidden:self.navigationController.isNavigationBarHidden animated:YES];
-            }
-
+        // Display/hide the toolbar on iPhone if required
+        if (self.isToolbarRequired)
+            [self.navigationController setToolbarHidden:!isNavigationBarHidden animated:YES];
+        
         // Set background color according to navigation bar visibility
         NSArray *viewControllers = self.childViewControllers;
         for (UIViewController *viewController in viewControllers) {
@@ -633,6 +636,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 }
 
 
+#pragma mark - Move/Copy image to Category
+-(void)addImageToCategory
+{
+    
+}
+
+
 #pragma mark - HUD methods
 
 -(void)showHUDwithTitle:(NSString *)title
@@ -658,6 +668,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
         hud.contentColor = [UIColor piwigoHudContentColor];
         hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+
+        // Will look best, if we set a minimum size.
+        hud.minSize = CGSizeMake(200.f, 100.f);
     }
     
     // Set title
