@@ -41,6 +41,8 @@
 	return self;
 }
 
+#pragma mark - View Lifecycle
+
 -(void)paletteChanged
 {
     // Background color of the view
@@ -83,13 +85,14 @@
 	}
 }
 
-#pragma mark UITableView Methods
+
+#pragma mark - UITableView - Headers
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     // Header height?
     NSString *header = NSLocalizedString(@"imageSortMessage", @"Please select how you wish to sort images");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -104,7 +107,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontSmall];
+    headerLabel.font = [UIFont piwigoFontNormal];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.text = NSLocalizedString(@"imageSortMessage", @"Please select how you wish to sort images");
     headerLabel.numberOfLines = 0;
@@ -130,6 +133,9 @@
     
     return header;
 }
+
+
+#pragma mark - UITableView - Rows
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -164,6 +170,9 @@
 	
 	return cell;
 }
+
+
+#pragma mark - UITableViewDelegate Methods
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

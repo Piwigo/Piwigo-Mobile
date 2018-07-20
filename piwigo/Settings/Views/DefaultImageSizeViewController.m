@@ -75,32 +75,55 @@
 }
 
 
-#pragma mark - UITableView Methods
+#pragma mark - UITableView - Headers
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    // Header height?
-    NSString *header = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"defaultPreviewFile>414px", @"Preview Image File")];
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
-    CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                             options:NSStringDrawingUsesLineFragmentOrigin
-                                          attributes:attributes
-                                             context:context];
-    return fmax(44.0, ceil(headerRect.size.height));
+    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:titleAttributes
+                                                 context:context];
+    
+    // Text
+    NSString *textString = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
+    NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:textAttributes
+                                               context:context];
+    return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"defaultPreviewFile>414px", @"Preview Image File")];
+    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                  range:NSMakeRange(0, [titleString length])];
+    [headerAttributedString appendAttributedString:titleAttributedString];
+    
+    // Text
+    NSString *textString = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
+    NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+    [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                 range:NSMakeRange(0, [textString length])];
+    [headerAttributedString appendAttributedString:textAttributedString];
+    
     // Header label
-	UILabel *headerLabel = [UILabel new];
-	headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	headerLabel.font = [UIFont piwigoFontSmall];
-	headerLabel.textColor = [UIColor piwigoHeaderColor];
-	headerLabel.text = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    headerLabel.attributedText = headerAttributedString;
 
     // Header view
     UIView *header = [[UIView alloc] init];
@@ -122,6 +145,8 @@
 	return header;
 }
 
+
+#pragma mark - UITableView - Rows
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -236,6 +261,9 @@
 	return cell;
 }
 
+
+#pragma mark - UITableView - Footers
+
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     // Footer height?
@@ -256,7 +284,7 @@
     // Footer label
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    footerLabel.font = [UIFont piwigoFontSmall];
+    footerLabel.font = [UIFont piwigoFontNormal];
     footerLabel.textColor = [UIColor piwigoHeaderColor];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
@@ -283,6 +311,9 @@
     
     return footer;
 }
+
+
+#pragma mark - UITableViewDelegate Methods
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

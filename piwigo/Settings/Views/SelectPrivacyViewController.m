@@ -104,13 +104,14 @@
 	_privacy = privacy;
 }
 
-#pragma mark UITableView Methods
+
+#pragma mark - UITableView - Headers
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     // Header height?
     NSString *header = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -125,7 +126,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontBold];
+    headerLabel.font = [UIFont piwigoFontNormal];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.text = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
     headerLabel.numberOfLines = 0;
@@ -151,6 +152,9 @@
     
     return header;
 }
+
+
+#pragma mark - UITableView - Rows
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -186,6 +190,9 @@
 	
 	return cell;
 }
+
+
+#pragma mark - UITableViewDelegate Methods
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
