@@ -1486,7 +1486,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     if (retry) {
         // Retry to upload the image
         UIAlertAction* retryAction = [UIAlertAction
-                                      actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                      actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
                                       style:UIAlertActionStyleDefault
                                       handler:^(UIAlertAction * action) {
                                           // Upload image

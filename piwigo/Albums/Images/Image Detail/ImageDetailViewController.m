@@ -419,7 +419,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                                 handler:^(UIAlertAction * action) {}];
                             
                             UIAlertAction* retryAction = [UIAlertAction
-                                actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
                                 style:UIAlertActionStyleDestructive
                                 handler:^(UIAlertAction * action) {
                                     [self deleteImage];
@@ -497,7 +497,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                                          handler:^(UIAlertAction * action) {}];
                                      
                                      UIAlertAction* retryAction = [UIAlertAction
-                                       actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                       actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
                                        style:UIAlertActionStyleDefault
                                        handler:^(UIAlertAction * action) {
                                            [self downloadImage];
@@ -548,7 +548,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                                           handler:^(UIAlertAction * action) {}];
                               
                                   UIAlertAction* retryAction = [UIAlertAction
-                                        actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
+                                        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
                                         style:UIAlertActionStyleDefault
                                         handler:^(UIAlertAction * action) {
                                             [self downloadImage];

@@ -16,7 +16,6 @@
 #import "CategoriesData.h"
 #import "Model.h"
 #import "ImageDetailViewController.h"
-#import "ImageDownloadView.h"
 #import "SortHeaderCollectionReusableView.h"
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "CategoryImageSort.h"
@@ -60,7 +59,6 @@ CGFloat const kRadius = 25.0;
 @property (nonatomic, assign) NSInteger totalImagesToDownload;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
 @property (nonatomic, strong) NSMutableArray *touchedImageIds;
-@property (nonatomic, strong) ImageDownloadView *downloadView;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) LoadingView *loadingView;
@@ -157,9 +155,6 @@ CGFloat const kRadius = 25.0;
                     forControlEvents:UIControlEventTouchUpInside];
         self.homeAlbumButton.hidden = YES;
         [self.view addSubview:self.homeAlbumButton];
-
-        // No download at start
-		self.downloadView.hidden = YES;
 
         // Register category data updates
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoNotificationGetCategoryData object:nil];
@@ -491,7 +486,7 @@ CGFloat const kRadius = 25.0;
     }
     if (!([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) && !noHUD) {
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…") inMode:MBProgressHUDModeIndeterminate];
     }
     
     // Disable cache if requested
@@ -526,7 +521,7 @@ CGFloat const kRadius = 25.0;
 //    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", [Model sharedInstance].loadAllCategoryInfo ? (long)0 : (long)self.categoryId);
 
     // Show loading HD
-    [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+    [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…") inMode:MBProgressHUDModeIndeterminate];
 
     [AlbumService getAlbumListForCategory:[Model sharedInstance].loadAllCategoryInfo ? 0 : self.categoryId
                                usingCache:NO
@@ -754,8 +749,7 @@ CGFloat const kRadius = 25.0;
         }
     }
 
-    // Hide download view, clear array of selected images and allow iOS device to sleep
-    self.downloadView.hidden = YES;
+    // Clear array of selected images and allow iOS device to sleep
     self.touchedImageIds = [NSMutableArray new];
     self.selectedImageIds = [NSMutableArray new];
 	[UIApplication sharedApplication].idleTimerDisabled = NO;
@@ -864,22 +858,22 @@ CGFloat const kRadius = 25.0;
 
     // Do we really want to delete these images?
     UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:titleString
-                                message:messageString
-                                preferredStyle:UIAlertControllerStyleActionSheet];
+        alertControllerWithTitle:NSLocalizedString(@"deleteImage_delete", @"Delete")
+        message:messageString
+        preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                                   style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {}];
+       actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+       style:UIAlertActionStyleCancel
+       handler:^(UIAlertAction * action) {}];
     
     UIAlertAction* deleteAction = [UIAlertAction
-                                   actionWithTitle:titleString
-                                   style:UIAlertActionStyleDestructive
-                                   handler:^(UIAlertAction * action) {
-                                       self.startDeleteTotalImages = self.selectedImageIds.count;
-                                       [self deleteSelected];
-                                   }];
+       actionWithTitle:titleString
+       style:UIAlertActionStyleDestructive
+       handler:^(UIAlertAction * action) {
+           self.startDeleteTotalImages = self.selectedImageIds.count;
+           [self deleteSelected];
+       }];
     
     // Add actions
     [alert addAction:cancelAction];
@@ -919,21 +913,21 @@ CGFloat const kRadius = 25.0;
                            onFailure:^(NSURLSessionTask *task, NSError *error) {
                               // Error — Try again ?
                               UIAlertController* alert = [UIAlertController
-                                          alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-                                          message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
-                                          preferredStyle:UIAlertControllerStyleAlert];
+                                  alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                                  message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                                  preferredStyle:UIAlertControllerStyleAlert];
                               
                               UIAlertAction* dismissAction = [UIAlertAction
-                                          actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                          style:UIAlertActionStyleCancel
-                                          handler:^(UIAlertAction * action) {}];
-                              
+                                  actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                  style:UIAlertActionStyleCancel
+                                  handler:^(UIAlertAction * action) {}];
+                          
                               UIAlertAction* retryAction = [UIAlertAction
-                                          actionWithTitle:NSLocalizedString(@"alertTryAgainButton", @"Try Again")
-                                          style:UIAlertActionStyleDestructive
-                                          handler:^(UIAlertAction * action) {
-                                              [self deleteSelected];
-                                          }];
+                                  actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                                  style:UIAlertActionStyleDestructive
+                                  handler:^(UIAlertAction * action) {
+                                      [self deleteSelected];
+                                  }];
                               
                                // Add actions
                                [alert addAction:dismissAction];
@@ -990,14 +984,14 @@ CGFloat const kRadius = 25.0;
             ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusRestricted)) {
         // Inform user that he/she denied or restricted access to photos
         UIAlertController* alert = [UIAlertController
-                                    alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
-                                    message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                                    preferredStyle:UIAlertControllerStyleActionSheet];
+            alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
+            message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+            preferredStyle:UIAlertControllerStyleActionSheet];
         
         UIAlertAction* dismissAction = [UIAlertAction
-                                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                        style:UIAlertActionStyleCancel
-                                        handler:^(UIAlertAction * action) {}];
+            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+            style:UIAlertActionStyleCancel
+            handler:^(UIAlertAction * action) {}];
         
         // Add actions
         [alert addAction:dismissAction];
@@ -1019,22 +1013,22 @@ CGFloat const kRadius = 25.0;
     }
     
     UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:titleString
-                                message:messageString
-                                preferredStyle:UIAlertControllerStyleActionSheet];
+        alertControllerWithTitle:NSLocalizedString(@"imageOptions_download", @"Download")
+        message:messageString
+        preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                                   style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {}];
+       actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+       style:UIAlertActionStyleCancel
+       handler:^(UIAlertAction * action) {}];
     
     UIAlertAction* downloadAction = [UIAlertAction
-                                   actionWithTitle:titleString
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action) {
-                                       self.totalImagesToDownload = self.selectedImageIds.count;
-                                       [self downloadImage];
-                                   }];
+       actionWithTitle:titleString
+       style:UIAlertActionStyleDefault
+       handler:^(UIAlertAction * action) {
+           self.totalImagesToDownload = self.selectedImageIds.count;
+           [self downloadImage];
+       }];
     
     // Add actions
     [alert addAction:cancelAction];
@@ -1049,44 +1043,42 @@ CGFloat const kRadius = 25.0;
 {
 	if(self.selectedImageIds.count <= 0)
 	{
-		[self cancelSelect];
+        // End of downloads: hide HUD and deselect images
+        [self hideHUDwithSuccess:YES completion:^{
+            [self cancelSelect];
+        }];
 		return;
 	}
 	
+    // Show loading HUD
+    [self showHUDwithTitle:NSLocalizedString(@"downloadingImages", @"Downloading Images") inMode:MBProgressHUDModeAnnularDeterminate];
+    
+    // Keep device awake
 	[UIApplication sharedApplication].idleTimerDisabled = YES;
-	self.downloadView.multiImage = YES;
-	self.downloadView.totalImageDownloadCount = self.totalImagesToDownload;
-	self.downloadView.imageDownloadCount = self.totalImagesToDownload - self.selectedImageIds.count + 1;
 	
-	self.downloadView.hidden = NO;
-    [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
-	
+    // Get image data
 	PiwigoImageData *downloadingImage = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.selectedImageIds.lastObject];
 	
-    // Dummy image for progress view
-	UIImageView *dummyView = [UIImageView new];
-	__weak typeof(self) weakSelf = self;
-    NSURL *URL = [NSURL URLWithString:downloadingImage.ThumbPath];
-    [dummyView setImageWithURLRequest:[NSURLRequest requestWithURL:URL]
-					 placeholderImage:[UIImage imageNamed:@"placeholderImage"]
-							  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-								  weakSelf.downloadView.downloadImage = image;
-							  } failure:nil];
-	
-    // Launch the download
+    // Launch download
     if(!downloadingImage.isVideo)
 	{
         [ImageService downloadImage:downloadingImage
                          onProgress:^(NSProgress *progress) {
                                dispatch_async(dispatch_get_main_queue(),
-                                    ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;});
+                                    ^(void){
+                                        [MBProgressHUD HUDForView:self.hudViewController.view].progress = progress.fractionCompleted;
+                                    });
                          }
                   completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
                       // Any error ?
                       if (error.code) {
-#if defined(DEBUG)
-                           NSLog(@"downloadImage fail");
-#endif
+                          // Error encountered
+                          dispatch_async(dispatch_get_main_queue(),
+                             ^(void){
+                                 [self hideHUDwithSuccess:NO completion:^{
+                                     [self downloadFailedWithError:error];
+                                 }];
+                             });
                       } else {
                           // Try to move photo in Photos.app
                           [self saveImageToCameraRoll:filePath];
@@ -1099,15 +1091,20 @@ CGFloat const kRadius = 25.0;
         [ImageService downloadVideo:downloadingImage
                          onProgress:^(NSProgress *progress) {
                              dispatch_async(dispatch_get_main_queue(),
-                                            ^(void){self.downloadView.percentDownloaded = progress.fractionCompleted;}
-                                            );
+                                            ^(void){
+                                                [MBProgressHUD HUDForView:self.hudViewController.view].progress = progress.fractionCompleted;
+                                            });
                          }
                   completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
                       // Any error ?
                       if (error.code) {
-#if defined(DEBUG)
-                          NSLog(@"AlbumImagesViewController: downloadImage fail");
-#endif
+                          // Error encountered
+                          dispatch_async(dispatch_get_main_queue(),
+                             ^(void){
+                                 [self hideHUDwithSuccess:NO completion:^{
+                                     [self downloadFailedWithError:error];
+                                 }];
+                             });
                       } else {
                           // Try to move video in Photos.app
 #if defined(DEBUG)
@@ -1116,24 +1113,67 @@ CGFloat const kRadius = 25.0;
                           if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath.path)) {
                               UISaveVideoAtPathToSavedPhotosAlbum(filePath.path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
                           } else {
-                              UIAlertController* alert = [UIAlertController
-                                      alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                                      message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
-                                      preferredStyle:UIAlertControllerStyleAlert];
-                              
-                              UIAlertAction* dismissAction = [UIAlertAction
-                                      actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                      style:UIAlertActionStyleDefault
-                                      handler:^(UIAlertAction * action) {}];
-                              
-                              [alert addAction:dismissAction];
-                              [self presentViewController:alert animated:YES completion:nil];
+                              dispatch_async(dispatch_get_main_queue(),
+                                 ^(void){
+                                     // Error encountered
+                                     [self hideHUDwithSuccess:NO completion:^{
+                                         UIAlertController* alert = [UIAlertController
+                                         alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+                                             message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
+                                             preferredStyle:UIAlertControllerStyleAlert];
+                                         
+                                         UIAlertAction* dismissAction = [UIAlertAction
+                                             actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                                 style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction * action) {}];
+                                         
+                                         [alert addAction:dismissAction];
+                                         [self presentViewController:alert animated:YES completion:nil];
+                                     }];
+                                 });
                           }
                       }
                   }
          ];
-        self.downloadView.hidden = NO;
 	}
+}
+
+-(void)downloadFailedWithError:(NSError *)error
+{
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+        message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+            [self cancelSelect];
+        }];
+    
+    UIAlertAction* retryAction = [UIAlertAction
+       actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+       style:UIAlertActionStyleDefault
+       handler:^(UIAlertAction * action) {
+           // Redownload image
+           [self.selectedImageIds removeLastObject];
+           [self downloadImage];
+       }];
+
+    UIAlertAction* continueAction = [UIAlertAction
+       actionWithTitle:NSLocalizedString(@"alertNextButton", @"Next Image")
+       style:UIAlertActionStyleDefault
+       handler:^(UIAlertAction * action) {
+           // Unqueue image and download next image
+           [self.selectedImageIds removeLastObject];
+           [self downloadImage];
+       }];
+
+    [alert addAction:defaultAction];
+    [alert addAction:retryAction];
+    [alert addAction:continueAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)saveImageToCameraRoll:(NSURL *)filePath
@@ -1143,20 +1183,27 @@ CGFloat const kRadius = 25.0;
     } completionHandler:^(BOOL success, NSError *error) {
         if (!success) {
             // Failed — Inform user
-            UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
-                message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-                preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* dismissAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleDefault
-                handler:^(UIAlertAction * action) {
-                    [self cancelSelect];
-                }];
-            
-            [alert addAction:dismissAction];
-            [self presentViewController:alert animated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(),
+               ^(void){
+                   // Error encountered
+                   [self hideHUDwithSuccess:NO completion:^{
+                       UIAlertController* alert = [UIAlertController
+                           alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
+                           message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+                           preferredStyle:UIAlertControllerStyleAlert];
+                       
+                       UIAlertAction* dismissAction = [UIAlertAction
+                           actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                           style:UIAlertActionStyleDefault
+                           handler:^(UIAlertAction * action) {
+                               // Abort downloads, deselect images
+                               [self cancelSelect];
+                           }];
+                       
+                       [alert addAction:dismissAction];
+                       [self presentViewController:alert animated:YES completion:nil];
+                   }];
+               });
         }
     }];
     
@@ -1169,37 +1216,32 @@ CGFloat const kRadius = 25.0;
 {
 	if(error)
 	{
-        UIAlertController* alert = [UIAlertController
-                    alertControllerWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
-                    message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-                    preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* dismissAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                    style:UIAlertActionStyleDefault
-                    handler:^(UIAlertAction * action) {
-                        [self cancelSelect];
-                    }];
-        
-        [alert addAction:dismissAction];
-        [self presentViewController:alert animated:YES completion:nil];
+        dispatch_async(dispatch_get_main_queue(),
+             ^(void){
+                 // Error encountered
+                 [self hideHUDwithSuccess:NO completion:^{
+                     UIAlertController* alert = [UIAlertController
+                         alertControllerWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
+                         message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
+                         preferredStyle:UIAlertControllerStyleAlert];
+                     
+                     UIAlertAction* dismissAction = [UIAlertAction
+                         actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                         style:UIAlertActionStyleDefault
+                         handler:^(UIAlertAction * action) {
+                             [self cancelSelect];
+                         }];
+                     
+                     [alert addAction:dismissAction];
+                     [self presentViewController:alert animated:YES completion:nil];
+                 }];
+             });
 	}
 	else
 	{
 		[self.selectedImageIds removeLastObject];
 		[self downloadImage];
 	}
-}
-
--(ImageDownloadView*)downloadView
-{
-	if(_downloadView) return _downloadView;
-	
-	_downloadView = [ImageDownloadView new];
-	_downloadView.translatesAutoresizingMaskIntoConstraints = NO;
-	[self.view addSubview:_downloadView];
-	[self.view addConstraints:[NSLayoutConstraint constraintFillSize:_downloadView]];
-	return _downloadView;
 }
 
 
@@ -1494,7 +1536,7 @@ CGFloat const kRadius = 25.0;
 
 #pragma mark - HUD methods
 
--(void)showHUDwithTitle:(NSString *)title
+-(void)showHUDwithTitle:(NSString *)title inMode:(MBProgressHUDMode)mode
 {
     // Determine the present view controller if needed (not necessarily self.view)
     if (!self.hudViewController) {
@@ -1526,6 +1568,21 @@ CGFloat const kRadius = 25.0;
     // Set title
     hud.label.text = title;
     hud.label.font = [UIFont piwigoFontNormal];
+    
+    // Image download or other action?
+    switch (mode) {
+        case MBProgressHUDModeAnnularDeterminate:
+            // Downloading images
+            hud.mode = MBProgressHUDModeAnnularDeterminate;
+            hud.detailsLabel.text = [NSString stringWithFormat:@"%ld / %ld", self.totalImagesToDownload - self.selectedImageIds.count + 1, self.totalImagesToDownload];
+            break;
+            
+        default:
+            // Other actions
+            hud.mode = MBProgressHUDModeIndeterminate;
+            hud.detailsLabel.text = @"";
+            break;
+    }
 }
 
 -(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
