@@ -35,7 +35,7 @@
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
-}
+    }
 	return self;
 }
 
