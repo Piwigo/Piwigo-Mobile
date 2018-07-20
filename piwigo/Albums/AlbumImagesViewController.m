@@ -1028,7 +1028,7 @@ CGFloat const kRadius = 25.0;
                                    style:UIAlertActionStyleCancel
                                    handler:^(UIAlertAction * action) {}];
     
-    UIAlertAction* deleteAction = [UIAlertAction
+    UIAlertAction* downloadAction = [UIAlertAction
                                    actionWithTitle:titleString
                                    style:UIAlertActionStyleDefault
                                    handler:^(UIAlertAction * action) {
@@ -1038,7 +1038,7 @@ CGFloat const kRadius = 25.0;
     
     // Add actions
     [alert addAction:cancelAction];
-    [alert addAction:deleteAction];
+    [alert addAction:downloadAction];
 
     // Present list of actions
     alert.popoverPresentationController.barButtonItem = self.downloadBarButton;
@@ -1144,16 +1144,16 @@ CGFloat const kRadius = 25.0;
         if (!success) {
             // Failed — Inform user
             UIAlertController* alert = [UIAlertController
-                                        alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
-                                        message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
-                                        preferredStyle:UIAlertControllerStyleAlert];
+                alertControllerWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
+                message:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), [error localizedDescription]]
+                preferredStyle:UIAlertControllerStyleAlert];
             
             UIAlertAction* dismissAction = [UIAlertAction
-                                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                            style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * action) {
-                                                [self cancelSelect];
-                                            }];
+                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                style:UIAlertActionStyleDefault
+                handler:^(UIAlertAction * action) {
+                    [self cancelSelect];
+                }];
             
             [alert addAction:dismissAction];
             [self presentViewController:alert animated:YES completion:nil];
