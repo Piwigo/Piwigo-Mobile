@@ -110,7 +110,7 @@
 {
     // Header height?
     NSString *header = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect headerRect = [header boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -125,7 +125,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.font = [UIFont piwigoFontSmall];
+    headerLabel.font = [UIFont piwigoFontBold];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
     headerLabel.text = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
     headerLabel.numberOfLines = 0;
