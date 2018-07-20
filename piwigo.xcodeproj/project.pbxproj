@@ -30,8 +30,6 @@
 		ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */; };
 		ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */; };
 		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
-		D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */; };
-		D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */; };
 		D8083A631A7FF30800A95605 /* TextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A621A7FF30800A95605 /* TextFieldTableViewCell.m */; };
 		D8083A671A7FF8F600A95605 /* ButtonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */; };
 		D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A9E1A81B03100A95605 /* ImageUploadManager.m */; };
@@ -198,10 +196,6 @@
 		B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8083A531A7D66CD00A95605 /* ImageService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageService.h; sourceTree = "<group>"; };
 		D8083A541A7D66CD00A95605 /* ImageService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageService.m; sourceTree = "<group>"; };
-		D8083A591A7DBD5000A95605 /* ImageDownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloadView.h; sourceTree = "<group>"; };
-		D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadView.m; sourceTree = "<group>"; };
-		D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloadingProgressView.h; sourceTree = "<group>"; };
-		D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadingProgressView.m; sourceTree = "<group>"; };
 		D8083A611A7FF30800A95605 /* TextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFieldTableViewCell.h; sourceTree = "<group>"; };
 		D8083A621A7FF30800A95605 /* TextFieldTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFieldTableViewCell.m; sourceTree = "<group>"; };
 		D8083A651A7FF8F600A95605 /* ButtonTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonTableViewCell.h; sourceTree = "<group>"; };
@@ -475,7 +469,6 @@
 				D8083A531A7D66CD00A95605 /* ImageService.h */,
 				D8083A541A7D66CD00A95605 /* ImageService.m */,
 				D818EA031A74D32100733991 /* Image Detail */,
-				ADE535921F65C2B000372CBD /* Image Download */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -487,17 +480,6 @@
 				D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */,
 			);
 			path = "Album Thumbnail";
-			sourceTree = "<group>";
-		};
-		ADE535921F65C2B000372CBD /* Image Download */ = {
-			isa = PBXGroup;
-			children = (
-				D8083A591A7DBD5000A95605 /* ImageDownloadView.h */,
-				D8083A5A1A7DBD5000A95605 /* ImageDownloadView.m */,
-				D8083A5C1A7E049400A95605 /* ImageDownloadingProgressView.h */,
-				D8083A5D1A7E049400A95605 /* ImageDownloadingProgressView.m */,
-			);
-			path = "Image Download";
 			sourceTree = "<group>";
 		};
 		ADF65A1D20CD2C5C001C567F /* Image Sort */ = {
@@ -1197,9 +1179,7 @@
 				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
 				D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */,
 				AD7B4C1F20E0D6D9003E403A /* CategoryHeaderReusableView.m in Sources */,
-				D8083A5E1A7E049500A95605 /* ImageDownloadingProgressView.m in Sources */,
 				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,
-				D8083A5B1A7DBD5000A95605 /* ImageDownloadView.m in Sources */,
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
 				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
 				D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */,
