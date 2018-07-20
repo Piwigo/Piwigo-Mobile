@@ -34,7 +34,7 @@
 	self = [super init];
 	if(self)
 	{
-        self.title = NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image");
+        self.title = NSLocalizedString(@"categoryImageSet_title", @"Album Thumbnail");
 		self.imageId = imageId;
 		self.categoryId = categoryId;
         self.categoryData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
@@ -282,7 +282,7 @@
 	}
 	
     UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Set Image Thumbnail")
+                alertControllerWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Album Thumbnail")
                 message:[NSString stringWithFormat:NSLocalizedString(@"categoryImageSet_message", @"Are you sure you want to set this image for the album \"%@\"?"), categoryData.name]
                 preferredStyle:UIAlertControllerStyleActionSheet];
     
@@ -292,7 +292,7 @@
                        handler:^(UIAlertAction * action) {}];
     
     UIAlertAction* setImageAction = [UIAlertAction
-             actionWithTitle:NSLocalizedString(@"categoryImageSet_title", @"Set Image Thumbnail")
+             actionWithTitle:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")
                        style:UIAlertActionStyleDefault
                      handler:^(UIAlertAction * action) {
                          [self setRepresentativeForCategoryId:categoryData.albumId];
