@@ -1574,7 +1574,7 @@ CGFloat const kRadius = 25.0;
         case MBProgressHUDModeAnnularDeterminate:
             // Downloading images
             hud.mode = MBProgressHUDModeAnnularDeterminate;
-            hud.detailsLabel.text = [NSString stringWithFormat:@"%lu / %ld", self.totalImagesToDownload - self.selectedImageIds.count + 1, (long)self.totalImagesToDownload];
+            hud.detailsLabel.text = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalImagesToDownload - self.selectedImageIds.count + 1), (long)self.totalImagesToDownload];
             break;
             
         default:
