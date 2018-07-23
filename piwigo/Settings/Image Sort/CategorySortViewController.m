@@ -86,7 +86,7 @@
 }
 
 
-#pragma mark - UITableView - Headers
+#pragma mark - UITableView - Header
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
