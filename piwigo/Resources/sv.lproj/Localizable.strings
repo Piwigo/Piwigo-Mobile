@@ -201,7 +201,7 @@
 "categorySelection_select" = "Välj Album";
 "categorySelection_current" = "Välj det aktuella albumet för denna bild";
 "categorySelection_other" = "eller välj ett annat album för denna bild";
-"categoryImageSet_title" = "Sätt miniatyrbild";
+"categoryImageSet_title" = "Album miniatyr";
 "categoryImageSet_message" = "Är du säker du vill använda denna bild miniatyrbild för albumet ”%@”?";
 "categoryImageSetHUD_updating" = "Uppdaterar albumets miniatyrbilder…";
 
@@ -243,6 +243,7 @@
 "editImageDetails_tags" = "Etiketter:";
 "editImageDetails_privacyLevel" = "Vem kan se bilden?";
 "editImageDetails_descriptionPlaceholder" = "Beskrivning";
+"editImageDetails_comments" = "Kommentarer";
 "editImageDetailsHUD_updating" = "Uppdaterar bildinfo…";
 
 // Image details — Errors
@@ -478,3 +479,5 @@
 "settings_translateWithCrowdin" = "Översätt Piwigo Mobile";
 "settings_pwgForumURL" = "http://Piwigo.org/forum";
 "settings_acknowledgements" = "Tack till och erkännanden";
+"settings_users" = "Användare";
+"settings_groups" = "Groups";

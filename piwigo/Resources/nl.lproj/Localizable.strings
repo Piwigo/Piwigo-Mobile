@@ -201,7 +201,7 @@
 "categorySelection_select" = "Selecteer album";
 "categorySelection_current" = "Selecteer voor deze foto het huidig album";
 "categorySelection_other" = "of selecteer een ander album voor deze foto";
-"categoryImageSet_title" = "Stel foto-miniatuur in";
+"categoryImageSet_title" = "Album Thumbnail";
 "categoryImageSet_message" = "Weet je zeker dat je deze foto wilt gebruiken voor album \"%@\"?";
 "categoryImageSetHUD_updating" = "Bijwerken album-miniatuur…";
 
@@ -243,6 +243,7 @@
 "editImageDetails_tags" = "Labels:";
 "editImageDetails_privacyLevel" = "Wie mag deze foto zien?";
 "editImageDetails_descriptionPlaceholder" = "Omschrijving";
+"editImageDetails_comments" = "Opmerkingen";
 "editImageDetailsHUD_updating" = "Bijwerken foto-info…";
 
 // Image details — Errors
@@ -478,3 +479,5 @@
 "settings_translateWithCrowdin" = "Vertaling Piwigo Mobiel";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Dank";
+"settings_users" = "Gebruikers";
+"settings_groups" = "Groepen";

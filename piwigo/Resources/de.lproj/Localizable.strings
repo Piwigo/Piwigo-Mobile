@@ -201,7 +201,7 @@
 "categorySelection_select" = "Wähle Album";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Bild";
 "categorySelection_other" = "oder wähle ein anderes Album für dieses Bild";
-"categoryImageSet_title" = "Miniaturbild setzen";
+"categoryImageSet_title" = "Album-Miniaturansicht";
 "categoryImageSet_message" = "Möchtest Du wirklich dieses Miniaturbild für das Album \"%@\" festlegen?";
 "categoryImageSetHUD_updating" = "Album Miniaturbild wird aktualisiert…";
 
@@ -243,6 +243,7 @@
 "editImageDetails_tags" = "Schlagwörter:";
 "editImageDetails_privacyLevel" = "Wer darf dieses Foto sehen?";
 "editImageDetails_descriptionPlaceholder" = "Beschreibung";
+"editImageDetails_comments" = "Kommentare";
 "editImageDetailsHUD_updating" = "Bildinformationen werden aktualisiert…";
 
 // Image details — Errors
@@ -478,3 +479,5 @@
 "settings_translateWithCrowdin" = "Piwigo Mobile übersetzen";
 "settings_pwgForumURL" = "http://piwigo.org/forum/";
 "settings_acknowledgements" = "Danksagungen";
+"settings_users" = "Benutzer";
+"settings_groups" = "Gruppen";

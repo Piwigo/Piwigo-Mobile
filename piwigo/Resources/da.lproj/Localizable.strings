@@ -201,7 +201,7 @@
 "categorySelection_select" = "Vælg album";
 "categorySelection_current" = "Vælg aktuelle album for dette billede";
 "categorySelection_other" = "eller vælg et andet album";
-"categoryImageSet_title" = "Vælg Miniaturebilledet";
+"categoryImageSet_title" = "Album miniature";
 "categoryImageSet_message" = "Er du sikker på, at du vil bruge dette billede som miniaturebillede for albummet \"%@\"?";
 "categoryImageSetHUD_updating" = "Opdaterer Album miniature…";
 
@@ -243,6 +243,7 @@
 "editImageDetails_tags" = "Etiketter:";
 "editImageDetails_privacyLevel" = "Hvem kan se dette billede?";
 "editImageDetails_descriptionPlaceholder" = "Beskrivelse";
+"editImageDetails_comments" = "Kommentarer";
 "editImageDetailsHUD_updating" = "Opdaterer billedinfo...";
 
 // Image details — Errors
@@ -478,3 +479,5 @@
 "settings_translateWithCrowdin" = "Oversæt Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum/";
 "settings_acknowledgements" = "Tak Til";
+"settings_users" = "Brugere";
+"settings_groups" = "Grupper";

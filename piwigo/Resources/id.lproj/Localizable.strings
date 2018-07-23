@@ -115,32 +115,32 @@
 
 // Album selection
 "categorySelection_title" = "Album";
-"categorySelection_titleSub" = "Sub-Albums";
-"categorySelection_root" = "Root Album";
-"categorySelection_action" = "Select an action for this album";
-"categorySelectionHUD_label" = "Retrieving Albums Data…";
+"categorySelection_titleSub" = "Sub-album";
+"categorySelection_root" = "Akar Album";
+"categorySelection_action" = "Pilih tindakan untuk album ini";
+"categorySelectionHUD_label" = "Mengambil Data album…";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "There is no sub-album to upload images to";
+"categoryUpload_noSubAlbum" = "Ada ada sub album untuk meng-upload gambar ke";
 "categoryUpload_chooseAlbum" = "Pilih album untuk mengunggah gambar";
-"categoryUpload_LocalAlbums" = "Local Albums";
+"categoryUpload_LocalAlbums" = "Album lokal";
 "categoryUpload_chooseLocalAlbum" = "Pilih album untuk mendapatkan gambar";
-"categoryUpload_iCloudAlbums" = "iCloud Albums";
+"categoryUpload_iCloudAlbums" = "iCloud album";
 "categoryUpload_chooseiCloudAlbum" = "Pilih album iCloud untuk mendapatkan gambar dari";
 "categoyUpload_loadSubCategories" = "muat";
-"categoryUpload_images" = "Upload Images";
-"categoryUpload_subAlbum" = "Create Sub-Album";
+"categoryUpload_images" = "Upload Gambar";
+"categoryUpload_subAlbum" = "Membuat Album sub";
 "categoryUpload_defaultAlbum" = "Set as Default Album";
 
 // Default album
 "setDefaultCategory_title" = "Default Album";
-"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+"setDefaultCategory_message" = "Apakah Anda yakin Anda ingin mengatur album \"%@\" sebagai default album?";
 
 // Album create
 "createNewAlbum_title" = "Album Baru";
 "createNewAlbum_message" = "Masukkan nama untuk album ini:";
 "createNewAlbum_placeholder" = "Nama Album";
-"createNewAlbumComment_placeholder" = "Comment";
+"createNewAlbumComment_placeholder" = "Komentar";
 "createNewAlbumHUD_label" = "Membuat Album…";
 
 // Album create — Errors
@@ -163,19 +163,19 @@
 "renameCategoyError_message" = "Gagal untuk mengganti nama album Anda";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Refreshing Representative…";
+"refreshCategoryHUD_label" = "Perwakilan menyegarkan…";
 
 // Album refresh representative — Errors
-"refreshCategoyError_title" = "Refresh Fail";
-"refreshCategoyError_message" = "Failed to refresh your album representative";
+"refreshCategoyError_title" = "Gagal memuat ulang";
+"refreshCategoyError_message" = "Gagal untuk me-refresh perwakilan album Anda";
 
 // Album delete
 "deleteCategory_title" = "HAPUS ALBUM";
 "deleteCategory_message" = "ANDA YAKIN INGIN MENGHAPUS ALBUM \"%@\" DAN SEMUA %@ GAMBAR?";
-"deleteCategory_empty" = "Delete Empty Album";
-"deleteCategory_noImages" = "Keep Images";
-"deleteCategory_orphanedImages" = "Delete Orphans";
-"deleteCategory_allImages" = "Delete %@ Images";
+"deleteCategory_empty" = "Hapus Album kosong";
+"deleteCategory_noImages" = "Menyimpan gambar";
+"deleteCategory_orphanedImages" = "Hapus yatim";
+"deleteCategory_allImages" = "Hapus %@ gambarnya";
 "deleteCategoryConfirm_title" = "Anda yakin?";
 "deleteCategoryConfirm_message" = "Masukkan jumlah gambar untuk menghapus album ini. Jumlah gambar: %@";
 "deleteCategoryConfirm_deleteButton" = "HAPUS";
@@ -198,10 +198,10 @@
 "moveCategoryError_message" = "Gagal untuk memindahkan album Anda";
 
 // Album set image thumbnail
-"categorySelection_select" = "Select Album";
-"categorySelection_current" = "Select the current album for this image";
-"categorySelection_other" = "or select another album for this image";
-"categoryImageSet_title" = "Atur Gambar untuk Gambar Mini";
+"categorySelection_select" = "Pilih album";
+"categorySelection_current" = "Pilih album saat ini untuk gambar ini";
+"categorySelection_other" = "atau pilih album lain untuk gambar ini";
+"categoryImageSet_title" = "Album Thumbnail";
 "categoryImageSet_message" = "Anda yakin ingin membuat gambar ini sebagai gambar untuk album \"%@\"?";
 "categoryImageSetHUD_updating" = "Memperbarui Gambar Mini Album…";
 
@@ -243,6 +243,7 @@
 "editImageDetails_tags" = "Tag:";
 "editImageDetails_privacyLevel" = "Siapa yang bisa melihat foto ini?";
 "editImageDetails_descriptionPlaceholder" = "Deskripsi";
+"editImageDetails_comments" = "Komentar";
 "editImageDetailsHUD_updating" = "Memperbarui Info Gambar…";
 
 // Image details — Errors
@@ -267,9 +268,9 @@
 "tagsHeader_all" = "Semua";
 
 // Image select
-"selectImages" = "Select Images";
-"selectImageSelected" = "1 Image Selected";
-"selectImagesSelected" = "%@ Images Selected";
+"selectImages" = "Pilih Gambar";
+"selectImageSelected" = "1 gambar yang dipilih";
+"selectImagesSelected" = "%@ gambar yang dipilih";
 "selectAll" = "Semua";
 
 // Image delete
@@ -352,7 +353,7 @@
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Photos library";
+"localAlbums" = "Galeri foto";
 
 "localImageSort_newest" = "Terbaru";
 "localImageSort_oldest" = "Terlama";
@@ -372,7 +373,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Peladen Piwigo";
-"settingsHeader_notSecure" = "Website Not Secure!";
+"settingsHeader_notSecure" = "Situs tidak aman!";
 "settings_server" = "Alamat";
 "settings_username" = "Nama Pengguna";
 "settings_notLoggedIn" = " - Tidak Masuk - ";
@@ -478,3 +479,5 @@
 "settings_translateWithCrowdin" = "Terjemahan Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Ucapan Terima Kasih";
+"settings_users" = "Pengguna";
+"settings_groups" = "Grup";

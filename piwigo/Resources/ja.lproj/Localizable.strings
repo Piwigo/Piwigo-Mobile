@@ -201,7 +201,7 @@
 "categorySelection_select" = "アルバムを選択します";
 "categorySelection_current" = "この画像のためのアルバムを選択します";
 "categorySelection_other" = "または、この画像のために別のアルバムを選択します";
-"categoryImageSet_title" = "画像サムネイルを設定";
+"categoryImageSet_title" = "アルバムのサムネイル";
 "categoryImageSet_message" = "この画像をアルバム「%@」に設定してよろしいですか？";
 "categoryImageSetHUD_updating" = "アルバムのサムネイルを更新中...";
 
@@ -243,6 +243,7 @@
 "editImageDetails_tags" = "タグ:";
 "editImageDetails_privacyLevel" = "この写真を見ることができるのは誰ですか？";
 "editImageDetails_descriptionPlaceholder" = "説明";
+"editImageDetails_comments" = "コメント";
 "editImageDetailsHUD_updating" = "画像情報を更新しています...";
 
 // Image details — Errors
@@ -478,3 +479,5 @@
 "settings_translateWithCrowdin" = "Piwigo Mobileを翻訳する";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "謝辞";
+"settings_users" = "ユーザー";
+"settings_groups" = "グループ";

@@ -6,36 +6,38 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.0_text" = "Version 2.2\n\n• Underalbum skapelser från alla album\n• Förbättrad hantering med standardalbum\n• Förbättrad albumpresentation på iPad (och iPhone)\n• Detektion av bildbibliotekets ändringar\n• Mindre buggfixar och förbättring av gränssnittet\n________________________________________\n\n";
+"v2.2.1_text" = "Version 2.2.1\n\n• Mindre buggfixar och förbättring av gränssnittet";
 
-"v2.1.9_text" = "Version 2.1.9\n14 maj 2018\n\n• Buggfixar\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.2.0_text" = "Version 2.2\n12 juli 2018\n\n• Underalbum skapelser från alla album\n• Förbättrad hantering med standardalbum\n• Förbättrad albumpresentation på iPad (och iPhone)\n• Detektion av bildbibliotekets ändringar\n• Mindre buggfixar och förbättring av gränssnittet";
 
-"v2.1.8_text" = "Version 2.1.8\n29 april 2018\n\n• Lägger till förmåga att ändra storleken på miniatyrer\n• HTTPS blir standardprotokollet\n• Japansk översättning\n• Mindre buggfixar och förbättring av gränssnittet\n________________________________________\n\n";
+"v2.1.9_text" = "Version 2.1.9\n14 maj 2018\n\n• Buggfixar";
 
-"v2.1.7_text" = "Version 2.1.7\n3 februari 2018\n\n• Fixa uppladdningsproblem på vissa servrar\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.8_text" = "Version 2.1.8\n29 april 2018\n\n• Lägger till förmåga att ändra storleken på miniatyrer\n• HTTPS blir standardprotokollet\n• Japansk översättning\n• Mindre buggfixar och förbättring av gränssnittet";
 
-"v2.1.6_text" = "Version 2.1.6\n7 januari 2018\n\n• Arabisk översättning\n• Förbättrad autentiseringshantering för HTTP-baserad åtkomst\n• Mindre buggfixar och förbättring av gränssnittet\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"v2.1.7_text" = "Version 2.1.7\n3 februari 2018\n\n• Fixa uppladdningsproblem på vissa servrar";
 
-"v2.1.5_text" = "Version 2.1.5\n21 december 2017\n\n• Adderat möjlighet att avbryta uppladdningar\n• Adderat alternativ att radera bilder efter uppladdning\n• Adderat kompatibilitet med optimerad lagring (iCloud)\n• Bevara bildformatet efter storleksändring närhelst möjligt\n• Danska och indonesiska översättningar\n• Fixat metadata delvis förlorat vid nedladdning\n• Fixat PNG format ersättas med JPEG innan uppladdning\n• Fixat problem som uppstått med iOS 11 och iPhone X\n• Fixat mindre buggar\n• Kodmodernisering\n________________________________________\n\n";
+"v2.1.6_text" = "Version 2.1.6\n7 januari 2018\n\n• Arabisk översättning\n• Förbättrad autentiseringshantering för HTTP-baserad åtkomst\n• Mindre buggfixar och förbättring av gränssnittet";
 
-"v2.1.4_text" = "Version 2.1.4\n31 oktober 2017\n\n• Svensk översättning\n• Buggfixar\n________________________________________\n\n";
+"v2.1.5_text" = "Version 2.1.5\n21 december 2017\n\n• Adderat möjlighet att avbryta uppladdningar\n• Adderat alternativ att radera bilder efter uppladdning\n• Adderat kompatibilitet med optimerad lagring (iCloud)\n• Bevara bildformatet efter storleksändring närhelst möjligt\n• Danska och indonesiska översättningar\n• Fixat metadata delvis förlorat vid nedladdning\n• Fixat PNG format ersättas med JPEG innan uppladdning\n• Fixat problem som uppstått med iOS 11 och iPhone X\n• Fixat mindre buggar\n• Kodmodernisering";
 
-"v2.1.3_text" = "Version 2.1.3\n19 oktober 2017\n\n• Lagt till grundläggande behörighetskontroll\n• Lagt till tillåtelse att avbryta automatisk anslutning\n• Förbättrat gränssnitt och uppladdningshantering\n• Förbättrade översättningar och kompatibilitet med iOS 11\n• Rättat fel med \"Ej uppladdat\" filter\n• Kod modernisering\n________________________________________\n\n";
+"v2.1.4_text" = "Version 2.1.4\n31 oktober 2017\n\n• Svensk översättning\n• Buggfixar";
 
-"v2.1.2_text" = "Version 2.1.2\n7 september 2017\n\n• Fixat nekad inloggning med Community plugin <2.9\n• Förbättrade översättningar\n• Underhållsarbete\n________________________________________\n\n";
+"v2.1.3_text" = "Version 2.1.3\n19 oktober 2017\n\n• Lagt till grundläggande behörighetskontroll\n• Lagt till tillåtelse att avbryta automatisk anslutning\n• Förbättrat gränssnitt och uppladdningshantering\n• Förbättrade översättningar och kompatibilitet med iOS 11\n• Rättat fel med \"Ej uppladdat\" filter\n• Kod modernisering";
 
-"v2.1.1_text" = "Version 2.1.1\n20 augusti 2017\n\n• Fixat bugg med icke-giltiga SSL-certifikat\n• Förbättrad dansk översättning\n________________________________________\n\n";
+"v2.1.2_text" = "Version 2.1.2\n7 september 2017\n\n• Fixat nekad inloggning med Community plugin <2.9\n• Förbättrade översättningar\n• Underhållsarbete";
 
-"v2.1.0_text" = "Version 2.1\n14 augusti 2017\n\n• Kompatibilitet för Communitytillägg\n• Danska, franska, polska översättningar\n• Bug fixar\n________________________________________\n\n";
+"v2.1.1_text" = "Version 2.1.1\n20 augusti 2017\n\n• Fixat bugg med icke-giltiga SSL-certifikat\n• Förbättrad dansk översättning";
 
-"v2.0.4_text" = "Version 2.0.4\n28 juli 2017\n\n• iPad - Fixat suddiga miniatyrbilder och omöjligheten att redigera bilder på iPad\n• Videor - Fixat uppladdning och nedladdning (VideoJS-tillägg krävs på servern)\n• Inställningar - Lagt till alternativ för att ta bort titlar & ändra miniatyrbildsupplösning\n• Förbättrad anslutningsäkerhet och informerar när uppladdningen är klar\n• Mindre buggfixar och förbättring av gränssnittet\n________________________________________\n\n";
+"v2.1.0_text" = "Version 2.1\n14 augusti 2017\n\n• Kompatibilitet för Communitytillägg\n• Danska, franska, polska översättningar\n• Bug fixar";
 
-"v2.0.3_text" = "Version 2.0.3\n26 maj 2017\n\n• Lagt till alternativ för att ta bort GPS-metadata på inställningssidan\n• Lagt till aktuell cache-användning på inställningssidan\n• Fixat cache-inställningar som ibland var glömda/återställda\n• Fixat uppladdning av bildinställningar som ibland blev förlorade/återställda\n________________________________________\n\n";
+"v2.0.4_text" = "Version 2.0.4\n28 juli 2017\n\n• iPad - Fixat suddiga miniatyrbilder och omöjligheten att redigera bilder på iPad\n• Videor - Fixat uppladdning och nedladdning (VideoJS-tillägg krävs på servern)\n• Inställningar - Lagt till alternativ för att ta bort titlar & ändra miniatyrbildsupplösning\n• Förbättrad anslutningsäkerhet och informerar när uppladdningen är klar\n• Mindre buggfixar och förbättring av gränssnittet";
 
-"v2.0.2_text" = "Version 2.0.2\n8 maj 2017\n\n• Sorteringskriterier som nu är identiska med webapplikation\n• Fixat sorteringsproblem\n• Fixat en krasch som uppstod när du lägger till taggar i en bild före uppladdning\n• Fixat situationer där radering av ett urval bilder inte fungerade\n• Fixat situationer där ett album inte visades efter flyttning\n• Fixat ett kompatibilitetsproblem med iOS 10 - utfasad kod\n________________________________________\n\n";
+"v2.0.3_text" = "Version 2.0.3\n26 maj 2017\n\n• Lagt till alternativ för att ta bort GPS-metadata på inställningssidan\n• Lagt till aktuell cache-användning på inställningssidan\n• Fixat cache-inställningar som ibland var glömda/återställda\n• Fixat uppladdning av bildinställningar som ibland blev förlorade/återställda";
 
-"v2.0.1_text" = "Version 2.0.1\n26 juni 2015\n\nNya inställningar:\n  - Alternativ för att ändra storlek på bilder vid uppladdning\n    + Bildkvaliteten är från ett område på 50 - 98%\n  - Möjlighet att ställa in en standardbildsförhandsgranskningstorlek\nBug fixar\n________________________________________\n\n";
+"v2.0.2_text" = "Version 2.0.2\n8 maj 2017\n\n• Sorteringskriterier som nu är identiska med webapplikation\n• Fixat sorteringsproblem\n• Fixat en krasch som uppstod när du lägger till taggar i en bild före uppladdning\n• Fixat situationer där radering av ett urval bilder inte fungerade\n• Fixat situationer där ett album inte visades efter flyttning\n• Fixat ett kompatibilitetsproblem med iOS 10 - utfasad kod";
 
-"v2.0.0_text" = "Version 2.0\n24 april 2015\n\nNya inbyggda funktioner:\n  - Möjlighet att hantera album\n  - Visa dina bilder\n  - Massuppladdning av bilder\n  - Video uppladdning och uppspelning (VideoJS-plugin måste installeras)\n________________________________________\n\n";
+"v2.0.1_text" = "Version 2.0.1\n26 juni 2015\n\nNya inställningar:\n  - Alternativ för att ändra storlek på bilder vid uppladdning\n    + Bildkvaliteten är från ett område på 50 - 98%\n  - Möjlighet att ställa in en standardbildsförhandsgranskningstorlek\nBug fixar";
+
+"v2.0.0_text" = "Version 2.0\n24 april 2015\n\nNya inbyggda funktioner:\n  - Möjlighet att hantera album\n  - Visa dina bilder\n  - Massuppladdning av bilder\n  - Video uppladdning och uppspelning (VideoJS-plugin måste installeras)";
 
 "v1.0.0_text" = "Version 1.0\n17 oktober 2011";

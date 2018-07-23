@@ -201,7 +201,7 @@
 "categorySelection_select" = "Wybierz Album";
 "categorySelection_current" = "Wybierz bieżący album dla tego zdjęcia";
 "categorySelection_other" = "lub wybierz inny album dla tego zdjęcia";
-"categoryImageSet_title" = "Ustaw Miniaturę Zdjęcia";
+"categoryImageSet_title" = "Miniaturę albumu";
 "categoryImageSet_message" = "Czy na pewno chcesz ustawić to zdjęcie dla albumu \"%@\"?";
 "categoryImageSetHUD_updating" = "Aktualizowanie miniatury albumu…";
 
@@ -243,6 +243,7 @@
 "editImageDetails_tags" = "Tagi:";
 "editImageDetails_privacyLevel" = "Kto może zobaczyć to zdjęcie?";
 "editImageDetails_descriptionPlaceholder" = "Opis";
+"editImageDetails_comments" = "Komentarze";
 "editImageDetailsHUD_updating" = "Aktualizacja informacji obrazu…";
 
 // Image details — Errors
@@ -478,3 +479,5 @@
 "settings_translateWithCrowdin" = "Przetłumacz Piwigo Mobile";
 "settings_pwgForumURL" = "http://pl.piwigo.org/forum";
 "settings_acknowledgements" = "Podziękowania";
+"settings_users" = "Użytkownik";
+"settings_groups" = "Grupy";

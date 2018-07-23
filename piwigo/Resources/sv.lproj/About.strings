@@ -10,18 +10,18 @@
 "authors2" = "och Eddy Lelièvre-Berna";
 "version" = "Version:";
 
-"translators_text" = "Vi tackar följande användare för att de med egen tid och ansträngning bidragit till att översätta Piwigo‎:\n\n- Arabiska‎: Rachid Haddani,\n- Danska‎: Thomas Christfort,\n- Franska‎: Eddy Lelièvre-Berna,\n- Indonesiska‎: Alfian Silaban,\n- Japanska: Takahiro Yakoh,\n- Nederländska‎: Robert Mulder och Wim Woonings,\n- Polska‎: Michał Majchrowicz och T00kie,\n- Svenska‎: Elger Lindgren,\n- Tyska‎: Jörg Knörchen.\n\n";
+"translators_text" = "Vi tackar följande användare för att de med egen tid och ansträngning bidragit till att översätta Piwigo‎:\n\n- Arabiska‎: Rachid Haddani,\n- Danska‎: Thomas Christfort,\n- Franska‎: Eddy Lelièvre-Berna,\n- Indonesiska‎: Alfian Silaban,\n- Japanska: Takahiro Yakoh,\n- Nederländska‎: Robert Mulder och Wim Woonings,\n- Polska‎: Michał Majchrowicz och T00kie,\n- Svenska‎: Elger Lindgren,\n- Tyska‎: Jörg Knörchen.";
 
 "about_text" = "Denna programvara innehåller viss programvara från tredje part som omfördelas under villkoren av sina ursprungliga licenser.\n\n";
 
-"licenceMIT_text" = "The MIT License (MIT)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n________________________________________\n\n";
+"licenceAFN_text" = "AFNetworking\n\nThe MIT License (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
 
-"licenceAFN_text" = "AFNetworking\n\nThe MIT License (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)\n________________________________________\n\n";
+"licenceMBProgHUD_text" = "MBProgressHUD\n\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
 
-"licenceMBProgHUD_text" = "MBProgressHUD\n\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski\n________________________________________\n\n";
-
-"licenceMGSTC_text" = "MGSwipeTableCell\n\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro\n________________________________________\n\n";
-
-"licenceUICL_text" = "UICountingLabel\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2013 Tim Gostony\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+"licenceMGSTC_text" = "MGSwipeTableCell\n\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro";
 
 "licenceSAM_text" = "SAMKeychain\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2010-2016 Sam Soffes\n‎(http‎:‎/‎/soff.es‎)";
+
+"licenceUICL_text" = "UICountingLabel\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2013 Tim Gostony";
+
+"licenceMIT_text" = "The MIT License (MIT)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.";
