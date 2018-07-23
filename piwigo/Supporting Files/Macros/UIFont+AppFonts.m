@@ -40,6 +40,11 @@
     return [UIFont fontWithName:@"OpenSans" size:10.0];
 }
 
++(UIFont*)piwigoFontLarge
+{
+    return [UIFont fontWithName:@"OpenSans" size:28.0];
+}
+
 +(UIFont*)piwigoFontLargeTitle
 {
     return [UIFont fontWithName:@"OpenSans-Extrabold" size:28.0];

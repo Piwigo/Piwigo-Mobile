@@ -16,6 +16,7 @@
 +(UIFont*)piwigoFontExtraBold;
 +(UIFont*)piwigoFontSmall;
 +(UIFont*)piwigoFontTiny;
++(UIFont*)piwigoFontLarge;
 +(UIFont*)piwigoFontLargeTitle;
 +(UIFont*)piwigoFontButton;
 +(UIFont*)piwigoFontDisclosure;
