@@ -670,7 +670,13 @@ CGFloat const kRadius = 25.0;
 
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        navController.modalPresentationStyle = UIModalPresentationPopover;
+        navController.popoverPresentationController.sourceView = self.view;
+        navController.popoverPresentationController.barButtonItem = self.settingsBarButton;
+    } else {
+        navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    }
     [self presentViewController:navController animated:YES completion:nil];
 }
 

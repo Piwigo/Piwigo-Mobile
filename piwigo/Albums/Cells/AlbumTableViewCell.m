@@ -58,14 +58,12 @@
         UIBlurEffect *blurEffect;
         blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
         self.textUnderlayDark = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        if (@available(iOS 10, *))
-            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
-        else
-            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-        self.textUnderlayLight = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-		self.textUnderlayDark.translatesAutoresizingMaskIntoConstraints = NO;
+        self.textUnderlayDark.translatesAutoresizingMaskIntoConstraints = NO;
         self.textUnderlayDark.hidden = YES;
-		[self.contentView addSubview:self.textUnderlayDark];
+        [self.contentView addSubview:self.textUnderlayDark];
+
+        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        self.textUnderlayLight = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
         self.textUnderlayLight.translatesAutoresizingMaskIntoConstraints = NO;
         self.textUnderlayLight.hidden = YES;
         [self.contentView addSubview:self.textUnderlayLight];
