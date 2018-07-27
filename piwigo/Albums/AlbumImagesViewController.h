@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
+
 @interface AlbumImagesViewController : UIViewController
 
 @property (nonatomic, assign) NSInteger categoryId;

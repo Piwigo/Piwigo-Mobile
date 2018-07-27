@@ -210,9 +210,9 @@
     // Switch between Open/Close cell disclosure
     cell.categoryDelegate = self;
     if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
-        cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
-    } else {
         cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
+    } else {
+        cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
     }
 
     return cell;
@@ -294,7 +294,7 @@
 
 -(void)changedDefaultCategory
 {
-    // Does this view controller already exists?
+    // Does the default album view controller already exists?
     NSInteger cur = 0, index = 0;
     AlbumImagesViewController *rootAlbumViewController = nil;
     for (UIViewController *viewController in self.navigationController.viewControllers) {
@@ -320,14 +320,23 @@
     
     // The view controller of the default album does not exist yet
     if (!rootAlbumViewController) {
+        // Create an instance of the default album view controller
         rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
+        // The existing album view controller must become a child of the default album view controller
         NSMutableArray *arrayOfVC = [[NSMutableArray alloc] initWithArray:self.navigationController.viewControllers];
         [arrayOfVC insertObject:rootAlbumViewController atIndex:index];
         self.navigationController.viewControllers = arrayOfVC;
     }
     
-    // Present the root album
-    [self.navigationController popToViewController:rootAlbumViewController animated:YES];
+    // Dismiss Settings and present default album
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:^{
+            // Replace current album view with default album view
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationBackToDefaultAlbum object:nil];
+        }];
+    } else {
+        [self.navigationController popToViewController:rootAlbumViewController animated:YES];
+    }
 }
 
 

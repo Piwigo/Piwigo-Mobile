@@ -34,6 +34,7 @@
 #import "MBProgressHUD.h"
 
 CGFloat const kRadius = 25.0;
+NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
@@ -162,6 +163,9 @@ CGFloat const kRadius = 25.0;
 		
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+
+        // Register root album changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
     }
 	return self;
 }
@@ -624,7 +628,7 @@ CGFloat const kRadius = 25.0;
 
 -(void)returnToDefaultCategory
 {
-    // Does this view controller already exists?
+    // Does the default album view controller already exists?
     NSInteger cur = 0, index = 0;
     AlbumImagesViewController *rootAlbumViewController = nil;
     for (UIViewController *viewController in self.navigationController.viewControllers) {

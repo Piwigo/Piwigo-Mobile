@@ -254,9 +254,9 @@
         // Switch between Open/Close cell disclosure
         cell.categoryDelegate = self;
         if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
-            cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
-        } else {
             cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
+        } else {
+            cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
         }
     }
 
