@@ -489,7 +489,7 @@ typedef enum {
                         cell.sliderName.text = NSLocalizedString(@"defaultThumbnailSize", @"Size");
                     }
                     
-                    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:self.view withMaxWidth:kThumbnailFileSize];
+                    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:kThumbnailFileSize];
                     cell.slider.minimumValue = 1;
                     cell.slider.maximumValue = 1 + minNberOfImages; // Allows to double the number of thumbnails
                     cell.incrementSliderBy = 1;
@@ -1542,7 +1542,7 @@ typedef enum {
 - (IBAction)updateThumbnailSize:(id)sender
 {
     SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingsSectionAlbums]];
-    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:self.view withMaxWidth:kThumbnailFileSize];
+    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:kThumbnailFileSize];
     [Model sharedInstance].thumbnailsPerRowInPortrait = 2 * minNberOfImages - ([thumbnailsSizeCell getCurrentSliderValue] - 1);
     [[Model sharedInstance] saveToDisk];
 }

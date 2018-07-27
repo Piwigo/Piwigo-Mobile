@@ -348,6 +348,9 @@
     }
     if(savedData.count > 23) {
         self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
+        NSInteger minValue = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize];
+        if ((self.thumbnailsPerRowInPortrait < minValue) || (self.thumbnailsPerRowInPortrait > 2*minValue))
+            self.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize]);
     } else {
         self.thumbnailsPerRowInPortrait = 4;
     }
