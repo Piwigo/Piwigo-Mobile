@@ -192,12 +192,14 @@
     cell.tintColor = [UIColor piwigoOrange];
     cell.textLabel.text = currentTag.tagName;
     cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
-        
-    NSArray *selectedTagIDs = [self.alreadySelectedTags valueForKey:@"tagId"];
-    if ([selectedTagIDs containsObject:@(currentTag.tagId)]) {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    } else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
+    
+    if (indexPath.section == 1) {
+        NSArray *selectedTagIDs = [self.alreadySelectedTags valueForKey:@"tagId"];
+        if ([selectedTagIDs containsObject:@(currentTag.tagId)]) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
     }
 
     return cell;
@@ -209,17 +211,23 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+
     PiwigoTagData *currentTag;
-    if (indexPath.section == 0) { // delete tag if tapped
+    if (indexPath.section == 0) {
+        // Delete tag if tapped
         [self.alreadySelectedTags removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    } else { // add if not yet selected or remove if already selected
+        [tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else {
+        // Add if not yet selected or remove if already selected
         currentTag = [TagsData sharedInstance].tagList[indexPath.row];
         NSUInteger indexOfSelection = [self.alreadySelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
             return (someTag.tagId == currentTag.tagId);
         }];
         
-        if (NSNotFound == indexOfSelection ) { // add if not yet selected
+        if (NSNotFound == indexOfSelection ) {
+            // Add if not yet selected
             [self.alreadySelectedTags addObject:currentTag];
             [self.alreadySelectedTags sortUsingDescriptors:
              [NSArray arrayWithObjects:
@@ -229,14 +237,17 @@
             [tableView insertRowsAtIndexPaths:@[somePath] withRowAnimation:UITableViewRowAnimationAutomatic];
             NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:0];
             [tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
-        } else { // remove if already selected
+        }
+        else {
+            // Remove if already selected
             [self.alreadySelectedTags removeObject:currentTag];
             NSIndexPath *removePath = [NSIndexPath indexPathForRow:indexOfSelection inSection:0];
-            if (!removePath && (removePath != nil) && (removePath >= 0)) {
+            if ((removePath != nil) && (removePath.row >= 0)) {
                 [tableView deleteRowsAtIndexPaths:@[removePath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
         }
-        // update the checkmark
+        
+        // Update the checkmark
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
