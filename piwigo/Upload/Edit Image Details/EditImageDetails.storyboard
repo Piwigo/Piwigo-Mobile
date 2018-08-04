@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -22,8 +23,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="T0l-Ou-dhs">
-                                <rect key="frame" x="0.0" y="-80" width="320" height="560"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="T0l-Ou-dhs">
+                                <rect key="frame" x="0.0" y="-60" width="320" height="540"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="textField" id="GhX-cy-KIv" customClass="EditImageTextFieldTableViewCell">
@@ -169,7 +170,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="T0l-Ou-dhs" firstAttribute="leading" secondItem="wiZ-et-8Je" secondAttribute="leading" id="1zo-yp-ZXp"/>
-                            <constraint firstItem="v9H-sj-q9x" firstAttribute="bottom" secondItem="T0l-Ou-dhs" secondAttribute="top" constant="100" id="9gA-xX-Wqi"/>
+                            <constraint firstItem="v9H-sj-q9x" firstAttribute="bottom" secondItem="T0l-Ou-dhs" secondAttribute="firstBaseline" constant="80" id="9gA-xX-Wqi"/>
                             <constraint firstAttribute="trailing" secondItem="T0l-Ou-dhs" secondAttribute="trailing" id="Auf-rc-gxf"/>
                             <constraint firstItem="uVf-G5-mw5" firstAttribute="top" secondItem="T0l-Ou-dhs" secondAttribute="bottom" priority="700" id="XXa-zF-EMU"/>
                         </constraints>

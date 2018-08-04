@@ -32,6 +32,8 @@
 #import "CategoryHeaderReusableView.h"
 #import "SettingsViewController.h"
 #import "MBProgressHUD.h"
+#import "MoveCategoryViewController.h"
+#import "MoveImageViewController.h"
 
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
@@ -490,7 +492,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
     if (!([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) && !noHUD) {
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…") inMode:MBProgressHUDModeIndeterminate];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate];
     }
     
     // Disable cache if requested
@@ -505,8 +507,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                           inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                  self.isCachedAtInit = YES;
-                                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                                 
+                                 [self.imagesCollection reloadData];
+
                                  // Hide loading HUD
                                  [self hideHUD];
                             }
@@ -525,7 +527,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 //    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", [Model sharedInstance].loadAllCategoryInfo ? (long)0 : (long)self.categoryId);
 
     // Show loading HD
-    [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…") inMode:MBProgressHUDModeIndeterminate];
+    [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate];
 
     [AlbumService getAlbumListForCategory:[Model sharedInstance].loadAllCategoryInfo ? 0 : self.categoryId
                                usingCache:NO
@@ -589,7 +591,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)categoriesUpdated
 {
-//    NSLog(@"=> categoriesUpdated…");
+//    NSLog(@"=> categoriesUpdated… %ld", self.categoryId);
     // Albums
     [self.imagesCollection reloadData];
 
@@ -677,7 +679,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         navController.modalPresentationStyle = UIModalPresentationPopover;
         navController.popoverPresentationController.sourceView = self.view;
-        navController.popoverPresentationController.barButtonItem = self.settingsBarButton;
+        [navController.popoverPresentationController setPermittedArrowDirections:0];
+        [navController.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds), 0, 0)];
     } else {
         navController.modalPresentationStyle = UIModalPresentationFullScreen;
     }
@@ -1524,26 +1527,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 }
 
 
-#pragma mark - ImageDetailDelegate Methods
-
--(void)didDeleteImage:(PiwigoImageData *)image
-{
-	[self.albumData removeImage:image];
-	[self.imagesCollection reloadData];
-}
-
--(void)needToLoadMoreImages
-{
-	[self.albumData loadMoreImagesOnCompletion:^{
-		if(self.imageDetailView != nil)
-		{
-			self.imageDetailView.images = [self.albumData.images mutableCopy];
-		}
-		[self.imagesCollection reloadData];
-	}];
-}
-
-
 #pragma mark - HUD methods
 
 -(void)showHUDwithTitle:(NSString *)title inMode:(MBProgressHUDMode)mode
@@ -1606,7 +1589,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"Complete", nil);
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
                 [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];
@@ -1629,6 +1612,26 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 }
 
 
+#pragma mark - ImageDetailDelegate Methods
+
+-(void)didDeleteImage:(PiwigoImageData *)image
+{
+    [self.albumData removeImage:image];
+    [self.imagesCollection reloadData];
+}
+
+-(void)needToLoadMoreImages
+{
+    [self.albumData loadMoreImagesOnCompletion:^{
+        if(self.imageDetailView != nil)
+        {
+            self.imageDetailView.images = [self.albumData.images mutableCopy];
+        }
+        [self.imagesCollection reloadData];
+    }];
+}
+
+
 #pragma mark - CategorySortDelegate Methods
 
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
@@ -1644,15 +1647,24 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)pushView:(UIViewController *)viewController
 {
-	[self.navigationController pushViewController:viewController animated:YES];
-}
-
--(void)presentView:(UIViewController *)viewController
-{
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    navController.modalPresentationStyle = UIModalPresentationFullScreen;
-    [self presentViewController:viewController animated:YES completion:nil];
+    if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
+        // Push sub-album view controller
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
+    else if ([viewController isKindOfClass:[MoveCategoryViewController class]]) {
+        // Present album list for moving current album
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+        navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            navController.modalPresentationStyle = UIModalPresentationPopover;
+            navController.popoverPresentationController.sourceView = self.view;
+            [navController.popoverPresentationController setPermittedArrowDirections:0];
+            [navController.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds), 0, 0)];
+        } else {
+            navController.modalPresentationStyle = UIModalPresentationFullScreen;
+        }
+        [self presentViewController:navController animated:YES completion:nil];
+    }
 }
 
 @end

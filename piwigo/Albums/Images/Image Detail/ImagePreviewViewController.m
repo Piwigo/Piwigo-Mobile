@@ -10,6 +10,7 @@
 #import "ImagePreviewViewController.h"
 #import "PiwigoImageData.h"
 #import "ImageScrollView.h"
+#import "ImageService.h"
 #import "VideoView.h"
 #import "Model.h"
 #import "NetworkHandler.h"
@@ -76,7 +77,8 @@
     NSURL *thumbnailURL = [NSURL URLWithString:thumbnailStr];
     UIImageView *thumb = [UIImageView new];
     [thumb setImageWithURL:thumbnailURL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-    
+    self.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
+
     // Previewed image
     NSString *previewStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
     if (previewStr == nil) {
@@ -86,8 +88,6 @@
     NSURL *previewURL = [NSURL URLWithString:previewStr];
     __weak typeof(self) weakSelf = self;
     
-    self.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
-
     [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
       parameters:nil
         progress:^(NSProgress *progress) {

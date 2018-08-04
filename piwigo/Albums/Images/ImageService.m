@@ -220,7 +220,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     imageData.XXLargeWidth = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"width"] integerValue];
     imageData.XXLargeHeight = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"height"] integerValue];
 
-	NSArray *categories = [imageJson objectForKey:@"categories"];
+	NSDictionary *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];
 	for(NSDictionary *category in categories)
 	{
@@ -228,7 +228,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 	}
 	imageData.categoryIds = categoryIds;
 	
-	NSArray *tags = [imageJson objectForKey:@"tags"];
+    NSDictionary *tags = [imageJson objectForKey:@"tags"];
 	NSMutableArray *imageTags = [NSMutableArray new];
 	for(NSDictionary *tag in tags)
 	{
@@ -312,6 +312,33 @@ NSString * const kGetImageOrderDescending = @"desc";
     [task resume];
 
 	return task;
+}
+
++(NSURLSessionTask*)setCategoriesForImage:(PiwigoImageData *)image
+                           withCategories:(NSArray *)categoryIds
+                               onProgress:(void (^)(NSProgress *))progress
+                             OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setCategoriesSuccessfully))completion
+                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    NSString *newImageCategories = [categoryIds componentsJoinedByString:@";"];
+    NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
+                             URLParameters:nil
+                                parameters:@{
+                                             @"image_id" : image.imageId,
+                                             @"categories" : newImageCategories,
+                                             @"multiple_value_mode" : @"replace"
+                                             }
+                                  progress:progress
+                                   success:^(NSURLSessionTask *task, id responseObject) {
+                                       
+                                       if(completion)
+                                       {
+                                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+                                       }
+                                   }
+                                   failure:fail];
+    
+    return request;
 }
 
 +(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video

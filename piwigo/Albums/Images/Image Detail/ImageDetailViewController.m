@@ -9,21 +9,22 @@
 #import <Photos/Photos.h>
 
 #import "AppDelegate.h"
-#import "ImageDetailViewController.h"
-#import "CategoriesData.h"
-#import "ImageService.h"
-#import "Model.h"
-#import "ImagePreviewViewController.h"
-#import "EditImageDetailsViewController.h"
-#import "ImageUpload.h"
-#import "ImageScrollView.h"
 #import "AllCategoriesViewController.h"
-#import "SAMKeychain.h"
+#import "CategoriesData.h"
+#import "EditImageDetailsViewController.h"
+#import "ImageDetailViewController.h"
+#import "ImagePreviewViewController.h"
+#import "ImageService.h"
+#import "ImageScrollView.h"
+#import "ImageUpload.h"
+#import "Model.h"
+#import "MoveImageViewController.h"
 #import "MBProgressHUD.h"
+#import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, UIToolbarDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, MoveImageDelegate, UIToolbarDelegate>
 
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoImageData *imageData;
@@ -35,6 +36,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
 @property (nonatomic, strong) UIBarButtonItem *setThumbnailBarButton;
+@property (nonatomic, strong) UIBarButtonItem *moveBarButton;
 @property (nonatomic, strong) UIBarButtonItem *spaceBetweenButtons;
 @property (nonatomic, assign) BOOL isToolbarRequired;
 
@@ -57,6 +59,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		self.title = self.imageData.name;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
 		[startingImage setImageScrollViewWithImageData:self.imageData];
+        [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
 		startingImage.imageIndex = imageIndex;
         startingImage.imagePreviewDelegate = self;
 		
@@ -90,9 +93,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         self.downloadBarButton.tintColor = [UIColor piwigoOrange];
         self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"paperclip"] landscapeImagePhone:[UIImage imageNamed:@"paperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
         self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
+        self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
+        self.moveBarButton.tintColor = [UIColor piwigoOrange];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
         self.navigationController.toolbar.barStyle = UIBarStyleDefault;
-        [self.navigationController setToolbarHidden:YES animated:YES];
 
         // For managing taps
 		[self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView)]];
@@ -105,6 +109,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 	}
 	return self;
 }
+
+
+#pragma mark - View Lifecycle
 
 -(void)paletteChanged
 {
@@ -155,52 +162,41 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)updateNavBar
 {
-    // Interface depends on device and orientation
-    if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
-        (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
-         ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
+    // Interface depends on device
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             
-            // Redefine bar buttons (definition lost after rotation of device)
-            self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
-            self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
-            self.deleteBarButton.tintColor = [UIColor redColor];
-            self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImage)];
-            self.downloadBarButton.tintColor = [UIColor piwigoOrange];
-            self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"paperclip"] landscapeImagePhone:[UIImage imageNamed:@"paperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
-            self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
-            self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+        // iPhone
+        if ([Model sharedInstance].hasAdminRights)
+        {
+            // User with admin rights can edit, delete images and set as album image
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
+            self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
 
-            if ([Model sharedInstance].hasAdminRights)
-            {
-                // User with admin rights can edit, delete images and set as album image
-                [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
-                self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+            // Present toolbar
+            self.isToolbarRequired = YES;
+            [self.navigationController setToolbarHidden:NO animated:YES];
+        }
+        else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        {
+            // User with upload access to the current category can edit images
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
+            self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton];
 
-                // Present toolbar
-                self.isToolbarRequired = YES;
-                [self.navigationController setToolbarHidden:self.navigationController.isNavigationBarHidden animated:YES];
-            }
-            else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
-            {
-                // User with upload access to the current category can edit images
-                [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
-                self.toolbarItems = @[self.spaceBetweenButtons, self.downloadBarButton,  self.spaceBetweenButtons];
-
-                // Present toolbar
-                self.isToolbarRequired = YES;
-                [self.navigationController setToolbarHidden:self.navigationController.isNavigationBarHidden animated:YES];
-            }
-            else
-            {
+            // Present toolbar
+            self.isToolbarRequired = YES;
+            [self.navigationController setToolbarHidden:NO animated:YES];
+        }
+        else
+        {
             // User with no special access rights can only download images
             [self.navigationItem setRightBarButtonItems:@[self.downloadBarButton]];
             
             // Hide toolbar
             self.isToolbarRequired = NO;
             [self.navigationController setToolbarHidden:YES animated:NO];
-            }
         }
-    else    // iPhone in landscape mode, iPad in any orientation
+    }
+    else    // iPad
     {
         // Hide toolbar
         self.isToolbarRequired = NO;
@@ -209,23 +205,55 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         if ([Model sharedInstance].hasAdminRights)
         {
             // User with admin rights can edit, delete images and set as album image
-            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.deleteBarButton, self.setThumbnailBarButton, self.downloadBarButton]];
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.deleteBarButton, self.setThumbnailBarButton, self.downloadBarButton, self.moveBarButton]];
         }
         else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
             // User with upload access to the current category can edit images
-            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.downloadBarButton]];
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.downloadBarButton, self.moveBarButton]];
         }
         else
         {
             // User with no special access rights can only download images
             [self.navigationItem setRightBarButtonItems:@[self.downloadBarButton]];
-            
-            // Hide toolbar
-            [self.navigationController setToolbarHidden:YES animated:NO];
         }
     }
 }
+
+#pragma mark - Retrieve Image Data
+
+-(void)retrieveCompleteImageDataOfImageId:(NSInteger)imageId
+{
+    // Image data are not complete when retrieved using pwg.categories.getImages
+    // Required by Copy, Delete, Move actions (may also be eploited to show list of albums it belongs to)
+    [ImageService getImageInfoById:imageId
+          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
+              self.imageData = imageDataComplete;
+          }
+                 onFailure:^(NSURLSessionTask *task, NSError *error) {
+              // Failed — Ask user if he/she wishes to retry
+              UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+                                   message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+                            preferredStyle:UIAlertControllerStyleAlert];
+              
+              UIAlertAction* dismissAction = [UIAlertAction
+                  actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                  style:UIAlertActionStyleCancel
+                  handler:^(UIAlertAction * action) {}];
+              
+              UIAlertAction* retryAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                    style:UIAlertActionStyleDefault
+                    handler:^(UIAlertAction * action) {
+                        
+                    }];
+              
+              [alert addAction:dismissAction];
+              [alert addAction:retryAction];
+              [self presentViewController:alert animated:YES completion:nil];
+          }];
+}
+
 
 #pragma mark - User Interaction
 
@@ -270,13 +298,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (BOOL)prefersStatusBarHidden {
-    if (self.navigationController.navigationBarHidden)
-        return YES;     // Hide the status bar with the navigation bar
-    else
-        return NO;      // Show the status bar with the navigation bar
-}
-
 
 #pragma mark - UIPageViewControllerDataSource
 
@@ -302,6 +323,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
     [nextImage setImageScrollViewWithImageData:imageData];
+    [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
     nextImage.imageIndex = currentIndex + 1;
     return nextImage;
 }
@@ -322,6 +344,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
     [prevImage setImageScrollViewWithImageData:imageData];
+    [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
     prevImage.imageIndex = currentIndex - 1;
     return prevImage;
 }
@@ -372,10 +395,8 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
     editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
     editImageVC.delegate = self;
-    editImageVC.isEdit = YES;
-    
-    UINavigationController *presentNav = [[UINavigationController alloc] initWithRootViewController:editImageVC];
-    [self.navigationController presentViewController:presentNav animated:YES completion:nil];
+    editImageVC.isEdit = YES;       // Edition mode
+    [self pushView:editImageVC];
 }
 
 
@@ -393,55 +414,120 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
            style:UIAlertActionStyleCancel
            handler:^(UIAlertAction * action) {}];
     
+    UIAlertAction *removeAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"removeSingleImage_title", @"Remove from Album")
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction *action) {
+                [self removeImageFromCategory];
+            }];
+
     UIAlertAction* deleteAction = [UIAlertAction
            actionWithTitle:NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
            style:UIAlertActionStyleDestructive
            handler:^(UIAlertAction * action) {
-               [ImageService deleteImage:self.imageData
-                        ListOnCompletion:^(NSURLSessionTask *task) {
-                            // Successful deletion
-                            if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
-                            {
-                                [self.imgDetailDelegate didDeleteImage:self.imageData];
-                            }
-                            [self.navigationController popViewControllerAnimated:YES];
-                            
-                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                            // Error — Try again ?
-                            UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-                                message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
-                                preferredStyle:UIAlertControllerStyleAlert];
-                            
-                            UIAlertAction* dismissAction = [UIAlertAction
-                                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                style:UIAlertActionStyleCancel
-                                handler:^(UIAlertAction * action) {}];
-                            
-                            UIAlertAction* retryAction = [UIAlertAction
-                                actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                                style:UIAlertActionStyleDestructive
-                                handler:^(UIAlertAction * action) {
-                                    [self deleteImage];
-                                }];
-                            
-                            [alert addAction:dismissAction];
-                            [alert addAction:retryAction];
-                            [self presentViewController:alert animated:YES completion:nil];
-#if defined(DEBUG)
-                            NSLog(@"Fail to delete!");
-#endif
-                        }];
+               [self deleteImageFromDatabase];
            }];
 
     // Add actions
     [alert addAction:cancelAction];
     [alert addAction:deleteAction];
+    if ([self.imageData.categoryIds count] > 1) {
+        // This image is used in another album!
+        [alert addAction:removeAction];
+    }
 
     // Present list of actions
     alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
+
+-(void)removeImageFromCategory
+{
+    // Display HUD during deletion
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Image…")];
+    });
+    
+    // Update image category list
+    NSMutableArray *categoryIds = [self.imageData.categoryIds mutableCopy];
+    [categoryIds removeObject:@(self.categoryId)];
+    
+    // Send request to Piwigo server
+    [ImageService setCategoriesForImage:self.imageData
+         withCategories:categoryIds
+             onProgress:nil
+           OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
+               
+               if (updatedSuccessfully)
+               {
+                   // Update image data
+                   self.imageData.categoryIds = categoryIds;
+                   
+                   // Remove image from current category
+                   [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] removeImages:@[self.imageData]];
+                   [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] deincrementImageSizeByOne];
+
+                   // Hide HUD
+                   [self hideHUDwithSuccess:YES completion:nil];
+
+                   // Return to album view
+                   [self didDeleteImage:self.imageData];
+               }
+               else {
+                   [self hideHUDwithSuccess:NO completion:^{
+                       [self showDeleteImageErrorWithMessage:NSLocalizedString(@"alertTryAgainButton", @"Try Again")];
+                   }];
+               }
+           }
+              onFailure:^(NSURLSessionTask *task, NSError *error) {
+                  [self hideHUDwithSuccess:NO completion:^{
+                      [self showDeleteImageErrorWithMessage:[error localizedDescription]];
+                  }];
+              }];
+}
+
+-(void)deleteImageFromDatabase
+{
+    // Display HUD during deletion
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…")];
+    });
+    
+    // Send request to Piwigo server
+    [ImageService deleteImage:self.imageData
+             ListOnCompletion:^(NSURLSessionTask *task) {
+                 
+                 // Hide HUD
+                 [self hideHUDwithSuccess:YES completion:nil];
+
+                 // Return to album view
+                 [self didDeleteImage:self.imageData];
+             }
+                    onFailure:^(NSURLSessionTask *task, NSError *error) {
+                 [self hideHUDwithSuccess:NO completion:^{
+                     [self showDeleteImageErrorWithMessage:[error localizedDescription]];
+                 }];
+             }];
+}
+
+-(void)showDeleteImageErrorWithMessage:(NSString*)message
+{
+    NSString *errorMessage = [NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), message];
+    
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                                message:errorMessage
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:dismissAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 
 #pragma mark - Download Image
 
@@ -636,10 +722,75 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 }
 
 
+#pragma mark - Set as Album Image
+
+-(void)setAsAlbumImage
+{
+    // Present AllCategories view
+    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+    [self pushView:allCategoriesPickVC];
+}
+
+
 #pragma mark - Move/Copy image to Category
+
 -(void)addImageToCategory
 {
+    UIAlertController* alert = [UIAlertController
+            alertControllerWithTitle:nil message:nil
+            preferredStyle:UIAlertControllerStyleActionSheet];
     
+    UIAlertAction* cancelAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+            style:UIAlertActionStyleCancel
+            handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* copyAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction * action) {
+                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImage:self.imageData inCategoryId:self.categoryId andCopyOption:YES];
+                moveImageVC.moveImageDelegate = self;
+                [self pushView:moveImageVC];
+            }];
+
+    UIAlertAction* moveAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction * action) {
+                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImage:self.imageData inCategoryId:self.categoryId andCopyOption:NO];
+                moveImageVC.moveImageDelegate = self;
+                [self pushView:moveImageVC];
+            }];
+
+    // Add actions
+    [alert addAction:cancelAction];
+    [alert addAction:copyAction];
+    [alert addAction:moveAction];
+
+    // Present list of actions
+    alert.popoverPresentationController.barButtonItem = self.moveBarButton;
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+
+#pragma mark - push view
+-(void)pushView:(UIViewController *)viewController
+{
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    navController.modalPresentationStyle = UIModalPresentationFullScreen;
+
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        navController.modalPresentationStyle = UIModalPresentationPopover;
+        navController.popoverPresentationController.sourceView = self.view;
+        [navController.popoverPresentationController setPermittedArrowDirections:0];
+        [navController.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds), 0, 0)];
+    } else {
+        navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    }
+
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 
@@ -663,7 +814,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         [hud setTag:loadingViewTag];
         
         // Change the background view shape, style and color.
-        hud.mode = MBProgressHUDModeAnnularDeterminate;
+        hud.mode = MBProgressHUDModeIndeterminate;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
         hud.contentColor = [UIColor piwigoHudContentColor];
@@ -689,7 +840,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"Complete", nil);
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
                 [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];
@@ -709,23 +860,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         [hud hideAnimated:YES];
         self.hudViewController = nil;
     }
-}
-
-
-#pragma mark - Set as Album Image
-
--(void)setAsAlbumImage
-{
-    // Hide the toolbar
-    [self.navigationController setToolbarHidden:YES animated:YES];
-    
-    // Present CategoriesSelector view
-    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
-
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:allCategoriesPickVC];
-    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    navController.modalPresentationStyle = UIModalPresentationFullScreen;
-    [self presentViewController:navController animated:YES completion:nil];
 }
 
 
@@ -765,6 +899,21 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     
     // Update current view
     self.title = details.title;
+}
+
+
+#pragma mark - MoveImageDelegate Methods
+
+-(void)didDeleteImage:(PiwigoImageData *)image
+{
+    // Update album data
+    if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
+    {
+        [self.imgDetailDelegate didDeleteImage:self.imageData];
+    }
+
+    // Return to image collection
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

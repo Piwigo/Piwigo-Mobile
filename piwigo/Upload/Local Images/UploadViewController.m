@@ -400,7 +400,7 @@
                   
                   if(sortType == kPiwigoSortByNotUploaded && !self.loadingView.hidden)
                   {
-                      [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"Complete", nil) showCheckMark:YES withDelay:0.5];
+                      [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"completeHUD_label", @"Complete") showCheckMark:YES withDelay:0.5];
                   }
                   self.images = images;
                   [self.localImagesCollection reloadData];

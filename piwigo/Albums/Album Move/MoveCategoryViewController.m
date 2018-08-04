@@ -10,6 +10,7 @@
 #import "MoveCategoryViewController.h"
 #import "CategoriesData.h"
 #import "AlbumService.h"
+#import "NetworkHandler.h"
 #import "Model.h"
 #import "CategoryTableViewCell.h"
 #import "MBProgressHUD.h"
@@ -17,9 +18,9 @@
 @interface MoveCategoryViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
+@property (nonatomic, strong) PiwigoAlbumData *selectedCategory;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
-@property (nonatomic, strong) PiwigoAlbumData *selectedCategory;
 @property (nonatomic, strong) UIViewController *hudViewController;
 @property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
@@ -97,6 +98,27 @@
 	
     // Set colors, fonts, etc.
     [self paletteChanged];
+
+    // Add Done button
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+}
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    //Reload the tableview on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        
+        // On iPad, the Settings section is presented in a centered popover view
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
+            [self.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(mainScreenBounds), CGRectGetMidY(mainScreenBounds), 0, 0)];
+            self.preferredContentSize = CGSizeMake(ceil(CGRectGetWidth(mainScreenBounds)*2/3), ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+        }
+        
+        // Reload table view
+        [self.categoriesTableView reloadData];
+    } completion:nil];
 }
 
 -(void)quitMoveCategory
@@ -304,8 +326,8 @@
                           [self hideHUDwithSuccess:YES completion:^{
                               dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
                                   self.selectedCategory.parentAlbumId = categoryId;
-//                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
-                                  [self.navigationController popViewControllerAnimated:YES];
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                                  [self quitMoveCategory];
                               });
                           }];
 					  }
@@ -393,7 +415,7 @@
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"Complete", nil);
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
                 [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];
@@ -426,7 +448,7 @@
     if (!(useCache && [Model sharedInstance].loadAllCategoryInfo
           && ([Model sharedInstance].defaultCategory == 0))) {
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
         
         // Reload category data and set current category
 //        NSLog(@"buildCategoryMv => getAlbumListForCategory(%ld,NO,YES)", (long)0);
@@ -597,7 +619,7 @@
 //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
 
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
                                    usingCache:[Model sharedInstance].loadAllCategoryInfo
@@ -720,7 +742,7 @@
 //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
 
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
                                    usingCache:[Model sharedInstance].loadAllCategoryInfo

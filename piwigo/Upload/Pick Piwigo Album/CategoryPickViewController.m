@@ -712,6 +712,12 @@
                 OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
                     if(createdSuccessfully)
                     {
+                        // Post to the app that category data have changed
+                        if ([Model sharedInstance].loadAllCategoryInfo) {
+                            NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+                        }
+
                         // Refresh list of categories (and cache)
                         [self refreshCategoryList];
 
@@ -805,7 +811,7 @@
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"Complete", nil);
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
                 [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];
@@ -891,7 +897,7 @@
     // Show loading HUD when not using cache option,
     if (!(useCache && [Model sharedInstance].loadAllCategoryInfo)) {
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
         
         // Reload category data and set current category
 //        NSLog(@"buildCategoryPk => getAlbumListForCategory(%ld,NO,YES)", (long)self.currentCategoryId);
@@ -1050,7 +1056,7 @@
 //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
         
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
                                    usingCache:[Model sharedInstance].loadAllCategoryInfo
@@ -1174,7 +1180,7 @@
 //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 //
 //        // Show loading HD
-//        [self showHUDwithTitle:NSLocalizedString(@"categorySelectionHUD_label", @"Retrieving Albums Data…")];
+//        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
 //        
 //        [AlbumService getAlbumListForCategory:categoryTapped.albumId
 //                                   usingCache:[Model sharedInstance].loadAllCategoryInfo

@@ -40,7 +40,8 @@ typedef enum {
 @property (nonatomic, readonly) NSInteger onPage;
 
 -(void)addImages:(NSArray*)images;
--(void)removeImage:(PiwigoImageData*)image;
+-(void)removeImages:(NSArray*)images;
+//-(void)removeImage:(PiwigoImageData*)image;
 
 -(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress

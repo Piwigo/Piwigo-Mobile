@@ -661,7 +661,6 @@
                             [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
                                 });
                             }];
                         }
@@ -759,8 +758,8 @@
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"Complete", nil);
-                [hud hideAnimated:YES afterDelay:2.f];
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
+                [hud hideAnimated:YES afterDelay:0.5f];
             } else {
                 [hud hideAnimated:YES];
             }

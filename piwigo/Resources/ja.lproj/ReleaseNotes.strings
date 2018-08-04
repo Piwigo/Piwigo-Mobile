@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.2.2_text" = "Version 2.2.2\n\n• Copy and move images between albums\n• Minor bug fixes and improvement of the interface";
+
 "v2.2.1_text" = "バージョン 2.2.1\n\n• 軽微なバグの修正とインタフェースの改善";
 
 "v2.2.0_text" = "バージョン 2.2\n2018年7月12日\n\n• 任意のアルバムからサブアルバムを生成\n• 規定のアルバム管理の改善\n• iPad (およびiPhone) でのアルバム表示の改善\n• フォトライブラリ変更の検出\n• 軽微なバグの修正とインタフェースの改善";

@@ -191,14 +191,27 @@
 	self.imageList = newImageList;
 }
 
--(void)removeImage:(PiwigoImageData*)image
+-(void)removeImages:(NSArray*)images
 {
-	NSMutableArray *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
-	[newImageArray removeObject:image];
-	self.imageList = newImageArray;
-	
-	[self.imageIds removeObjectForKey:image.imageId];
+    NSMutableArray *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
+    for (PiwigoImageData *image in images) {
+        if ([newImageArray containsObject:image]) {
+            [newImageArray removeObject:image];
+            [self.imageIds removeObjectForKey:image.imageId];
+        }
+    }
+    
+    self.imageList = newImageArray;
 }
+
+//-(void)removeImage:(PiwigoImageData*)image
+//{
+//    NSMutableArray *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
+//    [newImageArray removeObject:image];
+//    self.imageList = newImageArray;
+//    
+//    [self.imageIds removeObjectForKey:image.imageId];
+//}
 
 -(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload
 {

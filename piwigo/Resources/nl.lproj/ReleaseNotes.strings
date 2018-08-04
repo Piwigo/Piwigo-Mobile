@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.2.2_text" = "Versie 2.2.2\n• Kopieer en verplaats foto's naar de albums\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
 "v2.2.1_text" = "Versie 2.2.1\n\n• Kleine foutjes verbeterd en verbetering van de interface";
 
 "v2.2.0_text" = "Versie 2.2\n12 Juli 2018\n\n• Sub-album creaties vanuit elk album\n• Verbeterd beheer met het standaard album\n• Verbeterde albums presentatie op iPad (en iPhone)\n• Constatering van veranderingen van de Foto Bibliotheek\n• Kleine foutjes verbeterd en verbetering van de interface";
@@ -14,11 +16,11 @@
 
 "v2.1.8_text" = "Versie 2.1.8\n29 April 2018\n\n• Voegt de mogelijkheid toe om de grootte van miniaturen te wijzigen\n• HTTPS wordt het standaardprotocol\n• Japansk vertaling\n• Kleine foutjes verbeterd en verbetering van de interface";
 
-"v2.1.7_text" = "Versie 2.1.7 \n3 Februari 2018\n\n• Problemen met video-uploads op sommige servers oplossen";
+"v2.1.7_text" = "Versie 2.1.7 \n3 februari 2018\n\n• Problemen met video-uploads op sommige servers oplossen";
 
 "v2.1.6_text" = "Versie 2.1.6\n7 Januari 2018\n\n• Arabische vertaling\n• Verbeterd HTTP-basistoegangsverificatiebeheer\n• Kleine foutjes verbeterd en verbetering van de interface";
 
-"v2.1.5_text" = "Versie 2.1.5\n21 December 2017\n\n• Voeg mogelijkheid toe om uploads te annuleren\n• Optie toevoegen om foto's te verwijderen na het uploaden\n• Compatibiliteit toevoegen met Optimize Storage (iCloud)\n• Bewaar het beeldformaat na het wijzigen van de afmetingen waar mogelijk\n• Deense en Indonesische vertalingen\n• Fix PNG-formaat vervangen door JPEG voor uploaden\n• Verbeterd PNG-formaat vervangen door JPEG voor uploaden\n• Problemen verhelpen die zijn aangetroffen met iOS 11 en iPhone X\n• Kleine bugs oplossen\n• Codemodernisering";
+"v2.1.5_text" = "Versie 2.1.5\n21 December 2017\n\n• Toegevoegd mogelijkheid om uploads te annuleren\n• Optie toegevoegd om foto's te verwijderen na het uploaden\n• Compatibiliteit toegevoegd met Optimize Storage (iCloud)\n• Bewaar, waar mogelijk, het beeldformaat na het wijzigen van de afmetingen \n• Deense en Indonesische vertalingen\n• Verbeterd: PNG-formaat vervangen door JPEG vóór uploaden\n• Verbeterd: PNG-formaat vervangen door JPEG vóór uploaden\n• Problemen verholpen die zijn aangetroffen met iOS 11 en iPhone X\n• Kleine bugs verbeterd\n• Codemodernisering";
 
 "v2.1.4_text" = "Versie 2.1.4\n31 Oktober 2017\n\n• Zweedse vertaling\n• Foutjes verbeterd";
 
@@ -30,7 +32,7 @@
 
 "v2.1.0_text" = "Versie 2.1\n14 Augustus 2017\n\n• Community extensie overeenstemming\n• Deense, Franse, Poolse vertalingen\n• Fouten verbeterd";
 
-"v2.0.4_text" = "Versie 2.0.4\n28 Juli 2017\n\n• iPad — Verbeterd vage miniaturen en de onmogelijkheid om foto's te bewerken op de iPad\n• Video's — Problemen met uploaden en downloaden verholpen ‎(VideoJS-extensie vereist op server‎)\n• Instellingen — Opties toegevoegd om titels te verwijderen en de resolutie van miniaturen te wijzigen\n• De betrouwbaarheid Verbeterd van de verbinding en melding wanneer het uploaden is voltooid\n• Kleine foutjes verbeterd en verbetering van de interface";
+"v2.0.4_text" = "Versie 2.0.4\n28 Juli 2017\n\n• iPad — Vage miniaturen verbeterd en de onmogelijkheid om foto's te bewerken op de iPad\n• Video's — Problemen met uploaden en downloaden verholpen ‎(VideoJS-extensie vereist op server‎)\n• Instellingen — Opties toegevoegd om titels te verwijderen en de resolutie van miniaturen te wijzigen\n• De betrouwbaarheid verbeterd van de verbinding en melding wanneer het uploaden is voltooid\n• Kleine foutjes verbeterd en verbetering van de interface";
 
 "v2.0.3_text" = "Versie 2.0.3\n26 Mei 2017\n\n• Optie toegevoegd om GPS-metadata te strippen op de pagina Instellingen\n• Huidige cache-gebruik toevoegen op de pagina Instellingen\n• Verbeterde cache-instellingen soms vergeten ‎/ opnieuw instellen\n• Verbeterde upload beeldinstellingen soms verloren ‎/ opnieuw instellen";
 
@@ -38,6 +40,6 @@
 
 "v2.0.1_text" = "Versie 2.0.1\n26 Juni 2015\n\nNieuwe instellingen‎:\n - Optie om het formaat van afbeeldingen te wijzigen bij het uploaden\n   + De beeldkwaliteit is van een bereik van 50 - 98%\n - Mogelijkheid om een standaardfotovoorbeeld in te stellen\nFoutjes verbeterd";
 
-"v2.0.0_text" = "Versie 2.0\n24 April 2015\n\nNieuwe land toepassing met‎:\n - Mogelijkheid om albums te beheren\n - Overzicht van je foto's\n - Bulk foto's uploaden\n - Video uploaden en afspelen ‎(VideoJS-plug-in moet zijn geïnstalleerd‎)";
+"v2.0.0_text" = "Versie 2.0\n24 April 2015\n\nNieuw land toepassing met‎:\n - Mogelijkheid om albums te beheren\n - Bekijk je foto's\n - Bulk foto's uploaden\n - Video uploaden en afspelen ‎(VideoJS-plug-in moet zijn geïnstalleerd)";
 
 "v1.0.0_text" = "Versie 1.0\n17 Oktober 2011";

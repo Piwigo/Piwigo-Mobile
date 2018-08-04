@@ -1,48 +1,56 @@
 //
-//  AllCategoriesViewController.m
+//  MoveImageViewController.m
 //  piwigo
 //
-//  Created by Spencer Baker on 3/16/15.
-//  Copyright (c) 2015 bakercrew. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 27/07/2018.
+//  Copyright © 2018 Piwigo.org. All rights reserved.
 //
 
 #import "AppDelegate.h"
-#import "AllCategoriesViewController.h"
-#import "CategoriesData.h"
 #import "AlbumService.h"
-#import "Model.h"
+#import "CategoriesData.h"
 #import "CategoryTableViewCell.h"
+#import "EditImageDetailsViewController.h"
+#import "ImageService.h"
 #import "MBProgressHUD.h"
+#import "Model.h"
+#import "MoveImageViewController.h"
+#import "PiwigoAlbumData.h"
 
-@interface AllCategoriesViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
+@class PiwigoAlbumData;
+
+@interface MoveImageViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
+@property (nonatomic, strong) PiwigoImageData *selectedImage;
+@property (nonatomic, assign) NSInteger categoryIdOfSelectedImage;
+@property (nonatomic, assign) BOOL copyImage;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
-@property (nonatomic, assign) NSInteger imageId;
-@property (nonatomic, assign) NSInteger categoryId;
-@property (nonatomic, strong) PiwigoAlbumData *categoryData;
 @property (nonatomic, strong) UIViewController *hudViewController;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
-@implementation AllCategoriesViewController
+@implementation MoveImageViewController
 
--(instancetype)initForImageId:(NSInteger)imageId andCategoryId:(NSInteger)categoryId
+-(instancetype)initWithSelectedImage:(PiwigoImageData*)image inCategoryId:(NSInteger)categoryId andCopyOption:(BOOL)copyImage
 {
-	self = [super init];
-	if(self)
-	{
-        self.title = NSLocalizedString(@"categoryImageSet_title", @"Album Thumbnail");
-		self.imageId = imageId;
-		self.categoryId = categoryId;
-        self.categoryData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-
+    self = [super init];
+    if(self)
+    {
+        if (copyImage)
+            self.title = NSLocalizedString(@"copyImage_title", @"Copy to Album");
+        else
+            self.title = NSLocalizedString(@"moveImage_title", @"Move to Album");
+        self.selectedImage = image;
+        self.categoryIdOfSelectedImage = categoryId;
+        self.copyImage = copyImage;
+        
         // List of categories to present
         self.categories = [NSMutableArray new];
         self.categoriesThatShowSubCategories = [NSMutableArray new];
-
+        
         // Table view
         self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -54,15 +62,16 @@
         [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
-
+        
         // Button for cancelling action
-        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitAllCategories)];
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitMoveImage)];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
-	return self;
+    return self;
 }
+
 
 #pragma mark - View Lifecycle
 
@@ -87,7 +96,8 @@
     // Table view
     self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self buildCategoryArrayUsingCache:YES UntilCompletion:^(BOOL result) {
+    [self buildCategoryArrayUsingCache:YES untilCompletion:^(BOOL result) {
+        // Build complete list
         [self.categoriesTableView reloadData];
     } orFailure:^(NSURLSessionTask *task, NSError *error) {
         // Invite users to refresh?
@@ -123,10 +133,22 @@
     } completion:nil];
 }
 
--(void)quitAllCategories
+-(void)quitMoveImage
 {
-    // Leave action and return to Albums and Images
+    // Return to image preview
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)quitMoveImageAndReturnToAlbumView
+{
+    // Return to album view (image moved)
+    [self dismissViewControllerAnimated:YES completion:^{
+        // Update album view and dismiss image detail view
+        if([self.moveImageDelegate respondsToSelector:@selector(didDeleteImage:)])
+        {
+            [self.moveImageDelegate didDeleteImage:self.selectedImage];
+        }
+    }];
 }
 
 
@@ -134,68 +156,51 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
-    
-    if (section == 0)
-    {
-        // Title
-        NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
-        NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
-        CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                     options:NSStringDrawingUsesLineFragmentOrigin
-                                                  attributes:titleAttributes
-                                                     context:context];
-        
-        // Text
-        NSString *textString = NSLocalizedString(@"categorySelection_current", @"Select the current album for this image");
-        NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
-        CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                   options:NSStringDrawingUsesLineFragmentOrigin
-                                                attributes:textAttributes
-                                                   context:context];
-        return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
-    }
+    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:titleAttributes
+                                                 context:context];
     
     // Text
-    NSString *textString = NSLocalizedString(@"categorySelection_other", @"or select another album for this image");
+    NSString *textString;
+    if (self.copyImage)
+        textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.name];
+    else
+        textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.name];
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                options:NSStringDrawingUsesLineFragmentOrigin
                                             attributes:textAttributes
                                                context:context];
-    return ceil(textRect.size.height + 10.0);
+    return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
     
-    if (section == 0)   // Current album
-    {
-        // Title
-        NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
-        NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
-        [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
-                                      range:NSMakeRange(0, [titleString length])];
-        [headerAttributedString appendAttributedString:titleAttributedString];
-        
-        // Text
-        NSString *textString = NSLocalizedString(@"categorySelection_current", @"Select the current album for this image");
-        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
-        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
-                                     range:NSMakeRange(0, [textString length])];
-        [headerAttributedString appendAttributedString:textAttributedString];
-    }
-    else                // Or other albums
-    {
-        // Text
-        NSString *textString = NSLocalizedString(@"categorySelection_other", @"or select another album for this image");
-        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
-        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
-                                     range:NSMakeRange(0, [textString length])];
-        [headerAttributedString appendAttributedString:textAttributedString];
-    }
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                  range:NSMakeRange(0, [titleString length])];
+    [headerAttributedString appendAttributedString:titleAttributedString];
+    
+    // Text
+    NSString *textString;
+    if (self.copyImage)
+        textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.name];
+    else
+        textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.name];
+    NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+    [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                 range:NSMakeRange(0, [textString length])];
+    [headerAttributedString appendAttributedString:textAttributedString];
     
     // Header label
     UILabel *headerLabel = [UILabel new];
@@ -212,35 +217,32 @@
     [header addSubview:headerLabel];
     [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
     if (@available(iOS 11, *)) {
-        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[header]-|"
-                                                                       options:kNilOptions
-                                                                       metrics:nil
-                                                                         views:@{@"header" : headerLabel}]];
+        [header addConstraints:[NSLayoutConstraint
+                                constraintsWithVisualFormat:@"|-[header]-|"
+                                                    options:kNilOptions
+                                                    metrics:nil
+                                                      views:@{@"header" : headerLabel}]];
     } else {
-        [header addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[header]-15-|"
-                                                                       options:kNilOptions
-                                                                       metrics:nil
-                                                                         views:@{@"header" : headerLabel}]];
+        [header addConstraints:[NSLayoutConstraint
+                                constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                                    options:kNilOptions
+                                                    metrics:nil
+                                                      views:@{@"header" : headerLabel}]];
     }
     
     return header;
 }
 
-
 #pragma mark - UITableView - Rows
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 1;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	if(section == 0)
-	{
-		return 1;
-	}
-	return self.categories.count;
+    return self.categories.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -255,30 +257,29 @@
         [tableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumCell_ID];
         cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
     }
-
-	if(indexPath.section == 0)
-	{
-        [cell setupDefaultCellWithCategoryData:self.categoryData];
-	}
-	else
-	{
-        // Determine the depth before setting up the cell
-        PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-        NSInteger depth = [categoryData getDepthOfCategory];
-        PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
-        depth -= [defaultCategoryData getDepthOfCategory];
-        [cell setupWithCategoryData:categoryData atDepth:depth];
-
-        // Switch between Open/Close cell disclosure
-        cell.categoryDelegate = self;
-        if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
-            cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
-        } else {
-            cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
-        }
+    
+    // Determine the depth before setting up the cell
+    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+    NSInteger depth = [categoryData getDepthOfCategory];
+    PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
+    depth -= [defaultCategoryData getDepthOfCategory];
+    [cell setupWithCategoryData:categoryData atDepth:depth];
+    
+    // Category contains selected image?
+    if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
+    {
+        cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
     }
-
-	return cell;
+    
+    // Switch between Open/Close cell disclosure
+    cell.categoryDelegate = self;
+    if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
+        cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
+    } else {
+        cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
+    }
+    
+    return cell;
 }
 
 
@@ -286,40 +287,43 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
-	PiwigoAlbumData *categoryData;
-	
-	if(indexPath.section == 1)
-	{
-        categoryData = [self.categories objectAtIndex:indexPath.row];
-	}
-	else
-	{
-		categoryData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-	}
-	
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    PiwigoAlbumData *categoryData;
+    categoryData = [self.categories objectAtIndex:indexPath.row];
+    
+    // User cannot move/copy image at current place
+    if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)]) return;
+    
+    NSString *message;
+    if (self.copyImage)
+        message = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_message", @"Are you sure you want to copy the image \"%@\" to the album \"%@\"?"), self.selectedImage.name, categoryData.name];
+    else
+        message = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_message", @"Are you sure you want to move the image \"%@\" to the album \"%@\"?"), self.selectedImage.name, categoryData.name];
+
     UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:@""
-                message:[NSString stringWithFormat:NSLocalizedString(@"categoryImageSet_message", @"Are you sure you want to set this image for the album \"%@\"?"), categoryData.name]
-                preferredStyle:UIAlertControllerStyleActionSheet];
+        alertControllerWithTitle:@""
+        message:message
+        preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
-               actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                         style:UIAlertActionStyleCancel
-                       handler:^(UIAlertAction * action) {}];
+       actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+       style:UIAlertActionStyleCancel
+       handler:^(UIAlertAction * action) {
+//           [self.navigationController popViewControllerAnimated:YES];
+       }];
     
-    UIAlertAction* setImageAction = [UIAlertAction
-             actionWithTitle:NSLocalizedString(@"imageOptions_setAlbumImage", @"Set as Album Image")
-                       style:UIAlertActionStyleDefault
-                     handler:^(UIAlertAction * action) {
-                         [self setRepresentativeForCategoryId:categoryData.albumId];
-                     }];
+    UIAlertAction* moveImageAction = [UIAlertAction
+        actionWithTitle:self.copyImage ? NSLocalizedString(@"copyImage_title", @"Copy to Album") : NSLocalizedString(@"moveImage_title", @"Move to Album")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            [self addImageToCategoryId:categoryData.albumId];
+        }];
     
     // Add actions
     [alert addAction:cancelAction];
-    [alert addAction:setImageAction];
-
+    [alert addAction:moveImageAction];
+    
     // Determine position of cell in table view
     CGRect rectOfCellInTableView = [tableView rectForRowAtIndexPath:indexPath];
     
@@ -336,7 +340,7 @@
     
     // Calculate horizontal position of popover view
     rectOfCellInTableView.origin.x -= tableView.frame.size.width - textRect.size.width - tableView.layoutMargins.left - 12;
-
+    
     // Present popover view
     alert.popoverPresentationController.sourceView = tableView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
@@ -345,77 +349,96 @@
 }
 
 
-#pragma mark - Set Category Thumbnail
+#pragma mark - Copy/move image methods
 
--(void)setRepresentativeForCategoryId:(NSInteger)categoryId
+-(void)addImageToCategoryId:(NSInteger)categoryId
 {
     // Display HUD during the update
+    NSString *title = self.copyImage ? NSLocalizedString(@"copySingleImageHUD_copying", @"Copying Image…") : NSLocalizedString(@"moveSingleImageHUD_moving", @"Moving Image…");
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"categoryImageSetHUD_updating", @"Updating Album Thumbnail…")];
+        [self showHUDwithTitle:title];
     });
     
-    // Set image as representative
-	[AlbumService setCategoryRepresentativeForCategory:categoryId
-                forImageId:self.imageId
-              OnCompletion:^(NSURLSessionTask *task, BOOL setSuccessfully) {
-                  if(setSuccessfully)
-                  {
-                      // Update image Id of album
-                      PiwigoAlbumData *category = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-                      category.albumThumbnailId = self.imageId;
-                      
-                      // Update image URL of album
-                      PiwigoImageData *imgData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%@", @(self.imageId)]];
-                      category.albumThumbnailUrl = imgData.ThumbPath;
+    // Update image category list
+    NSMutableArray *categoryIds = [self.selectedImage.categoryIds mutableCopy];
+    [categoryIds addObject:@(categoryId)];
+    if (!self.copyImage && [categoryIds containsObject:@(self.categoryIdOfSelectedImage)]) {
+        [categoryIds removeObject:@(self.categoryIdOfSelectedImage)];
+    }
+    
+    // Send request to Piwigo server
+    [ImageService setCategoriesForImage:self.selectedImage
+          withCategories:categoryIds
+              onProgress:nil
+            OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
+                if (updatedSuccessfully)
+                {
+                    // Update image data
+                    self.selectedImage.categoryIds = categoryIds;
 
-                      // Image will be downloaded when displaying list of albums
-                      category.categoryImage = nil;
-                      
-                      // Close HUD
-                      [self hideHUDwithSuccess:YES completion:^{
-                          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 700 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                              [self quitAllCategories];
-                          });
-                      }];
-                  }
-                  else
-                  {
-                      // Close HUD and inform user
-                      [self hideHUDwithSuccess:NO completion:^{
-                          dispatch_async(dispatch_get_main_queue(),^{
-                              [self showSetRepresentativeError:nil];
-                          });
-                      }];
-                  }
-              } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                  // Close HUD and display error
+                    // Add image to other category
+                    [[[CategoriesData sharedInstance] getCategoryById:categoryId] addImages:@[self.selectedImage]];
+                    [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
+
+                    // Remove image from current category if needed
+                    if (!self.copyImage) {
+                        [[[CategoriesData sharedInstance] getCategoryById:self.categoryIdOfSelectedImage] removeImages:@[self.selectedImage]];
+                        [[[CategoriesData sharedInstance] getCategoryById:self.categoryIdOfSelectedImage] deincrementImageSizeByOne];
+                   }
+
+                    // Post to album views that category data have been updated
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil userInfo:nil];
+
+                    // Hide HUD
+                    [self hideHUDwithSuccess:YES completion:nil];
+
+                    // Return to album view?
+                    if (self.copyImage)
+                        [self quitMoveImage];
+                    else
+                        [self quitMoveImageAndReturnToAlbumView];
+                }
+                else {
                   [self hideHUDwithSuccess:NO completion:^{
-                      dispatch_async(dispatch_get_main_queue(),^{
-                          [self showSetRepresentativeError:[error localizedDescription]];
-                      });
+                      [self showMoveImageErrorWithMessage:nil];
                   }];
-              }];
+                }
+                }
+                onFailure:^(NSURLSessionTask *task, NSError *error) {
+                  [self hideHUDwithSuccess:NO completion:^{
+                      [self showMoveImageErrorWithMessage:[error localizedDescription]];
+                  }];
+                }];
 }
 
--(void)showSetRepresentativeError:(NSString*)message
+-(void)showMoveImageErrorWithMessage:(NSString*)message
 {
-	NSString *bodyMessage = NSLocalizedString(@"categoryImageSetError_message", @"Failed to set the album image");
-	if(message) {
-		bodyMessage = [NSString stringWithFormat:@"%@\n%@", bodyMessage, message];
-	}
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"categoryImageSetError_title", @"Image Set Error")
-                         message:bodyMessage
-                  preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                  style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
-    
-    // Add actions
-    [alert addAction:defaultAction];
-    [self presentViewController:alert animated:YES completion:nil];
-}
+    NSString *errorMessage;
+    if (self.copyImage)
+        errorMessage = NSLocalizedString(@"copySingleImageError_message", @"Failed to copy your image");
+    else
+        errorMessage = NSLocalizedString(@"moveSingleImageError_message", @"Failed to move your image");
 
+    if(message)
+    {
+        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+    }
+    
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:self.copyImage ? NSLocalizedString(@"copyImageError_title", @"Copy Fail") : NSLocalizedString(@"moveImageError_title", @"Move Fail")
+                                message:errorMessage
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:dismissAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 #pragma mark - HUD methods
 
@@ -437,13 +460,12 @@
         [hud setTag:loadingViewTag];
         
         // Change the background view shape, style and color.
-        hud.square = NO;
-        hud.animationType = MBProgressHUDAnimationFade;
+        hud.mode = MBProgressHUDModeIndeterminate;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
         hud.contentColor = [UIColor piwigoHudContentColor];
         hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
-        
+
         // Will look best, if we set a minimum size.
         hud.minSize = CGSizeMake(200.f, 100.f);
     }
@@ -490,7 +512,7 @@
 #pragma mark - Category List Builder
 
 -(void)buildCategoryArrayUsingCache:(BOOL)useCache
-                    UntilCompletion:(void (^)(BOOL result))completion
+                    untilCompletion:(void (^)(BOOL result))completion
                           orFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Show loading HUD when not using cache option,
@@ -500,7 +522,7 @@
         [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
         
         // Reload category data and set current category
-//        NSLog(@"buildCategoryTh => getAlbumListForCategory(%ld,NO,YES)", (long)0);
+//        NSLog(@"buildCategoryMv => getAlbumListForCategory(%ld,NO,YES)", (long)0);
         [AlbumService getAlbumListForCategory:0
                                    usingCache:NO
                               inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
@@ -521,7 +543,7 @@
 #endif
                                         // Hide loading HUD
                                         [self hideHUD];
-
+                                        
                                         if(fail) {
                                             fail(task, error);
                                         }
@@ -602,6 +624,12 @@
             [self.categories addObject:category];
         }
     }
+    
+    // Add root album
+    PiwigoAlbumData *rootAlbum = [PiwigoAlbumData new];
+    rootAlbum.albumId = 0;
+    rootAlbum.name = NSLocalizedString(@"categorySelection_root", @"Root Album");
+    [self.categories insertObject:rootAlbum atIndex:0];
 }
 
 
@@ -654,7 +682,7 @@
     {
         // Sub-categories are not known
 //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
-
+        
         // Show loading HD
         [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
         
@@ -667,6 +695,7 @@
                                      
                                      // Hide loading HUD
                                      [self hideHUD];
+                                     
                                  }
                                     onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
@@ -774,8 +803,8 @@
     // Sub-categories will not be known if user closes several layers at once
     // and caching option loadAllCategoryInfo is not activated
     if (![Model sharedInstance].loadAllCategoryInfo) {
-//        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
-
+        //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
+        
         // Show loading HD
         [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
         
@@ -788,6 +817,7 @@
                                      
                                      // Hide loading HUD
                                      [self hideHUD];
+                                     
                                  }
                                     onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)

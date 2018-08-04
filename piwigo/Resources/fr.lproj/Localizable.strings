@@ -26,8 +26,9 @@
 "alertNextButton" = "Image Suivante";
 "alertTryButton" = "Essayer";
 
-// Complete views
-"Complete" = "Terminé";
+// HUD views
+"loadingHUD_label" = "Chargement…";
+"completeHUD_label" = "Terminé";
 
 // Upload rights
 "uploadRights_title" = "Droits Requis";
@@ -278,10 +279,14 @@
 "deleteImageProgress_title" = "Suppression %@%%";
 
 "deleteSingleImage_title" = "Supprimer l’Image";
+"deleteSingleImageHUD_deleting" = "Suppression de l’Image…";
+"removeSingleImage_title" = "Supprimer de cet album";
+"removeSingleImageHUD_removing" = "Suppression d’Image…";
 "deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ? Opération irréversible !";
 "deleteSeveralImages_title" = "Supprimer %@ Images";
 "deleteSeveralImages_message" = "Êtes-vous sûr de vouloir supprimer la sélection de %@ images ? Opération irréversible !";
 
+// Image delete — Errors
 "deleteImageFail_title" = "Echec de la Suppression";
 "deleteImageFail_message" = "L'Image n’a pas pu être supprimée\n%@";
 
@@ -307,6 +312,26 @@
 
 "videoSaveError_title" = "Vidéo non Enregistrée";
 "videoSaveError_message" = "Impossible d’enregistrer la vidéo. Erreur : %@";
+
+// Image move
+"moveImage_title" = "Déplacer vers l'Album";
+"moveSingleImage_selectAlbum" = "Sélectionnez l'album vers lequel l'image @%@\" sera déplacée";
+"moveSingleImage_message" = "Êtes-vous certain de vouloir déplacer l'image \"%@\" dans l’album \"%@\" ?";
+"moveSingleImageHUD_moving" = "Déplacement de l’Image…";
+
+// Image move — Errors
+"moveImageError_title" = "Échec du déplacement";
+"moveSingleImageError_message" = "Impossible de déplacer votre image";
+
+// Image copy
+"copyImage_title" = "Copiez dans l'Album";
+"copySingleImage_selectAlbum" = "Sélectionnez l'album vers lequel l'image @%@\" sera copiée";
+"copySingleImage_message" = "Êtes-vous certain de vouloir copier l'image \"%@\" dans l’album \"%@\" ?";
+"copySingleImageHUD_copying" = "Copie de l’Image...";
+
+// Image copy — Errors
+"copyImageError_title" = "Échec de la copie";
+"copySingleImageError_message" = "Impossible de copier votre image";
 
 // Images upload
 "imageUploadDetails_title" = "Titre :";

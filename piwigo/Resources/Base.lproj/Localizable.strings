@@ -26,8 +26,9 @@
 "alertNextButton" = "Next Image";
 "alertTryButton" = "Try";
 
-// Complete views
-"Complete" = "Complete";
+// HUD views
+"loadingHUD_label" = "Loading…";
+"completeHUD_label" = "Complete";
 
 // Upload rights
 "uploadRights_title" = "Upload Rights Needed";
@@ -278,10 +279,14 @@
 "deleteImageProgress_title" = "Deleting %@%% Done";
 
 "deleteSingleImage_title" = "Delete Image";
+"deleteSingleImageHUD_deleting" = "Deleting Image…";
+"removeSingleImage_title" = "Remove from Album";
+"removeSingleImageHUD_removing" = "Removing Image…";
 "deleteSingleImage_message" = "Are you sure you want to delete this image? This cannot be undone!";
 "deleteSeveralImages_title" = "Delete %@ Images";
 "deleteSeveralImages_message" = "Are you sure you want to delete the selected %@ images? This cannot be undone!";
 
+// Image delete — Errors
 "deleteImageFail_title" = "Delete Failed";
 "deleteImageFail_message" = "Image could not be deleted\n%@";
 
@@ -307,6 +312,26 @@
 
 "videoSaveError_title" = "Fail Saving Video";
 "videoSaveError_message" = "Failed to save video. Error: %@";
+
+// Image move
+"moveImage_title" = "Move to Album";
+"moveSingleImage_selectAlbum" = "Select an album to move image \"%@\" to";
+"moveSingleImage_message" = "Are you sure you want to move the image \"%@\" to the album \"%@\"?";
+"moveSingleImageHUD_moving" = "Moving Image…";
+
+// Image move — Errors
+"moveImageError_title" = "Move Fail";
+"moveSingleImageError_message" = "Failed to move your image";
+
+// Image copy
+"copyImage_title" = "Copy to Album";
+"copySingleImage_selectAlbum" = "Select an album to copy image \"%@\" to";
+"copySingleImage_message" = "Are you sure you want to copy the image \"%@\" to the album \"%@\"?";
+"copySingleImageHUD_copying" = "Copying Image…";
+
+// Image copy — Errors
+"copyImageError_title" = "Copy Fail";
+"copySingleImageError_message" = "Failed to copy your image";
 
 // Images upload
 "imageUploadDetails_title" = "Title:";

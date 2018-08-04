@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.2.2_text" = "Version 2.2.2\n\n• Copy and move images between albums\n• Minor bug fixes and improvement of the interface";
+
 "v2.2.1_text" = "الإصدار 2.2.1\n\n• Minor bug fixes and improvement of the interface";
 
 "v2.2.0_text" = "الإصدار 2.2\n12 يوليو 2018\n\n• Sub-album creations from any album\n• Improved management with Default Album\n• Improved albums presentation on iPad (and iPhone)\n• Detection of Photo Library changes\n• Minor bug fixes and improvement of the interface";

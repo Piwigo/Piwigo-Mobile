@@ -164,7 +164,7 @@
                                  onProgress:progress
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                                    
-                                   // update the cache
+                                   // Update cache
                                    [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateCacheWithImageUploadInfo:imageInfo];
                                    
                                    if(completion)

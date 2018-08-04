@@ -13,11 +13,11 @@
 #import "EditImageLabelTableViewCell.h"
 #import "TagsTableViewCell.h"
 #import "ImageUpload.h"
+#import "ImageService.h"
+#import "MBProgressHUD.h"
 #import "SelectPrivacyViewController.h"
 #import "TagsViewController.h"
-#import "ImageService.h"
 #import "UploadService.h"
-#import "MBProgressHUD.h"
 
 typedef enum {
 	EditImageDetailsOrderImageName,
@@ -86,15 +86,15 @@ typedef enum {
     // Set colors, fonts, etc.
     [self paletteChanged];
 
-    // Navigation buttons
+    // Navigation buttons in edition mode
     if(self.isEdit)
-	{
+    {
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
 		UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
 		
 		self.navigationItem.leftBarButtonItem = cancel;
 		self.navigationItem.rightBarButtonItem = done;
-	}
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -106,6 +106,24 @@ typedef enum {
 		[self prepareImageForChanges];
 		[self.delegate didFinishEditingDetails:self.imageDetails];
 	}
+}
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    //Reload the tableview on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        
+        // On iPad, the Settings section is presented in a centered popover view
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
+            [self.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(mainScreenBounds), CGRectGetMidY(mainScreenBounds), 0, 0)];
+            self.preferredContentSize = CGSizeMake(ceil(CGRectGetWidth(mainScreenBounds)*2/3), ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+        }
+        
+        // Reload table view
+        [self.editImageDetailsTableView reloadData];
+    } completion:nil];
 }
 
 -(void)prepareImageForChanges
@@ -123,37 +141,38 @@ typedef enum {
 -(void)setIsEdit:(BOOL)isEditChoice
 {
     _isEdit = isEditChoice;
-    [ImageService getImageInfoById:self.imageDetails.imageId
-                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-                      self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
-                      [self.editImageDetailsTableView reloadData];
-                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                      // Failed — Ask user if he/she wishes to retry
-                      UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                            message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-                            preferredStyle:UIAlertControllerStyleAlert];
-                      
-                      UIAlertAction* dismissAction = [UIAlertAction
-                              actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                              style:UIAlertActionStyleCancel
-                              handler:^(UIAlertAction * action) {}];
-                  
-                      UIAlertAction* retryAction = [UIAlertAction
-                              actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                              style:UIAlertActionStyleDefault
-                              handler:^(UIAlertAction * action) {
-                                  self.isEdit = isEditChoice;
-                              }];
-
-                      [alert addAction:dismissAction];
-                      [alert addAction:retryAction];
-                      [self presentViewController:alert animated:YES completion:nil];
-                  }];
+//    [ImageService getImageInfoById:self.imageDetails.imageId
+//                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+//                      self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
+//                      [self.editImageDetailsTableView reloadData];
+//                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
+//                      // Failed — Ask user if he/she wishes to retry
+//                      UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+//                            message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+//                            preferredStyle:UIAlertControllerStyleAlert];
+//
+//                      UIAlertAction* dismissAction = [UIAlertAction
+//                              actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+//                              style:UIAlertActionStyleCancel
+//                              handler:^(UIAlertAction * action) {}];
+//
+//                      UIAlertAction* retryAction = [UIAlertAction
+//                              actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+//                              style:UIAlertActionStyleDefault
+//                              handler:^(UIAlertAction * action) {
+//                                  self.isEdit = isEditChoice;
+//                              }];
+//
+//                      [alert addAction:dismissAction];
+//                      [alert addAction:retryAction];
+//                      [self presentViewController:alert animated:YES completion:nil];
+//                  }];
 }
 
 -(void)cancelEdit
 {
-	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+	[self dismissViewControllerAnimated:YES completion:nil];
+//    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)doneEdit
@@ -174,7 +193,8 @@ typedef enum {
 							// complete
                             [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 700 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                                    [self dismissViewControllerAnimated:YES completion:nil];
+//                                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                                 });
                             }];
 						} onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -239,7 +259,7 @@ typedef enum {
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"Complete", nil);
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
                 [hud hideAnimated:YES afterDelay:2.f];
             } else {
                 [hud hideAnimated:YES];

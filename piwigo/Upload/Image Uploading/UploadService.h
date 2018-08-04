@@ -11,6 +11,7 @@
 FOUNDATION_EXPORT NSString * const kUploadImage;
 
 @class ImageUpload;
+@class PiwigoImageData;
 
 @interface UploadService : NetworkHandler
 

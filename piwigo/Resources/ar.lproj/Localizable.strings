@@ -26,8 +26,9 @@
 "alertNextButton" = "الصورة الموالية";
 "alertTryButton" = "محاولة";
 
-// Complete views
-"Complete" = "أكتمل";
+// HUD views
+"loadingHUD_label" = "Loading…";
+"completeHUD_label" = "Complete";
 
 // Upload rights
 "uploadRights_title" = "تحميل الحقوق المطلوبة";
@@ -278,10 +279,14 @@
 "deleteImageProgress_title" = "تم حذف %@%%";
 
 "deleteSingleImage_title" = "حذف الصورة";
+"deleteSingleImageHUD_deleting" = "Deleting Image…";
+"removeSingleImage_title" = "Remove from Album";
+"removeSingleImageHUD_removing" = "Removing Image…";
 "deleteSingleImage_message" = "هل أنت متأكد أنك تريد حذف هذه الصورة؟ هذا لا يمكن التراجع عنه!";
 "deleteSeveralImages_title" = "حذف الصور";
 "deleteSeveralImages_message" = "هل تريد بالتأكيد حذف %@ من الصور المحددة؟ هذا لا يمكن التراجع عنه!";
 
+// Image delete — Errors
 "deleteImageFail_title" = "فشل الحذف";
 "deleteImageFail_message" = "تعذر حذف الصورة\n%@";
 
@@ -307,6 +312,26 @@
 
 "videoSaveError_title" = "أخفق حفظ الفيديو";
 "videoSaveError_message" = "أخفق حفظ الفيديو. خطأ:%@";
+
+// Image move
+"moveImage_title" = "Move to Album";
+"moveSingleImage_selectAlbum" = "Select an album to move image \"%@\" to";
+"moveSingleImage_message" = "Are you sure you want to move the image \"%@\" to the album \"%@\"?";
+"moveSingleImageHUD_moving" = "Moving Image…";
+
+// Image move — Errors
+"moveImageError_title" = "Move Fail";
+"moveSingleImageError_message" = "Failed to move your image";
+
+// Image copy
+"copyImage_title" = "Copy to Album";
+"copySingleImage_selectAlbum" = "Select an album to copy image \"%@\" to";
+"copySingleImage_message" = "Are you sure you want to copy the image \"%@\" to the album \"%@\"?";
+"copySingleImageHUD_copying" = "Copying Image…";
+
+// Image copy — Errors
+"copyImageError_title" = "Copy Fail";
+"copySingleImageError_message" = "Failed to copy your image";
 
 // Images upload
 "imageUploadDetails_title" = "العنوان:";

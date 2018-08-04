@@ -26,8 +26,9 @@
 "alertNextButton" = "Volgende foto";
 "alertTryButton" = "Proberen";
 
-// Complete views
-"Complete" = "Klaar";
+// HUD views
+"loadingHUD_label" = "Bezig met laden…";
+"completeHUD_label" = "Klaar";
 
 // Upload rights
 "uploadRights_title" = "Upload-rechten nodig";
@@ -278,10 +279,14 @@
 "deleteImageProgress_title" = "Verwijderen van %@%% voltooid";
 
 "deleteSingleImage_title" = "Foto verwijderen";
+"deleteSingleImageHUD_deleting" = "Foto verwijderen…";
+"removeSingleImage_title" = "Verwijder uit album";
+"removeSingleImageHUD_removing" = "Foto verwijderen…";
 "deleteSingleImage_message" = "Weet je zeker dat je dit bestand wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
 "deleteSeveralImages_title" = "Verwijder %@ foto's";
 "deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
 
+// Image delete — Errors
 "deleteImageFail_title" = "Verwijderen is mislukt";
 "deleteImageFail_message" = "Foto kon niet worden verwijderd.\n%@";
 
@@ -307,6 +312,26 @@
 
 "videoSaveError_title" = "Opslaan video is mislukt";
 "videoSaveError_message" = "Opslaan video is mislukt. Fout: %@";
+
+// Image move
+"moveImage_title" = "Verplaats naar album";
+"moveSingleImage_selectAlbum" = "Kies een album om er foto \"%@\" naar toe te verplaatsen";
+"moveSingleImage_message" = "Weet je zeker dat je foto \"%@\" naar album \"%@\" wilt verplaatsen?";
+"moveSingleImageHUD_moving" = "Verplaatsen van foto…";
+
+// Image move — Errors
+"moveImageError_title" = "Verplaatsingsfout";
+"moveSingleImageError_message" = "Je foto verplaatsen is niet gelukt";
+
+// Image copy
+"copyImage_title" = "Kopieer naar album";
+"copySingleImage_selectAlbum" = "Kies een album om er foto \"%@\" naar toe te kopiëren";
+"copySingleImage_message" = "Wet je zeker dat je foto \"%@\" naar album \"%@\" wilt kopiëren?";
+"copySingleImageHUD_copying" = "Kopiëren van foto…";
+
+// Image copy — Errors
+"copyImageError_title" = "Kopiëren niet gelukt";
+"copySingleImageError_message" = "Je foto kopiëren is niet gelukt";
 
 // Images upload
 "imageUploadDetails_title" = "Titel:";
