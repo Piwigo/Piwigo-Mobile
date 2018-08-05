@@ -56,9 +56,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
 	[newCategories removeObjectAtIndex:index];
 	self.allCategories = newCategories;
-
-    // Post to the app that the category data has been updated
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 -(void)replaceAllCategories:(NSArray*)categories

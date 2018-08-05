@@ -659,9 +659,14 @@
                         if(deletedSuccessfully)
                         {
                             [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
-                                });
+                                
+                                [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
+                                
+                                // Post to the app that category data have changed
+                                if ([Model sharedInstance].loadAllCategoryInfo) {
+                                    NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+                                }
                             }];
                         }
                         else
