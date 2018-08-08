@@ -468,6 +468,40 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
           }
         }
+        else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        {
+            // Interface depends on device and orientation
+            if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
+                (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
+                 ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
+                    
+                    // Hide navigation bar left buttons and use a toolbar
+                    [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
+                    
+                    // Redefine bar buttons (definition lost after rotation of device)
+                    self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+                    self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
+                    self.downloadBarButton.tintColor = [UIColor piwigoOrange];
+                    self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
+                    self.moveBarButton.tintColor = [UIColor piwigoOrange];
+                    
+                    // Present toolbar
+                    [self.navigationController setToolbarHidden:NO animated:YES];
+                    self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton];
+                    self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
+                    self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
+                }
+            else    // iPhone in landscape mode, iPad in any orientation
+            {
+                // Hide toolbar
+                [self.navigationController setToolbarHidden:YES animated:YES];
+                
+                // Present buttons in the navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.moveBarButton, self.downloadBarButton] animated:YES];
+                self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
+            }
+        }
         else    // No rights => No toolbar, only download button
         {
             // Hide toolbar
