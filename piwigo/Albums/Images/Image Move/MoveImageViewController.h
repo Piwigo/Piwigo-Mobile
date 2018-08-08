@@ -12,14 +12,22 @@
 
 @protocol MoveImageDelegate <NSObject>
 
--(void)didDeleteImage:(PiwigoImageData*)image;
+-(void)didRemoveImage:(PiwigoImageData*)image;
+
+@end
+
+@protocol MoveImagesDelegate <NSObject>
+
+-(void)didRemoveImage:(PiwigoImageData*)image;
+-(void)deselectImages;
 
 @end
 
 @interface MoveImageViewController : UIViewController
 
 @property (nonatomic, weak) id<MoveImageDelegate> moveImageDelegate;
+@property (nonatomic, weak) id<MoveImagesDelegate> moveImagesDelegate;
 
--(instancetype)initWithSelectedImage:(PiwigoImageData*)image inCategoryId:(NSInteger)categoryId andCopyOption:(BOOL)copyImage;
+-(instancetype)initWithSelectedImageIds:(NSArray*)imageIds orSingleImageData:(PiwigoImageData *)imageData inCategoryId:(NSInteger)categoryId andCopyOption:(BOOL)copyImage;
 
 @end

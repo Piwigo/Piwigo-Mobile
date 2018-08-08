@@ -168,7 +168,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         // iPhone
         if ([Model sharedInstance].hasAdminRights)
         {
-            // User with admin rights can edit, delete images and set as album image
+            // User with admin rights can move, edit, delete images and set as album image
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
             self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
 
@@ -220,12 +220,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
 }
 
+
 #pragma mark - Retrieve Image Data
 
 -(void)retrieveCompleteImageDataOfImageId:(NSInteger)imageId
 {
     // Image data are not complete when retrieved using pwg.categories.getImages
-    // Required by Copy, Delete, Move actions (may also be eploited to show list of albums it belongs to)
+    // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:imageId
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
               self.imageData = imageDataComplete;
@@ -237,15 +238,19 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                             preferredStyle:UIAlertControllerStyleAlert];
               
               UIAlertAction* dismissAction = [UIAlertAction
-                  actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                  actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                   style:UIAlertActionStyleCancel
-                  handler:^(UIAlertAction * action) {}];
+                  handler:^(UIAlertAction * action) {
+                      self.editBarButton.enabled = NO;
+                      self.deleteBarButton.enabled = NO;
+                      self.moveBarButton.enabled = NO;
+                  }];
               
               UIAlertAction* retryAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                    actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
                     style:UIAlertActionStyleDefault
                     handler:^(UIAlertAction * action) {
-                        
+                        [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
                     }];
               
               [alert addAction:dismissAction];
@@ -471,7 +476,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                    [self hideHUDwithSuccess:YES completion:nil];
 
                    // Return to album view
-                   [self didDeleteImage:self.imageData];
+                   [self didRemoveImage:self.imageData];
                }
                else {
                    [self hideHUDwithSuccess:NO completion:^{
@@ -501,7 +506,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                  [self hideHUDwithSuccess:YES completion:nil];
 
                  // Return to album view
-                 [self didDeleteImage:self.imageData];
+                 [self didRemoveImage:self.imageData];
              }
                     onFailure:^(NSURLSessionTask *task, NSError *error) {
                  [self hideHUDwithSuccess:NO completion:^{
@@ -749,7 +754,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
-                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImage:self.imageData inCategoryId:self.categoryId andCopyOption:YES];
+                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId andCopyOption:YES];
                 moveImageVC.moveImageDelegate = self;
                 [self pushView:moveImageVC];
             }];
@@ -758,7 +763,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
-                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImage:self.imageData inCategoryId:self.categoryId andCopyOption:NO];
+                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId andCopyOption:NO];
                 moveImageVC.moveImageDelegate = self;
                 [self pushView:moveImageVC];
             }];
@@ -904,7 +909,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 #pragma mark - MoveImageDelegate Methods
 
--(void)didDeleteImage:(PiwigoImageData *)image
+-(void)didRemoveImage:(PiwigoImageData *)image
 {
     // Update album data
     if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])

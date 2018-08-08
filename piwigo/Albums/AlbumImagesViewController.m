@@ -38,7 +38,7 @@
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, ImageDetailDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -54,6 +54,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) UIBarButtonItem *spaceBetweenButtons;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *downloadBarButton;
+@property (nonatomic, strong) UIBarButtonItem *moveBarButton;
 @property (nonatomic, strong) UIButton *uploadButton;
 @property (nonatomic, strong) UIButton *homeAlbumButton;
 
@@ -118,6 +119,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.deleteBarButton.tintColor = [UIColor redColor];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
         self.downloadBarButton.tintColor = [UIColor piwigoOrange];
+        self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
+        self.moveBarButton.tintColor = [UIColor piwigoOrange];
         self.navigationController.toolbar.barStyle = UIBarStyleDefault;
         self.navigationController.toolbarHidden = YES;
 
@@ -443,12 +446,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 self.deleteBarButton.tintColor = [UIColor redColor];
                 self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
                 self.downloadBarButton.tintColor = [UIColor piwigoOrange];
+                self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
+                self.moveBarButton.tintColor = [UIColor piwigoOrange];
 
                 // Present toolbar
                 [self.navigationController setToolbarHidden:NO animated:YES];
-                self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+                self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton, self.spaceBetweenButtons, self.deleteBarButton];
                 self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
             }
             else    // iPhone in landscape mode, iPad in any orientation
             {
@@ -456,12 +462,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 [self.navigationController setToolbarHidden:YES animated:YES];
 
                 // Present buttons in the navigation bar
-                [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton, self.deleteBarButton] animated:YES];
+                [self.navigationItem setLeftBarButtonItems:@[self.moveBarButton, self.downloadBarButton, self.deleteBarButton] animated:YES];
                 self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
-            }
+                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
+          }
         }
-        else    // No delete rights => No Delete button and navigation bar (no toolbar)
+        else    // No rights => No toolbar, only download button
         {
             // Hide toolbar
             [self.navigationController setToolbarHidden:YES animated:YES];
@@ -907,7 +914,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	
     [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
     
-    // Image data are not always available —> Load them
+    // Image data are not fully known —> Load them
     [ImageService getImageInfoById:[self.selectedImageIds.lastObject integerValue]
               ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
@@ -1255,6 +1262,48 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 		[self.selectedImageIds removeLastObject];
 		[self downloadImage];
 	}
+}
+
+
+#pragma mark - Move/Copy images to Category
+
+-(void)addImagesToCategory
+{
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:nil message:nil
+                                preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* copyAction = [UIAlertAction
+                                 actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * action) {
+                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:nil inCategoryId:self.categoryId andCopyOption:YES];
+                                     moveImageVC.moveImagesDelegate = self;
+                                     [self pushView:moveImageVC];
+                                 }];
+    
+    UIAlertAction* moveAction = [UIAlertAction
+                                 actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * action) {
+                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:nil inCategoryId:self.categoryId andCopyOption:NO];
+                                     moveImageVC.moveImagesDelegate = self;
+                                     [self pushView:moveImageVC];
+                                 }];
+    
+    // Add actions
+    [alert addAction:cancelAction];
+    [alert addAction:copyAction];
+    [alert addAction:moveAction];
+    
+    // Present list of actions
+    alert.popoverPresentationController.barButtonItem = self.moveBarButton;
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 
@@ -1632,6 +1681,20 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 }
 
 
+#pragma mark - MoveImagesDelegate methods
+
+-(void)didRemoveImage:(PiwigoImageData *)image
+{
+    [self.albumData removeImage:image];
+    [self.imagesCollection reloadData];
+}
+
+-(void)deselectImages
+{
+    [self cancelSelect];
+}
+
+
 #pragma mark - CategorySortDelegate Methods
 
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
@@ -1651,7 +1714,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         // Push sub-album view controller
         [self.navigationController pushViewController:viewController animated:YES];
     }
-    else if ([viewController isKindOfClass:[MoveCategoryViewController class]]) {
+    else if (([viewController isKindOfClass:[MoveCategoryViewController class]]) ||
+             ([viewController isKindOfClass:[MoveImageViewController class]])) {
         // Present album list for moving current album
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
         navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
