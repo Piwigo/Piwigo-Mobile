@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UITableView *categoriesTableView;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
 @property (nonatomic, strong) NSMutableArray *selectedImages;
+@property (nonatomic, assign) double nberOfSelectedImages;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 @property (nonatomic, assign) NSInteger categoryIdOfSelectedImages;
 @property (nonatomic, assign) BOOL copyImage;
@@ -131,7 +132,7 @@
         // Display HUD
         dispatch_async(dispatch_get_main_queue(), ^{
             self.isLoadingImageData = YES;
-            [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
+            [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") andMode:MBProgressHUDModeIndeterminate];
         });
         
         // Start loading data of all image Ids
@@ -470,13 +471,17 @@
     NSString *title;
     if (self.selectedImages.count > 0) {
         title = self.copyImage ? NSLocalizedString(@"copySeveralImagesHUD_copying", @"Copying Images…") : NSLocalizedString(@"moveSeveralImagesHUD_moving", @"Moving Images…");
+        self.nberOfSelectedImages = (double)(self.selectedImages.count);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showHUDwithTitle:title andMode:MBProgressHUDModeAnnularDeterminate];
+        });
     }
     else {
         title = self.copyImage ? NSLocalizedString(@"copySingleImageHUD_copying", @"Copying Image…") : NSLocalizedString(@"moveSingleImageHUD_moving", @"Moving Image…");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showHUDwithTitle:title andMode:MBProgressHUDModeIndeterminate];
+        });
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:title];
-    });
     
     // Start copying/moving images
     if (self.selectedImages.count > 0) {
@@ -533,10 +538,16 @@
                         // Next image
                         [self.selectedImages removeLastObject];
                         self.selectedImage = [self.selectedImages lastObject];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [MBProgressHUD HUDForView:self.hudViewController.view].progress = 1.0 - (double)(self.selectedImages.count) / self.nberOfSelectedImages;
+                        });
                         [self addImageToCategoryId:categoryId];
                     }
                     else {
                         // Update album view if image moved
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [MBProgressHUD HUDForView:self.hudViewController.view].progress = 1.0;
+                        });
                         if (!self.copyImage) {
                             if([self.moveImagesDelegate respondsToSelector:@selector(didRemoveImage:)])
                             {
@@ -599,7 +610,7 @@
 
 #pragma mark - HUD methods
 
--(void)showHUDwithTitle:(NSString *)title
+-(void)showHUDwithTitle:(NSString *)title andMode:(MBProgressHUDMode)mode
 {
     // Determine the present view controller if needed (not necessarily self.view)
     if (!self.hudViewController) {
@@ -617,7 +628,7 @@
         [hud setTag:loadingViewTag];
         
         // Change the background view shape, style and color.
-        hud.mode = MBProgressHUDModeIndeterminate;
+        hud.mode = mode;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
         hud.contentColor = [UIColor piwigoHudContentColor];
@@ -678,7 +689,7 @@
           && ([Model sharedInstance].defaultCategory == 0))) {
         // Show loading HD
         self.isLoadingCategories = YES;
-        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") andMode:MBProgressHUDModeIndeterminate];
         
         // Reload category data and set current category
 //        NSLog(@"buildCategoryMv => getAlbumListForCategory(%ld,NO,YES)", (long)0);
@@ -845,7 +856,7 @@
 //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
         
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") andMode:MBProgressHUDModeIndeterminate];
         
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
                                    usingCache:[Model sharedInstance].loadAllCategoryInfo
@@ -967,7 +978,7 @@
         //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
         
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") andMode:MBProgressHUDModeIndeterminate];
         
         [AlbumService getAlbumListForCategory:categoryTapped.albumId
                                    usingCache:[Model sharedInstance].loadAllCategoryInfo
