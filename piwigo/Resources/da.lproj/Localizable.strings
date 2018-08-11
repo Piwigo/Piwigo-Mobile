@@ -27,8 +27,8 @@
 "alertTryButton" = "Forsøg";
 
 // HUD views
-"loadingHUD_label" = "Loading…";
-"completeHUD_label" = "Complete";
+"loadingHUD_label" = "Indlæser…";
+"completeHUD_label" = "Udført";
 
 // Upload rights
 "uploadRights_title" = "Rettigheder til Upload Påkrævet";
@@ -279,9 +279,9 @@
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";
 
 "deleteSingleImage_title" = "Slet Billede";
-"deleteSingleImageHUD_deleting" = "Deleting Image…";
-"removeSingleImage_title" = "Remove from Album";
-"removeSingleImageHUD_removing" = "Removing Image…";
+"deleteSingleImageHUD_deleting" = "Sletter foto…";
+"removeSingleImage_title" = "Fjern fra Album";
+"removeSingleImageHUD_removing" = "Sletter foto…";
 "deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede? Dette kan ikke fortrydes!";
 "deleteSeveralImages_title" = "Slet %@ Billeder";
 "deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder? Dette kan ikke fortrydes!";
@@ -314,30 +314,30 @@
 "videoSaveError_message" = "Kunne ikke gemme video. Fejl: %@";
 
 // Image move
-"moveImage_title" = "Move to Album";
-"moveSingleImage_selectAlbum" = "Select an album to move image \"%@\" to";
-"moveSeveralImages_selectAlbum" = "Select an album to move the images to";
-"moveSingleImage_message" = "Are you sure you want to move the image \"%@\" to the album \"%@\"?";
-"moveSeveralImages_message" = "Are you sure you want to move the images to the album \"%@\"?";
-"moveSingleImageHUD_moving" = "Moving Image…";
-"moveSeveralImagesHUD_moving" = "Moving Images…";
+"moveImage_title" = "Flyt til album";
+"moveSingleImage_selectAlbum" = "Vælg et album at flytte billede \"%@\" til";
+"moveSeveralImages_selectAlbum" = "Vælg et album at flytte billederne til";
+"moveSingleImage_message" = "Er du sikker på du vil flytte billede \"%@\" til albummet \"%@\"?";
+"moveSeveralImages_message" = "Er du sikker på du vil flytte billederne til album \"%@\"?";
+"moveSingleImageHUD_moving" = "Flytter billeder…";
+"moveSeveralImagesHUD_moving" = "Flytter billeder…";
 
 // Image move — Errors
-"moveImageError_title" = "Move Fail";
-"moveSingleImageError_message" = "Failed to move your image";
+"moveImageError_title" = "Flytning mislykkedes";
+"moveSingleImageError_message" = "Kunne ikke flytte dit billede";
 
 // Image copy
-"copyImage_title" = "Copy to Album";
-"copySingleImage_selectAlbum" = "Select an album to copy image \"%@\" to";
-"copySeveralImages_selectAlbum" = "Select an album to copy the images to";
-"copySingleImage_message" = "Are you sure you want to copy the image \"%@\" to the album \"%@\"?";
-"copySeveralImages_message" = "Are you sure you want to copy the images to the album \"%@\"?";
-"copySingleImageHUD_copying" = "Copying Image…";
-"copySeveralImagesHUD_copying" = "Copying Images…";
+"copyImage_title" = "Kopier til album";
+"copySingleImage_selectAlbum" = "Vælg et album at kopiere billede \"%@\" til";
+"copySeveralImages_selectAlbum" = "Vælg et album at kopiere billederne til";
+"copySingleImage_message" = "Er du sikker på du vil flytte billede \"%@\" til album \"%@\"?";
+"copySeveralImages_message" = "Er du sikker på du vil flytte billederne til album \"%@\"?";
+"copySingleImageHUD_copying" = "Kopierer billeder…";
+"copySeveralImagesHUD_copying" = "Kopierer billeder…";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
-"copySingleImageError_message" = "Failed to copy your image";
+"copyImageError_title" = "Kopiering mislykkedes";
+"copySingleImageError_message" = "Kunne ikke kopiere dit billede";
 
 // Images upload
 "imageUploadDetails_title" = "Titel:";

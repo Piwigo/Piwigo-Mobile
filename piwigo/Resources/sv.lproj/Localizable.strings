@@ -27,8 +27,8 @@
 "alertTryButton" = "Prova";
 
 // HUD views
-"loadingHUD_label" = "Loading…";
-"completeHUD_label" = "Complete";
+"loadingHUD_label" = "Laddar…";
+"completeHUD_label" = "Klart";
 
 // Upload rights
 "uploadRights_title" = "Behörighet för uppladdning krävs";
@@ -279,9 +279,9 @@
 "deleteImageProgress_title" = "Radering av %@%% utförd";
 
 "deleteSingleImage_title" = "Radera bild";
-"deleteSingleImageHUD_deleting" = "Deleting Image…";
-"removeSingleImage_title" = "Remove from Album";
-"removeSingleImageHUD_removing" = "Removing Image…";
+"deleteSingleImageHUD_deleting" = "Raderar bild…";
+"removeSingleImage_title" = "Ta bort från Album";
+"removeSingleImageHUD_removing" = "Ta bort bild…";
 "deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";
 "deleteSeveralImages_title" = "Radera %@ bilder";
 "deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna? Åtgärden kan inte ångras!";
@@ -314,30 +314,30 @@
 "videoSaveError_message" = "Kunde inte spara videon. Fel: %@";
 
 // Image move
-"moveImage_title" = "Move to Album";
-"moveSingleImage_selectAlbum" = "Select an album to move image \"%@\" to";
-"moveSeveralImages_selectAlbum" = "Select an album to move the images to";
-"moveSingleImage_message" = "Are you sure you want to move the image \"%@\" to the album \"%@\"?";
-"moveSeveralImages_message" = "Are you sure you want to move the images to the album \"%@\"?";
-"moveSingleImageHUD_moving" = "Moving Image…";
-"moveSeveralImagesHUD_moving" = "Moving Images…";
+"moveImage_title" = "Flytta till Album";
+"moveSingleImage_selectAlbum" = "Välj ett album att flytta bild \"%@\" till";
+"moveSeveralImages_selectAlbum" = "Välj ett album att flytta bilderna till";
+"moveSingleImage_message" = "Är du säker på att du vill flytta bilden ”%@” till albumet ”%@”?";
+"moveSeveralImages_message" = "Är du säker på att du vill flytta bilderna till albumet ”%@”?";
+"moveSingleImageHUD_moving" = "Flyttar bild…";
+"moveSeveralImagesHUD_moving" = "Flyttar bilderna…";
 
 // Image move — Errors
-"moveImageError_title" = "Move Fail";
-"moveSingleImageError_message" = "Failed to move your image";
+"moveImageError_title" = "Flytt misslyckades";
+"moveSingleImageError_message" = "Kunde inte flytta din bild";
 
 // Image copy
-"copyImage_title" = "Copy to Album";
-"copySingleImage_selectAlbum" = "Select an album to copy image \"%@\" to";
-"copySeveralImages_selectAlbum" = "Select an album to copy the images to";
-"copySingleImage_message" = "Are you sure you want to copy the image \"%@\" to the album \"%@\"?";
-"copySeveralImages_message" = "Are you sure you want to copy the images to the album \"%@\"?";
-"copySingleImageHUD_copying" = "Copying Image…";
-"copySeveralImagesHUD_copying" = "Copying Images…";
+"copyImage_title" = "Kopiera till Album";
+"copySingleImage_selectAlbum" = "Välj ett album att kopiera bild \"%@\" till";
+"copySeveralImages_selectAlbum" = "Välj ett album att kopiera bilderna till";
+"copySingleImage_message" = "Är du säker att du vill kopiera bild ”%@” till albumet ”%@”?";
+"copySeveralImages_message" = "Är du säker att du vill kopiera bilderna till albumet ”%@”?";
+"copySingleImageHUD_copying" = "Kopierar bild…";
+"copySeveralImagesHUD_copying" = "Kopierar bilderna…";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
-"copySingleImageError_message" = "Failed to copy your image";
+"copyImageError_title" = "Kopiering misslyckad";
+"copySingleImageError_message" = "Kunde inte kopiera din bild";
 
 // Images upload
 "imageUploadDetails_title" = "Titel:";
@@ -511,4 +511,4 @@
 "settings_pwgForumURL" = "http://Piwigo.org/forum";
 "settings_acknowledgements" = "Tack till och erkännanden";
 "settings_users" = "Användare";
-"settings_groups" = "Groups";
+"settings_groups" = "Grupper";

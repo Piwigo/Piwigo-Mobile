@@ -22,13 +22,13 @@
 "alertTryAgainButton" = "Erneut versuchen";
 "alertCancelButton" = "Abbrechen";
 "alertAddButton" = "Hinzufügen";
-"alertRetryButton" = "Wiederholen";
+"alertRetryButton" = "Erneut versuchen";
 "alertNextButton" = "Nächstes Bild";
 "alertTryButton" = "Probieren";
 
 // HUD views
-"loadingHUD_label" = "Loading…";
-"completeHUD_label" = "Complete";
+"loadingHUD_label" = "Laden…";
+"completeHUD_label" = "Abgeschlossen";
 
 // Upload rights
 "uploadRights_title" = "Erforderliche Rechte zum Hochladen benötigt";
@@ -64,10 +64,10 @@
 "serverMethodsError_title" = "Unbekannte Methoden";
 "serverMethodsError_message" = "Fehler beim Abrufen der Servermethoden. Probleme mit dem Piwigo Server?";
 
-"loginError_title" = "Anmeldung Fehlgeschlagen";
+"loginError_title" = "Anmeldung fehlgeschlagen";
 "loginError_message" = "Benutzername und Passwort stimmen für die angegebene Webadresse nicht überein";
 "loginEmptyServer_title" = "Webadresse eingeben";
-"loginEmptyServer_message" = "Bitte wählen Sie ein Protokoll und geben Sie eine Piwigo Webadresse ein, um fortfahren zu können.";
+"loginEmptyServer_message" = "Bitte wähle ein Protokoll und gib eine Piwigo Webadresse ein, um fortfahren zu können.";
 
 "serverConnectionError_title" = "Verbindung fehlgeschlagen";
 "serverConnectionError_message" = "Eine gesicherte HTTPS-Verbindung konnte nicht hergestellt werden. Bitte überprüfen Sie die Adresse oder versuchen Sie es im unverschlüsselten HTTP-Modus?";
@@ -78,8 +78,8 @@
 "sessionStatusError_title" = "Authentifizierung fehlgeschlagen";
 "sessionStatusError_message" = "Konnte den Server nicht authentifizieren. Versuche erneute Anmeldung.";
 
-"serverCommunityError_title" = "Kommunikationsfehler";
-"serverCommunityError_message" = "Konnte die Parameter der CommunityErweiterung nicht abrufen. Versuche erneute Anmeldung.";
+"serverCommunityError_title" = "Community Fehler";
+"serverCommunityError_message" = "Konnte die Parameter der Community Erweiterung nicht abrufen. Versuche erneute Anmeldung.";
 
 // Logout
 "logoutConfirmation_title" = "Abmelden";
@@ -154,7 +154,7 @@
 "categoryCellOption_delete" = "Löschen";
 
 // Album rename
-"renameCategory_title" = "Album Umbenennen";
+"renameCategory_title" = "Album umbenennen";
 "renameCategory_message" = "Gib einen neuen Namen für dieses Album ein";
 "renameCategory_button" = "Umbenennen";
 "renameCategoryHUD_label" = "Album wird umbenannt…";
@@ -202,7 +202,7 @@
 "categorySelection_select" = "Wähle Album";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Bild";
 "categorySelection_other" = "oder wähle ein anderes Album für dieses Bild";
-"categoryImageSet_title" = "Album-Miniaturansicht";
+"categoryImageSet_title" = "Album-Miniaturbild";
 "categoryImageSet_message" = "Möchtest Du wirklich dieses Miniaturbild für das Album \"%@\" festlegen?";
 "categoryImageSetHUD_updating" = "Album Miniaturbild wird aktualisiert…";
 
@@ -233,7 +233,7 @@
 // Image options (actions)
 "imageOptions_title" = "Bildoptionen";
 "imageOptions_edit" = "Bearbeiten";
-"imageOptions_download" = "Runterladen";
+"imageOptions_download" = "Herunterladen";
 "imageOptions_setAlbumImage" = "Als Album-Titelbild festlegen";
 
 // Image details
@@ -279,9 +279,9 @@
 "deleteImageProgress_title" = "Löschen von %@%% erledigt";
 
 "deleteSingleImage_title" = "Bild löschen";
-"deleteSingleImageHUD_deleting" = "Deleting Image…";
-"removeSingleImage_title" = "Remove from Album";
-"removeSingleImageHUD_removing" = "Removing Image…";
+"deleteSingleImageHUD_deleting" = "Lösche Bild…";
+"removeSingleImage_title" = "Aus Album entfernen";
+"removeSingleImageHUD_removing" = "Lösche Bild…";
 "deleteSingleImage_message" = "Möchtest Du dieses Bild wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
 "deleteSeveralImages_title" = "Lösche %@ Bilder";
 "deleteSeveralImages_message" = "Möchtest Du die %@ ausgewählten Bilder wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
@@ -314,30 +314,30 @@
 "videoSaveError_message" = "Video speichern fehlgeschlagen. Fehler: %@";
 
 // Image move
-"moveImage_title" = "Move to Album";
-"moveSingleImage_selectAlbum" = "Select an album to move image \"%@\" to";
-"moveSeveralImages_selectAlbum" = "Select an album to move the images to";
-"moveSingleImage_message" = "Are you sure you want to move the image \"%@\" to the album \"%@\"?";
-"moveSeveralImages_message" = "Are you sure you want to move the images to the album \"%@\"?";
-"moveSingleImageHUD_moving" = "Moving Image…";
-"moveSeveralImagesHUD_moving" = "Moving Images…";
+"moveImage_title" = "Zum Album verschieben";
+"moveSingleImage_selectAlbum" = "Wähle ein Album aus, in das Du das Bild \"%@\" verschieben möchtest";
+"moveSeveralImages_selectAlbum" = "Wähle ein Album zum Verschieben der Bilder";
+"moveSingleImage_message" = "Möchtest Du wirklich das Bild \"%@\" in das Album \"%@\" verschieben?";
+"moveSeveralImages_message" = "Möchtest Du wirklich die Bilder in das Album \"%@\" verschieben?";
+"moveSingleImageHUD_moving" = "Bild verschieben…";
+"moveSeveralImagesHUD_moving" = "Bilder verschieben…";
 
 // Image move — Errors
-"moveImageError_title" = "Move Fail";
-"moveSingleImageError_message" = "Failed to move your image";
+"moveImageError_title" = "Verschieben fehlgeschlagen";
+"moveSingleImageError_message" = "Fehler beim Verschieben Deines Bildes";
 
 // Image copy
-"copyImage_title" = "Copy to Album";
-"copySingleImage_selectAlbum" = "Select an album to copy image \"%@\" to";
-"copySeveralImages_selectAlbum" = "Select an album to copy the images to";
-"copySingleImage_message" = "Are you sure you want to copy the image \"%@\" to the album \"%@\"?";
-"copySeveralImages_message" = "Are you sure you want to copy the images to the album \"%@\"?";
-"copySingleImageHUD_copying" = "Copying Image…";
-"copySeveralImagesHUD_copying" = "Copying Images…";
+"copyImage_title" = "Zum Album kopieren";
+"copySingleImage_selectAlbum" = "Wähle ein Album aus, in das Du das Bild \"%@\" kopieren möchtest";
+"copySeveralImages_selectAlbum" = "Wähle ein Album zum Kopieren der Bilder";
+"copySingleImage_message" = "Möchtest Du wirklich das Bild \"%@\" in das Album \"%@\" kopieren?";
+"copySeveralImages_message" = "Möchtest Du wirklich die Bilder in das Album \"%@\" Kopieren?";
+"copySingleImageHUD_copying" = "Bild kopieren…";
+"copySeveralImagesHUD_copying" = "Bilder kopieren…";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
-"copySingleImageError_message" = "Failed to copy your image";
+"copyImageError_title" = "Kopieren fehlgeschlagen";
+"copySingleImageError_message" = "Fehler beim Kopieren Deines Bildes";
 
 // Images upload
 "imageUploadDetails_title" = "Titel:";

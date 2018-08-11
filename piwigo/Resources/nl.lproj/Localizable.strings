@@ -316,11 +316,11 @@
 // Image move
 "moveImage_title" = "Verplaats naar album";
 "moveSingleImage_selectAlbum" = "Kies een album om er foto \"%@\" naar toe te verplaatsen";
-"moveSeveralImages_selectAlbum" = "Select an album to move the images to";
+"moveSeveralImages_selectAlbum" = "Selecteer een album om je foto's naar toe te brengen";
 "moveSingleImage_message" = "Weet je zeker dat je foto \"%@\" naar album \"%@\" wilt verplaatsen?";
-"moveSeveralImages_message" = "Are you sure you want to move the images to the album \"%@\"?";
+"moveSeveralImages_message" = "Weet je zeker dat je de foto's naar album \"%@\" wilt verplaatsen?";
 "moveSingleImageHUD_moving" = "Verplaatsen van foto…";
-"moveSeveralImagesHUD_moving" = "Moving Images…";
+"moveSeveralImagesHUD_moving" = "Foto's verplaatsen…";
 
 // Image move — Errors
 "moveImageError_title" = "Verplaatsingsfout";
@@ -329,11 +329,11 @@
 // Image copy
 "copyImage_title" = "Kopieer naar album";
 "copySingleImage_selectAlbum" = "Kies een album om er foto \"%@\" naar toe te kopiëren";
-"copySeveralImages_selectAlbum" = "Select an album to copy the images to";
+"copySeveralImages_selectAlbum" = "Selecteer een album om de foto's naar toe te verplaatsen";
 "copySingleImage_message" = "Wet je zeker dat je foto \"%@\" naar album \"%@\" wilt kopiëren?";
-"copySeveralImages_message" = "Are you sure you want to copy the images to the album \"%@\"?";
+"copySeveralImages_message" = "Weet je zeker dat je de foto's naar album \"%@\" wilt verplaatsen?";
 "copySingleImageHUD_copying" = "Kopiëren van foto…";
-"copySeveralImagesHUD_copying" = "Copying Images…";
+"copySeveralImagesHUD_copying" = "Foto's aan het kopiëren…";
 
 // Image copy — Errors
 "copyImageError_title" = "Kopiëren niet gelukt";

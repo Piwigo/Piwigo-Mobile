@@ -117,7 +117,7 @@
 // Album selection
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Sous-Albums";
-"categorySelection_root" = "Album à la Racine";
+"categorySelection_root" = "Album Racine";
 "categorySelection_action" = "Choisissez une action pour cet album";
 "categorySelectionHUD_label" = "Récupération des Données d'Albums…";
 
@@ -281,7 +281,7 @@
 "deleteSingleImage_title" = "Supprimer l’Image";
 "deleteSingleImageHUD_deleting" = "Suppression de l’Image…";
 "removeSingleImage_title" = "Supprimer de cet album";
-"removeSingleImageHUD_removing" = "Suppression d’Image…";
+"removeSingleImageHUD_removing" = "Suppression de l’Image…";
 "deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ? Opération irréversible !";
 "deleteSeveralImages_title" = "Supprimer %@ Images";
 "deleteSeveralImages_message" = "Êtes-vous sûr de vouloir supprimer la sélection de %@ images ? Opération irréversible !";
@@ -315,25 +315,25 @@
 
 // Image move
 "moveImage_title" = "Déplacer vers l'Album";
-"moveSingleImage_selectAlbum" = "Sélectionnez l'album vers lequel l'image @%@\" sera déplacée";
-"moveSeveralImages_selectAlbum" = "Select an album to move the images to";
+"moveSingleImage_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer l'image @%@\"";
+"moveSeveralImages_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer les images";
 "moveSingleImage_message" = "Êtes-vous certain de vouloir déplacer l'image \"%@\" dans l’album \"%@\" ?";
-"moveSeveralImages_message" = "Are you sure you want to move the images to the album \"%@\"?";
+"moveSeveralImages_message" = "Êtes-vous certain de vouloir déplacer les images dans l’album \"%@\" ?";
 "moveSingleImageHUD_moving" = "Déplacement de l’Image…";
-"moveSeveralImagesHUD_moving" = "Moving Images…";
+"moveSeveralImagesHUD_moving" = "Déplacement des Images…";
 
 // Image move — Errors
 "moveImageError_title" = "Échec du déplacement";
 "moveSingleImageError_message" = "Impossible de déplacer votre image";
 
 // Image copy
-"copyImage_title" = "Copiez dans l'Album";
-"copySingleImage_selectAlbum" = "Sélectionnez l'album vers lequel l'image @%@\" sera copiée";
-"copySeveralImages_selectAlbum" = "Select an album to copy the images to";
+"copyImage_title" = "Copier dans l'Album";
+"copySingleImage_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez copier l'image \"%@\"";
+"copySeveralImages_selectAlbum" = "Sélectionnez l'album Piwigo vers lequel vous souhaitez copier les images";
 "copySingleImage_message" = "Êtes-vous certain de vouloir copier l'image \"%@\" dans l’album \"%@\" ?";
-"copySeveralImages_message" = "Are you sure you want to copy the images to the album \"%@\"?";
+"copySeveralImages_message" = "Êtes-vous certain de vouloir copier les images dans l’album \"%@\" ?";
 "copySingleImageHUD_copying" = "Copie de l’Image...";
-"copySeveralImagesHUD_copying" = "Copying Images…";
+"copySeveralImagesHUD_copying" = "Copie d’Images…";
 
 // Image copy — Errors
 "copyImageError_title" = "Échec de la copie";
