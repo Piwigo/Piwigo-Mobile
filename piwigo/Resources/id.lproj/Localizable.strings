@@ -27,8 +27,8 @@
 "alertTryButton" = "Mencoba";
 
 // HUD views
-"loadingHUD_label" = "Loading…";
-"completeHUD_label" = "Complete";
+"loadingHUD_label" = "Memuat…";
+"completeHUD_label" = "Selesai";
 
 // Upload rights
 "uploadRights_title" = "Hak Unggah Diperlukan";
@@ -323,7 +323,7 @@
 "moveSeveralImagesHUD_moving" = "Moving Images…";
 
 // Image move — Errors
-"moveImageError_title" = "Move Fail";
+"moveImageError_title" = "Gagal Memindahkan";
 "moveSingleImageError_message" = "Failed to move your image";
 
 // Image copy
