@@ -190,7 +190,7 @@
 
 // Album move
 "moveCategory" = "Déplacer l'Album";
-"moveCategory_selectParent" = "Sélectionnez un album pour déplacer l’album \"%@\" dans";
+"moveCategory_selectParent" = "Sélectionnez l'album vers lequel vous souhaitez déplacer l’album \"%@\"";
 "moveCategory_message" = "Êtes-vous certain de vouloir déplacer \"%@\" dans l’album \"%@\" ?";
 "moveCategoryHUD_moving" = "Déplacement de l'Album…";
 
@@ -314,7 +314,7 @@
 "videoSaveError_message" = "Impossible d’enregistrer la vidéo. Erreur : %@";
 
 // Image move
-"moveImage_title" = "Déplacer vers l'Album";
+"moveImage_title" = "Déplacer vers un Album";
 "moveSingleImage_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer l'image @%@\"";
 "moveSeveralImages_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer les images";
 "moveSingleImage_message" = "Êtes-vous certain de vouloir déplacer l'image \"%@\" dans l’album \"%@\" ?";
@@ -327,7 +327,7 @@
 "moveSingleImageError_message" = "Impossible de déplacer votre image";
 
 // Image copy
-"copyImage_title" = "Copier dans l'Album";
+"copyImage_title" = "Copier dans un Album";
 "copySingleImage_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez copier l'image \"%@\"";
 "copySeveralImages_selectAlbum" = "Sélectionnez l'album Piwigo vers lequel vous souhaitez copier les images";
 "copySingleImage_message" = "Êtes-vous certain de vouloir copier l'image \"%@\" dans l’album \"%@\" ?";
