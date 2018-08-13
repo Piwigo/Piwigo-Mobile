@@ -7,6 +7,7 @@
 //
 
 #import <Photos/Photos.h>
+#import <StoreKit/StoreKit.h>
 
 #import "AppDelegate.h"
 #import "AlbumImagesViewController.h"
