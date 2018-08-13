@@ -7,33 +7,32 @@
 //
 
 #import <Photos/Photos.h>
-#import <StoreKit/StoreKit.h>
 
 #import "AppDelegate.h"
 #import "AlbumImagesViewController.h"
-#import "ImageCollectionViewCell.h"
-#import "ImageService.h"
-#import "CategoriesData.h"
-#import "Model.h"
-#import "ImageDetailViewController.h"
-#import "SortHeaderCollectionReusableView.h"
-#import "NoImagesHeaderCollectionReusableView.h"
-#import "CategoryImageSort.h"
-#import "LoadingView.h"
-#import "UICountingLabel.h"
-#import "CategoryCollectionViewCell.h"
-#import "AlbumService.h"
-#import "LocalAlbumsViewController.h"
 #import "AlbumData.h"
-#import "NetworkHandler.h"
-#import "ImagesCollection.h"
-#import "SAMKeychain.h"
-#import "CategoryPickViewController.h"
+#import "AlbumService.h"
+#import "CategoriesData.h"
+#import "CategoryCollectionViewCell.h"
 #import "CategoryHeaderReusableView.h"
-#import "SettingsViewController.h"
+#import "CategoryPickViewController.h"
+#import "CategoryImageSort.h"
+#import "ImageCollectionViewCell.h"
+#import "ImagesCollection.h"
+#import "ImageDetailViewController.h"
+#import "ImageService.h"
+#import "LoadingView.h"
+#import "LocalAlbumsViewController.h"
 #import "MBProgressHUD.h"
+#import "Model.h"
 #import "MoveCategoryViewController.h"
 #import "MoveImageViewController.h"
+#import "NetworkHandler.h"
+#import "NoImagesHeaderCollectionReusableView.h"
+#import "SAMKeychain.h"
+#import "SettingsViewController.h"
+#import "SortHeaderCollectionReusableView.h"
+#import "UICountingLabel.h"
 
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
@@ -59,10 +58,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) UIButton *homeAlbumButton;
 
 @property (nonatomic, assign) BOOL isSelect;
-@property (nonatomic, assign) NSInteger startDeleteTotalImages;
-@property (nonatomic, assign) NSInteger totalImagesToDownload;
+@property (nonatomic, assign) NSInteger totalNumberOfImages;
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
 @property (nonatomic, strong) NSMutableArray *touchedImageIds;
+
+@property (nonatomic, strong) NSMutableArray *selectedImageIdsToDelete;
+@property (nonatomic, strong) NSMutableArray *selectedImagesToDelete;
+@property (nonatomic, strong) NSMutableArray *selectedImagesToRemove;
+@property (nonatomic, strong) PiwigoImageData *selectedImage;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) LoadingView *loadingView;
@@ -115,7 +118,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
+		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelected)];
         self.deleteBarButton.tintColor = [UIColor redColor];
 		self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
         self.downloadBarButton.tintColor = [UIColor piwigoOrange];
@@ -442,7 +445,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
                 // Redefine bar buttons (definition lost after rotation of device)
                 self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-                self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImages)];
+                self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelected)];
                 self.deleteBarButton.tintColor = [UIColor redColor];
                 self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImages)];
                 self.downloadBarButton.tintColor = [UIColor piwigoOrange];
@@ -533,7 +536,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
     if (!([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) && !noHUD) {
         // Show loading HD
-        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate];
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
     }
     
     // Disable cache if requested
@@ -568,7 +571,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 //    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", [Model sharedInstance].loadAllCategoryInfo ? (long)0 : (long)self.categoryId);
 
     // Show loading HD
-    [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate];
+    [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
 
     [AlbumService getAlbumListForCategory:[Model sharedInstance].loadAllCategoryInfo ? 0 : self.categoryId
                                usingCache:NO
@@ -896,128 +899,323 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - Delete images
 
--(void)deleteImages
+-(void)deleteSelected
 {
-	if(self.selectedImageIds.count <= 0) return;
-	
-    // Do we really want to delete these images?
-    NSString *titleString, *messageString;
-    if (self.selectedImageIds.count > 1) {
-        titleString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_title", @"Delete %@ Images"), @(self.selectedImageIds.count)];
-        messageString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImageIds.count)];
+    if(self.selectedImageIds.count <= 0) return;
+    
+    // Display HUD
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+    });
+    
+    // Retrieve image data
+    self.selectedImagesToDelete = [NSMutableArray new];
+    self.selectedImagesToRemove = [NSMutableArray new];
+    self.selectedImageIdsToDelete = [NSMutableArray arrayWithArray:[self.selectedImageIds mutableCopy]];
+    [self retrieveImageData];
+}
+
+-(void)retrieveImageData
+{
+    if (self.selectedImageIdsToDelete.count <= 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideHUDwithSuccess:NO completion:^{
+                [self askDeleteConfirmation];
+            }];
+        });
+        return;
+    }
+    
+    // Image data are not complete when retrieved using pwg.categories.getImages
+    [ImageService getImageInfoById:[[self.selectedImageIdsToDelete lastObject] integerValue]
+          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+
+              // Split orphaned and non-orphaned images
+              if (imageData.categoryIds.count > 1) {
+                  [self.selectedImagesToRemove addObject:imageData];
+              }
+              else {
+                  [self.selectedImagesToDelete addObject:imageData];
+              }
+              
+              // Next image
+              [self.selectedImageIdsToDelete removeLastObject];
+              [self retrieveImageData];
+          }
+                 onFailure:^(NSURLSessionTask *task, NSError *error) {
+                     // Failed — Ask user if he/she wishes to retry
+                     UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+                         message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+                         preferredStyle:UIAlertControllerStyleAlert];
+                     
+                     UIAlertAction* dismissAction = [UIAlertAction
+                         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                         style:UIAlertActionStyleCancel
+                         handler:^(UIAlertAction * action) {
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 [self hideHUD];
+                             });
+                         }];
+                     
+                     UIAlertAction* retryAction = [UIAlertAction
+                           actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                           style:UIAlertActionStyleDefault
+                           handler:^(UIAlertAction * action) {
+                               [self retrieveImageData];
+                           }];
+                     
+                     [alert addAction:dismissAction];
+                     [alert addAction:retryAction];
+                     [self presentViewController:alert animated:YES completion:nil];
+                 }];
+}
+
+-(void)askDeleteConfirmation
+{
+    NSString *messageString;
+    NSInteger totalNberToDelete = self.selectedImagesToDelete.count + self.selectedImagesToRemove.count;
+    // Alert message
+    if (totalNberToDelete > 1) {
+        messageString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(totalNberToDelete)];
     } else {
-        titleString = NSLocalizedString(@"deleteSingleImage_title", @"Delete Image");
         messageString = NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?");
     }
 
     // Do we really want to delete these images?
     UIAlertController* alert = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"deleteImage_delete", @"Delete")
+        alertControllerWithTitle:nil
         message:messageString
         preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
-       actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-       style:UIAlertActionStyleCancel
-       handler:^(UIAlertAction * action) {}];
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {}];
     
-    UIAlertAction* deleteAction = [UIAlertAction
-       actionWithTitle:titleString
-       style:UIAlertActionStyleDestructive
-       handler:^(UIAlertAction * action) {
-           self.startDeleteTotalImages = self.selectedImageIds.count;
-           [self deleteSelected];
+    UIAlertAction* removeImagesAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"deleteCategory_orphanedImages", @"Delete Orphans")
+        style:UIAlertActionStyleDestructive
+        handler:^(UIAlertAction * action) {
+
+            // Display HUD during server update
+            self.totalNumberOfImages = self.selectedImagesToRemove.count + self.selectedImagesToDelete.count;
+            if (self.totalNumberOfImages > 1) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showHUDwithTitle:NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:NO];
+                });
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showHUDwithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+                });
+            }
+
+            // Start removing images
+            [self removeImages];
+        }];
+
+    UIAlertAction* deleteImagesAction = [UIAlertAction
+        actionWithTitle:totalNberToDelete > 1 ? [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_title", @"Delete %@ Images"), @(totalNberToDelete)] : NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
+        style:UIAlertActionStyleDestructive
+        handler:^(UIAlertAction * action) {
+            
+            [self.selectedImagesToDelete addObjectsFromArray:self.selectedImagesToRemove];
+
+            // Display HUD during server update
+            self.totalNumberOfImages = self.selectedImagesToDelete.count;
+            if (self.selectedImagesToDelete.count > 1) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showHUDwithTitle:NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:NO];
+                });
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showHUDwithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+                });
+            }
+
+            // Start deleting images
+            [self deleteImages];
        }];
     
     // Add actions
     [alert addAction:cancelAction];
-    [alert addAction:deleteAction];
-    
+    if (self.selectedImagesToRemove.count > 0) { [alert addAction:removeImagesAction]; }
+    [alert addAction:deleteImagesAction];
+
     // Present list of actions
     alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
--(void)deleteSelected
+-(void)removeImages
 {
-	if(self.selectedImageIds.count <= 0)
-	{
-		[self cancelSelect];
-		return;
-	}
-	
-    [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
+    if (self.selectedImagesToRemove.count <= 0)
+    {
+        if (self.selectedImagesToDelete.count <= 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hideHUDwithSuccess:YES completion:^{
+                    [self cancelSelect];
+                }];
+            });
+        }
+        else {
+            [self deleteImages];
+        }
+        return;
+    }
     
-    // Image data are not fully known —> Load them
-    [ImageService getImageInfoById:[self.selectedImageIds.lastObject integerValue]
-              ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+    // Update image category list
+    self.selectedImage = [self.selectedImagesToRemove lastObject];
+    NSMutableArray *categoryIds = [self.selectedImage.categoryIds mutableCopy];
+    [categoryIds removeObject:@(self.categoryId)];
+    
+    // Let's remove the image from current category
+    [ImageService setCategoriesForImage:self.selectedImage
+         withCategories:categoryIds
+             onProgress:nil
+           OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
+               if (updatedSuccessfully)
+               {
+                   // Remove image from current category
+                   [self.albumData removeImageWithId:[self.selectedImage.imageId integerValue]];
+                   [self.selectedImageIds removeObject:self.selectedImage.imageId];
+                   [self.imagesCollection reloadData];
 
-                  // Let's delete the image
-                  [ImageService deleteImage:imageData
-                           ListOnCompletion:^(NSURLSessionTask *task) {
-                              // Image deleted
-                              [self.albumData removeImageWithId:[self.selectedImageIds.lastObject integerValue]];
-                              
-                              [self.selectedImageIds removeLastObject];
-                              NSInteger percentDone = ((CGFloat)(self.startDeleteTotalImages - self.selectedImageIds.count) / self.startDeleteTotalImages) * 100;
-                              self.title = [NSString stringWithFormat:NSLocalizedString(@"deleteImageProgress_title", @"Deleting %@%% Done"), @(percentDone)];
-                              [self.imagesCollection reloadData];
-                              [self deleteSelected];
-                           }
-                           onFailure:^(NSURLSessionTask *task, NSError *error) {
-                              // Error — Try again ?
-                              UIAlertController* alert = [UIAlertController
-                                  alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-                                  message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
-                                  preferredStyle:UIAlertControllerStyleAlert];
-                              
-                              UIAlertAction* dismissAction = [UIAlertAction
-                                  actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                  style:UIAlertActionStyleCancel
-                                  handler:^(UIAlertAction * action) {}];
-                          
-                              UIAlertAction* retryAction = [UIAlertAction
-                                  actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                                  style:UIAlertActionStyleDestructive
-                                  handler:^(UIAlertAction * action) {
-                                      [self deleteSelected];
-                                  }];
-                              
-                               // Add actions
-                               [alert addAction:dismissAction];
-                               [alert addAction:retryAction];
-                               
-                               // Present list of actions
-                               [self presentViewController:alert animated:YES completion:nil];
-                           }];
+                   // Update cache
+                   [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] removeImages:@[self.selectedImage]];
+                   [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] deincrementImageSizeByOne];
 
-              } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                  // Error encountered when retrieving image infos
+                   // Next image
+                   [self.selectedImagesToRemove removeLastObject];
+                   dispatch_async(dispatch_get_main_queue(), ^{
+                       [MBProgressHUD HUDForView:self.hudViewController.view].progress = 1.0 - (double)(self.selectedImagesToRemove.count + self.selectedImagesToDelete.count) / self.totalNumberOfImages;
+                   });
+                   [self removeImages];
+               }
+                else {
+                    // Update album view if image moved
+                    // Error — Try again ?
+                    UIAlertController* alert = [UIAlertController
+                        alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                        message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")]
+                        preferredStyle:UIAlertControllerStyleAlert];
+                    
+                    UIAlertAction* dismissAction = [UIAlertAction
+                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                        style:UIAlertActionStyleCancel
+                        handler:^(UIAlertAction * action) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self hideHUDwithSuccess:NO completion:nil];
+                            });
+                        }];
+                    
+                    UIAlertAction* retryAction = [UIAlertAction
+                       actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                       style:UIAlertActionStyleDestructive
+                       handler:^(UIAlertAction * action) {
+                           [self removeImages];
+                       }];
+                    
+                    // Add actions
+                    [alert addAction:dismissAction];
+                    [alert addAction:retryAction];
+                    
+                    // Present list of actions
+                    [self presentViewController:alert animated:YES completion:nil];
+                }
+           }
+              onFailure:^(NSURLSessionTask *task, NSError *error) {
+                  // Error — Try again ?
                   UIAlertController* alert = [UIAlertController
-                              alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                              message:NSLocalizedString(@"imageDetailsFetchError_continueMessage", @"Fetching the image data failed\nNContinue?")
-                              preferredStyle:UIAlertControllerStyleAlert];
+                      alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                      message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                      preferredStyle:UIAlertControllerStyleAlert];
                   
-                  UIAlertAction* cancelAction = [UIAlertAction
-                              actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                              style:UIAlertActionStyleCancel
-                              handler:^(UIAlertAction * action) {}];
+                  UIAlertAction* dismissAction = [UIAlertAction
+                      actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                      style:UIAlertActionStyleCancel
+                      handler:^(UIAlertAction * action) {
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              [self hideHUDwithSuccess:NO completion:nil];
+                          });
+                      }];
                   
-                  UIAlertAction* continueAction = [UIAlertAction
-                              actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                              style:UIAlertActionStyleDestructive
-                              handler:^(UIAlertAction * action) {
-                                  [self deleteSelected];
-                              }];
+                  UIAlertAction* retryAction = [UIAlertAction
+                     actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                     style:UIAlertActionStyleDestructive
+                     handler:^(UIAlertAction * action) {
+                         [self removeImages];
+                     }];
                   
                   // Add actions
-                  [alert addAction:cancelAction];
-                  [alert addAction:continueAction];
+                  [alert addAction:dismissAction];
+                  [alert addAction:retryAction];
                   
                   // Present list of actions
                   [self presentViewController:alert animated:YES completion:nil];
-              }
-     ];
+              }];
+}
+
+-(void)deleteImages
+{
+	if (self.selectedImagesToDelete.count <= 0)
+	{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideHUDwithSuccess:YES completion:^{
+                [self cancelSelect];
+            }];
+        });
+		return;
+	}
+    
+    // Let's delete the image
+    self.selectedImage = [self.selectedImagesToDelete lastObject];
+    [ImageService deleteImage:self.selectedImage
+           ListOnCompletion:^(NSURLSessionTask *task) {
+               
+               // Image deleted
+               [self.albumData removeImageWithId:[self.selectedImage.imageId integerValue]];
+               [self.selectedImageIds removeObject:self.selectedImage.imageId];
+               [self.imagesCollection reloadData];
+
+               // Next image
+               [self.selectedImagesToDelete removeLastObject];
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [MBProgressHUD HUDForView:self.hudViewController.view].progress = 1.0 - (double)(self.selectedImagesToDelete.count) / self.totalNumberOfImages;
+               });
+               [self deleteImages];
+           }
+           onFailure:^(NSURLSessionTask *task, NSError *error) {
+              // Error — Try again ?
+              UIAlertController* alert = [UIAlertController
+                  alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                  message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                  preferredStyle:UIAlertControllerStyleAlert];
+              
+              UIAlertAction* dismissAction = [UIAlertAction
+                  actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                  style:UIAlertActionStyleCancel
+                  handler:^(UIAlertAction * action) {
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [self hideHUDwithSuccess:NO completion:nil];
+                      });
+                  }];
+          
+              UIAlertAction* retryAction = [UIAlertAction
+                  actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                  style:UIAlertActionStyleDestructive
+                  handler:^(UIAlertAction * action) {
+                      [self deleteImages];
+                  }];
+              
+               // Add actions
+               [alert addAction:dismissAction];
+               [alert addAction:retryAction];
+               
+               // Present list of actions
+               [self presentViewController:alert animated:YES completion:nil];
+           }];
 }
 
 
@@ -1080,7 +1278,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
        actionWithTitle:titleString
        style:UIAlertActionStyleDefault
        handler:^(UIAlertAction * action) {
-           self.totalImagesToDownload = self.selectedImageIds.count;
+           self.totalNumberOfImages = self.selectedImageIds.count;
            [self downloadImage];
        }];
     
@@ -1098,14 +1296,18 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	if(self.selectedImageIds.count <= 0)
 	{
         // End of downloads: hide HUD and deselect images
-        [self hideHUDwithSuccess:YES completion:^{
-            [self cancelSelect];
-        }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideHUDwithSuccess:YES completion:^{
+                [self cancelSelect];
+            }];
+        });
 		return;
 	}
 	
     // Show loading HUD
-    [self showHUDwithTitle:NSLocalizedString(@"downloadingImages", @"Downloading Images") inMode:MBProgressHUDModeAnnularDeterminate];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"downloadingImages", @"Downloading Images") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:YES];
+    });
     
     // Keep device awake
 	[UIApplication sharedApplication].idleTimerDisabled = YES;
@@ -1612,7 +1814,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - HUD methods
 
--(void)showHUDwithTitle:(NSString *)title inMode:(MBProgressHUDMode)mode
+-(void)showHUDwithTitle:(NSString *)title inMode:(MBProgressHUDMode)mode withDetailLabel:(BOOL)isDownloading
 {
     // Determine the present view controller if needed (not necessarily self.view)
     if (!self.hudViewController) {
@@ -1648,9 +1850,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Image download or other action?
     switch (mode) {
         case MBProgressHUDModeAnnularDeterminate:
-            // Downloading images
+            // Downloading or deleting images
             hud.mode = MBProgressHUDModeAnnularDeterminate;
-            hud.detailsLabel.text = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalImagesToDownload - self.selectedImageIds.count + 1), (long)self.totalImagesToDownload];
+            if (isDownloading) {
+                hud.detailsLabel.text = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalNumberOfImages - self.selectedImageIds.count + 1), (long)self.totalNumberOfImages];
+            } else {
+                hud.detailsLabel.text = @"";
+            }
             break;
             
         default:
