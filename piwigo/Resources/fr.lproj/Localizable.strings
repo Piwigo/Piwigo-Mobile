@@ -315,7 +315,7 @@
 
 // Image move
 "moveImage_title" = "Déplacer vers un Album";
-"moveSingleImage_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer l'image @%@\"";
+"moveSingleImage_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer l'image \"%@\"";
 "moveSeveralImages_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer les images";
 "moveSingleImage_message" = "Êtes-vous certain de vouloir déplacer l'image \"%@\" dans l’album \"%@\" ?";
 "moveSeveralImages_message" = "Êtes-vous certain de vouloir déplacer les images dans l’album \"%@\" ?";
