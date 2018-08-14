@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "CategoryCollectionViewCell.h"
+#import "AlbumImagesViewController.h"
 #import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
-#import "AlbumImagesViewController.h"
+#import "CategoryCollectionViewCell.h"
+#import "ImagesCollection.h"
 
 @interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, AlbumTableViewCellDelegate>
 
@@ -29,14 +30,14 @@
 		self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.tableView.backgroundColor = [UIColor clearColor];
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-		[self.tableView registerClass:[AlbumTableViewCell class] forCellReuseIdentifier:@"cell"];
+//        [self.tableView registerClass:[AlbumTableViewCell class] forCellReuseIdentifier:kAlbumTableCell_ID];
+        [self.tableView registerNib:[UINib nibWithNibName:@"AlbumTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumTableCell_ID];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
 		[self.contentView addSubview:self.tableView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
-		
+    
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
-		
 	}
 	return self;
 }
@@ -68,14 +69,18 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 188.0;
+	return kThumbnailFileSize;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-	cell.cellDelegate = self;
-	
+    AlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kAlbumTableCell_ID forIndexPath:indexPath];
+    if (!cell) {
+        [tableView registerNib:[UINib nibWithNibName:@"AlbumTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumTableCell_ID];
+        cell = [tableView dequeueReusableCellWithIdentifier:kAlbumTableCell_ID forIndexPath:indexPath];
+    }
+
+    cell.cellDelegate = self;
 	[cell setupWithAlbumData:self.albumData];
 	
 	return cell;

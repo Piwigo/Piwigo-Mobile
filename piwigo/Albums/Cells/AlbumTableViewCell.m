@@ -19,162 +19,16 @@
 #import "MBProgressHUD.h"
 #import "SAMKeychain.h"
 
+NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
+
 @interface AlbumTableViewCell() <UITextFieldDelegate>
 
-@property (nonatomic, strong) UIImageView *backgroundImage;
-@property (nonatomic, strong) UILabel *albumName;
-@property (nonatomic, strong) UILabel *numberOfImages;
-@property (nonatomic, strong) UILabel *date;
-@property (nonatomic, strong) UIView *textUnderlayDark;
-@property (nonatomic, strong) UIView *textUnderlayLight;
-@property (nonatomic, strong) UILabel *cellDisclosure;
 @property (nonatomic, strong) UIAlertAction *categoryAction;
 @property (nonatomic, strong) UIAlertAction *deleteAction;
 
 @end
 
 @implementation AlbumTableViewCell
-
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-	if(self)
-	{
-		self.backgroundImage = [UIImageView new];
-		self.backgroundImage.translatesAutoresizingMaskIntoConstraints = NO;
-		self.backgroundImage.contentMode = UIViewContentModeScaleAspectFill;
-		self.backgroundImage.clipsToBounds = YES;
-		self.backgroundImage.backgroundColor = [UIColor clearColor];
-		self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
-        self.backgroundImage.layer.cornerRadius = 10;
-        [self.contentView addSubview:self.backgroundImage];
-		[self.contentView addConstraints:[NSLayoutConstraint
-                                          constraintsWithVisualFormat:@"|-5-[img]-5-|"
-                                          options:kNilOptions
-                                          metrics:nil
-                                          views:@{@"img" : self.backgroundImage}]];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintFillHeight:self.backgroundImage]];
-		
-        UIBlurEffect *blurEffect;
-        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        self.textUnderlayDark = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        self.textUnderlayDark.translatesAutoresizingMaskIntoConstraints = NO;
-        self.textUnderlayDark.hidden = YES;
-        [self.contentView addSubview:self.textUnderlayDark];
-
-        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
-        self.textUnderlayLight = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        self.textUnderlayLight.translatesAutoresizingMaskIntoConstraints = NO;
-        self.textUnderlayLight.hidden = YES;
-        [self.contentView addSubview:self.textUnderlayLight];
-
-		self.albumName = [UILabel new];         // Was OutlinedText
-		self.albumName.translatesAutoresizingMaskIntoConstraints = NO;
-		self.albumName.font = [UIFont piwigoFontButton];
-		self.albumName.textColor = [UIColor piwigoOrange];
-		self.albumName.adjustsFontSizeToFitWidth = YES;
-		self.albumName.minimumScaleFactor = 0.6;
-		[self.contentView addSubview:self.albumName];
-
-        self.cellDisclosure = [UILabel new];    // Was OutlinedText
-        if ([Model sharedInstance].isAppLanguageRTL) {
-            self.cellDisclosure.text = @"<";
-            self.cellDisclosure.textAlignment = NSLayoutAttributeLeftMargin;
-        } else {
-            self.cellDisclosure.text = @">";
-            self.cellDisclosure.textAlignment = NSLayoutAttributeRight;
-        }
-        self.cellDisclosure.translatesAutoresizingMaskIntoConstraints = NO;
-        self.cellDisclosure.font = [UIFont piwigoFontDisclosure];
-        self.cellDisclosure.textColor = [UIColor piwigoOrange];
-        self.cellDisclosure.adjustsFontSizeToFitWidth = NO;
-        self.cellDisclosure.minimumScaleFactor = 0.6;
-        [self.contentView addSubview:self.cellDisclosure];
-
-        self.numberOfImages = [UILabel new];
-		self.numberOfImages.translatesAutoresizingMaskIntoConstraints = NO;
-		self.numberOfImages.font = [UIFont piwigoFontNormal];
-		self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
-		self.numberOfImages.textColor = [UIColor piwigoTextColor];
-		self.numberOfImages.adjustsFontSizeToFitWidth = YES;
-		self.numberOfImages.minimumScaleFactor = 0.8;
-		self.numberOfImages.lineBreakMode = NSLineBreakByTruncatingTail;
-		[self.numberOfImages setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
-		[self.contentView addSubview:self.numberOfImages];
-		
-		self.date = [UILabel new];
-		self.date.translatesAutoresizingMaskIntoConstraints = NO;
-		self.date.font = [UIFont piwigoFontNormal];
-		self.date.font = [self.date.font fontWithSize:16.0];
-		self.date.textColor = [UIColor piwigoTextColor];
-        self.numberOfImages.adjustsFontSizeToFitWidth = YES;
-        self.numberOfImages.minimumScaleFactor = 0.8;
-        if ([Model sharedInstance].isAppLanguageRTL) {
-            self.date.textAlignment = NSTextAlignmentLeft;
-        } else {
-            self.date.textAlignment = NSTextAlignmentRight;
-        }
-		[self.date setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
-		[self.contentView addSubview:self.date];
-				
-		[self setupAutoLayout];
-				
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageUpdated) name:kPiwigoNotificationCategoryImageUpdated object:nil];
-		
-	}
-	return self;
-}
-
--(void)setupAutoLayout
-{
-	NSDictionary *views = @{
-							@"name" : self.albumName,
-                            @"disclosure" : self.cellDisclosure,
-							@"numImages" : self.numberOfImages,
-							@"date" : self.date
-							};
-	
-	[self.contentView addConstraints:[NSLayoutConstraint
-                  constraintsWithVisualFormat:@"V:[name]-5-[numImages]-15-|"
-                                      options:kNilOptions metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint
-                  constraintsWithVisualFormat:@"|-20-[name]-[disclosure]-20-|"
-                                      options:kNilOptions metrics:nil views:views]];
-    [self.contentView addConstraint:[NSLayoutConstraint
-                 constraintViewToSameBase:self.cellDisclosure equalToView:self.albumName]];
-	
-	[self.contentView addConstraints:[NSLayoutConstraint
-                  constraintsWithVisualFormat:@"|-20-[numImages]-[date]-20-|"
-                                      options:kNilOptions metrics:nil views:views]];
-	[self.contentView addConstraint:[NSLayoutConstraint
-                 constraintViewToSameBase:self.date equalToView:self.numberOfImages]];
-	
-	[self.contentView addConstraints:[NSLayoutConstraint
-                  constraintsWithVisualFormat:@"|-5-[bg]-5-|"
-                                      options:kNilOptions metrics:nil
-                                      views:@{@"bg" : self.textUnderlayDark}]];
-	[self.contentView addConstraint:[NSLayoutConstraint
-                 constraintViewFromBottom:self.textUnderlayDark amount:0]];
-	[self.contentView addConstraint:[NSLayoutConstraint
-                 constraintWithItem:self.textUnderlayDark
-                                     attribute:NSLayoutAttributeTop
-                                     relatedBy:NSLayoutRelationEqual toItem:self.albumName
-                                     attribute:NSLayoutAttributeTop
-                                     multiplier:1.0 constant:-5]];
-
-    [self.contentView addConstraints:[NSLayoutConstraint
-                  constraintsWithVisualFormat:@"|-5-[bg]-5-|"
-                                      options:kNilOptions metrics:nil
-                                      views:@{@"bg" : self.textUnderlayLight}]];
-    [self.contentView addConstraint:[NSLayoutConstraint
-                 constraintViewFromBottom:self.textUnderlayLight amount:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint
-                 constraintWithItem:self.textUnderlayLight
-                                     attribute:NSLayoutAttributeTop
-                                     relatedBy:NSLayoutRelationEqual toItem:self.albumName
-                                     attribute:NSLayoutAttributeTop
-                                     multiplier:1.0 constant:-5]];
-}
 
 -(void)imageUpdated
 {
@@ -187,64 +41,25 @@
     
     self.albumData = albumData;
     
-    // Changed Theme ?
+    // General settings
     self.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.numberOfImages.textColor = [UIColor piwigoTextColor];
-    self.date.textColor = [UIColor piwigoTextColor];
-    if ([Model sharedInstance].isDarkPaletteActive) {
-        self.textUnderlayDark.hidden = NO;
-        self.textUnderlayLight.hidden = YES;
-    } else {
-        self.textUnderlayDark.hidden = YES;
-        self.textUnderlayLight.hidden = NO;
-    }
+    self.contentView.layer.cornerRadius = 20;
+    self.contentView.backgroundColor = [UIColor piwigoCellBackgroundColor];
 
     // Album name
     self.albumName.text = self.albumData.name;
-    
-    // Add renaming, moving and deleting capabilities when user has admin rights
-    if([Model sharedInstance].hasAdminRights)
-    {
-        // Right => Left swipe
-        self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
-        self.rightButtons = @[[MGSwipeButton buttonWithTitle:@""
-                                                       icon:[UIImage imageNamed:@"SwipeRename.png"]
-                                            backgroundColor:[UIColor piwigoOrange]
-                                                   callback:^BOOL(MGSwipeTableCell *sender) {
-                                                          [self renameCategory];
-                                                          return YES;
-                                                   }],
-                               [MGSwipeButton buttonWithTitle:@""
-                                                      icon:[UIImage imageNamed:@"SwipeMove.png"]
-                                           backgroundColor:[UIColor piwigoBrown]
-                                                  callback:^BOOL(MGSwipeTableCell *sender) {
-                                                      [self moveCategory];
-                                                      return YES;
-                                                  }],
-                               [MGSwipeButton buttonWithTitle:@""
-                                                      icon:[UIImage imageNamed:@"SwipeTrash.png"]
-                                           backgroundColor:[UIColor redColor]
-                                                  callback:^BOOL(MGSwipeTableCell *sender) {
-                                                      [self deleteCategory];
-                                                      return YES;
-                                                  }]];
-  
-        // Left => Right swipe (only if there are images in the album)
-        // Disabled because it does not work reliably on the server side
-//        if (self.albumData.numberOfImages > 0) {
-//
-//            self.leftSwipeSettings.transition = MGSwipeTransitionBorder;
-//            self.leftButtons = @[[MGSwipeButton buttonWithTitle:@""
-//                                                           icon:[UIImage imageNamed:@"SwipeRefresh.png"]
-//                                                backgroundColor:[UIColor blueColor]
-//                                                       callback:^BOOL(MGSwipeTableCell *sender) {
-//                                                           [self resfreshRepresentative];
-//                                                           return YES;
-//                                                       }]];
-//        }
-    }
+    self.albumName.font = [UIFont piwigoFontButton];
+    self.albumName.textColor = [UIColor piwigoOrange];
+    self.albumName.adjustsFontSizeToFitWidth = YES;
+    self.albumName.minimumScaleFactor = 0.6;
 
-    // Display number of images and sub-albums
+    // Number of images and sub-albums
+    self.numberOfImages.textColor = [UIColor piwigoTextColor];
+    self.numberOfImages.font = [UIFont piwigoFontNormal];
+    self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
+    self.numberOfImages.textColor = [UIColor piwigoTextColor];
+    self.numberOfImages.adjustsFontSizeToFitWidth = YES;
+    self.numberOfImages.minimumScaleFactor = 0.8;
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#,##0"];
     if (self.albumData.numberOfSubCategories == 0) {
@@ -264,20 +79,66 @@
     } else {
         
         // There are images and sub-albums
-        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@ %@",
+        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@\r %@ %@",
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.totalNumberOfImages]],
                                     self.albumData.totalNumberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo"),
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]],
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
+
+    // Add renaming, moving and deleting capabilities when user has admin rights
+    if([Model sharedInstance].hasAdminRights)
+    {
+        // Handle
+        self.handleButton.layer.cornerRadius = 10;
+        self.handleButton.backgroundColor = [UIColor piwigoOrange];
+        self.handleView.backgroundColor = [UIColor piwigoCellBackgroundColor];
+        self.handleView.hidden = NO;
+        self.handleButton.hidden = NO;
+
+        // Right => Left swipe
+        self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
+        self.rightButtons = @[[MGSwipeButton buttonWithTitle:@""
+                                                        icon:[UIImage imageNamed:@"SwipeTrash.png"]
+                                             backgroundColor:[UIColor redColor]
+                                                    callback:^BOOL(MGSwipeTableCell *sender) {
+                                                        [self deleteCategory];
+                                                        return YES;
+                                                    }],
+                              [MGSwipeButton buttonWithTitle:@""
+                                                      icon:[UIImage imageNamed:@"SwipeMove.png"]
+                                           backgroundColor:[UIColor piwigoBrown]
+                                                  callback:^BOOL(MGSwipeTableCell *sender) {
+                                                      [self moveCategory];
+                                                      return YES;
+                                                  }],
+                              [MGSwipeButton buttonWithTitle:@""
+                                                        icon:[UIImage imageNamed:@"SwipeRename.png"]
+                                             backgroundColor:[UIColor piwigoOrange]
+                                                    callback:^BOOL(MGSwipeTableCell *sender) {
+                                                        [self renameCategory];
+                                                        return YES;
+                                                    }]
+                               ];
+  
+        // Left => Right swipe (only if there are images in the album)
+        // Disabled because it does not work reliably on the server side
+//        if (self.albumData.numberOfImages > 0) {
+//
+//            self.leftSwipeSettings.transition = MGSwipeTransitionBorder;
+//            self.leftButtons = @[[MGSwipeButton buttonWithTitle:@""
+//                                                           icon:[UIImage imageNamed:@"SwipeRefresh.png"]
+//                                                backgroundColor:[UIColor blueColor]
+//                                                       callback:^BOOL(MGSwipeTableCell *sender) {
+//                                                           [self resfreshRepresentative];
+//                                                           return YES;
+//                                                       }]];
+//        }
+    }
     
-    // Display date/time of last edition
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.formatterBehavior = NSDateFormatterBehavior10_4;
-    formatter.dateStyle = NSDateFormatterShortStyle;
-    self.date.text = [formatter stringFromDate:self.albumData.dateLast];
     
     // Display album image
+    self.backgroundImage.layer.cornerRadius = 10;
     NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
     
     if(albumData.categoryImage && imageSize > 0)

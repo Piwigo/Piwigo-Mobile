@@ -420,19 +420,19 @@
 {
     // Avoid unwanted spaces
     if ([collectionView numberOfItemsInSection:section] == 0)
-        return UIEdgeInsetsMake(0, kMarginsSpacing, 0, kMarginsSpacing);
+        return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
     
-    return UIEdgeInsetsMake(10, kMarginsSpacing, 10, kMarginsSpacing);
+    return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kCellSpacing;
+    return (CGFloat)kImageCellSpacing;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kCellSpacing;
+    return (CGFloat)kImageCellSpacing;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath

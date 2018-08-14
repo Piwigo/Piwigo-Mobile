@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+FOUNDATION_EXPORT NSString * const kAlbumTableCell_ID;
+
 @protocol AlbumTableViewCellDelegate <NSObject>
 
 -(void)pushView:(UIViewController*)viewController;
@@ -18,9 +20,14 @@
 
 @interface AlbumTableViewCell : MGSwipeTableCell
 
--(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
 @property (nonatomic, weak) id<AlbumTableViewCellDelegate> cellDelegate;
 @property (nonatomic, strong) PiwigoAlbumData *albumData;
-@property (nonatomic, readonly) UIImageView *backgroundImage;
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
+@property (weak, nonatomic) IBOutlet UILabel *albumName;
+@property (weak, nonatomic) IBOutlet UILabel *numberOfImages;
+@property (weak, nonatomic) IBOutlet UIView *handleView;
+@property (weak, nonatomic) IBOutlet UIButton *handleButton;
+
+-(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
 
 @end

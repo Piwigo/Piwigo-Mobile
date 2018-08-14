@@ -57,7 +57,7 @@
         self.categoriesTableView.showsVerticalScrollIndicator = YES;
         self.categoriesTableView.delegate = self;
         self.categoriesTableView.dataSource = self;
-        [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
+        [self.categoriesTableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumCell_ID];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
@@ -443,10 +443,10 @@
 
         default:                // List of albums to upload images to
         {
-            CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
+            CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID forIndexPath:indexPath];
             if (!cell) {
                 [tableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumCell_ID];
-                cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
+                cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID forIndexPath:indexPath];
             }
             
             // Display disclosure indicator on large screens

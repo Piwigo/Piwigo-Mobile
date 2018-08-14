@@ -6,8 +6,10 @@
 //  Copyright © 2017 Piwigo.org. All rights reserved.
 //
 
-extern NSInteger const kCellSpacing;
-extern NSInteger const kMarginsSpacing;
+extern NSInteger const kAlbumCellSpacing;
+extern NSInteger const kAlbumMarginsSpacing;
+extern NSInteger const kImageCellSpacing;
+extern NSInteger const kImageMarginsSpacing;
 extern NSInteger const kThumbnailFileSize;
 
 @interface ImagesCollection : NSObject

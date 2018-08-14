@@ -44,7 +44,6 @@
         self.localAlbumsTableView.backgroundColor = [UIColor clearColor];
         self.localAlbumsTableView.delegate = self;
         self.localAlbumsTableView.dataSource = self;
-        [self.localAlbumsTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
         [self.view addSubview:self.localAlbumsTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
         

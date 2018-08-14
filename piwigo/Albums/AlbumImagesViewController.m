@@ -1685,21 +1685,36 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    // Avoid unwanted spaces
-    if ([collectionView numberOfItemsInSection:section] == 0)
-        return UIEdgeInsetsMake(0, kMarginsSpacing, 0, kMarginsSpacing);
-    
-    return UIEdgeInsetsMake(10, kMarginsSpacing, 10, kMarginsSpacing);
+    if (section == 1) {
+        // Avoid unwanted spaces
+        if ([collectionView numberOfItemsInSection:section] == 0)
+            return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
+        else
+            return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
+    }
+    else {
+        // Avoid unwanted spaces
+        if ([collectionView numberOfItemsInSection:section] == 0)
+            return UIEdgeInsetsMake(0, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
+        else
+            return UIEdgeInsetsMake(10, kAlbumMarginsSpacing, 10, kAlbumMarginsSpacing);
+    }
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kCellSpacing;
+    if (section == 1)
+        return (CGFloat)kImageCellSpacing;
+    else
+        return (CGFloat)0.0;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kCellSpacing;
+    if (section == 1)
+        return (CGFloat)kImageCellSpacing;
+    else
+        return (CGFloat)kAlbumCellSpacing;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -1714,7 +1729,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	{
         float nberAlbumsPerRow = [ImagesCollection numberOfAlbumsPerRowForViewInPortrait:collectionView withMaxWidth:384];
         CGFloat size = (CGFloat)[ImagesCollection albumSizeForView:collectionView andNberOfAlbumsPerRowInPortrait:nberAlbumsPerRow];
-        return CGSizeMake(size, 188);                                   // Albums
+        return CGSizeMake(size, kThumbnailFileSize);                    // Albums
 	}
 }
 
