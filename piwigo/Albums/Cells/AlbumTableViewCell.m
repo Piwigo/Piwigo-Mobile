@@ -43,23 +43,31 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     
     // General settings
     self.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.contentView.layer.cornerRadius = 20;
+    self.contentView.layer.cornerRadius = 14;
     self.contentView.backgroundColor = [UIColor piwigoCellBackgroundColor];
 
     // Album name
     self.albumName.text = self.albumData.name;
     self.albumName.font = [UIFont piwigoFontButton];
     self.albumName.textColor = [UIColor piwigoOrange];
-    self.albumName.adjustsFontSizeToFitWidth = YES;
-    self.albumName.minimumScaleFactor = 0.6;
+    self.albumName.font = [self.albumName.font fontWithSize:[UIFont fontSizeForLabel:self.albumName andNberOfLines:2]];
+
+    // Album comment
+    if (self.albumData.comment.length == 0) {
+        self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumComment_placeholder", @"Comment")];
+        self.albumComment.textColor = [UIColor piwigoRightLabelColor];
+    }
+    else {
+        self.albumComment.text = self.albumData.comment;
+        self.albumComment.textColor = [UIColor piwigoTextColor];
+    }
+    self.albumComment.font = [UIFont piwigoFontSmall];
+    self.albumComment.font = [self.albumComment.font fontWithSize:[UIFont fontSizeForLabel:self.albumComment andNberOfLines:3]];
 
     // Number of images and sub-albums
     self.numberOfImages.textColor = [UIColor piwigoTextColor];
-    self.numberOfImages.font = [UIFont piwigoFontNormal];
-    self.numberOfImages.font = [self.numberOfImages.font fontWithSize:16.0];
+    self.numberOfImages.font = [UIFont piwigoFontTiny];
     self.numberOfImages.textColor = [UIColor piwigoTextColor];
-    self.numberOfImages.adjustsFontSizeToFitWidth = YES;
-    self.numberOfImages.minimumScaleFactor = 0.8;
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#,##0"];
     if (self.albumData.numberOfSubCategories == 0) {
@@ -79,12 +87,13 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     } else {
         
         // There are images and sub-albums
-        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@\r %@ %@",
+        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@ %@",
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.totalNumberOfImages]],
                                     self.albumData.totalNumberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo"),
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]],
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
+    self.numberOfImages.font = [self.numberOfImages.font fontWithSize:[UIFont fontSizeForLabel:self.numberOfImages andNberOfLines:1]];
 
     // Add renaming, moving and deleting capabilities when user has admin rights
     if([Model sharedInstance].hasAdminRights)

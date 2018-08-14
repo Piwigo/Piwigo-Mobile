@@ -1706,7 +1706,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (section == 1)
         return (CGFloat)kImageCellSpacing;
     else
-        return (CGFloat)0.0;
+        return 0.0;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
@@ -1723,13 +1723,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	{
         // Calculate the optimum image size
         CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-        return CGSizeMake(size, size);                                 // Images
+        return CGSizeMake(size, size);                     // Images
 	}
 	else
 	{
         float nberAlbumsPerRow = [ImagesCollection numberOfAlbumsPerRowForViewInPortrait:collectionView withMaxWidth:384];
         CGFloat size = (CGFloat)[ImagesCollection albumSizeForView:collectionView andNberOfAlbumsPerRowInPortrait:nberAlbumsPerRow];
-        return CGSizeMake(size, kThumbnailFileSize);                    // Albums
+        return CGSizeMake(size, 156.5);                    // Albums (see XIB file)
 	}
 }
 

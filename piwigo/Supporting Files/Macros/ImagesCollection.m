@@ -10,9 +10,9 @@
 #import "Model.h"
 
 NSInteger const kAlbumCellSpacing = 8;          // Spacing between albums (horizontally and vertically)
-NSInteger const kAlbumMarginsSpacing = 8;       // Left and right margins for albums
+NSInteger const kAlbumMarginsSpacing = 4;       // Left and right margins for albums
 NSInteger const kImageCellSpacing = 1;          // Spacing between images (horizontally and vertically)
-NSInteger const kImageMarginsSpacing = 8;       // Left and right margins for images
+NSInteger const kImageMarginsSpacing = 4;       // Left and right margins for images
 NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file size
 
 @implementation ImagesCollection

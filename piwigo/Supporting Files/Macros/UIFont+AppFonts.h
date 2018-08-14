@@ -20,5 +20,6 @@
 +(UIFont*)piwigoFontLargeTitle;
 +(UIFont*)piwigoFontButton;
 +(UIFont*)piwigoFontDisclosure;
++(CGFloat)fontSizeForLabel:(UILabel *)label andNberOfLines:(NSInteger)nberLines;
 
 @end

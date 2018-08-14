@@ -18,35 +18,41 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AlbumTableViewCell"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="AlbumTableViewCell" rowHeight="159" id="ClD-fz-kW7" customClass="AlbumTableViewCell">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="165"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="156.5"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ClD-fz-kW7" id="AYo-NF-5du">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="164.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="156"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="V5H-h5-LzC">
-                        <rect key="frame" x="10" y="10" width="145" height="145"/>
+                        <rect key="frame" x="6" y="6" width="144" height="144"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="V5H-h5-LzC" secondAttribute="height" multiplier="1:1" id="9AB-3Q-QWQ"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="albumName" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VUH-5s-TNg">
-                        <rect key="frame" x="175" y="10" width="180" height="23.5"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="albumName" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VUH-5s-TNg">
+                        <rect key="frame" x="170" y="6" width="185" height="23.5"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                         <color key="textColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="numberOfImages" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BOH-3d-ghk">
-                        <rect key="frame" x="175" y="137" width="180" height="18"/>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="comment" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8FE-y2-D2g" userLabel="Comment">
+                        <rect key="frame" x="170" y="108" width="185" height="18"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="numberOfImages" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BOH-3d-ghk">
+                        <rect key="frame" x="170" y="134" width="185" height="14"/>
+                        <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="10"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b5y-tG-VEP">
-                        <rect key="frame" x="355" y="0.0" width="20" height="165"/>
+                        <rect key="frame" x="355" y="0.0" width="20" height="156.5"/>
                         <subviews>
                             <button hidden="YES" clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gsh-Kx-Qjp">
-                                <rect key="frame" x="10" y="52.5" width="20" height="60"/>
+                                <rect key="frame" x="10" y="48" width="20" height="60"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="20" id="aUG-Fy-vut"/>
@@ -63,21 +69,27 @@
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="V5H-h5-LzC" secondAttribute="bottom" constant="10" id="1RH-xB-I7e"/>
+                    <constraint firstAttribute="bottom" secondItem="V5H-h5-LzC" secondAttribute="bottom" constant="6" id="1RH-xB-I7e"/>
+                    <constraint firstItem="8FE-y2-D2g" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="20" id="9Gl-Y7-w9L"/>
                     <constraint firstItem="b5y-tG-VEP" firstAttribute="height" secondItem="AYo-NF-5du" secondAttribute="height" id="AhZ-Di-xbX"/>
-                    <constraint firstItem="VUH-5s-TNg" firstAttribute="top" secondItem="AYo-NF-5du" secondAttribute="top" constant="10" id="EYe-O4-DDh"/>
+                    <constraint firstItem="VUH-5s-TNg" firstAttribute="top" secondItem="AYo-NF-5du" secondAttribute="top" constant="6" id="EYe-O4-DDh"/>
                     <constraint firstItem="b5y-tG-VEP" firstAttribute="centerY" secondItem="AYo-NF-5du" secondAttribute="centerY" id="INV-fj-sz1"/>
-                    <constraint firstItem="V5H-h5-LzC" firstAttribute="leading" secondItem="AYo-NF-5du" secondAttribute="leading" constant="10" id="QQj-js-e4h"/>
+                    <constraint firstAttribute="trailing" secondItem="8FE-y2-D2g" secondAttribute="trailing" constant="20" id="KkT-q0-wyK"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="8FE-y2-D2g" secondAttribute="bottom" constant="30" id="QDz-VC-hij"/>
+                    <constraint firstItem="V5H-h5-LzC" firstAttribute="leading" secondItem="AYo-NF-5du" secondAttribute="leading" constant="6" id="QQj-js-e4h"/>
+                    <constraint firstItem="BOH-3d-ghk" firstAttribute="top" secondItem="8FE-y2-D2g" secondAttribute="bottom" constant="8" symbolic="YES" id="Zfy-He-d4h"/>
                     <constraint firstAttribute="trailing" secondItem="BOH-3d-ghk" secondAttribute="trailing" constant="20" id="cIe-8L-0mb"/>
                     <constraint firstItem="VUH-5s-TNg" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="20" id="fAE-Z4-5Ma"/>
                     <constraint firstItem="BOH-3d-ghk" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="20" id="fu3-Hu-ns2"/>
+                    <constraint firstItem="8FE-y2-D2g" firstAttribute="top" relation="greaterThanOrEqual" secondItem="VUH-5s-TNg" secondAttribute="bottom" constant="10" id="fza-rJ-VbR"/>
                     <constraint firstAttribute="trailing" secondItem="VUH-5s-TNg" secondAttribute="trailing" constant="20" id="oRr-nL-fje"/>
-                    <constraint firstItem="V5H-h5-LzC" firstAttribute="top" secondItem="AYo-NF-5du" secondAttribute="top" constant="10" id="vED-7v-bgT"/>
+                    <constraint firstItem="V5H-h5-LzC" firstAttribute="top" secondItem="AYo-NF-5du" secondAttribute="top" constant="6" id="vED-7v-bgT"/>
                     <constraint firstAttribute="trailing" secondItem="b5y-tG-VEP" secondAttribute="trailing" id="vFI-L5-R97"/>
-                    <constraint firstAttribute="bottom" secondItem="BOH-3d-ghk" secondAttribute="bottom" constant="10" id="yJe-vP-O6B"/>
+                    <constraint firstAttribute="bottom" secondItem="BOH-3d-ghk" secondAttribute="bottom" constant="8" id="yJe-vP-O6B"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="albumComment" destination="8FE-y2-D2g" id="BJu-IX-igi"/>
                 <outlet property="albumName" destination="VUH-5s-TNg" id="2Ss-eO-bVx"/>
                 <outlet property="backgroundImage" destination="V5H-h5-LzC" id="zNh-d3-ztl"/>
                 <outlet property="contentView" destination="AYo-NF-5du" id="VVe-Qo-fqW"/>

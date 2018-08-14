@@ -60,6 +60,31 @@
     return [UIFont fontWithName:@"LacunaRegular" size:21.0];
 }
 
++(CGFloat)fontSizeForLabel:(UILabel *)label andNberOfLines:(NSInteger)nberLines
+{
+    if (label.adjustsFontSizeToFitWidth == NO || label.minimumScaleFactor >= 1.f) {
+        // font adjustment is disabled
+        return label.font.pointSize;
+    }
+    
+    CGSize unadjustedSize = [label.text sizeWithAttributes:@{NSFontAttributeName:label.font}];
+    CGFloat scaleFactor = label.frame.size.width / (unadjustedSize.width / (CGFloat)nberLines);
+    
+    if (scaleFactor >= 1.f) {
+        // the text already fits at full font size
+        return label.font.pointSize;
+    }
+    
+    // Respect minimumScaleFactor
+    scaleFactor = fmaxf(scaleFactor, label.minimumScaleFactor);
+    CGFloat newFontSize = label.font.pointSize * scaleFactor;
+    
+    // Uncomment this if you insist on integer font sizes
+    //newFontSize = floor(newFontSize);
+    
+    return newFontSize;
+}
+
 @end
 
 // Code for determining font name, e.g. LacunaRegular, OpenSans
