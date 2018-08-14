@@ -170,7 +170,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         {
             // User with admin rights can move, edit, delete images and set as album image
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
-            self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+            self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
 
             // Present toolbar
             self.isToolbarRequired = YES;
@@ -180,7 +180,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         {
             // User with upload access to the current category can edit images
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
-            self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton];
+            self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.moveBarButton];
 
             // Present toolbar
             self.isToolbarRequired = YES;
@@ -205,12 +205,12 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         if ([Model sharedInstance].hasAdminRights)
         {
             // User with admin rights can edit, delete images and set as album image
-            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.deleteBarButton, self.setThumbnailBarButton, self.downloadBarButton, self.moveBarButton]];
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.deleteBarButton, self.setThumbnailBarButton, self.moveBarButton, self.downloadBarButton]];
         }
         else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
             // User with upload access to the current category can edit images
-            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.downloadBarButton, self.moveBarButton]];
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.moveBarButton, self.downloadBarButton]];
         }
         else
         {

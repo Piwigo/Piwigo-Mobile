@@ -455,10 +455,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
                 // Present toolbar
                 [self.navigationController setToolbarHidden:NO animated:YES];
-                self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+                self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton];
                 self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
-                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
             }
             else    // iPhone in landscape mode, iPad in any orientation
             {
@@ -466,10 +466,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 [self.navigationController setToolbarHidden:YES animated:YES];
 
                 // Present buttons in the navigation bar
-                [self.navigationItem setLeftBarButtonItems:@[self.moveBarButton, self.downloadBarButton, self.deleteBarButton] animated:YES];
+                [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton, self.moveBarButton, self.deleteBarButton] animated:YES];
                 self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
-                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
           }
         }
         else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
@@ -491,7 +491,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     
                     // Present toolbar
                     [self.navigationController setToolbarHidden:NO animated:YES];
-                    self.toolbarItems = @[self.moveBarButton, self.spaceBetweenButtons, self.downloadBarButton];
+                    self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.moveBarButton];
                     self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
                     self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
                 }
@@ -501,7 +501,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 [self.navigationController setToolbarHidden:YES animated:YES];
                 
                 // Present buttons in the navigation bar
-                [self.navigationItem setLeftBarButtonItems:@[self.moveBarButton, self.downloadBarButton] animated:YES];
+                [self.navigationItem setLeftBarButtonItems:@[self.downloadBarButton, self.moveBarButton] animated:YES];
                 self.downloadBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
             }
