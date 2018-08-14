@@ -22,7 +22,13 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
         CGRect screenRect = [[UIScreen mainScreen] bounds];
         pageSize = screenRect.size;
     } else {
-        pageSize = view.frame.size;
+        if (@available(iOS 11.0, *)) {
+            pageSize = view.safeAreaLayoutGuide.layoutFrame.size;
+            if (pageSize.width == 0.0) pageSize = view.frame.size;
+        } else {
+            // Fallback on earlier versions
+            pageSize = view.frame.size;
+        }
     }
 
     return pageSize;
