@@ -172,9 +172,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
             self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
 
-            // Present toolbar
+            // Present toolbar if needed
             self.isToolbarRequired = YES;
-            [self.navigationController setToolbarHidden:NO animated:YES];
+            BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
+            [self.navigationController setToolbarHidden:isNavigationBarHidden animated:YES];
         }
         else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
@@ -182,9 +183,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
             self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.moveBarButton];
 
-            // Present toolbar
+            // Present toolbar if needed
             self.isToolbarRequired = YES;
-            [self.navigationController setToolbarHidden:NO animated:YES];
+            BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
+            [self.navigationController setToolbarHidden:isNavigationBarHidden animated:YES];
         }
         else
         {
