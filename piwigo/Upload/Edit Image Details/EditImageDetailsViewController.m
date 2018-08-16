@@ -141,32 +141,6 @@ typedef enum {
 -(void)setIsEdit:(BOOL)isEditChoice
 {
     _isEdit = isEditChoice;
-//    [ImageService getImageInfoById:self.imageDetails.imageId
-//                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-//                      self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
-//                      [self.editImageDetailsTableView reloadData];
-//                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-//                      // Failed — Ask user if he/she wishes to retry
-//                      UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-//                            message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-//                            preferredStyle:UIAlertControllerStyleAlert];
-//
-//                      UIAlertAction* dismissAction = [UIAlertAction
-//                              actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-//                              style:UIAlertActionStyleCancel
-//                              handler:^(UIAlertAction * action) {}];
-//
-//                      UIAlertAction* retryAction = [UIAlertAction
-//                              actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-//                              style:UIAlertActionStyleDefault
-//                              handler:^(UIAlertAction * action) {
-//                                  self.isEdit = isEditChoice;
-//                              }];
-//
-//                      [alert addAction:dismissAction];
-//                      [alert addAction:retryAction];
-//                      [self presentViewController:alert animated:YES completion:nil];
-//                  }];
 }
 
 -(void)cancelEdit

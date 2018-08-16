@@ -208,6 +208,9 @@
     [NetworkHandler createImagesSessionManager];        // 60s timeout, 4 connections max
     
     // Create permanent image downloader
+//    AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc]
+//                      initWithMemoryCapacity:1 * 1024*1024
+//                      preferredMemoryCapacity:0 * 1024*1024];
     AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc]
                     initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
                    preferredMemoryCapacity:([Model sharedInstance].memoryCache * 0.6) * 1024*1024];

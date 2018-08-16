@@ -7,6 +7,7 @@
 //
 
 #import "AlbumService.h"
+#import "AppDelegate.h"
 #import "PiwigoAlbumData.h"
 #import "Model.h"
 #import "CategoriesData.h"
@@ -39,6 +40,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   }
                   else
                   {
+                      // Check session (closed or IPv4/IPv6 switch)?
+                      if ([[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                      {
+                          NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                          });
+                      }
                       if(completion)
                       {
                           completion(task, nil);
@@ -118,6 +127,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   }
                   else
                   {
+                      // Check session (closed or IPv4/IPv6 switch)?
+                      if ([[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                      {
+                          NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                          });
+                      }
                       if(completion)
                       {
                           completion(task, nil);
@@ -230,6 +247,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                           NSArray *albums = [[responseObject objectForKey:@"result"] objectForKey:@"categories"];
                           completion(task, albums);
                       } else {
+                          // Check session (closed or IPv4/IPv6 switch)?
+                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                          {
+                              NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                              });
+                          }
                           completion(task, nil);
                       }
                   }

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPaletteChanged;
+FOUNDATION_EXPORT NSString * const kPiwigoError404EncounteredNotification;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

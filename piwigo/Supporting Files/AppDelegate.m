@@ -22,11 +22,12 @@
 #import "PhotosFetch.h"
 #import "AlbumImagesViewController.h"
 
-#ifndef DEBUG_NOCACHE
-#define DEBUG_NOCACHE
-#endif
+//#ifndef DEBUG_NOCACHE
+//#define DEBUG_NOCACHE
+//#endif
 
 NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
+NSString * const kPiwigoError404EncounteredNotification = @"kPiwigoError404EncounteredNotification";
 
 @interface AppDelegate ()
 
@@ -127,6 +128,10 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
     // When that notification is posted, the method screenBrightnessChanged will be called.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged:) name:UIScreenBrightnessDidChangeNotification object:nil];
 
+    // Observe the PiwigoError404EncounteredNotification.
+    // When that notification is posted, the app checks the login.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoError404EncounteredNotification object:nil];
+    
     // Set network reachability status change block
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
 //#if defined(DEBUG)
@@ -139,19 +144,24 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
 
         if ([AFNetworkReachabilityManager sharedManager].reachable) {
             // Connection changed but again reachable — Login again?
-            BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-            NSString *server = [Model sharedInstance].serverName;
-            NSString *user = [KeychainAccess getLoginUser];
-            
-            if(hadOpenedSession && (server.length > 0) && (user.length > 0))
-            {
+            [self checkSessionStatusAndTryRelogin];
+        }
+    }];
+}
+
+-(void)checkSessionStatusAndTryRelogin
+{
+    BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
+    NSString *server = [Model sharedInstance].serverName;
+    NSString *user = [KeychainAccess getLoginUser];
+    
+    if(hadOpenedSession && (server.length > 0) && (user.length > 0))
+    {
 //#if defined(DEBUG)
 //                NSLog(@"       Connection changed but again reachable — Login again?");
 //#endif
-                [self.loginVC checkSessionStatusAndTryRelogin];
-            }
-        }
-    }];
+        [self.loginVC checkSessionStatusAndTryRelogin];
+    }
 }
 
 // Called when the screen brightness has changed or when user changed settings

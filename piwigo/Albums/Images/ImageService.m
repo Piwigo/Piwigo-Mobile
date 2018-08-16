@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "ImageService.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
@@ -51,10 +52,19 @@ NSString * const kGetImageOrderDescending = @"desc";
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
 						  NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
 						  completion(task, albumImages);
-					  } else {
+					  }
+                      else {
 #if defined(DEBUG)
                           NSLog(@"=> getImagesForAlbumId: %@ — Success but stat not Ok!", @(albumId));
 #endif
+                          // Check session (closed or IPv4/IPv6 switch)?
+                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                          {
+                              NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                              });
+                          }
 						  completion(task, nil);
 					  }
 				  }
@@ -109,10 +119,19 @@ NSString * const kGetImageOrderDescending = @"desc";
 							  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] addImages:@[imageData]];
 						  }
 						  completion(task, imageData);
-					  } else {
+					  }
+                      else {
 #if defined(DEBUG)
                           NSLog(@"=> getImageInfoById: %@ — Success but stat not Ok!", @(imageId));
 #endif
+                          // Check session (closed or IPv4/IPv6 switch)?
+                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                          {
+                              NSLog(@"… notify kPiwigoError404EncounteredNotification!");
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                              });
+                          }
 						  completion(task, nil);
 					  }
 				  }
