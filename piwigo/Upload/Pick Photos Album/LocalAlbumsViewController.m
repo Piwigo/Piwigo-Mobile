@@ -44,6 +44,7 @@
         self.localAlbumsTableView.backgroundColor = [UIColor clearColor];
         self.localAlbumsTableView.delegate = self;
         self.localAlbumsTableView.dataSource = self;
+        [self.localAlbumsTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"CategoryTableViewCell"];
         [self.view addSubview:self.localAlbumsTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
         
@@ -260,7 +261,7 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CategoryTableViewCell" forIndexPath:indexPath];
     
     PHAssetCollection *groupAsset;
     switch (indexPath.section) {

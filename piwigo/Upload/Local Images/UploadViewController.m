@@ -67,9 +67,9 @@
         self.localImagesCollection.dataSource = self;
         self.localImagesCollection.delegate = self;
 
-        [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
-        [self.localImagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader"];
-        [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader"];
+        [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"LocalImageCollectionViewCell"];
+        [self.localImagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"SortHeaderCollection"];
+        [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
 
         [self.view addSubview:self.localImagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
@@ -293,7 +293,7 @@
         
         if(kind == UICollectionElementKindSectionHeader)
         {
-            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"SortHeaderCollection" forIndexPath:indexPath];
             header.backgroundColor = [UIColor piwigoCellBackgroundColor];
             header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
             header.currentSortLabel.text = [SortSelectViewController getNameForSortType:self.sortType];
@@ -308,7 +308,7 @@
         
         if(kind == UICollectionElementKindSectionHeader)
         {
-            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection" forIndexPath:indexPath];
             header.backgroundColor = [UIColor piwigoBackgroundColor];
             header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
             
@@ -445,7 +445,7 @@
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"LocalImageCollectionViewCell" forIndexPath:indexPath];
     
     PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
     [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait]];

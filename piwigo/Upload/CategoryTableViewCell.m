@@ -10,8 +10,6 @@
 #import "PiwigoAlbumData.h"
 #import "Model.h"
 
-NSString * const kAlbumCell_ID = @"CategoryTableViewCell";
-
 @interface CategoryTableViewCell()
 
 @property (nonatomic, strong) PiwigoAlbumData *categoryData;
@@ -20,7 +18,7 @@ NSString * const kAlbumCell_ID = @"CategoryTableViewCell";
 
 @implementation CategoryTableViewCell
 
--(void)setupDefaultCellWithCategoryData:(PiwigoAlbumData*)category
+-(void)setupWithCategoryData:(PiwigoAlbumData*)category
 {
     // General settings
     self.backgroundColor = [UIColor piwigoCellBackgroundColor];

@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-FOUNDATION_EXPORT NSString * const kAlbumCell_ID;
-
 @class PiwigoAlbumData;
 
 @protocol CategoryCellDelegate <NSObject>
@@ -28,7 +26,7 @@ FOUNDATION_EXPORT NSString * const kAlbumCell_ID;
 @property (nonatomic, strong) IBOutlet UIView *loadTapView;
 
 -(void)tappedLoadView;
+-(void)setupWithCategoryData:(PiwigoAlbumData*)category;
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category atDepth:(NSInteger)depth;
--(void)setupDefaultCellWithCategoryData:(PiwigoAlbumData*)category;
 
 @end
