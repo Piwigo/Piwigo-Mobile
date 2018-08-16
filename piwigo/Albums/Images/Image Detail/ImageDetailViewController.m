@@ -355,7 +355,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         // return nil;
         // Crash reported by AppStore here on May 25th, 2017
         // Should return 0 when the user reaches the first image of the album
-        return 0;
+        return nil;
     }
     
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
