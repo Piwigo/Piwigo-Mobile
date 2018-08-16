@@ -556,10 +556,8 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                                 [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
                                 
                                 // Post to the app that category data have changed
-                                if ([Model sharedInstance].loadAllCategoryInfo) {
-                                    NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-                                }
+                                NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
+                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
                             }];
                         }
                         else
