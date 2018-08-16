@@ -323,8 +323,14 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 {
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
-    // Check to see if they've scroll beyond a certain threshold, then load more image data
-    if(currentIndex >= self.images.count - 21 && self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+    // Reached the end of the category?
+    if(currentIndex >= (self.images.count - 1))
+    {
+        return nil;
+    }
+    
+    // Check to see if they've scrolled beyond a certain threshold, then load more image data
+    if ((currentIndex >= self.images.count - 21) && (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
     {
         if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
         {
@@ -332,16 +338,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         }
     }
     
-    
-    if(currentIndex >= self.images.count - 1)
-    {
-        return nil;
-    }
+    // Retrieve image data in case user will want to copy, edit, move, etc. the image
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
+    [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
     
+    // Prepare image preview
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
     [nextImage setImageScrollViewWithImageData:imageData];
-    [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
     nextImage.imageIndex = currentIndex + 1;
     return nextImage;
 }
@@ -350,19 +353,22 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 {
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
+    // Reached the beginning of the category?
     if(currentIndex <= 0)
     {
         // return nil;
         // Crash reported by AppStore here on May 25th, 2017
-        // Should return 0 when the user reaches the first image of the album
+        // Should return nil when the user reaches the first image of the album
         return nil;
     }
     
+    // Retrieve image data in case user will want to copy, edit, move, etc. the image
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
+    [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
     
+    // Prepare image preview
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
     [prevImage setImageScrollViewWithImageData:imageData];
-    [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
     prevImage.imageIndex = currentIndex - 1;
     return prevImage;
 }
@@ -390,17 +396,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         // Crash reported by AppleStore in November 2017
         currentIndex = self.images.count - 1;
     }
-    
-    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex];
-    
+
+    self.imageData = [self.images objectAtIndex:currentIndex];
+    self.title = self.imageData.name;
     if(self.imageData.isVideo)
     {
         self.progressBar.hidden = YES;
     }
-    
-    self.imageData = [self.images objectAtIndex:currentIndex];
-    
-    self.title = self.imageData.name;
 }
 
 
