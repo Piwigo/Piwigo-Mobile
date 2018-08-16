@@ -119,7 +119,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 			  }
               failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                  NSLog(@"=> getImageInfoById: %@ — Failed!", @(imageId));
+                  NSLog(@"=> getImageInfoById: %@ failed with error %ld:%@", @(imageId), [error code], [error localizedDescription]);
 #endif
 				  if(fail) {
 					  fail(task, error);

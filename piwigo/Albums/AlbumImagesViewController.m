@@ -933,44 +933,56 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [ImageService getImageInfoById:[[self.selectedImageIdsToDelete lastObject] integerValue]
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
-              // Split orphaned and non-orphaned images
-              if (imageData.categoryIds.count > 1) {
-                  [self.selectedImagesToRemove addObject:imageData];
+              if (imageData != nil) {
+                  // Split orphaned and non-orphaned images
+                  if (imageData.categoryIds.count > 1) {
+                      [self.selectedImagesToRemove addObject:imageData];
+                  }
+                  else {
+                      [self.selectedImagesToDelete addObject:imageData];
+                  }
+              
+                  // Next image
+                  [self.selectedImageIdsToDelete removeLastObject];
+                  [self retrieveImageData];
               }
               else {
-                  [self.selectedImagesToDelete addObject:imageData];
+                  // Could not retrieve image data
+                  [self couldNotRetrieveImageData];
               }
-              
-              // Next image
-              [self.selectedImageIdsToDelete removeLastObject];
-              [self retrieveImageData];
           }
                  onFailure:^(NSURLSessionTask *task, NSError *error) {
                      // Failed — Ask user if he/she wishes to retry
-                     UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                         message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-                         preferredStyle:UIAlertControllerStyleAlert];
-                     
-                     UIAlertAction* dismissAction = [UIAlertAction
-                         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                         style:UIAlertActionStyleCancel
-                         handler:^(UIAlertAction * action) {
-                             dispatch_async(dispatch_get_main_queue(), ^{
-                                 [self hideHUD];
-                             });
-                         }];
-                     
-                     UIAlertAction* retryAction = [UIAlertAction
-                           actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                           style:UIAlertActionStyleDefault
-                           handler:^(UIAlertAction * action) {
-                               [self retrieveImageData];
-                           }];
-                     
-                     [alert addAction:dismissAction];
-                     [alert addAction:retryAction];
-                     [self presentViewController:alert animated:YES completion:nil];
+                     [self couldNotRetrieveImageData];
                  }];
+}
+
+-(void)couldNotRetrieveImageData
+{
+    // Failed — Ask user if he/she wishes to retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hideHUD];
+            });
+        }];
+    
+    UIAlertAction* retryAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+          [self retrieveImageData];
+        }];
+    
+    [alert addAction:dismissAction];
+    [alert addAction:retryAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)askDeleteConfirmation

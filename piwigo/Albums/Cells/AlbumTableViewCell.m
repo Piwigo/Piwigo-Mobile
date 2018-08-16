@@ -162,30 +162,30 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     
     __weak typeof(self) weakSelf = self;
     [ImageService getImageInfoById:albumData.albumThumbnailId
-              ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-                  if(!imageData.MediumPath)
-                     {
-                         albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
-                     }
-                     else
-                     {
-                         NSURL *URL = [NSURL URLWithString:imageData.MediumPath];
-                         [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:URL]
-                                                     placeholderImage:[UIImage imageNamed:@"placeholder"]
-                                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                                  albumData.categoryImage = image;
-                                                                  weakSelf.backgroundImage.image = image;
-                                                              } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                if(!imageData.MediumPath)
+                {
+                    albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+                }
+                else {
+                     NSURL *URL = [NSURL URLWithString:imageData.MediumPath];
+                     [self.backgroundImage
+                        setImageWithURLRequest:[NSURLRequest requestWithURL:URL]
+                              placeholderImage:[UIImage imageNamed:@"placeholder"]
+                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                           albumData.categoryImage = image;
+                                           weakSelf.backgroundImage.image = image;
+                                       } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-                                                                  NSLog(@"setupWithAlbumData — Fail to get imgage for album at %@", imageData.MediumPath);
+                                           NSLog(@"setupWithAlbumData — Fail to get imgage for album at %@", imageData.MediumPath);
 #endif
-                                                              }];
-                     }
-                 } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                      }];
+                 }
+             } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                     NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
+                 NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
 #endif
-                 }];
+             }];
 }
 
 -(void)prepareForReuse

@@ -22,6 +22,10 @@
 #import "PhotosFetch.h"
 #import "AlbumImagesViewController.h"
 
+#ifndef DEBUG_NOCACHE
+#define DEBUG_NOCACHE
+#endif
+
 NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
 
 @interface AppDelegate ()
@@ -40,14 +44,28 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
     // Override point for customization after application launch.
-	
+
     // Cache settings
-	NSURLCache *URLCache = [[NSURLCache alloc]
+#if defined(DEBUG_NOCACHE)
+    // set it to 0 to clear cache
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
+                                                       diskCapacity:0
+                                                           diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
+    // set it back to default value
+	URLCache = [[NSURLCache alloc]
                             initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
 								      diskCapacity:[Model sharedInstance].diskCache * 1024*1024
                                           diskPath:nil];
 	[NSURLCache setSharedURLCache:URLCache];
-    
+#else
+    NSURLCache *URLCache = [[NSURLCache alloc]
+                            initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+                            diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                            diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
+#endif
+
     // Login ?
     NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;

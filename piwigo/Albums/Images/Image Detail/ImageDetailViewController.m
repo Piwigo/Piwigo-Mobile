@@ -231,34 +231,45 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:imageId
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
-              self.imageData = imageDataComplete;
+              if (imageDataComplete != nil) {
+                  self.imageData = imageDataComplete;
+              }
+              else {
+                  [self couldNotRetrieveImageData];
+              }
           }
                  onFailure:^(NSURLSessionTask *task, NSError *error) {
               // Failed — Ask user if he/she wishes to retry
-              UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                                   message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-                            preferredStyle:UIAlertControllerStyleAlert];
-              
-              UIAlertAction* dismissAction = [UIAlertAction
-                  actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                  style:UIAlertActionStyleCancel
-                  handler:^(UIAlertAction * action) {
-                      self.editBarButton.enabled = NO;
-                      self.deleteBarButton.enabled = NO;
-                      self.moveBarButton.enabled = NO;
-                  }];
-              
-              UIAlertAction* retryAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                    style:UIAlertActionStyleDefault
-                    handler:^(UIAlertAction * action) {
-                        [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
-                    }];
-              
-              [alert addAction:dismissAction];
-              [alert addAction:retryAction];
-              [self presentViewController:alert animated:YES completion:nil];
-          }];
+                     [self couldNotRetrieveImageData];
+                 }];
+}
+
+-(void)couldNotRetrieveImageData
+{
+    // Failed — Ask user if he/she wishes to retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+            self.editBarButton.enabled = NO;
+            self.deleteBarButton.enabled = NO;
+            self.moveBarButton.enabled = NO;
+        }];
+    
+    UIAlertAction* retryAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+          [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
+        }];
+    
+    [alert addAction:dismissAction];
+    [alert addAction:retryAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 
