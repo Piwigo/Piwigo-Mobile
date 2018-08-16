@@ -93,14 +93,16 @@
 +(NSString*)getTagsStringFromList:(NSArray*)tagList
 {
 	NSString *tagListString = @"";
-	if ((tagList != nil) && ([tagList count] > 0))
-	{
-		tagListString = [[tagList firstObject] tagName];
-		for(NSInteger i = 1; i < tagList.count; i++)
-		{
-			PiwigoTagData *tagData = [tagList objectAtIndex:i];
-			tagListString = [NSString stringWithFormat:@"%@, %@", tagListString, tagData.tagName];
-		}
+    if (tagList != nil) {
+        if ([tagList count] > 0)
+        {
+            tagListString = [[tagList firstObject] tagName];
+            for(NSInteger i = 1; i < tagList.count; i++)
+            {
+                PiwigoTagData *tagData = [tagList objectAtIndex:i];
+                tagListString = [NSString stringWithFormat:@"%@, %@", tagListString, tagData.tagName];
+            }
+        }
 	}
 	return tagListString;
 }
