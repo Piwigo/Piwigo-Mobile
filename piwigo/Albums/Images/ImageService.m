@@ -72,6 +72,14 @@ NSString * const kGetImageOrderDescending = @"desc";
 #if defined(DEBUG)
                   NSLog(@"=> getImagesForAlbumId: %@ — Failed!", @(albumId));
 #endif
+                  // Check session (closed or IPv4/IPv6 switch)?
+                  if ([[error localizedDescription] containsString:@"(404)"])
+                  {
+                      NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
 				  if(fail) {
 					  fail(task, error);
 				  }
@@ -127,7 +135,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                           // Check session (closed or IPv4/IPv6 switch)?
                           if ([[responseObject objectForKey:@"err"] isEqualToString:@"404"])
                           {
-                              NSLog(@"… notify kPiwigoError404EncounteredNotification!");
+                              NSLog(@"…notify kPiwigoError404EncounteredNotification!");
                               dispatch_async(dispatch_get_main_queue(), ^{
                                   [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
                               });
@@ -140,6 +148,14 @@ NSString * const kGetImageOrderDescending = @"desc";
 #if defined(DEBUG)
                   NSLog(@"=> getImageInfoById: %@ failed with error %ld:%@", @(imageId), [error code], [error localizedDescription]);
 #endif
+                  // Check session (closed or IPv4/IPv6 switch)?
+                  if ([[error localizedDescription] containsString:@"(404)"])
+                  {
+                      NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
 				  if(fail) {
 					  fail(task, error);
 				  }

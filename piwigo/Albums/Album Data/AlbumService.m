@@ -57,6 +57,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG)
                   NSLog(@"getInfos — Fail: %@", [error description]);
 #endif
+                  // Check session (closed or IPv4/IPv6 switch)?
+                  if ([[error localizedDescription] containsString:@"(404)"])
+                  {
+                      NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
                   if(fail) {
                       fail(task, error);
                   }
@@ -144,6 +152,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG)
                   NSLog(@"getAlbumListForCategory — Fail: %@", [error description]);
 #endif
+                  // Check session (closed or IPv4/IPv6 switch)?
+                  if ([[error localizedDescription] containsString:@"(404)"])
+                  {
+                      NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
                   if(fail) {
                       fail(task, error);
                   }
@@ -262,6 +278,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG)
                   NSLog(@"getCommunityAlbumListForCategory — Fail: %@", [error description]);
 #endif
+                  // Check session (closed or IPv4/IPv6 switch)?
+                  if ([[error localizedDescription] containsString:@"(404)"])
+                  {
+                      NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
               }];
 }
 
