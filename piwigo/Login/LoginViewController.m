@@ -279,6 +279,7 @@
         userTextField.placeholder = NSLocalizedString(@"loginHTTPuser_placeholder", @"username");
         userTextField.clearButtonMode = UITextFieldViewModeAlways;
         userTextField.keyboardType = UIKeyboardTypeDefault;
+        userTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         userTextField.returnKeyType = UIReturnKeyContinue;
         userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         userTextField.delegate = self;
@@ -288,6 +289,7 @@
         pwdTextField.placeholder = NSLocalizedString(@"loginHTTPpwd_placeholder", @"password");
         pwdTextField.clearButtonMode = UITextFieldViewModeAlways;
         pwdTextField.keyboardType = UIKeyboardTypeDefault;
+        pwdTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         pwdTextField.returnKeyType = UIReturnKeyContinue;
         pwdTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         pwdTextField.delegate = self;

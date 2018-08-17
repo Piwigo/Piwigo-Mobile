@@ -176,7 +176,6 @@ NSString * const kPiwigoError404EncounteredNotification = @"kPiwigoError404Encou
         } else {
             // Switch to light palette
             [Model sharedInstance].isDarkPaletteActive = NO;
-            [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceLight;
         }
     } else {
         // Dark palette mode chosen
@@ -188,7 +187,6 @@ NSString * const kPiwigoError404EncounteredNotification = @"kPiwigoError404Encou
             } else {
                 // Switch to dark palette
                 [Model sharedInstance].isDarkPaletteActive = YES;
-                [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceDark;
             }
         } else {
             // Dynamic dark palette chosen
@@ -198,7 +196,6 @@ NSString * const kPiwigoError404EncounteredNotification = @"kPiwigoError404Encou
                 if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
                     // Screen brightness > thereshold, switch to light palette
                     [Model sharedInstance].isDarkPaletteActive = NO;
-                    [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceLight;
                 } else {
                     // Keep dark palette
                     return;
@@ -208,7 +205,6 @@ NSString * const kPiwigoError404EncounteredNotification = @"kPiwigoError404Encou
                 if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
                     // Screen brightness < threshold, switch to dark palette
                     [Model sharedInstance].isDarkPaletteActive = YES;
-                    [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceDark;
                 } else {
                     // Keep light palette
                     return;
