@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -30,6 +31,24 @@
                             <constraint firstAttribute="width" secondItem="V5H-h5-LzC" secondAttribute="height" multiplier="1:1" id="9AB-3Q-QWQ"/>
                         </constraints>
                     </imageView>
+                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q1L-X3-UGq" userLabel="topCut">
+                        <rect key="frame" x="153" y="-7" width="14" height="14"/>
+                        <color key="backgroundColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="14" id="Kbc-PG-Psg"/>
+                            <constraint firstAttribute="height" constant="14" id="psl-Jc-7eu"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    </button>
+                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1O2-wR-Lbe" userLabel="bottomCut">
+                        <rect key="frame" x="153" y="149" width="14" height="14"/>
+                        <color key="backgroundColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="14" id="h4H-vE-guV"/>
+                            <constraint firstAttribute="width" constant="14" id="oj7-PA-wFh"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="albumName" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VUH-5s-TNg">
                         <rect key="frame" x="170" y="6" width="185" height="23.5"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
@@ -52,10 +71,10 @@
                         <rect key="frame" x="355" y="0.0" width="20" height="156.5"/>
                         <subviews>
                             <button hidden="YES" clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gsh-Kx-Qjp">
-                                <rect key="frame" x="10" y="48" width="20" height="60"/>
-                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="13" y="48" width="14" height="60"/>
+                                <color key="backgroundColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="aUG-Fy-vut"/>
+                                    <constraint firstAttribute="width" constant="14" id="aUG-Fy-vut"/>
                                     <constraint firstAttribute="height" constant="60" id="kBq-uR-AdW"/>
                                 </constraints>
                             </button>
@@ -72,16 +91,20 @@
                     <constraint firstAttribute="bottom" secondItem="V5H-h5-LzC" secondAttribute="bottom" constant="6" id="1RH-xB-I7e"/>
                     <constraint firstItem="8FE-y2-D2g" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="20" id="9Gl-Y7-w9L"/>
                     <constraint firstItem="b5y-tG-VEP" firstAttribute="height" secondItem="AYo-NF-5du" secondAttribute="height" id="AhZ-Di-xbX"/>
+                    <constraint firstItem="1O2-wR-Lbe" firstAttribute="centerY" secondItem="AYo-NF-5du" secondAttribute="bottom" id="Bmb-bN-GIe"/>
                     <constraint firstItem="VUH-5s-TNg" firstAttribute="top" secondItem="AYo-NF-5du" secondAttribute="top" constant="6" id="EYe-O4-DDh"/>
                     <constraint firstItem="b5y-tG-VEP" firstAttribute="centerY" secondItem="AYo-NF-5du" secondAttribute="centerY" id="INV-fj-sz1"/>
                     <constraint firstAttribute="trailing" secondItem="8FE-y2-D2g" secondAttribute="trailing" constant="20" id="KkT-q0-wyK"/>
                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="8FE-y2-D2g" secondAttribute="bottom" constant="30" id="QDz-VC-hij"/>
                     <constraint firstItem="V5H-h5-LzC" firstAttribute="leading" secondItem="AYo-NF-5du" secondAttribute="leading" constant="6" id="QQj-js-e4h"/>
+                    <constraint firstItem="q1L-X3-UGq" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="3" id="UAF-f0-lmU"/>
+                    <constraint firstItem="q1L-X3-UGq" firstAttribute="centerY" secondItem="AYo-NF-5du" secondAttribute="top" id="XLy-dA-hbo"/>
                     <constraint firstItem="BOH-3d-ghk" firstAttribute="top" secondItem="8FE-y2-D2g" secondAttribute="bottom" constant="8" symbolic="YES" id="Zfy-He-d4h"/>
                     <constraint firstAttribute="trailing" secondItem="BOH-3d-ghk" secondAttribute="trailing" constant="20" id="cIe-8L-0mb"/>
                     <constraint firstItem="VUH-5s-TNg" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="20" id="fAE-Z4-5Ma"/>
                     <constraint firstItem="BOH-3d-ghk" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="20" id="fu3-Hu-ns2"/>
                     <constraint firstItem="8FE-y2-D2g" firstAttribute="top" relation="greaterThanOrEqual" secondItem="VUH-5s-TNg" secondAttribute="bottom" constant="10" id="fza-rJ-VbR"/>
+                    <constraint firstItem="1O2-wR-Lbe" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="3" id="g33-b0-yTL"/>
                     <constraint firstAttribute="trailing" secondItem="VUH-5s-TNg" secondAttribute="trailing" constant="20" id="oRr-nL-fje"/>
                     <constraint firstItem="V5H-h5-LzC" firstAttribute="top" secondItem="AYo-NF-5du" secondAttribute="top" constant="6" id="vED-7v-bgT"/>
                     <constraint firstAttribute="trailing" secondItem="b5y-tG-VEP" secondAttribute="trailing" id="vFI-L5-R97"/>
@@ -92,10 +115,12 @@
                 <outlet property="albumComment" destination="8FE-y2-D2g" id="BJu-IX-igi"/>
                 <outlet property="albumName" destination="VUH-5s-TNg" id="2Ss-eO-bVx"/>
                 <outlet property="backgroundImage" destination="V5H-h5-LzC" id="zNh-d3-ztl"/>
+                <outlet property="bottomCut" destination="1O2-wR-Lbe" id="0AV-Sd-n2J"/>
                 <outlet property="contentView" destination="AYo-NF-5du" id="VVe-Qo-fqW"/>
                 <outlet property="handleButton" destination="gsh-Kx-Qjp" id="jOz-bc-Bnn"/>
                 <outlet property="handleView" destination="b5y-tG-VEP" id="dQW-DW-k8B"/>
                 <outlet property="numberOfImages" destination="BOH-3d-ghk" id="W3H-Pg-0Ge"/>
+                <outlet property="topCut" destination="q1L-X3-UGq" id="8DG-Rq-6oX"/>
             </connections>
             <point key="canvasLocation" x="14.5" y="-101.5"/>
         </tableViewCell>

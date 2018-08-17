@@ -23,6 +23,8 @@ FOUNDATION_EXPORT NSString * const kAlbumTableCell_ID;
 @property (nonatomic, weak) id<AlbumTableViewCellDelegate> cellDelegate;
 @property (nonatomic, strong) PiwigoAlbumData *albumData;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
+@property (weak, nonatomic) IBOutlet UIButton *topCut;
+@property (weak, nonatomic) IBOutlet UIButton *bottomCut;
 @property (weak, nonatomic) IBOutlet UILabel *albumName;
 @property (weak, nonatomic) IBOutlet UILabel *albumComment;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfImages;

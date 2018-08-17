@@ -45,6 +45,10 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.backgroundColor = [UIColor piwigoBackgroundColor];
     self.contentView.layer.cornerRadius = 14;
     self.contentView.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.topCut.layer.cornerRadius = 7;
+    self.topCut.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.bottomCut.layer.cornerRadius = 7;
+    self.bottomCut.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Album name
     self.albumName.text = self.albumData.name;
@@ -65,7 +69,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.albumComment.font = [self.albumComment.font fontWithSize:[UIFont fontSizeForLabel:self.albumComment andNberOfLines:3]];
 
     // Number of images and sub-albums
-    self.numberOfImages.textColor = [UIColor piwigoTextColor];
     self.numberOfImages.font = [UIFont piwigoFontTiny];
     self.numberOfImages.textColor = [UIColor piwigoTextColor];
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
@@ -99,7 +102,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     if([Model sharedInstance].hasAdminRights)
     {
         // Handle
-        self.handleButton.layer.cornerRadius = 10;
+        self.handleButton.layer.cornerRadius = 7;
         self.handleButton.backgroundColor = [UIColor piwigoOrange];
         self.handleView.backgroundColor = [UIColor piwigoCellBackgroundColor];
         self.handleView.hidden = NO;
