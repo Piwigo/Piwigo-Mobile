@@ -95,7 +95,7 @@
 +(UIColor*)piwigoSeparatorColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
-        return [UIColor colorWithRed:64/255.0 green:64/255.0 blue:64/255.0 alpha:1.0];
+        return [UIColor colorWithRed:97/255.0 green:97/255.0 blue:104/255.0 alpha:1.0];
     else
         return [UIColor colorWithRed:128/255.0 green:128/255.0 blue:128/255.0 alpha:1.0];
 }
