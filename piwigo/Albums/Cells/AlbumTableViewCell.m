@@ -58,7 +58,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
     // Album comment
     if (self.albumData.comment.length == 0) {
-        self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumComment_placeholder", @"Comment")];
+        self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumComment_noComment", @"no comment")];
         self.albumComment.textColor = [UIColor piwigoRightLabelColor];
     }
     else {
