@@ -217,7 +217,9 @@
     }
     cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
     cell.tintColor = [UIColor piwigoOrange];
-    cell.textLabel.text = currentTag.tagName;
+    
+    // Number of images not known if getAdminList called
+    cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, currentTag.numberOfImagesUnderTag];
     cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
     
     if (indexPath.section == 1) {

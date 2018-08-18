@@ -38,6 +38,7 @@ NSString * const kPiwigoImageSetInfo = @"format=json&method=pwg.images.setInfo";
 NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
 
 NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
+NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdminList";
 
 // Parameter keys:
 NSString * const kPiwigoImagesUploadParamData = @"data";

@@ -83,8 +83,11 @@
 		PiwigoTagData *newTagData = [PiwigoTagData new];
 		newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
 		newTagData.tagName = [tagData objectForKey:@"name"];
+        
+        // Number of images not known if getAdminList called
 		newTagData.numberOfImagesUnderTag = [[tagData objectForKey:@"counter"] integerValue];
-		[tags addObject:newTagData];
+
+        [tags addObject:newTagData];
 	}
 	
 	return tags;
