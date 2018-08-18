@@ -212,14 +212,14 @@
     PiwigoTagData *currentTag;
     if (indexPath.section == 0) {
         currentTag = self.alreadySelectedTags[indexPath.row];
+        cell.textLabel.text = currentTag.tagName;
     } else {
         currentTag = [TagsData sharedInstance].tagList[indexPath.row];
+        // Number of images not known if getAdminList called
+        cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, currentTag.numberOfImagesUnderTag];
     }
     cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
     cell.tintColor = [UIColor piwigoOrange];
-    
-    // Number of images not known if getAdminList called
-    cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, currentTag.numberOfImagesUnderTag];
     cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
     
     if (indexPath.section == 1) {
