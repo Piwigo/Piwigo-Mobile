@@ -76,6 +76,22 @@ typedef enum {
     // Table view
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+
+    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+    [textFieldCell paletteChanged];
+    
+    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+    [textFieldCell paletteChanged];
+    
+    EditImageLabelTableViewCell *labelCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
+    [labelCell paletteChanged];
+    
+    labelCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
+    [labelCell paletteChanged];
+
+    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
+    [textViewCell paletteChanged];
+
     [self.editImageDetailsTableView reloadData];
 }
 
@@ -146,7 +162,6 @@ typedef enum {
 -(void)cancelEdit
 {
 	[self dismissViewControllerAnimated:YES completion:nil];
-//    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)doneEdit
@@ -168,7 +183,6 @@ typedef enum {
                             [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 700 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
                                     [self dismissViewControllerAnimated:YES completion:nil];
-//                                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                                 });
                             }];
 						} onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -354,7 +368,8 @@ typedef enum {
 		tagsVC.delegate = self;
 		tagsVC.alreadySelectedTags = [self.imageDetails.tags mutableCopy];
 		[self.navigationController pushViewController:tagsVC animated:YES];
-    } else if (indexPath.row == EditImageDetailsOrderAuthor) {
+    }
+    else if (indexPath.row == EditImageDetailsOrderAuthor) {
         if (0 == self.imageDetails.author.length) { // only update if not yet set, dont overwrite
             if (0 < [[[Model sharedInstance] defaultAuthor] length]) { // must know the default author
                 self.imageDetails.author = [[Model sharedInstance] defaultAuthor];

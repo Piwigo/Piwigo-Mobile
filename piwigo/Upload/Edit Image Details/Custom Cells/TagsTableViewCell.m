@@ -31,9 +31,14 @@
 	self.tagsString = @"";
 	self.leftLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
     self.leftLabel.font = [UIFont piwigoFontNormal];
-    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.rightLabel.font = [UIFont piwigoFontNormal];
+}
+
+-(void)paletteChanged
+{
+    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.rightLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
 }
 
 -(void)setTagsString:(NSString *)tagsString
