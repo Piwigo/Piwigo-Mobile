@@ -61,6 +61,7 @@
 		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
 		self.serverTextField.returnKeyType = UIReturnKeyNext;
+        self.serverTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         self.serverTextField.clearButtonMode = YES;
 		self.serverTextField.delegate = self;
 		[self.view addSubview:self.serverTextField];
@@ -71,7 +72,9 @@
 		self.userTextField.text = [Model sharedInstance].username;
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.userTextField.keyboardType = UIKeyboardTypeDefault;
 		self.userTextField.returnKeyType = UIReturnKeyNext;
+        self.userTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         self.userTextField.clearButtonMode = YES;
 		self.userTextField.delegate = self;
 		[self.view addSubview:self.userTextField];
@@ -81,6 +84,8 @@
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
 		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
+        self.passwordTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        self.passwordTextField.keyboardType = UIKeyboardTypeDefault;
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
         self.passwordTextField.clearButtonMode = YES;
 		self.passwordTextField.delegate = self;
@@ -282,6 +287,7 @@
         userTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         userTextField.returnKeyType = UIReturnKeyContinue;
         userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         userTextField.delegate = self;
     }];
     
@@ -289,9 +295,11 @@
         pwdTextField.placeholder = NSLocalizedString(@"loginHTTPpwd_placeholder", @"password");
         pwdTextField.clearButtonMode = UITextFieldViewModeAlways;
         pwdTextField.keyboardType = UIKeyboardTypeDefault;
+        pwdTextField.secureTextEntry = YES;
         pwdTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        pwdTextField.returnKeyType = UIReturnKeyContinue;
         pwdTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        pwdTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        pwdTextField.returnKeyType = UIReturnKeyContinue;
         pwdTextField.delegate = self;
     }];
 

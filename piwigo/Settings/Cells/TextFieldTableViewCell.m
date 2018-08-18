@@ -36,6 +36,11 @@
 		self.rightTextField.font = [UIFont piwigoFontNormal];
 		self.rightTextField.textColor = [UIColor piwigoRightLabelColor];
         self.rightTextField.keyboardType = UIKeyboardTypeDefault;
+        self.rightTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        self.rightTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        self.rightTextField.autocorrectionType = UITextAutocorrectionTypeYes;
+        self.rightTextField.returnKeyType = UIReturnKeyGo;
+
         self.rightTextField.returnKeyType = UIReturnKeyDone;
         if ([Model sharedInstance].isAppLanguageRTL) {
             self.rightTextField.textAlignment = NSTextAlignmentLeft;
