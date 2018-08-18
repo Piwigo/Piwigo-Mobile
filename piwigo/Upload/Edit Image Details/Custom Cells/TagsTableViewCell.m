@@ -32,6 +32,7 @@
 	self.leftLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
     self.leftLabel.font = [UIFont piwigoFontNormal];
     self.rightLabel.font = [UIFont piwigoFontNormal];
+    [self paletteChanged];
 }
 
 -(void)paletteChanged
