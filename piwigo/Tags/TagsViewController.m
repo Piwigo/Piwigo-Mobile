@@ -6,9 +6,11 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "TagsViewController.h"
-#import "TagsData.h"
+#import "AppDelegate.h"
+#import "Model.h"
 #import "PiwigoTagData.h"
+#import "TagsData.h"
+#import "TagsViewController.h"
 
 @interface TagsViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -44,19 +46,44 @@
 			[self.tagsTableView reloadData];
 		}];
 		
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
 	}
 	return self;
 }
 
 #pragma mark - View Lifecycle
 
+-(void)paletteChanged
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    
+    // Table view
+    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    [self.tagsTableView reloadData];
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    // Table view
-    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
-    [self.tagsTableView reloadData];
+    // Set colors, fonts, etc.
+    [self paletteChanged];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
