@@ -58,11 +58,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                           NSLog(@"=> getImagesForAlbumId: %@ — Success but stat not Ok!", @(albumId));
 #endif
                           // Check session (closed or IPv4/IPv6 switch)?
-                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
+                              [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
                           {
-                              NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                              NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                               dispatch_async(dispatch_get_main_queue(), ^{
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
                               });
                           }
 						  completion(task, nil);
@@ -73,11 +74,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                   NSLog(@"=> getImagesForAlbumId: %@ — Failed!", @(albumId));
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?
-                  if ([[error localizedDescription] containsString:@"(404)"])
+                  if ([[error localizedDescription] containsString:@"(401)"] ||
+                      [[error localizedDescription] containsString:@"(404)"])
                   {
-                      NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
                       });
                   }
 				  if(fail) {
@@ -133,11 +135,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                           NSLog(@"=> getImageInfoById: %@ — Success but stat not Ok!", @(imageId));
 #endif
                           // Check session (closed or IPv4/IPv6 switch)?
-                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
+                              [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
                           {
-                              NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                              NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                               dispatch_async(dispatch_get_main_queue(), ^{
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
                               });
                           }
 						  completion(task, nil);
@@ -149,11 +152,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                   NSLog(@"=> getImageInfoById: %@ failed with error %ld:%@", @(imageId), [error code], [error localizedDescription]);
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?
-                  if ([[error localizedDescription] containsString:@"(404)"])
+                  if ([[error localizedDescription] containsString:@"(401)"] ||
+                      [[error localizedDescription] containsString:@"(404)"])
                   {
-                      NSLog(@"…notify kPiwigoError404EncounteredNotification!");
+                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoError404EncounteredNotification object:nil userInfo:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
                       });
                   }
 				  if(fail) {

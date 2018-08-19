@@ -27,7 +27,7 @@
 //#endif
 
 NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
-NSString * const kPiwigoError404EncounteredNotification = @"kPiwigoError404EncounteredNotification";
+NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkErrorEncounteredNotification";
 
 @interface AppDelegate ()
 
@@ -130,7 +130,7 @@ NSString * const kPiwigoError404EncounteredNotification = @"kPiwigoError404Encou
 
     // Observe the PiwigoError404EncounteredNotification.
     // When that notification is posted, the app checks the login.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoError404EncounteredNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoNetworkErrorEncounteredNotification object:nil];
     
     // Set network reachability status change block
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
