@@ -146,6 +146,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+
     NSString *langCode = [[NSLocale currentLocale] languageCode];
     NSTimeInterval thirtyDays = 60 * 60 * 24 * 30.0;
 //    NSLog(@"=> langCode: %@", langCode);
