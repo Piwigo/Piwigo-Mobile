@@ -23,6 +23,8 @@
 //#define DEBUG_SESSION
 //#endif
 
+NSString * const kPiwigoURL = @"— https://piwigo.org —";
+
 @interface LoginViewController () <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIAlertAction *httpLoginAction;
@@ -49,7 +51,7 @@
         self.piwigoButton.translatesAutoresizingMaskIntoConstraints = NO;
         self.piwigoButton.titleLabel.font = [UIFont piwigoFontNormal];
         [self.piwigoButton setTitleColor:[UIColor piwigoOrange] forState:UIControlStateNormal];
-        [self.piwigoButton setTitle:@"— https://piwigo.org —" forState:UIControlStateNormal];
+        [self.piwigoButton setTitle:kPiwigoURL forState:UIControlStateNormal];
         [self.piwigoButton addTarget:self action:@selector(openPiwigoURL) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:self.piwigoButton];
 

@@ -291,8 +291,8 @@ typedef enum {
 -(void)keyboardWillChange:(NSNotification*)notification
 {
     // Unused — interface to be improved !!
-    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+//    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
     self.tableViewBottomConstraint.constant = -100;
 }
 

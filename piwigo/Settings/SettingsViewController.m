@@ -123,6 +123,8 @@ typedef enum {
 
 -(void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     // Get Server Infos if possible
     if ([Model sharedInstance].hasAdminRights)
         [self getInfos];

@@ -222,7 +222,7 @@
         currentTag = [TagsData sharedInstance].tagList[indexPath.row];
         
         // Number of images not known if getAdminList called
-        cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, currentTag.numberOfImagesUnderTag];
+        cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag];
 
         // Display checkmark if image tagged with current tag
         NSArray *selectedTagIDs = [self.alreadySelectedTags valueForKey:@"tagId"];
