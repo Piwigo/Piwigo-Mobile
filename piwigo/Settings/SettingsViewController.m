@@ -44,6 +44,9 @@ typedef enum {
 	kImageUploadSettingAuthor
 } kImageUploadSetting;
 
+NSString * const kHelpUsTitle = @"Help Us!";
+NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated in your language. Could you please help us complete the translation?";
+
 @interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
@@ -139,6 +142,44 @@ typedef enum {
     
     // Set navigation buttons
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    NSString *langCode = [[NSLocale currentLocale] languageCode];
+    NSTimeInterval thirtyDays = 60 * 60 * 24 * 30.0;
+//    NSLog(@"=> langCode: %@", langCode);
+//    NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, thirtyDays);
+    if (([[NSDate date] timeIntervalSinceReferenceDate] > [Model sharedInstance].dateOfLastTranslationRequest + thirtyDays) &&
+        ([langCode isEqualToString:@"ar"] || [langCode isEqualToString:@"id"] ||
+         [langCode isEqualToString:@"ja"] || [langCode isEqualToString:@"pl"]))
+    {
+        // Store date of last translation request
+        [Model sharedInstance].dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
+        [[Model sharedInstance] saveToDisk];
+        
+        // Request a translation
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:kHelpUsTitle
+                message:kHelpUsTranslatePiwigo
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* cancelAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                style:UIAlertActionStyleDestructive
+                handler:^(UIAlertAction * action) {}];
+
+        UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                style:UIAlertActionStyleDefault
+                handler:^(UIAlertAction * action) {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
+                }];
+        
+        [alert addAction:cancelAction];
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
