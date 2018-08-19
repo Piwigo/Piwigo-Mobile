@@ -33,6 +33,7 @@ typedef enum {
 @property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewBottomConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewTopConstraint;
+@property (assign, nonatomic) BOOL shouldUpdateDetails;
 
 @end
 
@@ -103,6 +104,7 @@ typedef enum {
     [self paletteChanged];
 
     // Navigation buttons in edition mode
+    self.shouldUpdateDetails = NO;
     if(self.isEdit)
     {
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
@@ -117,7 +119,8 @@ typedef enum {
 {
     [super viewWillDisappear:animated];
     
-    if([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
+    if ((self.shouldUpdateDetails || (self.navigationItem.rightBarButtonItem == nil)) &&
+        [self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
 	{
 		[self prepareImageForChanges];
 		[self.delegate didFinishEditingDetails:self.imageDetails];
@@ -161,7 +164,8 @@ typedef enum {
 
 -(void)cancelEdit
 {
-	[self dismissViewControllerAnimated:YES completion:nil];
+    self.shouldUpdateDetails = NO;
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)doneEdit
@@ -174,18 +178,25 @@ typedef enum {
         [self showUpdatingImageInfoHUD];
     });
     
-    // Update image info
+    // Update image info on server and in cache
 	[UploadService updateImageInfo:self.imageDetails
 						onProgress:^(NSProgress *progress) {
-							// progress
-						} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-							// complete
+							// Progress
+						}
+                      OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+							
+                            // Complete, update image data
+                            self.shouldUpdateDetails = YES;
+                          
+                            // Hide HUD
                             [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 700 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                    // Return to image preview
                                     [self dismissViewControllerAnimated:YES completion:nil];
                                 });
                             }];
-						} onFailure:^(NSURLSessionTask *task, NSError *error) {
+						}
+                         onFailure:^(NSURLSessionTask *task, NSError *error) {
 							// Failed
                             [self hideUpdatingImageInfoHUDwithSuccess:NO completion:^{
                                 UIAlertController* alert = [UIAlertController
@@ -194,12 +205,14 @@ typedef enum {
                                         preferredStyle:UIAlertControllerStyleAlert];
                                 
                                 UIAlertAction* dismissAction = [UIAlertAction
-                                                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                                actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                                                 style:UIAlertActionStyleCancel
-                                                handler:^(UIAlertAction * action) {}];
+                                                handler:^(UIAlertAction * action) {
+                                                    self.shouldUpdateDetails = NO;
+                                                }];
 
                                 UIAlertAction* retryAction = [UIAlertAction
-                                                actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                                actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
                                                 style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction * action) {
                                                     [self doneEdit];

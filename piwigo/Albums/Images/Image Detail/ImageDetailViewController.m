@@ -87,14 +87,17 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		
         // Bar buttons
         self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
+        self.editBarButton.enabled = NO;
         self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
         self.deleteBarButton.tintColor = [UIColor redColor];
+        self.deleteBarButton.enabled = NO;
         self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImage)];
         self.downloadBarButton.tintColor = [UIColor piwigoOrange];
         self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"paperclip"] landscapeImagePhone:[UIImage imageNamed:@"paperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
         self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
+        self.moveBarButton.enabled = NO;
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
         self.navigationController.toolbar.barStyle = UIBarStyleDefault;
 
@@ -228,11 +231,32 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)retrieveCompleteImageDataOfImageId:(NSInteger)imageId
 {
     // Image data are not complete when retrieved using pwg.categories.getImages
+    self.editBarButton.enabled = NO;
+    self.deleteBarButton.enabled = NO;
+    self.moveBarButton.enabled = NO;
+
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:imageId
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
               if (imageDataComplete != nil) {
+
+                  // Update list of images
                   self.imageData = imageDataComplete;
+                  NSInteger index = 0;
+                  for(PiwigoImageData *image in self.images)
+                  {
+                      if([image.imageId integerValue] == [imageDataComplete.imageId integerValue]) {
+                          [self.images replaceObjectAtIndex:index withObject:imageDataComplete];
+                          break;
+                      }
+                      index++;
+                  }
+                  [self.images replaceObjectAtIndex:index withObject:imageDataComplete];
+
+                  // Enable actions
+                  self.editBarButton.enabled = YES;
+                  self.deleteBarButton.enabled = YES;
+                  self.moveBarButton.enabled = YES;
               }
               else {
                   [self couldNotRetrieveImageData];
@@ -255,9 +279,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
         style:UIAlertActionStyleCancel
         handler:^(UIAlertAction * action) {
-            self.editBarButton.enabled = NO;
-            self.deleteBarButton.enabled = NO;
-            self.moveBarButton.enabled = NO;
         }];
     
     UIAlertAction* retryAction = [UIAlertAction
@@ -906,8 +927,8 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             image.name = details.title;
             image.author = details.author;
             image.privacyLevel = details.privacyLevel;
-            image.imageDescription = [NSString stringWithString:details.description];
-            image.tags = [details.description copy];
+            image.imageDescription = [NSString stringWithString:details.imageDescription];
+            image.tags = [details.tags copy];
             [self.images replaceObjectAtIndex:index withObject:image];
             break;
         }
