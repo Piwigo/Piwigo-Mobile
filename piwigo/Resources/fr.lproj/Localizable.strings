@@ -142,6 +142,7 @@
 "createNewAlbum_message" = "Entrez un nom pour cet album :";
 "createNewAlbum_placeholder" = "Nom de l’Album";
 "createNewAlbumComment_placeholder" = "Commentaire";
+"createNewAlbumComment_noComment" = "pas de commentaire";
 "createNewAlbumHUD_label" = "Création de l'Album…";
 
 // Album create — Errors
@@ -280,6 +281,7 @@
 
 "deleteSingleImage_title" = "Supprimer l’Image";
 "deleteSingleImageHUD_deleting" = "Suppression de l’Image…";
+"deleteSeveralImagesHUD_deleting" = "Suppression des images…";
 "removeSingleImage_title" = "Supprimer de cet album";
 "removeSingleImageHUD_removing" = "Suppression de l’Image…";
 "deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette image ? Opération irréversible !";

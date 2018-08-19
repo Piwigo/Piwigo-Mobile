@@ -142,6 +142,7 @@
 "createNewAlbum_message" = "Masukkan nama untuk album ini:";
 "createNewAlbum_placeholder" = "Nama Album";
 "createNewAlbumComment_placeholder" = "Komentar";
+"createNewAlbumComment_noComment" = "tidak ada komentar";
 "createNewAlbumHUD_label" = "Membuat Album…";
 
 // Album create — Errors
@@ -280,6 +281,7 @@
 
 "deleteSingleImage_title" = "Hapus Gambar";
 "deleteSingleImageHUD_deleting" = "Deleting Image…";
+"deleteSeveralImagesHUD_deleting" = "Deleting Images…";
 "removeSingleImage_title" = "Remove from Album";
 "removeSingleImageHUD_removing" = "Removing Image…";
 "deleteSingleImage_message" = "Anda yakin ingin menghapus gambar ini? Ini tidak dapat dibatalkan!";

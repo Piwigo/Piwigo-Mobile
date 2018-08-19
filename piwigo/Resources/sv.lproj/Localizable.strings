@@ -142,6 +142,7 @@
 "createNewAlbum_message" = "Ange ett namn för albumet:";
 "createNewAlbum_placeholder" = "Albumnamn";
 "createNewAlbumComment_placeholder" = "Kommentar";
+"createNewAlbumComment_noComment" = "ingen kommentar";
 "createNewAlbumHUD_label" = "Skapar Album…";
 
 // Album create — Errors
@@ -280,6 +281,7 @@
 
 "deleteSingleImage_title" = "Radera bild";
 "deleteSingleImageHUD_deleting" = "Raderar bild…";
+"deleteSeveralImagesHUD_deleting" = "Raderar bilder…";
 "removeSingleImage_title" = "Ta bort från Album";
 "removeSingleImageHUD_removing" = "Ta bort bild…";
 "deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";

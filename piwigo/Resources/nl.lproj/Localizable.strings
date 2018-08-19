@@ -142,6 +142,7 @@
 "createNewAlbum_message" = "Voer een naam in voor dit album:";
 "createNewAlbum_placeholder" = "Albumnaam";
 "createNewAlbumComment_placeholder" = "Opmerking";
+"createNewAlbumComment_noComment" = "geen opmerking";
 "createNewAlbumHUD_label" = "Bezig album te maken…";
 
 // Album create — Errors
@@ -280,6 +281,7 @@
 
 "deleteSingleImage_title" = "Foto verwijderen";
 "deleteSingleImageHUD_deleting" = "Foto verwijderen…";
+"deleteSeveralImagesHUD_deleting" = "Foto's aan het verwijderen…";
 "removeSingleImage_title" = "Verwijder uit album";
 "removeSingleImageHUD_removing" = "Foto verwijderen…";
 "deleteSingleImage_message" = "Weet je zeker dat je dit bestand wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";

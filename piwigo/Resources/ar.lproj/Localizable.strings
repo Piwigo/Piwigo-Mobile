@@ -142,6 +142,7 @@
 "createNewAlbum_message" = "أدخل اسم لهذا الألبوم:";
 "createNewAlbum_placeholder" = "اسم الألبوم";
 "createNewAlbumComment_placeholder" = "التعليق";
+"createNewAlbumComment_noComment" = "لا توجد تعليقات";
 "createNewAlbumHUD_label" = "جار إنشاء الألبوم…";
 
 // Album create — Errors
@@ -280,6 +281,7 @@
 
 "deleteSingleImage_title" = "حذف الصورة";
 "deleteSingleImageHUD_deleting" = "Deleting Image…";
+"deleteSeveralImagesHUD_deleting" = "Deleting Images…";
 "removeSingleImage_title" = "Remove from Album";
 "removeSingleImageHUD_removing" = "Removing Image…";
 "deleteSingleImage_message" = "هل أنت متأكد أنك تريد حذف هذه الصورة؟ هذا لا يمكن التراجع عنه!";

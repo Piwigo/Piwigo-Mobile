@@ -142,6 +142,7 @@
 "createNewAlbum_message" = "このアルバムの名称を入力してください：";
 "createNewAlbum_placeholder" = "アルバムの名称";
 "createNewAlbumComment_placeholder" = "コメント";
+"createNewAlbumComment_noComment" = "コメントなし";
 "createNewAlbumHUD_label" = "アルバム作成中...";
 
 // Album create — Errors
@@ -280,6 +281,7 @@
 
 "deleteSingleImage_title" = "画像を削除";
 "deleteSingleImageHUD_deleting" = "Deleting Image…";
+"deleteSeveralImagesHUD_deleting" = "Deleting Images…";
 "removeSingleImage_title" = "Remove from Album";
 "removeSingleImageHUD_removing" = "Removing Image…";
 "deleteSingleImage_message" = "この画像を本当に削除しますか？この操作は元に戻せません。";

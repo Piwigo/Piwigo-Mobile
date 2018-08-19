@@ -142,6 +142,7 @@
 "createNewAlbum_message" = "Indtast navm for dette album:";
 "createNewAlbum_placeholder" = "Navn på album";
 "createNewAlbumComment_placeholder" = "Bemærkning";
+"createNewAlbumComment_noComment" = "ingen kommentar";
 "createNewAlbumHUD_label" = "Opretter album…";
 
 // Album create — Errors
@@ -280,6 +281,7 @@
 
 "deleteSingleImage_title" = "Slet Billede";
 "deleteSingleImageHUD_deleting" = "Sletter foto…";
+"deleteSeveralImagesHUD_deleting" = "Sletter fotos…";
 "removeSingleImage_title" = "Fjern fra Album";
 "removeSingleImageHUD_removing" = "Sletter foto…";
 "deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede? Dette kan ikke fortrydes!";

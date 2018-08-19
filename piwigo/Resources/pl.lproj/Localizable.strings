@@ -142,6 +142,7 @@
 "createNewAlbum_message" = "Wprowadź nazwę albumu:";
 "createNewAlbum_placeholder" = "Nazwa Albumu";
 "createNewAlbumComment_placeholder" = "Skomentuj";
+"createNewAlbumComment_noComment" = "brak komentarza";
 "createNewAlbumHUD_label" = "Tworzenie albumu…";
 
 // Album create — Errors
@@ -280,6 +281,7 @@
 
 "deleteSingleImage_title" = "Usuń Zdjęcie";
 "deleteSingleImageHUD_deleting" = "Deleting Image…";
+"deleteSeveralImagesHUD_deleting" = "Deleting Images…";
 "removeSingleImage_title" = "Remove from Album";
 "removeSingleImageHUD_removing" = "Removing Image…";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
