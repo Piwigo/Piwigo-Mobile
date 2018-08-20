@@ -280,10 +280,10 @@
 "deleteImageProgress_title" = "%@%% の削除が済みました";
 
 "deleteSingleImage_title" = "画像を削除";
-"deleteSingleImageHUD_deleting" = "Deleting Image…";
-"deleteSeveralImagesHUD_deleting" = "Deleting Images…";
-"removeSingleImage_title" = "Remove from Album";
-"removeSingleImageHUD_removing" = "Removing Image…";
+"deleteSingleImageHUD_deleting" = "画像を削除しています...";
+"deleteSeveralImagesHUD_deleting" = "画像を削除しています...";
+"removeSingleImage_title" = "アルバムから削除する";
+"removeSingleImageHUD_removing" = "画像を削除しています...";
 "deleteSingleImage_message" = "この画像を本当に削除しますか？この操作は元に戻せません。";
 "deleteSeveralImages_title" = "%@枚の画像を削除";
 "deleteSeveralImages_message" = "選択した%@枚の画像を本当に削除しますか？この操作は元に戻せません。";
@@ -295,7 +295,7 @@
 // Image download
 "downloadSingleImage_title" = "画像をダウンロードします";
 "downloadSingleImage_confirmation" = "選択した画像をダウンロードしますか？";
-"downloadSeveralImages_title" = "%@イメージをダウンロード";
+"downloadSeveralImages_title" = "%@枚の画像をダウンロードします";
 "downloadSeveralImage_confirmation" = "選択した%@枚の画像をダウンロードしますか？";
 
 "downloadingImage" = "画像をダウンロード中";
@@ -316,30 +316,30 @@
 "videoSaveError_message" = "動画の保存に失敗しました。エラー：%@";
 
 // Image move
-"moveImage_title" = "Move to Album";
-"moveSingleImage_selectAlbum" = "Select an album to move image \"%@\" to";
-"moveSeveralImages_selectAlbum" = "Select an album to move the images to";
-"moveSingleImage_message" = "Are you sure you want to move the image \"%@\" to the album \"%@\"?";
-"moveSeveralImages_message" = "Are you sure you want to move the images to the album \"%@\"?";
-"moveSingleImageHUD_moving" = "Moving Image…";
-"moveSeveralImagesHUD_moving" = "Moving Images…";
+"moveImage_title" = "アルバムに移動する";
+"moveSingleImage_selectAlbum" = "画像「%@」を移動するアルバムを選択する";
+"moveSeveralImages_selectAlbum" = "画像を移動するアルバムを選択する";
+"moveSingleImage_message" = "画像「%@」をアルバム「%@」へ移動していいですか？";
+"moveSeveralImages_message" = "画像をアルバム「%@」へ移動していいですか？";
+"moveSingleImageHUD_moving" = "画像を移動しています...";
+"moveSeveralImagesHUD_moving" = "画像を移動しています...";
 
 // Image move — Errors
 "moveImageError_title" = "移動に失敗しました";
-"moveSingleImageError_message" = "Failed to move your image";
+"moveSingleImageError_message" = "画像の移動に失敗しました。";
 
 // Image copy
-"copyImage_title" = "Copy to Album";
-"copySingleImage_selectAlbum" = "Select an album to copy image \"%@\" to";
-"copySeveralImages_selectAlbum" = "Select an album to copy the images to";
-"copySingleImage_message" = "Are you sure you want to copy the image \"%@\" to the album \"%@\"?";
-"copySeveralImages_message" = "Are you sure you want to copy the images to the album \"%@\"?";
-"copySingleImageHUD_copying" = "Copying Image…";
-"copySeveralImagesHUD_copying" = "Copying Images…";
+"copyImage_title" = "アルバムにコピーする";
+"copySingleImage_selectAlbum" = "画像「%@」をコピーするアルバムを選択する";
+"copySeveralImages_selectAlbum" = "画像をコピーするアルバムを選択する";
+"copySingleImage_message" = "画像「%@」をアルバム「%@」へコピーしていいですか？";
+"copySeveralImages_message" = "画像をアルバム「%@」へコピーしていいですか？";
+"copySingleImageHUD_copying" = "画像をコピーしています...";
+"copySeveralImagesHUD_copying" = "画像をコピーしています...";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
-"copySingleImageError_message" = "Failed to copy your image";
+"copyImageError_title" = "コピーに失敗しました";
+"copySingleImageError_message" = "画像のコピーに失敗しました";
 
 // Images upload
 "imageUploadDetails_title" = "題名：";
