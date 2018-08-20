@@ -12,6 +12,8 @@
 #import "PiwigoImageData.h"
 #import "ImagesCollection.h"
 
+NSTimeInterval const kThirtyDays = 60 * 60 * 24 * 30.0;
+
 @interface Model()
 
 @end
@@ -87,7 +89,7 @@
 		instance.memoryCache = 80;
 		
         // Request help for translating Piwigo every month or so
-        instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
+        instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - kThirtyDays;
 
         [instance readFromDisk];
 	});
@@ -372,7 +374,7 @@
     if(savedData.count > 25) {
         self.dateOfLastTranslationRequest = [[savedData objectAtIndex:25] doubleValue];
     } else {
-        self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
+        self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - kThirtyDays;
     }
 	return self;
 }

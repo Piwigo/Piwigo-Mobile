@@ -10,6 +10,8 @@
 #import <CoreData/CoreData.h>
 #import "CategorySortViewController.h"
 
+FOUNDATION_EXPORT NSTimeInterval const kThirtyDays;
+
 @class PHPhotoLibrary;
 
 typedef enum {
