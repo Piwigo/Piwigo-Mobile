@@ -59,8 +59,10 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   NSLog(@"getInfos — Fail: %@", [error description]);
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?
-                  if ([[error localizedDescription] containsString:@"(401)"] ||
-                      [[error localizedDescription] containsString:@"(404)"])
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
                   {
                       NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                       dispatch_async(dispatch_get_main_queue(), ^{
@@ -156,8 +158,10 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   NSLog(@"getAlbumListForCategory — Fail: %@", [error description]);
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?
-                  if ([[error localizedDescription] containsString:@"(401)"] ||
-                      [[error localizedDescription] containsString:@"(404)"])
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
                   {
                       NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                       dispatch_async(dispatch_get_main_queue(), ^{
@@ -284,8 +288,10 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   NSLog(@"getCommunityAlbumListForCategory — Fail: %@", [error description]);
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?
-                  if ([[error localizedDescription] containsString:@"(401)"] ||
-                      [[error localizedDescription] containsString:@"(404)"])
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
                   {
                       NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                       dispatch_async(dispatch_get_main_queue(), ^{

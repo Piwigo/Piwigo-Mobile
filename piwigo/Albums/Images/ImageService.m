@@ -73,9 +73,10 @@ NSString * const kGetImageOrderDescending = @"desc";
 #if defined(DEBUG)
                   NSLog(@"=> getImagesForAlbumId: %@ — Failed!", @(albumId));
 #endif
-                  // Check session (closed or IPv4/IPv6 switch)?
-                  if ([[error localizedDescription] containsString:@"(401)"] ||
-                      [[error localizedDescription] containsString:@"(404)"])
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
                   {
                       NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                       dispatch_async(dispatch_get_main_queue(), ^{
@@ -152,8 +153,10 @@ NSString * const kGetImageOrderDescending = @"desc";
                   NSLog(@"=> getImageInfoById: %@ failed with error %ld:%@", @(imageId), [error code], [error localizedDescription]);
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?
-                  if ([[error localizedDescription] containsString:@"(401)"] ||
-                      [[error localizedDescription] containsString:@"(404)"])
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
                   {
                       NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
                       dispatch_async(dispatch_get_main_queue(), ^{

@@ -99,7 +99,8 @@ NSInteger const loadingViewTag = 899;
         
         // To remember app recieved anthentication challenge
         [Model sharedInstance].performedHTTPauthentication = YES;
-        
+//        NSLog(@"=> performedHTTPauthentication!");
+
         // HTTP basic authentification credentials
         NSString *user = [Model sharedInstance].HttpUsername;
         NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
@@ -108,6 +109,7 @@ NSInteger const loadingViewTag = 899;
         if ((user == nil) || (user.length <= 0) || (password == nil)) {
             user  = [Model sharedInstance].username;
             password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
+            if (password == nil) password = @"";
             
             [Model sharedInstance].HttpUsername = user;
             [[Model sharedInstance] saveToDisk];
@@ -117,9 +119,10 @@ NSInteger const loadingViewTag = 899;
         // Supply requested credentials if not provided yet
         if (challenge.previousFailureCount == 0) {
             // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
+            *credential = [NSURLCredential
+                           credentialWithUser:user
+                           password:password
+                           persistence:NSURLCredentialPersistenceSynchronizable];
             return NSURLSessionAuthChallengeUseCredential;
         } else {
             // HTTP credentials refused!
@@ -159,7 +162,8 @@ NSInteger const loadingViewTag = 899;
         
         // To remember app recieved anthentication challenge
         [Model sharedInstance].performedHTTPauthentication = YES;
-        
+//        NSLog(@"=> performedHTTPauthentication!");
+
         // HTTP basic authentification credentials
         NSString *user = [Model sharedInstance].HttpUsername;
         NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
@@ -168,7 +172,8 @@ NSInteger const loadingViewTag = 899;
         if ((user == nil) || (user.length <= 0) || (password == nil)) {
             user  = [Model sharedInstance].username;
             password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
-            
+            if (password == nil) password = @"";
+
             [Model sharedInstance].HttpUsername = user;
             [[Model sharedInstance] saveToDisk];
             [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
@@ -177,9 +182,10 @@ NSInteger const loadingViewTag = 899;
         // Supply requested credentials if not provided yet
         if (challenge.previousFailureCount == 0) {
             // Trying HTTP credentials…
-            *credential = [NSURLCredential credentialWithUser:user
-                                                     password:password
-                                                  persistence:NSURLCredentialPersistenceForSession];
+            *credential = [NSURLCredential
+                           credentialWithUser:user
+                           password:password
+                           persistence:NSURLCredentialPersistenceSynchronizable];
             return NSURLSessionAuthChallengeUseCredential;
         } else {
             // HTTP credentials refused!
@@ -194,7 +200,7 @@ NSInteger const loadingViewTag = 899;
 
 +(NSString*)encodedURL:(NSString*)originalURL
 {
-//    NSLog(@"=> %@", originalURL);
+//    NSLog(@"encodedURL:%@", originalURL);
     // Return nil if originalURL is nil
     if (originalURL == nil) return nil;
     
@@ -207,8 +213,20 @@ NSInteger const loadingViewTag = 899;
     }
 
     // Servers may return image URLs different from those used to login
-    // We only keep the path because we only accept to download images from the same server
+    // We only keep the path+query because we only accept to download images from the same server
+//    NSLog(@"path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
     NSString* cleanPath = serverURL.path;
+    if (serverURL.parameterString) {
+        cleanPath = [cleanPath stringByAppendingString:serverURL.parameterString];
+    }
+    if (serverURL.query) {
+        cleanPath = [cleanPath stringByAppendingString:@"?"];
+        cleanPath = [cleanPath stringByAppendingString:serverURL.query];
+    }
+    if (serverURL.fragment) {
+        cleanPath = [cleanPath stringByAppendingString:@"#"];
+        cleanPath = [cleanPath stringByAppendingString:serverURL.fragment];
+    }
 
     // The Piwigo server may not be in the root e.g. example.com/piwigo/…
     // So we remove the path to avoid a duplicate if necessary
@@ -240,8 +258,80 @@ NSInteger const loadingViewTag = 899;
     NSString *encodedURL = [NSString stringWithFormat:@"%@%@%@%@",
                             [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
-//    NSLog(@"   %@", encodedURL);
+//    NSLog(@"%@", encodedURL);
     return encodedURL;
+}
+
++(NSString*)getURLWithPath:(NSString*)originalURL withURLParams:(NSDictionary*)params
+{
+//    NSLog(@"getURLWithPath:%@ (%@)", originalURL, params);
+    // Return nil if path is nil
+    if (originalURL == nil) return nil;
+    
+    // Servers may return incorrect URLs (would lead to a crash)
+    NSURL *serverURL = [NSURL URLWithString:originalURL];
+    if (serverURL == nil) {
+        // The URL is incorrect —> return image.jpg in server home page to avoid a crash
+        return [NSString stringWithFormat:@"%@%@/image.jpg",
+                [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+    }
+    
+    // Servers may return image URLs different from those used to login
+    // We only keep the path because we only accept to download images from the same server
+    //    NSLog(@"path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
+    NSString* cleanPath = serverURL.path;
+    if (serverURL.parameterString) {
+        cleanPath = [cleanPath stringByAppendingString:serverURL.parameterString];
+    }
+    if (serverURL.query) {
+        cleanPath = [cleanPath stringByAppendingString:@"?"];
+        cleanPath = [cleanPath stringByAppendingString:serverURL.query];
+    }
+    if (serverURL.fragment) {
+        cleanPath = [cleanPath stringByAppendingString:@"#"];
+        cleanPath = [cleanPath stringByAppendingString:serverURL.fragment];
+    }
+
+    // The Piwigo server may not be in the root e.g. example.com/piwigo/…
+    // So we remove the path to avoid a duplicate if necessary
+    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
+    if ([cleanPath hasPrefix:loginURL.path]) {
+        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
+    }
+
+    // Remove the .php? prefix if any
+    NSString *prefix = @"";
+    NSRange pos = [cleanPath rangeOfString:@".php?"];
+    if (pos.location != NSNotFound ) {
+        // The path contains .php?
+        pos.length += pos.location;
+        pos.location = 0;
+        prefix = [cleanPath substringWithRange:pos];
+        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:prefix withString:@""];
+    }
+    
+    // Path may not be encoded
+    NSString *decodedPath = [cleanPath stringByRemovingPercentEncoding];
+    if ([cleanPath isEqualToString:decodedPath]) {
+        // Path is not encoded
+        NSCharacterSet *allowedCharacters = [NSCharacterSet URLPathAllowedCharacterSet];
+        cleanPath = [cleanPath stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
+    }
+    
+    // Copy parameters in URL
+    for(NSString *parameter in params)
+    {
+        NSString *replaceMe = [NSString stringWithFormat:@"{%@}", parameter];
+        NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
+        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
+    }
+    
+    // Compile final URL
+    NSString *url = [NSString stringWithFormat:@"%@%@/ws.php?%@%@",
+                     [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
+    
+//    NSLog(@"%@", url);
+    return url;
 }
 
 // path: format={param1}
@@ -253,11 +343,9 @@ NSInteger const loadingViewTag = 899;
                  success:(void (^)(NSURLSessionTask *task, id responseObject))success
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-#if defined(DEBUG_SESSION)
-    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
-    NSLog(@"   parameters =%@", parameters);
-#endif
-    NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
+    NSURLSessionTask *task = [[Model sharedInstance].sessionManager
+                              POST:[NetworkHandler getURLWithPath:path
+                                                    withURLParams:urlParams]
                                 parameters:parameters
                                   progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
@@ -289,8 +377,9 @@ NSInteger const loadingViewTag = 899;
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:nil]
-                                parameters:nil
+    NSURLSessionTask *task = [[Model sharedInstance].sessionManager
+                              POST:[NetworkHandler getURLWithPath:path withURLParams:nil]
+                        parameters:nil
                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
                   {
                       [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
@@ -338,60 +427,6 @@ NSInteger const loadingViewTag = 899;
                                    }];
     
     return task;
-}
-
-+(NSString*)getURLWithPath:(NSString*)path asPiwigoRequest:(BOOL)piwigo withURLParams:(NSDictionary*)params
-{
-//    NSLog(@"=> %@ (%@:%@)", path, piwigo ? @"YES" : @"NO", params);
-    // Return nil if path is nil
-    if (path == nil) return nil;
-    
-    // Servers sometimes return http://… instead of https://…
-    NSString* cleanPath = [path stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
-    
-    // Users usually provides DNS name in lowercase, but not always
-    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
-    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[[Model sharedInstance].serverName lowercaseString] withString:@""];
-//    NSLog(@"   %@", cleanPath);
-
-    // Remove the .php? prefix if any
-    NSString *prefix = @"";
-    NSRange pos = [cleanPath rangeOfString:@".php?"];
-    if (pos.location != NSNotFound ) {
-        // The path contains .php?
-        pos.length += pos.location;
-        pos.location = 0;
-        prefix = [cleanPath substringWithRange:pos];
-        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:prefix withString:@""];
-    }
-//    NSLog(@"   %@", cleanPath);
-
-    // Path may not be encoded
-    NSString *decodedPath = [cleanPath stringByRemovingPercentEncoding];
-    if ([cleanPath isEqualToString:decodedPath]) {
-        // Path is not encoded
-        NSCharacterSet *allowedCharacters = [NSCharacterSet URLPathAllowedCharacterSet];
-        cleanPath = [cleanPath stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
-    }
-//    NSLog(@"   %@", cleanPath);
-
-    // Copy parameters in URL
-    for(NSString *parameter in params)
-    {
-        NSString *replaceMe = [NSString stringWithFormat:@"{%@}", parameter];
-        NSString *toReplace = [NSString stringWithFormat:@"%@", [params objectForKey:parameter]];
-        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:replaceMe withString:toReplace];
-    }
-//    NSLog(@"   %@", cleanPath);
-
-    // Compile final URL
-    NSString *url = [NSString stringWithFormat:@"%@%@%@%@%@",
-                     [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName,
-                     piwigo ? @"/ws.php?" : @"", prefix, cleanPath];
-    
-//    NSLog(@"   %@", url);
-    return url;
 }
 
 +(void)showConnectionError:(NSError*)error
