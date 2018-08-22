@@ -61,6 +61,8 @@
 "loginHTTPpwd_placeholder" = "Password";
 
 // Login — Errors
+"serverURLerror_title" = "Incorrect URL";
+"serverURLerror_message" ="Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "Unknown Methods";
 "serverMethodsError_message" = "Failed to get server methods. Problem with Piwigo server?";
 

@@ -61,6 +61,8 @@
 "loginHTTPpwd_placeholder" = "Adgangskode";
 
 // Login — Errors
+"serverURLerror_title" = "Incorrect URL";
+"serverURLerror_message" = "Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "Ukendt Protokol";
 "serverMethodsError_message" = "Kunne ikke hente server protokol. Prøv at logge ind igen?";
 

@@ -850,16 +850,29 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
 -(BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    // Disable HTTP login action
+    // Disable login actions
+    if(textField == self.serverTextField) {
+        [self.loginButton setEnabled:NO];
+    }
     [self.httpLoginAction setEnabled:NO];
     return YES;
 }
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    // Enable Add Category action if album name is non null
+    // Enable HTTP Login action if field not empty
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     [self.httpLoginAction setEnabled:(finalString.length >= 1)];
+
+    // Disable Login button is URL invalid
+    if(textField == self.serverTextField) {
+        BOOL validURL = [self saveServerAddress:finalString andUsername:self.userTextField.text];
+        if (!validURL) {
+            [self showIncorrectWebAddressAlert];
+        }
+        [self.loginButton setEnabled:validURL];
+    }
+    
     return YES;
 }
 
@@ -867,8 +880,15 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
 	if(textField == self.serverTextField) {
         // Save server address and username to disk
-        [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
-        // User entered server address
+        BOOL validURL = [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
+        [self.loginButton setEnabled:validURL];
+        if (!validURL) {
+            // Incorrect URL
+            [self showIncorrectWebAddressAlert];
+            return NO;
+        }
+
+        // User entered acceptable server address
 		[self.userTextField becomeFirstResponder];
 	}
     else if (textField == self.userTextField) {
@@ -890,7 +910,13 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
     if(textField == self.serverTextField) {
         // Save server address and username to disk
-        [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
+        BOOL validURL = [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
+        [self.loginButton setEnabled:validURL];
+        if (!validURL) {
+            // Incorrect URL
+            [self showIncorrectWebAddressAlert];
+            return NO;
+        }
     }
     return YES;
 }
@@ -898,34 +924,82 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
 #pragma mark - Utilities
 
--(void)saveServerAddress:(NSString *)serverString andUsername:(NSString *)user
+-(BOOL)saveServerAddress:(NSString *)serverString andUsername:(NSString *)user
 {
     // Remove extra "/" at the end of the server address
-    if ([serverString hasSuffix:@"/"]) {
+    while ([serverString hasSuffix:@"/"]) {
         serverString = [serverString substringWithRange:NSMakeRange(0, serverString.length-1)];
     }
     
-    // Extract "http://"
-    NSRange httpRange = [serverString rangeOfString:@"http://" options:NSCaseInsensitiveSearch];
-    if(httpRange.location == 0)
-    {
-        serverString = [serverString substringFromIndex:7];
+    // Remove extra " " at the end of the server address
+    while ([serverString hasSuffix:@" "]) {
+        serverString = [serverString substringWithRange:NSMakeRange(0, serverString.length-1)];
     }
     
-    // Extract "https://"
-    NSRange httpsRange = [serverString rangeOfString:@"https://" options:NSCaseInsensitiveSearch];
-    if(httpsRange.location == 0)
-    {
-        serverString = [serverString substringFromIndex:8];
+    // User may have entered an incorrect URLs (would lead to a crash)
+    NSURL *serverURL = nil;
+    if ([serverString containsString:@"http://"] || [serverString containsString:@"https://"]) {
+        serverURL = [NSURL URLWithString:serverString];
+    }
+    else {
+        // Add HTTPS scheme if not provided
+        serverURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", serverString]];
+    }
+    if (serverURL == nil) {
+        // The URL is not correct
+//        NSLog(@"ATTENTION!!! Incorrect URL");
+        return NO;
     }
     
-    // Force HTTPS protocol?
+    // Is the port provided ?
+//    NSLog(@"sheme:%@, user:%@, pwd:%@, host:%@, port:%@, path:%@", serverURL.scheme, serverURL.user, serverURL.password, serverURL.host, serverURL.port, serverURL.path);
+    if (serverURL.port != NULL) {
+        // Port provided => Adopt user choice but check protocol
+        // Save username, server address and protocol to disk
+        switch (serverURL.port.integerValue) {
+            case 80:
+                [Model sharedInstance].serverProtocol = @"http://";
+                break;
+                
+            case 443:
+                [Model sharedInstance].serverProtocol = @"https://";
+                break;
+                
+            default:
+                [Model sharedInstance].serverProtocol = [NSString stringWithFormat:@"%@://", serverURL.scheme];
+                break;
+        }
+        [Model sharedInstance].serverName = [NSString stringWithFormat:@"%@:%@%@", serverURL.host, serverURL.port, serverURL.path];
+        [Model sharedInstance].username = user;
+        [[Model sharedInstance] saveToDisk];
+        return YES;
+    }
+    
+    // Will try to force HTTPS protocol
     [Model sharedInstance].serverProtocol = @"https://";
     
     // Save username, server address and protocol to disk
-    [Model sharedInstance].serverName = serverString;
+    [Model sharedInstance].serverName = [NSString stringWithFormat:@"%@%@", serverURL.host, serverURL.path];
     [Model sharedInstance].username = user;
     [[Model sharedInstance] saveToDisk];
+    return YES;
+}
+
+-(void)showIncorrectWebAddressAlert
+{
+    // The URL is not correct —> inform user
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"serverURLerror_title", @"Incorrect URL")
+        message:NSLocalizedString(@"serverURLerror_message", @"Please correct the Piwigo web server address.")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)moveTextFieldsBy:(CGFloat)amount inDuration:(NSTimeInterval)duration

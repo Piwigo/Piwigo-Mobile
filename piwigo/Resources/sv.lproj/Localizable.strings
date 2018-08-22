@@ -61,6 +61,8 @@
 "loginHTTPpwd_placeholder" = "Lösenord";
 
 // Login — Errors
+"serverURLerror_title" = "Incorrect URL";
+"serverURLerror_message" = "Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "Okända metoder";
 "serverMethodsError_message" = "Det gick inte att få servermetoder. Problem med Piwigo servern?";
 

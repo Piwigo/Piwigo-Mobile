@@ -61,6 +61,8 @@
 "loginHTTPpwd_placeholder" = "كلمة المرور";
 
 // Login — Errors
+"serverURLerror_title" = "Incorrect URL";
+"serverURLerror_message" = "Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "طرق غير معروفة";
 "serverMethodsError_message" = "أخفق الحصول على طرق الخادم. مشكلة مع خادم Piwigo ؟";
 

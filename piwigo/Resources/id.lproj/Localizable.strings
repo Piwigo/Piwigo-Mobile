@@ -61,6 +61,8 @@
 "loginHTTPpwd_placeholder" = "Kata sandi";
 
 // Login — Errors
+"serverURLerror_title" = "Incorrect URL";
+"serverURLerror_message" = "Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "Metode Tidak Diketahui";
 "serverMethodsError_message" = "Gagal mendapatkan metode peladen. Masalah dengan peladen Piwigo?";
 
