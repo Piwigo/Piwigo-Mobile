@@ -244,7 +244,7 @@
 "editImageDetails_title" = "Title:";
 "editImageDetails_titlePlaceholder" = "Title";
 "editImageDetails_author" = "Author:";
-"editImageDetails_tags" = "Keywords:";
+"editImageDetails_tags" = "Tags:";
 "editImageDetails_privacyLevel" = "Who can see this photo?";
 "editImageDetails_descriptionPlaceholder" = "Description";
 "editImageDetails_comments" = "Comments";
@@ -267,7 +267,7 @@
 
 // Image tags
 "none" = "none";
-"tags" = "Keywords";
+"tags" = "Tags";
 "tagsHeader_selected" = "Selected";
 "tagsHeader_all" = "All";
 
@@ -347,7 +347,7 @@
 "imageUploadDetails_title" = "Title:";
 "imageUploadDetails_author" = "Author:";
 "imageUploadDetails_privacy" = "Privacy:";
-"imageUploadDetails_tags" = "Keywords:";
+"imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Description:";
 
 "imageUploadDetailsView_title" = "Images";
