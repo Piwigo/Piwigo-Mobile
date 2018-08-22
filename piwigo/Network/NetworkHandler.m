@@ -12,6 +12,10 @@
 #import "SAMKeychain.h"
 #import "MBProgressHUD.h"
 
+//#ifndef DEBUG_SESSION
+//#define DEBUG_SESSION
+//#endif
+
 // Piwigo URLs:
 NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
@@ -123,7 +127,7 @@ NSInteger const loadingViewTag = 899;
             return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];
-//#if defined(DEBUG)
+//#if defined(DEBUG_SESSION)
 //    NSLog(@"=> JSON data session manager created");
 //#endif
 }
@@ -183,7 +187,7 @@ NSInteger const loadingViewTag = 899;
             return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }];     
-//#if defined(DEBUG)
+//#if defined(DEBUG_SESSION)
 //    NSLog(@"=> Images session manager created");
 //#endif
 }
@@ -194,14 +198,24 @@ NSInteger const loadingViewTag = 899;
     // Return nil if originalURL is nil
     if (originalURL == nil) return nil;
     
-    // Servers sometimes return http://… instead of https://…
-    NSString* cleanPath = [originalURL stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+    // Servers may return incorrect URLs (would lead to a crash)
+    NSURL *serverURL = [NSURL URLWithString:originalURL];
+    if (serverURL == nil) {
+        // The URL is incorrect —> return image.jpg in server home page to avoid a crash
+        return [NSString stringWithFormat:@"%@%@/image.jpg",
+                [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+    }
 
-    // Users usually provides DNS name in lowercase, but not always
-    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[Model sharedInstance].serverName withString:@""];
-    cleanPath = [cleanPath stringByReplacingOccurrencesOfString:[[Model sharedInstance].serverName lowercaseString] withString:@""];
-//    NSLog(@"   %@", cleanPath);
+    // Servers may return image URLs different from those used to login
+    // We only keep the path because we only accept to download images from the same server
+    NSString* cleanPath = serverURL.path;
+
+    // The Piwigo server may not be in the root e.g. example.com/piwigo/…
+    // So we remove the path to avoid a duplicate if necessary
+    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
+    if ([cleanPath hasPrefix:loginURL.path]) {
+        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
+    }
     
     // Remove the .php? prefix if any
     NSString *prefix = @"";
@@ -213,18 +227,16 @@ NSInteger const loadingViewTag = 899;
         prefix = [cleanPath substringWithRange:pos];
         cleanPath = [cleanPath stringByReplacingOccurrencesOfString:prefix withString:@""];
     }
-//    NSLog(@"   %@", cleanPath);
 
     // Path may not be encoded
     NSString *decodedPath = [cleanPath stringByRemovingPercentEncoding];
     if ([cleanPath isEqualToString:decodedPath]) {
-        // Path is not encoded
+        // Path may not be encoded
         NSCharacterSet *allowedCharacters = [NSCharacterSet URLPathAllowedCharacterSet];
         cleanPath = [cleanPath stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
     }
-//    NSLog(@"   %@", cleanPath);
     
-    // Compile final URL
+    // Compile final URL using the one provided at login
     NSString *encodedURL = [NSString stringWithFormat:@"%@%@%@%@",
                             [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
@@ -241,8 +253,10 @@ NSInteger const loadingViewTag = 899;
                  success:(void (^)(NSURLSessionTask *task, id responseObject))success
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-//    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
-//    NSLog(@"   parameters =%@", parameters);
+#if defined(DEBUG_SESSION)
+    NSLog(@"   Network URL=%@", [NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]);
+    NSLog(@"   parameters =%@", parameters);
+#endif
     NSURLSessionTask *task = [[Model sharedInstance].sessionManager POST:[NetworkHandler getURLWithPath:path asPiwigoRequest:YES withURLParams:urlParams]
                                 parameters:parameters
                                   progress:progress
@@ -253,12 +267,12 @@ NSInteger const loadingViewTag = 899;
 //                                       [manager invalidateSessionCancelingTasks:YES];
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
-//#if defined(DEBUG)
-//                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
-//                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
-//                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
-//                                       NSLog(@"=> response= %@", task.response);
-//#endif
+#if defined(DEBUG_SESSION)
+                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
+                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
+                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
+                                       NSLog(@"=> response= %@", task.response);
+#endif
                                        if(fail) {
                                            fail(task, error);
                                        }
@@ -311,7 +325,7 @@ NSInteger const loadingViewTag = 899;
 //                                       [manager invalidateSessionCancelingTasks:YES];
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
+#if defined(DEBUG_SESSION)
                                        NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
                                        NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
                                        NSLog(@"=> originalRequest= %@", task.originalRequest);
