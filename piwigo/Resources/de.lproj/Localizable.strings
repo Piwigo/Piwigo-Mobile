@@ -61,8 +61,8 @@
 "loginHTTPpwd_placeholder" = "Passwort";
 
 // Login — Errors
-"serverURLerror_title" = "Incorrect URL";
-"serverURLerror_message" = "Please correct the Piwigo web server address.";
+"serverURLerror_title" = "Ungültige URL";
+"serverURLerror_message" = "Bitte korrigieren Sie die Piwigo-Web-Server-Adresse.";
 "serverMethodsError_title" = "Unbekannte Methoden";
 "serverMethodsError_message" = "Fehler beim Abrufen der Servermethoden. Probleme mit dem Piwigo Server?";
 
@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "Neues Album";
 "createNewAlbum_message" = "Gib einen Namen für dieses Album ein:";
 "createNewAlbum_placeholder" = "Albumname";
-"createNewAlbumDescription_placeholder" = "Kommentar";
-"createNewAlbumDescription_noDescription" = "kein Kommentar";
+"createNewAlbumDescription_placeholder" = "Beschreibung";
+"createNewAlbumDescription_noDescription" = "keine Beschreibung";
 "createNewAlbumHUD_label" = "Erstelle Album…";
 
 // Album create — Errors
@@ -204,6 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Wähle Album";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Bild";
+"categorySelection_one" = "Select one of the albums containing this image";
 "categorySelection_other" = "oder wähle ein anderes Album für dieses Bild";
 "categoryImageSet_title" = "Album-Miniaturbild";
 "categoryImageSet_message" = "Möchtest Du wirklich dieses Miniaturbild für das Album \"%@\" festlegen?";
@@ -283,7 +284,7 @@
 
 "deleteSingleImage_title" = "Bild löschen";
 "deleteSingleImageHUD_deleting" = "Lösche Bild…";
-"deleteSeveralImagesHUD_deleting" = "Löschen von Fotos…";
+"deleteSeveralImagesHUD_deleting" = "Lösche Fotos…";
 "removeSingleImage_title" = "Aus Album entfernen";
 "removeSingleImageHUD_removing" = "Lösche Bild…";
 "deleteSingleImage_message" = "Möchtest Du dieses Bild wirklich löschen? Dies kann nicht rückgängig gemacht werden!";

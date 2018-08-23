@@ -27,8 +27,8 @@
 "alertTryButton" = "Wypróbuj";
 
 // HUD views
-"loadingHUD_label" = "Loading…";
-"completeHUD_label" = "Complete";
+"loadingHUD_label" = "Ładowanie…";
+"completeHUD_label" = "Zakończono";
 
 // Upload rights
 "uploadRights_title" = "Wymagane są uprawnienia do wgrywania zdjęć";
@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "Nowy Album";
 "createNewAlbum_message" = "Wprowadź nazwę albumu:";
 "createNewAlbum_placeholder" = "Nazwa Albumu";
-"createNewAlbumDescription_placeholder" = "Skomentuj";
-"createNewAlbumDescription_noDescription" = "brak komentarza";
+"createNewAlbumDescription_placeholder" = "Opis";
+"createNewAlbumDescription_noDescription" = "brak opisu";
 "createNewAlbumHUD_label" = "Tworzenie albumu…";
 
 // Album create — Errors
@@ -204,6 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Wybierz Album";
 "categorySelection_current" = "Wybierz bieżący album dla tego zdjęcia";
+"categorySelection_one" = "Select one of the albums containing this image";
 "categorySelection_other" = "lub wybierz inny album dla tego zdjęcia";
 "categoryImageSet_title" = "Miniaturę albumu";
 "categoryImageSet_message" = "Czy na pewno chcesz ustawić to zdjęcie dla albumu \"%@\"?";

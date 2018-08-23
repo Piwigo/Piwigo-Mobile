@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "新規アルバム";
 "createNewAlbum_message" = "このアルバムの名称を入力してください：";
 "createNewAlbum_placeholder" = "アルバムの名称";
-"createNewAlbumDescription_placeholder" = "コメント";
-"createNewAlbumDescription_noDescription" = "コメントなし";
+"createNewAlbumDescription_placeholder" = "説明";
+"createNewAlbumDescription_noDescription" = "説明がありません";
 "createNewAlbumHUD_label" = "アルバム作成中...";
 
 // Album create — Errors
@@ -204,6 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "アルバムを選択します";
 "categorySelection_current" = "この画像のためのアルバムを選択します";
+"categorySelection_one" = "Select one of the albums containing this image";
 "categorySelection_other" = "または、この画像のために別のアルバムを選択します";
 "categoryImageSet_title" = "アルバムのサムネイル";
 "categoryImageSet_message" = "この画像をアルバム「%@」に設定してよろしいですか？";

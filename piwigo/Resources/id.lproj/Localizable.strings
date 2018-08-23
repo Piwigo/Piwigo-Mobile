@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "Album Baru";
 "createNewAlbum_message" = "Masukkan nama untuk album ini:";
 "createNewAlbum_placeholder" = "Nama Album";
-"createNewAlbumDescription_placeholder" = "Komentar";
-"createNewAlbumDescription_noDescription" = "tidak ada komentar";
+"createNewAlbumDescription_placeholder" = "Deskripsi";
+"createNewAlbumDescription_noDescription" = "Tidak ada Deskripsi";
 "createNewAlbumHUD_label" = "Membuat Album…";
 
 // Album create — Errors
@@ -204,6 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Pilih album";
 "categorySelection_current" = "Pilih album saat ini untuk gambar ini";
+"categorySelection_one" = "Select one of the albums containing this image";
 "categorySelection_other" = "atau pilih album lain untuk gambar ini";
 "categoryImageSet_title" = "Album Thumbnail";
 "categoryImageSet_message" = "Anda yakin ingin membuat gambar ini sebagai gambar untuk album \"%@\"?";

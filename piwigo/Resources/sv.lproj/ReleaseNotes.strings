@@ -18,7 +18,7 @@
 
 "v2.1.8_text" = "Version 2.1.8\n29 april 2018\n\n• Lägger till förmåga att ändra storleken på miniatyrer\n• HTTPS blir standardprotokollet\n• Japansk översättning\n• Mindre buggfixar och förbättring av gränssnittet";
 
-"v2.1.7_text" = "Version 2.1.7\n3 februari 2018\n\n• Fixa uppladdningsproblem på vissa servrar";
+"v2.1.7_text" = "Version 2.1.7\n3 februari 2018\n\n• Fixa problem med videouppladdningar på vissa servrar";
 
 "v2.1.6_text" = "Version 2.1.6\n7 januari 2018\n\n• Arabisk översättning\n• Förbättrad autentiseringshantering för HTTP-baserad åtkomst\n• Mindre buggfixar och förbättring av gränssnittet";
 

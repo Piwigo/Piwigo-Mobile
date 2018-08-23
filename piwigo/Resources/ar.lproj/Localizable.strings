@@ -61,7 +61,7 @@
 "loginHTTPpwd_placeholder" = "كلمة المرور";
 
 // Login — Errors
-"serverURLerror_title" = "Incorrect URL";
+"serverURLerror_title" = "URL غير صحيحة";
 "serverURLerror_message" = "Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "طرق غير معروفة";
 "serverMethodsError_message" = "أخفق الحصول على طرق الخادم. مشكلة مع خادم Piwigo ؟";
@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "البوم جديد";
 "createNewAlbum_message" = "أدخل اسم لهذا الألبوم:";
 "createNewAlbum_placeholder" = "اسم الألبوم";
-"createNewAlbumDescription_placeholder" = "التعليق";
-"createNewAlbumDescription_noDescription" = "لا توجد تعليقات";
+"createNewAlbumDescription_placeholder" = "الوصف";
+"createNewAlbumDescription_noDescription" = "no description";
 "createNewAlbumHUD_label" = "جار إنشاء الألبوم…";
 
 // Album create — Errors
@@ -204,6 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Select Album";
 "categorySelection_current" = "Select the current album for this image";
+"categorySelection_one" = "Select one of the albums containing this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Album Thumbnail";
 "categoryImageSet_message" = "هل تريد بالتأكيد تعيين هذه الصورة للألبوم \"%@\"؟";
@@ -247,7 +248,7 @@
 "editImageDetails_tags" = "العلامات:";
 "editImageDetails_privacyLevel" = "من يمكنه مشاهدة هذه الصورة؟";
 "editImageDetails_descriptionPlaceholder" = "الوصف";
-"editImageDetails_comments" = "Comments";
+"editImageDetails_comments" = "تعليقات";
 "editImageDetailsHUD_updating" = "جار تحديث معلومات الصورة…";
 
 // Image details — Errors
@@ -272,7 +273,7 @@
 "tagsHeader_all" = "الكل";
 
 // Image select
-"selectImages" = "Select Images";
+"selectImages" = "تحديد صور";
 "selectImageSelected" = "1 Image Selected";
 "selectImagesSelected" = "%@ Images Selected";
 "selectAll" = "الكل";
@@ -284,7 +285,7 @@
 "deleteSingleImage_title" = "حذف الصورة";
 "deleteSingleImageHUD_deleting" = "Deleting Image…";
 "deleteSeveralImagesHUD_deleting" = "Deleting Images…";
-"removeSingleImage_title" = "Remove from Album";
+"removeSingleImage_title" = "إزالة من الألبوم";
 "removeSingleImageHUD_removing" = "Removing Image…";
 "deleteSingleImage_message" = "هل أنت متأكد أنك تريد حذف هذه الصورة؟ هذا لا يمكن التراجع عنه!";
 "deleteSeveralImages_title" = "حذف الصور";
@@ -327,7 +328,7 @@
 "moveSeveralImagesHUD_moving" = "Moving Images…";
 
 // Image move — Errors
-"moveImageError_title" = "Move Fail";
+"moveImageError_title" = "فشل النقل";
 "moveSingleImageError_message" = "Failed to move your image";
 
 // Image copy
@@ -388,7 +389,7 @@
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "Photos library";
+"localAlbums" = "Photo Library";
 
 "localImageSort_newest" = "الأحدث";
 "localImageSort_oldest" = "الأقدم";
@@ -408,7 +409,7 @@
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "خادم Piwigo";
-"settingsHeader_notSecure" = "Website Not Secure!";
+"settingsHeader_notSecure" = "موقع ويب غير آمنة!";
 "settings_server" = "العنوان";
 "settings_username" = "اسم المستخدم";
 "settings_notLoggedIn" = " - لم تقم بتسجيل الدخول - ";
@@ -514,5 +515,5 @@
 "settings_translateWithCrowdin" = "ترجمة Piwigo موبايل";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "شكر وتقدير";
-"settings_users" = "Users";
-"settings_groups" = "Groups";
+"settings_users" = "المستخدمين";
+"settings_groups" = "المجموعات";
