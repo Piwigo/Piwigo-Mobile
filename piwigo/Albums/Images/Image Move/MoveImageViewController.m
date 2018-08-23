@@ -164,6 +164,18 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void)quitAfterCopyingImageWithCategoryIds:(NSMutableArray *)categoryIds
+{
+    // Return to image preview
+    [self dismissViewControllerAnimated:YES completion:^{
+        // Update image data
+        if([self.moveImageDelegate respondsToSelector:@selector(didCopyImageInOneOfCategoryIds:)])
+        {
+            [self.moveImageDelegate didCopyImageInOneOfCategoryIds:categoryIds];
+        }
+    }];
+}
+
 -(void)quitMoveImageAndReturnToAlbumView
 {
     // Return to album view (image moved)
@@ -530,7 +542,7 @@
                         
                         // Return to album view if image moved
                         if (self.copyImage)
-                            [self quitMoveImage];
+                            [self quitAfterCopyingImageWithCategoryIds:categoryIds];
                         else
                             [self quitMoveImageAndReturnToAlbumView];
                     }
@@ -542,6 +554,7 @@
                                 [self.moveImagesDelegate didRemoveImage:self.selectedImage];
                             }
                         }
+                        
                         // Next image
                         [self.selectedImages removeLastObject];
                         self.selectedImage = [self.selectedImages lastObject];

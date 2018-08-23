@@ -948,6 +948,12 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 #pragma mark - MoveImageDelegate Methods
 
+-(void)didCopyImageInOneOfCategoryIds:(NSMutableArray *)categoryIds
+{
+    // Update image data
+    self.imageData.categoryIds = [categoryIds mutableCopy];
+}
+
 -(void)didRemoveImage:(PiwigoImageData *)image
 {
     // Update album data

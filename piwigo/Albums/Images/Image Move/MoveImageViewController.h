@@ -12,6 +12,7 @@
 
 @protocol MoveImageDelegate <NSObject>
 
+-(void)didCopyImageInOneOfCategoryIds:(NSMutableArray*)categoryIds;
 -(void)didRemoveImage:(PiwigoImageData*)image;
 
 @end
