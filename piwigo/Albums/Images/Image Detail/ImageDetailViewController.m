@@ -95,6 +95,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         self.downloadBarButton.tintColor = [UIColor piwigoOrange];
         self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"paperclip"] landscapeImagePhone:[UIImage imageNamed:@"paperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
         self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
+        self.setThumbnailBarButton.enabled = NO;
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
         self.moveBarButton.enabled = NO;
@@ -234,6 +235,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     self.editBarButton.enabled = NO;
     self.deleteBarButton.enabled = NO;
     self.moveBarButton.enabled = NO;
+    self.setThumbnailBarButton.enabled = NO;
 
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:imageId
@@ -257,6 +259,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                   self.editBarButton.enabled = YES;
                   self.deleteBarButton.enabled = YES;
                   self.moveBarButton.enabled = YES;
+                  self.setThumbnailBarButton.enabled = YES;
               }
               else {
                   [self couldNotRetrieveImageData];
@@ -768,7 +771,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)setAsAlbumImage
 {
     // Present AllCategories view
-    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImage:self.imageData andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
     [self pushView:allCategoriesPickVC];
 }
 

@@ -19,7 +19,7 @@
 @property (nonatomic, strong) UITableView *categoriesTableView;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
-@property (nonatomic, assign) NSInteger imageId;
+@property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoAlbumData *categoryData;
 @property (nonatomic, strong) UIViewController *hudViewController;
@@ -29,13 +29,13 @@
 
 @implementation AllCategoriesViewController
 
--(instancetype)initForImageId:(NSInteger)imageId andCategoryId:(NSInteger)categoryId
+-(instancetype)initForImage:(PiwigoImageData *)imageData andCategoryId:(NSInteger)categoryId
 {
 	self = [super init];
 	if(self)
 	{
         self.title = NSLocalizedString(@"categoryImageSet_title", @"Album Thumbnail");
-		self.imageId = imageId;
+		self.imageData = imageData;
 		self.categoryId = categoryId;
         self.categoryData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
 
@@ -148,7 +148,11 @@
                                                      context:context];
         
         // Text
-        NSString *textString = NSLocalizedString(@"categorySelection_current", @"Select the current album for this image");
+        NSString *textString;
+        if ([self.imageData.categoryIds count] > 1)
+            textString = NSLocalizedString(@"categorySelection_one", @"Select one of the albums containing this image");
+        else
+            textString = NSLocalizedString(@"categorySelection_current", @"Select the current album for this image");
         NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
         CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                    options:NSStringDrawingUsesLineFragmentOrigin
@@ -181,7 +185,11 @@
         [headerAttributedString appendAttributedString:titleAttributedString];
         
         // Text
-        NSString *textString = NSLocalizedString(@"categorySelection_current", @"Select the current album for this image");
+        NSString *textString;
+        if ([self.imageData.categoryIds count] > 1)
+            textString = NSLocalizedString(@"categorySelection_one", @"Select one of the albums containing this image");
+        else
+            textString = NSLocalizedString(@"categorySelection_current", @"Select the current album for this image");
         NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
         [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
                                      range:NSMakeRange(0, [textString length])];
@@ -238,7 +246,7 @@
 {
 	if(section == 0)
 	{
-		return 1;
+		return [self.imageData.categoryIds count];
 	}
 	return self.categories.count;
 }
@@ -254,7 +262,9 @@
 
 	if(indexPath.section == 0)
 	{
-        [cell setupWithCategoryData:self.categoryData];
+        NSInteger categoryId = [[self.imageData.categoryIds objectAtIndex:indexPath.row] integerValue];
+        PiwigoAlbumData *categoryData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
+        [cell setupWithCategoryData:categoryData];
 	}
 	else
 	{
@@ -292,7 +302,8 @@
 	}
 	else
 	{
-		categoryData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+        NSInteger categoryId = [[self.imageData.categoryIds objectAtIndex:indexPath.row] integerValue];
+		categoryData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
 	}
 	
     UIAlertController* alert = [UIAlertController
@@ -352,16 +363,16 @@
     
     // Set image as representative
 	[AlbumService setCategoryRepresentativeForCategory:categoryId
-                forImageId:self.imageId
+                forImageId:[self.imageData.imageId integerValue]
               OnCompletion:^(NSURLSessionTask *task, BOOL setSuccessfully) {
                   if(setSuccessfully)
                   {
                       // Update image Id of album
                       PiwigoAlbumData *category = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-                      category.albumThumbnailId = self.imageId;
+                      category.albumThumbnailId = [self.imageData.imageId integerValue];
                       
                       // Update image URL of album
-                      PiwigoImageData *imgData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%@", @(self.imageId)]];
+                      PiwigoImageData *imgData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%@", @([self.imageData.imageId integerValue])]];
                       category.albumThumbnailUrl = imgData.ThumbPath;
 
                       // Image will be downloaded when displaying list of albums
