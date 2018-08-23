@@ -58,8 +58,12 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
     // Album comment
     if (self.albumData.comment.length == 0) {
-        self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumDescription_noDescription", @"no comment")];
-        self.albumComment.textColor = [UIColor piwigoRightLabelColor];
+        if([Model sharedInstance].hasAdminRights) {
+            self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumDescription_noDescription", @"no description")];
+            self.albumComment.textColor = [UIColor piwigoRightLabelColor];
+        } else {
+            self.albumComment.text = @"";
+        }
     }
     else {
         self.albumComment.text = self.albumData.comment;
