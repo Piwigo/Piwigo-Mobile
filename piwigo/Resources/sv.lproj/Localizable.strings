@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "Nytt Album";
 "createNewAlbum_message" = "Ange ett namn för albumet:";
 "createNewAlbum_placeholder" = "Albumnamn";
-"createNewAlbumComment_placeholder" = "Kommentar";
-"createNewAlbumComment_noComment" = "ingen kommentar";
+"createNewAlbumDescription_placeholder" = "Kommentar";
+"createNewAlbumDescription_noDescription" = "ingen kommentar";
 "createNewAlbumHUD_label" = "Skapar Album…";
 
 // Album create — Errors

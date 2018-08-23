@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "البوم جديد";
 "createNewAlbum_message" = "أدخل اسم لهذا الألبوم:";
 "createNewAlbum_placeholder" = "اسم الألبوم";
-"createNewAlbumComment_placeholder" = "التعليق";
-"createNewAlbumComment_noComment" = "لا توجد تعليقات";
+"createNewAlbumDescription_placeholder" = "التعليق";
+"createNewAlbumDescription_noDescription" = "لا توجد تعليقات";
 "createNewAlbumHUD_label" = "جار إنشاء الألبوم…";
 
 // Album create — Errors

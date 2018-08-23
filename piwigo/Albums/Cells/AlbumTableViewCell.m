@@ -58,7 +58,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
     // Album comment
     if (self.albumData.comment.length == 0) {
-        self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumComment_noComment", @"no comment")];
+        self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumDescription_noDescription", @"no comment")];
         self.albumComment.textColor = [UIColor piwigoRightLabelColor];
     }
     else {
@@ -272,7 +272,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     }];
 
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = NSLocalizedString(@"createNewAlbumComment_placeholder", @"Comment");
+        textField.placeholder = NSLocalizedString(@"createNewAlbumDescription_placeholder", @"Description");
         textField.text = self.albumData.comment;
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;

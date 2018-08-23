@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "新規アルバム";
 "createNewAlbum_message" = "このアルバムの名称を入力してください：";
 "createNewAlbum_placeholder" = "アルバムの名称";
-"createNewAlbumComment_placeholder" = "コメント";
-"createNewAlbumComment_noComment" = "コメントなし";
+"createNewAlbumDescription_placeholder" = "コメント";
+"createNewAlbumDescription_noDescription" = "コメントなし";
 "createNewAlbumHUD_label" = "アルバム作成中...";
 
 // Album create — Errors

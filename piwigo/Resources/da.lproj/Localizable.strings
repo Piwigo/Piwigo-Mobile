@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "Nyt Album";
 "createNewAlbum_message" = "Indtast navm for dette album:";
 "createNewAlbum_placeholder" = "Navn på album";
-"createNewAlbumComment_placeholder" = "Bemærkning";
-"createNewAlbumComment_noComment" = "ingen kommentar";
+"createNewAlbumDescription_placeholder" = "Bemærkning";
+"createNewAlbumDescription_noDescription" = "ingen kommentar";
 "createNewAlbumHUD_label" = "Opretter album…";
 
 // Album create — Errors

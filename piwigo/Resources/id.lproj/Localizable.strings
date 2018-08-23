@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "Album Baru";
 "createNewAlbum_message" = "Masukkan nama untuk album ini:";
 "createNewAlbum_placeholder" = "Nama Album";
-"createNewAlbumComment_placeholder" = "Komentar";
-"createNewAlbumComment_noComment" = "tidak ada komentar";
+"createNewAlbumDescription_placeholder" = "Komentar";
+"createNewAlbumDescription_noDescription" = "tidak ada komentar";
 "createNewAlbumHUD_label" = "Membuat Album…";
 
 // Album create — Errors

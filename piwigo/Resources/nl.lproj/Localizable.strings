@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "Nieuw album";
 "createNewAlbum_message" = "Voer een naam in voor dit album:";
 "createNewAlbum_placeholder" = "Albumnaam";
-"createNewAlbumComment_placeholder" = "Opmerking";
-"createNewAlbumComment_noComment" = "geen opmerking";
+"createNewAlbumDescription_placeholder" = "Opmerking";
+"createNewAlbumDescription_noDescription" = "geen opmerking";
 "createNewAlbumHUD_label" = "Bezig album te maken…";
 
 // Album create — Errors

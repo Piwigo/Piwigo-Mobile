@@ -143,8 +143,8 @@
 "createNewAlbum_title" = "Nowy Album";
 "createNewAlbum_message" = "Wprowadź nazwę albumu:";
 "createNewAlbum_placeholder" = "Nazwa Albumu";
-"createNewAlbumComment_placeholder" = "Skomentuj";
-"createNewAlbumComment_noComment" = "brak komentarza";
+"createNewAlbumDescription_placeholder" = "Skomentuj";
+"createNewAlbumDescription_noDescription" = "brak komentarza";
 "createNewAlbumHUD_label" = "Tworzenie albumu…";
 
 // Album create — Errors

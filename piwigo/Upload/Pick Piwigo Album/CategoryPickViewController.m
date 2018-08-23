@@ -669,7 +669,7 @@
     }];
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = NSLocalizedString(@"createNewAlbumComment_placeholder", @"Comment");
+        textField.placeholder = NSLocalizedString(@"createNewAlbumDescription_placeholder", @"Description");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
         textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
