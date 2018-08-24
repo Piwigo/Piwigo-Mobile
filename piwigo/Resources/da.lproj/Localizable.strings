@@ -62,7 +62,7 @@
 
 // Login — Errors
 "serverURLerror_title" = "Forkert URL";
-"serverURLerror_message" = "Ret venligst Piwigo web serveradresse.";
+"serverURLerror_message" = "Ret venligst Piwigo web serveradressen.";
 "serverMethodsError_title" = "Ukendt Protokol";
 "serverMethodsError_message" = "Kunne ikke hente server protokol. Prøv at logge ind igen?";
 
@@ -204,7 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Vælg album";
 "categorySelection_current" = "Vælg aktuelle album for dette billede";
-"categorySelection_one" = "Select one of the albums containing this image";
+"categorySelection_one" = "Vælg en af de album, som indeholder dette billede";
 "categorySelection_other" = "eller vælg et andet album";
 "categoryImageSet_title" = "Album miniature";
 "categoryImageSet_message" = "Er du sikker på, at du vil bruge dette billede som miniaturebillede for albummet \"%@\"?";
