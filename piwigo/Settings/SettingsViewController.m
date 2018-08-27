@@ -1472,8 +1472,10 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                                [Model sharedInstance].hadOpenedSession = NO;
                                
                                // Back to default values
+                               [Model sharedInstance].defaultCategory = 0;
                                [Model sharedInstance].usesCommunityPluginV29 = NO;
                                [Model sharedInstance].hasAdminRights = NO;
+                               [[Model sharedInstance] saveToDisk];
                                
                                // Erase cache
                                [ClearCache clearAllCache];
