@@ -283,9 +283,9 @@
 "deleteImageProgress_title" = "Menghapus %@%% Selesai";
 
 "deleteSingleImage_title" = "Hapus Gambar";
-"deleteSingleImageHUD_deleting" = "Deleting Image…";
-"deleteSeveralImagesHUD_deleting" = "Deleting Images…";
-"removeSingleImage_title" = "Remove from Album";
+"deleteSingleImageHUD_deleting" = "Menghapus gambar…";
+"deleteSeveralImagesHUD_deleting" = "Menghapus gambar…";
+"removeSingleImage_title" = "Hapus dari Album";
 "removeSingleImageHUD_removing" = "Removing Image…";
 "deleteSingleImage_message" = "Anda yakin ingin menghapus gambar ini? Ini tidak dapat dibatalkan!";
 "deleteSeveralImages_title" = "Hapus Gambar";
@@ -319,7 +319,7 @@
 "videoSaveError_message" = "Gagal untuk menyimpan video. Galat: %@";
 
 // Image move
-"moveImage_title" = "Move to Album";
+"moveImage_title" = "Pindah ke Album";
 "moveSingleImage_selectAlbum" = "Select an album to move image \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Select an album to move the images to";
 "moveSingleImage_message" = "Are you sure you want to move the image \"%@\" to the album \"%@\"?";

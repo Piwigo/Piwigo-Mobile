@@ -61,7 +61,7 @@
 "loginHTTPpwd_placeholder" = "Wachtwoord";
 
 // Login — Errors
-"serverURLerror_title" = "Incorrect URL";
+"serverURLerror_title" = "Onjuiste URL";
 "serverURLerror_message" = "Corrigeer het adres van de server van het web van Piwigo.";
 "serverMethodsError_title" = "Onbekende methoden";
 "serverMethodsError_message" = "Server methoden verkrijgen mislukt. Problemen met de Piwigo-server?";
@@ -204,7 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Selecteer album";
 "categorySelection_current" = "Selecteer voor deze foto het huidig album";
-"categorySelection_one" = "Select one of the albums containing this image";
+"categorySelection_one" = "Selecteer een van de albums met deze afbeelding";
 "categorySelection_other" = "of selecteer een ander album voor deze foto";
 "categoryImageSet_title" = "Album-miniatuur";
 "categoryImageSet_message" = "Weet je zeker dat je deze foto wilt gebruiken voor album \"%@\"?";
