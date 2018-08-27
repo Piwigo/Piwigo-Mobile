@@ -150,6 +150,7 @@
 -(void)setupWithImageData:(PiwigoImageData*)imageData
 {
 	self.imageData = imageData;
+    self.isAccessibilityElement = YES;
 
     // Do we have any info on that image ?
 	if(!self.imageData)

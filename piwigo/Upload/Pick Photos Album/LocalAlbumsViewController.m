@@ -50,6 +50,7 @@
         
         // Button for returning to albums/images
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
@@ -285,6 +286,7 @@
     cell.textLabel.minimumScaleFactor = 0.5;
     cell.textLabel.lineBreakMode = NSLineBreakByTruncatingHead;
 
+    cell.isAccessibilityElement = YES;
     return cell;
 }
 

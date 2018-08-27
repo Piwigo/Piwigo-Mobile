@@ -57,7 +57,9 @@
         // Bar buttons
         self.uploadBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"imageUploadDetailsButton_title", @"Upload")
             style:UIBarButtonItemStylePlain target:self action:@selector(startUpload)];
+        [self.uploadBarButton setAccessibilityIdentifier:@"Upload"];
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
 	}
 	return self;
 }
@@ -269,6 +271,7 @@
     cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
     cell.tintColor = [UIColor piwigoOrange];
     
+    cell.isAccessibilityElement = YES;
 	return cell;
 }
 

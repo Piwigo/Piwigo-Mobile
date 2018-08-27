@@ -284,6 +284,7 @@
         }
     }
 
+    cell.isAccessibilityElement = YES;
 	return cell;
 }
 

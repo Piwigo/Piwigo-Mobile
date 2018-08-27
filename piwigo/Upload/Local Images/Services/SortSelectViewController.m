@@ -243,6 +243,7 @@
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
+    cell.isAccessibilityElement = YES;
     return cell;
 }
 

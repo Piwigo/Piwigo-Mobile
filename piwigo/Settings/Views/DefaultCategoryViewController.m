@@ -211,6 +211,7 @@
         cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
     }
 
+    cell.isAccessibilityElement = YES;
     return cell;
 }
 

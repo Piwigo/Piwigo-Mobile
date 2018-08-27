@@ -80,7 +80,9 @@
         
         // Bar buttons
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
+        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(presentImageUploadView)];
         
         // Register Photo Library changes

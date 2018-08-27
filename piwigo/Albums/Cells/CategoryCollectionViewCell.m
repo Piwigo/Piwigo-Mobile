@@ -83,6 +83,7 @@
     cell.cellDelegate = self;
 	[cell setupWithAlbumData:self.albumData];
 	
+    cell.isAccessibilityElement = YES;
 	return cell;
 }
 

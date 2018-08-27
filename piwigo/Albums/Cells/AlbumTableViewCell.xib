@@ -27,6 +27,9 @@
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="V5H-h5-LzC">
                         <rect key="frame" x="6" y="6" width="144" height="144"/>
+                        <accessibility key="accessibilityConfiguration" label="bckgImage">
+                            <bool key="isElement" value="YES"/>
+                        </accessibility>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="V5H-h5-LzC" secondAttribute="height" multiplier="1:1" id="9AB-3Q-QWQ"/>
                         </constraints>
@@ -51,18 +54,21 @@
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="albumName" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VUH-5s-TNg">
                         <rect key="frame" x="170" y="6" width="185" height="23.5"/>
+                        <accessibility key="accessibilityConfiguration" label="albumName"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                         <color key="textColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="comment" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8FE-y2-D2g" userLabel="Comment">
                         <rect key="frame" x="170" y="108" width="185" height="18"/>
+                        <accessibility key="accessibilityConfiguration" label="comment"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="numberOfImages" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BOH-3d-ghk">
                         <rect key="frame" x="170" y="134" width="185" height="14"/>
+                        <accessibility key="accessibilityConfiguration" label="nberImages"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="10"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -80,6 +86,9 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <accessibility key="accessibilityConfiguration" label="handle">
+                            <bool key="isElement" value="YES"/>
+                        </accessibility>
                         <constraints>
                             <constraint firstAttribute="width" constant="20" id="1tj-9f-dDt"/>
                             <constraint firstItem="gsh-Kx-Qjp" firstAttribute="centerY" secondItem="b5y-tG-VEP" secondAttribute="centerY" id="EJG-Bx-UwX"/>
@@ -111,6 +120,9 @@
                     <constraint firstAttribute="bottom" secondItem="BOH-3d-ghk" secondAttribute="bottom" constant="8" id="yJe-vP-O6B"/>
                 </constraints>
             </tableViewCellContentView>
+            <accessibility key="accessibilityConfiguration">
+                <bool key="isElement" value="YES"/>
+            </accessibility>
             <connections>
                 <outlet property="albumComment" destination="8FE-y2-D2g" id="BJu-IX-igi"/>
                 <outlet property="albumName" destination="VUH-5s-TNg" id="2Ss-eO-bVx"/>

@@ -38,6 +38,46 @@
                ReferencedContainer = "container:piwigo.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AD1BB8F72130021F0053096B"
+               BuildableName = "PiwigoUIScreenshots.xctest"
+               BlueprintName = "PiwigoUIScreenshots"
+               ReferencedContainer = "container:piwigo.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AD30FD142131665A009AA30E"
+               BuildableName = "piwigoScreenshots.xctest"
+               BlueprintName = "piwigoScreenshots"
+               ReferencedContainer = "container:piwigo.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AD30FD2521316D7F009AA30E"
+               BuildableName = "PiwigoUITests.xctest"
+               BlueprintName = "PiwigoUITests"
+               ReferencedContainer = "container:piwigo.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AD30FD3321316DA7009AA30E"
+               BuildableName = "piwigoUITests.xctest"
+               BlueprintName = "piwigoUITests"
+               ReferencedContainer = "container:piwigo.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

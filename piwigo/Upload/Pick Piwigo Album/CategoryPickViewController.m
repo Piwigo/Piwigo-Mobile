@@ -478,6 +478,7 @@
         }
     }
     
+    tableViewCell.isAccessibilityElement = YES;
     return tableViewCell;
 }
 
