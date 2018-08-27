@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
+		AD1EBB68213404D50012FA44 /* piwigoGetPiwigo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */; };
+		AD1EBB70213404DB0012FA44 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB6F213404DB0012FA44 /* SnapshotHelper.swift */; };
 		AD1F90B220724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1F90B120724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m */; };
 		AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */; };
 		AD274E271FF411D4009CD3AC /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */; };
-		AD30FD3721316DA8009AA30E /* piwigoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoUITests.swift */; };
+		AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */; };
 		AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */; };
@@ -109,6 +111,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AD1EBB6A213404D50012FA44 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
+			remoteInfo = piwigo;
+		};
 		AD30FD3921316DA8009AA30E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
@@ -130,6 +139,10 @@
 		AD0822741FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD0822751FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
+		AD1EBB65213404D50012FA44 /* piwigoGetPiwigo.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoGetPiwigo.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoGetPiwigo.swift; sourceTree = "<group>"; };
+		AD1EBB69213404D50012FA44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AD1EBB6F213404DB0012FA44 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		AD1F90B020724A63004BA1AA /* NoImagesHeaderCollectionReusableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoImagesHeaderCollectionReusableView.h; sourceTree = "<group>"; };
 		AD1F90B120724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NoImagesHeaderCollectionReusableView.m; sourceTree = "<group>"; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
@@ -137,8 +150,8 @@
 		AD294B2A1F2CE87400CD3769 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultThumbnailSizeViewController.h; sourceTree = "<group>"; };
 		AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultThumbnailSizeViewController.m; sourceTree = "<group>"; };
-		AD30FD3421316DA7009AA30E /* piwigoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD30FD3621316DA8009AA30E /* piwigoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoUITests.swift; sourceTree = "<group>"; };
+		AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppStore.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoAppStore.swift; sourceTree = "<group>"; };
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD35CA371E9BF8A600E3B897 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "piwigo/Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -357,6 +370,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AD1EBB62213404D50012FA44 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD30FD3121316DA7009AA30E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -395,14 +415,24 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		AD30FD3521316DA8009AA30E /* piwigoUITests */ = {
+		AD1EBB66213404D50012FA44 /* piwigoGetPiwigo */ = {
 			isa = PBXGroup;
 			children = (
-				AD30FD3621316DA8009AA30E /* piwigoUITests.swift */,
+				AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */,
+				AD1EBB6F213404DB0012FA44 /* SnapshotHelper.swift */,
+				AD1EBB69213404D50012FA44 /* Info.plist */,
+			);
+			path = piwigoGetPiwigo;
+			sourceTree = "<group>";
+		};
+		AD30FD3521316DA8009AA30E /* piwigoAppStore */ = {
+			isa = PBXGroup;
+			children = (
+				AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */,
 				AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */,
 				AD30FD3821316DA8009AA30E /* Info.plist */,
 			);
-			path = piwigoUITests;
+			path = piwigoAppStore;
 			sourceTree = "<group>";
 		};
 		AD42DDF4210B38820083FC7D /* Image Move */ = {
@@ -633,7 +663,8 @@
 			isa = PBXGroup;
 			children = (
 				D82B8CBD1A67820A000E47CA /* piwigo */,
-				AD30FD3521316DA8009AA30E /* piwigoUITests */,
+				AD30FD3521316DA8009AA30E /* piwigoAppStore */,
+				AD1EBB66213404D50012FA44 /* piwigoGetPiwigo */,
 				D82B8CBC1A67820A000E47CA /* Products */,
 				9BE2F03E92BB4BD667BAA1F0 /* Pods */,
 				1F042DC0C96A55B227088605 /* Frameworks */,
@@ -644,7 +675,8 @@
 			isa = PBXGroup;
 			children = (
 				D82B8CBB1A67820A000E47CA /* piwigo.app */,
-				AD30FD3421316DA7009AA30E /* piwigoUITests.xctest */,
+				AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */,
+				AD1EBB65213404D50012FA44 /* piwigoGetPiwigo.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -910,9 +942,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AD30FD3321316DA7009AA30E /* piwigoUITests */ = {
+		AD1EBB64213404D50012FA44 /* piwigoGetPiwigo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "piwigoUITests" */;
+			buildConfigurationList = AD1EBB6C213404D50012FA44 /* Build configuration list for PBXNativeTarget "piwigoGetPiwigo" */;
+			buildPhases = (
+				AD1EBB61213404D50012FA44 /* Sources */,
+				AD1EBB62213404D50012FA44 /* Frameworks */,
+				AD1EBB63213404D50012FA44 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AD1EBB6B213404D50012FA44 /* PBXTargetDependency */,
+			);
+			name = piwigoGetPiwigo;
+			productName = piwigoGetPiwigo;
+			productReference = AD1EBB65213404D50012FA44 /* piwigoGetPiwigo.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		AD30FD3321316DA7009AA30E /* piwigoAppStore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "piwigoAppStore" */;
 			buildPhases = (
 				AD30FD3021316DA7009AA30E /* Sources */,
 				AD30FD3121316DA7009AA30E /* Frameworks */,
@@ -923,9 +973,9 @@
 			dependencies = (
 				AD30FD3A21316DA8009AA30E /* PBXTargetDependency */,
 			);
-			name = piwigoUITests;
+			name = piwigoAppStore;
 			productName = piwigoUITests;
-			productReference = AD30FD3421316DA7009AA30E /* piwigoUITests.xctest */;
+			productReference = AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		D82B8CBA1A67820A000E47CA /* piwigo */ = {
@@ -958,10 +1008,16 @@
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
-					AD30FD3321316DA7009AA30E = {
+					AD1EBB64213404D50012FA44 = {
 						CreatedOnToolsVersion = 9.4.1;
 						DevelopmentTeam = ZEC3W885H6;
 						ProvisioningStyle = Automatic;
+						TestTargetID = D82B8CBA1A67820A000E47CA;
+					};
+					AD30FD3321316DA7009AA30E = {
+						CreatedOnToolsVersion = 9.4.1;
+						DevelopmentTeam = ZEC3W885H6;
+						ProvisioningStyle = Manual;
 						TestTargetID = D82B8CBA1A67820A000E47CA;
 					};
 					D82B8CBA1A67820A000E47CA = {
@@ -1005,12 +1061,20 @@
 			projectRoot = "";
 			targets = (
 				D82B8CBA1A67820A000E47CA /* piwigo */,
-				AD30FD3321316DA7009AA30E /* piwigoUITests */,
+				AD30FD3321316DA7009AA30E /* piwigoAppStore */,
+				AD1EBB64213404D50012FA44 /* piwigoGetPiwigo */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AD1EBB63213404D50012FA44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD30FD3221316DA7009AA30E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1096,11 +1160,20 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AD1EBB61213404D50012FA44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD1EBB68213404D50012FA44 /* piwigoGetPiwigo.swift in Sources */,
+				AD1EBB70213404DB0012FA44 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD30FD3021316DA7009AA30E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD30FD3721316DA8009AA30E /* piwigoUITests.swift in Sources */,
+				AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */,
 				AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1196,6 +1269,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AD1EBB6B213404D50012FA44 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D82B8CBA1A67820A000E47CA /* piwigo */;
+			targetProxy = AD1EBB6A213404D50012FA44 /* PBXContainerItemProxy */;
+		};
 		AD30FD3A21316DA8009AA30E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D82B8CBA1A67820A000E47CA /* piwigo */;
@@ -1301,7 +1379,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		AD30FD3C21316DA8009AA30E /* Debug */ = {
+		AD1EBB6D213404D50012FA44 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1315,12 +1393,69 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = piwigoGetPiwigo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoGetPiwigo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = piwigo;
+			};
+			name = Debug;
+		};
+		AD1EBB6E213404D50012FA44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = ZEC3W885H6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = piwigoGetPiwigo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoGetPiwigo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = piwigo;
+			};
+			name = Release;
+		};
+		AD30FD3C21316DA8009AA30E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = ZEC3W885H6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
+				PROVISIONING_PROFILE = "d3e37774-f832-404f-b43e-ee87b83b503b";
+				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -1339,7 +1474,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = ZEC3W885H6;
@@ -1349,7 +1484,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
+				PROVISIONING_PROFILE = "d3e37774-f832-404f-b43e-ee87b83b503b";
+				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1523,7 +1659,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "piwigoUITests" */ = {
+		AD1EBB6C213404D50012FA44 /* Build configuration list for PBXNativeTarget "piwigoGetPiwigo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD1EBB6D213404D50012FA44 /* Debug */,
+				AD1EBB6E213404D50012FA44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "piwigoAppStore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AD30FD3C21316DA8009AA30E /* Debug */,

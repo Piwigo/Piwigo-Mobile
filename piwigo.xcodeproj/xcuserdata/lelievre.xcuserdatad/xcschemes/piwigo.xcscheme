@@ -73,8 +73,18 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AD30FD3321316DA7009AA30E"
-               BuildableName = "piwigoUITests.xctest"
-               BlueprintName = "piwigoUITests"
+               BuildableName = "piwigoAppStore.xctest"
+               BlueprintName = "piwigoAppStore"
+               ReferencedContainer = "container:piwigo.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AD1EBB64213404D50012FA44"
+               BuildableName = "piwigoGetPiwigo.xctest"
+               BlueprintName = "piwigoGetPiwigo"
                ReferencedContainer = "container:piwigo.xcodeproj">
             </BuildableReference>
          </TestableReference>
