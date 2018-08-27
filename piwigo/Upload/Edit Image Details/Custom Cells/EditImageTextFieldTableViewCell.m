@@ -7,6 +7,7 @@
 //
 
 #import "EditImageTextFieldTableViewCell.h"
+#import "Model.h"
 
 @interface EditImageTextFieldTableViewCell()
 
@@ -22,11 +23,20 @@
     [super awakeFromNib];
     
     self.cellLabel.font = [UIFont piwigoFontNormal];
-    self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
-
     self.cellTextField.font = [UIFont piwigoFontNormal];
+    self.cellTextField.keyboardType = UIKeyboardTypeDefault;
+    self.cellTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+    self.cellTextField.autocorrectionType = UITextAutocorrectionTypeYes;
+    self.cellTextField.returnKeyType = UIReturnKeyDefault;
+    [self paletteChanged];
+}
+
+-(void)paletteChanged
+{
+    self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.cellTextField.textColor = [UIColor piwigoRightLabelColor];
     self.cellTextField.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.cellTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
 -(void)setLabel:(NSString*)label andTextField:(NSString*)text withPlaceholder:(NSString*)placeholder

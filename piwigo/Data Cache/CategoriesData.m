@@ -54,7 +54,8 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 		index++;
 	}
 	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
-	[newCategories removeObjectAtIndex:index];
+    if ((index >= 0) && (index < newCategories.count))
+        [newCategories removeObjectAtIndex:index];
 	self.allCategories = newCategories;
 }
 

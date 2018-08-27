@@ -71,7 +71,7 @@
         self.categoriesTableView.showsVerticalScrollIndicator = YES;
         self.categoriesTableView.delegate = self;
         self.categoriesTableView.dataSource = self;
-        [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
+        [self.categoriesTableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:@"CategoryTableViewCell"];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
         
@@ -164,6 +164,18 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void)quitAfterCopyingImageWithCategoryIds:(NSMutableArray *)categoryIds
+{
+    // Return to image preview
+    [self dismissViewControllerAnimated:YES completion:^{
+        // Update image data
+        if([self.moveImageDelegate respondsToSelector:@selector(didCopyImageInOneOfCategoryIds:)])
+        {
+            [self.moveImageDelegate didCopyImageInOneOfCategoryIds:categoryIds];
+        }
+    }];
+}
+
 -(void)quitMoveImageAndReturnToAlbumView
 {
     // Return to album view (image moved)
@@ -195,50 +207,61 @@
     [ImageService getImageInfoById:[[self.selectedImageIds lastObject] integerValue]
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
               
-              // Store image data
-              [self.selectedImages addObject:imageDataComplete];
-              if (self.selectedImages.count == 1)
-                  self.selectedImage = [self.selectedImages firstObject];
-              
-              // Determine categories common to all images
-              NSMutableSet *set1 = [NSMutableSet setWithArray:self.selectedImage.categoryIds];
-              NSSet *set2 = [NSSet setWithArray:imageDataComplete.categoryIds];
-              [set1 intersectSet:set2];
-              self.selectedImage.categoryIds = [set1 allObjects];
-              
-              // Next image
-              [self.selectedImageIds removeLastObject];
-              [self retrieveImageData];
+              if (imageDataComplete != nil) {
+                  // Store image data
+                  [self.selectedImages addObject:imageDataComplete];
+                  if (self.selectedImages.count == 1)
+                      self.selectedImage = [self.selectedImages firstObject];
+                  
+                  // Determine categories common to all images
+                  NSMutableSet *set1 = [NSMutableSet setWithArray:self.selectedImage.categoryIds];
+                  NSSet *set2 = [NSSet setWithArray:imageDataComplete.categoryIds];
+                  [set1 intersectSet:set2];
+                  self.selectedImage.categoryIds = [set1 allObjects];
+                  
+                  // Next image
+                  [self.selectedImageIds removeLastObject];
+                  [self retrieveImageData];
+              }
+              else {
+                  [self couldNotRetrieveImageData];
+              }
           }
                  onFailure:^(NSURLSessionTask *task, NSError *error) {
                      // Failed — Ask user if he/she wishes to retry
-                     UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                         message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-                         preferredStyle:UIAlertControllerStyleAlert];
-                     
-                     UIAlertAction* dismissAction = [UIAlertAction
-                         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                         style:UIAlertActionStyleCancel
-                         handler:^(UIAlertAction * action) {
-                             dispatch_async(dispatch_get_main_queue(), ^{
-                                 self.isLoadingImageData = NO;
-                                 [self hideHUDwithSuccess:NO completion:^{
-                                     [self quitMoveImage];
-                                 }];
-                             });
-                         }];
-                     
-                     UIAlertAction* retryAction = [UIAlertAction
-                           actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                           style:UIAlertActionStyleDefault
-                           handler:^(UIAlertAction * action) {
-                               [self retrieveImageData];
-                           }];
-                     
-                     [alert addAction:dismissAction];
-                     [alert addAction:retryAction];
-                     [self presentViewController:alert animated:YES completion:nil];
+                     [self couldNotRetrieveImageData];
                  }];
+}
+
+-(void)couldNotRetrieveImageData
+{
+    // Failed — Ask user if he/she wishes to retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.isLoadingImageData = NO;
+                [self hideHUDwithSuccess:NO completion:^{
+                    [self quitMoveImage];
+                }];
+            });
+        }];
+    
+    UIAlertAction* retryAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+          [self retrieveImageData];
+        }];
+    
+    [alert addAction:dismissAction];
+    [alert addAction:retryAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 
@@ -358,11 +381,7 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
-    if (!cell) {
-        [tableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumCell_ID];
-        cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
-    }
+    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CategoryTableViewCell" forIndexPath:indexPath];
     
     // Determine the depth before setting up the cell
     PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
@@ -385,6 +404,7 @@
         cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
     }
     
+    cell.isAccessibilityElement = YES;
     return cell;
 }
 
@@ -523,7 +543,7 @@
                         
                         // Return to album view if image moved
                         if (self.copyImage)
-                            [self quitMoveImage];
+                            [self quitAfterCopyingImageWithCategoryIds:categoryIds];
                         else
                             [self quitMoveImageAndReturnToAlbumView];
                     }
@@ -535,6 +555,7 @@
                                 [self.moveImagesDelegate didRemoveImage:self.selectedImage];
                             }
                         }
+                        
                         // Next image
                         [self.selectedImages removeLastObject];
                         self.selectedImage = [self.selectedImages lastObject];

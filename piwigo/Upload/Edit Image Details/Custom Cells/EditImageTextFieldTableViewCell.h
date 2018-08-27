@@ -10,6 +10,7 @@
 
 @interface EditImageTextFieldTableViewCell : UITableViewCell
 
+-(void)paletteChanged;
 -(void)setLabel:(NSString*)label andTextField:(NSString*)text withPlaceholder:(NSString*)placeholder;
 -(NSString*)getTextFieldText;
 

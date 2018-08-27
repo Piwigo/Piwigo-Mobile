@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.2_text" = "Version 2.2.2\n\n• Copy and move images between albums\n• Minor bug fixes and improvement of the interface";
+"v2.2.3_text" = "Wersja 2.2.3\n\n• Nowy projekt albumu\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
-"v2.2.1_text" = "Wersja 2.2.1\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.2.2_text" = "Wersja 2.2.2\n14 sierpnia 2018\n\n• Copy and move images between albums\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.2.1_text" = "Wersja 2.2.1\n25 lipca 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
 "v2.2.0_text" = "Wersja 2.2 \n12 lipca 2018\n\n• Tworzenie podalbumów z dowolnego albumu\n• Poprawa zarządzania poprzez wprowadzenie domyślnego Albumu\n• Usprawniono prezentację albumów na iPad-ie (i iPhone-ie) \n• Wykrywanie zmian w Bibliotece zdjęć \n• Drobne poprawki błędów i ulepszenia interfejsu";
 

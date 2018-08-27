@@ -10,6 +10,8 @@
 #import <CoreData/CoreData.h>
 #import "CategorySortViewController.h"
 
+FOUNDATION_EXPORT NSTimeInterval const kThirtyDays;
+
 @class PHPhotoLibrary;
 
 typedef enum {
@@ -99,6 +101,8 @@ typedef enum {
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;
 
+// Request help for translating Piwigo every month or so
+@property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;
 
 -(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 

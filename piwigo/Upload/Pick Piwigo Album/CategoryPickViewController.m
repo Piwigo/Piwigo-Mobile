@@ -34,93 +34,98 @@
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId;
 {
-	// User can upload images/videos if he/she has:
-    // — admin rights
-    // — opened a session on a server having Community extension installed
-    if(([Model sharedInstance].hasAdminRights) ||
-       ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
-	{
-        self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
-        
-        // Current category
-        self.currentCategoryId = categoryId;
-        
-        // List of categories to present in 2nd section
-        self.categories = [NSMutableArray new];
-        self.categoriesThatShowSubCategories = [NSMutableArray new];
-        
-        // Table view
-        self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-        self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.categoriesTableView.backgroundColor = [UIColor clearColor];
-        self.categoriesTableView.alwaysBounceVertical = YES;
-        self.categoriesTableView.showsVerticalScrollIndicator = YES;
-        self.categoriesTableView.delegate = self;
-        self.categoriesTableView.dataSource = self;
-        [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
-        [self.view addSubview:self.categoriesTableView];
-        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
-		[[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:nil];
+    self = [super init];
+    self = [super init];
+    if(self)
+    {
+        // User can upload images/videos if he/she has:
+        // — admin rights
+        // — opened a session on a server having Community extension installed
+        if(([Model sharedInstance].hasAdminRights) ||
+           ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
+        {
+            self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
+            
+            // Current category
+            self.currentCategoryId = categoryId;
+            
+            // List of categories to present in 2nd section
+            self.categories = [NSMutableArray new];
+            self.categoriesThatShowSubCategories = [NSMutableArray new];
+            
+            // Table view
+            self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+            self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
+            self.categoriesTableView.backgroundColor = [UIColor clearColor];
+            self.categoriesTableView.alwaysBounceVertical = YES;
+            self.categoriesTableView.showsVerticalScrollIndicator = YES;
+            self.categoriesTableView.delegate = self;
+            self.categoriesTableView.dataSource = self;
+            [self.categoriesTableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:@"CategoryTableViewCell"];
+            [self.view addSubview:self.categoriesTableView];
+            [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
-        // Button for returning to albums/images
-        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
-        
-        // Register category changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoNotificationChangedCurrentCategory object:nil];
+            [[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:nil];
 
-        // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
-    }
-	else
-	{
-        self = (CategoryPickViewController*)[[UIViewController alloc] init];
-        
-		UILabel *adminLabel = [UILabel new];
-		adminLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		adminLabel.font = [UIFont piwigoFontNormal];
-		adminLabel.font = [adminLabel.font fontWithSize:20];
-		adminLabel.textColor = [UIColor piwigoWhiteCream];
-		adminLabel.text = NSLocalizedString(@"uploadRights_title", @"Upload Rights Needed");
-		adminLabel.minimumScaleFactor = 0.5;
-		adminLabel.adjustsFontSizeToFitWidth = YES;
-		adminLabel.textAlignment = NSTextAlignmentCenter;
-		[self.view addSubview:adminLabel];
-		[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:adminLabel]];
-		[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[admin]-10-|"
-																		  options:kNilOptions
-																		  metrics:nil
-																			views:@{@"admin" : adminLabel}]];
-		
-		UILabel *description = [UILabel new];
-		description.translatesAutoresizingMaskIntoConstraints = NO;
-		description.font = [UIFont piwigoFontNormal];
-		description.textColor = [UIColor piwigoWhiteCream];
-		description.numberOfLines = 4;
-		description.textAlignment = NSTextAlignmentCenter;
-		description.text = NSLocalizedString(@"uploadRights_message", @"You must have upload rights to be able to upload images or videos.");
-		description.adjustsFontSizeToFitWidth = YES;
-		description.minimumScaleFactor = 0.5;
-		[self.view addSubview:description];
-		[self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:description]];
-		[self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"|-[description]-|"
-                                   options:kNilOptions metrics:nil
-                                   views:@{@"description" : description}]];
-		
-        if (@available(iOS 11, *)) {
-            [self.view addConstraints:[NSLayoutConstraint
-                                       constraintsWithVisualFormat:@"V:|-[admin]-[description]"
-                                       options:kNilOptions metrics:nil
-                                       views:@{@"admin" : adminLabel, @"description" : description}]];
-        } else {
-            [self.view addConstraints:[NSLayoutConstraint
-                                       constraintsWithVisualFormat:@"V:|-80-[admin]-[description]"
-                                       options:kNilOptions metrics:nil
-                                       views:@{@"admin" : adminLabel, @"description" : description}]];
+            // Button for returning to albums/images
+            self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
+            
+            // Register category changes
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoNotificationChangedCurrentCategory object:nil];
+
+            // Register palette changes
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
         }
-}
-	
+        else
+        {
+            self = (CategoryPickViewController*)[[UIViewController alloc] init];
+            
+            UILabel *adminLabel = [UILabel new];
+            adminLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            adminLabel.font = [UIFont piwigoFontNormal];
+            adminLabel.font = [adminLabel.font fontWithSize:20];
+            adminLabel.textColor = [UIColor piwigoWhiteCream];
+            adminLabel.text = NSLocalizedString(@"uploadRights_title", @"Upload Rights Needed");
+            adminLabel.minimumScaleFactor = 0.5;
+            adminLabel.adjustsFontSizeToFitWidth = YES;
+            adminLabel.textAlignment = NSTextAlignmentCenter;
+            [self.view addSubview:adminLabel];
+            [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:adminLabel]];
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[admin]-10-|"
+                                                                              options:kNilOptions
+                                                                              metrics:nil
+                                                                                views:@{@"admin" : adminLabel}]];
+            
+            UILabel *description = [UILabel new];
+            description.translatesAutoresizingMaskIntoConstraints = NO;
+            description.font = [UIFont piwigoFontNormal];
+            description.textColor = [UIColor piwigoWhiteCream];
+            description.numberOfLines = 4;
+            description.textAlignment = NSTextAlignmentCenter;
+            description.text = NSLocalizedString(@"uploadRights_message", @"You must have upload rights to be able to upload images or videos.");
+            description.adjustsFontSizeToFitWidth = YES;
+            description.minimumScaleFactor = 0.5;
+            [self.view addSubview:description];
+            [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:description]];
+            [self.view addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"|-[description]-|"
+                                       options:kNilOptions metrics:nil
+                                       views:@{@"description" : description}]];
+            
+            if (@available(iOS 11, *)) {
+                [self.view addConstraints:[NSLayoutConstraint
+                                           constraintsWithVisualFormat:@"V:|-[admin]-[description]"
+                                           options:kNilOptions metrics:nil
+                                           views:@{@"admin" : adminLabel, @"description" : description}]];
+            } else {
+                [self.view addConstraints:[NSLayoutConstraint
+                                           constraintsWithVisualFormat:@"V:|-80-[admin]-[description]"
+                                           options:kNilOptions metrics:nil
+                                           views:@{@"admin" : adminLabel, @"description" : description}]];
+            }
+        }
+    }
 	return self;
 }
 
@@ -443,11 +448,7 @@
 
         default:                // List of albums to upload images to
         {
-            CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
-            if (!cell) {
-                [tableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumCell_ID];
-                cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
-            }
+            CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CategoryTableViewCell" forIndexPath:indexPath];
             
             // Display disclosure indicator on large screens
             // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
@@ -477,6 +478,7 @@
         }
     }
     
+    tableViewCell.isAccessibilityElement = YES;
     return tableViewCell;
 }
 
@@ -661,18 +663,20 @@
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
         textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        textField.returnKeyType = UIReturnKeyContinue;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        textField.autocorrectionType = UITextAutocorrectionTypeYes;
+        textField.returnKeyType = UIReturnKeyContinue;
         textField.delegate = self;
     }];
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = NSLocalizedString(@"createNewAlbumComment_placeholder", @"Comment");
+        textField.placeholder = NSLocalizedString(@"createNewAlbumDescription_placeholder", @"Description");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
         textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        textField.returnKeyType = UIReturnKeyContinue;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        textField.autocorrectionType = UITextAutocorrectionTypeYes;
+        textField.returnKeyType = UIReturnKeyContinue;
         textField.delegate = self;
     }];
     

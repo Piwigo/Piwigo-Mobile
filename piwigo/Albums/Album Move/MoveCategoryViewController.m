@@ -48,7 +48,7 @@
         self.categoriesTableView.showsVerticalScrollIndicator = YES;
         self.categoriesTableView.delegate = self;
         self.categoriesTableView.dataSource = self;
-        [self.categoriesTableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"cell"];
+        [self.categoriesTableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:@"CategoryTableViewCell"];
         [self.view addSubview:self.categoriesTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
@@ -218,11 +218,7 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
-    if (!cell) {
-        [tableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumCell_ID];
-        cell = [tableView dequeueReusableCellWithIdentifier:kAlbumCell_ID];
-    }
+    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CategoryTableViewCell" forIndexPath:indexPath];
     
     // Determine the depth before setting up the cell
     PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
@@ -245,6 +241,7 @@
         cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
     }
 
+    cell.isAccessibilityElement = YES;
     return cell;
 }
 

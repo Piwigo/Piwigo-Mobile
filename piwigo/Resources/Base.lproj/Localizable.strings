@@ -61,6 +61,8 @@
 "loginHTTPpwd_placeholder" = "Password";
 
 // Login — Errors
+"serverURLerror_title" = "Incorrect URL";
+"serverURLerror_message" ="Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "Unknown Methods";
 "serverMethodsError_message" = "Failed to get server methods. Problem with Piwigo server?";
 
@@ -141,7 +143,8 @@
 "createNewAlbum_title" = "New Album";
 "createNewAlbum_message" = "Enter a name for this album:";
 "createNewAlbum_placeholder" = "Album Name";
-"createNewAlbumComment_placeholder" = "Comment";
+"createNewAlbumDescription_placeholder" = "Description";
+"createNewAlbumDescription_noDescription" = "no description";
 "createNewAlbumHUD_label" = "Creating Album…";
 
 // Album create — Errors
@@ -201,6 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Select Album";
 "categorySelection_current" = "Select the current album for this image";
+"categorySelection_one" = "Select one of the albums containing this image";
 "categorySelection_other" = "or select another album for this image";
 "categoryImageSet_title" = "Album Thumbnail";
 "categoryImageSet_message" = "Are you sure you want to set this image for the album \"%@\"?";

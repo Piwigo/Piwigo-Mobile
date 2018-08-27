@@ -7,7 +7,7 @@
 //
 
 #import <Photos/Photos.h>
-#import <StoreKit/StoreKit.h>
+//#import <StoreKit/StoreKit.h>
 
 #import "AppDelegate.h"
 #import "AlbumImagesViewController.h"
@@ -32,7 +32,6 @@
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "SAMKeychain.h"
 #import "SettingsViewController.h"
-#import "SortHeaderCollectionReusableView.h"
 #import "UICountingLabel.h"
 
 CGFloat const kRadius = 25.0;
@@ -82,7 +81,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     self = [super init];
 	if(self)
 	{
-        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 		self.categoryId = albumId;
         self.loadingImages = NO;
         self.isCachedAtInit = isCached;
@@ -104,20 +102,26 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 		self.imagesCollection.dataSource = self;
 		self.imagesCollection.delegate = self;
 
-        [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
-		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"category"];
-        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"categoryHeader"];
-        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"categoryHeader"];
-		[self.imagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader"];
-        [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader"];
+        [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
+		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
+        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
+        [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
 
 		[self.view addSubview:self.imagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
+        if (@available(iOS 11.0, *)) {
+            [self.imagesCollection setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentAlways];
+        } else {
+            // Fallback on earlier versions
+        }
 
         // Bar buttons
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] landscapeImagePhone:[UIImage imageNamed:@"preferencesCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
+        [self.settingsBarButton setAccessibilityIdentifier:@"preferences"];
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
+        [self.selectBarButton setAccessibilityIdentifier:@"Select"];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
+        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
 		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelected)];
         self.deleteBarButton.tintColor = [UIColor redColor];
@@ -294,11 +298,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
-#if !defined(DEBUG)
-    if (NSClassFromString(@"SKStoreReviewController")) {
-        [SKStoreReviewController requestReview];
-    }
-#endif
+//#if !defined(DEBUG)
+//    if (NSClassFromString(@"SKStoreReviewController")) {
+//        [SKStoreReviewController requestReview];
+//    }
+//#endif
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -931,44 +935,56 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [ImageService getImageInfoById:[[self.selectedImageIdsToDelete lastObject] integerValue]
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
-              // Split orphaned and non-orphaned images
-              if (imageData.categoryIds.count > 1) {
-                  [self.selectedImagesToRemove addObject:imageData];
+              if (imageData != nil) {
+                  // Split orphaned and non-orphaned images
+                  if (imageData.categoryIds.count > 1) {
+                      [self.selectedImagesToRemove addObject:imageData];
+                  }
+                  else {
+                      [self.selectedImagesToDelete addObject:imageData];
+                  }
+              
+                  // Next image
+                  [self.selectedImageIdsToDelete removeLastObject];
+                  [self retrieveImageData];
               }
               else {
-                  [self.selectedImagesToDelete addObject:imageData];
+                  // Could not retrieve image data
+                  [self couldNotRetrieveImageData];
               }
-              
-              // Next image
-              [self.selectedImageIdsToDelete removeLastObject];
-              [self retrieveImageData];
           }
                  onFailure:^(NSURLSessionTask *task, NSError *error) {
                      // Failed — Ask user if he/she wishes to retry
-                     UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                         message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-                         preferredStyle:UIAlertControllerStyleAlert];
-                     
-                     UIAlertAction* dismissAction = [UIAlertAction
-                         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                         style:UIAlertActionStyleCancel
-                         handler:^(UIAlertAction * action) {
-                             dispatch_async(dispatch_get_main_queue(), ^{
-                                 [self hideHUD];
-                             });
-                         }];
-                     
-                     UIAlertAction* retryAction = [UIAlertAction
-                           actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                           style:UIAlertActionStyleDefault
-                           handler:^(UIAlertAction * action) {
-                               [self retrieveImageData];
-                           }];
-                     
-                     [alert addAction:dismissAction];
-                     [alert addAction:retryAction];
-                     [self presentViewController:alert animated:YES completion:nil];
+                     [self couldNotRetrieveImageData];
                  }];
+}
+
+-(void)couldNotRetrieveImageData
+{
+    // Failed — Ask user if he/she wishes to retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hideHUD];
+            });
+        }];
+    
+    UIAlertAction* retryAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+          [self retrieveImageData];
+        }];
+    
+    [alert addAction:dismissAction];
+    [alert addAction:retryAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)askDeleteConfirmation
@@ -1554,7 +1570,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             CategoryHeaderReusableView *header = nil;
             
             if (kind == UICollectionElementKindSectionHeader) {
-                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"categoryHeader" forIndexPath:indexPath];
+                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader" forIndexPath:indexPath];
                 PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
                 if ([albumData.comment length] > 0) {
                     header.commentLabel.text = albumData.comment;
@@ -1572,7 +1588,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             
             if(kind == UICollectionElementKindSectionHeader)
             {
-                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
+                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection" forIndexPath:indexPath];
                 header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
 
                 if (self.categoryId == 0) {
@@ -1680,21 +1696,36 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    // Avoid unwanted spaces
-    if ([collectionView numberOfItemsInSection:section] == 0)
-        return UIEdgeInsetsMake(0, kMarginsSpacing, 0, kMarginsSpacing);
-    
-    return UIEdgeInsetsMake(10, kMarginsSpacing, 10, kMarginsSpacing);
+    if (section == 1) {
+        // Avoid unwanted spaces
+        if ([collectionView numberOfItemsInSection:section] == 0)
+            return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
+        else
+            return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
+    }
+    else {
+        // Avoid unwanted spaces
+        if ([collectionView numberOfItemsInSection:section] == 0)
+            return UIEdgeInsetsMake(0, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
+        else
+            return UIEdgeInsetsMake(10, kAlbumMarginsSpacing, 10, kAlbumMarginsSpacing);
+    }
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kCellSpacing;
+    if (section == 1)
+        return (CGFloat)kImageCellSpacing;
+    else
+        return 0.0;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kCellSpacing;
+    if (section == 1)
+        return (CGFloat)kImageCellSpacing;
+    else
+        return (CGFloat)kAlbumCellSpacing;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -1703,13 +1734,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	{
         // Calculate the optimum image size
         CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-        return CGSizeMake(size, size);                                 // Thumbnails
+        return CGSizeMake(size, size);                     // Images
 	}
 	else
 	{
         float nberAlbumsPerRow = [ImagesCollection numberOfAlbumsPerRowForViewInPortrait:collectionView withMaxWidth:384];
         CGFloat size = (CGFloat)[ImagesCollection albumSizeForView:collectionView andNberOfAlbumsPerRowInPortrait:nberAlbumsPerRow];
-        return CGSizeMake(size, 188);                                   // Albums
+        return CGSizeMake(size, 156.5);                    // Albums (see XIB file)
 	}
 }
 
@@ -1717,7 +1748,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
 	if(indexPath.section == 1)      // Images
 	{
-		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCollectionViewCell" forIndexPath:indexPath];
 		
 		if(self.albumData.images.count > indexPath.row) {
 			// Create cell from Piwigo data
@@ -1751,7 +1782,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	}
 	else        // Albums
 	{
-		CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"category" forIndexPath:indexPath];
+		CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CategoryCollectionViewCell" forIndexPath:indexPath];
 		cell.categoryDelegate = self;
 		
 		PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];

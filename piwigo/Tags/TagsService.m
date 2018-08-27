@@ -14,7 +14,7 @@
 +(NSURLSessionTask*)getTagsOnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	return [self post:kPiwigoTagsGetList
+    return [self post:[Model sharedInstance].hasAdminRights ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList
 		URLParameters:nil
            parameters:nil
              progress:nil

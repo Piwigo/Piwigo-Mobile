@@ -12,6 +12,8 @@
 #import "PiwigoImageData.h"
 #import "ImagesCollection.h"
 
+NSTimeInterval const kThirtyDays = 60 * 60 * 24 * 30.0;
+
 @interface Model()
 
 @end
@@ -86,7 +88,10 @@
 		instance.diskCache = 80;
 		instance.memoryCache = 80;
 		
-		[instance readFromDisk];
+        // Request help for translating Piwigo every month or so
+        instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - kThirtyDays;
+
+        [instance readFromDisk];
 	});
 	return instance;
 }
@@ -190,6 +195,7 @@
         self.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
         self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
         self.defaultCategory = modelData.defaultCategory;
+        self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
 	}
 }
 
@@ -203,7 +209,7 @@
 	[data writeToFile:dataPath atomically:YES];
 }
 
-- (void) encodeWithCoder:(NSCoder *)encoder {
+- (void)encodeWithCoder:(NSCoder *)encoder {
 	NSMutableArray *saveObject = [[NSMutableArray alloc] init];
 	[saveObject addObject:self.serverName];
 	[saveObject addObject:@(self.defaultPrivacyLevel)];
@@ -215,21 +221,27 @@
 	[saveObject addObject:self.serverProtocol];
 	[saveObject addObject:[NSNumber numberWithBool:self.loadAllCategoryInfo]];
 	[saveObject addObject:@(self.defaultSort)];
-	[saveObject addObject:[ NSNumber numberWithBool:self.resizeImageOnUpload]];
+	[saveObject addObject:[NSNumber numberWithBool:self.resizeImageOnUpload]];
 	[saveObject addObject:@(self.defaultImagePreviewSize)];
     [saveObject addObject:[NSNumber numberWithBool:self.stripGPSdataOnUpload]];
     [saveObject addObject:@(self.defaultThumbnailSize)];
     [saveObject addObject:@(self.displayImageTitles)];
-    [saveObject addObject:[NSNumber numberWithBool:self.compressImageOnUpload]];    // Added in v2.1.5
+    // Added in v2.1.5…
+    [saveObject addObject:[NSNumber numberWithBool:self.compressImageOnUpload]];
     [saveObject addObject:[NSNumber numberWithBool:self.deleteImageAfterUpload]];
-    [saveObject addObject:self.username];                                           // Added in v2.1.6
+    // Added in v2.1.6…
+    [saveObject addObject:self.username];
     [saveObject addObject:self.HttpUsername];
     [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteActive]];
     [saveObject addObject:[NSNumber numberWithBool:self.switchPaletteAutomatically]];
     [saveObject addObject:@(self.switchPaletteThreshold)];
     [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteModeActive]];
-    [saveObject addObject:@(self.thumbnailsPerRowInPortrait)];                      // Added in v2.1.8
-    [saveObject addObject:@(self.defaultCategory)];                                 // Added in v2.2.0
+    // Added in v2.1.8…
+    [saveObject addObject:@(self.thumbnailsPerRowInPortrait)];
+    // Added in v2.2.0…
+    [saveObject addObject:@(self.defaultCategory)];
+    // Added in v2.2.3…
+    [saveObject addObject:[NSNumber numberWithDouble:self.dateOfLastTranslationRequest]];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -358,6 +370,11 @@
         self.defaultCategory = [[savedData objectAtIndex:24] integerValue];
     } else {
         self.defaultCategory = 0;
+    }
+    if(savedData.count > 25) {
+        self.dateOfLastTranslationRequest = [[savedData objectAtIndex:25] doubleValue];
+    } else {
+        self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - kThirtyDays;
     }
 	return self;
 }

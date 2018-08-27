@@ -87,14 +87,19 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		
         // Bar buttons
         self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
+        self.editBarButton.enabled = NO;
         self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
         self.deleteBarButton.tintColor = [UIColor redColor];
+        self.deleteBarButton.enabled = NO;
         self.downloadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] landscapeImagePhone:[UIImage imageNamed:@"downloadCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadImage)];
         self.downloadBarButton.tintColor = [UIColor piwigoOrange];
         self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"paperclip"] landscapeImagePhone:[UIImage imageNamed:@"paperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
         self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
+        self.setThumbnailBarButton.enabled = NO;
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
+        self.moveBarButton.enabled = NO;
+        [self.moveBarButton setAccessibilityIdentifier:@"Move"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
         self.navigationController.toolbar.barStyle = UIBarStyleDefault;
 
@@ -172,9 +177,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
             self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
 
-            // Present toolbar
+            // Present toolbar if needed
             self.isToolbarRequired = YES;
-            [self.navigationController setToolbarHidden:NO animated:YES];
+            BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
+            [self.navigationController setToolbarHidden:isNavigationBarHidden animated:YES];
         }
         else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
@@ -182,9 +188,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
             self.toolbarItems = @[self.downloadBarButton, self.spaceBetweenButtons, self.moveBarButton];
 
-            // Present toolbar
+            // Present toolbar if needed
             self.isToolbarRequired = YES;
-            [self.navigationController setToolbarHidden:NO animated:YES];
+            BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
+            [self.navigationController setToolbarHidden:isNavigationBarHidden animated:YES];
         }
         else
         {
@@ -226,37 +233,68 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)retrieveCompleteImageDataOfImageId:(NSInteger)imageId
 {
     // Image data are not complete when retrieved using pwg.categories.getImages
+    self.editBarButton.enabled = NO;
+    self.deleteBarButton.enabled = NO;
+    self.moveBarButton.enabled = NO;
+    self.setThumbnailBarButton.enabled = NO;
+
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:imageId
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
-              self.imageData = imageDataComplete;
+              if (imageDataComplete != nil) {
+
+                  // Update list of images
+                  self.imageData = imageDataComplete;
+                  NSInteger index = 0;
+                  for(PiwigoImageData *image in self.images)
+                  {
+                      if([image.imageId integerValue] == [imageDataComplete.imageId integerValue]) {
+                          [self.images replaceObjectAtIndex:index withObject:imageDataComplete];
+                          break;
+                      }
+                      index++;
+                  }
+                  [self.images replaceObjectAtIndex:index withObject:imageDataComplete];
+
+                  // Enable actions
+                  self.editBarButton.enabled = YES;
+                  self.deleteBarButton.enabled = YES;
+                  self.moveBarButton.enabled = YES;
+                  self.setThumbnailBarButton.enabled = YES;
+              }
+              else {
+                  [self couldNotRetrieveImageData];
+              }
           }
                  onFailure:^(NSURLSessionTask *task, NSError *error) {
               // Failed — Ask user if he/she wishes to retry
-              UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-                                   message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-                            preferredStyle:UIAlertControllerStyleAlert];
-              
-              UIAlertAction* dismissAction = [UIAlertAction
-                  actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                  style:UIAlertActionStyleCancel
-                  handler:^(UIAlertAction * action) {
-                      self.editBarButton.enabled = NO;
-                      self.deleteBarButton.enabled = NO;
-                      self.moveBarButton.enabled = NO;
-                  }];
-              
-              UIAlertAction* retryAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                    style:UIAlertActionStyleDefault
-                    handler:^(UIAlertAction * action) {
-                        [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
-                    }];
-              
-              [alert addAction:dismissAction];
-              [alert addAction:retryAction];
-              [self presentViewController:alert animated:YES completion:nil];
-          }];
+                     [self couldNotRetrieveImageData];
+                 }];
+}
+
+-(void)couldNotRetrieveImageData
+{
+    // Failed — Ask user if he/she wishes to retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+        }];
+    
+    UIAlertAction* retryAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+          [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
+        }];
+    
+    [alert addAction:dismissAction];
+    [alert addAction:retryAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 
@@ -310,8 +348,14 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 {
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
-    // Check to see if they've scroll beyond a certain threshold, then load more image data
-    if(currentIndex >= self.images.count - 21 && self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])
+    // Reached the end of the category?
+    if(currentIndex >= (self.images.count - 1))
+    {
+        return nil;
+    }
+    
+    // Check to see if they've scrolled beyond a certain threshold, then load more image data
+    if ((currentIndex >= self.images.count - 21) && (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
     {
         if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
         {
@@ -319,16 +363,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         }
     }
     
-    
-    if(currentIndex >= self.images.count - 1)
-    {
-        return nil;
-    }
+    // Retrieve image data in case user will want to copy, edit, move, etc. the image
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
+    [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
     
+    // Prepare image preview
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
     [nextImage setImageScrollViewWithImageData:imageData];
-    [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
     nextImage.imageIndex = currentIndex + 1;
     return nextImage;
 }
@@ -337,19 +378,22 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 {
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
+    // Reached the beginning of the category?
     if(currentIndex <= 0)
     {
         // return nil;
         // Crash reported by AppStore here on May 25th, 2017
-        // Should return 0 when the user reaches the first image of the album
-        return 0;
+        // Should return nil when the user reaches the first image of the album
+        return nil;
     }
     
+    // Retrieve image data in case user will want to copy, edit, move, etc. the image
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
+    [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
     
+    // Prepare image preview
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
     [prevImage setImageScrollViewWithImageData:imageData];
-    [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
     prevImage.imageIndex = currentIndex - 1;
     return prevImage;
 }
@@ -377,17 +421,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         // Crash reported by AppleStore in November 2017
         currentIndex = self.images.count - 1;
     }
-    
-    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andIndex:currentIndex];
-    
+
+    self.imageData = [self.images objectAtIndex:currentIndex];
+    self.title = self.imageData.name;
     if(self.imageData.isVideo)
     {
         self.progressBar.hidden = YES;
     }
-    
-    self.imageData = [self.images objectAtIndex:currentIndex];
-    
-    self.title = self.imageData.name;
 }
 
 
@@ -732,7 +772,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)setAsAlbumImage
 {
     // Present AllCategories view
-    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImageId:[self.imageData.imageId integerValue] andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImage:self.imageData andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
     [self pushView:allCategoriesPickVC];
 }
 
@@ -891,8 +931,8 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             image.name = details.title;
             image.author = details.author;
             image.privacyLevel = details.privacyLevel;
-            image.imageDescription = [NSString stringWithString:details.description];
-            image.tags = [details.description copy];
+            image.imageDescription = [NSString stringWithString:details.imageDescription];
+            image.tags = [details.tags copy];
             [self.images replaceObjectAtIndex:index withObject:image];
             break;
         }
@@ -908,6 +948,12 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 
 #pragma mark - MoveImageDelegate Methods
+
+-(void)didCopyImageInOneOfCategoryIds:(NSMutableArray *)categoryIds
+{
+    // Update image data
+    self.imageData.categoryIds = [categoryIds mutableCopy];
+}
 
 -(void)didRemoveImage:(PiwigoImageData *)image
 {

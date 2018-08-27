@@ -32,6 +32,7 @@
         self.sortSelectTableView.backgroundColor = [UIColor clearColor];
 		self.sortSelectTableView.delegate = self;
 		self.sortSelectTableView.dataSource = self;
+        [self.sortSelectTableView setAccessibilityIdentifier:@"sortSelect"];
 		[self.view addSubview:self.sortSelectTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.sortSelectTableView]];
 

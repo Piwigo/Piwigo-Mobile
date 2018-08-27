@@ -35,7 +35,7 @@
 		self.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.textLabel.font = [UIFont systemFontOfSize:19];
 		self.textLabel.textColor = [UIColor whiteColor];
-		self.textLabel.text = @"Loading";
+		self.textLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
 		[self addSubview:self.textLabel];
 		
 		self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];

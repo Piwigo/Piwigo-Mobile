@@ -22,7 +22,12 @@
 #import "PhotosFetch.h"
 #import "AlbumImagesViewController.h"
 
+//#ifndef DEBUG_NOCACHE
+//#define DEBUG_NOCACHE
+//#endif
+
 NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
+NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkErrorEncounteredNotification";
 
 @interface AppDelegate ()
 
@@ -40,14 +45,28 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
     // Override point for customization after application launch.
-	
+
     // Cache settings
-	NSURLCache *URLCache = [[NSURLCache alloc]
+#if defined(DEBUG_NOCACHE)
+    // set it to 0 to clear cache
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
+                                                       diskCapacity:0
+                                                           diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
+    // set it back to default value
+	URLCache = [[NSURLCache alloc]
                             initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
 								      diskCapacity:[Model sharedInstance].diskCache * 1024*1024
                                           diskPath:nil];
 	[NSURLCache setSharedURLCache:URLCache];
-    
+#else
+    NSURLCache *URLCache = [[NSURLCache alloc]
+                            initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
+                            diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                            diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
+#endif
+
     // Login ?
     NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;
@@ -109,6 +128,10 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
     // When that notification is posted, the method screenBrightnessChanged will be called.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged:) name:UIScreenBrightnessDidChangeNotification object:nil];
 
+    // Observe the PiwigoNetworkErrorEncounteredNotification.
+    // When that notification is posted, the app checks the login.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoNetworkErrorEncounteredNotification object:nil];
+    
     // Set network reachability status change block
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
 //#if defined(DEBUG)
@@ -121,19 +144,24 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
 
         if ([AFNetworkReachabilityManager sharedManager].reachable) {
             // Connection changed but again reachable — Login again?
-            BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-            NSString *server = [Model sharedInstance].serverName;
-            NSString *user = [KeychainAccess getLoginUser];
-            
-            if(hadOpenedSession && (server.length > 0) && (user.length > 0))
-            {
+            [self checkSessionStatusAndTryRelogin];
+        }
+    }];
+}
+
+-(void)checkSessionStatusAndTryRelogin
+{
+    BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
+    NSString *server = [Model sharedInstance].serverName;
+    NSString *user = [KeychainAccess getLoginUser];
+    
+    if(hadOpenedSession && (server.length > 0) && (user.length > 0))
+    {
 //#if defined(DEBUG)
 //                NSLog(@"       Connection changed but again reachable — Login again?");
 //#endif
-                [self.loginVC checkSessionStatusAndTryRelogin];
-            }
-        }
-    }];
+        [self.loginVC checkSessionStatusAndTryRelogin];
+    }
 }
 
 // Called when the screen brightness has changed or when user changed settings
@@ -148,7 +176,6 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
         } else {
             // Switch to light palette
             [Model sharedInstance].isDarkPaletteActive = NO;
-            [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceLight;
         }
     } else {
         // Dark palette mode chosen
@@ -160,7 +187,6 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
             } else {
                 // Switch to dark palette
                 [Model sharedInstance].isDarkPaletteActive = YES;
-                [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceDark;
             }
         } else {
             // Dynamic dark palette chosen
@@ -170,7 +196,6 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
                 if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
                     // Screen brightness > thereshold, switch to light palette
                     [Model sharedInstance].isDarkPaletteActive = NO;
-                    [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceLight;
                 } else {
                     // Keep dark palette
                     return;
@@ -180,7 +205,6 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
                 if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
                     // Screen brightness < threshold, switch to dark palette
                     [Model sharedInstance].isDarkPaletteActive = YES;
-                    [UITextField appearance].keyboardAppearance = UIKeyboardAppearanceDark;
                 } else {
                     // Keep light palette
                     return;

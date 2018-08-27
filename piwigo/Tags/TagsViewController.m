@@ -6,9 +6,11 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "TagsViewController.h"
-#import "TagsData.h"
+#import "AppDelegate.h"
+#import "Model.h"
 #import "PiwigoTagData.h"
+#import "TagsData.h"
+#import "TagsViewController.h"
 
 @interface TagsViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -44,19 +46,44 @@
 			[self.tagsTableView reloadData];
 		}];
 		
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
 	}
 	return self;
 }
 
 #pragma mark - View Lifecycle
 
+-(void)paletteChanged
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    
+    // Table view
+    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    [self.tagsTableView reloadData];
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    // Table view
-    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
-    [self.tagsTableView reloadData];
+    // Set colors, fonts, etc.
+    [self paletteChanged];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -182,18 +209,22 @@
 		cell = [UITableViewCell new];
 	}
     
+    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.tintColor = [UIColor piwigoOrange];
+    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+
     PiwigoTagData *currentTag;
     if (indexPath.section == 0) {
         currentTag = self.alreadySelectedTags[indexPath.row];
-    } else {
-        currentTag = [TagsData sharedInstance].tagList[indexPath.row];
+        cell.textLabel.text = currentTag.tagName;
     }
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    cell.tintColor = [UIColor piwigoOrange];
-    cell.textLabel.text = currentTag.tagName;
-    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
-    
-    if (indexPath.section == 1) {
+    else {
+        currentTag = [TagsData sharedInstance].tagList[indexPath.row];
+        
+        // Number of images not known if getAdminList called
+        cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag];
+
+        // Display checkmark if image tagged with current tag
         NSArray *selectedTagIDs = [self.alreadySelectedTags valueForKey:@"tagId"];
         if ([selectedTagIDs containsObject:@(currentTag.tagId)]) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -201,7 +232,7 @@
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
     }
-
+    
     return cell;
 }
 
@@ -214,7 +245,7 @@
 
     PiwigoTagData *currentTag;
     if (indexPath.section == 0) {
-        // Delete tag if tapped
+        // Delete tag tapped in image tag list
         [self.alreadySelectedTags removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         [tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -233,18 +264,21 @@
              [NSArray arrayWithObjects:
               [NSSortDescriptor sortDescriptorWithKey:@"tagName" ascending:YES], nil]];
 
-            NSIndexPath *somePath = [NSIndexPath indexPathForRow:(self.alreadySelectedTags.count - 1) inSection:0];
-            [tableView insertRowsAtIndexPaths:@[somePath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:0];
-            [tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            // Insert tag at right place in first section
+            NSUInteger indexOfTag = [self.alreadySelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
+                return (someTag.tagId == currentTag.tagId);
+            }];
+            NSIndexPath *insertPath = [NSIndexPath indexPathForRow:indexOfTag inSection:0];
+            [tableView insertRowsAtIndexPaths:@[insertPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         else {
             // Remove if already selected
-            [self.alreadySelectedTags removeObject:currentTag];
-            NSIndexPath *removePath = [NSIndexPath indexPathForRow:indexOfSelection inSection:0];
-            if ((removePath != nil) && (removePath.row >= 0)) {
-                [tableView deleteRowsAtIndexPaths:@[removePath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
+            NSUInteger indexOfTag = [self.alreadySelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
+                return (someTag.tagId == currentTag.tagId);
+            }];
+            [self.alreadySelectedTags removeObjectAtIndex:indexOfTag];
+            NSIndexPath *removePath = [NSIndexPath indexPathForRow:indexOfTag inSection:0];
+            [tableView deleteRowsAtIndexPaths:@[removePath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         
         // Update the checkmark

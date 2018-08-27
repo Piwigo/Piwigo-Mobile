@@ -10,6 +10,7 @@
 
 @interface TagsTableViewCell : UITableViewCell
 
+-(void)paletteChanged;
 -(void)setTagList:(NSArray*)tags;
 
 @end

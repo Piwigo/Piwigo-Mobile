@@ -44,6 +44,9 @@ typedef enum {
 	kImageUploadSettingAuthor
 } kImageUploadSetting;
 
+NSString * const kHelpUsTitle = @"Help Us!";
+NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated in your language. Could you please help us complete the translation?";
+
 @interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
@@ -71,6 +74,7 @@ typedef enum {
         self.settingsTableView.backgroundColor = [UIColor clearColor];
 		self.settingsTableView.delegate = self;
 		self.settingsTableView.dataSource = self;
+        [self.settingsTableView setAccessibilityIdentifier:@"preferences"];
 		[self.view addSubview:self.settingsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.settingsTableView]];
 		[self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.settingsTableView amount:0]];
@@ -79,6 +83,7 @@ typedef enum {
 
         // Button for returning to albums/images
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitSettings)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Keyboard management
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
@@ -123,6 +128,8 @@ typedef enum {
 
 -(void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     // Get Server Infos if possible
     if ([Model sharedInstance].hasAdminRights)
         [self getInfos];
@@ -137,6 +144,45 @@ typedef enum {
     
     // Set navigation buttons
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+
+    NSString *langCode = [[NSLocale currentLocale] languageCode];
+//    NSLog(@"=> langCode: %@", langCode);
+//    NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, kThirtyDays);
+    if (([[NSDate date] timeIntervalSinceReferenceDate] > [Model sharedInstance].dateOfLastTranslationRequest + kThirtyDays) &&
+        ([langCode isEqualToString:@"ar"] || [langCode isEqualToString:@"id"] ||
+         [langCode isEqualToString:@"pl"]))
+    {
+        // Store date of last translation request
+        [Model sharedInstance].dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
+        [[Model sharedInstance] saveToDisk];
+        
+        // Request a translation
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:kHelpUsTitle
+                message:kHelpUsTranslatePiwigo
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* cancelAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                style:UIAlertActionStyleDestructive
+                handler:^(UIAlertAction * action) {}];
+
+        UIAlertAction* defaultAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                style:UIAlertActionStyleDefault
+                handler:^(UIAlertAction * action) {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
+                }];
+        
+        [alert addAction:cancelAction];
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -381,6 +427,7 @@ typedef enum {
                     } else {
                         cell.rightText = [Model sharedInstance].serverName;
                     }
+                    [cell setAccessibilityIdentifier:@"server"];
 					break;
 				case 1:
 					cell.leftText = NSLocalizedString(@"settings_username", @"Username");
@@ -1169,6 +1216,7 @@ typedef enum {
 		}
 	}
 	
+    tableViewCell.isAccessibilityElement = YES;
 	return tableViewCell;
 }
 
@@ -1428,8 +1476,10 @@ typedef enum {
                                [Model sharedInstance].hadOpenedSession = NO;
                                
                                // Back to default values
+                               [Model sharedInstance].defaultCategory = 0;
                                [Model sharedInstance].usesCommunityPluginV29 = NO;
                                [Model sharedInstance].hasAdminRights = NO;
+                               [[Model sharedInstance] saveToDisk];
                                
                                // Erase cache
                                [ClearCache clearAllCache];

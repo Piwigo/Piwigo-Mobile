@@ -61,6 +61,8 @@
 "loginHTTPpwd_placeholder" = "Lösenord";
 
 // Login — Errors
+"serverURLerror_title" = "Felaktig URL";
+"serverURLerror_message" = "Vänligen korrigera Piwigo webbserveradressen.";
 "serverMethodsError_title" = "Okända metoder";
 "serverMethodsError_message" = "Det gick inte att få servermetoder. Problem med Piwigo servern?";
 
@@ -141,7 +143,8 @@
 "createNewAlbum_title" = "Nytt Album";
 "createNewAlbum_message" = "Ange ett namn för albumet:";
 "createNewAlbum_placeholder" = "Albumnamn";
-"createNewAlbumComment_placeholder" = "Kommentar";
+"createNewAlbumDescription_placeholder" = "Beskrivning";
+"createNewAlbumDescription_noDescription" = "ingen beskrivning";
 "createNewAlbumHUD_label" = "Skapar Album…";
 
 // Album create — Errors
@@ -201,6 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Välj Album";
 "categorySelection_current" = "Välj det aktuella albumet för denna bild";
+"categorySelection_one" = "Välj en av de album som innehåller den här bilden";
 "categorySelection_other" = "eller välj ett annat album för denna bild";
 "categoryImageSet_title" = "Album miniatyr";
 "categoryImageSet_message" = "Är du säker du vill använda denna bild miniatyrbild för albumet ”%@”?";
@@ -280,6 +284,7 @@
 
 "deleteSingleImage_title" = "Radera bild";
 "deleteSingleImageHUD_deleting" = "Raderar bild…";
+"deleteSeveralImagesHUD_deleting" = "Raderar bilder…";
 "removeSingleImage_title" = "Ta bort från Album";
 "removeSingleImageHUD_removing" = "Ta bort bild…";
 "deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";

@@ -8,6 +8,7 @@
 
 #import "EditImageTextViewTableViewCell.h"
 #import "UIPlaceHolderTextView.h"
+#import "Model.h"
 
 @interface EditImageTextViewTableViewCell()
 
@@ -23,11 +24,16 @@
     [super awakeFromNib];
 
     self.textView.font = [UIFont piwigoFontNormal];
+    self.textView.placeholder = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
+    [self paletteChanged];
+}
+
+-(void)paletteChanged
+{
     self.textView.textColor = [UIColor piwigoRightLabelColor];
     self.textView.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    
-    self.textView.placeholder = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
     self.textView.placeholderColor = [UIColor piwigoRightLabelColor];
+    self.textView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

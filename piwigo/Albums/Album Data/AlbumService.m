@@ -7,6 +7,7 @@
 //
 
 #import "AlbumService.h"
+#import "AppDelegate.h"
 #import "PiwigoAlbumData.h"
 #import "Model.h"
 #import "CategoriesData.h"
@@ -39,6 +40,15 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   }
                   else
                   {
+                      // Check session (closed or IPv4/IPv6 switch)?
+                      if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
+                          [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                      {
+                          NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                          });
+                      }
                       if(completion)
                       {
                           completion(task, nil);
@@ -48,6 +58,17 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG)
                   NSLog(@"getInfos — Fail: %@", [error description]);
 #endif
+                  // Check session (closed or IPv4/IPv6 switch)?
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
+                  {
+                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
                   if(fail) {
                       fail(task, error);
                   }
@@ -118,6 +139,15 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   }
                   else
                   {
+                      // Check session (closed or IPv4/IPv6 switch)?
+                      if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
+                          [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                      {
+                          NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                          });
+                      }
                       if(completion)
                       {
                           completion(task, nil);
@@ -127,6 +157,17 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG)
                   NSLog(@"getAlbumListForCategory — Fail: %@", [error description]);
 #endif
+                  // Check session (closed or IPv4/IPv6 switch)?
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
+                  {
+                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
                   if(fail) {
                       fail(task, error);
                   }
@@ -230,6 +271,15 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                           NSArray *albums = [[responseObject objectForKey:@"result"] objectForKey:@"categories"];
                           completion(task, albums);
                       } else {
+                          // Check session (closed or IPv4/IPv6 switch)?
+                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
+                              [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
+                          {
+                              NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                              });
+                          }
                           completion(task, nil);
                       }
                   }
@@ -237,6 +287,17 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG)
                   NSLog(@"getCommunityAlbumListForCategory — Fail: %@", [error description]);
 #endif
+                  // Check session (closed or IPv4/IPv6 switch)?
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
+                  {
+                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
               }];
 }
 

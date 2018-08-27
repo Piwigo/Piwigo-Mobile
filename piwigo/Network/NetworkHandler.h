@@ -36,6 +36,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoImageSetInfo;
 FOUNDATION_EXPORT NSString * const kPiwigoImageDelete;
 
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetList;
+FOUNDATION_EXPORT NSString * const kPiwigoTagsGetAdminList;
 
 // Parameter keys:
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamData;
@@ -58,6 +59,7 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
 +(void)createJSONdataSessionManager;
 +(void)createImagesSessionManager;
 +(NSString*)encodedURL:(NSString*)originalURL;
++(NSString*)getURLWithPath:(NSString*)originalURL withURLParams:(NSDictionary*)params;
 
 +(NSURLSessionTask*)post:(NSString*)path
            URLParameters:(NSDictionary*)urlParams
@@ -71,8 +73,6 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
                          progress:(void (^)(NSProgress *))progress
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-+(NSString*)getURLWithPath:(NSString*)path asPiwigoRequest:(BOOL)piwigo withURLParams:(NSDictionary*)params;
 
 +(void)showConnectionError:(NSError*)error;
 

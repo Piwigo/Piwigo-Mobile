@@ -61,6 +61,8 @@
 "loginHTTPpwd_placeholder" = "Adgangskode";
 
 // Login — Errors
+"serverURLerror_title" = "Forkert URL";
+"serverURLerror_message" = "Ret venligst Piwigo web serveradressen.";
 "serverMethodsError_title" = "Ukendt Protokol";
 "serverMethodsError_message" = "Kunne ikke hente server protokol. Prøv at logge ind igen?";
 
@@ -141,7 +143,8 @@
 "createNewAlbum_title" = "Nyt Album";
 "createNewAlbum_message" = "Indtast navm for dette album:";
 "createNewAlbum_placeholder" = "Navn på album";
-"createNewAlbumComment_placeholder" = "Bemærkning";
+"createNewAlbumDescription_placeholder" = "Beskrivelse";
+"createNewAlbumDescription_noDescription" = "ingen beskrivelse";
 "createNewAlbumHUD_label" = "Opretter album…";
 
 // Album create — Errors
@@ -201,6 +204,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Vælg album";
 "categorySelection_current" = "Vælg aktuelle album for dette billede";
+"categorySelection_one" = "Vælg en af de album, som indeholder dette billede";
 "categorySelection_other" = "eller vælg et andet album";
 "categoryImageSet_title" = "Album miniature";
 "categoryImageSet_message" = "Er du sikker på, at du vil bruge dette billede som miniaturebillede for albummet \"%@\"?";
@@ -280,6 +284,7 @@
 
 "deleteSingleImage_title" = "Slet Billede";
 "deleteSingleImageHUD_deleting" = "Sletter foto…";
+"deleteSeveralImagesHUD_deleting" = "Sletter fotos…";
 "removeSingleImage_title" = "Fjern fra Album";
 "removeSingleImageHUD_removing" = "Sletter foto…";
 "deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede? Dette kan ikke fortrydes!";

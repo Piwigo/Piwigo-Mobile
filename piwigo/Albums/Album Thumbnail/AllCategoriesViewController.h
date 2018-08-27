@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import "PiwigoImageData.h"
+
 @interface AllCategoriesViewController : UIViewController
 
--(instancetype)initForImageId:(NSInteger)imageId andCategoryId:(NSInteger)categoryId;
+-(instancetype)initForImage:(PiwigoImageData *)imageData andCategoryId:(NSInteger)categoryId;
 
 @end

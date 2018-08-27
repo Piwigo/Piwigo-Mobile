@@ -33,6 +33,7 @@ typedef enum {
 @property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewBottomConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewTopConstraint;
+@property (assign, nonatomic) BOOL shouldUpdateDetails;
 
 @end
 
@@ -76,6 +77,22 @@ typedef enum {
     // Table view
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+
+    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+    [textFieldCell paletteChanged];
+    
+    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+    [textFieldCell paletteChanged];
+    
+    EditImageLabelTableViewCell *privacyCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
+    [privacyCell paletteChanged];
+    
+    TagsTableViewCell *tagCell = (TagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
+    [tagCell paletteChanged];
+
+    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
+    [textViewCell paletteChanged];
+
     [self.editImageDetailsTableView reloadData];
 }
 
@@ -87,6 +104,7 @@ typedef enum {
     [self paletteChanged];
 
     // Navigation buttons in edition mode
+    self.shouldUpdateDetails = NO;
     if(self.isEdit)
     {
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
@@ -101,7 +119,8 @@ typedef enum {
 {
     [super viewWillDisappear:animated];
     
-    if([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
+    if ((self.shouldUpdateDetails || (self.navigationItem.rightBarButtonItem == nil)) &&
+        [self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
 	{
 		[self prepareImageForChanges];
 		[self.delegate didFinishEditingDetails:self.imageDetails];
@@ -141,38 +160,12 @@ typedef enum {
 -(void)setIsEdit:(BOOL)isEditChoice
 {
     _isEdit = isEditChoice;
-//    [ImageService getImageInfoById:self.imageDetails.imageId
-//                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-//                      self.imageDetails = [[ImageUpload alloc] initWithImageData:imageData];
-//                      [self.editImageDetailsTableView reloadData];
-//                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-//                      // Failed — Ask user if he/she wishes to retry
-//                      UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-//                            message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-//                            preferredStyle:UIAlertControllerStyleAlert];
-//
-//                      UIAlertAction* dismissAction = [UIAlertAction
-//                              actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-//                              style:UIAlertActionStyleCancel
-//                              handler:^(UIAlertAction * action) {}];
-//
-//                      UIAlertAction* retryAction = [UIAlertAction
-//                              actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-//                              style:UIAlertActionStyleDefault
-//                              handler:^(UIAlertAction * action) {
-//                                  self.isEdit = isEditChoice;
-//                              }];
-//
-//                      [alert addAction:dismissAction];
-//                      [alert addAction:retryAction];
-//                      [self presentViewController:alert animated:YES completion:nil];
-//                  }];
 }
 
 -(void)cancelEdit
 {
-	[self dismissViewControllerAnimated:YES completion:nil];
-//    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    self.shouldUpdateDetails = NO;
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)doneEdit
@@ -185,19 +178,25 @@ typedef enum {
         [self showUpdatingImageInfoHUD];
     });
     
-    // Update image info
+    // Update image info on server and in cache
 	[UploadService updateImageInfo:self.imageDetails
 						onProgress:^(NSProgress *progress) {
-							// progress
-						} OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-							// complete
+							// Progress
+						}
+                      OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+							
+                            // Complete, update image data
+                            self.shouldUpdateDetails = YES;
+                          
+                            // Hide HUD
                             [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 700 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                    // Return to image preview
                                     [self dismissViewControllerAnimated:YES completion:nil];
-//                                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                                 });
                             }];
-						} onFailure:^(NSURLSessionTask *task, NSError *error) {
+						}
+                         onFailure:^(NSURLSessionTask *task, NSError *error) {
 							// Failed
                             [self hideUpdatingImageInfoHUDwithSuccess:NO completion:^{
                                 UIAlertController* alert = [UIAlertController
@@ -206,12 +205,14 @@ typedef enum {
                                         preferredStyle:UIAlertControllerStyleAlert];
                                 
                                 UIAlertAction* dismissAction = [UIAlertAction
-                                                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                                actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                                                 style:UIAlertActionStyleCancel
-                                                handler:^(UIAlertAction * action) {}];
+                                                handler:^(UIAlertAction * action) {
+                                                    self.shouldUpdateDetails = NO;
+                                                }];
 
                                 UIAlertAction* retryAction = [UIAlertAction
-                                                actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                                actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
                                                 style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction * action) {
                                                     [self doneEdit];
@@ -290,8 +291,8 @@ typedef enum {
 -(void)keyboardWillChange:(NSNotification*)notification
 {
     // Unused — interface to be improved !!
-    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+//    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
     self.tableViewBottomConstraint.constant = -100;
 }
 
@@ -380,7 +381,8 @@ typedef enum {
 		tagsVC.delegate = self;
 		tagsVC.alreadySelectedTags = [self.imageDetails.tags mutableCopy];
 		[self.navigationController pushViewController:tagsVC animated:YES];
-    } else if (indexPath.row == EditImageDetailsOrderAuthor) {
+    }
+    else if (indexPath.row == EditImageDetailsOrderAuthor) {
         if (0 == self.imageDetails.author.length) { // only update if not yet set, dont overwrite
             if (0 < [[[Model sharedInstance] defaultAuthor] length]) { // must know the default author
                 self.imageDetails.author = [[Model sharedInstance] defaultAuthor];

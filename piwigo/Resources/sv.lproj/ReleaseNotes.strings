@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.2_text" = "Version 2.2.2\n\n• kopiera och flytta bilder mellan album\n• mindre buggfixar och förbättringar av gränssnittet";
+"v2.2.3_text" = "Version 2.2.3\n\n• Ny albumdesign\n• Mindre buggfixar och förbättring av gränssnittet";
+
+"v2.2.2_text" = "Version 2.2.2\n14 augusti 2018\n\n• kopiera och flytta bilder mellan album\n• mindre buggfixar och förbättringar av gränssnittet";
 
 "v2.2.1_text" = "Version 2.2.1\n25 juli 2018\n\n• Mindre buggfixar och förbättring av gränssnittet";
 
@@ -16,7 +18,7 @@
 
 "v2.1.8_text" = "Version 2.1.8\n29 april 2018\n\n• Lägger till förmåga att ändra storleken på miniatyrer\n• HTTPS blir standardprotokollet\n• Japansk översättning\n• Mindre buggfixar och förbättring av gränssnittet";
 
-"v2.1.7_text" = "Version 2.1.7\n3 februari 2018\n\n• Fixa uppladdningsproblem på vissa servrar";
+"v2.1.7_text" = "Version 2.1.7\n3 februari 2018\n\n• Fixa problem med videouppladdningar på vissa servrar";
 
 "v2.1.6_text" = "Version 2.1.6\n7 januari 2018\n\n• Arabisk översättning\n• Förbättrad autentiseringshantering för HTTP-baserad åtkomst\n• Mindre buggfixar och förbättring av gränssnittet";
 

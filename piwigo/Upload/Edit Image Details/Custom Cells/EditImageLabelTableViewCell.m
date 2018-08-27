@@ -7,6 +7,7 @@
 //
 
 #import "EditImageLabelTableViewCell.h"
+#import "Model.h"
 
 @interface EditImageLabelTableViewCell()
 
@@ -23,12 +24,16 @@
     // Initialization code
     [super awakeFromNib];
 	
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
-
     self.leftLabel.font = [UIFont piwigoFontNormal];
-	self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.rightLabel.font = [UIFont piwigoFontNormal];
+    [self paletteChanged];
+}
+
+-(void)paletteChanged
+{
+    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.rightLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

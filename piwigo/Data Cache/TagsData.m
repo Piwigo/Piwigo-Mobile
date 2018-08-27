@@ -83,8 +83,11 @@
 		PiwigoTagData *newTagData = [PiwigoTagData new];
 		newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
 		newTagData.tagName = [tagData objectForKey:@"name"];
+        
+        // Number of images not known if getAdminList called
 		newTagData.numberOfImagesUnderTag = [[tagData objectForKey:@"counter"] integerValue];
-		[tags addObject:newTagData];
+
+        [tags addObject:newTagData];
 	}
 	
 	return tags;
@@ -93,14 +96,16 @@
 +(NSString*)getTagsStringFromList:(NSArray*)tagList
 {
 	NSString *tagListString = @"";
-	if ((tagList != nil) && ([tagList count] > 0))
-	{
-		tagListString = [[tagList firstObject] tagName];
-		for(NSInteger i = 1; i < tagList.count; i++)
-		{
-			PiwigoTagData *tagData = [tagList objectAtIndex:i];
-			tagListString = [NSString stringWithFormat:@"%@, %@", tagListString, tagData.tagName];
-		}
+    if (tagList != nil) {
+        if ([tagList count] > 0)
+        {
+            tagListString = [[tagList firstObject] tagName];
+            for(NSInteger i = 1; i < tagList.count; i++)
+            {
+                PiwigoTagData *tagData = [tagList objectAtIndex:i];
+                tagListString = [NSString stringWithFormat:@"%@, %@", tagListString, tagData.tagName];
+            }
+        }
 	}
 	return tagListString;
 }

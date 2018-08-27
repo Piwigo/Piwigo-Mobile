@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.2_text" = "Version 2.2.2\n\n• Copy and move images between albums\n• Minor bug fixes and improvement of the interface";
+"v2.2.3_text" = "Version 2.2.3\n\n• New album design\n• Minor bug fixes and improvement of the interface";
+
+"v2.2.2_text" = "Version 2.2.2\nAugust 14, 2018\n\n• Copy and move images between albums\n• Minor bug fixes and improvement of the interface";
 
 "v2.2.1_text" = "Version 2.2.1\nJuly 25, 2018\n\n• Minor bug fixes and improvement of the interface";
 

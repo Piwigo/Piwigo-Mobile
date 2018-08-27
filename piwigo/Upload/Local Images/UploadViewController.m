@@ -67,9 +67,9 @@
         self.localImagesCollection.dataSource = self;
         self.localImagesCollection.delegate = self;
 
-        [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
-        [self.localImagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader"];
-        [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader"];
+        [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"LocalImageCollectionViewCell"];
+        [self.localImagesCollection registerClass:[SortHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"SortHeaderCollection"];
+        [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
 
         [self.view addSubview:self.localImagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
@@ -80,7 +80,9 @@
         
         // Bar buttons
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
+        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         self.uploadBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"upload"] style:UIBarButtonItemStylePlain target:self action:@selector(presentImageUploadView)];
         
         // Register Photo Library changes
@@ -293,7 +295,7 @@
         
         if(kind == UICollectionElementKindSectionHeader)
         {
-            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"sortHeader" forIndexPath:indexPath];
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"SortHeaderCollection" forIndexPath:indexPath];
             header.backgroundColor = [UIColor piwigoCellBackgroundColor];
             header.sortLabel.textColor = [UIColor piwigoLeftLabelColor];
             header.currentSortLabel.text = [SortSelectViewController getNameForSortType:self.sortType];
@@ -308,7 +310,7 @@
         
         if(kind == UICollectionElementKindSectionHeader)
         {
-            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"noImagesHeader" forIndexPath:indexPath];
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection" forIndexPath:indexPath];
             header.backgroundColor = [UIColor piwigoBackgroundColor];
             header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
             
@@ -420,19 +422,19 @@
 {
     // Avoid unwanted spaces
     if ([collectionView numberOfItemsInSection:section] == 0)
-        return UIEdgeInsetsMake(0, kMarginsSpacing, 0, kMarginsSpacing);
+        return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
     
-    return UIEdgeInsetsMake(10, kMarginsSpacing, 10, kMarginsSpacing);
+    return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kCellSpacing;
+    return (CGFloat)kImageCellSpacing;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kCellSpacing;
+    return (CGFloat)kImageCellSpacing;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -445,7 +447,7 @@
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"LocalImageCollectionViewCell" forIndexPath:indexPath];
     
     PHAsset *imageAsset = [self.images objectAtIndex:indexPath.row];
     [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait]];

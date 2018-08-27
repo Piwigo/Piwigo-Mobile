@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.2_text" = "Versi 2.2.2\n\n• Salin dan pindahkan gambar antar album\n• Perbaikan bug minor dan perbaikan antarmuka";
+"v2.2.3_text" = "Versi 2.2.3\n\n• Desain album baru\n• Perbaikan bug minor dan perbaikan antarmuka";
+
+"v2.2.2_text" = "Versi 2.2.2\n14 Agustus, 2018\n\n• Salin dan pindahkan gambar antar album\n• Perbaikan bug minor dan perbaikan antarmuka";
 
 "v2.2.1_text" = "Versi 2.2.1\n25 Juli 2018\n\n• Perbaikan bug minor dan perbaikan antarmuka";
 

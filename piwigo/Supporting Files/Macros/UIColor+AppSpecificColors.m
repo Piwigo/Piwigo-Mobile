@@ -95,7 +95,7 @@
 +(UIColor*)piwigoSeparatorColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
-        return [UIColor colorWithRed:64/255.0 green:64/255.0 blue:64/255.0 alpha:1.0];
+        return [UIColor colorWithRed:97/255.0 green:97/255.0 blue:104/255.0 alpha:1.0];
     else
         return [UIColor colorWithRed:128/255.0 green:128/255.0 blue:128/255.0 alpha:1.0];
 }
@@ -104,10 +104,7 @@
 +(UIColor*)piwigoCellBackgroundColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
-        if (@available(iOS 10, *))
-            return [UIColor colorWithRed:28/255.0 green:28/255.0 blue:30/255.0 alpha:1.0];
-        else
-            return [UIColor colorWithRed:46/255.0 green:46/255.0 blue:46/255.0 alpha:1.0];
+        return [UIColor colorWithRed:42/255.0 green:42/255.0 blue:45/255.0 alpha:1.0];
     else
         return [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0];
 }

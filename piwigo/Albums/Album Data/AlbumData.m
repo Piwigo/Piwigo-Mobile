@@ -144,11 +144,13 @@
 {
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId]
      loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
+         if (completed) {
             self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
             if(completion)
             {
                 completion();
             }
+         }
 	}];
 }
 
