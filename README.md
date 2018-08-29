@@ -1,4 +1,4 @@
-![Piwigo Mobile](https://github.com/Piwigo/Piwigo-Mobile/blob/master/Assets/Screenshots/iPhone8%2BiPadPro105-Landscape-Silver-en.png)
+![Piwigo Mobile](https://github.com/Piwigo/Piwigo-Mobile/blob/master/Assets/Screenshots/Wiki/iPhone8%2BiPadPro105-Landscape-Silver.png)
 # Piwigo Mobile
 Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
