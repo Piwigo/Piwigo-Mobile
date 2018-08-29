@@ -1,4 +1,5 @@
 [![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/v2.2.4/Assets/Screenshots/iPhone8%2BiPadPro105-Landscape-Silver-en-small.png)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/v2.2.4/Assets/Screenshots/iPhone8%2BiPadPro105-Landscape-Silver-en.png)
+
 # Piwigo Mobile
 Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
