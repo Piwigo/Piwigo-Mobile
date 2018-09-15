@@ -254,6 +254,12 @@
 	{
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages++;
 	}
+    
+    // If first added image, update category cache to get thumbnail image
+    if (self.numberOfImages == 1) {
+        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+    }
 }
 
 -(void)deincrementImageSizeByOne
