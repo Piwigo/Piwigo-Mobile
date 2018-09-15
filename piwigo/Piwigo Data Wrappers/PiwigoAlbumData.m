@@ -270,6 +270,12 @@
 	{
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages--;
 	}
+
+    // If no image left, update category cache to get thumbnail image
+    if (self.numberOfImages == 0) {
+        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+    }
 }
 
 #pragma mark - debugging support -
