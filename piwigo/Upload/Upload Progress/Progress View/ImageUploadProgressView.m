@@ -169,7 +169,7 @@
                     actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
                     style:UIAlertActionStyleCancel
                     handler:^(UIAlertAction * action) {
-                        // Initialise counters for the next upload taks
+                        // Initialise counters for the next upload task
                         [self.uploadProgress setProgress:0 animated:NO];
                         self.totalUploadedImages = 0;
                         self.currentImage = 1;
