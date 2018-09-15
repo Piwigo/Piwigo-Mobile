@@ -73,7 +73,7 @@
 }
 
 
-#pragma mark -- Upload image queue management
+#pragma mark - Upload image queue management
 
 -(void)addImages:(NSArray*)images
 {
@@ -254,7 +254,7 @@
 }
 
 
-#pragma mark -- Image, retrieve and modify before upload
+#pragma mark - Image, retrieve and modify before upload
 
 -(void)retrieveImageFromiCloudForAsset:(ImageUpload *)image
 {
@@ -677,7 +677,7 @@
     [self uploadImage:image withData:imageData andMimeType:mimeType];
 }
 
-#pragma mark -- MIME type and file extension sniffing
+#pragma mark - MIME type and file extension sniffing
 
 // See https://en.wikipedia.org/wiki/List_of_file_signatures
 // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
@@ -845,7 +845,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //    }
 //}
 
-#pragma mark -- Video, retrieve and modify before upload
+#pragma mark - Video, retrieve and modify before upload
 
 -(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image  // Asynchronous
 {
@@ -1332,7 +1332,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //}
 
 
-#pragma mark -- Upload image/video
+#pragma mark - Upload image/video
 
 -(void)uploadImage:(ImageUpload *)image withData:(NSData *)imageData andMimeType:(NSString *)mimeType
 {
@@ -1517,7 +1517,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 }
 
 
-#pragma mark -- Finish image upload
+#pragma mark - Finish image upload
 
 -(void)setImageResponse:(NSDictionary*)jsonResponse withInfo:(NSDictionary*)imageProperties
 {
@@ -1614,7 +1614,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 }
 
 
-#pragma mark -- Scale, crop, etc. image before upload
+#pragma mark - Scale, crop, etc. image before upload
 
 -(UIImage *)fixOrientationOfImage:(UIImage *)image {
     
