@@ -73,6 +73,11 @@
 
         [self.view addSubview:self.localImagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
+        if (@available(iOS 11.0, *)) {
+            [self.localImagesCollection setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentAlways];
+        } else {
+            // Fallback on earlier versions
+        }
 
         // Selected images
         self.selectedImages = [NSMutableArray new];
