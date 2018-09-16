@@ -299,12 +299,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     self.imagesCollection.alwaysBounceVertical = YES;
     
     // Should we scroll to image of interest?
-    NSLog(@"••• Starting with %ld images", [self.imagesCollection numberOfItemsInSection:1]);
+    NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
         ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
         
         // Scroll cell to center of screen
-        NSLog(@"=> Try to scroll to item=%ld in section=%ld", self.imageOfInterest.row, self.imageOfInterest.section);
+        NSLog(@"=> Try to scroll to item=%ld in section=%ld", (long)self.imageOfInterest.row, (long)self.imageOfInterest.section);
 
         // Calculate the number of thumbnails displayed per page
         NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
@@ -317,17 +317,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             NSLog(@"=> Load more images…");
             [self.albumData loadMoreImagesOnCompletion:^{
                 [self.imagesCollection reloadData];
-                NSLog(@"=> Scroll with %ld images", [self.imagesCollection numberOfItemsInSection:1]);
+                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
                 [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
             }];
         }
         else {
             if (self.imageOfInterest.row <= imagesPerPage / 2) {
-                NSLog(@"=> Highlight with %ld images", [self.imagesCollection numberOfItemsInSection:1]);
+                NSLog(@"=> Highlight with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
                 [self highlightCell];
             }
             else {
-                NSLog(@"=> Scroll with %ld images", [self.imagesCollection numberOfItemsInSection:1]);
+                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
                 [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
             }
         }
@@ -347,7 +347,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Apply effect on cell of lastly previewed image
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
         ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
-        NSLog(@"=> Did end scrolling with %ld images", [self.imagesCollection numberOfItemsInSection:1]);
+        NSLog(@"=> Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
         [self highlightCell];
     }
 }
