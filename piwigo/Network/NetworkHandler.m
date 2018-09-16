@@ -231,8 +231,10 @@ NSInteger const loadingViewTag = 899;
     // The Piwigo server may not be in the root e.g. example.com/piwigo/…
     // So we remove the path to avoid a duplicate if necessary
     NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
-    if ([cleanPath hasPrefix:loginURL.path]) {
-        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
+    if ([loginURL.path length] > 0) {
+        if ([cleanPath hasPrefix:loginURL.path]) {
+            cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
+        }
     }
     
     // Remove the .php? prefix if any
@@ -295,8 +297,10 @@ NSInteger const loadingViewTag = 899;
     // The Piwigo server may not be in the root e.g. example.com/piwigo/…
     // So we remove the path to avoid a duplicate if necessary
     NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
-    if ([cleanPath hasPrefix:loginURL.path]) {
-        cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
+    if ([loginURL.path length] > 0) {
+        if ([cleanPath hasPrefix:loginURL.path]) {
+            cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
+        }
     }
 
     // Remove the .php? prefix if any
