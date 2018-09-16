@@ -17,6 +17,7 @@
 #import "ImageService.h"
 #import "ImageScrollView.h"
 #import "ImageUpload.h"
+#import "ImagesCollection.h"
 #import "Model.h"
 #import "MoveImageViewController.h"
 #import "MBProgressHUD.h"
@@ -156,6 +157,17 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 	}
 }
 
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Scroll previewed image to visible area
+    if([self.imgDetailDelegate respondsToSelector:@selector(didFinishPreviewOfImageWithId:)])
+    {
+        [self.imgDetailDelegate didFinishPreviewOfImageWithId:[self.imageData.imageId integerValue]];
+    }
+}
+
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
@@ -233,6 +245,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)retrieveCompleteImageDataOfImageId:(NSInteger)imageId
 {
     // Image data are not complete when retrieved using pwg.categories.getImages
+    self.downloadBarButton.enabled = NO;
     self.editBarButton.enabled = NO;
     self.deleteBarButton.enabled = NO;
     self.moveBarButton.enabled = NO;
@@ -257,6 +270,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                   [self.images replaceObjectAtIndex:index withObject:imageDataComplete];
 
                   // Enable actions
+                  self.downloadBarButton.enabled = YES;
                   self.editBarButton.enabled = YES;
                   self.deleteBarButton.enabled = YES;
                   self.moveBarButton.enabled = YES;
@@ -355,17 +369,25 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
     
     // Check to see if they've scrolled beyond a certain threshold, then load more image data
-    if ((currentIndex >= self.images.count - 21) && (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
+//    if ((currentIndex >= self.images.count - 21) && (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
+//    {
+//        if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
+//        {
+//            [self.imgDetailDelegate needToLoadMoreImages];
+//        }
+//    }
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    if ((currentIndex > fmaxf(roundf(2 * imagesPerPage / 3.0), self.images.count - roundf(imagesPerPage / 3.0))) &&
+        (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
     {
         if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
         {
             [self.imgDetailDelegate needToLoadMoreImages];
         }
     }
-    
-    // Retrieve image data in case user will want to copy, edit, move, etc. the image
+
+    // Retrieve (incomplete) image data
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
-    [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
     
     // Prepare image preview
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
@@ -387,9 +409,8 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         return nil;
     }
     
-    // Retrieve image data in case user will want to copy, edit, move, etc. the image
+    // Retrieve (incomplete) image data
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
-    [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
     
     // Prepare image preview
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
@@ -421,6 +442,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         // Crash reported by AppleStore in November 2017
         currentIndex = self.images.count - 1;
     }
+
+    // Retrieve image data in case user will want to copy, edit, move, etc. the image
+    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex];
+    [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
 
     self.imageData = [self.images objectAtIndex:currentIndex];
     self.title = self.imageData.name;
@@ -490,7 +515,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 {
     // Display HUD during deletion
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Image…")];
+        [self showHUDwithTitle:NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Image…") withProgress:NO];
     });
     
     // Update image category list
@@ -535,7 +560,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 {
     // Display HUD during deletion
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…")];
+        [self showHUDwithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") withProgress:NO];
     });
     
     // Send request to Piwigo server
@@ -598,7 +623,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
     
     // Show loading HUD
-    [self showHUDwithTitle:NSLocalizedString(@"downloadingImage", @"Downloading Image")];
+    [self showHUDwithTitle:NSLocalizedString(@"downloadingImage", @"Downloading Image") withProgress:YES];
     
     // Launch the download
     if(!self.imageData.isVideo)
@@ -841,7 +866,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 #pragma mark - HUD methods
 
--(void)showHUDwithTitle:(NSString *)title
+-(void)showHUDwithTitle:(NSString *)title withProgress:(BOOL)showProgress
 {
     // Determine the present view controller if needed (not necessarily self.view)
     if (!self.hudViewController) {
@@ -859,7 +884,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         [hud setTag:loadingViewTag];
         
         // Change the background view shape, style and color.
-        hud.mode = MBProgressHUDModeIndeterminate;
+        hud.mode = showProgress ? MBProgressHUDModeDeterminate : MBProgressHUDModeIndeterminate;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
         hud.contentColor = [UIColor piwigoHudContentColor];
