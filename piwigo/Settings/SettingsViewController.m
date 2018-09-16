@@ -150,38 +150,40 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 {
     [super viewDidAppear:animated];
 
-    NSString *langCode = [[NSLocale currentLocale] languageCode];
-//    NSLog(@"=> langCode: %@", langCode);
-//    NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, kThirtyDays);
-    if (([[NSDate date] timeIntervalSinceReferenceDate] > [Model sharedInstance].dateOfLastTranslationRequest + kThirtyDays) &&
-        ([langCode isEqualToString:@"ar"] || [langCode isEqualToString:@"id"] ||
-         [langCode isEqualToString:@"pl"]))
-    {
-        // Store date of last translation request
-        [Model sharedInstance].dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
-        [[Model sharedInstance] saveToDisk];
-        
-        // Request a translation
-        UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:kHelpUsTitle
-                message:kHelpUsTranslatePiwigo
-                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* cancelAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                style:UIAlertActionStyleDestructive
-                handler:^(UIAlertAction * action) {}];
+    if (@available(iOS 10, *)) {
+        NSString *langCode = [[NSLocale currentLocale] languageCode];
+    //    NSLog(@"=> langCode: %@", langCode);
+    //    NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, kThirtyDays);
+        if (([[NSDate date] timeIntervalSinceReferenceDate] > [Model sharedInstance].dateOfLastTranslationRequest + kThirtyDays) &&
+            ([langCode isEqualToString:@"ar"] || [langCode isEqualToString:@"id"] ||
+             [langCode isEqualToString:@"pl"]))
+        {
+            // Store date of last translation request
+            [Model sharedInstance].dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
+            [[Model sharedInstance] saveToDisk];
+            
+            // Request a translation
+            UIAlertController* alert = [UIAlertController
+                    alertControllerWithTitle:kHelpUsTitle
+                    message:kHelpUsTranslatePiwigo
+                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* cancelAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                    style:UIAlertActionStyleDestructive
+                    handler:^(UIAlertAction * action) {}];
 
-        UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                style:UIAlertActionStyleDefault
-                handler:^(UIAlertAction * action) {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
-                }];
-        
-        [alert addAction:cancelAction];
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:nil];
+            UIAlertAction* defaultAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                    style:UIAlertActionStyleDefault
+                    handler:^(UIAlertAction * action) {
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
+                    }];
+            
+            [alert addAction:cancelAction];
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
     }
 }
 
