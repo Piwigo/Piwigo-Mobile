@@ -41,6 +41,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
+@property (nonatomic, assign) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL isCachedAtInit;
 @property (nonatomic, strong) NSString *currentSort;
 @property (nonatomic, assign) BOOL loadingImages;
@@ -84,6 +85,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 		self.categoryId = albumId;
         self.loadingImages = NO;
         self.isCachedAtInit = isCached;
+        self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
@@ -296,6 +298,41 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
     
+    // Should we scroll to image of interest?
+    NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+    if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
+        ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
+        
+        // Scroll cell to center of screen
+        NSLog(@"=> Try to scroll to item=%ld in section=%ld", (long)self.imageOfInterest.row, (long)self.imageOfInterest.section);
+
+        // Calculate the number of thumbnails displayed per page
+        NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+        
+        // Scroll and load more images if necessary (page after page…)
+        NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
+        if ((self.imageOfInterest.row > fmaxf(roundf(2 * imagesPerPage / 3.0), nberOfItems - roundf(imagesPerPage / 3.0))) &&
+            (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
+        {
+            NSLog(@"=> Load more images…");
+            [self.albumData loadMoreImagesOnCompletion:^{
+                [self.imagesCollection reloadData];
+                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+            }];
+        }
+        else {
+            if (self.imageOfInterest.row <= imagesPerPage / 2) {
+                NSLog(@"=> Highlight with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+                [self highlightCell];
+            }
+            else {
+                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+            }
+        }
+    }
+
     // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
 //#if !defined(DEBUG)
@@ -303,6 +340,43 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 //        [SKStoreReviewController requestReview];
 //    }
 //#endif
+}
+
+-(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+
+    // Apply effect on cell of lastly previewed image
+    if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
+        ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
+        NSLog(@"=> Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+        [self highlightCell];
+    }
+}
+
+-(void)highlightCell
+{
+    // Select cell of image of interest and apply effect
+    UICollectionViewCell *cell = nil;
+    cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
+    if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+        ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+        imageCell.backgroundColor = [UIColor piwigoBackgroundColor];
+        imageCell.contentMode = UIViewContentModeScaleAspectFit;
+        [UIView animateWithDuration:0.4 delay:0.3 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            [imageCell.cellImage setAlpha:0.2];
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.4 delay:0.7 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [imageCell.cellImage setAlpha:1.0];
+            } completion:^(BOOL finished) {
+                // Apply effect only when returning from image preview mode
+                self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+            }];
+        }];
+    }
+    else {
+        // Apply effect only when returning from image preview mode
+        self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+    }
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -1750,7 +1824,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	{
 		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCollectionViewCell" forIndexPath:indexPath];
 		
-		if(self.albumData.images.count > indexPath.row) {
+		if (self.albumData.images.count > indexPath.row) {
 			// Create cell from Piwigo data
             PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 			[cell setupWithImageData:imageData];
@@ -1934,6 +2008,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 
 #pragma mark - ImageDetailDelegate Methods
+
+-(void)didFinishPreviewOfImageWithId:(NSInteger)imageId
+{
+    NSInteger index = 0;
+    for (PiwigoImageData *image in self.albumData.images) {
+        if ([image.imageId integerValue] == imageId) break;
+        index++;
+    }
+    if (index < [self.albumData.images count])
+        self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
+}
 
 -(void)didDeleteImage:(PiwigoImageData *)image
 {

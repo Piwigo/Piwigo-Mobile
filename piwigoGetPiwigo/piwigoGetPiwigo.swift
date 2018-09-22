@@ -50,6 +50,9 @@ public enum Model : String {
     iPhone8            = "iPhone 8",
     iPhone8plus        = "iPhone 8 Plus",
     iPhoneX            = "iPhone X",
+    iPhoneXs           = "iPhone XS",
+    iPhoneXsMax        = "iPhone XS Max",
+    iPhoneXr           = "iPhone XR",
     //Apple TV
     AppleTV            = "Apple TV",
     AppleTV_4K         = "Apple TV 4K",
@@ -146,6 +149,10 @@ public extension UIDevice {
             "iPhone10,5" : .iPhone8plus,
             "iPhone10,3" : .iPhoneX,
             "iPhone10,6" : .iPhoneX,
+            "iPhone11,2" : .iPhoneXs,
+            "iPhone11,4" : .iPhoneXsMax,
+            "iPhone11,6" : .iPhoneXsMax,
+            "iPhone11,8" : .iPhoneXr,
             //AppleTV
             "AppleTV5,3" : .AppleTV,
             "AppleTV6,2" : .AppleTV_4K
@@ -204,8 +211,9 @@ class piwigoGetPiwigo: XCTestCase {
 
         // Select Photos Title A->Z sort order
         app.navigationBars.element(boundBy: 0).buttons["preferences"].tap()
-        app.tables["preferences"].children(matching: .cell).element(boundBy: 4).tap()
-        app.tables["sortSelect"].children(matching: .cell).element(boundBy: 0).tap()
+        sleep(1);
+        app.tables["preferences"].cells["defaultSort"].tap()
+        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
         app.navigationBars.buttons["Done"].tap()
         
         // Screenshot

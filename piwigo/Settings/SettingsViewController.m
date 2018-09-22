@@ -150,38 +150,40 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 {
     [super viewDidAppear:animated];
 
-    NSString *langCode = [[NSLocale currentLocale] languageCode];
-//    NSLog(@"=> langCode: %@", langCode);
-//    NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, kThirtyDays);
-    if (([[NSDate date] timeIntervalSinceReferenceDate] > [Model sharedInstance].dateOfLastTranslationRequest + kThirtyDays) &&
-        ([langCode isEqualToString:@"ar"] || [langCode isEqualToString:@"id"] ||
-         [langCode isEqualToString:@"pl"]))
-    {
-        // Store date of last translation request
-        [Model sharedInstance].dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
-        [[Model sharedInstance] saveToDisk];
-        
-        // Request a translation
-        UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:kHelpUsTitle
-                message:kHelpUsTranslatePiwigo
-                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* cancelAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                style:UIAlertActionStyleDestructive
-                handler:^(UIAlertAction * action) {}];
+    if (@available(iOS 10, *)) {
+        NSString *langCode = [[NSLocale currentLocale] languageCode];
+    //    NSLog(@"=> langCode: %@", langCode);
+    //    NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, kThirtyDays);
+        if (([[NSDate date] timeIntervalSinceReferenceDate] > [Model sharedInstance].dateOfLastTranslationRequest + kThirtyDays) &&
+            ([langCode isEqualToString:@"ar"] || [langCode isEqualToString:@"id"] ||
+             [langCode isEqualToString:@"pl"]))
+        {
+            // Store date of last translation request
+            [Model sharedInstance].dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
+            [[Model sharedInstance] saveToDisk];
+            
+            // Request a translation
+            UIAlertController* alert = [UIAlertController
+                    alertControllerWithTitle:kHelpUsTitle
+                    message:kHelpUsTranslatePiwigo
+                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* cancelAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                    style:UIAlertActionStyleDestructive
+                    handler:^(UIAlertAction * action) {}];
 
-        UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                style:UIAlertActionStyleDefault
-                handler:^(UIAlertAction * action) {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
-                }];
-        
-        [alert addAction:cancelAction];
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:nil];
+            UIAlertAction* defaultAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                    style:UIAlertActionStyleDefault
+                    handler:^(UIAlertAction * action) {
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
+                    }];
+            
+            [alert addAction:cancelAction];
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
     }
 }
 
@@ -483,6 +485,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.rightText = [[[CategoriesData sharedInstance] getCategoryById:[Model sharedInstance].defaultCategory] name];
                     }
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    [cell setAccessibilityIdentifier:@"defaultAlbum"];
                     
                     tableViewCell = cell;
                     break;
@@ -505,6 +508,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
 					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    [cell setAccessibilityIdentifier:@"defaultSort"];
 
                     tableViewCell = cell;
 					break;
@@ -526,6 +530,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
 					cell.rightText = [PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    [cell setAccessibilityIdentifier:@"defaultThumbnailFile"];
 
 					tableViewCell = cell;
 					break;
@@ -553,7 +558,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     cell.sliderCountSuffix = [NSString stringWithFormat:@"/%d", (int)cell.slider.maximumValue];
                     cell.sliderValue = 2 * minNberOfImages - [Model sharedInstance].thumbnailsPerRowInPortrait + 1;
                     [cell.slider addTarget:self action:@selector(updateThumbnailSize:) forControlEvents:UIControlEventValueChanged];
-                    
+                    [cell setAccessibilityIdentifier:@"defaultThumbnailSize"];
+
                     tableViewCell = cell;
                     break;
                 }
@@ -576,7 +582,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         [Model sharedInstance].displayImageTitles = switchState;
                         [[Model sharedInstance] saveToDisk];
                     };
-                    
+                    [cell setAccessibilityIdentifier:@"titles"];
+
                     tableViewCell = cell;
                     break;
                 }

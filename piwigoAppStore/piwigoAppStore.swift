@@ -50,6 +50,9 @@ public enum Model : String {
     iPhone8            = "iPhone 8",
     iPhone8plus        = "iPhone 8 Plus",
     iPhoneX            = "iPhone X",
+    iPhoneXs           = "iPhone XS",
+    iPhoneXsMax        = "iPhone XS Max",
+    iPhoneXr           = "iPhone XR",
     //Apple TV
     AppleTV            = "Apple TV",
     AppleTV_4K         = "Apple TV 4K",
@@ -57,7 +60,7 @@ public enum Model : String {
 }
 
 // #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-//MARK: UIDevice extensions
+// MARK: UIDevice extensions
 // #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 public extension UIDevice {
@@ -146,6 +149,10 @@ public extension UIDevice {
             "iPhone10,5" : .iPhone8plus,
             "iPhone10,3" : .iPhoneX,
             "iPhone10,6" : .iPhoneX,
+            "iPhone11,2" : .iPhoneXs,
+            "iPhone11,4" : .iPhoneXsMax,
+            "iPhone11,6" : .iPhoneXsMax,
+            "iPhone11,8" : .iPhoneXr,
             //AppleTV
             "AppleTV5,3" : .AppleTV,
             "AppleTV6,2" : .AppleTV_4K
@@ -199,8 +206,9 @@ class piwigoAppStore: XCTestCase {
 
         // Select Photos Title A->Z sort order
         app.navigationBars.element(boundBy: 0).buttons["preferences"].tap()
-        app.tables["preferences"].children(matching: .cell).element(boundBy: 4).tap()
-        app.tables["sortSelect"].children(matching: .cell).element(boundBy: 0).tap()
+        sleep(1);
+        app.tables["preferences"].cells["defaultSort"].tap()
+        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
         app.navigationBars.buttons["Done"].tap()
 
         // Screenshot #1: swipe left and reveal album actions
@@ -210,6 +218,7 @@ class piwigoAppStore: XCTestCase {
         }
         let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: index)
         let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
+        sleep(1);
         tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
         snapshot("Image1")
         
@@ -258,17 +267,21 @@ class piwigoAppStore: XCTestCase {
                 app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
             }
         }
+        if deviceType == "iPhone XS Max" {
+            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
+        }
         if deviceType == "iPhone X" {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.735, velocity: -2.0)
         }
         if deviceType == "iPhone 8 Plus" {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.57, velocity: -2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 0.59, velocity: -2.0)
         }
         if deviceType == "iPhone 8" {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.48, velocity: -2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 0.52, velocity: -2.0)
         }
         if deviceType == "iPhone SE" {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
@@ -287,6 +300,7 @@ class piwigoAppStore: XCTestCase {
         
         // Screenshot #5: upload view
         app.navigationBars["Castle"].buttons.element(boundBy: 0).tap()
+        sleep(2);                       // Leave time for animation
         app.buttons["add"].tap();
         snapshot("Image5")
         
@@ -295,11 +309,12 @@ class piwigoAppStore: XCTestCase {
         app.tables.children(matching: .cell).element(boundBy: 0).tap()
         app.collectionViews.children(matching: .cell).element(boundBy: 0).children(matching: .other).element.tap()
         app.collectionViews.children(matching: .cell).element(boundBy: 1).children(matching: .other).element.tap()
+        app.collectionViews.children(matching: .cell).element(boundBy: 2).children(matching: .other).element.tap()
         app.collectionViews.children(matching: .cell).element(boundBy: 3).children(matching: .other).element.tap()
         app.collectionViews.children(matching: .cell).element(boundBy: 4).children(matching: .other).element.tap()
         app.collectionViews.children(matching: .cell).element(boundBy: 5).children(matching: .other).element.tap()
-        app.collectionViews.children(matching: .cell).element(boundBy: 6).children(matching: .other).element.tap()
         app.navigationBars.buttons["upload"].tap()
+        sleep(1);
         app.tables.children(matching: .cell).element(boundBy: 1).swipeLeft()
         snapshot("Image6")
 

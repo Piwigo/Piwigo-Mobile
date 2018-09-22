@@ -341,7 +341,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString: URLRequest]];
 
     // Download and save image
-    NSString *fileName = image.fileName;
+    NSString *fileName = [[NSURL URLWithString:URLRequest] lastPathComponent];
     NSURLSessionDownloadTask *task =
         [[Model sharedInstance].imagesSessionManager downloadTaskWithRequest:request
                                 progress:progress

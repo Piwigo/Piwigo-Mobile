@@ -159,7 +159,9 @@
 	cell.textLabel.minimumScaleFactor = 0.5;
 	cell.textLabel.adjustsFontSizeToFitWidth = YES;
 	cell.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
-	
+    if (indexPath.row == 0)
+        [cell setAccessibilityIdentifier:@"sortAZ"];
+
 	if(indexPath.row == self.currentCategorySortType)
 	{
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;

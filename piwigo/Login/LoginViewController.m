@@ -27,7 +27,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
 @interface LoginViewController () <UITextFieldDelegate>
 
-@property (nonatomic, strong) UIAlertController *httpAlertCtontroller;
+@property (nonatomic, strong) UIAlertController *httpAlertController;
 @property (nonatomic, strong) UIAlertAction *httpLoginAction;
 
 @end
@@ -151,6 +151,9 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
     // Register for keyboard notifications
     [self registerForKeyboardNotifications];
+    
+    // Not yet trying to login
+    self.isAlreadyTryingToLogin = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -170,6 +173,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [self.view endEditing:YES];
 
     // Default settings
+    self.isAlreadyTryingToLogin = YES;
     self.usesCommunityPluginV29 = NO;
     [Model sharedInstance].hasAdminRights = NO;
     [Model sharedInstance].usesCommunityPluginV29 = NO;
@@ -285,12 +289,12 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
     if (password == nil) password = @"";
 
-    self.httpAlertCtontroller = [UIAlertController
+    self.httpAlertController = [UIAlertController
         alertControllerWithTitle:NSLocalizedString(@"loginHTTP_title", @"HTTP Credentials")
         message:NSLocalizedString(@"loginHTTP_message", @"HTTP basic authentification is required by the Piwigo server:")
         preferredStyle:UIAlertControllerStyleAlert];
     
-    [self.httpAlertCtontroller addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull userTextField) {
+    [self.httpAlertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull userTextField) {
         userTextField.placeholder = NSLocalizedString(@"loginHTTPuser_placeholder", @"username");
         userTextField.text = (user.length > 0) ? user : @"";
         userTextField.clearButtonMode = UITextFieldViewModeAlways;
@@ -302,7 +306,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 //        userTextField.delegate = self;
     }];
     
-    [self.httpAlertCtontroller addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull pwdTextField) {
+    [self.httpAlertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull pwdTextField) {
         pwdTextField.placeholder = NSLocalizedString(@"loginHTTPpwd_placeholder", @"password");
         pwdTextField.text = (password.length > 0) ? password : @"";
         pwdTextField.clearButtonMode = UITextFieldViewModeAlways;
@@ -328,15 +332,15 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                               style:UIAlertActionStyleDefault
                               handler:^(UIAlertAction * action) {
                                   // Store credentials
-                                  [Model sharedInstance].HttpUsername = [self.httpAlertCtontroller.textFields objectAtIndex:0].text;
-                                  [SAMKeychain setPassword:[self.httpAlertCtontroller.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:[self.httpAlertCtontroller.textFields objectAtIndex:0].text];
+                                  [Model sharedInstance].HttpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
+                                  [SAMKeychain setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:[self.httpAlertController.textFields objectAtIndex:0].text];
                                   // Try logging in with new HTTP credentials
                                   [self launchLogin];
                               }];
     
-    [self.httpAlertCtontroller addAction:cancelAction];
-    [self.httpAlertCtontroller addAction:self.httpLoginAction];
-    [self presentViewController:self.httpAlertCtontroller animated:YES completion:nil];
+    [self.httpAlertController addAction:cancelAction];
+    [self.httpAlertController addAction:self.httpLoginAction];
+    [self presentViewController:self.httpAlertController animated:YES completion:nil];
 }
 
 -(void)tryNonSecuredAccessAfterError:(NSError *)error
@@ -439,7 +443,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                      }
                  }];
 	}
-	else     // No username, get only server status
+	else     // No username or user cancelled communication, get only server status
 	{
         // Reset keychain and credentials
         [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
@@ -479,11 +483,13 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 // Inform user that server failed to retrieve Community parameters
                 NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                self.isAlreadyTryingToLogin = NO;
             }
             
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
             // Display error message
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+            self.isAlreadyTryingToLogin = NO;
         }];
 
     } else {
@@ -527,13 +533,16 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                             UIAlertAction* defaultAction = [UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
                                     style:UIAlertActionStyleCancel
-                                    handler:^(UIAlertAction * action) {}];
+                                    handler:^(UIAlertAction * action) {
+                                        self.isAlreadyTryingToLogin = NO;
+                                    }];
                             
                             UIAlertAction* continueAction = [UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
                                     style:UIAlertActionStyleDestructive
                                     handler:^(UIAlertAction * action) {
                                         // Proceed at their own risk
+                                        self.isAlreadyTryingToLogin = NO;
                                         if (isFirstLogin) {
                                             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                                             [appDelegate loadNavigation];
@@ -547,6 +556,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                     }];
                 } else {
                     // Their version is Ok. Close HUD.
+                    self.isAlreadyTryingToLogin = NO;
                     [self hideLoadingWithCompletion:^{
                         // Load navigation if needed
                         if (isFirstLogin) {
@@ -561,14 +571,17 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 }
             } else {
                 // Inform user that we could not authenticate with server
+                self.isAlreadyTryingToLogin = NO;
                 NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
+            self.isAlreadyTryingToLogin = NO;
             // Display error message
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }];
     } else {
+        self.isAlreadyTryingToLogin = NO;
         [self loggingInConnectionError:nil];
     }
 }
@@ -580,7 +593,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 //        [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
 //    });
     
+    // Don't try to login in if already being trying
+    if (self.isAlreadyTryingToLogin) return;
+    
     // Check whether session is still active
+    self.isAlreadyTryingToLogin = YES;
     [SessionService getPiwigoStatusAtLogin:NO
                               OnCompletion:^(NSDictionary *responseObject) {
             if(responseObject) {
@@ -596,7 +613,8 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                     [self performRelogin];
 
                 } else {
-                    // Connection still alive. Close HUD and do nothing.
+                    // Connection still alive. Do nothing.
+                    self.isAlreadyTryingToLogin = NO;
 //                [self hideLoading];
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
@@ -614,9 +632,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 // Connection really lost, inform user
                 NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                self.isAlreadyTryingToLogin = NO;
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
             // No connection or server down
+            self.isAlreadyTryingToLogin = NO;
             [Model sharedInstance].hadOpenedSession = NO;
             
             // Display message
@@ -659,10 +679,12 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                                     [Model sharedInstance].hadOpenedSession = NO;
                                     NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
                                     [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                                    self.isAlreadyTryingToLogin = NO;
                                 }
 
                             } onFailure:^(NSURLSessionTask *task, NSError *error) {
                                 // Could not re-establish the session, login/pwd changed, something else ?
+                                self.isAlreadyTryingToLogin = NO;
                                 [Model sharedInstance].hadOpenedSession = NO;
                                 
                                 // Display error message
@@ -854,12 +876,12 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     // Disable HTTP login action until user provides infos
-    if (textField == [self.httpAlertCtontroller.textFields objectAtIndex:0]) {
-        if ([self.httpAlertCtontroller.textFields objectAtIndex:0].text.length == 0)
+    if (textField == [self.httpAlertController.textFields objectAtIndex:0]) {
+        if ([self.httpAlertController.textFields objectAtIndex:0].text.length == 0)
             [self.httpLoginAction setEnabled:NO];
     }
-    else if (textField == [self.httpAlertCtontroller.textFields objectAtIndex:1]) {
-        if ([self.httpAlertCtontroller.textFields objectAtIndex:1].text.length == 0)
+    else if (textField == [self.httpAlertController.textFields objectAtIndex:1]) {
+        if ([self.httpAlertController.textFields objectAtIndex:1].text.length == 0)
             [self.httpLoginAction setEnabled:NO];
     }
     return YES;
@@ -871,8 +893,8 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     if(textField == self.serverTextField) {
         [self.loginButton setEnabled:NO];
     }
-    else if ((textField == [self.httpAlertCtontroller.textFields objectAtIndex:0]) ||
-        (textField == [self.httpAlertCtontroller.textFields objectAtIndex:1])) {
+    else if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
+        (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
         [self.httpLoginAction setEnabled:NO];
     }
     
@@ -883,8 +905,8 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
-    if ((textField == [self.httpAlertCtontroller.textFields objectAtIndex:0]) ||
-        (textField == [self.httpAlertCtontroller.textFields objectAtIndex:1])) {
+    if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
+        (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
         // Enable HTTP Login action if field not empty
         [self.httpLoginAction setEnabled:(finalString.length >= 1)];
     }
