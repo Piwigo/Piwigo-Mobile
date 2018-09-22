@@ -1,35 +1,41 @@
 ##################
-# piwigoGetPiwigo #
+# piwigoAppStore #
 ##################
 # A list of devices you want to take the screenshots from
 devices([
-   "iPhone 8 (4.7-inch)",
-   "iPad Pro (10.5-inch)",
+#   "iPhone SE",						# 4-inch
+   "iPhone 8",						# 4.7-inch
+   "iPhone 8 Plus",					# 5.5-inch
+#   "iPhone X",						# 5.8-inch
+#   "iPhone XS Max",					# 6.5-inch
+#   "iPad Pro (9.7-inch)",			# 9.7-inch
+#   "iPad Pro (10.5-inch)",			# 10.5-inch
+#   "iPad Pro (12.9-inch)"			# 12.9-inch
 ])
 
 #   "it-IT",
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
 #   "ar",
-   "da",
-   "de",
-   "en",
-   "fr",
+#   "da",
+#   "de",
+#   "en",
+#   "fr",
 #   "id",
-#   "ja",
-   "nl",
-   "pl",
+   "ja",
+#   "nl",
+#   "pl",
 #   "sv"
 ])
 
 # The name of the scheme which contains the UI Tests
-scheme("piwigoGetPiwigo")
+scheme("piwigoAppStore")
 
 # Where should the resulting screenshots be stored?
-output_directory("./Assets/Screenshots/GetPiwigo")
+output_directory("./Assets/Screenshots/AppStore")
 
 # remove the '#' to clear all previously generated screenshots before creating new ones
-clear_previous_screenshots(true)
+# clear_previous_screenshots(true)
 
 # reinstall the app before producing screenshots
 # reinstall_app

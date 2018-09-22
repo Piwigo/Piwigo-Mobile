@@ -3,8 +3,8 @@
 ##################
 # A list of devices you want to take the screenshots from
 devices([
-   "iPhone 8 (4.7-inch)",
-   "iPad Pro (10.5-inch)",
+   "iPhone 8",						# 4.7-inch
+   "iPad Pro (10.5-inch)",			# 10.5-inch
 ])
 
 #   "it-IT",

@@ -485,6 +485,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.rightText = [[[CategoriesData sharedInstance] getCategoryById:[Model sharedInstance].defaultCategory] name];
                     }
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    [cell setAccessibilityIdentifier:@"defaultAlbum"];
                     
                     tableViewCell = cell;
                     break;
@@ -507,6 +508,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
 					cell.rightText = [CategorySortViewController getNameForCategorySortType:[Model sharedInstance].defaultSort];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    [cell setAccessibilityIdentifier:@"defaultSort"];
 
                     tableViewCell = cell;
 					break;
@@ -528,6 +530,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
 					cell.rightText = [PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    [cell setAccessibilityIdentifier:@"defaultThumbnailFile"];
 
 					tableViewCell = cell;
 					break;
@@ -555,7 +558,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     cell.sliderCountSuffix = [NSString stringWithFormat:@"/%d", (int)cell.slider.maximumValue];
                     cell.sliderValue = 2 * minNberOfImages - [Model sharedInstance].thumbnailsPerRowInPortrait + 1;
                     [cell.slider addTarget:self action:@selector(updateThumbnailSize:) forControlEvents:UIControlEventValueChanged];
-                    
+                    [cell setAccessibilityIdentifier:@"defaultThumbnailSize"];
+
                     tableViewCell = cell;
                     break;
                 }
@@ -578,7 +582,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         [Model sharedInstance].displayImageTitles = switchState;
                         [[Model sharedInstance] saveToDisk];
                     };
-                    
+                    [cell setAccessibilityIdentifier:@"titles"];
+
                     tableViewCell = cell;
                     break;
                 }
