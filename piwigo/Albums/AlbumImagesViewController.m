@@ -41,7 +41,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
-@property (nonatomic, assign) NSIndexPath *imageOfInterest;
+@property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL isCachedAtInit;
 @property (nonatomic, strong) NSString *currentSort;
 @property (nonatomic, assign) BOOL loadingImages;
@@ -299,35 +299,35 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     self.imagesCollection.alwaysBounceVertical = YES;
     
     // Should we scroll to image of interest?
-    NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+//    NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
         ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
         
         // Scroll cell to center of screen
-        NSLog(@"=> Try to scroll to item=%ld in section=%ld", (long)self.imageOfInterest.row, (long)self.imageOfInterest.section);
+//        NSLog(@"=> Try to scroll to item=%ld in section=%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
 
         // Calculate the number of thumbnails displayed per page
         NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
         
         // Scroll and load more images if necessary (page after page…)
         NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
-        if ((self.imageOfInterest.row > fmaxf(roundf(2 * imagesPerPage / 3.0), nberOfItems - roundf(imagesPerPage / 3.0))) &&
+        if ((self.imageOfInterest.item > fmaxf(roundf(2 * imagesPerPage / 3.0), nberOfItems - roundf(imagesPerPage / 3.0))) &&
             (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
         {
-            NSLog(@"=> Load more images…");
+//            NSLog(@"=> Load more images…");
             [self.albumData loadMoreImagesOnCompletion:^{
                 [self.imagesCollection reloadData];
-                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+//                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
                 [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
             }];
         }
         else {
-            if (self.imageOfInterest.row <= imagesPerPage / 2) {
-                NSLog(@"=> Highlight with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+            if (self.imageOfInterest.item <= imagesPerPage / 2) {
+//                NSLog(@"=> Highlight with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
                 [self highlightCell];
             }
             else {
-                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+//                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
                 [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
             }
         }
