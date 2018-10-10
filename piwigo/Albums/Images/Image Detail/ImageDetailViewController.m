@@ -884,7 +884,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         [hud setTag:loadingViewTag];
         
         // Change the background view shape, style and color.
-        hud.mode = showProgress ? MBProgressHUDModeDeterminate : MBProgressHUDModeIndeterminate;
+        hud.mode = showProgress ? MBProgressHUDModeAnnularDeterminate : MBProgressHUDModeIndeterminate;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
         hud.contentColor = [UIColor piwigoHudContentColor];
