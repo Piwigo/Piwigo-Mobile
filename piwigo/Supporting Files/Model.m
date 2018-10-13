@@ -69,6 +69,7 @@ NSTimeInterval const kThirtyDays = 60 * 60 * 24 * 30.0;
         instance.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize]);
         
         // Default image preview size
+        instance.didOptimiseImagePreviewSize = NO;
 		instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
         
         // Default image upload settings
@@ -196,6 +197,7 @@ NSTimeInterval const kThirtyDays = 60 * 60 * 24 * 30.0;
         self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
         self.defaultCategory = modelData.defaultCategory;
         self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
+        self.didOptimiseImagePreviewSize = modelData.didOptimiseImagePreviewSize;
 	}
 }
 
@@ -242,6 +244,8 @@ NSTimeInterval const kThirtyDays = 60 * 60 * 24 * 30.0;
     [saveObject addObject:@(self.defaultCategory)];
     // Added in v2.2.3…
     [saveObject addObject:[NSNumber numberWithDouble:self.dateOfLastTranslationRequest]];
+    // Added in v2.2.5…
+    [saveObject addObject:[NSNumber numberWithBool:self.didOptimiseImagePreviewSize]];
 	
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -375,6 +379,11 @@ NSTimeInterval const kThirtyDays = 60 * 60 * 24 * 30.0;
         self.dateOfLastTranslationRequest = [[savedData objectAtIndex:25] doubleValue];
     } else {
         self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - kThirtyDays;
+    }
+    if(savedData.count > 26) {
+        self.didOptimiseImagePreviewSize = [[savedData objectAtIndex:26] boolValue];
+    } else {
+        self.didOptimiseImagePreviewSize = NO;
     }
 	return self;
 }

@@ -76,6 +76,7 @@ typedef enum {
 
 
 -(NSString*)getURLFromImageSizeType:(kPiwigoImageSize)imageSize;
++(NSInteger)optimumImageSizeForDevice;
 +(NSString*)nameForThumbnailSizeType:(kPiwigoImageSize)imageSize;
 +(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withAdvice:(BOOL)advice;
 
