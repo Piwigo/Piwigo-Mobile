@@ -225,6 +225,9 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 	LoginNavigationController *nav = [[LoginNavigationController alloc] initWithRootViewController:self.loginVC];
 	[nav setNavigationBarHidden:YES];
 	self.window.rootViewController = nav;
+    
+    // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
+    [self.window.rootViewController.view setNeedsUpdateConstraints];
 }
 
 -(LoginViewController*)loginVC
