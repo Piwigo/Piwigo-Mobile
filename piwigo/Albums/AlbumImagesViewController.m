@@ -348,7 +348,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Apply effect on cell of lastly previewed image
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
         ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
-        NSLog(@"=> Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+//        NSLog(@"=> Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
         [self highlightCell];
     }
 }
