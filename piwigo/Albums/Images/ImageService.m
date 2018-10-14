@@ -222,6 +222,10 @@ NSString * const kGetImageOrderDescending = @"desc";
     if (![dateCreatedString isKindOfClass:[NSNull class]]) {
         imageData.dateCreated = [dateFormat dateFromString:dateCreatedString];
     }
+    else {
+        // When creation is unknown, use posted date so that image sort becomes possible
+        imageData.dateCreated = imageData.datePosted;
+    }
 
     // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
     // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
