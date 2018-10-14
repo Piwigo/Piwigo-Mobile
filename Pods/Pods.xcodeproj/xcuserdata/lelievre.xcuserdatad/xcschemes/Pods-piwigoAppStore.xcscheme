@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0EABDFFFE1E889B87B1197D012AD068A"
-               BlueprintName = "AFNetworking"
+               BlueprintIdentifier = "24F2001333E52DA08A43E6B67DDF8B46"
+               BlueprintName = "Pods-piwigoAppStore"
                ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libAFNetworking.a">
+               BuildableName = "libPods-piwigoAppStore.a">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

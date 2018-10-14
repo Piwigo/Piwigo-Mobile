@@ -244,15 +244,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
     
-	// Albums
-    if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
-        [self.imagesCollection reloadData];
-	}
-    
-    // Images
+    // Sort images and reload collection
     if (self.categoryId != 0) {
         self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+//            NSLog(@"viewWillAppear:Sorting images…");
 
             // Set navigation bar buttons
             [self updateNavBar];
@@ -260,6 +256,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             self.loadingImages = NO;
             [self.imagesCollection reloadData];
         }];
+    }
+    else {
+        if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
+            [self.imagesCollection reloadData];
+        }
     }
     
     // Refresh image collection if displayImageTitles option changed
@@ -714,28 +715,28 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)categoriesUpdated
 {
-//    NSLog(@"=> categoriesUpdated… %ld", self.categoryId);
-    // Albums
-    [self.imagesCollection reloadData];
+    NSLog(@"=> categoriesUpdated… %ld", self.categoryId);
 
-    // Images
+    // Images ?
     if (self.categoryId != 0) {
         self.loadingImages = YES;
         [self.albumData loadAllImagesOnCompletion:^{
 
              // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-            
-                // Reload images collection view
-                self.loadingImages = NO;
-                [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-            
-                // Set navigation bar buttons
-                [self updateNavBar];
+             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+//                 NSLog(@"categoriesUpdated:Sorting images…");
 
-                // The album title is not shown in backButtonItem to provide enough space
-                // for image title on devices of screen width <= 414 ==> Restore album title
-                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+                 // The album title is not shown in backButtonItem to provide enough space
+                 // for image title on devices of screen width <= 414 ==> Restore album title
+                 self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+                
+                 // Set navigation bar buttons
+                 [self updateNavBar];
+
+                 // Reload collection view
+                 self.loadingImages = NO;
+                 [self.imagesCollection reloadData];
+//                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
             }];
         }];
     }
@@ -746,6 +747,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
          // Set navigation bar buttons
          [self updateNavBar];
+
+         // Reload collection view
+         [self.imagesCollection reloadData];
      }
 }
 
@@ -2058,6 +2062,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
 	self.currentSortCategory = sortType;
     [self.albumData updateImageSort:sortType OnCompletion:^{
+//        NSLog(@"didSelectCategorySortType:Sorting images…");
         [self.imagesCollection reloadData];
     }];
 }

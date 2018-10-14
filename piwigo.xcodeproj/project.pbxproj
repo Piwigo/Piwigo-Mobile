@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		312BF382BCDD1D57787047EB /* libPods-piwigoAppStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 297CC11501571E3E266D8AB5 /* libPods-piwigoAppStore.a */; };
+		8EBB87326DDBF0FA7A10C8FE /* libPods-piwigoGetPiwigo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F09C9ADFF1E09579418AB493 /* libPods-piwigoGetPiwigo.a */; };
 		91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD1EBB68213404D50012FA44 /* piwigoGetPiwigo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */; };
@@ -128,10 +130,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2730F70D21F7F339E7C4C5A2 /* Pods-piwigoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		297CC11501571E3E266D8AB5 /* libPods-piwigoAppStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoAppStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4638715CC0ABD46A2178FEC6 /* Pods-piwigo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-piwigo/Pods-piwigo.debug.xcconfig"; sourceTree = "<group>"; };
+		704AA8D216E567F25798E1C8 /* Pods-piwigoAppStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoAppStore.debug.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoAppStore/Pods-piwigoAppStore.debug.xcconfig"; sourceTree = "<group>"; };
+		7725E4B89043FA81612A77FA /* Pods-piwigoGetPiwigo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoGetPiwigo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoGetPiwigo/Pods-piwigoGetPiwigo.debug.xcconfig"; sourceTree = "<group>"; };
 		7C4B704898B5BF42D1A475AB /* Pods-piwigo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigo.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigo/Pods-piwigo.release.xcconfig"; sourceTree = "<group>"; };
-		9AEB39308966C4B773F67234 /* Pods-piwigoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoTests/Pods-piwigoTests.release.xcconfig"; sourceTree = "<group>"; };
 		A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD0822711FA06B090005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD0822721FA06B090005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/About.strings; sourceTree = "<group>"; };
@@ -216,6 +219,8 @@
 		ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansExtraBold.TTF; sourceTree = "<group>"; };
 		ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansLight.TTF; sourceTree = "<group>"; };
 		B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC2EF1B4D6E942B22B2385A1 /* Pods-piwigoGetPiwigo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoGetPiwigo.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoGetPiwigo/Pods-piwigoGetPiwigo.release.xcconfig"; sourceTree = "<group>"; };
+		CF89AF9D04D25606B05A868A /* Pods-piwigoAppStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoAppStore.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoAppStore/Pods-piwigoAppStore.release.xcconfig"; sourceTree = "<group>"; };
 		D8083A531A7D66CD00A95605 /* ImageService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageService.h; sourceTree = "<group>"; };
 		D8083A541A7D66CD00A95605 /* ImageService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageService.m; sourceTree = "<group>"; };
 		D8083A611A7FF30800A95605 /* TextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFieldTableViewCell.h; sourceTree = "<group>"; };
@@ -367,6 +372,7 @@
 		ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPhone.m; sourceTree = "<group>"; };
 		ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPad.h; sourceTree = "<group>"; };
 		ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPad.m; sourceTree = "<group>"; };
+		F09C9ADFF1E09579418AB493 /* libPods-piwigoGetPiwigo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoGetPiwigo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -374,6 +380,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EBB87326DDBF0FA7A10C8FE /* libPods-piwigoGetPiwigo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +388,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				312BF382BCDD1D57787047EB /* libPods-piwigoAppStore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +408,8 @@
 			children = (
 				A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */,
 				B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */,
+				297CC11501571E3E266D8AB5 /* libPods-piwigoAppStore.a */,
+				F09C9ADFF1E09579418AB493 /* libPods-piwigoGetPiwigo.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -409,8 +419,10 @@
 			children = (
 				4638715CC0ABD46A2178FEC6 /* Pods-piwigo.debug.xcconfig */,
 				7C4B704898B5BF42D1A475AB /* Pods-piwigo.release.xcconfig */,
-				2730F70D21F7F339E7C4C5A2 /* Pods-piwigoTests.debug.xcconfig */,
-				9AEB39308966C4B773F67234 /* Pods-piwigoTests.release.xcconfig */,
+				704AA8D216E567F25798E1C8 /* Pods-piwigoAppStore.debug.xcconfig */,
+				CF89AF9D04D25606B05A868A /* Pods-piwigoAppStore.release.xcconfig */,
+				7725E4B89043FA81612A77FA /* Pods-piwigoGetPiwigo.debug.xcconfig */,
+				CC2EF1B4D6E942B22B2385A1 /* Pods-piwigoGetPiwigo.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -946,6 +958,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD1EBB6C213404D50012FA44 /* Build configuration list for PBXNativeTarget "piwigoGetPiwigo" */;
 			buildPhases = (
+				463564FD9806F8EAD6671CAE /* [CP] Check Pods Manifest.lock */,
 				AD1EBB61213404D50012FA44 /* Sources */,
 				AD1EBB62213404D50012FA44 /* Frameworks */,
 				AD1EBB63213404D50012FA44 /* Resources */,
@@ -964,6 +977,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "piwigoAppStore" */;
 			buildPhases = (
+				A1B3467A8BF4F6AC0BC928CF /* [CP] Check Pods Manifest.lock */,
 				AD30FD3021316DA7009AA30E /* Sources */,
 				AD30FD3121316DA7009AA30E /* Frameworks */,
 				AD30FD3221316DA7009AA30E /* Resources */,
@@ -1109,6 +1123,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		463564FD9806F8EAD6671CAE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-piwigoGetPiwigo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		577A7301DA17AC6D5EBDAA33 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1143,6 +1179,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1B3467A8BF4F6AC0BC928CF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-piwigoAppStore-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */ = {
@@ -1383,6 +1441,7 @@
 /* Begin XCBuildConfiguration section */
 		AD1EBB6D213404D50012FA44 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7725E4B89043FA81612A77FA /* Pods-piwigoGetPiwigo.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1411,6 +1470,7 @@
 		};
 		AD1EBB6E213404D50012FA44 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC2EF1B4D6E942B22B2385A1 /* Pods-piwigoGetPiwigo.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1439,6 +1499,7 @@
 		};
 		AD30FD3C21316DA8009AA30E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 704AA8D216E567F25798E1C8 /* Pods-piwigoAppStore.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1468,6 +1529,7 @@
 		};
 		AD30FD3D21316DA8009AA30E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CF89AF9D04D25606B05A868A /* Pods-piwigoAppStore.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

@@ -303,11 +303,11 @@ NSInteger const loadingViewTag = 899;
                             [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
     // For debugging purposes
-    if (![encodedImageURL isEqualToString:originalURL]) {
-        NSLog(@"=> %@", originalURL);
-        NSLog(@"   %@", encodedImageURL);
-        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
-    }
+//    if (![encodedImageURL isEqualToString:originalURL]) {
+//        NSLog(@"=> %@", originalURL);
+//        NSLog(@"   %@", encodedImageURL);
+//        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
+//    }
     return encodedImageURL;
 }
 
@@ -380,11 +380,11 @@ NSInteger const loadingViewTag = 899;
                      [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
     // For debugging purposes
-    if (![url isEqualToString:originalURL]) {
-        NSLog(@"=> %@ (%@)", originalURL, params);
-        NSLog(@"   %@", url);
-        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
-    }
+//    if (![url isEqualToString:originalURL]) {
+//        NSLog(@"=> %@ (%@)", originalURL, params);
+//        NSLog(@"   %@", url);
+//        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
+//    }
     return url;
 }
 
