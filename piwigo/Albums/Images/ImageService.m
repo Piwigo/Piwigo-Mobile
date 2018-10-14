@@ -43,7 +43,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                         @"cat_id"   : @(albumId),
                         @"per_page" : @(imagesPerPage),
                         @"page"     : @(page),
-                        @"order"    : [order stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]
+                        @"order"    : order     // Percent-encoded should not be used here!
                         }
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
