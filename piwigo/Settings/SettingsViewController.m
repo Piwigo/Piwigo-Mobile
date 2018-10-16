@@ -34,8 +34,8 @@ typedef enum {
     SettingsSectionAlbums,
     SettingsSectionImages,
 	SettingsSectionImageUpload,
-    SettingsSectionCache,
     SettingsSectionColor,
+    SettingsSectionCache,
 	SettingsSectionAbout,
 	SettingsSectionCount
 } SettingsSection;
@@ -243,11 +243,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionImageUpload:
             titleString = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
             break;
-        case SettingsSectionCache:
-            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
-            break;
         case SettingsSectionColor:
             titleString = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            break;
+        case SettingsSectionCache:
+            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
             break;
         case SettingsSectionAbout:
             titleString = NSLocalizedString(@"settingsHeader_about", @"Information");
@@ -304,11 +304,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionImageUpload:
             titleString = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
             break;
-        case SettingsSectionCache:
-            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
-            break;
         case SettingsSectionColor:
             titleString = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            break;
+        case SettingsSectionCache:
+            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
             break;
         case SettingsSectionAbout:
             titleString = NSLocalizedString(@"settingsHeader_about", @"Information");
@@ -388,11 +388,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
                                 ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
             break;
-        case SettingsSectionCache:
-            nberOfRows = 3;
-            break;
         case SettingsSectionColor:
             nberOfRows = 1 + ([Model sharedInstance].isDarkPaletteModeActive ? 1 + ([Model sharedInstance].switchPaletteAutomatically ? 1 : 0) : 0);
+            break;
+        case SettingsSectionCache:
+            nberOfRows = 3;
             break;
         case SettingsSectionAbout:
             nberOfRows = 5;
@@ -913,101 +913,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 			break;
 		}
 
-#pragma mark Cache Settings
-        case SettingsSectionCache:       // Cache Settings
-        {
-            switch(indexPath.row)
-            {
-                case 0:     // Download all Albums at Start
-                {
-                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchCell"];
-                    if(!cell)
-                    {
-                        cell = [SwitchTableViewCell new];
-                    }
-                    
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
-                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories>320px", @"Download all Albums at Start (uncheck if troubles)");
-                    } else {
-                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Download all Albums at Start");
-                    }
-                    [cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
-                    cell.cellSwitchBlock = ^(BOOL switchState) {
-                        if(![Model sharedInstance].loadAllCategoryInfo && switchState)
-                        {
-//                            NSLog(@"settingsResetCa => getAlbumListForCategory(%ld,NO,YES)", (long)0);
-                            [AlbumService getAlbumListForCategory:0
-                                                       usingCache:NO
-                                                  inRecursiveMode:YES
-                                                     OnCompletion:nil onFailure:nil];
-                        }
-                        
-                        [Model sharedInstance].loadAllCategoryInfo = switchState;
-                        [[Model sharedInstance] saveToDisk];
-                    };
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-                case 1:     // Disk
-                {
-                    NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
-                    float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
-                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
-                    if(!cell)
-                    {
-                        cell = [SliderTableViewCell new];
-                    }
-                    cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
-                    cell.slider.minimumValue = 10;
-                    cell.slider.maximumValue = 500;
-                    
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
-                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentDiskSizeInMB];
-                    } else {
-                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
-                    }
-                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = 10;
-                    cell.sliderValue = [Model sharedInstance].diskCache;
-                    [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-                case 2:     // Memory
-                {
-                    NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
-                    float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
-                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
-                    if(!cell)
-                    {
-                        cell = [SliderTableViewCell new];
-                    }
-                    cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
-                    cell.slider.minimumValue = 10;
-                    cell.slider.maximumValue = 200;
-                    
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
-                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentMemSizeInMB];
-                    } else {
-                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
-                    }
-                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = 10;
-                    cell.sliderValue = [Model sharedInstance].memoryCache;
-                    [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-            }
-            break;
-        }
-
 #pragma mark Colors
         case SettingsSectionColor:      // Colors
         {
@@ -1119,6 +1024,101 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             break;
         }
 
+#pragma mark Cache Settings
+        case SettingsSectionCache:       // Cache Settings
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Download all Albums at Start
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchCell"];
+                    if(!cell)
+                    {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories>320px", @"Download all Albums at Start (uncheck if troubles)");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_loadAllCategories", @"Download all Albums at Start");
+                    }
+                    [cell.cellSwitch setOn:[Model sharedInstance].loadAllCategoryInfo];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        if(![Model sharedInstance].loadAllCategoryInfo && switchState)
+                        {
+//                            NSLog(@"settingsResetCa => getAlbumListForCategory(%ld,NO,YES)", (long)0);
+                            [AlbumService getAlbumListForCategory:0
+                                                       usingCache:NO
+                                                  inRecursiveMode:YES
+                                                     OnCompletion:nil onFailure:nil];
+                        }
+                        
+                        [Model sharedInstance].loadAllCategoryInfo = switchState;
+                        [[Model sharedInstance] saveToDisk];
+                    };
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Disk
+                {
+                    NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
+                    float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
+                    cell.slider.minimumValue = 10;
+                    cell.slider.maximumValue = 500;
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentDiskSizeInMB];
+                    } else {
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
+                    }
+                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
+                    cell.incrementSliderBy = 10;
+                    cell.sliderValue = [Model sharedInstance].diskCache;
+                    [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 2:     // Memory
+                {
+                    NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
+                    float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
+                    cell.slider.minimumValue = 10;
+                    cell.slider.maximumValue = 200;
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%.1f/", currentMemSizeInMB];
+                    } else {
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
+                    }
+                    cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
+                    cell.incrementSliderBy = 10;
+                    cell.sliderValue = [Model sharedInstance].memoryCache;
+                    [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+            }
+            break;
+        }
+            
 #pragma mark Information
         case SettingsSectionAbout:      // Information
 		{
@@ -1385,35 +1385,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 				}
 			}
 			break;
-//        case SettingsSectionCache:       // Cache Settings
-//        {
-//            switch(indexPath.row)
-//            {
-//			if(indexPath.row == 2)
-//			{
-//				[UIAlertView showWithTitle:@"DELETE IMAGE CACHE"
-//								   message:@"Are you sure you want to clear your image cache?\nThis will make images take a while to load again."
-//						 cancelButtonTitle:@"No"
-//						 otherButtonTitles:@[@"Yes"]
-//								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-//									  if(buttonIndex == 1)
-//									  {
-//										  // set it to 0 to clear it
-//										  NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-//																							   diskCapacity:0
-//																								   diskPath:nil];
-//										  [NSURLCache setSharedURLCache:URLCache];
-//										  
-//										  // set it back
-//										  URLCache = [[NSURLCache alloc] initWithMemoryCapacity:500 * 1024 * 1024
-//																				   diskCapacity:500 * 1024 * 1024
-//																					   diskPath:nil];
-//										  [NSURLCache setSharedURLCache:URLCache];
-//									  }
-//								  }];
-//            }
-//            break;
-//        }
 		case SettingsSectionAbout:       // About — Informations
 		{
             switch(indexPath.row)
@@ -1448,6 +1419,35 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
             }
 		}
+//        case SettingsSectionCache:       // Cache Settings
+//        {
+//            switch(indexPath.row)
+//            {
+//            if(indexPath.row == 2)
+//            {
+//                [UIAlertView showWithTitle:@"DELETE IMAGE CACHE"
+//                                   message:@"Are you sure you want to clear your image cache?\nThis will make images take a while to load again."
+//                         cancelButtonTitle:@"No"
+//                         otherButtonTitles:@[@"Yes"]
+//                                  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+//                                      if(buttonIndex == 1)
+//                                      {
+//                                          // set it to 0 to clear it
+//                                          NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
+//                                                                                               diskCapacity:0
+//                                                                                                   diskPath:nil];
+//                                          [NSURLCache setSharedURLCache:URLCache];
+//
+//                                          // set it back
+//                                          URLCache = [[NSURLCache alloc] initWithMemoryCapacity:500 * 1024 * 1024
+//                                                                                   diskCapacity:500 * 1024 * 1024
+//                                                                                       diskPath:nil];
+//                                          [NSURLCache setSharedURLCache:URLCache];
+//                                      }
+//                                  }];
+//            }
+//            break;
+//        }
 	}
 }
 
