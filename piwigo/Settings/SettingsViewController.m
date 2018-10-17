@@ -220,6 +220,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     // Header strings
     NSString *titleString, *textString = @"";
     switch(section)
@@ -281,6 +291,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     // Header strings
     NSString *titleString, *textString = @"";
     switch(section)
@@ -364,11 +384,23 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return SettingsSectionCount;
+    return SettingsSectionCount - (!([Model sharedInstance].hasAdminRights ||
+                                     [Model sharedInstance].usesCommunityPluginV29) ||
+                                   ![Model sharedInstance].hadOpenedSession);
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     NSInteger nberOfRows = 0;
     switch(section)
     {
@@ -408,8 +440,19 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = indexPath.section;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+    
     UITableViewCell *tableViewCell = [UITableViewCell new];
-	switch(indexPath.section)
+	switch(section)
 	{
 #pragma mark Server
 		case SettingsSectionServer:      // Piwigo Server
@@ -916,6 +959,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 #pragma mark Colors
         case SettingsSectionColor:      // Colors
         {
+            NSInteger sectionOffset = !([Model sharedInstance].hasAdminRights ||
+                                        [Model sharedInstance].usesCommunityPluginV29) ||
+                                      ![Model sharedInstance].hadOpenedSession;
             switch (indexPath.row)
             {
                 case 0:     // Dark Palette Mode
@@ -934,9 +980,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
                         // Position of the row(s) that should be added/removed
                         NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
-                                                                         inSection:SettingsSectionColor];
+                                                            inSection:SettingsSectionColor - sectionOffset];
                         NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
-                                                                         inSection:SettingsSectionColor];
+                                                            inSection:SettingsSectionColor - sectionOffset];
                         if(switchState) {
                             // Insert row in existing table
                             if ([Model sharedInstance].switchPaletteAutomatically)
@@ -983,7 +1029,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
                         // Position of the row that should be added/removed
                         NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
-                                                                         inSection:SettingsSectionColor];
+                                                            inSection:SettingsSectionColor - sectionOffset];
                         if(switchState) {
                             // Insert row in existing table
                             [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -1235,6 +1281,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // No footer by default (nil => 0 point)
     NSString *footer;
     
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     // Any footer text?
     switch(section)
     {
@@ -1278,6 +1334,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     footerLabel.adjustsFontSizeToFitWidth = NO;
     footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     // Footer text
     switch(section)
     {
@@ -1324,7 +1390,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	switch(indexPath.section)
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = indexPath.section;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+    
+	switch(section)
 	{
 		case SettingsSectionServer:         // Piwigo Server
 			break;
