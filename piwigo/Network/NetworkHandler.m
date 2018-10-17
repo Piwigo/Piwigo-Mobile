@@ -229,6 +229,15 @@ NSInteger const loadingViewTag = 899;
         authority = [leftURL substringWithRange:NSMakeRange(0, range.location)];
         leftURL = [leftURL stringByReplacingOccurrencesOfString:authority withString:@"" options:0 range:NSMakeRange(0, authority.length)];
         
+        // The Piwigo server may not be in the root e.g. example.com/piwigo/…
+        // So we remove the path to avoid a duplicate if necessary
+        NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
+        if ([loginURL.path length] > 0) {
+            if ([leftURL hasPrefix:loginURL.path]) {
+                leftURL = [leftURL stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
+            }
+        }
+        
         // Retrieve path
         range = [leftURL rangeOfString:@"?"];
         if (range.location == NSNotFound) {
@@ -303,11 +312,11 @@ NSInteger const loadingViewTag = 899;
                             [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
     // For debugging purposes
-//    if (![encodedImageURL isEqualToString:originalURL]) {
-//        NSLog(@"=> %@", originalURL);
-//        NSLog(@"   %@", encodedImageURL);
-//        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
-//    }
+    if (![encodedImageURL isEqualToString:originalURL]) {
+        NSLog(@"=> %@", originalURL);
+        NSLog(@"   %@", encodedImageURL);
+        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
+    }
     return encodedImageURL;
 }
 
