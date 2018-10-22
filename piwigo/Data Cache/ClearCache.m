@@ -14,8 +14,12 @@
 
 +(void)clearAllCache
 {
-	[[TagsData sharedInstance] clearCache];
+	// Data
+    [[TagsData sharedInstance] clearCache];
 	[[CategoriesData sharedInstance] clearCache];
+    
+    // Images
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 @end

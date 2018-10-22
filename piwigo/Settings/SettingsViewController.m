@@ -36,6 +36,7 @@ typedef enum {
 	SettingsSectionImageUpload,
     SettingsSectionColor,
     SettingsSectionCache,
+    SettingsSectionClear,
 	SettingsSectionAbout,
 	SettingsSectionCount
 } SettingsSection;
@@ -243,6 +244,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         case SettingsSectionLogout:
+        case SettingsSectionClear:
             return 14;
         case SettingsSectionAlbums:
             titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
@@ -314,6 +316,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         case SettingsSectionLogout:
+        case SettingsSectionClear:
             return nil;
         case SettingsSectionAlbums:
             titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
@@ -425,6 +428,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             break;
         case SettingsSectionCache:
             nberOfRows = 3;
+            break;
+        case SettingsSectionClear:
+            nberOfRows = 1;
             break;
         case SettingsSectionAbout:
             nberOfRows = 5;
@@ -1164,6 +1170,33 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         }
+
+#pragma mark Cache Clear
+        case SettingsSectionClear:       // Cache Settings
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Clear
+                {
+                    ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"clearCache"];
+                    if(!cell)
+                    {
+                        cell = [ButtonTableViewCell new];
+                    }
+
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
+                        cell.buttonText = NSLocalizedString(@"settings_cacheClearAll", @"Clear album & image caches");
+                    } else {
+                        cell.buttonText = NSLocalizedString(@"settings_cacheClear", @"Clear caches");
+                    }
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+            }
+            break;
+        }
             
 #pragma mark Information
         case SettingsSectionAbout:      // Information
@@ -1450,6 +1483,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             break;
         }
 		case SettingsSectionImageUpload:     // Default upload Settings
+        {
 			switch(indexPath.row)
 			{
 				case 1:                      // Default privacy selection
@@ -1462,6 +1496,42 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 				}
 			}
 			break;
+        }
+        case SettingsSectionClear:          // Cache Clear
+        {
+            switch(indexPath.row)
+            {
+                case 0:                      // Clear cache
+                {
+                    UIAlertController* alert = [UIAlertController
+                        alertControllerWithTitle:NSLocalizedString(@"settings_cacheClear", @"Clear Cache")
+                        message:NSLocalizedString(@"settings_cacheClearMsg", @"Are you sure you want to clear the image cache? This will make albums and images take a while to load again.")
+                        preferredStyle:UIAlertControllerStyleAlert];
+                    
+                    UIAlertAction* dismissAction = [UIAlertAction
+                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                        style:UIAlertActionStyleCancel
+                        handler:nil ];
+                    
+                    UIAlertAction* clearAction = [UIAlertAction
+                          actionWithTitle:NSLocalizedString(@"alertClearButton", @"Clear")
+                          style:UIAlertActionStyleDestructive
+                          handler:^(UIAlertAction * action) {
+                              [[NSURLCache sharedURLCache] removeAllCachedResponses];
+                              [self.settingsTableView reloadData];
+                          }];
+
+                    // Add actions
+                    [alert addAction:dismissAction];
+                    [alert addAction:clearAction];
+                    
+                    // Present list of actions
+                    [self presentViewController:alert animated:YES completion:nil];
+                    break;
+                }
+            }
+            break;
+        }
 		case SettingsSectionAbout:       // About — Informations
 		{
             switch(indexPath.row)
@@ -1496,35 +1566,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
             }
 		}
-//        case SettingsSectionCache:       // Cache Settings
-//        {
-//            switch(indexPath.row)
-//            {
-//            if(indexPath.row == 2)
-//            {
-//                [UIAlertView showWithTitle:@"DELETE IMAGE CACHE"
-//                                   message:@"Are you sure you want to clear your image cache?\nThis will make images take a while to load again."
-//                         cancelButtonTitle:@"No"
-//                         otherButtonTitles:@[@"Yes"]
-//                                  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-//                                      if(buttonIndex == 1)
-//                                      {
-//                                          // set it to 0 to clear it
-//                                          NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-//                                                                                               diskCapacity:0
-//                                                                                                   diskPath:nil];
-//                                          [NSURLCache setSharedURLCache:URLCache];
-//
-//                                          // set it back
-//                                          URLCache = [[NSURLCache alloc] initWithMemoryCapacity:500 * 1024 * 1024
-//                                                                                   diskCapacity:500 * 1024 * 1024
-//                                                                                       diskPath:nil];
-//                                          [NSURLCache setSharedURLCache:URLCache];
-//                                      }
-//                                  }];
-//            }
-//            break;
-//        }
 	}
 }
 
