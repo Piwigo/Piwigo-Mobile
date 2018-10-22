@@ -1759,7 +1759,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (IBAction)updateDiskCacheSize:(id)sender
 {
-    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionCache]];
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = SettingsSectionCache;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
+    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:section]];
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
@@ -1768,7 +1779,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (IBAction)updateMemoryCacheSize:(id)sender
 {
-    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingsSectionCache]];
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = SettingsSectionCache;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+    
+    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:section]];
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
