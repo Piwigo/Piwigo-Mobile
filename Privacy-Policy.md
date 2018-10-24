@@ -12,7 +12,7 @@ We reserve the right to make changes to this Privacy Policy at any time and for 
 
 You are encouraged to periodically review this Privacy Policy to stay informed of updates. You will be deemed to have been made aware of, will be subject to, and will be deemed to have accepted the changes in any revised Privacy Policy by your continued use of the Application after the date such revised Privacy Policy is posted.
 
-This Privacy Policy does not apply to the third-party online/mobile store from which you install the Application or make payments, including any in-game virtual items, which may also collect and use data about you. We are not responsible for any of the data collected by any such third party.
+This Privacy Policy does not apply to the third-party online/mobile store from which you install the Application or make payments, including any in-app virtual items, which may also collect and use data about you. We are not responsible for any of the data collected by any such third party.
 
 ## What data is processed and stored?
 
@@ -49,4 +49,4 @@ If you have questions or comments about this Privacy Policy, please contact us a
 
      42 Rue des Vignes, 21800 Quetigny (France)
 
-     [ios@piwigo.org](mailto:ios@piwigo.org)
+     ios@piwigo.org
