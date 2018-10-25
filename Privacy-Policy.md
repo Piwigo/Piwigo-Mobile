@@ -20,9 +20,13 @@ This Privacy Policy does not apply to the third-party online/mobile store from w
 
      Account credentials are stored by the Applications and submitted to the configured sites to connect to one or several Piwigo galleries. Beside that, all the photos, videos and other files that are selected for download/upload and the entered content is stored, processed and transmitted to the configured gallery site.
  
+- **Geo-Location Information**
+
+     We may request access or permission to and track location-based information from your mobile device, either continuously or while you are using the Applications, to provide location-based services. If you wish to change our access or permissions, you may do so in your device’s settings.
+
 - **Mobile Device Access**
 
-     The Applications may request access or permission to certain features from your mobile device, including your mobile device’s photo library and file storage, the Android AccountManager, the Apple Keychain, foreign and cloud based storage folders and other features. If you wish to change our access or permissions, you may do so in your device’s settings but be aware that some accesses are necessary to upload media files of your mobile to the Piwigo gallery or to store Piwigo media files in your mobile.
+     The Applications may request access or permission to certain features from your mobile device, including your mobile device’s photo library and file storage, the Android AccountManager, the Apple Keychain, foreign and cloud based storage folders, geolocalisation, and other features. If you wish to change our access or permissions, you may do so in your device’s settings but be aware that some accesses are necessary to upload media files of your mobile to the Piwigo gallery or to store Piwigo media files in your mobile.
 
 - **Mobile Device Data**
 
