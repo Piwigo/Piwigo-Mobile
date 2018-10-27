@@ -158,7 +158,6 @@
 		AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppStore.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoAppStore.swift; sourceTree = "<group>"; };
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AD3203652184738F00BAD372 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD3203672184739200BAD372 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD3203682184739300BAD372 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD3203692184739300BAD372 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
@@ -221,6 +220,7 @@
 		ADC06AE21F40B1ED0081B4FA /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		ADC5E23E2184D1BE002B0D48 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrivacyPolicyViewController.m; sourceTree = "<group>"; };
 		ADE936F92182D5650003F037 /* PrivacyPolicyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivacyPolicyViewController.h; sourceTree = "<group>"; };
 		ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoryTableViewCell.xib; sourceTree = "<group>"; };
@@ -1381,7 +1381,6 @@
 		AD3203662184738F00BAD372 /* PrivacyPolicy.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD3203652184738F00BAD372 /* en */,
 				AD3203672184739200BAD372 /* fr */,
 				AD3203682184739300BAD372 /* da */,
 				AD3203692184739300BAD372 /* pl */,
@@ -1391,6 +1390,7 @@
 				AD32036D2184739600BAD372 /* nl */,
 				AD32036E2184739800BAD372 /* ar */,
 				AD32036F2184739800BAD372 /* ja */,
+				ADC5E23E2184D1BE002B0D48 /* Base */,
 			);
 			name = PrivacyPolicy.strings;
 			sourceTree = "<group>";
