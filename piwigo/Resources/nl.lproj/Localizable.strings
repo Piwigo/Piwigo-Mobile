@@ -25,6 +25,7 @@
 "alertRetryButton" = "Probeer opnieuw";
 "alertNextButton" = "Volgende foto";
 "alertTryButton" = "Proberen";
+"alertClearButton" = "Clear";
 
 // HUD views
 "loadingHUD_label" = "Bezig met laden…";
@@ -499,6 +500,9 @@
 "settings_cacheDisk" = "Schijf";
 "settings_cacheMemory" = "Geheugen";
 "settings_cacheMegabytes" = "MB";
+"settings_cacheClear" = "Clear Cache";
+"settings_cacheClearAll" = "Clear Image Cache";
+"settings_cacheClearMsg" = "Are you sure you want to clear the image cache? This will make albums and images take a while to load again.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Kleuren";
@@ -509,11 +513,14 @@
 // Settings — Information
 "settings_appName" = "Piwigo Mobiel";
 "settingsHeader_about" = "Informatie";
+"settings_contactUs" = "Contact Us";
+"settings_feedback" = "Feedback";
 "settings_supportForum" = "Ondersteuningsforum";
 "settings_releaseNotes" = "Uitgave opmerkingen";
 "settings_rateInAppStore" = "Waardeer Piwigo Mobiel";
 "settings_translateWithCrowdin" = "Vertaling Piwigo Mobiel";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Dank";
+"settings_privacy" = "Privacy Policy";
 "settings_users" = "Gebruikers";
 "settings_groups" = "Groepen";

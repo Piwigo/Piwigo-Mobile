@@ -25,6 +25,7 @@
 "alertRetryButton" = "إعادة المحاولة";
 "alertNextButton" = "الصورة الموالية";
 "alertTryButton" = "محاولة";
+"alertClearButton" = "Clear";
 
 // HUD views
 "loadingHUD_label" = "Loading…";
@@ -499,6 +500,9 @@
 "settings_cacheDisk" = "القرص";
 "settings_cacheMemory" = "الذاكرة";
 "settings_cacheMegabytes" = "MB";
+"settings_cacheClear" = "Clear Cache";
+"settings_cacheClearAll" = "Clear Image Cache";
+"settings_cacheClearMsg" = "Are you sure you want to clear the image cache? This will make albums and images take a while to load again.";
 
 // Settings — Colors
 "settingsHeader_colors" = "الألوان";
@@ -509,11 +513,14 @@
 // Settings — Information
 "settings_appName" = "Piwigo موبايل";
 "settingsHeader_about" = "معلومة";
+"settings_contactUs" = "Contact Us";
+"settings_feedback" = "Feedback";
 "settings_supportForum" = "منتدى الدعم";
 "settings_releaseNotes" = "ملاحظات الإصدار";
 "settings_rateInAppStore" = "تقييم Piwigo موبايل";
 "settings_translateWithCrowdin" = "ترجمة Piwigo موبايل";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "شكر وتقدير";
+"settings_privacy" = "Privacy Policy";
 "settings_users" = "المستخدمين";
 "settings_groups" = "المجموعات";

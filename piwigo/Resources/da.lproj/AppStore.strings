@@ -8,6 +8,8 @@
 
 "description" = "Piwigo til iPhone/iPad/iPod suplement til fotobiblioteksprogrammet i skyen Piwigo (v2.7 eller højere): \n\n• Gennemse dine album, \n• Opret nye album, \n• Slette, flytte og omdøbe album, \n• Redigere, hente og slette fotos & videoer, \n• Kopier og flyt billeder mellem album,\n• Angive et foto som albumbilledet, \n• Uploade billeder: \n - modificer størrelse og kvalitet, \n - med beskrivelse, forfatter, tags, EXIF metadata, \n - med eller uden GPS-metadata. \n• Upload videoer. \n\nPiwigo giver dig mulighed for at oprette dit eget galleri på nettet. Det indeholder mange kraftfulde funktioner såsom album, tags og geolocation mange niveauer af tilpasning, upload af besøgende, privatlivets fred, kalender eller statistikker. \n\nPiwigo er gratis og opensource.";
 
+"compatibility" = "Piwigo is also compatible with the following extensions:\n- Community: allows non-admin users to add photos\n- piwigo-videojs: adds video support";
+
 "feedback" = "Feedback eller spørgsmål? \nPiwigo tilbyder gratis support på %@ og vi vil gerne høre fra dig.";
 
 "promotional_text" = "Piwigo fotobiblioteket i skyen ved hånden!";

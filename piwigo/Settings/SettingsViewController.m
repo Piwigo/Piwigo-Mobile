@@ -5,28 +5,31 @@
 //  Created by Spencer Baker on 1/20/15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
+#import <MessageUI/MessageUI.h>
+#import <sys/utsname.h>
 
-#import "AppDelegate.h"
-#import "SettingsViewController.h"
-#import "SessionService.h"
-#import "Model.h"
-#import "SelectPrivacyViewController.h"
-#import "TextFieldTableViewCell.h"
-#import "ButtonTableViewCell.h"
-#import "LabelTableViewCell.h"
 #import "AboutViewController.h"
-#import "ClearCache.h"
-#import "SliderTableViewCell.h"
-#import "SwitchTableViewCell.h"
 #import "AlbumService.h"
+#import "AppDelegate.h"
+#import "ButtonTableViewCell.h"
+#import "CategoriesData.h"
 #import "CategorySortViewController.h"
-#import "PiwigoImageData.h"
+#import "ClearCache.h"
+#import "DefaultCategoryViewController.h"
 #import "DefaultImageSizeViewController.h"
 #import "DefaultThumbnailSizeViewController.h"
-#import "DefaultCategoryViewController.h"
-#import "ReleaseNotesViewController.h"
 #import "ImagesCollection.h"
-#import "CategoriesData.h"
+#import "LabelTableViewCell.h"
+#import "Model.h"
+#import "PiwigoImageData.h"
+#import "PrivacyPolicyViewController.h"
+#import "ReleaseNotesViewController.h"
+#import "SelectPrivacyViewController.h"
+#import "SessionService.h"
+#import "SettingsViewController.h"
+#import "SliderTableViewCell.h"
+#import "SwitchTableViewCell.h"
+#import "TextFieldTableViewCell.h"
 
 typedef enum {
 	SettingsSectionServer,
@@ -48,7 +51,7 @@ typedef enum {
 NSString * const kHelpUsTitle = @"Help Us!";
 NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated in your language. Could you please help us complete the translation?";
 
-@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
+@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
@@ -433,7 +436,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 1;
             break;
         case SettingsSectionAbout:
-            nberOfRows = 5;
+            nberOfRows = 7;
             break;
     }
     return nberOfRows;
@@ -1171,7 +1174,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             break;
         }
 
-#pragma mark Cache Clear
         case SettingsSectionClear:       // Cache Settings
         {
             switch(indexPath.row)
@@ -1186,7 +1188,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
-                        cell.buttonText = NSLocalizedString(@"settings_cacheClearAll", @"Clear album & image caches");
+                        cell.buttonText = NSLocalizedString(@"settings_cacheClearAll", @"Clear image caches");
                     } else {
                         cell.buttonText = NSLocalizedString(@"settings_cacheClear", @"Clear caches");
                     }
@@ -1203,7 +1205,29 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 		{
             switch(indexPath.row)
             {
-                case 0:     // Support Forum
+                case 0:     // Contact Us
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"contact"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_contactUs", @"Contact Us");
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    if (![MFMailComposeViewController canSendMail]) {
+                        cell.leftLabel.textColor = [UIColor piwigoRightLabelColor];
+                    }
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Support Forum
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"support"];
                     if(!cell)
@@ -1222,7 +1246,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Rate Piwigo Mobile
+                case 2:     // Rate Piwigo Mobile
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rate"];
                     if(!cell)
@@ -1241,7 +1265,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 2:     // Translate Piwigo Mobile
+                case 3:     // Translate Piwigo Mobile
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"translate"];
                     if(!cell)
@@ -1260,7 +1284,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 3:     // Release Notes
+                case 4:     // Release Notes
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"release"];
                     if(!cell)
@@ -1279,7 +1303,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 4:     // Acknowledgements
+                case 5:     // Acknowledgements
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"thanks"];
                     if(!cell)
@@ -1298,6 +1322,25 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
+                case 6:     // Privacy Policy
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_privacy", @"Privacy Policy");
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    //                    if ([Model sharedInstance].isAppLanguageRTL) {
+                    //                        cell.rightText = @"<";
+                    //                    } else {
+                    //                        cell.rightText = @">";
+                    //                    }
+                    
+                    tableViewCell = cell;
+                    break;
+                }
             }
 		}
 	}
@@ -1306,6 +1349,129 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 	return tableViewCell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = indexPath.section;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+    
+    BOOL result = YES;
+    switch(section)
+    {
+#pragma mark Server
+        case SettingsSectionServer:         // Piwigo Server
+        {
+            result = NO;
+            break;
+        }
+        case SettingsSectionLogout:         // Logout Button
+        {
+            result = YES;
+            break;
+        }
+#pragma mark Albums
+        case SettingsSectionAlbums:         // Albums
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Default album
+                case 1:     // Default Sort
+                case 2:     // Default Thumbnail File
+                    result = YES;
+                    break;
+                case 3:     // Default Thumbnail Size
+                case 4:     // Display titles on thumbnails
+                    result = NO;
+                    break;
+            }
+            break;
+        }
+#pragma mark Images
+        case SettingsSectionImages:     // Images
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Default Size of Previewed Images
+                {
+                    result = YES;
+                    break;
+                }
+            }
+            break;
+        }
+#pragma mark Default Upload Settings
+        case SettingsSectionImageUpload:     // Default Upload Settings
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Author Name
+                case 2:     // Strip private Metadata
+                case 3:     // Resize Before Upload
+                case 4:     // Image Size slider or Compress Before Upload switch
+                case 5:     // Compress Before Upload switch or Image Quality slider or Delete Image switch
+                case 6:     // Image Quality slider or Delete Image switch
+                case 7:     // Delete image after upload
+                {
+                    result = NO;
+                    break;
+                }
+                case 1:     // Privacy Level
+                {
+                    result = YES;
+                    break;
+                }
+            }
+            break;
+        }
+#pragma mark Colors
+        case SettingsSectionColor:      // Colors
+        {
+            result = NO;
+            break;
+        }
+#pragma mark Cache Settings
+        case SettingsSectionCache:       // Cache Settings
+        {
+            result = NO;
+            break;
+        }
+        case SettingsSectionClear:       // Cache Settings
+        {
+            result = YES;
+            break;
+        }
+#pragma mark Information
+        case SettingsSectionAbout:      // Information
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Contact Us
+                {
+                    result = [MFMailComposeViewController canSendMail] ? YES : NO;
+                    break;
+                }
+                case 1:     // Support Forum
+                case 2:     // Rate Piwigo Mobile
+                case 3:     // Translate Piwigo Mobile
+                case 4:     // Release Notes
+                case 5:     // Acknowledgements
+                case 6:     // Privacy Policy
+                {
+                    result = YES;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    return result;
+}
 
 #pragma mark - UITableView - Footer
 
@@ -1504,7 +1670,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 case 0:                      // Clear cache
                 {
                     UIAlertController* alert = [UIAlertController
-                        alertControllerWithTitle:NSLocalizedString(@"settings_cacheClear", @"Clear Cache")
+                        alertControllerWithTitle:NSLocalizedString(@"settings_cacheClear", @"Clear Image Cache")
                         message:NSLocalizedString(@"settings_cacheClearMsg", @"Are you sure you want to clear the image cache? This will make albums and images take a while to load again.")
                         preferredStyle:UIAlertControllerStyleAlert];
                     
@@ -1536,31 +1702,60 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 		{
             switch(indexPath.row)
             {
-                case 0:     // Open Piwigo support forum webpage with default browser
+                case 0:     // Prepare draft email
+                {
+                    if ([MFMailComposeViewController canSendMail]) {
+                        MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
+                        composeVC.mailComposeDelegate = self;
+                        
+                        // Configure the fields of the interface.
+                        [composeVC setToRecipients:@[NSLocalizedStringFromTableInBundle(@"contact_email", @"PrivacyPolicy", [NSBundle mainBundle], @"Contact email")]];
+                        NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+                        NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+                        [composeVC setSubject:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), NSLocalizedString(@"settings_feedback", @"Feedback")]];
+                        struct utsname systemInfo;
+                        uname(&systemInfo);
+                        NSString* deviceModel = [self deviceNameFromCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
+                        NSString *deviceOS = [[UIDevice currentDevice] systemName];
+                        NSString *deviceOSversion = [[UIDevice currentDevice] systemVersion];
+                        [composeVC setMessageBody:[NSString stringWithFormat:@"%@ %@(%@)\n%@ — %@ %@\n==============\n\n", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), appVersionString, appBuildString, deviceModel, deviceOS, deviceOSversion] isHTML:NO];
+                        
+                        // Present the view controller modally.
+                        [self presentViewController:composeVC animated:YES completion:nil];
+                    }
+                    break;
+                }
+                case 1:     // Open Piwigo support forum webpage with default browser
                 {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:NSLocalizedString(@"settings_pwgForumURL", @"http://piwigo.org/forum")]];
                     break;
                 }
-                case 1:     // Open Piwigo App Store page for rating
+                case 2:     // Open Piwigo App Store page for rating
                 {
                     // See https://itunes.apple.com/us/app/piwigo/id472225196?ls=1&mt=8
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/piwigo/id472225196?action=write-review"]];
                     break;
                 }
-                case 2:     // Open Piwigo Crowdin page for translating
+                case 3:     // Open Piwigo Crowdin page for translating
                 {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
                     break;
                 }
-                case 3:     // Open Release Notes page
+                case 4:     // Open Release Notes page
                 {
                     ReleaseNotesViewController *releaseNotesVC = [ReleaseNotesViewController new];
                     [self.navigationController pushViewController:releaseNotesVC animated:YES];
                     break;
                 }
-                case 4:     // Open Acknowledgements page
+                case 5:     // Open Acknowledgements page
                 {
                     AboutViewController *aboutVC = [AboutViewController new];
+                    [self.navigationController pushViewController:aboutVC animated:YES];
+                    break;
+                }
+                case 6:     // Open Privacy Policy page
+                {
+                    PrivacyPolicyViewController *aboutVC = [PrivacyPolicyViewController new];
                     [self.navigationController pushViewController:aboutVC animated:YES];
                     break;
                 }
@@ -1663,6 +1858,101 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 	}
 }
 
+- (void)mailComposeController:(MFMailComposeViewController *)controller
+          didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    // Check the result or perform other tasks.
+    
+    // Dismiss the mail compose view controller.
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (NSString *)deviceNameFromCode:(NSString *)deviceCode
+{
+    // iPhone
+    if ([deviceCode isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
+    if ([deviceCode isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
+    if ([deviceCode isEqualToString:@"iPhone2,1"])    return @"iPhone 3GS";
+    if ([deviceCode isEqualToString:@"iPhone3,1"])    return @"iPhone 4";
+    if ([deviceCode isEqualToString:@"iPhone3,3"])    return @"Verizon iPhone 4";
+    if ([deviceCode isEqualToString:@"iPhone4,1"])    return @"iPhone 4S";
+    if ([deviceCode isEqualToString:@"iPhone5,1"])    return @"iPhone 5 (GSM)";
+    if ([deviceCode isEqualToString:@"iPhone5,2"])    return @"iPhone 5 (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone5,3"])    return @"iPhone 5c (GSM)";
+    if ([deviceCode isEqualToString:@"iPhone5,4"])    return @"iPhone 5c (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone6,1"])    return @"iPhone 5s (GSM)";
+    if ([deviceCode isEqualToString:@"iPhone6,2"])    return @"iPhone 5s (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone7,1"])    return @"iPhone 6";
+    if ([deviceCode isEqualToString:@"iPhone7,2"])    return @"iPhone 6 Plus";
+    if ([deviceCode isEqualToString:@"iPhone8,1"])    return @"iPhone 6s";
+    if ([deviceCode isEqualToString:@"iPhone8,2"])    return @"iPhone 6s Plus";
+    if ([deviceCode isEqualToString:@"iPhone8,4"])    return @"iPhone SE";
+    if ([deviceCode isEqualToString:@"iPhone9,1"])    return @"iPhone 7";
+    if ([deviceCode isEqualToString:@"iPhone9,2"])    return @"iPhone 7 Plus";
+    if ([deviceCode isEqualToString:@"iPhone9,3"])    return @"iPhone 7";
+    if ([deviceCode isEqualToString:@"iPhone9,4"])    return @"iPhone 7 Plus";
+    if ([deviceCode isEqualToString:@"iPhone10,1"])   return @"iPhone 8";
+    if ([deviceCode isEqualToString:@"iPhone10,2"])   return @"iPhone 8 Plus";
+    if ([deviceCode isEqualToString:@"iPhone10,3"])   return @"iPhone X";
+    if ([deviceCode isEqualToString:@"iPhone10,4"])   return @"iPhone 8";
+    if ([deviceCode isEqualToString:@"iPhone10,5"])   return @"iPhone 8 Plus";
+    if ([deviceCode isEqualToString:@"iPhone10,6"])   return @"iPhone X";
+    if ([deviceCode isEqualToString:@"iPhone11,2"])   return @"iPhone Xs";
+    if ([deviceCode isEqualToString:@"iPhone11,4"])   return @"iPhone Xs Max";
+    if ([deviceCode isEqualToString:@"iPhone11,6"])   return @"iPhone Xs Max";
+    if ([deviceCode isEqualToString:@"iPhone11,8"])   return @"iPhone Xr";
+
+    // iPad
+    if ([deviceCode isEqualToString:@"iPad1,1"])      return @"iPad";
+    if ([deviceCode isEqualToString:@"iPad2,1"])      return @"iPad 2 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad2,2"])      return @"iPad 2 (GSM)";
+    if ([deviceCode isEqualToString:@"iPad2,3"])      return @"iPad 2 (CDMA)";
+    if ([deviceCode isEqualToString:@"iPad2,4"])      return @"iPad 2 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad3,1"])      return @"iPad 3 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad3,2"])      return @"iPad 3 (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPad3,3"])      return @"iPad 3 (GSM)";
+    if ([deviceCode isEqualToString:@"iPad3,4"])      return @"iPad 4 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad3,5"])      return @"iPad 4 (GSM)";
+    if ([deviceCode isEqualToString:@"iPad3,6"])      return @"iPad 4 (GSM+CDMA)";
+    
+    // iPad Air
+    if ([deviceCode isEqualToString:@"iPad4,1"])      return @"iPad Air (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad4,2"])      return @"iPad Air (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad5,3"])      return @"iPad Air 2 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad5,4"])      return @"iPad Air 2 (Cellular)";
+
+    // iPad Pro
+    if ([deviceCode isEqualToString:@"iPad6,3"])      return @"iPad Pro 9.7 inch (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad6,4"])      return @"iPad Pro 9.7 inch (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,3"])      return @"iPad Pro 10.5 inch (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad7,4"])      return @"iPad Pro 10.5 inch (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad6,7"])      return @"iPad Pro 12.9 inch (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad6,8"])      return @"iPad Pro 12.9 inch (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,1"])      return @"iPad Pro 2 12.9 inch (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad7,2"])      return @"iPad Pro 2 12.9 inch (Cellular)";
+
+    // iPad mini
+    if ([deviceCode isEqualToString:@"iPad2,5"])      return @"iPad Mini (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad2,6"])      return @"iPad Mini (GSM)";
+    if ([deviceCode isEqualToString:@"iPad2,7"])      return @"iPad Mini (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPad4,4"])      return @"iPad mini 2G (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad4,5"])      return @"iPad mini 2G (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad5,1"])      return @"iPad mini 4 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad5,2"])      return @"iPad mini 4 (Cellular)";
+
+    // iPod
+    if ([deviceCode isEqualToString:@"iPod1,1"])      return @"iPod Touch 1G";
+    if ([deviceCode isEqualToString:@"iPod2,1"])      return @"iPod Touch 2G";
+    if ([deviceCode isEqualToString:@"iPod3,1"])      return @"iPod Touch 3G";
+    if ([deviceCode isEqualToString:@"iPod4,1"])      return @"iPod Touch 4G";
+    if ([deviceCode isEqualToString:@"iPod5,1"])      return @"iPod Touch 5G";
+    if ([deviceCode isEqualToString:@"iPod7,1"])      return @"iPod Touch 6G";
+    
+    // Simulator
+    if ([deviceCode isEqualToString:@"i386"])         return @"Simulator";
+    if ([deviceCode isEqualToString:@"x86_64"])       return @"Simulator";
+    
+    return deviceCode;
+}
 
 #pragma mark - UITextFieldDelegate Methods
 

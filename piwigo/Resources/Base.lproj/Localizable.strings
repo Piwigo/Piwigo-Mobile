@@ -513,6 +513,8 @@
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
+"settings_contactUs" = "Contact Us";
+"settings_feedback" = "Feedback";
 "settings_supportForum" = "Support Forum";
 "settings_releaseNotes" = "Release Notes";
 "settings_rateInAppStore" = "Rate Piwigo Mobile";
