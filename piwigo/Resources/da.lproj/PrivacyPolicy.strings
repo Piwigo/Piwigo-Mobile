@@ -10,7 +10,7 @@
 
 "intro_title" = "Introduction";
 
-"intro_text1" = "Developers of Piwigo-Android and Piwigo-Mobile, we (or “us” or “our”) respect the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile applications (the “Applications”). Our names can be extracted from the meta data in the git repositories and within the Applications.";
+"intro_text1" = "Developers of Piwigo-Android and Piwigo-Mobile, we (or “us” or “our”) respect the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile applications (the “Applications”). Our names can be extracted from the meta data in the git repositories and the Acknowledgements section within the Applications.";
 
 "intro_text2" = "Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Applications.";
 
@@ -46,7 +46,7 @@
 
 "how_title" = "How is the data protected?";
 
-"how_text1" = "The Applications store data locally on the device it is executed on. You are responsible to protect the stored data from unauthorized access. We strongly recommend to use HTTPS to protect data during transmission and the Applications try to use HTTPS the first time the user establishes a connection with a Piwigo gallery. Keeping certificates and libraries for HTTPS access up to date is under responsibility of the Piwigo server operator. When the Applications cannot use HTTPS, they switches to HTTP and data are not encrypted during transmission.";
+"how_text1" = "The Applications store data locally on the device it is executed on. You are responsible to protect the stored data from unauthorized access. We strongly recommend to use HTTPS to protect data during transmission and the Applications try to use encrypted connections over HTTPS the first time the user establishes a connection with a Piwigo gallery. Keeping certificates and libraries for HTTPS access up to date is under responsibility of the Piwigo server operator. When the Applications cannot use HTTPS, they switches to HTTP and data are not encrypted during transmission.";
 
 "how_text2" = "When you upload images to a Piwigo gallery, images may contain private data like GPS coordinates or comments. The Applications provide an option for removing these data from image files before upload in the Settings section. It is the responsibility of the user to decide whether those private data are uploaded.";
 

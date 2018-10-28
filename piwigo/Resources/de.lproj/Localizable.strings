@@ -25,7 +25,7 @@
 "alertRetryButton" = "Erneut versuchen";
 "alertNextButton" = "Nächstes Bild";
 "alertTryButton" = "Probieren";
-"alertClearButton" = "Clear";
+"alertClearButton" = "Leeren";
 
 // HUD views
 "loadingHUD_label" = "Laden…";
@@ -500,9 +500,9 @@
 "settings_cacheDisk" = "Festplatte";
 "settings_cacheMemory" = "Speicher";
 "settings_cacheMegabytes" = "MB";
-"settings_cacheClear" = "Clear Cache";
-"settings_cacheClearAll" = "Clear Image Cache";
-"settings_cacheClearMsg" = "Are you sure you want to clear the image cache? This will make albums and images take a while to load again.";
+"settings_cacheClear" = "Zwischenspeicher leeren";
+"settings_cacheClearAll" = "Zwischenspeicher für Bilder leeren";
+"settings_cacheClearMsg" = "Bist du sicher, dass du den Zwischenspeicher für Bilder leeren möchtest? Dies wird zu Verzögerungen führen um Alben und Bilder erneut zu laden.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Farben";
@@ -513,14 +513,14 @@
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Informationen";
-"settings_contactUs" = "Contact Us";
-"settings_feedback" = "Feedback";
+"settings_contactUs" = "Kontakt";
+"settings_feedback" = "Rückmeldung";
 "settings_supportForum" = "Support-Forum";
 "settings_releaseNotes" = "Versionshinweise";
 "settings_rateInAppStore" = "Piwigo Mobile bewerten";
 "settings_translateWithCrowdin" = "Piwigo Mobile übersetzen";
 "settings_pwgForumURL" = "http://piwigo.org/forum/";
 "settings_acknowledgements" = "Danksagungen";
-"settings_privacy" = "Privacy Policy";
+"settings_privacy" = "Datenschutzerklärung";
 "settings_users" = "Benutzer";
 "settings_groups" = "Gruppen";
