@@ -18,6 +18,7 @@
 @property (nonatomic, strong) UILabel *versionLabel;
 
 @property (nonatomic, strong) UITextView *textView;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
 @end
 
@@ -157,6 +158,10 @@
 
         [self addConstraints];
 
+        // Button for returning to albums/images
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitSettings)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
+        
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
@@ -197,6 +202,14 @@
     
     // Set colors, fonts, etc.
     [self paletteChanged];
+
+    // Set navigation buttons
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+}
+
+-(void)quitSettings
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)addConstraints
@@ -224,7 +237,7 @@
                                                                             views:views]];
     } else {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|-80-[title][by1][by2]-3-[usu]-10-[textView]-|"
+                                   constraintsWithVisualFormat:@"V:|-64-[title][by1][by2]-3-[usu]-10-[textView]-|"
                                    options:kNilOptions metrics:nil views:views]];
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
                                                                           options:kNilOptions

@@ -120,7 +120,7 @@
                                            views:@{@"admin" : adminLabel, @"description" : description}]];
             } else {
                 [self.view addConstraints:[NSLayoutConstraint
-                                           constraintsWithVisualFormat:@"V:|-80-[admin]-[description]"
+                                           constraintsWithVisualFormat:@"V:|-64-[admin]-[description]"
                                            options:kNilOptions metrics:nil
                                            views:@{@"admin" : adminLabel, @"description" : description}]];
             }

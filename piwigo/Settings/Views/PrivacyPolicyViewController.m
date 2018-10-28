@@ -12,12 +12,8 @@
 
 @interface PrivacyPolicyViewController () <UITextViewDelegate>
 
-@property (nonatomic, strong) UILabel *piwigoTitle;
-@property (nonatomic, strong) UILabel *byLabel1;
-@property (nonatomic, strong) UILabel *byLabel2;
-@property (nonatomic, strong) UILabel *versionLabel;
-
 @property (nonatomic, strong) UITextView *textView;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
 @end
 
@@ -29,34 +25,6 @@
     if(self)
     {
         self.title = NSLocalizedString(@"settings_privacy", @"Policy Privacy");
-        
-        self.piwigoTitle = [UILabel new];
-        self.piwigoTitle.translatesAutoresizingMaskIntoConstraints = NO;
-        self.piwigoTitle.font = [UIFont piwigoFontLarge];
-        self.piwigoTitle.textColor = [UIColor piwigoOrange];
-        self.piwigoTitle.text = NSLocalizedString(@"settings_appName", @"Piwigo Mobile");
-        [self.view addSubview:self.piwigoTitle];
-        
-        self.byLabel1 = [UILabel new];
-        self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
-        self.byLabel1.font = [UIFont piwigoFontSmall];
-        self.byLabel1.text = NSLocalizedStringFromTableInBundle(@"authors1", @"About", [NSBundle mainBundle], @"By Spencer Baker, Olaf Greck,");
-        [self.view addSubview:self.byLabel1];
-        
-        self.byLabel2 = [UILabel new];
-        self.byLabel2.translatesAutoresizingMaskIntoConstraints = NO;
-        self.byLabel2.font = [UIFont piwigoFontSmall];
-        self.byLabel2.text = NSLocalizedStringFromTableInBundle(@"authors2", @"About", [NSBundle mainBundle], @"and Eddy Lelièvre-Berna");
-        [self.view addSubview:self.byLabel2];
-        
-        self.versionLabel = [UILabel new];
-        self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.versionLabel.font = [UIFont piwigoFontTiny];
-        [self.view addSubview:self.versionLabel];
-        
-        NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-        self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
         
         self.textView = [UITextView new];
         self.textView.restorationIdentifier = @"thanks+licenses";
@@ -209,6 +177,8 @@
         [privacyAttributedString appendAttributedString:spacerAttributedString];
 
         NSString *contactString3 = NSLocalizedStringFromTableInBundle(@"contact_email", @"PrivacyPolicy", [NSBundle mainBundle], @"Contact email");
+        NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
         NSString *subject = [[NSString stringWithFormat:@"%@ %@ (%@) — %@", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), appVersionString, appBuildString, NSLocalizedString(@"settings_privacy", @"Policy Privacy")] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
         NSString *mailTo = [NSString stringWithFormat:@"mailto:%@?subject=%@", contactString3, subject];
         NSMutableAttributedString *contactAttributedString3 = [[NSMutableAttributedString alloc] initWithString:contactString3 attributes:@{NSFontAttributeName:[UIFont piwigoFontSmall],
@@ -216,6 +186,27 @@
         [privacyAttributedString appendAttributedString:contactAttributedString3];
         [privacyAttributedString appendAttributedString:spacerAttributedString];
 
+        // Piwigo-Mobile URLs
+        NSRange noRange = {NSNotFound, 0};
+        NSURL *iOS_URL = [NSURL URLWithString:@"https://github.com/Piwigo/Piwigo-Mobile"];
+        NSRange iOS_Range = [privacyAttributedString.string rangeOfString:@"Piwigo-Mobile"];
+        while (!NSEqualRanges(iOS_Range, noRange)) {
+            [privacyAttributedString addAttribute:NSLinkAttributeName value:iOS_URL range:iOS_Range];
+            NSInteger nextCharPos = iOS_Range.location + iOS_Range.length;
+            if (nextCharPos >= [privacyAttributedString.string length]) break;
+            iOS_Range = [privacyAttributedString.string rangeOfString:@"Piwigo-Mobile" options:NSLiteralSearch range:NSMakeRange(nextCharPos, [privacyAttributedString.string length] - nextCharPos)];
+        }
+        
+        // Piwigo-Android URLs
+        NSURL *Android_URL = [NSURL URLWithString:@"https://github.com/Piwigo/Piwigo-Android"];
+        NSRange Android_Range = [privacyAttributedString.string rangeOfString:@"Piwigo-Android"];
+        while (!NSEqualRanges(Android_Range, noRange)) {
+            [privacyAttributedString addAttribute:NSLinkAttributeName value:Android_URL range:Android_Range];
+            NSInteger nextCharPos = Android_Range.location + Android_Range.length;
+            if (nextCharPos >= [privacyAttributedString.string length]) break;
+            Android_Range = [privacyAttributedString.string rangeOfString:@"Piwigo-Android" options:NSLiteralSearch range:NSMakeRange(nextCharPos, [privacyAttributedString.string length] - nextCharPos)];
+        }
+        
         self.textView.attributedText = privacyAttributedString;
         self.textView.editable = NO;
         self.textView.allowsEditingTextAttributes = NO;
@@ -230,6 +221,10 @@
         [self.view addSubview:self.textView];
         
         [self addConstraints];
+        
+        // Button for returning to albums/images
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitSettings)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -258,9 +253,6 @@
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Text color depdending on background color
-    self.byLabel1.textColor = [UIColor piwigoTextColor];
-    self.byLabel2.textColor = [UIColor piwigoTextColor];
-    self.versionLabel.textColor = [UIColor piwigoTextColor];
     self.textView.textColor = [UIColor piwigoTextColor];
     self.textView.backgroundColor = [UIColor piwigoBackgroundColor];
 }
@@ -271,39 +263,34 @@
     
     // Set colors, fonts, etc.
     [self paletteChanged];
+
+    // Set navigation buttons
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+}
+
+-(void)quitSettings
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)addConstraints
 {
     NSDictionary *views = @{
-                            @"title" : self.piwigoTitle,
-                            @"by1" : self.byLabel1,
-                            @"by2" : self.byLabel2,
-                            @"usu" : self.versionLabel,
                             @"textView" : self.textView
                             };
     
-    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoTitle]];
-    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel1]];
-    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.byLabel2]];
-    [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.versionLabel]];
-    
     if (@available(iOS 11, *)) {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|-[title][by1][by2]-3-[usu]-10-[textView]-|"
+                                   constraintsWithVisualFormat:@"V:|-[textView]-|"
                                    options:kNilOptions metrics:nil views:views]];
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textView]-|"
-                                                                          options:kNilOptions
-                                                                          metrics:nil
-                                                                            views:views]];
+                                   options:kNilOptions metrics:nil views:views]];
     } else {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|-80-[title][by1][by2]-3-[usu]-10-[textView]-|"
+                                   constraintsWithVisualFormat:@"V:|-64-[textView]-|"
                                    options:kNilOptions metrics:nil views:views]];
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[textView]-15-|"
-                                                                          options:kNilOptions
-                                                                          metrics:nil
-                                                                            views:views]];
+                                   options:kNilOptions metrics:nil views:views]];
     }
 }
 
