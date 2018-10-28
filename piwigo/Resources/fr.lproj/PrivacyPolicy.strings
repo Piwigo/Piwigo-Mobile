@@ -40,7 +40,7 @@
 
 "why_title" = "Pourquoi l'application mobile stocke-t-elle des données?";
 
-"why_text1" = "Les Applications stockent uniquement des données destinées à satisfaire une intention: accéder à une galerie Piwigo hébergée sur un serveur Web étranger. Aucune donnée n'est collectée, transmise ou stockée si elle n'est pas requise pour accéder à la galerie.";
+"why_text1" = "Les Applications stockent uniquement des données destinées à satisfaire une intention: accéder à une galerie Piwigo hébergée sur un serveur Web distant. Aucune donnée n'est collectée, transmise ou stockée si elle n'est pas requise pour accéder à la galerie.";
 
 "why_text2" = "Lorsque vous accédez aux Applications, vos informations personnelles ne sont pas collectées par le biais de technologies de suivi. Nous utilisons uniquement des mécanismes de mise en cache pour personnaliser les applications et améliorer votre expérience. Vous pouvez désactiver ou effacer les caches, mais sachez qu'une telle action pourrait affecter la disponibilité et les fonctionnalités des Applications.";
 
