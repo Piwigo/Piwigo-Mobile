@@ -4,7 +4,7 @@
 Last updated October 25, 2018
 
 ## Introduction
-Developers of Piwigo-Android and Piwigo-Mobile, we (or “us” or “our”) respect the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile applications (the “Applications”). Our names can be extracted from the meta data in the git repositories and within the Applications.
+Developers of Piwigo-Android and Piwigo-Mobile, we (or “us” or “our”) respect the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile applications (the “Applications”). Our names can be extracted from the meta data in the git repositories and the Acknowledgements section within the Applications.
 
 Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Applications.
 
