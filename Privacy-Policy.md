@@ -53,4 +53,4 @@ If you have questions or comments about this Privacy Policy, please contact us a
 
      42 Rue des Vignes, 21800 Quetigny (France)
 
-     ios@piwigo.org
+     ios@piwigo.org — android@piwigo.org
