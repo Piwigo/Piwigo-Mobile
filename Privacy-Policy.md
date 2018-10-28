@@ -34,7 +34,7 @@ This Privacy Policy does not apply to the third-party online/mobile store from w
 
 ## Why does the mobile app store data?
 
- The Applications store only data to satisfy one intention: accessing a Piwigo gallery hosted on a foreign webserver. No data is collected, transmitted or stored that is not required for its intended functionality.
+ The Applications store only data to satisfy one intention: accessing a Piwigo gallery hosted on a remote webserver. No data is collected, transmitted or stored that is not required for its intended functionality.
  
  When you access the Applications, your personal information is not collected through the use of tracking technology. We only use caching mechanisms to help customize the Applications and improve your experience. You can disable or clear caches, but be aware that such action could affect the availability and functionality of the Applications.
 
