@@ -513,6 +513,8 @@
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Informationen";
+"settings_twitter" = "@piwigo";
+"settings_twitterURL" = "https://twitter.com/piwigo";
 "settings_contactUs" = "Kontakt";
 "settings_feedback" = "Rückmeldung";
 "settings_supportForum" = "Support-Forum";

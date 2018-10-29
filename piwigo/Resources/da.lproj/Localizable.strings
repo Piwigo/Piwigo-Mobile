@@ -25,7 +25,7 @@
 "alertRetryButton" = "Retry";
 "alertNextButton" = "Næste billede";
 "alertTryButton" = "Forsøg";
-"alertClearButton" = "Clear";
+"alertClearButton" = "Slet";
 
 // HUD views
 "loadingHUD_label" = "Indlæser…";
@@ -500,9 +500,9 @@
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Hukommelse";
 "settings_cacheMegabytes" = "MB";
-"settings_cacheClear" = "Clear Cache";
-"settings_cacheClearAll" = "Clear Image Cache";
-"settings_cacheClearMsg" = "Are you sure you want to clear the image cache? This will make albums and images take a while to load again.";
+"settings_cacheClear" = "Ryd cache";
+"settings_cacheClearAll" = "Ryd foto cache";
+"settings_cacheClearMsg" = "Er du sikker på du vil slette billedcache? Dette vil bevirke at albums og billeder skal genindlæses ved næste visning.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Farver";
@@ -513,14 +513,16 @@
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Oplysninger";
-"settings_contactUs" = "Contact Us";
-"settings_feedback" = "Feedback";
+"settings_twitter" = "@piwigo";
+"settings_twitterURL" = "https://twitter.com/piwigo";
+"settings_contactUs" = "iOS@piwigo.org";
+"settings_feedback" = "Tilbagemelding";
 "settings_supportForum" = "Supportforum";
 "settings_releaseNotes" = "Udgivelsesnoter";
 "settings_rateInAppStore" = "Vurder Piwigo Mobile";
 "settings_translateWithCrowdin" = "Oversæt Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum/";
 "settings_acknowledgements" = "Tak Til";
-"settings_privacy" = "Privacy Policy";
+"settings_privacy" = "Fortrolighedspolitik";
 "settings_users" = "Brugere";
 "settings_groups" = "Grupper";

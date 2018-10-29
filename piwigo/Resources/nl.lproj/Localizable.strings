@@ -24,8 +24,8 @@
 "alertAddButton" = "Toevoegen";
 "alertRetryButton" = "Probeer opnieuw";
 "alertNextButton" = "Volgende foto";
-"alertTryButton" = "Proberen";
-"alertClearButton" = "Clear";
+"alertTryButton" = "Probeer";
+"alertClearButton" = "Wissen";
 
 // HUD views
 "loadingHUD_label" = "Bezig met laden…";
@@ -37,7 +37,7 @@
 
 // Errors
 "internetErrorGeneral_title" = "Verbindingsfout";
-"internetErrorGeneral_broken" = "Sorry, de verbinding is verbroken. Probeer opnieuw aan te melden.";
+"internetErrorGeneral_broken" = "Sorry, de verbinding is verbroken. Probeer opnieuw in te loggen.";
 "internetCancellingConnection_button" = "Verbinding afgebroken…";
 "internetCancelledConnection_button" = "Verbinding afgebroken";
 "internetCancelledConnection_title" = "Verbindingen afgebroken";
@@ -46,14 +46,14 @@
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
-"login" = "Aanmelden";
+"login" = "Inloggen";
 "login_serverPlaceholder" = "voorbeeld.com";
 "login_userPlaceholder" = "Gebruikersnaam (optioneel)";
-"login_passwordPlaceholder" = "Wachtwoord (optioneel)";
+"login_passwordPlaceholder" = "Wachtwoord optioneel";
 "login_loggingIn" = "Bezig met aanmelden...";
 "login_connecting" = "Bezig met verbinden";
 "login_newSession" = "Sessie openen";
-"login_communityParameters" = "Community Parameters";
+"login_communityParameters" = "Gemeenschap Parameters";
 "login_serverParameters" = "Piwigo parameters";
 "login_connectionChanged" = "Verbinding gewijzigd!";
 "loginHTTP_title" = "HTTP Referenties";
@@ -63,7 +63,7 @@
 
 // Login — Errors
 "serverURLerror_title" = "Onjuiste URL";
-"serverURLerror_message" = "Corrigeer het adres van de server van het web van Piwigo.";
+"serverURLerror_message" = "Corrigeer het adres van de server van Piwigo.";
 "serverMethodsError_title" = "Onbekende methoden";
 "serverMethodsError_message" = "Server methoden verkrijgen mislukt. Problemen met de Piwigo-server?";
 
@@ -500,9 +500,9 @@
 "settings_cacheDisk" = "Schijf";
 "settings_cacheMemory" = "Geheugen";
 "settings_cacheMegabytes" = "MB";
-"settings_cacheClear" = "Clear Cache";
-"settings_cacheClearAll" = "Clear Image Cache";
-"settings_cacheClearMsg" = "Are you sure you want to clear the image cache? This will make albums and images take a while to load again.";
+"settings_cacheClear" = "Cache wissen";
+"settings_cacheClearAll" = "Wis foto-cache";
+"settings_cacheClearMsg" = "Weet je zeker dat je de foto-cache wilt wissen? Dit zorgt er voor dat het opnieuw laden van albums en foto's een tijd duurt.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Kleuren";
@@ -513,14 +513,16 @@
 // Settings — Information
 "settings_appName" = "Piwigo Mobiel";
 "settingsHeader_about" = "Informatie";
-"settings_contactUs" = "Contact Us";
-"settings_feedback" = "Feedback";
+"settings_twitter" = "@piwigo";
+"settings_twitterURL" = "https://twitter.com/piwigo";
+"settings_contactUs" = "iOS@piwigo.org";
+"settings_feedback" = "Terugkoppeling";
 "settings_supportForum" = "Ondersteuningsforum";
 "settings_releaseNotes" = "Uitgave opmerkingen";
 "settings_rateInAppStore" = "Waardeer Piwigo Mobiel";
 "settings_translateWithCrowdin" = "Vertaling Piwigo Mobiel";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Dank";
-"settings_privacy" = "Privacy Policy";
+"settings_privacy" = "Privacybeleid";
 "settings_users" = "Gebruikers";
 "settings_groups" = "Groepen";
