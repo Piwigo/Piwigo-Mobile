@@ -436,7 +436,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 1;
             break;
         case SettingsSectionAbout:
-            nberOfRows = 7;
+            nberOfRows = 8;
             break;
     }
     return nberOfRows;
@@ -1205,7 +1205,26 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 		{
             switch(indexPath.row)
             {
-                case 0:     // Contact Us
+                case 0:     // @piwigo
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"twitter"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_twitter", @"@piwigo");
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    //                    if ([Model sharedInstance].isAppLanguageRTL) {
+                    //                        cell.rightText = @"<";
+                    //                    } else {
+                    //                        cell.rightText = @">";
+                    //                    }
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Contact Us
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"contact"];
                     if(!cell)
@@ -1213,7 +1232,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [LabelTableViewCell new];
                     }
                     
-                    cell.leftText = NSLocalizedString(@"settings_contactUs", @"Contact Us");
+                    cell.leftText = NSLocalizedString(@"settings_contactUs", @"iOS@piwigo.org");
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     if (![MFMailComposeViewController canSendMail]) {
                         cell.leftLabel.textColor = [UIColor piwigoRightLabelColor];
@@ -1227,7 +1246,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Support Forum
+                case 2:     // Support Forum
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"support"];
                     if(!cell)
@@ -1246,7 +1265,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 2:     // Rate Piwigo Mobile
+                case 3:     // Rate Piwigo Mobile
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rate"];
                     if(!cell)
@@ -1265,7 +1284,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 3:     // Translate Piwigo Mobile
+                case 4:     // Translate Piwigo Mobile
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"translate"];
                     if(!cell)
@@ -1284,7 +1303,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 4:     // Release Notes
+                case 5:     // Release Notes
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"release"];
                     if(!cell)
@@ -1303,7 +1322,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 5:     // Acknowledgements
+                case 6:     // Acknowledgements
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"thanks"];
                     if(!cell)
@@ -1322,7 +1341,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 6:     // Privacy Policy
+                case 7:     // Privacy Policy
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
                     if(!cell)
@@ -1451,17 +1470,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         {
             switch(indexPath.row)
             {
-                case 0:     // Contact Us
+                case 1:     // Contact Us
                 {
                     result = [MFMailComposeViewController canSendMail] ? YES : NO;
                     break;
                 }
-                case 1:     // Support Forum
-                case 2:     // Rate Piwigo Mobile
-                case 3:     // Translate Piwigo Mobile
-                case 4:     // Release Notes
-                case 5:     // Acknowledgements
-                case 6:     // Privacy Policy
+                case 0:     // Twitter
+                case 2:     // Support Forum
+                case 3:     // Rate Piwigo Mobile
+                case 4:     // Translate Piwigo Mobile
+                case 5:     // Release Notes
+                case 6:     // Acknowledgements
+                case 7:     // Privacy Policy
                 {
                     result = YES;
                     break;
@@ -1702,7 +1722,12 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 		{
             switch(indexPath.row)
             {
-                case 0:     // Prepare draft email
+                case 0:     // Open @piwigo on Twitter
+                {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:NSLocalizedString(@"settings_twitterURL", @"https://twitter.com/piwigo")]];
+                    break;
+                }
+                case 1:     // Prepare draft email
                 {
                     if ([MFMailComposeViewController canSendMail]) {
                         MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
@@ -1725,35 +1750,35 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
                     break;
                 }
-                case 1:     // Open Piwigo support forum webpage with default browser
+                case 2:     // Open Piwigo support forum webpage with default browser
                 {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:NSLocalizedString(@"settings_pwgForumURL", @"http://piwigo.org/forum")]];
                     break;
                 }
-                case 2:     // Open Piwigo App Store page for rating
+                case 3:     // Open Piwigo App Store page for rating
                 {
                     // See https://itunes.apple.com/us/app/piwigo/id472225196?ls=1&mt=8
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/piwigo/id472225196?action=write-review"]];
                     break;
                 }
-                case 3:     // Open Piwigo Crowdin page for translating
+                case 4:     // Open Piwigo Crowdin page for translating
                 {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
                     break;
                 }
-                case 4:     // Open Release Notes page
+                case 5:     // Open Release Notes page
                 {
                     ReleaseNotesViewController *releaseNotesVC = [ReleaseNotesViewController new];
                     [self.navigationController pushViewController:releaseNotesVC animated:YES];
                     break;
                 }
-                case 5:     // Open Acknowledgements page
+                case 6:     // Open Acknowledgements page
                 {
                     AboutViewController *aboutVC = [AboutViewController new];
                     [self.navigationController pushViewController:aboutVC animated:YES];
                     break;
                 }
-                case 6:     // Open Privacy Policy page
+                case 7:     // Open Privacy Policy page
                 {
                     PrivacyPolicyViewController *aboutVC = [PrivacyPolicyViewController new];
                     [self.navigationController pushViewController:aboutVC animated:YES];
