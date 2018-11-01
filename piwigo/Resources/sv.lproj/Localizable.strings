@@ -25,6 +25,7 @@
 "alertRetryButton" = "Försök igen";
 "alertNextButton" = "Nästa bild";
 "alertTryButton" = "Prova";
+"alertClearButton" = "Rensa";
 
 // HUD views
 "loadingHUD_label" = "Laddar…";
@@ -499,6 +500,9 @@
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Minne";
 "settings_cacheMegabytes" = "MB";
+"settings_cacheClear" = "Rensa cache";
+"settings_cacheClearAll" = "Töm bildcache";
+"settings_cacheClearMsg" = "Är du säker på att du vill rensa bild-cacheminnet? Detta betyder att album och bilder kommer att ta en stund att ladda igen.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Färger";
@@ -509,11 +513,16 @@
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
+"settings_twitter" = "@piwigo";
+"settings_twitterURL" = "https://twitter.com/piwigo";
+"settings_contactUs" = "iOS@piwigo.org";
+"settings_feedback" = "Återkoppling";
 "settings_supportForum" = "Supportforum";
 "settings_releaseNotes" = "Ändringslogg";
 "settings_rateInAppStore" = "Betygsätt Piwigo Mobile";
 "settings_translateWithCrowdin" = "Översätt Piwigo Mobile";
 "settings_pwgForumURL" = "http://Piwigo.org/forum";
 "settings_acknowledgements" = "Tack till och erkännanden";
+"settings_privacy" = "Integritetspolicy";
 "settings_users" = "Användare";
 "settings_groups" = "Grupper";

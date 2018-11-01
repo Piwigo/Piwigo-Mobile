@@ -16,6 +16,7 @@ public enum Model : String {
     iPod3              = "iPod 3",
     iPod4              = "iPod 4",
     iPod5              = "iPod 5",
+    iPod6              = "iPod 6",
     //iPad
     iPad2              = "iPad 2",
     iPad3              = "iPad 3",
@@ -82,6 +83,7 @@ public extension UIDevice {
             "iPod3,1"   : .iPod3,
             "iPod4,1"   : .iPod4,
             "iPod5,1"   : .iPod5,
+            "iPod6,1"   : .iPod6,
             //iPad
             "iPad2,1"   : .iPad2,
             "iPad2,2"   : .iPad2,

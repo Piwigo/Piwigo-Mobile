@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.4_text" = "Version 2.2.4\n\n• Bug fixes";
+"v2.2.5_text" = "Version 2.2.5\n\n• Send us feedback by email\n• Privacy policy\n• Bug fixes";
+
+"v2.2.4_text" = "Version 2.2.4\nSeptember 23, 2018\n\n• Bug fixes";
 
 "v2.2.3_text" = "Version 2.2.3\nAugust 27, 2018\n\n• New album design\n• Minor bug fixes and improvement of the interface";
 

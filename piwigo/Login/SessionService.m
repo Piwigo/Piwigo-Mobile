@@ -7,6 +7,7 @@
 //
 
 #import "SessionService.h"
+#import "PiwigoImageData.h"
 #import "Model.h"
 
 @implementation SessionService
@@ -138,7 +139,8 @@
                                   [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                               }
                               
-                              // Collect the list of available sizes — Starting with default values
+                              // Collect the list of available sizes
+                              // Let's start with default values
                               [Model sharedInstance].hasSquareSizeImages  = YES;
                               [Model sharedInstance].hasThumbSizeImages   = YES;
                               [Model sharedInstance].hasXXSmallSizeImages = NO;
@@ -149,6 +151,10 @@
                               [Model sharedInstance].hasXLargeSizeImages  = NO;
                               [Model sharedInstance].hasXXLargeSizeImages = NO;
                               
+                              // Determine the optimum image size for the current device
+                              NSInteger optimumSize = [PiwigoImageData optimumImageSizeForDevice];
+
+                              // Update list of available sizes and set default preview size
                               id availableSizesList = [[responseObject objectForKey:@"result"] objectForKey:@"available_sizes"];
                               for (NSString *size in availableSizesList) {
                                   if ([size isEqualToString:@"square"]) {
@@ -159,19 +165,51 @@
                                       [Model sharedInstance].hasXXSmallSizeImages = YES;
                                   } else if ([size isEqualToString:@"xsmall"]) {
                                       [Model sharedInstance].hasXSmallSizeImages = YES;
+                                      if ((optimumSize == kPiwigoImageSizeXSmall) &&
+                                          (![Model sharedInstance].didOptimiseImagePreviewSize)) {
+                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeXSmall;
+                                          [Model sharedInstance].didOptimiseImagePreviewSize = YES;
+                                      }
                                   } else if ([size isEqualToString:@"small"]) {
                                       [Model sharedInstance].hasSmallSizeImages = YES;
+                                      if ((optimumSize == kPiwigoImageSizeSmall) &&
+                                          (![Model sharedInstance].didOptimiseImagePreviewSize)) {
+                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeSmall;
+                                          [Model sharedInstance].didOptimiseImagePreviewSize = YES;
+                                      }
                                   } else if ([size isEqualToString:@"medium"]) {
                                       [Model sharedInstance].hasMediumSizeImages = YES;
+                                      if ((optimumSize == kPiwigoImageSizeMedium) &&
+                                          (![Model sharedInstance].didOptimiseImagePreviewSize)) {
+                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeMedium;
+                                          [Model sharedInstance].didOptimiseImagePreviewSize = YES;
+                                      }
                                   } else if ([size isEqualToString:@"large"]) {
                                       [Model sharedInstance].hasLargeSizeImages = YES;
+                                      if ((optimumSize == kPiwigoImageSizeLarge) &&
+                                          (![Model sharedInstance].didOptimiseImagePreviewSize)) {
+                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeLarge;
+                                          [Model sharedInstance].didOptimiseImagePreviewSize = YES;
+                                      }
                                   } else if ([size isEqualToString:@"xlarge"]) {
                                       [Model sharedInstance].hasXLargeSizeImages = YES;
+                                      if ((optimumSize == kPiwigoImageSizeXLarge) &&
+                                          (![Model sharedInstance].didOptimiseImagePreviewSize)) {
+                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeXLarge;
+                                          [Model sharedInstance].didOptimiseImagePreviewSize = YES;
+                                      }
                                   } else if ([size isEqualToString:@"xxlarge"]) {
                                       [Model sharedInstance].hasXXLargeSizeImages = YES;
+                                      if ((optimumSize == kPiwigoImageSizeXXLarge) &&
+                                          (![Model sharedInstance].didOptimiseImagePreviewSize)) {
+                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeXXLarge;
+                                          [Model sharedInstance].didOptimiseImagePreviewSize = YES;
+                                      }
                                   }
                               }
                           }
+                          [[Model sharedInstance] saveToDisk];
+
                           completion([responseObject objectForKey:@"result"]);
                       } else {
                           completion(nil);

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.4_text" = "Versie 2.2.4\n\n• Foutjes verbeterd";
+"v2.2.5_text" = "Versie 2.2.5\n\n• Stuur ons feedback per e-mail\n• Privacybeleid\n• Foutjes verbeterd";
+
+"v2.2.4_text" = "Versie 2.2.4\n23 September 2018\n\n• Foutjes verbeterd";
 
 "v2.2.3_text" = "Versie 2.2.3\n27 Augustus 2018\n\n• Nieuw albumontwerp\n• Kleine foutjes gerepareerd en verbetering van de interface";
 

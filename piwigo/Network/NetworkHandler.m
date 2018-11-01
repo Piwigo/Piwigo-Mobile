@@ -198,23 +198,74 @@ NSInteger const loadingViewTag = 899;
 //#endif
 }
 
-+(NSString*)encodedURL:(NSString*)originalURL
++(NSString*)encodedImageURL:(NSString*)originalURL
 {
-//    NSLog(@"encodedURL:%@", originalURL);
-    // Return nil if originalURL is nil
+    // Return nil if originalURL is nil and a placeholder will be used
     if (originalURL == nil) return nil;
     
     // Servers may return incorrect URLs (would lead to a crash)
+    // See https://tools.ietf.org/html/rfc3986#section-2
     NSURL *serverURL = [NSURL URLWithString:originalURL];
     if (serverURL == nil) {
-        // The URL is incorrect —> return image.jpg in server home page to avoid a crash
+        // URL not RFC compliant!
+        NSString *leftURL = originalURL;
+        NSString *authority, *path;
+        
+        // Remove protocol header
+        if ([originalURL hasPrefix:@"http://"]) {
+            leftURL = [leftURL stringByReplacingOccurrencesOfString:@"http://" withString:@"" options:0 range:NSMakeRange(0, [@"http://" length])];
+        }
+        if ([originalURL hasPrefix:@"https://"]) {
+            leftURL = [leftURL stringByReplacingOccurrencesOfString:@"https://" withString:@"" options:0 range:NSMakeRange(0, [@"https://" length])];
+        }
+
+        // Retrieve authority
+        NSRange range = [leftURL rangeOfString:@"/"];
+        if (range.location == NSNotFound) {
+            // No path, incomplete URL —> return image.jpg but should never happen
+            return [NSString stringWithFormat:@"%@%@/image.jpg",
+                    [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+        }
+        authority = [leftURL substringWithRange:NSMakeRange(0, range.location)];
+        leftURL = [leftURL stringByReplacingOccurrencesOfString:authority withString:@"" options:0 range:NSMakeRange(0, authority.length)];
+        
+        // The Piwigo server may not be in the root e.g. example.com/piwigo/…
+        // So we remove the path to avoid a duplicate if necessary
+        NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
+        if ([loginURL.path length] > 0) {
+            if ([leftURL hasPrefix:loginURL.path]) {
+                leftURL = [leftURL stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
+            }
+        }
+        
+        // Retrieve path
+        range = [leftURL rangeOfString:@"?"];
+        if (range.location == NSNotFound) {
+            // No query -> remaining string is a path
+            path = [leftURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
+            originalURL = [NSString stringWithFormat:@"%@%@%@",
+                           [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, path];
+        }
+        else {
+            // URL seems to contain a query
+            path = [leftURL substringWithRange:NSMakeRange(0, range.location+1)];
+            path = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
+            leftURL = [leftURL stringByReplacingOccurrencesOfString:path withString:@"" options:0 range:NSMakeRange(0, path.length)];
+            leftURL = [leftURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+            originalURL = [NSString stringWithFormat:@"%@%@%@%@",
+                           [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, path, leftURL];
+        }
+    }
+    
+    serverURL = [NSURL URLWithString:originalURL];
+    if (serverURL == nil) {
+        // The URL is still not RFC compliant —> return image.jpg to avoid a crash
         return [NSString stringWithFormat:@"%@%@/image.jpg",
                 [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
     }
 
-    // Servers may return image URLs different from those used to login
+    // Servers may return image URLs different from those used to login (e.g. wrong server settings)
     // We only keep the path+query because we only accept to download images from the same server
-//    NSLog(@"path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
     NSString* cleanPath = serverURL.path;
     if (serverURL.parameterString) {
         cleanPath = [cleanPath stringByAppendingString:serverURL.parameterString];
@@ -257,16 +308,20 @@ NSInteger const loadingViewTag = 899;
     }
     
     // Compile final URL using the one provided at login
-    NSString *encodedURL = [NSString stringWithFormat:@"%@%@%@%@",
+    NSString *encodedImageURL = [NSString stringWithFormat:@"%@%@%@%@",
                             [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
-//    NSLog(@"%@", encodedURL);
-    return encodedURL;
+    // For debugging purposes
+    if (![encodedImageURL isEqualToString:originalURL]) {
+        NSLog(@"=> %@", originalURL);
+        NSLog(@"   %@", encodedImageURL);
+        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
+    }
+    return encodedImageURL;
 }
 
 +(NSString*)getURLWithPath:(NSString*)originalURL withURLParams:(NSDictionary*)params
 {
-//    NSLog(@"getURLWithPath:%@ (%@)", originalURL, params);
     // Return nil if path is nil
     if (originalURL == nil) return nil;
     
@@ -280,7 +335,6 @@ NSInteger const loadingViewTag = 899;
     
     // Servers may return image URLs different from those used to login
     // We only keep the path because we only accept to download images from the same server
-    //    NSLog(@"path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
     NSString* cleanPath = serverURL.path;
     if (serverURL.parameterString) {
         cleanPath = [cleanPath stringByAppendingString:serverURL.parameterString];
@@ -334,7 +388,12 @@ NSInteger const loadingViewTag = 899;
     NSString *url = [NSString stringWithFormat:@"%@%@/ws.php?%@%@",
                      [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
-//    NSLog(@"%@", url);
+    // For debugging purposes
+//    if (![url isEqualToString:originalURL]) {
+//        NSLog(@"=> %@ (%@)", originalURL, params);
+//        NSLog(@"   %@", url);
+//        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
+//    }
     return url;
 }
 

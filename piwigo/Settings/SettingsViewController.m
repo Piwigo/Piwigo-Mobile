@@ -5,28 +5,31 @@
 //  Created by Spencer Baker on 1/20/15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
+#import <MessageUI/MessageUI.h>
+#import <sys/utsname.h>
 
-#import "AppDelegate.h"
-#import "SettingsViewController.h"
-#import "SessionService.h"
-#import "Model.h"
-#import "SelectPrivacyViewController.h"
-#import "TextFieldTableViewCell.h"
-#import "ButtonTableViewCell.h"
-#import "LabelTableViewCell.h"
 #import "AboutViewController.h"
-#import "ClearCache.h"
-#import "SliderTableViewCell.h"
-#import "SwitchTableViewCell.h"
 #import "AlbumService.h"
+#import "AppDelegate.h"
+#import "ButtonTableViewCell.h"
+#import "CategoriesData.h"
 #import "CategorySortViewController.h"
-#import "PiwigoImageData.h"
+#import "ClearCache.h"
+#import "DefaultCategoryViewController.h"
 #import "DefaultImageSizeViewController.h"
 #import "DefaultThumbnailSizeViewController.h"
-#import "DefaultCategoryViewController.h"
-#import "ReleaseNotesViewController.h"
 #import "ImagesCollection.h"
-#import "CategoriesData.h"
+#import "LabelTableViewCell.h"
+#import "Model.h"
+#import "PiwigoImageData.h"
+#import "PrivacyPolicyViewController.h"
+#import "ReleaseNotesViewController.h"
+#import "SelectPrivacyViewController.h"
+#import "SessionService.h"
+#import "SettingsViewController.h"
+#import "SliderTableViewCell.h"
+#import "SwitchTableViewCell.h"
+#import "TextFieldTableViewCell.h"
 
 typedef enum {
 	SettingsSectionServer,
@@ -34,8 +37,9 @@ typedef enum {
     SettingsSectionAlbums,
     SettingsSectionImages,
 	SettingsSectionImageUpload,
-    SettingsSectionCache,
     SettingsSectionColor,
+    SettingsSectionCache,
+    SettingsSectionClear,
 	SettingsSectionAbout,
 	SettingsSectionCount
 } SettingsSection;
@@ -47,7 +51,7 @@ typedef enum {
 NSString * const kHelpUsTitle = @"Help Us!";
 NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated in your language. Could you please help us complete the translation?";
 
-@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate>
+@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
@@ -220,6 +224,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     // Header strings
     NSString *titleString, *textString = @"";
     switch(section)
@@ -233,6 +247,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         case SettingsSectionLogout:
+        case SettingsSectionClear:
             return 14;
         case SettingsSectionAlbums:
             titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
@@ -243,11 +258,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionImageUpload:
             titleString = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
             break;
-        case SettingsSectionCache:
-            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
-            break;
         case SettingsSectionColor:
             titleString = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            break;
+        case SettingsSectionCache:
+            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
             break;
         case SettingsSectionAbout:
             titleString = NSLocalizedString(@"settingsHeader_about", @"Information");
@@ -281,6 +296,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     // Header strings
     NSString *titleString, *textString = @"";
     switch(section)
@@ -294,6 +319,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         case SettingsSectionLogout:
+        case SettingsSectionClear:
             return nil;
         case SettingsSectionAlbums:
             titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
@@ -304,11 +330,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionImageUpload:
             titleString = NSLocalizedString(@"settingsHeader_upload", @"Default Upload Settings");
             break;
-        case SettingsSectionCache:
-            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
-            break;
         case SettingsSectionColor:
             titleString = NSLocalizedString(@"settingsHeader_colors", @"Colors");
+            break;
+        case SettingsSectionCache:
+            titleString = NSLocalizedString(@"settingsHeader_cache", @"Cache Settings (Used/Total)");
             break;
         case SettingsSectionAbout:
             titleString = NSLocalizedString(@"settingsHeader_about", @"Information");
@@ -364,11 +390,23 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return SettingsSectionCount;
+    return SettingsSectionCount - (!([Model sharedInstance].hasAdminRights ||
+                                     [Model sharedInstance].usesCommunityPluginV29) ||
+                                   ![Model sharedInstance].hadOpenedSession);
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     NSInteger nberOfRows = 0;
     switch(section)
     {
@@ -388,14 +426,17 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
                                 ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
             break;
-        case SettingsSectionCache:
-            nberOfRows = 3;
-            break;
         case SettingsSectionColor:
             nberOfRows = 1 + ([Model sharedInstance].isDarkPaletteModeActive ? 1 + ([Model sharedInstance].switchPaletteAutomatically ? 1 : 0) : 0);
             break;
+        case SettingsSectionCache:
+            nberOfRows = 3;
+            break;
+        case SettingsSectionClear:
+            nberOfRows = 1;
+            break;
         case SettingsSectionAbout:
-            nberOfRows = 5;
+            nberOfRows = 8;
             break;
     }
     return nberOfRows;
@@ -408,8 +449,19 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = indexPath.section;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+    
     UITableViewCell *tableViewCell = [UITableViewCell new];
-	switch(indexPath.section)
+	switch(section)
 	{
 #pragma mark Server
 		case SettingsSectionServer:      // Piwigo Server
@@ -913,6 +965,120 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 			break;
 		}
 
+#pragma mark Colors
+        case SettingsSectionColor:      // Colors
+        {
+            NSInteger sectionOffset = !([Model sharedInstance].hasAdminRights ||
+                                        [Model sharedInstance].usesCommunityPluginV29) ||
+                                      ![Model sharedInstance].hadOpenedSession;
+            switch (indexPath.row)
+            {
+                case 0:     // Dark Palette Mode
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"darkPalette"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    cell.leftLabel.text = NSLocalizedString(@"settings_darkPalette", @"Dark Palette");
+                    [cell.cellSwitch setOn:[Model sharedInstance].isDarkPaletteModeActive];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+
+                        // Number of rows will change accordingly
+                        [Model sharedInstance].isDarkPaletteModeActive = switchState;
+
+                        // Position of the row(s) that should be added/removed
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
+                                                            inSection:SettingsSectionColor - sectionOffset];
+                        NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
+                                                            inSection:SettingsSectionColor - sectionOffset];
+                        if(switchState) {
+                            // Insert row in existing table
+                            if ([Model sharedInstance].switchPaletteAutomatically)
+                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            else
+                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        } else {
+                            // Remove row in existing table
+                            if ([Model sharedInstance].switchPaletteAutomatically)
+                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            else
+                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        }
+                        // Switch off auto mode if dark palette mode disabled
+                        if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
+
+                        // Store modified setting
+                        [[Model sharedInstance] saveToDisk];
+ 
+                        // Notify palette change
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate screenBrightnessChanged:nil];
+                    };
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Switch automatically ?
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchPalette"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    cell.leftLabel.text = NSLocalizedString(@"settings_switchPalette", @"Switch Automatically");
+                    [cell.cellSwitch setOn:[Model sharedInstance].switchPaletteAutomatically];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+
+                        // Number of rows will change accordingly
+                        [Model sharedInstance].switchPaletteAutomatically = switchState;
+
+                        // Store modified setting
+                        [[Model sharedInstance] saveToDisk];
+
+                        // Position of the row that should be added/removed
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
+                                                            inSection:SettingsSectionColor - sectionOffset];
+                        if(switchState) {
+                            // Insert row in existing table
+                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        } else {
+                            // Remove row in existing table
+                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        }
+                        
+                        // Notify palette change
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate screenBrightnessChanged:nil];
+                    };
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 2:     // Switch at Brightness ?
+                {
+                    CGFloat currentBrightness = [[UIScreen mainScreen] brightness] * 100;
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderPalette"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_brightness", @"Brightness");
+                    cell.slider.minimumValue = 0;
+                    cell.slider.maximumValue = 100;
+                    cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentBrightness)];
+                    cell.sliderCountSuffix = @"";
+                    cell.incrementSliderBy = 1;
+                    cell.sliderValue = [Model sharedInstance].switchPaletteThreshold;
+                    [cell.slider addTarget:self action:@selector(updatePaletteBrightnessThreshold:) forControlEvents:UIControlEventValueChanged];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+            }
+            break;
+        }
+
 #pragma mark Cache Settings
         case SettingsSectionCache:       // Cache Settings
         {
@@ -1008,109 +1174,24 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             break;
         }
 
-#pragma mark Colors
-        case SettingsSectionColor:      // Colors
+        case SettingsSectionClear:       // Cache Settings
         {
-            switch (indexPath.row)
+            switch(indexPath.row)
             {
-                case 0:     // Dark Palette Mode
+                case 0:     // Clear
                 {
-                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"darkPalette"];
-                    if(!cell) {
-                        cell = [SwitchTableViewCell new];
-                    }
-                    
-                    cell.leftLabel.text = NSLocalizedString(@"settings_darkPalette", @"Dark Palette");
-                    [cell.cellSwitch setOn:[Model sharedInstance].isDarkPaletteModeActive];
-                    cell.cellSwitchBlock = ^(BOOL switchState) {
-
-                        // Number of rows will change accordingly
-                        [Model sharedInstance].isDarkPaletteModeActive = switchState;
-
-                        // Position of the row(s) that should be added/removed
-                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
-                                                                         inSection:SettingsSectionColor];
-                        NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
-                                                                         inSection:SettingsSectionColor];
-                        if(switchState) {
-                            // Insert row in existing table
-                            if ([Model sharedInstance].switchPaletteAutomatically)
-                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            else
-                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        } else {
-                            // Remove row in existing table
-                            if ([Model sharedInstance].switchPaletteAutomatically)
-                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            else
-                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        }
-                        // Switch off auto mode if dark palette mode disabled
-                        if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
-
-                        // Store modified setting
-                        [[Model sharedInstance] saveToDisk];
- 
-                        // Notify palette change
-                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate screenBrightnessChanged:nil];
-                    };
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-                case 1:     // Switch automatically ?
-                {
-                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchPalette"];
-                    if(!cell) {
-                        cell = [SwitchTableViewCell new];
-                    }
-                    
-                    cell.leftLabel.text = NSLocalizedString(@"settings_switchPalette", @"Switch Automatically");
-                    [cell.cellSwitch setOn:[Model sharedInstance].switchPaletteAutomatically];
-                    cell.cellSwitchBlock = ^(BOOL switchState) {
-
-                        // Number of rows will change accordingly
-                        [Model sharedInstance].switchPaletteAutomatically = switchState;
-
-                        // Store modified setting
-                        [[Model sharedInstance] saveToDisk];
-
-                        // Position of the row that should be added/removed
-                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
-                                                                         inSection:SettingsSectionColor];
-                        if(switchState) {
-                            // Insert row in existing table
-                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        } else {
-                            // Remove row in existing table
-                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        }
-                        
-                        // Notify palette change
-                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate screenBrightnessChanged:nil];
-                    };
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-                case 2:     // Switch at Brightness ?
-                {
-                    CGFloat currentBrightness = [[UIScreen mainScreen] brightness] * 100;
-                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderPalette"];
+                    ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"clearCache"];
                     if(!cell)
                     {
-                        cell = [SliderTableViewCell new];
+                        cell = [ButtonTableViewCell new];
                     }
-                    cell.sliderName.text = NSLocalizedString(@"settings_brightness", @"Brightness");
-                    cell.slider.minimumValue = 0;
-                    cell.slider.maximumValue = 100;
-                    cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentBrightness)];
-                    cell.sliderCountSuffix = @"";
-                    cell.incrementSliderBy = 1;
-                    cell.sliderValue = [Model sharedInstance].switchPaletteThreshold;
-                    [cell.slider addTarget:self action:@selector(updatePaletteBrightnessThreshold:) forControlEvents:UIControlEventValueChanged];
+
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
+                        cell.buttonText = NSLocalizedString(@"settings_cacheClearAll", @"Clear image caches");
+                    } else {
+                        cell.buttonText = NSLocalizedString(@"settings_cacheClear", @"Clear caches");
+                    }
                     
                     tableViewCell = cell;
                     break;
@@ -1118,13 +1199,54 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         }
-
+            
 #pragma mark Information
         case SettingsSectionAbout:      // Information
 		{
             switch(indexPath.row)
             {
-                case 0:     // Support Forum
+                case 0:     // @piwigo
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"twitter"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_twitter", @"@piwigo");
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    //                    if ([Model sharedInstance].isAppLanguageRTL) {
+                    //                        cell.rightText = @"<";
+                    //                    } else {
+                    //                        cell.rightText = @">";
+                    //                    }
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Contact Us
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"contact"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_contactUs", @"iOS@piwigo.org");
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    if (![MFMailComposeViewController canSendMail]) {
+                        cell.leftLabel.textColor = [UIColor piwigoRightLabelColor];
+                    }
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 2:     // Support Forum
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"support"];
                     if(!cell)
@@ -1143,7 +1265,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Rate Piwigo Mobile
+                case 3:     // Rate Piwigo Mobile
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rate"];
                     if(!cell)
@@ -1162,7 +1284,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 2:     // Translate Piwigo Mobile
+                case 4:     // Translate Piwigo Mobile
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"translate"];
                     if(!cell)
@@ -1181,7 +1303,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 3:     // Release Notes
+                case 5:     // Release Notes
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"release"];
                     if(!cell)
@@ -1200,7 +1322,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 4:     // Acknowledgements
+                case 6:     // Acknowledgements
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"thanks"];
                     if(!cell)
@@ -1219,6 +1341,25 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
+                case 7:     // Privacy Policy
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
+                    if(!cell)
+                    {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    cell.leftText = NSLocalizedString(@"settings_privacy", @"Privacy Policy");
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    //                    if ([Model sharedInstance].isAppLanguageRTL) {
+                    //                        cell.rightText = @"<";
+                    //                    } else {
+                    //                        cell.rightText = @">";
+                    //                    }
+                    
+                    tableViewCell = cell;
+                    break;
+                }
             }
 		}
 	}
@@ -1227,6 +1368,130 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 	return tableViewCell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = indexPath.section;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+    
+    BOOL result = YES;
+    switch(section)
+    {
+#pragma mark Server
+        case SettingsSectionServer:         // Piwigo Server
+        {
+            result = NO;
+            break;
+        }
+        case SettingsSectionLogout:         // Logout Button
+        {
+            result = YES;
+            break;
+        }
+#pragma mark Albums
+        case SettingsSectionAlbums:         // Albums
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Default album
+                case 1:     // Default Sort
+                case 2:     // Default Thumbnail File
+                    result = YES;
+                    break;
+                case 3:     // Default Thumbnail Size
+                case 4:     // Display titles on thumbnails
+                    result = NO;
+                    break;
+            }
+            break;
+        }
+#pragma mark Images
+        case SettingsSectionImages:     // Images
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Default Size of Previewed Images
+                {
+                    result = YES;
+                    break;
+                }
+            }
+            break;
+        }
+#pragma mark Default Upload Settings
+        case SettingsSectionImageUpload:     // Default Upload Settings
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Author Name
+                case 2:     // Strip private Metadata
+                case 3:     // Resize Before Upload
+                case 4:     // Image Size slider or Compress Before Upload switch
+                case 5:     // Compress Before Upload switch or Image Quality slider or Delete Image switch
+                case 6:     // Image Quality slider or Delete Image switch
+                case 7:     // Delete image after upload
+                {
+                    result = NO;
+                    break;
+                }
+                case 1:     // Privacy Level
+                {
+                    result = YES;
+                    break;
+                }
+            }
+            break;
+        }
+#pragma mark Colors
+        case SettingsSectionColor:      // Colors
+        {
+            result = NO;
+            break;
+        }
+#pragma mark Cache Settings
+        case SettingsSectionCache:       // Cache Settings
+        {
+            result = NO;
+            break;
+        }
+        case SettingsSectionClear:       // Cache Settings
+        {
+            result = YES;
+            break;
+        }
+#pragma mark Information
+        case SettingsSectionAbout:      // Information
+        {
+            switch(indexPath.row)
+            {
+                case 1:     // Contact Us
+                {
+                    result = [MFMailComposeViewController canSendMail] ? YES : NO;
+                    break;
+                }
+                case 0:     // Twitter
+                case 2:     // Support Forum
+                case 3:     // Rate Piwigo Mobile
+                case 4:     // Translate Piwigo Mobile
+                case 5:     // Release Notes
+                case 6:     // Acknowledgements
+                case 7:     // Privacy Policy
+                {
+                    result = YES;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    return result;
+}
 
 #pragma mark - UITableView - Footer
 
@@ -1235,6 +1500,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // No footer by default (nil => 0 point)
     NSString *footer;
     
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     // Any footer text?
     switch(section)
     {
@@ -1278,6 +1553,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     footerLabel.adjustsFontSizeToFitWidth = NO;
     footerLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
     // Footer text
     switch(section)
     {
@@ -1324,7 +1609,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	switch(indexPath.section)
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = indexPath.section;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+    
+	switch(section)
 	{
 		case SettingsSectionServer:         // Piwigo Server
 			break;
@@ -1373,6 +1669,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             break;
         }
 		case SettingsSectionImageUpload:     // Default upload Settings
+        {
 			switch(indexPath.row)
 			{
 				case 1:                      // Default privacy selection
@@ -1385,64 +1682,105 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 				}
 			}
 			break;
-//        case SettingsSectionCache:       // Cache Settings
-//        {
-//            switch(indexPath.row)
-//            {
-//			if(indexPath.row == 2)
-//			{
-//				[UIAlertView showWithTitle:@"DELETE IMAGE CACHE"
-//								   message:@"Are you sure you want to clear your image cache?\nThis will make images take a while to load again."
-//						 cancelButtonTitle:@"No"
-//						 otherButtonTitles:@[@"Yes"]
-//								  tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-//									  if(buttonIndex == 1)
-//									  {
-//										  // set it to 0 to clear it
-//										  NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-//																							   diskCapacity:0
-//																								   diskPath:nil];
-//										  [NSURLCache setSharedURLCache:URLCache];
-//										  
-//										  // set it back
-//										  URLCache = [[NSURLCache alloc] initWithMemoryCapacity:500 * 1024 * 1024
-//																				   diskCapacity:500 * 1024 * 1024
-//																					   diskPath:nil];
-//										  [NSURLCache setSharedURLCache:URLCache];
-//									  }
-//								  }];
-//            }
-//            break;
-//        }
+        }
+        case SettingsSectionClear:          // Cache Clear
+        {
+            switch(indexPath.row)
+            {
+                case 0:                      // Clear cache
+                {
+                    UIAlertController* alert = [UIAlertController
+                        alertControllerWithTitle:NSLocalizedString(@"settings_cacheClear", @"Clear Image Cache")
+                        message:NSLocalizedString(@"settings_cacheClearMsg", @"Are you sure you want to clear the image cache? This will make albums and images take a while to load again.")
+                        preferredStyle:UIAlertControllerStyleAlert];
+                    
+                    UIAlertAction* dismissAction = [UIAlertAction
+                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                        style:UIAlertActionStyleCancel
+                        handler:nil ];
+                    
+                    UIAlertAction* clearAction = [UIAlertAction
+                          actionWithTitle:NSLocalizedString(@"alertClearButton", @"Clear")
+                          style:UIAlertActionStyleDestructive
+                          handler:^(UIAlertAction * action) {
+                              [[NSURLCache sharedURLCache] removeAllCachedResponses];
+                              [self.settingsTableView reloadData];
+                          }];
+
+                    // Add actions
+                    [alert addAction:dismissAction];
+                    [alert addAction:clearAction];
+                    
+                    // Present list of actions
+                    [self presentViewController:alert animated:YES completion:nil];
+                    break;
+                }
+            }
+            break;
+        }
 		case SettingsSectionAbout:       // About — Informations
 		{
             switch(indexPath.row)
             {
-                case 0:     // Open Piwigo support forum webpage with default browser
+                case 0:     // Open @piwigo on Twitter
+                {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:NSLocalizedString(@"settings_twitterURL", @"https://twitter.com/piwigo")]];
+                    break;
+                }
+                case 1:     // Prepare draft email
+                {
+                    if ([MFMailComposeViewController canSendMail]) {
+                        MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
+                        composeVC.mailComposeDelegate = self;
+                        
+                        // Configure the fields of the interface.
+                        [composeVC setToRecipients:@[NSLocalizedStringFromTableInBundle(@"contact_email", @"PrivacyPolicy", [NSBundle mainBundle], @"Contact email")]];
+                        NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+                        NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+                        [composeVC setSubject:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), NSLocalizedString(@"settings_feedback", @"Feedback")]];
+                        struct utsname systemInfo;
+                        uname(&systemInfo);
+                        NSString* deviceModel = [self deviceNameFromCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
+                        NSString *deviceOS = [[UIDevice currentDevice] systemName];
+                        NSString *deviceOSversion = [[UIDevice currentDevice] systemVersion];
+                        [composeVC setMessageBody:[NSString stringWithFormat:@"%@ %@(%@)\n%@ — %@ %@\n==============\n\n", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), appVersionString, appBuildString, deviceModel, deviceOS, deviceOSversion] isHTML:NO];
+                        
+                        // Present the view controller modally.
+                        [self presentViewController:composeVC animated:YES completion:nil];
+                    }
+                    break;
+                }
+                case 2:     // Open Piwigo support forum webpage with default browser
                 {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:NSLocalizedString(@"settings_pwgForumURL", @"http://piwigo.org/forum")]];
                     break;
                 }
-                case 1:     // Open Piwigo App Store page for rating
+                case 3:     // Open Piwigo App Store page for rating
                 {
                     // See https://itunes.apple.com/us/app/piwigo/id472225196?ls=1&mt=8
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/piwigo/id472225196?action=write-review"]];
                     break;
                 }
-                case 2:     // Open Piwigo Crowdin page for translating
+                case 4:     // Open Piwigo Crowdin page for translating
                 {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://crowdin.com/project/piwigo-mobile"]];
                     break;
                 }
-                case 3:     // Open Release Notes page
+                case 5:     // Open Release Notes page
                 {
                     ReleaseNotesViewController *releaseNotesVC = [ReleaseNotesViewController new];
                     [self.navigationController pushViewController:releaseNotesVC animated:YES];
                     break;
                 }
-                case 4:     // Open Acknowledgements page
+                case 6:     // Open Acknowledgements page
                 {
                     AboutViewController *aboutVC = [AboutViewController new];
+                    [self.navigationController pushViewController:aboutVC animated:YES];
+                    break;
+                }
+                case 7:     // Open Privacy Policy page
+                {
+                    PrivacyPolicyViewController *aboutVC = [PrivacyPolicyViewController new];
                     [self.navigationController pushViewController:aboutVC animated:YES];
                     break;
                 }
@@ -1545,6 +1883,101 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 	}
 }
 
+- (void)mailComposeController:(MFMailComposeViewController *)controller
+          didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    // Check the result or perform other tasks.
+    
+    // Dismiss the mail compose view controller.
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (NSString *)deviceNameFromCode:(NSString *)deviceCode
+{
+    // iPhone
+    if ([deviceCode isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
+    if ([deviceCode isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
+    if ([deviceCode isEqualToString:@"iPhone2,1"])    return @"iPhone 3GS";
+    if ([deviceCode isEqualToString:@"iPhone3,1"])    return @"iPhone 4";
+    if ([deviceCode isEqualToString:@"iPhone3,3"])    return @"Verizon iPhone 4";
+    if ([deviceCode isEqualToString:@"iPhone4,1"])    return @"iPhone 4S";
+    if ([deviceCode isEqualToString:@"iPhone5,1"])    return @"iPhone 5 (GSM)";
+    if ([deviceCode isEqualToString:@"iPhone5,2"])    return @"iPhone 5 (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone5,3"])    return @"iPhone 5c (GSM)";
+    if ([deviceCode isEqualToString:@"iPhone5,4"])    return @"iPhone 5c (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone6,1"])    return @"iPhone 5s (GSM)";
+    if ([deviceCode isEqualToString:@"iPhone6,2"])    return @"iPhone 5s (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone7,1"])    return @"iPhone 6";
+    if ([deviceCode isEqualToString:@"iPhone7,2"])    return @"iPhone 6 Plus";
+    if ([deviceCode isEqualToString:@"iPhone8,1"])    return @"iPhone 6s";
+    if ([deviceCode isEqualToString:@"iPhone8,2"])    return @"iPhone 6s Plus";
+    if ([deviceCode isEqualToString:@"iPhone8,4"])    return @"iPhone SE";
+    if ([deviceCode isEqualToString:@"iPhone9,1"])    return @"iPhone 7";
+    if ([deviceCode isEqualToString:@"iPhone9,2"])    return @"iPhone 7 Plus";
+    if ([deviceCode isEqualToString:@"iPhone9,3"])    return @"iPhone 7";
+    if ([deviceCode isEqualToString:@"iPhone9,4"])    return @"iPhone 7 Plus";
+    if ([deviceCode isEqualToString:@"iPhone10,1"])   return @"iPhone 8";
+    if ([deviceCode isEqualToString:@"iPhone10,2"])   return @"iPhone 8 Plus";
+    if ([deviceCode isEqualToString:@"iPhone10,3"])   return @"iPhone X";
+    if ([deviceCode isEqualToString:@"iPhone10,4"])   return @"iPhone 8";
+    if ([deviceCode isEqualToString:@"iPhone10,5"])   return @"iPhone 8 Plus";
+    if ([deviceCode isEqualToString:@"iPhone10,6"])   return @"iPhone X";
+    if ([deviceCode isEqualToString:@"iPhone11,2"])   return @"iPhone Xs";
+    if ([deviceCode isEqualToString:@"iPhone11,4"])   return @"iPhone Xs Max";
+    if ([deviceCode isEqualToString:@"iPhone11,6"])   return @"iPhone Xs Max";
+    if ([deviceCode isEqualToString:@"iPhone11,8"])   return @"iPhone Xr";
+
+    // iPad
+    if ([deviceCode isEqualToString:@"iPad1,1"])      return @"iPad";
+    if ([deviceCode isEqualToString:@"iPad2,1"])      return @"iPad 2 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad2,2"])      return @"iPad 2 (GSM)";
+    if ([deviceCode isEqualToString:@"iPad2,3"])      return @"iPad 2 (CDMA)";
+    if ([deviceCode isEqualToString:@"iPad2,4"])      return @"iPad 2 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad3,1"])      return @"iPad 3 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad3,2"])      return @"iPad 3 (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPad3,3"])      return @"iPad 3 (GSM)";
+    if ([deviceCode isEqualToString:@"iPad3,4"])      return @"iPad 4 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad3,5"])      return @"iPad 4 (GSM)";
+    if ([deviceCode isEqualToString:@"iPad3,6"])      return @"iPad 4 (GSM+CDMA)";
+    
+    // iPad Air
+    if ([deviceCode isEqualToString:@"iPad4,1"])      return @"iPad Air (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad4,2"])      return @"iPad Air (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad5,3"])      return @"iPad Air 2 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad5,4"])      return @"iPad Air 2 (Cellular)";
+
+    // iPad Pro
+    if ([deviceCode isEqualToString:@"iPad6,3"])      return @"iPad Pro 9.7 inch (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad6,4"])      return @"iPad Pro 9.7 inch (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,3"])      return @"iPad Pro 10.5 inch (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad7,4"])      return @"iPad Pro 10.5 inch (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad6,7"])      return @"iPad Pro 12.9 inch (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad6,8"])      return @"iPad Pro 12.9 inch (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,1"])      return @"iPad Pro 2 12.9 inch (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad7,2"])      return @"iPad Pro 2 12.9 inch (Cellular)";
+
+    // iPad mini
+    if ([deviceCode isEqualToString:@"iPad2,5"])      return @"iPad Mini (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad2,6"])      return @"iPad Mini (GSM)";
+    if ([deviceCode isEqualToString:@"iPad2,7"])      return @"iPad Mini (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPad4,4"])      return @"iPad mini 2G (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad4,5"])      return @"iPad mini 2G (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad5,1"])      return @"iPad mini 4 (WiFi)";
+    if ([deviceCode isEqualToString:@"iPad5,2"])      return @"iPad mini 4 (Cellular)";
+
+    // iPod
+    if ([deviceCode isEqualToString:@"iPod1,1"])      return @"iPod Touch 1G";
+    if ([deviceCode isEqualToString:@"iPod2,1"])      return @"iPod Touch 2G";
+    if ([deviceCode isEqualToString:@"iPod3,1"])      return @"iPod Touch 3G";
+    if ([deviceCode isEqualToString:@"iPod4,1"])      return @"iPod Touch 4G";
+    if ([deviceCode isEqualToString:@"iPod5,1"])      return @"iPod Touch 5G";
+    if ([deviceCode isEqualToString:@"iPod7,1"])      return @"iPod Touch 6G";
+    
+    // Simulator
+    if ([deviceCode isEqualToString:@"i386"])         return @"Simulator";
+    if ([deviceCode isEqualToString:@"x86_64"])       return @"Simulator";
+    
+    return deviceCode;
+}
 
 #pragma mark - UITextFieldDelegate Methods
 
@@ -1641,7 +2074,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (IBAction)updateDiskCacheSize:(id)sender
 {
-    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionCache]];
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = SettingsSectionCache;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
+    SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:section]];
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
@@ -1650,7 +2094,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (IBAction)updateMemoryCacheSize:(id)sender
 {
-    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingsSectionCache]];
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = SettingsSectionCache;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+    
+    SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:section]];
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     

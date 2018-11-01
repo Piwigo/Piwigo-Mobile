@@ -22,6 +22,11 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
    - with or without GPS metadata,
 - Upload videos.
 
+[Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) is compatible with the following [extensions](https://piwigo.org/ext/):
+
+- [Community](https://piwigo.org/ext/extension_view.php?eid=303): allows non-admin users to add photos
+- [piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610): adds video support
+
 ## Videos 
 For video upload using your iOS device, you need the plugin on your Piwigo server titled "[piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610)". After you have installed this plugin, you will need to allow for video file types to be uploaded by following [these instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos).
 

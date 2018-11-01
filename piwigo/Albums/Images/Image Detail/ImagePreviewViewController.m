@@ -103,12 +103,19 @@
                            });
         }
          success:^(NSURLSessionTask *task, UIImage *image) {
-             weakSelf.scrollView.imageView.image = image;
-             weakSelf.imageLoaded = YES;                      // Hide progress bar
+             if (image != nil) {
+                 weakSelf.scrollView.imageView.image = image;
+                 weakSelf.imageLoaded = YES;                      // Hide progress bar
+             }
+             else {     // Keep thumbnail or placeholder is image could not be loaded
+#if defined(DEBUG)
+                 NSLog(@"setImageScrollViewWithImageData: loaded image is nil!");
+#endif
+             }
          }
          failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-             NSLog(@"ImageDetail/GET Error: %@", error);
+             NSLog(@"setImageScrollViewWithImageData/GET Error: %@", error);
 #endif
          }
      ];

@@ -78,6 +78,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 // Default image preview size
+@property (nonatomic, assign) BOOL didOptimiseImagePreviewSize;
 @property (nonatomic, assign) NSInteger defaultImagePreviewSize;
 
 // Default image upload settings

@@ -12,9 +12,14 @@ target 'piwigo' do
   pod 'MGSwipeTableCell'
   pod 'SAMKeychain'
 
-  target 'piwigoTests' do
+  target 'piwigoAppStore' do
     inherit! :search_paths
     # Pods for testing
+  end
+
+  target 'piwigoGetPiwigo' do
+      inherit! :search_paths
+      # Pods for testing
   end
 
 end
