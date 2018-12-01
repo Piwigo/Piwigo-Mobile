@@ -51,6 +51,11 @@ FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamDescription;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamTags;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamMimeType;
 
+// Piwigo errors
+FOUNDATION_EXPORT NSInteger const kInvalidMethod;
+FOUNDATION_EXPORT NSInteger const kMissingParameter;
+FOUNDATION_EXPORT NSInteger const kInvalidParameter;
+
 // HUD tag:
 FOUNDATION_EXPORT NSInteger const loadingViewTag;
 
@@ -75,5 +80,6 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(void)showConnectionError:(NSError*)error;
++(void)showPiwigoError:(NSInteger)code forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams;
 
 @end

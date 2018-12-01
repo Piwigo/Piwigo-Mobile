@@ -66,6 +66,10 @@
 "serverURLerror_message" ="Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "Unknown Methods";
 "serverMethodsError_message" = "Failed to get server methods. Problem with Piwigo server?";
+"serverInvalidMethodError_message" = "Failed to call server method.";
+"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
+"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
+"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given web address";

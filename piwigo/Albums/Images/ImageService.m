@@ -53,20 +53,13 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
 						  completion(task, albumImages);
 					  }
-                      else {
-#if defined(DEBUG)
-                          NSLog(@"=> getImagesForAlbumId: %@ — Success but stat not Ok!", @(albumId));
-#endif
-                          // Check session (closed or IPv4/IPv6 switch)?
-                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
-                              [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
-                          {
-                              NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
-                              });
-                          }
-						  completion(task, nil);
+                      else
+                      {
+                          // Display Piwigo error
+                          NSInteger errorCode = [[responseObject objectForKey:@"err"] intValue];
+                          [NetworkHandler showPiwigoError:errorCode forPath:kPiwigoGetInfos andURLparams:nil];
+
+                          completion(task, nil);
 					  }
 				  }
 			  } failure:^(NSURLSessionTask *task, NSError *error) {
@@ -131,20 +124,13 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  }
 						  completion(task, imageData);
 					  }
-                      else {
-#if defined(DEBUG)
-                          NSLog(@"=> getImageInfoById: %@ — Success but stat not Ok!", @(imageId));
-#endif
-                          // Check session (closed or IPv4/IPv6 switch)?
-                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
-                              [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
-                          {
-                              NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
-                              });
-                          }
-						  completion(task, nil);
+                      else
+                      {
+                          // Display Piwigo error
+                          NSInteger errorCode = [[responseObject objectForKey:@"err"] intValue];
+                          [NetworkHandler showPiwigoError:errorCode forPath:kPiwigoGetInfos andURLparams:nil];
+
+                          completion(task, nil);
 					  }
 				  }
 			  }

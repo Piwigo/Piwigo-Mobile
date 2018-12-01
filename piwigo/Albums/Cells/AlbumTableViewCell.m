@@ -167,11 +167,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     }
     else
     {
-        [self downloadBackgroundImageOfAlbum:albumData forTheFirstTime:YES];
+        [self downloadBackgroundImageOfAlbum:albumData];
     }
 }
 
--(void)downloadBackgroundImageOfAlbum:(PiwigoAlbumData*)albumData forTheFirstTime:(BOOL)isFirstRequest
+-(void)downloadBackgroundImageOfAlbum:(PiwigoAlbumData*)albumData
 {
     __weak typeof(self) weakSelf = self;
     [ImageService getImageInfoById:albumData.albumThumbnailId
@@ -197,23 +197,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                        }];
                   }
               }
-              else {
-                  // Retry once
-                  if (isFirstRequest) {
-                      NSLog(@"setupWithAlbumData — Retry to get album bg image for album at %@", imageData.MediumPath);
-                      [self downloadBackgroundImageOfAlbum:albumData forTheFirstTime:NO];
-                  }
-              }
           }
                  onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                      NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
 #endif
-                     // Retry once
-                     if (isFirstRequest) {
-                         NSLog(@"setupWithAlbumData — Retry to get album bg image for album %ld", (long)albumData.albumId);
-                         [self downloadBackgroundImageOfAlbum:albumData forTheFirstTime:NO];
-                    }
           }];
 }
 

@@ -57,6 +57,11 @@ NSString * const kPiwigoImagesUploadParamDescription = @"description";
 NSString * const kPiwigoImagesUploadParamTags = @"tags";
 NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 
+// Piwigo errors:
+NSInteger const kInvalidMethod = 501;
+NSInteger const kMissingParameter = 1002;
+NSInteger const kInvalidParameter = 1003;
+
 // HUD tag:
 NSInteger const loadingViewTag = 899;
 
@@ -511,6 +516,31 @@ NSInteger const loadingViewTag = 899;
         topViewController = topViewController.presentedViewController;
     }
     [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
++(void)showPiwigoError:(NSInteger)code forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams
+{
+    NSError *error;
+    NSString *url = [self getURLWithPath:path withURLParams:urlParams];
+
+    switch (code) {
+        case kInvalidMethod:
+            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", NSLocalizedString(@"serverInvalidMethodError_message", @"Failed to call server method."), url]}];
+            break;
+            
+        case kMissingParameter:
+            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", NSLocalizedString(@"serverMissingParamError_message", @"Failed to execute server method with missing parameter."), url]}];
+            break;
+            
+        case kInvalidParameter:
+            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", NSLocalizedString(@"serverInvalidParamError_message", @"Failed to call server method with provided parameters."), url]}];
+            break;
+            
+        default:
+            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", NSLocalizedString(@"serverUnknownError_message", @"Unexpected error encountered while calling server method with provided parameters."), url]}];
+            break;
+    }
+    [self showConnectionError:error];
 }
 
 @end

@@ -40,15 +40,10 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   }
                   else
                   {
-                      // Check session (closed or IPv4/IPv6 switch)?
-                      if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
-                          [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
-                      {
-                          NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
-                          dispatch_async(dispatch_get_main_queue(), ^{
-                              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
-                          });
-                      }
+                      // Display Piwigo error
+                      NSInteger errorCode = [[responseObject objectForKey:@"err"] intValue];
+                      [NetworkHandler showPiwigoError:errorCode forPath:kPiwigoGetInfos andURLparams:nil];
+
                       if(completion)
                       {
                           completion(task, nil);
@@ -139,15 +134,10 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   }
                   else
                   {
-                      // Check session (closed or IPv4/IPv6 switch)?
-                      if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
-                          [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
-                      {
-                          NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
-                          dispatch_async(dispatch_get_main_queue(), ^{
-                              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
-                          });
-                      }
+                      // Display Piwigo error
+                      NSInteger errorCode = [[responseObject objectForKey:@"err"] intValue];
+                      [NetworkHandler showPiwigoError:errorCode forPath:kPiwigoGetInfos andURLparams:nil];
+
                       if(completion)
                       {
                           completion(task, nil);
@@ -270,16 +260,13 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
                           NSArray *albums = [[responseObject objectForKey:@"result"] objectForKey:@"categories"];
                           completion(task, albums);
-                      } else {
-                          // Check session (closed or IPv4/IPv6 switch)?
-                          if ([[responseObject objectForKey:@"err"] isEqualToString:@"401"] ||
-                              [[responseObject objectForKey:@"err"] isEqualToString:@"404"])
-                          {
-                              NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
-                              });
-                          }
+                      }
+                      else
+                      {
+                          // Display Piwigo error
+                          NSInteger errorCode = [[responseObject objectForKey:@"err"] intValue];
+                          [NetworkHandler showPiwigoError:errorCode forPath:kPiwigoGetInfos andURLparams:nil];
+
                           completion(task, nil);
                       }
                   }
