@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "ImageUploadViewController.h"
 #import "ImageUploadTableViewCell.h"
 #import "ImageUpload.h"
@@ -60,17 +61,18 @@
         [self.uploadBarButton setAccessibilityIdentifier:@"Upload"];
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
-	}
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+    }
 	return self;
 }
 
--(void)viewWillAppear:(BOOL)animated
+-(void)paletteChanged
 {
-	[super viewWillAppear:animated];
-	
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
+
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -80,16 +82,27 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-
-    // Navigation bar buttons
-    self.navigationItem.rightBarButtonItem = self.uploadBarButton;
-	
+    
     // Table view
     self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.uploadImagesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.uploadImagesTableView reloadData];
     
     // Progress bar
     [[ImageUploadProgressView sharedInstance] changePaletteMode];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+    // Set colors, fonts, etc.
+    [self paletteChanged];
+    
+    // Navigation bar buttons
+    self.navigationItem.rightBarButtonItem = self.uploadBarButton;
+	    
+    // Progress bar
     if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 	{
 		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
@@ -187,7 +200,7 @@
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontBold];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
-    headerLabel.backgroundColor = [UIColor piwigoBackgroundColor];
+//    headerLabel.backgroundColor = [UIColor piwigoBackgroundColor];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
