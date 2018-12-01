@@ -346,6 +346,22 @@ NSString * const kGetImageOrderDescending = @"desc";
 
     // Download and save image
     NSString *fileName = [[NSURL URLWithString:URLRequest] lastPathComponent];
+    if ([fileName containsString:@".php"]) {
+        // The URL does not contain a unique file name but a PHP request
+        // Might happen with full resolution images
+        fileName = [[NSURL URLWithString:image.MediumPath] lastPathComponent];
+        if ([fileName containsString:@".php"]) {
+            // The URL does not contain a unique file name but a PHP request
+            if ([image.fileName length] > 0) {
+                // Use the image file name returned by Piwigo
+                fileName = image.fileName;
+            } else {
+                // Should never reach this point
+                fileName = @"fileName.jpg";
+            }
+        }
+    }
+
     NSURLSessionDownloadTask *task =
         [[Model sharedInstance].imagesSessionManager downloadTaskWithRequest:request
                                 progress:progress
