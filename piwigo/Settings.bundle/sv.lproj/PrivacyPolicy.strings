@@ -1,0 +1,63 @@
+/* 
+  PrivacyPolicy.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 27/10/2018.
+  Copyright © 2018 Piwigo.org. All rights reserved.
+*/
+
+"privacy_text" = "Piwigo-Android och Piwigo-Mobil är ett gratis, fritt och öppet källkods-klientprogram för Piwigogallerier. Denna integritetspolicy gäller dessa infödda Android och iOS applikationer, ansluta till Piwigohemsidor som inte är under kontroll av författarna. Kolla motsvarande webbplatsers integritetspolicy innan du konfigurerar ett konto i Piwigo-Android eller Piwigo-Mobil för att ansluta till ett galleri.\n\nsenast uppdaterad 25 oktober 2018";
+
+"intro_title" = "Introduktion";
+
+"intro_text1" = "Utvecklarna av Piwigo-Android och Piwigo-Mobil, vi (eller ”oss” eller ”vår”) respekterar integriteten hos våra användare (”användare” eller ”du”). Denna sekretesspolicy förklarar hur vi samlar in, använder, lämnar ut och skyddar din information när du använder våra mobila applikationer (”programmen”). Våra namn kan extraheras från metadata i git-förråden och i avsnittet erkännanden inom programmen.";
+
+"intro_text2" = "Läs denna integritetspolicy noggrant. Om du inte samtycker med villkoren i denna integritetspolicy, ska du inte heller använda programmen.";
+
+"intro_text3" = "Vi förbehåller oss rätten att göra ändringar i denna integritetspolicy när som helst och oavsett anledning. Vi kommer att varna dig om eventuella ändringar genom att uppdatera datumet ”senast uppdaterad” i denna integritetspolicy.";
+
+"intro_text4" = "Du uppmuntras att regelbundet läsa igenom denna Integritetspolicy för att hålla dig informerad om uppdateringar. Du kommer att anses ha gjorts medveten om, kommer att omfattas och kommer att anses ha accepterat ändringarna i den reviderade Integritetspolicyn genom fortsatt användning av applikationerna efter det datum sådana reviderade integritetspolicy postats.";
+
+"intro_text5" = "Denna sekretesspolicy gäller inte tredje part online/mobil butiker där du installerar program eller gör betalningar, inklusive några i-app virtuella föremål, som också kan samla in och använda data om dig. Vi ansvarar inte för någon av den data som samlas in av någon sådan tredje part.";
+
+"what_title" = "Vilka uppgifter processas och sparas?";
+
+"what_subTitle1" = "Piwigo galleridata";
+
+"what_subText1a" = "Kontouppgifterna lagras av Applikationerna och skickas till de konfigurerade hemsidorna för att ansluta till en eller flera Piwigo-gallerier. Utöver detta lagras, bearbetas och överförs alla foton, videoklipp och andra filer som är markerade för nedladdning/uppladdning och det inmatade innehållet till den konfigurerade galleri-hemsidor.";
+
+"what_subTitle2" = "Platsinformation";
+
+"what_subText2a" = "Vi kan komma att begära tillgång till eller behörighet att spåra platsbaserad information från din mobila enhet, antingen kontinuerligt eller under användning av Programmen, för att tillhandahålla platsbaserade tjänster. Om du vill ändra vår tillgång eller behörighet kan du göra det i enhetens inställningar.";
+
+"what_subTitle3" = "Regler för mobila enheter";
+
+"what_subText3a" = "Applikationerna kan begära åtkomst eller tillåtelse till vissa funktioner från din mobilenhet, inklusive mobilenhetens bildbibliotek och fillagring, Android Kontohanterare, Apple Nyckelhanterare, utländska och molnbaserade lagringsmappar, geolokalisation och andra funktioner. Om du vill ändra vår tillgång eller behörighet kan du göra det i enhetens inställningar men vara medveten om att vissa åtkomster är nödvändiga för att ladda upp mediefiler från din mobil till Piwigo-galleriet eller för att lagra Piwigo-mediefiler i din mobil.";
+
+"what_subTitle4" = "Data från mobila enheter";
+
+"what_subText4a" = "När du kontaktar supportteamet kan enhetens information, t. ex. ditt mobilenhets-ID, modell och tillverkare, version av operativsystem, e-post, land, plats och annan information du väljer att skicka, överföras till utvecklingslaget för programmen. Utöver de data som uttryckligen delas av användaren med utvecklarna kommer inget innehåll att lagras, överföras eller behandlas av oss.";
+
+"why_title" = "Varför lagrar mobilappen data?";
+
+"why_text1" = "Applikationerna lagrar endast data för att tillfredsställa en avsikt: åtkomst till ett Piwigo-galleri som är värd på en fjärrwebbserver. Ingen data samlas in, överförs eller lagras som inte krävs för sin avsedda funktionalitet.";
+
+"why_text2" = "När du öppnar programmen samlas dina personuppgifter inte in genom användning av spårningsteknik. Vi använder endast cachemekanismer för att hjälpa till att anpassa programmen och förbättra din upplevelse. Du kan inaktivera eller rensa cachar, men var medveten om att sådan åtgärd kan påverka tillgängligheten och funktionaliteten i programmen.";
+
+"how_title" = "Hur skyddas data?";
+
+"how_text1" = "Applikationerna lagrar data lokalt på den enhet som den exekveras på. Du är ansvarig för att skydda lagrade data från obehörig åtkomst. Vi rekommenderar starkt att du använder HTTPS för att skydda data under överföring och programmen försöker använda krypterade anslutningar via HTTPS första gången användaren etablerar en anslutning till ett Piwigo-galleri. Att hålla certifikat och bibliotek för HTTPS-åtkomst uppdaterad är ansvarig för Piwigo-serverns operatör. När programmen inte kan använda HTTPS växlar de till HTTP och data krypteras inte under överföringen.";
+
+"how_text2" = "När du överför bilder till ett Piwigo-galleri kan bilder innehålla privata data som GPS-koordinater eller kommentarer. Programmen ger ett alternativ för att ta bort dessa data från bildfiler innan de laddas upp i avsnittet Inställningar. Det är användarens ansvar att avgöra om de privata uppgifterna laddas upp.";
+
+"security_title" = "Säkerhetsinformation";
+
+"security_text" = "Vi använder tekniska säkerhetsåtgärder för att skydda din personliga information. Medan vi har vidtagit rimliga åtgärder för att skydda den personliga informationen du lämnar till oss, ska du vara medveten om att inga säkerhetsåtgärder är perfekta eller ogenomträngliga trots våra ansträngningar, och ingen överföringsmetod kan garanteras mot eventuella avlyssningar eller andra typer av missbruk. All information som visas online är sårbar för avlyssning och missbruk av obehöriga parter. Därför kan vi inte garantera fullständig säkerhet om du lämnar personlig information.";
+
+"contact_title" = "Kontakta oss";
+
+"contact_text" = "Om du har frågor eller kommentarer om denna integritetspolicy, kontakta oss på:";
+
+"contact_address" = "Piwigo, 42 rue des Vignes, 21800 Quetigny (Frankrike)";
+
+"contact_email" = "ios@piwigo.org";
