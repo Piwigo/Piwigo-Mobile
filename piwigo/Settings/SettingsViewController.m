@@ -1735,15 +1735,30 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         
                         // Configure the fields of the interface.
                         [composeVC setToRecipients:@[NSLocalizedStringFromTableInBundle(@"contact_email", @"PrivacyPolicy", [NSBundle mainBundle], @"Contact email")]];
+                        
+                        // Collect version and build numbers
                         NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
                         NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-                        [composeVC setSubject:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), NSLocalizedString(@"settings_feedback", @"Feedback")]];
+                        
+                        // Compile ticket number from current date
+                        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                        [dateFormatter setDateFormat:@"yyyyMMddHHmm"];
+                        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
+                        NSDate *date = [NSDate date];
+                        NSString *ticketDate = [dateFormatter stringFromDate:date];
+
+                        // Set subject
+                        [composeVC setSubject:[NSString stringWithFormat:@"[Ticket#%@]: %@ %@", ticketDate, NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), NSLocalizedString(@"settings_feedback", @"Feedback")]];
+                        
+                        // Collect system and device data
                         struct utsname systemInfo;
                         uname(&systemInfo);
                         NSString* deviceModel = [self deviceNameFromCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
                         NSString *deviceOS = [[UIDevice currentDevice] systemName];
                         NSString *deviceOSversion = [[UIDevice currentDevice] systemVersion];
-                        [composeVC setMessageBody:[NSString stringWithFormat:@"%@ %@(%@)\n%@ — %@ %@\n==============\n\n", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), appVersionString, appBuildString, deviceModel, deviceOS, deviceOSversion] isHTML:NO];
+                        
+                        // Set message body
+                        [composeVC setMessageBody:[NSString stringWithFormat:@"%@ %@ (%@)\n%@ — %@ %@\n==============>>\n\n", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), appVersionString, appBuildString, deviceModel, deviceOS, deviceOSversion] isHTML:NO];
                         
                         // Present the view controller modally.
                         [self presentViewController:composeVC animated:YES completion:nil];

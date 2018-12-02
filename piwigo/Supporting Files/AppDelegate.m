@@ -245,8 +245,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 	return _loginVC;
 }
 
-// Updates the version number and build date in the app's settings bundle.
-// Call this just before returning from the didFinishLaunchingWithOptions method in the appDelegate implementation file.
+// Updates the version and build numbers in the app's settings bundle.
 - (void)setSettingsBundleData
 {
     // Get the Settings.bundle object
@@ -257,23 +256,11 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
     
-    // Dealing with the date
-//    NSString *dateFromSettings = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBuildDate"];
-//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-//    [dateFormatter setDateFormat:@"EEE MMM d HH:mm:ss zzz yyyy"];
-//    NSDate *date = [dateFormatter dateFromString:dateFromSettings];
-//    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
-//    [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
-//    NSString *buildDate = [dateFormatter stringFromDate:date];
-    
     // Create the version number
     NSString *versionNumberInSettings = [NSString stringWithFormat:@"%@ (%@)", appVersionString, appBuildString];
-//    NSLog(@"Build date: %@", buildDate);
     
     // Set the build date and version number in the settings bundle reflected in app settings.
     [defaults setObject:versionNumberInSettings forKey:@"version_prefs"];
-//    [defaults setObject:buildDate forKey:@"buildDate"];
-    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
