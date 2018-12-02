@@ -13,6 +13,7 @@
 #import "ImagesCollection.h"
 
 NSTimeInterval const kThirtyDays = 60 * 60 * 24 * 30.0;
+NSTimeInterval const kTwentyDays = 60 * 60 * 24 * 20.0;
 
 @interface Model()
 

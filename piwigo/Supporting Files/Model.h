@@ -11,6 +11,7 @@
 #import "CategorySortViewController.h"
 
 FOUNDATION_EXPORT NSTimeInterval const kThirtyDays;
+FOUNDATION_EXPORT NSTimeInterval const kTwentyDays;
 
 @class PHPhotoLibrary;
 
