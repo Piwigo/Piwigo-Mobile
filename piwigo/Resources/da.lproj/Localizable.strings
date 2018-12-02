@@ -66,6 +66,10 @@
 "serverURLerror_message" = "Ret venligst Piwigo web serveradressen.";
 "serverMethodsError_title" = "Ukendt Protokol";
 "serverMethodsError_message" = "Kunne ikke hente server protokol. Prøv at logge ind igen?";
+"serverInvalidMethodError_message" = "Kunne ikke ringe til servermetoden.";
+"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
+"serverInvalidParamError_message" = "Kunne ikke ringe til servermetoden med de angivne parametre.";
+"serverUnknownError_message" = "Uventet fejl opstod under kaldende server metode med angivne parametre.";
 
 "loginError_title" = "Log ind Mislykkedes";
 "loginError_message" = "Brugernavnet og adgangskoden er ikke korrekt";

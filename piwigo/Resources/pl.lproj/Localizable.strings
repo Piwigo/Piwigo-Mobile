@@ -66,6 +66,10 @@
 "serverURLerror_message" = "Popraw adres serwera sieci web Piwigo.";
 "serverMethodsError_title" = "Nieznane metody";
 "serverMethodsError_message" = "Nie udało się uzyskać metod serwera. Problem z serwerem Piwigo?";
+"serverInvalidMethodError_message" = "Failed to call server method.";
+"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
+"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
+"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
 
 "loginError_title" = "Logowanie nieudane";
 "loginError_message" = "Nazwa użytkownika i hasło nie pasują do podanego serwera";

@@ -66,6 +66,10 @@
 "serverURLerror_message" = "Bitte korrigieren Sie die Piwigo-Web-Server-Adresse.";
 "serverMethodsError_title" = "Unbekannte Methoden";
 "serverMethodsError_message" = "Fehler beim Abrufen der Servermethoden. Probleme mit dem Piwigo Server?";
+"serverInvalidMethodError_message" = "Server-Methode konnte nicht aufgerufen werden.";
+"serverMissingParamError_message" = "Ausführung der Servermethode mit fehlendem Parameter fehlgeschlagen.";
+"serverInvalidParamError_message" = "Fehler beim Aufruf der Servermethode mit den angegebenen Parametern.";
+"serverUnknownError_message" = "Beim Aufrufen der Servermethode mit den angegebenen Parametern ist ein unerwarteter Fehler aufgetreten.";
 
 "loginError_title" = "Anmeldung fehlgeschlagen";
 "loginError_message" = "Benutzername und Passwort stimmen für die angegebene Webadresse nicht überein";

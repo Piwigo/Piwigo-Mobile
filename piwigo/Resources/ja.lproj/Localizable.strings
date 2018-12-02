@@ -66,6 +66,10 @@
 "serverURLerror_message" = "Piwigoウェブサーバのアドレスを訂正して下さい";
 "serverMethodsError_title" = "不明なメソッド";
 "serverMethodsError_message" = "サーバーメソットの取得に失敗しました。Piwigoサーバの問題か？";
+"serverInvalidMethodError_message" = "Failed to call server method.";
+"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
+"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
+"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
 
 "loginError_title" = "ログインに失敗しました";
 "loginError_message" = "ユーザ名とパスワードが、指定したwebアドレスで一致しません";

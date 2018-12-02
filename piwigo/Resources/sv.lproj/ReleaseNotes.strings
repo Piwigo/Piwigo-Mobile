@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.5_text" = "Version 2.2.5\n\n• Skicka oss feedback via e-post\n• Integritetspolicy\n• Buggfixar";
+"v2.2.6_text" = "Version 2.2.6\n\n• Förbättrade översättningar och kompatibilitet med iOS 12\n• Mindre buggfixar och förbättring av gränssnittet";
+
+"v2.2.5_text" = "Version 2.2.5\n28 oktober 2018\n\n• Skicka oss feedback via e-post\n• Integritetspolicy\n• Buggfixar";
 
 "v2.2.4_text" = "Version 2.2.4\n23 september 2018\n\n• Buggfixar";
 

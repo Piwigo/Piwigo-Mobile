@@ -66,6 +66,10 @@
 "serverURLerror_message" = "Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "Metode Tidak Diketahui";
 "serverMethodsError_message" = "Gagal mendapatkan metode peladen. Masalah dengan peladen Piwigo?";
+"serverInvalidMethodError_message" = "Failed to call server method.";
+"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
+"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
+"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
 
 "loginError_title" = "Gagal Masuk";
 "loginError_message" = "Nama pengguna dan kata sandi tidak sesuai dengan alamat web yang diberikan";

@@ -66,6 +66,10 @@
 "serverURLerror_message" = "Please correct the Piwigo web server address.";
 "serverMethodsError_title" = "طرق غير معروفة";
 "serverMethodsError_message" = "أخفق الحصول على طرق الخادم. مشكلة مع خادم Piwigo ؟";
+"serverInvalidMethodError_message" = "Failed to call server method.";
+"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
+"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
+"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
 
 "loginError_title" = "أخفق تسجيل الدخول";
 "loginError_message" = "لا يتطابق اسم المستخدم وكلمة المرور مع عنوان الويب المحدد";
