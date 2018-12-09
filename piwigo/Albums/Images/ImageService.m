@@ -185,11 +185,13 @@ NSString * const kGetImageOrderDescending = @"desc";
     imageData.fullResPath = [NetworkHandler encodedImageURL:[[imageJson objectForKey:@"element_url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
 	
 	imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
-	imageData.author = [imageJson objectForKey:@"author"];
+
+    imageData.author = [imageJson objectForKey:@"author"];
 	if(!imageData.author || [imageData.author isKindOfClass:[NSNull class]])
 	{
 		imageData.author = @"";
 	}
+    
     imageData.imageDescription = [imageJson objectForKey:@"comment"];
 	if(!imageData.imageDescription || [imageData.imageDescription isKindOfClass:[NSNull class]])
 	{
@@ -216,43 +218,177 @@ NSString * const kGetImageOrderDescending = @"desc";
     // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
     // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
+    
+    // Square image
     imageData.SquarePath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"square"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.SquareWidth = [[[imageSizes objectForKey:@"square"] objectForKey:@"width"] integerValue];
-    imageData.SquareHeight = [[[imageSizes objectForKey:@"square"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"square"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.SquareWidth = [[[imageSizes objectForKey:@"square"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.SquareWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"square"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.SquareHeight = [[[imageSizes objectForKey:@"square"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.SquareHeight = 0;
+    }
 
+    // Thumbnail image
     imageData.ThumbPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"thumb"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.ThumbWidth = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"width"] integerValue];
-    imageData.ThumbHeight = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"thumb"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.ThumbWidth = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.ThumbWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"thumb"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.ThumbHeight = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.ThumbHeight = 0;
+    }
 
+    // Medium image
     imageData.MediumPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"medium"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.MediumWidth = [[[imageSizes objectForKey:@"medium"] objectForKey:@"width"] integerValue];
-    imageData.MediumHeight = [[[imageSizes objectForKey:@"medium"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"medium"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.MediumWidth = [[[imageSizes objectForKey:@"medium"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.MediumWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"medium"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.MediumHeight = [[[imageSizes objectForKey:@"medium"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.MediumHeight = 0;
+    }
 
+    // XX small image
     imageData.XXSmallPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"2small"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.XXSmallWidth = [[[imageSizes objectForKey:@"2small"] objectForKey:@"width"] integerValue];
-    imageData.XXSmallHeight = [[[imageSizes objectForKey:@"2small"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"2small"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.XXSmallWidth = [[[imageSizes objectForKey:@"2small"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.XXSmallWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"2small"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.XXSmallHeight = [[[imageSizes objectForKey:@"2small"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.XXSmallHeight = 0;
+    }
 
+    // X small image
     imageData.XSmallPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"xsmall"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.XSmallWidth = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"width"] integerValue];
-    imageData.XSmallHeight = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"xsmall"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.XSmallWidth = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.XSmallWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"xsmall"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.XSmallHeight = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.XSmallHeight = 0;
+    }
 
+    // Small image
     imageData.SmallPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"small"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.SmallWidth = [[[imageSizes objectForKey:@"small"] objectForKey:@"width"] integerValue];
-    imageData.SmallHeight = [[[imageSizes objectForKey:@"small"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"small"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.SmallWidth = [[[imageSizes objectForKey:@"small"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.SmallWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"small"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.SmallHeight = [[[imageSizes objectForKey:@"small"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.SmallHeight = 0;
+    }
 
+    // Large image
     imageData.LargePath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"large"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.LargeWidth = [[[imageSizes objectForKey:@"large"] objectForKey:@"width"] integerValue];
-    imageData.LargeHeight = [[[imageSizes objectForKey:@"large"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"large"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.LargeWidth = [[[imageSizes objectForKey:@"large"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.LargeWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"large"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.LargeHeight = [[[imageSizes objectForKey:@"large"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.LargeHeight = 0;
+    }
 
+    // X large image
     imageData.XLargePath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"xlarge"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.XLargeWidth = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"width"] integerValue];
-    imageData.XLargeHeight = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"xlarge"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.XLargeWidth = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.XLargeWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"xlarge"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.XLargeHeight = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.XLargeHeight = 0;
+    }
 
+    // XX large image
     imageData.XXLargePath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-    imageData.XXLargeWidth = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"width"] integerValue];
-    imageData.XXLargeHeight = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"height"] integerValue];
+    if (![[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.XXLargeWidth = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.XXLargeWidth = 0;
+    }
+    if (![[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.XXLargeHeight = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.XXLargeHeight = 0;
+    }
 
-	NSDictionary *categories = [imageJson objectForKey:@"categories"];
+    // Full resolution dimensions
+    if (![[imageSizes objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.fullResWidth = [[imageSizes objectForKey:@"width"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.fullResWidth = 0;
+    }
+    if (![[imageSizes objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.fullResHeight = [[imageSizes objectForKey:@"height"] integerValue];
+    }
+    else {
+        // When the image dimensions are unknown, use 0
+        imageData.fullResHeight = 0;
+    }
+
+    NSDictionary *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];
 	for(NSDictionary *category in categories)
 	{
