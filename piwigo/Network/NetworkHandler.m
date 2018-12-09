@@ -203,6 +203,69 @@ NSInteger const loadingViewTag = 899;
 //#endif
 }
 
++(void)createUploadSessionManager
+{
+    // Configuration
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.allowsCellularAccess = YES;
+    config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
+    config.HTTPMaximumConnectionsPerHost = 1;       // 4 is the advised default value
+    
+    // Create session manager
+    [Model sharedInstance].imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    
+    // Security policy
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    [[Model sharedInstance].imageUploadManager setSecurityPolicy:policy];
+    
+    // Add "text/plain" to response serializer
+    AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
+    serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    [Model sharedInstance].imageUploadManager.responseSerializer = serializer;
+    
+    // For servers performing HTTP Authentication
+    [[Model sharedInstance].imageUploadManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+        
+        // To remember app recieved anthentication challenge
+        [Model sharedInstance].performedHTTPauthentication = YES;
+//        NSLog(@"=> performedHTTPauthentication!");
+        
+        // HTTP basic authentification credentials
+        NSString *user = [Model sharedInstance].HttpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        
+        // Without HTTP credentials available, tries Piwigo credentials
+        if ((user == nil) || (user.length <= 0) || (password == nil)) {
+            user  = [Model sharedInstance].username;
+            password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
+            if (password == nil) password = @"";
+            
+            [Model sharedInstance].HttpUsername = user;
+            [[Model sharedInstance] saveToDisk];
+            [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        }
+        
+        // Supply requested credentials if not provided yet
+        if (challenge.previousFailureCount == 0) {
+            // Trying HTTP credentials…
+            *credential = [NSURLCredential
+                           credentialWithUser:user
+                           password:password
+                           persistence:NSURLCredentialPersistenceSynchronizable];
+            return NSURLSessionAuthChallengeUseCredential;
+        } else {
+            // HTTP credentials refused!
+            [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+            return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        }
+    }];
+//#if defined(DEBUG_SESSION)
+//    NSLog(@"=> Image upload session manager created");
+//#endif
+}
+
 +(NSString*)encodedImageURL:(NSString*)originalURL
 {
     // Return nil if originalURL is nil and a placeholder will be used
@@ -439,16 +502,17 @@ NSInteger const loadingViewTag = 899;
     return task;
 }
 
+// Only used to upload images
 +(NSURLSessionTask*)postMultiPart:(NSString*)path
                        parameters:(NSDictionary*)parameters
                          progress:(void (^)(NSProgress *))progress
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    NSURLSessionTask *task = [[Model sharedInstance].sessionManager
+    NSURLSessionTask *task = [[Model sharedInstance].imageUploadManager
                               POST:[NetworkHandler getURLWithPath:path withURLParams:nil]
                         parameters:nil
-                 constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
+         constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
                   {
                       [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
                                                   name:@"file"
@@ -479,7 +543,6 @@ NSInteger const loadingViewTag = 899;
                                        if (success) {
                                            success(task, responseObject);
                                        }
-//                                       [manager invalidateSessionCancelingTasks:YES];
                                    }
                                    failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG_SESSION)
@@ -491,7 +554,6 @@ NSInteger const loadingViewTag = 899;
                                        if(fail) {
                                            fail(task, error);
                                        }
-//                                       [manager invalidateSessionCancelingTasks:YES];
                                    }];
     
     return task;

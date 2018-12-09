@@ -12,82 +12,112 @@
 #import "PiwigoTagData.h"
 #import "CategoriesData.h"
 
+NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
+
 @implementation UploadService
 
-+(void)uploadImage:(NSData*)imageData
-   withInformation:(NSDictionary*)imageInformation
++(void)uploadImage:(NSMutableData *)imageData
+   withInformation:(NSDictionary *)imageInformation
 			onProgress:(void (^)(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks))onProgress
 		  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
 			 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	NSInteger chunkSize = 500 * 1024;
-	
-	NSInteger chunks = imageData.length / chunkSize;
-	if(imageData.length % chunkSize != 0) {
+    // Create upload session
+    [NetworkHandler createUploadSessionManager];        // 60s timeout, 1 connections max
+
+    // Calculate number of chunks
+    NSInteger chunks = imageData.length / kChunkSize;
+	if(imageData.length % kChunkSize != 0) {
 		chunks++;
 	}
 	
-	[self sendChunk:imageData WithInformation:[imageInformation mutableCopy]
-                                    forOffset:0
-                                      onChunk:0
-                               forTotalChunks:(NSInteger)chunks
-                                   onProgress:onProgress
-                                 OnCompletion:completion
-                                    onFailure:fail];
+    // Start sending data to server
+	[self sendChunk:imageData withInformation:[imageInformation mutableCopy]
+            onChunk:0 forTotalChunks:(NSInteger)chunks
+         onProgress:onProgress
+       OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+           // Close upload session
+           [[Model sharedInstance].imageUploadManager invalidateSessionCancelingTasks:YES];
+           // Done, return
+           if(completion) {
+               completion(task, response);
+           }
+       }
+          onFailure:^(NSURLSessionTask *task, NSError *error) {
+              // Close upload session
+              [[Model sharedInstance].imageUploadManager invalidateSessionCancelingTasks:YES];
+              // Done, return
+              if(fail) {
+                  fail(task, error);
+              }
+          }
+    ];
 }
 
-+(void)sendChunk:(NSData*)imageData
- WithInformation:(NSMutableDictionary*)imageInformation
-					  forOffset:(NSInteger)offset
-						onChunk:(NSInteger)count
-				 forTotalChunks:(NSInteger)chunks
++(void)sendChunk:(NSMutableData *)imageData withInformation:(NSMutableDictionary *)imageInformation
+         onChunk:(NSInteger)count forTotalChunks:(NSInteger)chunks
 					 onProgress:(void (^)(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks))onProgress
 				   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
 					  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	NSInteger chunkSize = 500 * 1024;
-	NSInteger length = [imageData length];
-	NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
-	NSData *chunk = [imageData subdataWithRange:NSMakeRange(offset, thisChunkSize)];
-	
-	NSInteger nextChunkNumber = count + 1;
-	offset += thisChunkSize;
-	
-	[imageInformation setObject:chunk forKey:kPiwigoImagesUploadParamData];
-	[imageInformation setObject:[NSString stringWithFormat:@"%@", @(count)] forKey:kPiwigoImagesUploadParamChunk];
-	[imageInformation setObject:[NSString stringWithFormat:@"%@", @(chunks)] forKey:kPiwigoImagesUploadParamChunks];
-	
-	[self postMultiPart:kPiwigoImagesUpload
-          parameters:imageInformation
+    NSInteger length = [imageData length];
+    NSUInteger thisChunkSize = length > kChunkSize ? kChunkSize : length;
+    NSData *chunk = [imageData subdataWithRange:NSMakeRange(0, thisChunkSize)];
+    
+    [imageInformation setObject:chunk
+                         forKey:kPiwigoImagesUploadParamData];
+    [imageInformation setObject:[NSString stringWithFormat:@"%@", @(count)]
+                         forKey:kPiwigoImagesUploadParamChunk];
+    [imageInformation setObject:[NSString stringWithFormat:@"%@", @(chunks)]
+                         forKey:kPiwigoImagesUploadParamChunks];
+
+    chunk = nil;
+    if (length == thisChunkSize) {
+        imageData = nil;
+    } else {
+        [imageData setData:[imageData subdataWithRange:NSMakeRange(thisChunkSize, length - thisChunkSize)]];
+    }
+
+    NSInteger nextChunkNumber = count + 1;
+
+    [self postMultiPart:kPiwigoImagesUpload
+             parameters:imageInformation
                progress:^(NSProgress *progress) {
                    dispatch_async(dispatch_get_main_queue(),
                                   ^(void){if(progress) onProgress((NSProgress *)progress, count + 1, chunks);});
                }
-             success:^(NSURLSessionTask *task, id responseObject) {
-                 if(count >= chunks - 1) {
-                      // done, return
-                      if(completion) {
-                          completion(task, responseObject);
-                      }
-                  } else {
-                      // keep going!
-                      [self sendChunk:imageData
-                      WithInformation:imageInformation
-                            forOffset:offset
-                              onChunk:nextChunkNumber
-                       forTotalChunks:chunks
+                success:^(NSURLSessionTask *task, id responseObject) {
+                    // Continue?
+                    if(count >= chunks - 1)
+                    {
+                        // Release memory
+                        [imageInformation removeAllObjects];
+
+                        // Done, return
+                        if(completion) {
+                            completion(task, responseObject);
+                        }
+                    }
+                    else
+                    {
+                        // Keep going!
+                        [self sendChunk:imageData withInformation:imageInformation
+                                onChunk:nextChunkNumber forTotalChunks:chunks
                            onProgress:onProgress
                          OnCompletion:completion
                             onFailure:fail];
-                  }
+                    }
+            
               } failure:^(NSURLSessionTask *task, NSError *error) {
+                  // Release memory
+                  [imageInformation removeAllObjects];
                   // failed!
                   if(fail)
                   {
                       fail(task, error);
                   }
               }
-  ];
+      ];
 }
 
 +(NSURLSessionTask*)setImageInfoForImageWithId:(NSString*)imageId

@@ -26,48 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "NO">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D82B8CD31A67820A000E47CA"
-               BuildableName = "piwigoTests.xctest"
-               BlueprintName = "piwigoTests"
-               ReferencedContainer = "container:piwigo.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AD1BB8F72130021F0053096B"
-               BuildableName = "PiwigoUIScreenshots.xctest"
-               BlueprintName = "PiwigoUIScreenshots"
-               ReferencedContainer = "container:piwigo.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AD30FD142131665A009AA30E"
-               BuildableName = "piwigoScreenshots.xctest"
-               BlueprintName = "piwigoScreenshots"
-               ReferencedContainer = "container:piwigo.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AD30FD2521316D7F009AA30E"
-               BuildableName = "PiwigoUITests.xctest"
-               BlueprintName = "PiwigoUITests"
-               ReferencedContainer = "container:piwigo.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -105,10 +65,12 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      disableMainThreadChecker = "YES"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
+      stopOnEveryUBSanitizerIssue = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
@@ -126,8 +88,8 @@
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Debug"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = ""
+      shouldUseLaunchSchemeArgsEnv = "NO"
+      savedToolIdentifier = "/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/Resources/templates/Leaks.tracetemplate"
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
       <BuildableProductRunnable

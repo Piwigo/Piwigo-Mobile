@@ -413,16 +413,16 @@
                          }
 
                          // Expected resource available
-                         [self modifyImage:image withData:imageData andObject:imageObject];
+                         [self modifyImage:image withData:[imageData mutableCopy] andObject:imageObject];
                      }
          ];
     }
 }
 
--(void)modifyImage:(ImageUpload *)image withData:(NSData *)originalData andObject:(UIImage *)originalObject
+-(void)modifyImage:(ImageUpload *)image withData:(NSMutableData *)originalData andObject:(UIImage *)originalObject
 {
     // Create CGI reference from image data (to retrieve complete metadata)
-    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) originalData, NULL);
+    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFMutableDataRef) originalData, NULL);
     if (!source) {
 #if defined(DEBUG_UPLOAD)
         NSLog(@"Error: Could not create source");
@@ -632,6 +632,7 @@
         NSLog(@"Error: Could not retrieve imageData object");
 #endif
             CFRelease(source);
+            CFRelease(objectSource);
             CFRelease(destination);
             CFRelease(imageDataRef);
             // Inform user and propose to cancel or continue
@@ -648,13 +649,17 @@
     
     // Release original CGImageSourceRef
     CFRelease(source);
+    CFRelease(objectSource);
     
     // Add metadata to final image
     NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
     
     // Release memory
+    imageCompressed = nil;
     imageMetadata = nil;
     originalObject = nil;
+    originalData = nil;
+    objectNSData = nil;
 
     // Try to determine MIME type from image data
     NSString *mimeType = @"";
@@ -674,7 +679,7 @@
     }
     
     // Upload image with tags and properties
-    [self uploadImage:image withData:imageData andMimeType:mimeType];
+    [self uploadImage:image withData:[imageData mutableCopy] andMimeType:mimeType];
 }
 
 #pragma mark - MIME type and file extension sniffing
@@ -914,7 +919,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                           NSArray *presets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset];
                           // This array never contains AVAssetExportPresetPassthrough,
                           // that is why we use determineCompatibilityOfExportPreset: before.
-                          //                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
+//                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
                           if ((maxPixels <= 640) && ([presets containsObject:AVAssetExportPreset640x480])) {
                               // Encode in 640x480 pixels — metadata will be lost
                               exportPreset = AVAssetExportPreset640x480;
@@ -960,7 +965,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                             
                                   // Modifies video before upload to Piwigo server
                                   [self modifyVideo:image withAVAsset:avasset beforeExporting:exportSession];
-                                  //                                  [self modifyVideo:image beforeExporting:exportSession];
+//                                  [self modifyVideo:image beforeExporting:exportSession];
                               }
                            ];
                       }
@@ -1000,13 +1005,12 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
     // Export temporary video for upload
-    __block NSData *assetData = nil;
     [exportSession exportAsynchronouslyWithCompletionHandler:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([exportSession status] == AVAssetExportSessionStatusCompleted)
             {
                 // Gets copy as NSData
-                assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
+                NSData *assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
                 assert(assetData.length != 0);
 #if defined(DEBUG_UPLOAD)
                 AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
@@ -1019,7 +1023,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                 [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
                 // Upload video with tags and properties
-                [self uploadImage:image withData:assetData andMimeType:mimeType];
+                [self uploadImage:image withData:[assetData mutableCopy] andMimeType:mimeType];
             }
             else if ([exportSession status] == AVAssetExportSessionStatusFailed)
             {
@@ -1050,7 +1054,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                     if (assetData && ((![Model sharedInstance].stripGPSdataOnUpload) || ([Model sharedInstance].stripGPSdataOnUpload && assetDoesNotContainGPSmetadata))) {
 
                         // Upload video with tags and properties
-                        [self uploadImage:image withData:assetData andMimeType:mimeType];
+                        [self uploadImage:image withData:[assetData mutableCopy] andMimeType:mimeType];
                         return;
                     } else {
                         // No data — Inform user that it won't succeed
@@ -1334,7 +1338,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 
 #pragma mark - Upload image/video
 
--(void)uploadImage:(ImageUpload *)image withData:(NSData *)imageData andMimeType:(NSString *)mimeType
+-(void)uploadImage:(ImageUpload *)image withData:(NSMutableData *)imageData andMimeType:(NSString *)mimeType
 {
     // Chek that the final image format will be accepted by the Piwigo server
     if (![[Model sharedInstance].uploadFileTypes containsString:[[image.image pathExtension] lowercaseString]]) {
@@ -1417,13 +1421,17 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                         });
                         
                     } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                        // What should we do?
                         ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
                         if (imageBeingUploaded.stopUpload) {
+                            
                             // Upload was cancelled by user
                             self.maximumImagesForBatch--;
+                            
                             // Remove image from caching
                             [self.cachingManager stopCachingImagesForAssets:@[image.imageAsset]
                                             targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeDefault options:self.options];
+                            
                             // Remove image from queue and upload next one
                             [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
                         }
@@ -1438,7 +1446,8 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                          forRetrying:YES
                                            withImage:image];
                         }
-                    }];
+                    }
+     ];
 }
 
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message forRetrying:(BOOL)retry withImage:(ImageUpload *)image
@@ -1895,7 +1904,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
             } else {
                 CFRelease(destination);
                 CFRelease(source);
-                return dest_data;
+                return [dest_data copy];
             }
         }
     }

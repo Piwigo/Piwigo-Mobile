@@ -63,6 +63,8 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
 
 +(void)createJSONdataSessionManager;
 +(void)createImagesSessionManager;
++(void)createUploadSessionManager;
+
 +(NSString*)encodedImageURL:(NSString*)originalURL;
 +(NSString*)getURLWithPath:(NSString*)originalURL withURLParams:(NSDictionary*)params;
 
