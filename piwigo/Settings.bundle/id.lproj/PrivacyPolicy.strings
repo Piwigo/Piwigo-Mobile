@@ -6,58 +6,58 @@
   Copyright © 2018 Piwigo.org. All rights reserved.
 */
 
-"privacy_text" = "Piwigo-Android and Piwigo-Mobile are free, libre and open source client applications for Piwigo galleries. This privacy policy applies to these native Android and iOS applications, connecting to Piwigo sites which are out of the control of the authors. Check the privacy policy of the corresponding sites before configuring an account in Piwigo-Android or Piwigo-Mobile to connect to a gallery.\n\nLast updated October 25, 2018";
+"privacy_text" = "Piwigo-Android dan Piwigo-Mobile adalah aplikasi gratis dan open source untuk galeri Piwigo. Kebijakan privasi ini berlaku untuk aplikasi asli Android dan iOS, yang menghubungkan ke situs Piwigo di luar kendali pencipta. Periksa kebijakan privasi dari situs yang sesuai sebelum mengonfigurasi akun di Piwigo-Android atau Piwigo-Mobile untuk terhubung ke galeri.";
 
-"intro_title" = "Introduction";
+"intro_title" = "Pendahuluan";
 
-"intro_text1" = "Developers of Piwigo-Android and Piwigo-Mobile, we (or “us” or “our”) respect the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile applications (the “Applications”). Our names can be extracted from the meta data in the git repositories and the Acknowledgements section within the Applications.";
+"intro_text1" = "Pengembang Piwigo-Android dan Piwigo-Mobile, kami menghormati privasi pengguna kami. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, mengungkapkan, dan menjaga informasi Anda ketika Anda menggunakan aplikasi mobile kami. Nama kami dapat ditemukan dari data meta di repositori git dan bagian Ucapan Terima Kasih dalam Aplikasi.";
 
-"intro_text2" = "Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Applications.";
+"intro_text2" = "Dimohon untuk membaca Kebijakan privasi ini dengna seksama. Jika anda tidak menyetujui Kebijakan Privasi ini, anda tidak dapat mengakses Aplikasi.";
 
-"intro_text3" = "We reserve the right to make changes to this Privacy Policy at any time and for any reason. We will alert you about any changes by updating the “Last updated” date of this Privacy Policy.";
+"intro_text3" = "Kami berhak mengubah Kebijakan Privasi ini kapanpun dan dengan alasan apapun. Kami akan memberitahu anda mengenai perubahan dengan memperbarui tanggal \"Terakhir diperbarui\" pada Kebijakan Privasi ini.";
 
-"intro_text4" = "You are encouraged to periodically review this Privacy Policy to stay informed of updates. You will be deemed to have been made aware of, will be subject to, and will be deemed to have accepted the changes in any revised Privacy Policy by your continued use of the Applications after the date such revised Privacy Policy is posted.";
+"intro_text4" = "Anda dianjurkan secara berkala untuk meninjau Kebijakan Privasi ini untuk tetap mendapat informasi tentang pembaruan. Anda akan dianggap telah mengetahui, tunduk, dan telah menerima perubahan dalam Kebijakan Privasi yang direvisi dengan terus menggunakan Aplikasi setelah tanggal revisi Kebijakan Privasi tersebut diposting.";
 
-"intro_text5" = "This Privacy Policy does not apply to the third-party online/mobile store from which you install the Applications or make payments, including any in-app virtual items, which may also collect and use data about you. We are not responsible for any of the data collected by any such third party.";
+"intro_text5" = "Kebijakan Privasi ini tidak berlaku untuk toko daring/seluler pihak ketiga tempat Anda menginstal Aplikasi atau melakukan pembayaran, termasuk item virtual dalam aplikasi, yang juga dapat mengumpulkan dan menggunakan data tentang Anda. Kami tidak bertanggung jawab atas segala data yang dikumpulkan oleh pihak ketiga tersebut.";
 
-"what_title" = "What data is processed and stored?";
+"what_title" = "Data apa yang diolah dan disimpan?";
 
-"what_subTitle1" = "Piwigo Gallery Data";
+"what_subTitle1" = "Data Galeri Piwigo";
 
-"what_subText1a" = "Account credentials are stored by the Applications and submitted to the configured sites to connect to one or several Piwigo galleries. Beside that, all the photos, videos and other files that are selected for download/upload and the entered content is stored, processed and transmitted to the configured gallery site.";
+"what_subText1a" = "Kredensial akun disimpan oleh Aplikasi dan diserahkan ke situs yang dikonfigurasi untuk terhubung ke satu atau beberapa galeri Piwigo. Selain itu, semua foto, video, dan file lain yang dipilih untuk diunduh / diunggah dan konten yang dimasukkan disimpan, diproses, dan dikirimkan ke situs galeri yang dikonfigurasikan.";
 
-"what_subTitle2" = "Geo-Location Information";
+"what_subTitle2" = "Informasi Geo-lokasi";
 
-"what_subText2a" = "We may request access or permission to and track location-based information from your mobile device, either continuously or while you are using the Applications, to provide location-based services. If you wish to change our access or permissions, you may do so in your device’s settings.";
+"what_subText2a" = "Kami dapat meminta akses atau izin untuk melacak informasi berbasis lokasi dari perangkat seluler Anda, baik secara terus menerus atau hanya ketika Anda menggunakan aplikasi, untuk menyediakan layanan berbasi lokasi. Jika anda ingin mengubah akses atau izin kami, anda dapat mengubahnya pada pengaturan perangkat Anda.";
 
-"what_subTitle3" = "Mobile Device Access";
+"what_subTitle3" = "Akses perangkat mobile";
 
-"what_subText3a" = "The Applications may request access or permission to certain features from your mobile device, including your mobile device’s photo library and file storage, the Android AccountManager, the Apple Keychain, foreign and cloud based storage folders, geolocalisation, and other features. If you wish to change our access or permissions, you may do so in your device’s settings but be aware that some accesses are necessary to upload media files of your mobile to the Piwigo gallery or to store Piwigo media files in your mobile.";
+"what_subText3a" = "Aplikasi dapat meminta akses atau izin untuk fitur tertentu dari ponsel anda, termasuk perpustakaan foto dan penyimpanan media ponsel Anda, Pengelola Akun Android, Apple Keychain, folder penyimpanan asing dan berbasis cloud, Geolokalisasi, dan fitur lainnya. Jika anda ingin mengubah akses atau izin kami, anda dapat mengubahnya pada pengaturan ponsel anda tetapi berhati-hatilah bahwa beberapa akses dibutuhkan untuk mengunggah file media dari ponsel anda ke galeri Piwigo atau untuk menyimpan file media Piwigo di ponsel Anda.";
 
-"what_subTitle4" = "Mobile Device Data";
+"what_subTitle4" = "Data Perangkat Seluler";
 
-"what_subText4a" = "When contacting the support team, device information such as your mobile device ID, model, and manufacturer, version of your operating system, email, country, location, and any other data you choose to provide may be transmitted to the development team of the Applications. Beside the data explicitly shared by the user with the developers no content will be stored, transmitted or processed by us.";
+"what_subText4a" = "Saat menghubungi tim dukungan, informasi perangkat seperti ID perangkat seluler Anda, model, dan pabrikan, versi sistem operasi Anda, email, negara, lokasi, dan data lain yang Anda berikan dapat dikirimkan ke tim pengembangan Aplikasi. Selain data yang secara eksplisit dibagikan oleh pengguna dengan pengembang, konten tidak akan disimpan, dikirim, atau diproses oleh kami.";
 
-"why_title" = "Why does the mobile app store data?";
+"why_title" = "Mengapa aplikasi menyimpan data?";
 
-"why_text1" = "The Applications store only data to satisfy one intention: accessing a Piwigo gallery hosted on a remote webserver. No data is collected, transmitted or stored that is not required for its intended functionality.";
+"why_text1" = "Aplikasi hanya menyimpan data untuk memenuhi satu tujuan: mengakses galeri Piwigo yang dihosting di server web jarak jauh. Tidak ada data yang dikumpulkan, dikirim atau disimpan yang tidak diperlukan untuk fungsi yang dimaksudkan.";
 
-"why_text2" = "When you access the Applications, your personal information is not collected through the use of tracking technology. We only use caching mechanisms to help customize the Applications and improve your experience. You can disable or clear caches, but be aware that such action could affect the availability and functionality of the Applications.";
+"why_text2" = "Saat Anda mengakses Aplikasi, informasi pribadi Anda tidak dikumpulkan melalui penggunaan teknologi pelacakan. Kami hanya menggunakan mekanisme cache untuk membantu menyesuaikan Aplikasi dan meningkatkan pengalaman Anda. Anda dapat menonaktifkan atau menghapus cache, tetapi ketahuilah bahwa tindakan tersebut dapat memengaruhi ketersediaan dan fungsionalitas Aplikasi.";
 
-"how_title" = "How is the data protected?";
+"how_title" = "Bagaimana data diamankan?";
 
-"how_text1" = "The Applications store data locally on the device it is executed on. You are responsible to protect the stored data from unauthorized access. We strongly recommend to use HTTPS to protect data during transmission and the Applications try to use encrypted connections over HTTPS the first time the user establishes a connection with a Piwigo gallery. Keeping certificates and libraries for HTTPS access up to date is under responsibility of the Piwigo server operator. When the Applications cannot use HTTPS, they switches to HTTP and data are not encrypted during transmission.";
+"how_text1" = "Aplikasi menyimpan data secara lokal di dalam perangkat. Anda bertanggung jawab untuk melindungi data yang disimpan dari akses yang tidak sah. Kami sangat menyarankan untuk menggunakan HTTPS untuk melindungi data selama transmisi dan Aplikasi mencoba menggunakan koneksi terenkripsi melalui HTTPS saat pertama kali pengguna membuat koneksi dengan galeri Piwigo. Menyimpan sertifikat dan pustaka untuk akses HTTPS hingga saat ini berada di bawah tanggung jawab operator server Piwigo. Ketika Aplikasi tidak dapat menggunakan HTTPS, mereka beralih ke HTTP dan data tidak dienkripsi selama transmisi.";
 
-"how_text2" = "When you upload images to a Piwigo gallery, images may contain private data like GPS coordinates or comments. The Applications provide an option for removing these data from image files before upload in the Settings section. It is the responsibility of the user to decide whether those private data are uploaded.";
+"how_text2" = "Saat Anda mengunggah gambar ke galeri Piwigo, gambar mungkin berisi data pribadi seperti koordinat GPS atau komentar. Aplikasi menyediakan opsi untuk menghapus data ini dari file gambar sebelum diunggah di bagian Pengaturan. Ini adalah tanggung jawab pengguna untuk memutuskan apakah data pribadi tersebut akan diunggah.";
 
-"security_title" = "Security of your information";
+"security_title" = "Keamanan informasi anda";
 
-"security_text" = "We use technical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable, and no method of data transmission can be guaranteed against any interception or other type of misuse. Any information disclosed online is vulnerable to interception and misuse by unauthorized parties. Therefore, we cannot guarantee complete security if you provide personal information.";
+"security_text" = "Kami menggunakan langkah-langkah keamanan teknis untuk membantu melindungi informasi pribadi Anda. Meskipun kami telah mengambil langkah-langkah yang wajar untuk mengamankan informasi pribadi yang Anda berikan kepada kami, harap perhatikan bahwa terlepas dari upaya kami, tidak ada tindakan keamanan yang sempurna atau tidak dapat ditembus, dan tidak ada metode transmisi data yang dapat dijamin terhadap setiap intersepsi atau jenis penyalahgunaan lainnya. Setiap informasi yang diungkapkan secara online rentan terhadap intersepsi dan penyalahgunaan oleh pihak yang tidak berwenang. Oleh karena itu, kami tidak dapat menjamin keamanan lengkap jika Anda memberikan informasi pribadi.";
 
-"contact_title" = "Contact us";
+"contact_title" = "Hubungi kami";
 
-"contact_text" = "If you have questions or comments about this Privacy Policy, please contact us at:";
+"contact_text" = "Jika Anda memiliki pertanyaan atau komentar tentang kebijakan privasi ini, silakan hubungi kami:";
 
-"contact_address" = "Piwigo, 42 rue des Vignes, 21800 Quetigny (France)";
+"contact_address" = "Piwigo, 42 rue des Vignes, 21800 Quetigny (Prancis)";
 
-"contact_email" = "ios@piwigo.org";
+"contact_email" = "iOS@piwigo.org";

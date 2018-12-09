@@ -66,10 +66,10 @@
 "serverURLerror_message" = "Veuillez corriger l'adresse du serveur Web Piwigo.";
 "serverMethodsError_title" = "Méthodes Inconnues";
 "serverMethodsError_message" = "Impossible d’obtenir les méthodes du serveur. Problème avec le serveur Piwigo ?";
-"serverInvalidMethodError_message" = "Echec de l'appel de la méthode.";
-"serverMissingParamError_message" = "Échec de l'exécution de la méthode avec un paramètre manquant.";
-"serverInvalidParamError_message" = "Echec de l'appel de la méthode avec les paramètres fournis.";
-"serverUnknownError_message" = "Une erreur inattendue s'est produite lors de l'appel de la méthode avec les paramètres fournis.";
+"serverInvalidMethodError_message" = "Echec de l'appel de la méthode du serveur.";
+"serverMissingParamError_message" = "Échec de l'exécution de la méthode du serveur avec un paramètre manquant.";
+"serverInvalidParamError_message" = "Echec de l'appel de la méthode du serveur avec les paramètres fournis.";
+"serverUnknownError_message" = "Une erreur inattendue s'est produite lors de l'appel de la méthode du serveur avec les paramètres fournis.";
 
 "loginError_title" = "Échec de Connexion";
 "loginError_message" = "Les nom d’utilisateur et mot de passe ne correspondent pas à l’adresse donnée";

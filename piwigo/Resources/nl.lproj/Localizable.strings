@@ -66,10 +66,10 @@
 "serverURLerror_message" = "Corrigeer s. v. p. het adres van de server van Piwigo.";
 "serverMethodsError_title" = "Onbekende methoden";
 "serverMethodsError_message" = "Server methoden verkrijgen mislukt. Problemen met de Piwigo-server?";
-"serverInvalidMethodError_message" = "Kan de servermethode niet bellen.";
+"serverInvalidMethodError_message" = "Mislukt om de server methode op te roepen.";
 "serverMissingParamError_message" = "Het is mislukt om de servermethode met ontbrekende parameter uit te voeren.";
 "serverInvalidParamError_message" = "Kan de servermethode niet bellen met de opgegeven parameters.";
-"serverUnknownError_message" = "Er is een onverwachte fout opgetreden bij het aanroepen van de servermethode met de opgegeven parameters.";
+"serverUnknownError_message" = "Onverwachte fout bij het aanroepen van de server methode met de meegeleverde parameters.";
 
 "loginError_title" = "Mislukte aanmelding";
 "loginError_message" = "De gebruikersnaam en het wachtwoord komen niet overeen op het opgegeven webadres";

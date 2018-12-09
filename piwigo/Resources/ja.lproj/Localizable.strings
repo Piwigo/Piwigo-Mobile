@@ -25,7 +25,7 @@
 "alertRetryButton" = "再試行";
 "alertNextButton" = "次の画像";
 "alertTryButton" = "試す";
-"alertClearButton" = "Clear";
+"alertClearButton" = "クリア";
 
 // HUD views
 "loadingHUD_label" = "読み込み中…";
@@ -66,10 +66,10 @@
 "serverURLerror_message" = "Piwigoウェブサーバのアドレスを訂正して下さい";
 "serverMethodsError_title" = "不明なメソッド";
 "serverMethodsError_message" = "サーバーメソットの取得に失敗しました。Piwigoサーバの問題か？";
-"serverInvalidMethodError_message" = "Failed to call server method.";
-"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
-"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
-"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
+"serverInvalidMethodError_message" = "サーバーメソッドの呼び出しに失敗しました。";
+"serverMissingParamError_message" = "不足しているパラメーターでサーバーメソッドの実行に失敗しました。";
+"serverInvalidParamError_message" = "指定されたパラメーターでのサーバーメソッドの呼び出しに失敗しました。";
+"serverUnknownError_message" = "サーバー指定されたパラメーターを持つメソッドの呼び出し中に発生した予期しないエラー。";
 
 "loginError_title" = "ログインに失敗しました";
 "loginError_message" = "ユーザ名とパスワードが、指定したwebアドレスで一致しません";
@@ -504,9 +504,9 @@
 "settings_cacheDisk" = "ディスク";
 "settings_cacheMemory" = "メモリ";
 "settings_cacheMegabytes" = "MB";
-"settings_cacheClear" = "Clear Cache";
-"settings_cacheClearAll" = "Clear Image Cache";
-"settings_cacheClearMsg" = "Are you sure you want to clear the image cache? This will make albums and images take a while to load again.";
+"settings_cacheClear" = "キャッシュをクリア";
+"settings_cacheClearAll" = "画像キャッシュをクリア";
+"settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと画像を再度読み込むために時間がかかるようになります。";
 
 // Settings — Colors
 "settingsHeader_colors" = "色";
@@ -520,13 +520,13 @@
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
 "settings_contactUs" = "iOS@piwigo.org";
-"settings_feedback" = "Feedback";
+"settings_feedback" = "フィードバック";
 "settings_supportForum" = "サポートフォーラム";
 "settings_releaseNotes" = "リリースノート";
 "settings_rateInAppStore" = "Piwigo Mobileを評価する";
 "settings_translateWithCrowdin" = "Piwigo Mobileを翻訳する";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "謝辞";
-"settings_privacy" = "Privacy Policy";
+"settings_privacy" = "プライバシーポリシー";
 "settings_users" = "ユーザー";
 "settings_groups" = "グループ";

@@ -25,7 +25,7 @@
 "alertRetryButton" = "Ulangi";
 "alertNextButton" = "Gambar Berikutnya";
 "alertTryButton" = "Mencoba";
-"alertClearButton" = "Clear";
+"alertClearButton" = "Bersihkan";
 
 // HUD views
 "loadingHUD_label" = "Memuat…";
@@ -62,14 +62,14 @@
 "loginHTTPpwd_placeholder" = "Kata sandi";
 
 // Login — Errors
-"serverURLerror_title" = "Incorrect URL";
-"serverURLerror_message" = "Please correct the Piwigo web server address.";
+"serverURLerror_title" = "URL salah";
+"serverURLerror_message" = "Silakan perbaiki alamat server web Piwigo.";
 "serverMethodsError_title" = "Metode Tidak Diketahui";
 "serverMethodsError_message" = "Gagal mendapatkan metode peladen. Masalah dengan peladen Piwigo?";
-"serverInvalidMethodError_message" = "Failed to call server method.";
-"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
-"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
-"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
+"serverInvalidMethodError_message" = "Gagal untuk memanggil metode server.";
+"serverMissingParamError_message" = "Gagal untuk menjalankan metode server dengan parameter yang hilang.";
+"serverInvalidParamError_message" = "Gagal untuk memanggil metode server dengan parameter yang disediakan.";
+"serverUnknownError_message" = "Kesalahan yang tidak terduga sewaktu memanggil metode server dengan parameter yang disediakan.";
 
 "loginError_title" = "Gagal Masuk";
 "loginError_message" = "Nama pengguna dan kata sandi tidak sesuai dengan alamat web yang diberikan";
@@ -209,7 +209,7 @@
 // Album set image thumbnail
 "categorySelection_select" = "Pilih album";
 "categorySelection_current" = "Pilih album saat ini untuk gambar ini";
-"categorySelection_one" = "Select one of the albums containing this image";
+"categorySelection_one" = "Pilih album yang didalamnya terdapat gambar ini";
 "categorySelection_other" = "atau pilih album lain untuk gambar ini";
 "categoryImageSet_title" = "Album Thumbnail";
 "categoryImageSet_message" = "Anda yakin ingin membuat gambar ini sebagai gambar untuk album \"%@\"?";
@@ -291,7 +291,7 @@
 "deleteSingleImageHUD_deleting" = "Menghapus gambar…";
 "deleteSeveralImagesHUD_deleting" = "Menghapus gambar…";
 "removeSingleImage_title" = "Hapus dari Album";
-"removeSingleImageHUD_removing" = "Removing Image…";
+"removeSingleImageHUD_removing" = "Menghapus Gambar…";
 "deleteSingleImage_message" = "Anda yakin ingin menghapus gambar ini? Ini tidak dapat dibatalkan!";
 "deleteSeveralImages_title" = "Hapus Gambar";
 "deleteSeveralImages_message" = "Anda yakin ingin menghapus gambar %@ yang dipilih? Ini tidak dapat dibatalkan!";
@@ -325,29 +325,29 @@
 
 // Image move
 "moveImage_title" = "Pindah ke Album";
-"moveSingleImage_selectAlbum" = "Select an album to move image \"%@\" to";
-"moveSeveralImages_selectAlbum" = "Select an album to move the images to";
-"moveSingleImage_message" = "Are you sure you want to move the image \"%@\" to the album \"%@\"?";
-"moveSeveralImages_message" = "Are you sure you want to move the images to the album \"%@\"?";
-"moveSingleImageHUD_moving" = "Moving Image…";
-"moveSeveralImagesHUD_moving" = "Moving Images…";
+"moveSingleImage_selectAlbum" = "Pilih album untuk memindahkan gambar \"%@\"";
+"moveSeveralImages_selectAlbum" = "Pilih album untuk memindahkan gambar";
+"moveSingleImage_message" = "Apakah anda ingin memindahkan gambar \"%@\" ke album \"%@\"?";
+"moveSeveralImages_message" = "Apakah anda ingin memindahkan gambar ke album \"%@\"?";
+"moveSingleImageHUD_moving" = "Memindahkan…";
+"moveSeveralImagesHUD_moving" = "Memindahkan…";
 
 // Image move — Errors
 "moveImageError_title" = "Gagal Memindahkan";
-"moveSingleImageError_message" = "Failed to move your image";
+"moveSingleImageError_message" = "Gagal memindahkan gambar anda";
 
 // Image copy
-"copyImage_title" = "Copy to Album";
-"copySingleImage_selectAlbum" = "Select an album to copy image \"%@\" to";
-"copySeveralImages_selectAlbum" = "Select an album to copy the images to";
-"copySingleImage_message" = "Are you sure you want to copy the image \"%@\" to the album \"%@\"?";
-"copySeveralImages_message" = "Are you sure you want to copy the images to the album \"%@\"?";
-"copySingleImageHUD_copying" = "Copying Image…";
-"copySeveralImagesHUD_copying" = "Copying Images…";
+"copyImage_title" = "Salin ke Album";
+"copySingleImage_selectAlbum" = "Pilih album untuk menyalin gambar \"%@\"";
+"copySeveralImages_selectAlbum" = "Pilih album untuk menyalin gambar";
+"copySingleImage_message" = "Apakah anda ingin menyalin gambar \"%@\" ke album \"%@\"?";
+"copySeveralImages_message" = "Apakah anda ingin menyalin gambar ke album \"%@\"?";
+"copySingleImageHUD_copying" = "Menyalin Gambar…";
+"copySeveralImagesHUD_copying" = "Menyalin Gambar…";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
-"copySingleImageError_message" = "Failed to copy your image";
+"copyImageError_title" = "Gagal menyalin";
+"copySingleImageError_message" = "Gagal menyalin gambar anda";
 
 // Images upload
 "imageUploadDetails_title" = "Judul:";
@@ -504,9 +504,9 @@
 "settings_cacheDisk" = "Diska";
 "settings_cacheMemory" = "Memori";
 "settings_cacheMegabytes" = "MB";
-"settings_cacheClear" = "Clear Cache";
-"settings_cacheClearAll" = "Clear Image Cache";
-"settings_cacheClearMsg" = "Are you sure you want to clear the image cache? This will make albums and images take a while to load again.";
+"settings_cacheClear" = "Bersihkan Cache";
+"settings_cacheClearAll" = "Bersihkan Cache Gambar";
+"settings_cacheClearMsg" = "Apakah anda ingin membersihkan cache gambar? Hal ini membuat album dan gambar memerlukan waktu untuk memuat lagi.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Warna";
@@ -520,13 +520,13 @@
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
 "settings_contactUs" = "iOS@piwigo.org";
-"settings_feedback" = "Feedback";
+"settings_feedback" = "Umpan Balik";
 "settings_supportForum" = "Forum Bantuan";
 "settings_releaseNotes" = "Catatan Rilis";
 "settings_rateInAppStore" = "Beri Nilai untuk Piwigo Mobile";
 "settings_translateWithCrowdin" = "Terjemahan Piwigo Mobile";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Ucapan Terima Kasih";
-"settings_privacy" = "Privacy Policy";
+"settings_privacy" = "Kebijakan Privasi";
 "settings_users" = "Pengguna";
 "settings_groups" = "Grup";

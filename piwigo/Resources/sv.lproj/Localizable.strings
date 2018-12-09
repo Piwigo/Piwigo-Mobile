@@ -66,9 +66,9 @@
 "serverURLerror_message" = "Vänligen korrigera Piwigo webbserveradressen.";
 "serverMethodsError_title" = "Okända metoder";
 "serverMethodsError_message" = "Det gick inte att få servermetoder. Problem med Piwigo servern?";
-"serverInvalidMethodError_message" = "Misslyckades med att ringa serverns metod.";
+"serverInvalidMethodError_message" = "Misslyckades att anropa servermetod.";
 "serverMissingParamError_message" = "Det gick inte att exekvera servermetoden med saknad parameter.";
-"serverInvalidParamError_message" = "Misslyckades med att ringa serverns metod med angivna parametrar.";
+"serverInvalidParamError_message" = "Misslyckades anropa servermetod med angivna parametrar.";
 "serverUnknownError_message" = "Ett oväntat fel uppstod när du anropade servermetoden med angivna parametrar.";
 
 "loginError_title" = "Inloggning Misslyckades";
