@@ -36,6 +36,8 @@ typedef enum {
 @property (nonatomic, strong) NSDate *dateCreated;
 @property (nonatomic, assign) BOOL isVideo;
 @property (nonatomic, strong) NSString *fullResPath;
+@property (nonatomic, assign) NSInteger fullResWidth;
+@property (nonatomic, assign) NSInteger fullResHeight;
 
 // image sizes:
 @property (nonatomic, strong) NSString *SquarePath;
