@@ -391,6 +391,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     
     // Prepare image preview
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
+    [self.progressBar setProgress:0];
     [nextImage setImageScrollViewWithImageData:imageData];
     nextImage.imageIndex = currentIndex + 1;
     return nextImage;
@@ -414,6 +415,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     
     // Prepare image preview
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
+    [self.progressBar setProgress:0];
     [prevImage setImageScrollViewWithImageData:imageData];
     prevImage.imageIndex = currentIndex - 1;
     return prevImage;
@@ -425,10 +427,8 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     [removedVC.scrollView.imageView cancelImageDownloadTask];
     
     ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
-    view.imagePreviewDelegate = self;
-    
+    view.imagePreviewDelegate = self;    
     self.progressBar.hidden = view.imageLoaded;
-    [self.progressBar setProgress:0];
     
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     

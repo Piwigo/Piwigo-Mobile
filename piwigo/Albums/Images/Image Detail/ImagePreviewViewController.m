@@ -92,7 +92,8 @@
       parameters:nil
         progress:^(NSProgress *progress) {
             dispatch_async(dispatch_get_main_queue(),
-                           ^(void){if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
+                           ^(void){
+                               if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
                            {
                                [weakSelf.imagePreviewDelegate downloadProgress:progress.fractionCompleted];
                            }
