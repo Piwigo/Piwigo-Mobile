@@ -25,6 +25,7 @@
 
 @property (nonatomic, strong) ImageScrollView *scrollView;
 @property (nonatomic, strong) VideoView *videoView;
+@property (nonatomic, strong) NSURLSessionDataTask *downloadTask;
 
 @property (nonatomic, assign) NSInteger imageIndex;
 @property (nonatomic, assign) BOOL imageLoaded;

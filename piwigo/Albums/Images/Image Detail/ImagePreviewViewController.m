@@ -88,38 +88,41 @@
     NSURL *previewURL = [NSURL URLWithString:previewStr];
     __weak typeof(self) weakSelf = self;
     
-    [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
-      parameters:nil
-        progress:^(NSProgress *progress) {
-            dispatch_async(dispatch_get_main_queue(),
-                           ^(void){
-                               if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
-                           {
-                               [weakSelf.imagePreviewDelegate downloadProgress:progress.fractionCompleted];
-                           }
-                               if(progress.fractionCompleted == 1)
-                               {
-                                   weakSelf.imageLoaded = YES;
-                               }
-                           });
-        }
-         success:^(NSURLSessionTask *task, UIImage *image) {
-             if (image != nil) {
-                 weakSelf.scrollView.imageView.image = image;
-                 weakSelf.imageLoaded = YES;                      // Hide progress bar
-             }
-             else {     // Keep thumbnail or placeholder is image could not be loaded
-#if defined(DEBUG)
-                 NSLog(@"setImageScrollViewWithImageData: loaded image is nil!");
-#endif
-             }
-         }
-         failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-             NSLog(@"setImageScrollViewWithImageData/GET Error: %@", error);
-#endif
-         }
-     ];
+    NSLog(@"==> Start loading %@", previewURL.path);
+    self.downloadTask = [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
+                                                              parameters:nil
+                progress:^(NSProgress *progress) {
+                    dispatch_async(dispatch_get_main_queue(),
+                       ^(void){
+                           if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
+                       {
+                           [weakSelf.imagePreviewDelegate downloadProgress:progress.fractionCompleted];
+                       }
+                                });
+                }
+                 success:^(NSURLSessionTask *task, UIImage *image) {
+                     if (image != nil) {
+                         weakSelf.scrollView.imageView.image = image;
+                         if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
+                         {
+                             [weakSelf.imagePreviewDelegate downloadProgress:1.0];
+                         }
+                         weakSelf.imageLoaded = YES;                      // Hide progress bar
+                     }
+                     else {     // Keep thumbnail or placeholder if image could not be loaded
+        #if defined(DEBUG)
+                         NSLog(@"setImageScrollViewWithImageData: loaded image is nil!");
+        #endif
+                     }
+                 }
+                 failure:^(NSURLSessionTask *task, NSError *error) {
+        #if defined(DEBUG)
+                     NSLog(@"setImageScrollViewWithImageData/GET Error: %@", error);
+        #endif
+                 }
+             ];
+    
+    [self.downloadTask resume];
 }
 
 -(void)startVideoPlayerViewWithImageData:(PiwigoImageData*)imageData

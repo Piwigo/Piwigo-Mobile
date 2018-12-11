@@ -59,10 +59,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		self.imageData = [self.images objectAtIndex:imageIndex];
 		self.title = self.imageData.name;
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
+        startingImage.imagePreviewDelegate = self;
 		[startingImage setImageScrollViewWithImageData:self.imageData];
         [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
 		startingImage.imageIndex = imageIndex;
-        startingImage.imagePreviewDelegate = self;
 		
 		[self setViewControllers:@[startingImage]
 					   direction:UIPageViewControllerNavigationDirectionForward
@@ -358,6 +358,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 #pragma mark - UIPageViewControllerDataSource
 
+// Returns the view controller after the given view controller
 -(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
@@ -390,13 +391,14 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
     
     // Prepare image preview
+    NSLog(@"=> After ViewController, load image %@", imageData.imageId);
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
-    [self.progressBar setProgress:0];
     [nextImage setImageScrollViewWithImageData:imageData];
     nextImage.imageIndex = currentIndex + 1;
     return nextImage;
 }
 
+// Returns the view controller before the given view controller
 -(UIViewController*)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
@@ -414,20 +416,29 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
     
     // Prepare image preview
+    NSLog(@"=> Before ViewController, load image %@", imageData.imageId);
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
-    [self.progressBar setProgress:0];
     [prevImage setImageScrollViewWithImageData:imageData];
     prevImage.imageIndex = currentIndex - 1;
     return prevImage;
 }
 
+// Called before a gesture-driven transition begins
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
+{
+    // Stop loading image if needed
+    ImagePreviewViewController *removedVC = [pageViewController.viewControllers firstObject];
+    if (removedVC.downloadTask.state == 0) {    // Task active?
+        [removedVC.scrollView.imageView cancelImageDownloadTask];
+        [removedVC.downloadTask cancel];
+    }
+}
+
+// Called after a gesture-driven transition completes
 -(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
 {
-    ImagePreviewViewController *removedVC = [previousViewControllers firstObject];
-    [removedVC.scrollView.imageView cancelImageDownloadTask];
-    
     ImagePreviewViewController *view = [pageViewController.viewControllers firstObject];
-    view.imagePreviewDelegate = self;    
+    view.imagePreviewDelegate = self;
     self.progressBar.hidden = view.imageLoaded;
     
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
@@ -938,10 +949,12 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)downloadProgress:(CGFloat)progress
 {
 	[self.progressBar setProgress:progress animated:YES];
-	if(progress == 1)
-	{
-		self.progressBar.hidden = YES;
-	}
+    self.progressBar.hidden = (progress == 1) ? YES : NO;
+    NSLog(@"==> setProgress:%.2f", progress);
+//    if(progress == 1)
+//    {
+//        self.progressBar.hidden = YES;
+//    }
 }
 
 #pragma mark - EditImageDetailsDelegate Methods
