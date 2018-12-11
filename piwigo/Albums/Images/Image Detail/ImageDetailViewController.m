@@ -391,7 +391,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
     
     // Prepare image preview
-    NSLog(@"=> After ViewController, load image %@", imageData.imageId);
+//    NSLog(@"=> After ViewController, load image %@", imageData.imageId);
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
     [nextImage setImageScrollViewWithImageData:imageData];
     nextImage.imageIndex = currentIndex + 1;
@@ -416,7 +416,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
     
     // Prepare image preview
-    NSLog(@"=> Before ViewController, load image %@", imageData.imageId);
+//    NSLog(@"=> Before ViewController, load image %@", imageData.imageId);
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
     [prevImage setImageScrollViewWithImageData:imageData];
     prevImage.imageIndex = currentIndex - 1;
@@ -950,11 +950,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 {
 	[self.progressBar setProgress:progress animated:YES];
     self.progressBar.hidden = (progress == 1) ? YES : NO;
-    NSLog(@"==> setProgress:%.2f", progress);
-//    if(progress == 1)
-//    {
-//        self.progressBar.hidden = YES;
-//    }
+//    NSLog(@"==> setProgress:%.2f", progress);
 }
 
 #pragma mark - EditImageDetailsDelegate Methods

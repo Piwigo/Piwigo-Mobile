@@ -88,7 +88,7 @@
     NSURL *previewURL = [NSURL URLWithString:previewStr];
     __weak typeof(self) weakSelf = self;
     
-    NSLog(@"==> Start loading %@", previewURL.path);
+//    NSLog(@"==> Start loading %@", previewURL.path);
     self.downloadTask = [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
                                                               parameters:nil
                 progress:^(NSProgress *progress) {
