@@ -429,8 +429,8 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Stop loading image if needed
     ImagePreviewViewController *removedVC = [pageViewController.viewControllers firstObject];
     if (removedVC.downloadTask.state == 0) {    // Task active?
-        [removedVC.scrollView.imageView cancelImageDownloadTask];
-        [removedVC.downloadTask cancel];
+        [removedVC.scrollView.imageView cancelImageDownloadTask];   // Thumbnail / placeholder
+        [removedVC.downloadTask cancel];                            // Previewed image
     }
 }
 
