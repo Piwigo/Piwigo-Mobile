@@ -31,7 +31,7 @@
 
         self.maximumZoomScale = 5.0;
         self.minimumZoomScale = 1.0;
-        self.previousScale = 1.0;
+        self.previousScale = 0.0;
 		
         // Image previewed
 		self.imageView = [UIImageView new];
