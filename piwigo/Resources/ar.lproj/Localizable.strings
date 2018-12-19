@@ -407,7 +407,7 @@
 "localAlbums_photosNnil_msg" = "هناك مشكلة في قراءة مكتبة الصور المحلية.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "لا يمكن فتح مكتبة الصور المحلية. يرجى الدخول إلى إعدادات التطبيق، الخصوصية، صور وتمكين الوصول ل Piwigo.";
+"localAlbums_photosNotAuthorized_msg" = "لا يمكن فتح مكتبة الصور المحلية. يرجى الدخول إلى إعدادات التطبيق، وتمكين الوصول ل Piwigo.";
 
 // ===========================================================================
 // ==> SETTINGS

@@ -618,17 +618,30 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
     if (status != PHAuthorizationStatusAuthorized) {
         
+        // Ask user to provide access to Photos
         UIAlertController* alert = [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
+            alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
             message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-            preferredStyle:UIAlertControllerStyleAlert];
+            preferredStyle:UIAlertControllerStyleActionSheet];
         
-        UIAlertAction* defaultAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-            style:UIAlertActionStyleCancel
+        UIAlertAction* cancelAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+            style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {}];
         
-        [alert addAction:defaultAction];
+        UIAlertAction* prefsAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
+            style:UIAlertActionStyleCancel
+            handler:^(UIAlertAction * action) {
+              [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+            }];
+
+        // Add actions
+        [alert addAction:cancelAction];
+        [alert addAction:prefsAction];
+
+        // Present list of actions
+        alert.popoverPresentationController.barButtonItem = self.downloadBarButton;
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }

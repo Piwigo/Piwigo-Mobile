@@ -289,30 +289,6 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-
-    // Check access to photos — Required as system does not always ask
-    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusNotDetermined) {
-        // Request authorization to access photos
-        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-            // Nothing to do…
-        }];
-    }
-    else if(([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusDenied) ||
-            ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusRestricted)) {
-        // Inform user that he denied or restricted access to photos
-        UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
-                message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* dismissAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
-        
-        [alert addAction:dismissAction];
-        [self.loginVC presentViewController:alert animated:YES completion:nil];
-    }
     
     // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
     // Furthermore, it will interrupt any other current audio sessions (no mixing)

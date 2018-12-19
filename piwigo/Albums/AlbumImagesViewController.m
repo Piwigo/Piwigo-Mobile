@@ -1320,28 +1320,31 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
 	if(self.selectedImageIds.count <= 0) return;
 	
-    // Check access to Photos — Required as system does not always ask
-    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusNotDetermined) {
-        // Request authorization to access photos
-        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-            // Nothing to do…
-        }];
-    }
-    else if(([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusDenied) ||
-            ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusRestricted)) {
-        // Inform user that he/she denied or restricted access to photos
+    // Check autorisation to access Photo Library
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status != PHAuthorizationStatusAuthorized) {
+
+        // Ask user to provide access to photos
         UIAlertController* alert = [UIAlertController
             alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
             message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
             preferredStyle:UIAlertControllerStyleActionSheet];
         
-        UIAlertAction* dismissAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-            style:UIAlertActionStyleCancel
+        UIAlertAction* cancelAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+            style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {}];
+
+        UIAlertAction* prefsAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
+            style:UIAlertActionStyleCancel
+            handler:^(UIAlertAction * action) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+            }];
         
         // Add actions
-        [alert addAction:dismissAction];
+        [alert addAction:cancelAction];
+        [alert addAction:prefsAction];
 
         // Present list of actions
         alert.popoverPresentationController.barButtonItem = self.downloadBarButton;

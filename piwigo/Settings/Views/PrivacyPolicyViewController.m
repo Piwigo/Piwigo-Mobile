@@ -177,8 +177,8 @@
         [privacyAttributedString appendAttributedString:spacerAttributedString];
 
         NSString *contactString3 = NSLocalizedStringFromTableInBundle(@"contact_email", @"PrivacyPolicy", [NSBundle mainBundle], @"Contact email");
-        NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+        NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
         NSString *subject = [[NSString stringWithFormat:@"%@ %@ (%@) — %@", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), appVersionString, appBuildString, NSLocalizedString(@"settings_privacy", @"Policy Privacy")] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
         NSString *mailTo = [NSString stringWithFormat:@"mailto:%@?subject=%@", contactString3, subject];
         NSMutableAttributedString *contactAttributedString3 = [[NSMutableAttributedString alloc] initWithString:contactString3 attributes:@{NSFontAttributeName:[UIFont piwigoFontSmall],

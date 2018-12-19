@@ -407,7 +407,7 @@
 "localAlbums_photosNnil_msg" = "Probleem bij het inlezen van jouw lokale fotobibliotheek.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen, Privacy, Foto's en geef Piwigo toegang.";
+"localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen en activeer Piwigo toegang.";
 
 // ===========================================================================
 // ==> SETTINGS

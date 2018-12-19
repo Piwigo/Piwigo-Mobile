@@ -407,7 +407,7 @@
 "localAlbums_photosNnil_msg" = "Ada masalah dalam membaca pustaka lokal foto Anda.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Tidak dapat membuka pustaka lokal foto. Silakan masuk ke Pengaturan aplikasi, Privasi, Foto dan izinkan akses untuk Piwigo.";
+"localAlbums_photosNotAuthorized_msg" = "Tidak dapat membuka pustaka lokal foto. Silakan masuk ke Pengaturan aplikasi dan izinkan akses untuk Piwigo.";
 
 // ===========================================================================
 // ==> SETTINGS

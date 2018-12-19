@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.6_text" = "Version 2.2.6\n\n• Improves translations and iOS 12 compatibility\n• Minor bug fixes and improvement of the interface";
+"v2.2.6_text" = "Version 2.2.6\n\n• Improves translations and iOS 12 compatibility\n• Minor bug fixes and improvement of the interface\n• Italian translation";
 
 "v2.2.5_text" = "Version 2.2.5\nOctober 28, 2018\n\n• Send us feedback by email\n• Privacy policy\n• Bug fixes";
 
