@@ -6,13 +6,13 @@
   Copyright © 2018 Piwigo.org. All rights reserved.
 */
 
-"privacy_text" = "Piwigo-Android dan Piwigo-Mobile adalah aplikasi gratis dan open source untuk galeri Piwigo. Kebijakan privasi ini berlaku untuk aplikasi asli Android dan iOS, yang menghubungkan ke situs Piwigo di luar kendali pencipta. Periksa kebijakan privasi dari situs yang sesuai sebelum mengonfigurasi akun di Piwigo-Android atau Piwigo-Mobile untuk terhubung ke galeri.";
+"privacy_text" = "Piwigo-Android dan Piwigo-Mobile adalah aplikasi gratis dan open source untuk galeri Piwigo. Kebijakan privasi ini berlaku untuk aplikasi asli Android dan iOS, yang menghubungkan ke situs Piwigo di luar kendali pencipta. Periksa kebijakan privasi dari situs yang sesuai sebelum mengonfigurasi akun di Piwigo-Android atau Piwigo-Mobile untuk terhubung ke galeri.\n\nDiperbarui Oktober 25, 2018";
 
 "intro_title" = "Pendahuluan";
 
 "intro_text1" = "Pengembang Piwigo-Android dan Piwigo-Mobile, kami menghormati privasi pengguna kami. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, mengungkapkan, dan menjaga informasi Anda ketika Anda menggunakan aplikasi mobile kami. Nama kami dapat ditemukan dari data meta di repositori git dan bagian Ucapan Terima Kasih dalam Aplikasi.";
 
-"intro_text2" = "Dimohon untuk membaca Kebijakan privasi ini dengna seksama. Jika anda tidak menyetujui Kebijakan Privasi ini, anda tidak dapat mengakses Aplikasi.";
+"intro_text2" = "Dimohon untuk membaca Kebijakan privasi ini dengan seksama. Jika anda tidak menyetujui Kebijakan Privasi ini, anda tidak dapat mengakses Aplikasi.";
 
 "intro_text3" = "Kami berhak mengubah Kebijakan Privasi ini kapanpun dan dengan alasan apapun. Kami akan memberitahu anda mengenai perubahan dengan memperbarui tanggal \"Terakhir diperbarui\" pada Kebijakan Privasi ini.";
 
@@ -30,7 +30,7 @@
 
 "what_subText2a" = "Kami dapat meminta akses atau izin untuk melacak informasi berbasis lokasi dari perangkat seluler Anda, baik secara terus menerus atau hanya ketika Anda menggunakan aplikasi, untuk menyediakan layanan berbasi lokasi. Jika anda ingin mengubah akses atau izin kami, anda dapat mengubahnya pada pengaturan perangkat Anda.";
 
-"what_subTitle3" = "Akses perangkat mobile";
+"what_subTitle3" = "Akses Perangkat Mobile";
 
 "what_subText3a" = "Aplikasi dapat meminta akses atau izin untuk fitur tertentu dari ponsel anda, termasuk perpustakaan foto dan penyimpanan media ponsel Anda, Pengelola Akun Android, Apple Keychain, folder penyimpanan asing dan berbasis cloud, Geolokalisasi, dan fitur lainnya. Jika anda ingin mengubah akses atau izin kami, anda dapat mengubahnya pada pengaturan ponsel anda tetapi berhati-hatilah bahwa beberapa akses dibutuhkan untuk mengunggah file media dari ponsel anda ke galeri Piwigo atau untuk menyimpan file media Piwigo di ponsel Anda.";
 
@@ -50,7 +50,7 @@
 
 "how_text2" = "Saat Anda mengunggah gambar ke galeri Piwigo, gambar mungkin berisi data pribadi seperti koordinat GPS atau komentar. Aplikasi menyediakan opsi untuk menghapus data ini dari file gambar sebelum diunggah di bagian Pengaturan. Ini adalah tanggung jawab pengguna untuk memutuskan apakah data pribadi tersebut akan diunggah.";
 
-"security_title" = "Keamanan informasi anda";
+"security_title" = "Keamanan Informasi Anda";
 
 "security_text" = "Kami menggunakan langkah-langkah keamanan teknis untuk membantu melindungi informasi pribadi Anda. Meskipun kami telah mengambil langkah-langkah yang wajar untuk mengamankan informasi pribadi yang Anda berikan kepada kami, harap perhatikan bahwa terlepas dari upaya kami, tidak ada tindakan keamanan yang sempurna atau tidak dapat ditembus, dan tidak ada metode transmisi data yang dapat dijamin terhadap setiap intersepsi atau jenis penyalahgunaan lainnya. Setiap informasi yang diungkapkan secara online rentan terhadap intersepsi dan penyalahgunaan oleh pihak yang tidak berwenang. Oleh karena itu, kami tidak dapat menjamin keamanan lengkap jika Anda memberikan informasi pribadi.";
 

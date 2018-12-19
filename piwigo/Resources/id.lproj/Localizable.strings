@@ -136,7 +136,7 @@
 "categoryUpload_iCloudAlbums" = "iCloud album";
 "categoryUpload_chooseiCloudAlbum" = "Pilih album iCloud untuk mendapatkan gambar dari";
 "categoyUpload_loadSubCategories" = "muat";
-"categoryUpload_images" = "Upload Gambar";
+"categoryUpload_images" = "Unggah gambar";
 "categoryUpload_subAlbum" = "Membuat Album sub";
 "categoryUpload_defaultAlbum" = "Set as Default Album";
 
@@ -303,7 +303,7 @@
 // Image download
 "downloadSingleImage_title" = "Unduh Gambar";
 "downloadSingleImage_confirmation" = "Yakin ingin mengunduh gambar yang dipilih?";
-"downloadSeveralImages_title" = "Unduh Gambar";
+"downloadSeveralImages_title" = "Unduh %@ Gambar";
 "downloadSeveralImage_confirmation" = "Anda yakin ingin mengunduh gambar %@ yang dipilih?";
 
 "downloadingImage" = "Mengunduh Gambar";
