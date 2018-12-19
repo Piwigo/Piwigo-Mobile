@@ -32,9 +32,11 @@ public enum Model : String {
     iPadMini4          = "iPad Mini 4",
     //iPad pro
     iPadPro9_7         = "iPad Pro 9.7\"",
+    iPadPro11          = "iPad Pro 11\"",
     iPadPro10_5        = "iPad Pro 10.5\"",
     iPadPro12_9        = "iPad Pro 12.9\"",
     iPadPro2_12_9      = "iPad Pro 2 12.9\"",
+    iPadPro3_12_9      = "iPad Pro 3 12.9\"",
     //iPhone
     iPhone4            = "iPhone 4",
     iPhone4S           = "iPhone 4S",
@@ -116,15 +118,23 @@ public extension UIDevice {
             "iPad4,9"   : .iPadMini3,
             "iPad5,1"   : .iPadMini4,
             "iPad5,2"   : .iPadMini4,
-            //iPad pro
+            //iPad Pro
             "iPad6,3"   : .iPadPro9_7,
             "iPad6,4"   : .iPadPro9_7,
             "iPad7,3"   : .iPadPro10_5,
             "iPad7,4"   : .iPadPro10_5,
+            "iPad8,1"   : .iPadPro11,
+            "iPad8,2"   : .iPadPro11,
+            "iPad8,3"   : .iPadPro11,
+            "iPad8,4"   : .iPadPro11,
             "iPad6,7"   : .iPadPro12_9,
             "iPad6,8"   : .iPadPro12_9,
             "iPad7,1"   : .iPadPro2_12_9,
             "iPad7,2"   : .iPadPro2_12_9,
+            "iPad8,5"   : .iPadPro3_12_9,
+            "iPad8,6"   : .iPadPro3_12_9,
+            "iPad8,7"   : .iPadPro3_12_9,
+            "iPad8,8"   : .iPadPro3_12_9,
             //iPhone
             "iPhone3,1" : .iPhone4,
             "iPhone3,2" : .iPhone4,

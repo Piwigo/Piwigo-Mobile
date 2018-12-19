@@ -14,16 +14,12 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - EAIntroView (2.12.0):
-    - EARestrictedScrollView (~> 1.1.0)
-  - EARestrictedScrollView (1.1.0)
   - MBProgressHUD (1.1.0)
-  - MGSwipeTableCell (1.6.7)
+  - MGSwipeTableCell (1.6.8)
   - SAMKeychain (1.5.3)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.2)
-  - EAIntroView
   - MBProgressHUD (~> 1.1.0)
   - MGSwipeTableCell
   - SAMKeychain
@@ -31,20 +27,16 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AFNetworking
-    - EAIntroView
-    - EARestrictedScrollView
     - MBProgressHUD
     - MGSwipeTableCell
     - SAMKeychain
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  EAIntroView: 249559079ddfdbe80e5bcb755c04c3b964b2ac27
-  EARestrictedScrollView: b0c2a3f92fb2610bb44d71c5e4893777c89e45ef
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
-  MGSwipeTableCell: fb20e983988bde2b8d0df29c2d9e1d8ffd10b74a
+  MGSwipeTableCell: dc4eca3212ed38a563b27d6aa7b3c01ce656c1e2
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
 
-PODFILE CHECKSUM: 2d56f78c076e5236001a39db8682888b99c404d3
+PODFILE CHECKSUM: 63a1f0e7682300e5b8514f83c7edeb8e91fa234d
 
 COCOAPODS: 1.5.3
