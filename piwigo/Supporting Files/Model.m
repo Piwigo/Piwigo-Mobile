@@ -12,8 +12,9 @@
 #import "PiwigoImageData.h"
 #import "ImagesCollection.h"
 
-NSTimeInterval const kThirtyDays = 60 * 60 * 24 * 30.0;
-NSTimeInterval const kTwentyDays = 60 * 60 * 24 * 20.0;
+NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
+NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
+NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 
 @interface Model()
 
@@ -90,8 +91,8 @@ NSTimeInterval const kTwentyDays = 60 * 60 * 24 * 20.0;
 		instance.diskCache = 80;
 		instance.memoryCache = 80;
 		
-        // Request help for translating Piwigo every month or so
-        instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - kThirtyDays;
+        // Request help for translating Piwigo every 2 weeks or so
+        instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
 
         [instance readFromDisk];
 	});
@@ -379,7 +380,7 @@ NSTimeInterval const kTwentyDays = 60 * 60 * 24 * 20.0;
     if(savedData.count > 25) {
         self.dateOfLastTranslationRequest = [[savedData objectAtIndex:25] doubleValue];
     } else {
-        self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - kThirtyDays;
+        self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
     }
     if(savedData.count > 26) {
         self.didOptimiseImagePreviewSize = [[savedData objectAtIndex:26] boolValue];

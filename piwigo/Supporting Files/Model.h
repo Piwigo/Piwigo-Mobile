@@ -10,8 +10,9 @@
 #import <CoreData/CoreData.h>
 #import "CategorySortViewController.h"
 
-FOUNDATION_EXPORT NSTimeInterval const kThirtyDays;
-FOUNDATION_EXPORT NSTimeInterval const kTwentyDays;
+FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
+FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
+FOUNDATION_EXPORT NSTimeInterval const k3WeeksInDays;
 
 @class PHPhotoLibrary;
 
