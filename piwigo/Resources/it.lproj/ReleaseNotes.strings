@@ -1,0 +1,53 @@
+/*
+ ReleaseNotes.strings
+ piwigo
+ 
+ Created by Eddy Lelièvre-Berna on 15/07/2017.
+ Copyright © 2017 Piwigo.org. All rights reserved.
+ */
+
+"v2.2.6_text" = "Versione 2.2.6\n\n• Migliora le traduzioni e la compatibilità con iOS 12\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.2.5_text" = "Versione 2.2.5\n28 ottobre 2018\n\n• Inviaci un feedback via e-mail\n• Politica sulla riservatezza\n• Correzioni di bug";
+
+"v2.2.4_text" = "Versione 2.2.4\n23 settembre 2018\n\n• Correzioni di bug";
+
+"v2.2.3_text" = "Versione 2.2.3\n27 agosto 2018\n\n• Nuovo design dell'album\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.2.2_text" = "Versione 2.2.2\n14 agosto 2018\n\n• Copia e sposta le immagini tra gli album\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.2.1_text" = "Versione 2.2.1\n25 luglio 2018\n\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.2.0_text" = "Versione 2.2\n12 luglio 2018\n\n• Creazioni di album secondari da qualsiasi album\n• Gestione migliorata con Album predefinito\n• Presentazione degli album migliorata su iPad (e iPhone)\n• Rilevamento delle modifiche alla Libreria fotografica\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.1.9_text" = "Versione 2.1.9\n14 maggio 2018\n\n• Correzioni di bug";
+
+"v2.1.8_text" = "Versione 2.1.8\n29 aprile 2018\n\n• Aggiunge la possibilità di cambiare la dimensione delle miniature\n• HTTPS diventa il protocollo predefinito\n• Traduzione giapponese\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.1.7_text" = "Versione 2.1.7\n3 febbraio 2018\n\n• Risolti problemi di caricamento dei video su alcuni server";
+
+"v2.1.6_text" = "Versione 2.1.6\n7 gennaio 2018\n\n• Traduzione araba\n• Migliorata la gestione dell'autenticazione di accesso di base HTTP\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.1.5_text" = "Versione 2.1.5\n21 dicembre 2017\n\n• Aggiungi la possibilità di annullare i caricamenti\n• Aggiungi l'opzione per eliminare le immagini dopo il caricamento\n• Aggiungi compatibilità con Optimize Storage (iCloud)\n• Mantieni il formato immagine dopo il ridimensionamento quando possibile\n• Traduzioni danesi e indonesiane\n• Corregge i metadati parzialmente persi al momento del download\n• Correggere il formato PNG sostituito con JPEG prima del caricamento\n• Risolti i problemi riscontrati con iOS 11 e iPhone X\n• Risolti bug minori\n• Modernizzazione del codice";
+
+"v2.1.4_text" = "Versione 2.1.4\n31 ottobre 2017\n\n• Traduzione svedese\n• Correzioni di bug";
+
+"v2.1.3_text" = "Versione 2.1.3\n19 ottobre 2017\n\n• Aggiungi autenticazione di accesso di base\n• Consenti l'annullamento della connessione automatica\n• Migliora l'interfaccia e la gestione del caricamento\n• Migliora le traduzioni e la compatibilità con iOS 11\n• Risolto bug riscontrato con il filtro \"Non caricato\"\n• Modernizzazione del codice";
+
+"v2.1.2_text" = "Versione 2.1.2\n7 settembre 2017\n\n• Correggi il login rifiutato con le versioni di plug-in della comunità <2,9\n• Migliora le traduzioni\n• Manutenzione";
+
+"v2.1.1_text" = "Versione 2.1.1\n20 agosto 2017\n\n• Risolto bug riscontrato con certificati SSL non validi\n• Migliora la traduzione danese";
+
+"v2.1.0_text" = "Versione 2.1\n14 agosto 2017\n\n• Compatibilità delle estensioni della community\n• Traduzioni danese, francese, polacco\n• Correzioni di bug";
+
+"v2.0.4_text" = "Versione 2.0.4\n28 luglio 2017\n\n• iPad - Risolvi le anteprime fuzzy e l'impossibilità di modificare le foto su iPad\n• Video: risoluzione dei problemi di caricamento e download (estensione VideoJS richiesta sul server)\n• Impostazioni - Aggiungi opzioni per rimuovere titoli e modificare la risoluzione dei thumbnails\n• Migliora l'affidabilità della connessione e informa quando il caricamento è completato\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.0.3_text" = "Versione 2.0.3\n26 maggio 2017\n\n• Aggiungi l'opzione per rimuovere i metadati GPS nella pagina Impostazioni\n• Aggiungi l'utilizzo della cache corrente nella pagina Impostazioni\n• Correggere le impostazioni della cache a volte dimenticate / ripristinate\n• Correggere le impostazioni di caricamento dell'immagine a volte perse / ripristinate";
+
+"v2.0.2_text" = "Versione 2.0.2\n8 maggio 2017\n\n• I criteri di ordinamento ora sono identici a quelli dell'applicazione Web\n• Risolvi problemi di ordinamento\n• Risolto un crash che si verificava durante l'aggiunta di tag a una foto prima del caricamento\n• Risolvere situazioni in cui la cancellazione di una selezione di immagini non ha funzionato\n• Risolvi le situazioni in cui un album non si presentava dopo lo spostamento\n• Risolve un problema di compatibilità con iOS 10 - codice deprecato";
+
+"v2.0.1_text" = "Versione 2.0.1\n26 giugno 2015\n\nNuove impostazioni:\n  - Opzione per ridimensionare le immagini al caricamento\n    + La qualità dell'immagine varia da 50 a 98%\n  - Possibilità di impostare una dimensione di anteprima dell'immagine predefinita\nCorrezioni di bug";
+
+"v2.0.0_text" = "Versione 2.0\n24 aprile 2015\n\nNuova applicazione nativa con:\n  - Possibilità di gestire album\n  - Guarda le tue immagini\n  - Caricamento di immagini collettive\n  - Caricamento e riproduzione video (deve essere installato il plug-in VideoJS)";
+
+"v1.0.0_text" = "Versione 1.0\n17 ottobre 2011";

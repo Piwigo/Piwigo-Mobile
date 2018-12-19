@@ -216,6 +216,12 @@
 		AD92B8FF1F200083006E5B63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		ADA6DA4621B2AD9900F941F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		ADA6F18A21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADA6F18B21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/About.strings; sourceTree = "<group>"; };
+		ADA6F18C21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		ADA6F18D21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/AppStore.strings; sourceTree = "<group>"; };
+		ADA6F18E21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		ADA6F18F21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADB607E61FC9D75700AF28DB /* VideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoView.h; sourceTree = "<group>"; };
 		ADB607E71FC9D79000AF28DB /* VideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoView.m; sourceTree = "<group>"; };
 		ADC06AE01F40B15E0081B4FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1091,6 +1097,7 @@
 				nl,
 				ar,
 				ja,
+				it,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -1379,6 +1386,7 @@
 				AD8549341FE98CE300155BA1 /* nl */,
 				AD8452621FEC70740035047B /* ar */,
 				ADF3B312207F1EEE0082C384 /* ja */,
+				ADA6F18D21CA924C006C9DD5 /* it */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -1396,6 +1404,7 @@
 				AD32036E2184739800BAD372 /* ar */,
 				AD32036F2184739800BAD372 /* ja */,
 				ADC5E23E2184D1BE002B0D48 /* Base */,
+				ADA6F18F21CA924D006C9DD5 /* it */,
 			);
 			name = PrivacyPolicy.strings;
 			sourceTree = "<group>";
@@ -1422,6 +1431,7 @@
 				AD8549311FE98CE200155BA1 /* nl */,
 				AD84525F1FEC70740035047B /* ar */,
 				ADF3B30F207F1EEE0082C384 /* ja */,
+				ADA6F18A21CA924C006C9DD5 /* it */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1439,6 +1449,7 @@
 				AD8549321FE98CE300155BA1 /* nl */,
 				AD8452601FEC70740035047B /* ar */,
 				ADF3B310207F1EEE0082C384 /* ja */,
+				ADA6F18B21CA924C006C9DD5 /* it */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -1456,6 +1467,7 @@
 				AD8549331FE98CE300155BA1 /* nl */,
 				AD8452611FEC70740035047B /* ar */,
 				ADF3B311207F1EEE0082C384 /* ja */,
+				ADA6F18C21CA924C006C9DD5 /* it */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
@@ -1473,6 +1485,7 @@
 				AD8549351FE98CE300155BA1 /* nl */,
 				AD8452631FEC70750035047B /* ar */,
 				ADF3B313207F1EEE0082C384 /* ja */,
+				ADA6F18E21CA924D006C9DD5 /* it */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
