@@ -57,7 +57,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		self.delegate = self;
 		
 		self.imageData = [self.images objectAtIndex:imageIndex];
-		self.title = self.imageData.name;
+        self.title = self.imageData.name;
+        [self setTitleViewFromImageData];
+
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
         startingImage.imagePreviewDelegate = self;
 		[startingImage setImageScrollViewWithImageData:self.imageData];
@@ -127,6 +129,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self setTitleViewFromImageData];
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
@@ -171,9 +174,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    //Reload the tableview on orientation change, to match the new width of the table.
+    // Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [self updateNavBar];
+        [self setTitleViewFromImageData];
     } completion:nil];
 }
 
@@ -460,6 +464,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
     self.imageData = [self.images objectAtIndex:currentIndex];
     self.title = self.imageData.name;
+    [self setTitleViewFromImageData];
     if(self.imageData.isVideo)
     {
         self.progressBar.hidden = YES;
@@ -956,6 +961,68 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
 }
 
+
+#pragma mark - Title and Subtitle
+
+-(void)setTitleViewFromImageData
+{
+    // Create label programmatically
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textColor = [UIColor piwigoWhiteCream];
+    titleLabel.numberOfLines = 1;
+    titleLabel.font = [UIFont piwigoFontSmall];
+    titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    titleLabel.adjustsFontSizeToFitWidth = NO;
+    titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    if (@available(iOS 9, *)) {
+        titleLabel.allowsDefaultTighteningForTruncation = YES;
+    }
+    titleLabel.text = self.imageData.name;
+    [titleLabel sizeToFit];
+
+    // There is no subtitle in landscape mode or when the craetion date is unknown
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ||
+        (self.imageData.dateCreated == self.imageData.datePosted))
+    {
+        float titleWidth = MIN(titleLabel.frame.size.width, self.view.frame.size.width);
+        UIView *oneLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleWidth, 30)];
+        [oneLineTitleView addSubview:titleLabel];
+        [oneLineTitleView addConstraints:[NSLayoutConstraint constraintCenterView:titleLabel]];
+
+        self.navigationItem.titleView = oneLineTitleView;
+    }
+    else
+    {
+        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 22, 0, 0)];
+        subTitleLabel.backgroundColor = [UIColor clearColor];
+        subTitleLabel.textColor = [UIColor piwigoWhiteCream];
+        subTitleLabel.numberOfLines = 1;
+        subTitleLabel.font = [UIFont piwigoFontTiny];
+        subTitleLabel.text = [NSDateFormatter localizedStringFromDate:self.imageData.dateCreated
+                                                            dateStyle:NSDateFormatterMediumStyle
+                                                            timeStyle:NSDateFormatterMediumStyle];
+        [subTitleLabel sizeToFit];
+        
+        float titleWidth = MAX(subTitleLabel.frame.size.width, titleLabel.frame.size.width);
+        titleWidth = MIN(titleWidth, self.navigationController.view.frame.size.width);
+        NSLog(@"=> width = %f inside %f", titleWidth, self.navigationController.view.frame.size.width);
+        UIView *twoLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleWidth, 30)];
+        [twoLineTitleView addSubview:titleLabel];
+        [twoLineTitleView addSubview:subTitleLabel];
+        [twoLineTitleView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:titleLabel]];
+        [twoLineTitleView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:subTitleLabel]];
+        NSDictionary *views = @{
+                                @"title" : titleLabel,
+                                @"subtitle" : subTitleLabel,
+                                };
+        [twoLineTitleView addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"V:|[title][subtitle]|"
+                                   options:kNilOptions metrics:nil views:views]];
+
+        self.navigationItem.titleView = twoLineTitleView;
+    }
+}
 
 #pragma mark - ImagePreviewDelegate Methods
 
