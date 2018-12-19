@@ -1328,16 +1328,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         UIAlertController* alert = [UIAlertController
             alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
             message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-            preferredStyle:UIAlertControllerStyleActionSheet];
+            preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction* cancelAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-            style:UIAlertActionStyleDefault
+            style:UIAlertActionStyleDestructive
             handler:^(UIAlertAction * action) {}];
 
         UIAlertAction* prefsAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
-            style:UIAlertActionStyleCancel
+            style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
             }];
