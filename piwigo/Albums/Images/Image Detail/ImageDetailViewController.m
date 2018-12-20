@@ -368,7 +368,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
     // Reached the end of the category?
-    if(currentIndex >= (self.images.count - 1))
+    if (currentIndex >= (self.images.count - 1))
     {
         return nil;
     }
@@ -391,14 +391,26 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         }
     }
 
-    // Retrieve (incomplete) image data
-    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
+    // Does the needed image preview controller already exist?
+    for (UIViewController *viewController in [pageViewController viewControllers]) {
+        // Only consider view controllers of the right class!
+        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
+            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
+            // Return if exists
+            if (imageViewCtrl.imageIndex == currentIndex + 1) {
+                NSLog(@"=> Preview view controller for next image already exists");
+                return nil;
+            }
+        }
+    }
     
-    // Prepare image preview
-//    NSLog(@"=> After ViewController, load image %@", imageData.imageId);
+    // Retrieve (incomplete) image data and create view controller
+    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
+//    NSLog(@"=> Create preview view controller for next image %@", imageData.imageId);
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
-    [nextImage setImageScrollViewWithImageData:imageData];
+    nextImage.imageLoaded = NO;
     nextImage.imageIndex = currentIndex + 1;
+    [nextImage setImageScrollViewWithImageData:imageData];
     return nextImage;
 }
 
@@ -408,22 +420,35 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
     // Reached the beginning of the category?
-    if(currentIndex <= 0)
+    if (currentIndex <= 0)
     {
-        // return nil;
-        // Crash reported by AppStore here on May 25th, 2017
+        // Crash reported by AppStore here on May 25th, 2017!
         // Should return nil when the user reaches the first image of the album
         return nil;
     }
     
+    // Does the needed image preview controller already exist?
+    for (UIViewController *viewController in [pageViewController viewControllers]) {
+        // Only consider view controllers of the right class!
+        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
+            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
+            // Return if exists
+            if (imageViewCtrl.imageIndex == currentIndex - 1) {
+                NSLog(@"=> Preview view controller for previous image already exists");
+                return nil;
+            }
+        }
+    }
+
     // Retrieve (incomplete) image data
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
     
-    // Prepare image preview
-//    NSLog(@"=> Before ViewController, load image %@", imageData.imageId);
+    // Retrieve (incomplete) image data and create view controller
+//    NSLog(@"=> Create preview view controller for previous image %@", imageData.imageId);
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
-    [prevImage setImageScrollViewWithImageData:imageData];
+    prevImage.imageLoaded = NO;
     prevImage.imageIndex = currentIndex - 1;
+    [prevImage setImageScrollViewWithImageData:imageData];
     return prevImage;
 }
 
@@ -432,9 +457,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 {
     // Stop loading image if needed
     ImagePreviewViewController *removedVC = [pageViewController.viewControllers firstObject];
-    if (removedVC.downloadTask.state == 0) {    // Task active?
-        [removedVC.scrollView.imageView cancelImageDownloadTask];   // Thumbnail / placeholder
-        [removedVC.downloadTask cancel];                            // Previewed image
+    if (removedVC.downloadTask.state == 0) {                        // Task active?
+        [removedVC.scrollView.imageView cancelImageDownloadTask];   // Cancel thumbnail download
+        [removedVC.downloadTask cancel];                            // Cancel image file download
     }
 }
 
@@ -1006,7 +1031,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         
         float titleWidth = MAX(subTitleLabel.frame.size.width, titleLabel.frame.size.width);
         titleWidth = MIN(titleWidth, self.navigationController.view.frame.size.width);
-        NSLog(@"=> width = %f inside %f", titleWidth, self.navigationController.view.frame.size.width);
         UIView *twoLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleWidth, 30)];
         [twoLineTitleView addSubview:titleLabel];
         [twoLineTitleView addSubview:subTitleLabel];
