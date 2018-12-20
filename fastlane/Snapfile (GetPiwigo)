@@ -11,14 +11,15 @@ devices([
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
 #   "ar",
-   "da",
-   "de",
+#   "da",
+#   "de",
    "en",
-   "fr",
+#   "fr",
 #   "id",
+#   "it",
 #   "ja",
-   "nl",
-   "pl",
+#   "nl",
+#   "pl",
 #   "sv"
 ])
 
