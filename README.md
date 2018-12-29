@@ -32,7 +32,7 @@ For video upload using your iOS device, you need the plugin on your Piwigo serve
 
 Your Piwigo server generates a poster of each uploaded video with [FFmpeg](http://www.ffmpeg.org) (or [avconv](https://libav.org/documentation/avconv.html) from [Libdav](https://libav.org)). If neither of these solutions is installed, the upload will fail. From to our experience, we recommand to install the 'true' [FFmpeg](http://www.ffmpeg.org).
 
-## Translations
+## Translations [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile)
 Piwigo Mobile is available from the [App Store](https://itunes.apple.com/app/piwigo/id472225196?mt=8) in the following languages:
 - [Italian](https://crowdin.com/project/piwigo-mobile/it#) since [v2.2.6](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.2.6),
 - [Japanese](https://crowdin.com/project/piwigo-mobile/ja#) since [v2.1.8](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1.8),

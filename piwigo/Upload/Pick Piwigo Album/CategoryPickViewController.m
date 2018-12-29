@@ -6,17 +6,17 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "AppDelegate.h"
-#import "CategoryPickViewController.h"
-#import "CategoriesData.h"
-#import "CategoryTableViewCell.h"
-#import "LabelTableViewCell.h"
-#import "LocalAlbumsViewController.h"
 #import "AlbumImagesViewController.h"
-#import "Model.h"
 #import "AlbumService.h"
-#import "PhotosFetch.h"
+#import "AppDelegate.h"
+#import "CategoriesData.h"
+#import "CategoryPickViewController.h"
+#import "CategoryTableViewCell.h"
+#import "LocalAlbumsViewController.h"
+#import "LabelTableViewCell.h"
 #import "MBProgressHUD.h"
+#import "Model.h"
+#import "PhotosFetch.h"
 
 @interface CategoryPickViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, CategoryCellDelegate>
 
@@ -35,7 +35,6 @@
 -(instancetype)initWithCategoryId:(NSInteger)categoryId;
 {
 
-    self = [super init];
     self = [super init];
     if(self)
     {
@@ -65,8 +64,6 @@
             [self.categoriesTableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:@"CategoryTableViewCell"];
             [self.view addSubview:self.categoriesTableView];
             [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
-
-            [[PhotosFetch sharedInstance] getLocalGroupsOnCompletion:nil];
 
             // Button for returning to albums/images
             self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
@@ -489,14 +486,9 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    PiwigoAlbumData *categoryData;
-    
     switch (indexPath.section) {
         case 0:                 // List of actions for the current album
         {
-            // Retrieve category data
-            categoryData = [[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId];
-            
             // Which action ?
             switch (indexPath.row) {
                 case 0:
@@ -504,7 +496,7 @@
                     if ((self.currentCategoryId != 0) &&
                         ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) {
                         // Upload images in the current category
-                        [self selectedCategory:categoryData];
+                        [self selectedCategory:self.currentCategoryId];
                     }
                     else if ([Model sharedInstance].hasAdminRights) {
                         // Create Sub-Album
@@ -548,8 +540,8 @@
             if(self.categories.count > indexPath.row)
             {
                 // Upload images in the selected category
-                categoryData = [self.categories objectAtIndex:indexPath.row];
-                [self selectedCategory:categoryData];
+                NSInteger categoryId = [[self.categories objectAtIndex:indexPath.row] albumId];
+                [self selectedCategory:categoryId];
             }
             break;
         }
@@ -560,13 +552,22 @@
 #pragma mark - Upload Images
 
 // Upload images in selected category
--(void)selectedCategory:(PiwigoAlbumData *)category
+-(void)selectedCategory:(NSInteger)categoryId
 {
-    if(category)
-    {
-        LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:category.albumId];
-        [self.navigationController pushViewController:localAlbums animated:YES];
-    }
+    // Upload images except in root album
+    if (categoryId == 0) return;
+
+    // Check autorisation to access Photo Library before uploading
+    [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
+           onRetry:^{
+               // Retry if status was not determined
+               [self selectedCategory:categoryId];
+           } onSuccess:^{
+               // Open local albums view controller
+               LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:categoryId];
+               [self.navigationController pushViewController:localAlbums animated:YES];
+           }
+    ];
 }
 
 

@@ -15,11 +15,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.6</string>
+	<string>2.2.7</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>155</string>
+	<string>156</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -36,6 +36,7 @@
 		<string>LacunaRegular.TTF</string>
 		<string>OpenSansLight.TTF</string>
 		<string>OpenSansRegular.TTF</string>
+		<string>OpenSansSemiBold.TTF</string>
 		<string>OpenSansBold.TTF</string>
 		<string>OpenSansExtraBold.TTF</string>
 	</array>
