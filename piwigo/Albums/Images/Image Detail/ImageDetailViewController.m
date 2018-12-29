@@ -8,8 +8,8 @@
 
 #import <Photos/Photos.h>
 
-#import "AppDelegate.h"
 #import "AllCategoriesViewController.h"
+#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageDetailsViewController.h"
 #import "ImageDetailViewController.h"
@@ -21,6 +21,7 @@
 #import "Model.h"
 #import "MoveImageViewController.h"
 #import "MBProgressHUD.h"
+#import "PhotosFetch.h"
 #import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
@@ -644,38 +645,20 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)downloadImage
 {
-    // Check autorisation to access Photo Library
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    if (status != PHAuthorizationStatusAuthorized) {
-        
-        // Ask user to provide access to Photos
-        UIAlertController* alert = [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
-            message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-            preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* cancelAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-            style:UIAlertActionStyleDestructive
-            handler:^(UIAlertAction * action) {}];
-        
-        UIAlertAction* prefsAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
-            style:UIAlertActionStyleDefault
-            handler:^(UIAlertAction * action) {
-              [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-            }];
+    // Check autorisation to access Photo Library before downloading
+    [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
+           onRetry:^{
+               // Retry if status was not determined
+               [self downloadImage];
+           } onSuccess:^{
+               // Start downloading image
+               [self startDownloadingImage];
+           }
+     ];
+}
 
-        // Add actions
-        [alert addAction:cancelAction];
-        [alert addAction:prefsAction];
-
-        // Present list of actions
-        alert.popoverPresentationController.barButtonItem = self.downloadBarButton;
-        [self presentViewController:alert animated:YES completion:nil];
-        return;
-    }
-    
+-(void)startDownloadingImage
+{
     // Show loading HUD
     [self showHUDwithTitle:NSLocalizedString(@"downloadingImage", @"Downloading Image") withProgress:YES];
     

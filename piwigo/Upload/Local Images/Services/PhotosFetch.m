@@ -31,37 +31,145 @@
 	return instance;
 }
 
--(void)getLocalGroupsOnCompletion:(CompletionBlock)completion
+-(void)checkPhotoLibraryAccessForViewController:(UIViewController *)viewController
+                                        onRetry:(void (^)(void))retry
+                                      onSuccess:(void (^)(void))success
 {
     // Check autorisation to access Photo Library
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    if (status != PHAuthorizationStatusAuthorized) {
-
-        // Determine the present view controller
-        UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (topViewController.presentedViewController) {
-            topViewController = topViewController.presentedViewController;
+    switch (status) {
+        case PHAuthorizationStatusNotDetermined:
+        {
+            // Request authorization to access photos
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                // Create "Photos access" in Settings app for Piwigo, return user's choice
+                switch (status) {
+                    case PHAuthorizationStatusRestricted:
+                    case PHAuthorizationStatusDenied:
+                        // Inform user that Piwigo cannot access the Photo library
+                        if ([NSThread isMainThread]) {
+                            [self showPhotosLibraryAccessRestrictedInViewController:viewController];
+                        }
+                        else{
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self showPhotosLibraryAccessRestrictedInViewController:viewController];
+                            });
+                        }
+                        break;
+                        
+                    default:
+                        if (retry) {
+                            // Retry as this should be fine
+                            if ([NSThread isMainThread]) {
+                                retry();
+                            }
+                            else{
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    retry();
+                                });
+                            }
+                        }
+                        break;
+                }
+            }];
+            return;
+            break;
         }
-        
-        UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
-                message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
-                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleDefault
-                handler:^(UIAlertAction * action) {
-                    if(completion)
-                    {
-                        completion(@(-1),@(-1));
-                    }
-                }];
-        
-        [alert addAction:defaultAction];
-        [topViewController presentViewController:alert animated:YES completion:nil];        
-	}
+            
+        case PHAuthorizationStatusRestricted:
+        {
+            // Inform user that he/she cannot access the Photo library
+            if ([NSThread isMainThread]) {
+                [self showPhotosLibraryAccessRestrictedInViewController:viewController];
+            }
+            else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showPhotosLibraryAccessRestrictedInViewController:viewController];
+                });
+            }
+            break;
+        }
+            
+        case PHAuthorizationStatusDenied:
+        {
+            // Invite user to provide access to photos
+            if ([NSThread isMainThread]) {
+                [self requestPhotoLibraryAccessInViewController:viewController];
+            }
+            else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self requestPhotoLibraryAccessInViewController:viewController];
+                });
+            }
+            break;
+        }
+            
+        default:
+        {
+            // Access Photo Library
+            if (success) {
+                if ([NSThread isMainThread]) {
+                    success();
+                }
+                else{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        success();
+                    });
+                }
+            }
+            break;
+        }
+    }
+}
+
+-(void)requestPhotoLibraryAccessInViewController:(UIViewController *)viewController
+{
+    // Invite user to provide access to photos
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNotAuthorized_title", @"No Access")
+        message:NSLocalizedString(@"localAlbums_photosNotAuthorized_msg", @"tell user to change settings, how")
+        preferredStyle:UIAlertControllerStyleAlert];
     
+    UIAlertAction* cancelAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleDestructive
+        handler:^(UIAlertAction * action) { }];
+    
+    UIAlertAction* prefsAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            // Redirect user to Settings app
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+        }];
+    
+    // Add actions
+    [alert addAction:cancelAction];
+    [alert addAction:prefsAction];
+    
+    // Present list of actions
+    [viewController presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)showPhotosLibraryAccessRestrictedInViewController:(UIViewController *)viewController
+{
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:NSLocalizedString(@"localAlbums_photosNiltitle", @"Problem Reading Photos")
+                                message:NSLocalizedString(@"localAlbums_photosNnil_msg", @"There is a problem reading your local photo library.")
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) { }];
+    
+    // Present alert
+    [alert addAction:dismissAction];
+    [viewController presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)getLocalGroupsOnCompletion:(CompletionBlock)completion
+{
     // Collect all smart albums created in the Photos app
     // i.e. Camera Roll, Favorites, Recently Deleted, Panoramas, etc.
     PHFetchResult *smartAlbums = [PHAssetCollection
