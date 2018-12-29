@@ -978,8 +978,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textColor = [UIColor piwigoWhiteCream];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.numberOfLines = 1;
-    titleLabel.font = [UIFont piwigoFontSmall];
+    titleLabel.font = [UIFont piwigoFontSmallSemiBold];
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     titleLabel.adjustsFontSizeToFitWidth = NO;
     titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -989,36 +990,50 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     titleLabel.text = self.imageData.name;
     [titleLabel sizeToFit];
 
-    // There is no subtitle in landscape mode or when the craetion date is unknown
-    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ||
+    // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
+    if ((([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
+         (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))) ||
         (self.imageData.dateCreated == self.imageData.datePosted))
     {
-        float titleWidth = MIN(titleLabel.frame.size.width, self.view.frame.size.width);
-        UIView *oneLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleWidth, 30)];
-        [oneLineTitleView addSubview:titleLabel];
-        [oneLineTitleView addConstraints:[NSLayoutConstraint constraintCenterView:titleLabel]];
-
+        float titleWidth = fmin(titleLabel.bounds.size.width, self.view.bounds.size.width*0.4);
+        [titleLabel sizeThatFits:CGSizeMake(fmin(titleLabel.bounds.size.width, titleWidth), titleLabel.bounds.size.height)];
+        UIView *oneLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleWidth, titleLabel.bounds.size.height)];
         self.navigationItem.titleView = oneLineTitleView;
+
+        [oneLineTitleView addSubview:titleLabel];
+        [oneLineTitleView addConstraint:[NSLayoutConstraint constraintView:titleLabel toWidth:titleWidth]];
+        [oneLineTitleView addConstraints:[NSLayoutConstraint constraintCenterView:titleLabel]];
     }
     else
     {
-        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 22, 0, 0)];
+        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, titleLabel.frame.size.height, 0, 0)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
         subTitleLabel.textColor = [UIColor piwigoWhiteCream];
+        subTitleLabel.textAlignment = NSTextAlignmentCenter;
         subTitleLabel.numberOfLines = 1;
+        subTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
         subTitleLabel.font = [UIFont piwigoFontTiny];
+        subTitleLabel.adjustsFontSizeToFitWidth = NO;
+        subTitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        if (@available(iOS 9, *)) {
+            subTitleLabel.allowsDefaultTighteningForTruncation = YES;
+        }
         subTitleLabel.text = [NSDateFormatter localizedStringFromDate:self.imageData.dateCreated
                                                             dateStyle:NSDateFormatterMediumStyle
                                                             timeStyle:NSDateFormatterMediumStyle];
         [subTitleLabel sizeToFit];
         
-        float titleWidth = MAX(subTitleLabel.frame.size.width, titleLabel.frame.size.width);
-        titleWidth = MIN(titleWidth, self.navigationController.view.frame.size.width);
-        UIView *twoLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleWidth, 30)];
+        float titleWidth = fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width);
+        titleWidth = fmin(titleWidth, self.navigationController.view.bounds.size.width*0.4);
+        UIView *twoLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleWidth, titleLabel.bounds.size.height + subTitleLabel.bounds.size.height)];
+        self.navigationItem.titleView = twoLineTitleView;
+
         [twoLineTitleView addSubview:titleLabel];
         [twoLineTitleView addSubview:subTitleLabel];
+        [twoLineTitleView addConstraint:[NSLayoutConstraint constraintView:titleLabel toWidth:titleWidth]];
         [twoLineTitleView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:titleLabel]];
         [twoLineTitleView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:subTitleLabel]];
+
         NSDictionary *views = @{
                                 @"title" : titleLabel,
                                 @"subtitle" : subTitleLabel,
@@ -1026,8 +1041,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         [twoLineTitleView addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"V:|[title][subtitle]|"
                                    options:kNilOptions metrics:nil views:views]];
-
-        self.navigationItem.titleView = twoLineTitleView;
     }
 }
 
