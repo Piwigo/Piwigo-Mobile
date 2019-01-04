@@ -740,7 +740,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
     // Propagate user's request
     [Model sharedInstance].userCancelledCommunication = YES;
-    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
+    NSArray <NSURLSessionTask *> *tasks = [[Model sharedInstance].sessionManager tasks];
+    for (NSURLSessionTask *task in tasks) {
+        [task cancel];
+    }
 
     dispatch_async(dispatch_get_main_queue(), ^{
         // Update login HUD
