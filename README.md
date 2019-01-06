@@ -1,6 +1,6 @@
 [![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/v2.2.4/Assets/Screenshots/iPhone8%2BiPadPro105-Landscape-Silver-en-small.png)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/v2.2.4/Assets/Screenshots/iPhone8%2BiPadPro105-Landscape-Silver-en.png)
 
-# Piwigo Mobile
+# Piwigo Mobile [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile) [![License: MIT](https://img.shields.io/cocoapods/l/MBProgressHUD.svg?style=flat)](http://opensource.org/licenses/MIT)
 Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
 [Piwigo](http://piwigo.org) is a **free and opensource** web photo gallery, built by an active community of users and developers.
