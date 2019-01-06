@@ -16,7 +16,7 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
 
 @implementation UploadService
 
-+(void)uploadImage:(NSMutableData *)imageData
++(void)uploadImage:(NSData *)imageData
    withInformation:(NSDictionary *)imageInformation
 			onProgress:(void (^)(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks))onProgress
 		  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
@@ -33,6 +33,7 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
 	
     // Start sending data to server
 	[self sendChunk:imageData withInformation:[imageInformation mutableCopy]
+          forOffset:0
             onChunk:0 forTotalChunks:(NSInteger)chunks
          onProgress:onProgress
        OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
@@ -54,15 +55,19 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
     ];
 }
 
-+(void)sendChunk:(NSMutableData *)imageData withInformation:(NSMutableDictionary *)imageInformation
++(void)sendChunk:(NSData *)imageData withInformation:(NSMutableDictionary *)imageInformation
+       forOffset:(NSInteger)offset
          onChunk:(NSInteger)count forTotalChunks:(NSInteger)chunks
 					 onProgress:(void (^)(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks))onProgress
 				   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
 					  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSInteger length = [imageData length];
-    NSUInteger thisChunkSize = length > kChunkSize ? kChunkSize : length;
-    NSData *chunk = [imageData subdataWithRange:NSMakeRange(0, thisChunkSize)];
+    NSUInteger thisChunkSize = length  - offset > kChunkSize ? kChunkSize : length - offset;
+    NSData *chunk = [imageData subdataWithRange:NSMakeRange(offset, thisChunkSize)];
+    
+    NSInteger nextChunkNumber = count + 1;
+    offset += thisChunkSize;
     
     [imageInformation setObject:chunk
                          forKey:kPiwigoImagesUploadParamData];
@@ -70,15 +75,6 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                          forKey:kPiwigoImagesUploadParamChunk];
     [imageInformation setObject:[NSString stringWithFormat:@"%@", @(chunks)]
                          forKey:kPiwigoImagesUploadParamChunks];
-
-    chunk = nil;
-    if (length == thisChunkSize) {
-        imageData = nil;
-    } else {
-        [imageData setData:[imageData subdataWithRange:NSMakeRange(thisChunkSize, length - thisChunkSize)]];
-    }
-
-    NSInteger nextChunkNumber = count + 1;
 
     [self postMultiPart:kPiwigoImagesUpload
              parameters:imageInformation
@@ -101,11 +97,14 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                     else
                     {
                         // Keep going!
-                        [self sendChunk:imageData withInformation:imageInformation
-                                onChunk:nextChunkNumber forTotalChunks:chunks
-                           onProgress:onProgress
-                         OnCompletion:completion
-                            onFailure:fail];
+                        [self sendChunk:imageData
+                        withInformation:imageInformation
+                              forOffset:offset
+                                onChunk:nextChunkNumber
+                         forTotalChunks:chunks
+                             onProgress:onProgress
+                           OnCompletion:completion
+                              onFailure:fail];
                     }
             
               } failure:^(NSURLSessionTask *task, NSError *error) {

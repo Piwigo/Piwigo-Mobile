@@ -679,7 +679,7 @@
     }
     
     // Upload image with tags and properties
-    [self uploadImage:image withData:[imageData mutableCopy] andMimeType:mimeType];
+    [self uploadImage:image withData:[imageData copy] andMimeType:mimeType];
 }
 
 #pragma mark - MIME type and file extension sniffing
@@ -1023,7 +1023,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                 [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
                 // Upload video with tags and properties
-                [self uploadImage:image withData:[assetData mutableCopy] andMimeType:mimeType];
+                [self uploadImage:image withData:[assetData copy] andMimeType:mimeType];
             }
             else if ([exportSession status] == AVAssetExportSessionStatusFailed)
             {
@@ -1054,7 +1054,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                     if (assetData && ((![Model sharedInstance].stripGPSdataOnUpload) || ([Model sharedInstance].stripGPSdataOnUpload && assetDoesNotContainGPSmetadata))) {
 
                         // Upload video with tags and properties
-                        [self uploadImage:image withData:[assetData mutableCopy] andMimeType:mimeType];
+                        [self uploadImage:image withData:[assetData copy] andMimeType:mimeType];
                         return;
                     } else {
                         // No data — Inform user that it won't succeed
@@ -1338,7 +1338,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 
 #pragma mark - Upload image/video
 
--(void)uploadImage:(ImageUpload *)image withData:(NSMutableData *)imageData andMimeType:(NSString *)mimeType
+-(void)uploadImage:(ImageUpload *)image withData:(NSData *)imageData andMimeType:(NSString *)mimeType
 {
     // Chek that the final image format will be accepted by the Piwigo server
     if (![[Model sharedInstance].uploadFileTypes containsString:[[image.image pathExtension] lowercaseString]]) {
