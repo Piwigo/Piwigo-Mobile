@@ -58,7 +58,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		self.delegate = self;
 		
 		self.imageData = [self.images objectAtIndex:imageIndex];
-        self.title = self.imageData.name;
         [self setTitleViewFromImageData];
 
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
@@ -489,7 +488,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
 
     self.imageData = [self.images objectAtIndex:currentIndex];
-    self.title = self.imageData.name;
     [self setTitleViewFromImageData];
     if(self.imageData.isVideo)
     {
@@ -1077,7 +1075,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%ld", (long)details.imageId]];
     
     // Update current view
-    self.title = details.title;
+    [self setTitleViewFromImageData];
 }
 
 
