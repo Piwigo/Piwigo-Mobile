@@ -1128,8 +1128,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
-                    cell.slider.minimumValue = 10;
-                    cell.slider.maximumValue = 500;
+                    cell.slider.minimumValue = 16;
+                    cell.slider.maximumValue = 2048;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
@@ -1138,7 +1138,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
                     }
                     cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = 10;
+                    cell.incrementSliderBy = 16;
                     cell.sliderValue = [Model sharedInstance].diskCache;
                     [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
@@ -1155,8 +1155,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
-                    cell.slider.minimumValue = 10;
-                    cell.slider.maximumValue = 200;
+                    cell.slider.minimumValue = 16;
+                    cell.slider.maximumValue = 512;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
@@ -1165,7 +1165,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
                     }
                     cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = 10;
+                    cell.incrementSliderBy = 16;
                     cell.sliderValue = [Model sharedInstance].memoryCache;
                     [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
@@ -1421,6 +1421,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 case 0:     // Default Size of Previewed Images
                 {
                     result = YES;
+                    break;
+                }
+                case 1:     // Share private Metadata
+                {
+                    result = NO;
                     break;
                 }
             }

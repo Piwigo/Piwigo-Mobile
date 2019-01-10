@@ -88,8 +88,8 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         
         // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
-		instance.diskCache = 80;
-		instance.memoryCache = 80;
+		instance.diskCache = 512;
+		instance.memoryCache = 128;
 		
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
