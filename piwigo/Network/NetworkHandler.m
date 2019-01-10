@@ -356,9 +356,9 @@ NSInteger const loadingViewTag = 899;
         }
     }
     
-    // Remove the .php? prefix if any
+    // Remove the .php?, i? prefixes if any
     NSString *prefix = @"";
-    NSRange pos = [cleanPath rangeOfString:@".php?"];
+    NSRange pos = [cleanPath rangeOfString:@"?"];
     if (pos.location != NSNotFound ) {
         // The path contains .php?
         pos.length += pos.location;
@@ -381,8 +381,8 @@ NSInteger const loadingViewTag = 899;
     
     // For debugging purposes
     if (![encodedImageURL isEqualToString:originalURL]) {
-        NSLog(@"=> %@", originalURL);
-        NSLog(@"   %@", encodedImageURL);
+        NSLog(@"=> originalURL:%@", originalURL);
+        NSLog(@"    encodedURL:%@", encodedImageURL);
         NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
     }
     return encodedImageURL;
