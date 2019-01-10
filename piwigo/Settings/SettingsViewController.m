@@ -422,7 +422,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 5;
             break;
         case SettingsSectionImages:
-            nberOfRows = 1;
+            nberOfRows = 2;
             break;
         case SettingsSectionImageUpload:
             nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
@@ -667,6 +667,28 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
                     cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize withAdvice:NO];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Share private Metadata
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"gps"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata>375px", @"Share Private Metadata");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata", @"Share Metadata");
+                    }
+                    [cell.cellSwitch setOn:[Model sharedInstance].shareGPSdataOnShare];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        [Model sharedInstance].shareGPSdataOnShare = switchState;
+                        [[Model sharedInstance] saveToDisk];
+                    };
                     
                     tableViewCell = cell;
                     break;

@@ -80,9 +80,10 @@ typedef enum {
 @property (nonatomic, assign) NSInteger defaultThumbnailSize;
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
-// Default image preview size
+// Default image settings
 @property (nonatomic, assign) BOOL didOptimiseImagePreviewSize;
 @property (nonatomic, assign) NSInteger defaultImagePreviewSize;
+@property (nonatomic, assign) BOOL shareGPSdataOnShare;
 
 // Default image upload settings
 @property (nonatomic, strong) NSString *defaultAuthor;

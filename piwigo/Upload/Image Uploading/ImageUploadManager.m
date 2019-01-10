@@ -19,6 +19,7 @@
 @interface ImageUploadManager()
 
 @property (nonatomic, assign) BOOL isUploading;
+@property (nonatomic, strong) NSData *imageData;
 @property (nonatomic, assign) NSInteger onCurrentImageUpload;
 @property (nonatomic, assign) NSInteger current;
 @property (nonatomic, assign) NSInteger total;
@@ -413,13 +414,13 @@
                          }
 
                          // Expected resource available
-                         [self modifyImage:image withData:[imageData mutableCopy] andObject:imageObject];
+                         [self modifyImage:image withData:imageData andObject:imageObject];
                      }
          ];
     }
 }
 
--(void)modifyImage:(ImageUpload *)image withData:(NSMutableData *)originalData andObject:(UIImage *)originalObject
+-(void)modifyImage:(ImageUpload *)image withData:(NSData *)originalData andObject:(UIImage *)originalObject
 {
     // Create CGI reference from image data (to retrieve complete metadata)
     CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFMutableDataRef) originalData, NULL);
@@ -442,164 +443,18 @@
     NSLog(@"originalObject is %.0fw x %.0fh", originalObject.size.width, originalObject.size.height);
 #endif
     
-    // Strips GPS metadata if user requested it in Settings
-    if([Model sharedInstance].stripGPSdataOnUpload && (imageMetadata != nil)) {
-
-        // GPS dictionary
-        NSMutableDictionary *GPSDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
-        if (GPSDictionary) {
-#if defined(DEBUG_UPLOAD)
-            NSLog(@"modifyImage: GPS metadata = %@",GPSDictionary);
-#endif
-            [imageMetadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
-        }
-
-        // EXIF dictionary
-        NSMutableDictionary *EXIFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
-        if (EXIFDictionary) {
-#if defined(DEBUG_UPLOAD)
-            NSLog(@"modifyImage: EXIF User Comment metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifUserComment]);
-            NSLog(@"modifyImage: EXIF Subject Location metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifSubjectLocation]);
-#endif
-            [EXIFDictionary removeObjectForKey:(NSString *)kCGImagePropertyExifUserComment];
-            [EXIFDictionary removeObjectForKey:(NSString *)kCGImagePropertyExifSubjectLocation];
-            [imageMetadata setObject:EXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
-        }
+    // Strip GPS metadata if user requested it in Settings
+    if([Model sharedInstance].stripGPSdataOnUpload && (imageMetadata != nil))
+    {
+        imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
     }
 
-    // Extract metadata from UIImage object
-    NSData *objectNSData = UIImageJPEGRepresentation(originalObject, 1.0f);
-    CGImageSourceRef objectSource = CGImageSourceCreateWithData((__bridge CFDataRef) objectNSData, NULL);
-    NSMutableDictionary *objectMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(objectSource, 0, NULL)) mutableCopy];
-#if defined(DEBUG_UPLOAD)
-    NSLog(@"modifyImage finds metadata from object:%@",objectMetadata);
-#endif
+    // Fix image metadata (size, type, etc.)
+    imageMetadata = [ImageService fixMetadata:imageMetadata ofImage:originalObject];
     
-    // Update metadata header with correct metadata
-    if ([imageMetadata valueForKey:(NSString *)kCGImagePropertyOrientation]) {
-        [imageMetadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyOrientation]
-                         forKey:(NSString *)kCGImagePropertyOrientation];
-    }
-    
-    // Update metadata with correct size
-    if ([imageMetadata valueForKey:(NSString *)kCGImagePropertyPixelWidth]) {
-        [imageMetadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyPixelWidth]
-                         forKey:(NSString *)kCGImagePropertyPixelWidth];
-        [imageMetadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyPixelHeight]
-                         forKey:(NSString *)kCGImagePropertyPixelHeight];
-    }
-    
-    // Update 8BIM dictionary with correct metadata
-    NSMutableDictionary *image8BIMDictionary = [[imageMetadata objectForKey:(NSString *)kCGImageProperty8BIMDictionary] mutableCopy];
-    NSMutableDictionary *object8BIMDictionary = [[objectMetadata objectForKey:(NSString *)kCGImageProperty8BIMDictionary] mutableCopy];
-    if (image8BIMDictionary && object8BIMDictionary) {
-        [image8BIMDictionary addEntriesFromDictionary:object8BIMDictionary];
-        [imageMetadata setObject:image8BIMDictionary forKey:(NSString *)kCGImageProperty8BIMDictionary];
-    } else if (!image8BIMDictionary && object8BIMDictionary) {
-        [imageMetadata setObject:object8BIMDictionary forKey:(NSString *)kCGImageProperty8BIMDictionary];
-    }
-    
-    // Update CIFF dictionary with correct metadata
-    NSMutableDictionary *imageCIFFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyCIFFDictionary] mutableCopy];
-    NSMutableDictionary *objectCIFFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyCIFFDictionary] mutableCopy];
-    if (imageCIFFDictionary && objectCIFFDictionary) {
-        [imageCIFFDictionary addEntriesFromDictionary:objectCIFFDictionary];
-        [imageMetadata setObject:imageCIFFDictionary forKey:(NSString *)kCGImagePropertyCIFFDictionary];
-    } else if (!imageCIFFDictionary && objectCIFFDictionary) {
-        [imageMetadata setObject:objectCIFFDictionary forKey:(NSString *)kCGImagePropertyCIFFDictionary];
-    }
-    
-    // Update DNG dictionary with correct metadata
-    NSMutableDictionary *imageDNGDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyDNGDictionary] mutableCopy];
-    NSMutableDictionary *objectDNGDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyDNGDictionary] mutableCopy];
-    if (imageDNGDictionary && objectDNGDictionary) {
-        [imageDNGDictionary addEntriesFromDictionary:objectDNGDictionary];
-        [imageMetadata setObject:objectDNGDictionary forKey:(NSString *)kCGImagePropertyDNGDictionary];
-    } else if (!imageDNGDictionary && objectDNGDictionary) {
-        [imageMetadata setObject:objectDNGDictionary forKey:(NSString *)kCGImagePropertyDNGDictionary];
-    }
-    
-    // Update Exif dictionary with correct metadata
-    NSMutableDictionary *imageEXIFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
-    NSMutableDictionary *objectEXIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
-    if (imageEXIFDictionary && objectEXIFDictionary) {
-        [imageEXIFDictionary addEntriesFromDictionary:objectEXIFDictionary];
-        [imageMetadata setObject:imageEXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
-    } else if (!imageEXIFDictionary && objectEXIFDictionary) {
-        [imageMetadata setObject:objectEXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
-    }
-    NSMutableDictionary *imageEXIFAuxDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyExifAuxDictionary] mutableCopy];
-    NSMutableDictionary *objectEXIFAuxDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyExifAuxDictionary] mutableCopy];
-    if (imageEXIFAuxDictionary && objectEXIFAuxDictionary) {
-        [imageEXIFAuxDictionary addEntriesFromDictionary:objectEXIFAuxDictionary];
-        [imageMetadata setObject:imageEXIFAuxDictionary forKey:(NSString *)kCGImagePropertyExifAuxDictionary];
-    } else if (!imageEXIFAuxDictionary && objectEXIFAuxDictionary) {
-        [imageMetadata setObject:objectEXIFAuxDictionary forKey:(NSString *)kCGImagePropertyExifAuxDictionary];
-    }
-
-    // Update GIF dictionary with correct metadata
-    NSMutableDictionary *imageGIFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyGIFDictionary] mutableCopy];
-    NSMutableDictionary *objectGIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyGIFDictionary] mutableCopy];
-    if (imageGIFDictionary && objectGIFDictionary) {
-        [imageGIFDictionary addEntriesFromDictionary:objectGIFDictionary];
-        [imageMetadata setObject:imageGIFDictionary forKey:(NSString *)kCGImagePropertyGIFDictionary];
-    } else if (!imageGIFDictionary && objectGIFDictionary) {
-        [imageMetadata setObject:objectGIFDictionary forKey:(NSString *)kCGImagePropertyGIFDictionary];
-    }
-    
-    // Update IPTC dictionary with correct metadata
-    NSMutableDictionary *imageIPTCDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyIPTCDictionary] mutableCopy];
-    NSMutableDictionary *objectIPTCDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyIPTCDictionary] mutableCopy];
-    if (imageIPTCDictionary && objectIPTCDictionary) {
-        [imageIPTCDictionary addEntriesFromDictionary:objectIPTCDictionary];
-        [imageMetadata setObject:imageIPTCDictionary forKey:(NSString *)kCGImagePropertyIPTCDictionary];
-    } else if (!imageIPTCDictionary && objectIPTCDictionary) {
-        [imageMetadata setObject:objectIPTCDictionary forKey:(NSString *)kCGImagePropertyIPTCDictionary];
-    }
-    
-    // Update JFIF dictionary with correct metadata
-    NSMutableDictionary *imageJFIFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyJFIFDictionary] mutableCopy];
-    NSMutableDictionary *objectJFIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyJFIFDictionary] mutableCopy];
-    if (imageJFIFDictionary && objectJFIFDictionary) {
-        [imageJFIFDictionary addEntriesFromDictionary:objectJFIFDictionary];
-        [imageMetadata setObject:imageJFIFDictionary forKey:(NSString *)kCGImagePropertyJFIFDictionary];
-    } else if (!imageJFIFDictionary && objectJFIFDictionary) {
-        [imageMetadata setObject:objectJFIFDictionary forKey:(NSString *)kCGImagePropertyJFIFDictionary];
-    }
-
-    // Update PNG dictionary with correct metadata
-    NSMutableDictionary *imagePNGDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyPNGDictionary] mutableCopy];
-    NSMutableDictionary *objectPNGDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyPNGDictionary] mutableCopy];
-    if (imagePNGDictionary && objectPNGDictionary) {
-        [imagePNGDictionary addEntriesFromDictionary:objectPNGDictionary];
-        [imageMetadata setObject:imagePNGDictionary forKey:(NSString *)kCGImagePropertyPNGDictionary];
-    } else if (!imagePNGDictionary && objectPNGDictionary) {
-        [imageMetadata setObject:objectPNGDictionary forKey:(NSString *)kCGImagePropertyPNGDictionary];
-    }
-
-    // Update RAW dictionary with correct metadata
-    NSMutableDictionary *imageRawDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyRawDictionary] mutableCopy];
-    NSMutableDictionary *objectRawDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyRawDictionary] mutableCopy];
-    if (imageRawDictionary && objectRawDictionary) {
-        [imageRawDictionary addEntriesFromDictionary:objectRawDictionary];
-        [imageMetadata setObject:imageRawDictionary forKey:(NSString *)kCGImagePropertyRawDictionary];
-    } else if (!imageRawDictionary && objectRawDictionary) {
-        [imageMetadata setObject:objectRawDictionary forKey:(NSString *)kCGImagePropertyRawDictionary];
-    }
-    
-    // Update TIFF dictionary with correct metadata
-    NSMutableDictionary *imageTIFFDictionary = [[imageMetadata objectForKey:(NSString *)kCGImagePropertyTIFFDictionary] mutableCopy];
-    NSMutableDictionary *objectTIFFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyTIFFDictionary] mutableCopy];
-    if (imageTIFFDictionary && objectTIFFDictionary) {
-        [imageTIFFDictionary addEntriesFromDictionary:objectTIFFDictionary];
-        [imageMetadata setObject:imageTIFFDictionary forKey:(NSString *)kCGImagePropertyTIFFDictionary];
-    } else if (!imageTIFFDictionary && objectTIFFDictionary) {
-        [imageMetadata setObject:objectTIFFDictionary forKey:(NSString *)kCGImagePropertyTIFFDictionary];
-    }
-
     // Final metadata…
 #if defined(DEBUG_UPLOAD)
-    NSLog(@"modifyImage: metadata for upload => %@",imageMetadata);
+    NSLog(@"modifyImage: metadata to upload => %@",imageMetadata);
 #endif
     
     // Apply compression if user requested it in Settings, or convert to JPEG if necessary
@@ -632,7 +487,6 @@
         NSLog(@"Error: Could not retrieve imageData object");
 #endif
             CFRelease(source);
-            CFRelease(objectSource);
             CFRelease(destination);
             CFRelease(imageDataRef);
             // Inform user and propose to cancel or continue
@@ -649,26 +503,24 @@
     
     // Release original CGImageSourceRef
     CFRelease(source);
-    CFRelease(objectSource);
     
     // Add metadata to final image
-    NSData *imageData = [self writeMetadataIntoImageData:imageCompressed metadata:imageMetadata];
+    self.imageData = [ImageService writeMetadata:imageMetadata intoImageData:imageCompressed];
     
     // Release memory
     imageCompressed = nil;
     imageMetadata = nil;
     originalObject = nil;
     originalData = nil;
-    objectNSData = nil;
 
     // Try to determine MIME type from image data
     NSString *mimeType = @"";
-    mimeType = [self contentTypeForImageData:imageData];
+    mimeType = [self contentTypeForImageData:self.imageData];
     
     // Re-check filename extension if MIME type known
     if (mimeType != nil) {
         fileExt = [[image.image pathExtension] lowercaseString];
-        NSString *expectedFileExtension = [self fileExtensionForImageData:imageData];
+        NSString *expectedFileExtension = [self fileExtensionForImageData:self.imageData];
         if (![fileExt isEqualToString:expectedFileExtension]) {
             image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:expectedFileExtension];
         }
@@ -679,7 +531,7 @@
     }
     
     // Upload image with tags and properties
-    [self uploadImage:image withData:[imageData copy] andMimeType:mimeType];
+    [self uploadImage:image withMimeType:mimeType];
 }
 
 #pragma mark - MIME type and file extension sniffing
@@ -1010,8 +862,8 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
             if ([exportSession status] == AVAssetExportSessionStatusCompleted)
             {
                 // Gets copy as NSData
-                NSData *assetData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
-                assert(assetData.length != 0);
+                self.imageData = [[NSData dataWithContentsOfURL:exportSession.outputURL] copy];
+                assert(self.imageData.length != 0);
 #if defined(DEBUG_UPLOAD)
                 AVAsset *videoAsset = [AVAsset assetWithURL:exportSession.outputURL];
                 NSArray *assetMetadata = [videoAsset commonMetadata];
@@ -1023,7 +875,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                 [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
 
                 // Upload video with tags and properties
-                [self uploadImage:image withData:[assetData copy] andMimeType:mimeType];
+                [self uploadImage:image withMimeType:mimeType];
             }
             else if ([exportSession status] == AVAssetExportSessionStatusFailed)
             {
@@ -1034,7 +886,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                 if ([originalVideo isKindOfClass:[AVURLAsset class]] &&
                     [[Model sharedInstance].uploadFileTypes containsString:[image.image pathExtension]]) {
                     AVURLAsset *originalFileURL = (AVURLAsset *)originalVideo;
-                    NSData *assetData = [[NSData dataWithContentsOfURL:originalFileURL.URL] copy];
+                    self.imageData = [[NSData dataWithContentsOfURL:originalFileURL.URL] copy];
                     NSArray *assetMetadata = [originalVideo commonMetadata];
 
                     // Creates metadata without location data
@@ -1051,10 +903,11 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                     BOOL assetDoesNotContainGPSmetadata =
                         (newAssetMetadata.count == assetMetadata.count) || ([assetMetadata count] == 0);
 
-                    if (assetData && ((![Model sharedInstance].stripGPSdataOnUpload) || ([Model sharedInstance].stripGPSdataOnUpload && assetDoesNotContainGPSmetadata))) {
+                    if (self.imageData && ((![Model sharedInstance].stripGPSdataOnUpload) || ([Model sharedInstance].stripGPSdataOnUpload && assetDoesNotContainGPSmetadata))) {
 
                         // Upload video with tags and properties
-                        [self uploadImage:image withData:[assetData copy] andMimeType:mimeType];
+                        
+                        [self uploadImage:image withMimeType:mimeType];
                         return;
                     } else {
                         // No data — Inform user that it won't succeed
@@ -1338,7 +1191,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 
 #pragma mark - Upload image/video
 
--(void)uploadImage:(ImageUpload *)image withData:(NSData *)imageData andMimeType:(NSString *)mimeType
+-(void)uploadImage:(ImageUpload *)image withMimeType:(NSString *)mimeType
 {
     // Chek that the final image format will be accepted by the Piwigo server
     if (![[Model sharedInstance].uploadFileTypes containsString:[[image.image pathExtension] lowercaseString]]) {
@@ -1362,7 +1215,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     // Prepare properties for uploaded image/video (filename key is kPiwigoImagesUploadParamFileName)
     // pwg.images.upload: file name key is kPiwigoImagesUploadParamTitle
     // pwg.images.setInfo: file name key is kPiwigoImagesUploadParamFileName
-    NSDictionary *imageProperties = @{
+    __block NSDictionary *imageProperties = @{
                                       kPiwigoImagesUploadParamFileName : image.image,
                                       kPiwigoImagesUploadParamTitle : image.title,
                                       kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
@@ -1372,9 +1225,10 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                       kPiwigoImagesUploadParamTags : [tagIds copy],
                                       kPiwigoImagesUploadParamMimeType : mimeType
                                       };
+    tagIds = nil;
     
     // Upload photo or video
-    [UploadService uploadImage:imageData
+    [UploadService uploadImage:self.imageData
                withInformation:imageProperties
                     onProgress:^(NSProgress *progress, NSInteger currentChunk, NSInteger totalChunks) {
                         ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
@@ -1396,6 +1250,11 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                         // Set properties of uploaded image/video on Piwigo server
                         [self setImageResponse:response withInfo:imageProperties];
                         
+                        // Release memory
+                        imageProperties = nil;
+                        self.imageData = nil;
+//                        imageDataToUpload = nil;
+
                         // The image must not be appended to the cache if it is moderated
                         if ([Model sharedInstance].usesCommunityPluginV29) {
 
@@ -1623,7 +1482,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 }
 
 
-#pragma mark - Scale, crop, etc. image before upload
+#pragma mark - Scale, crop, rotate, etc. image before upload
 
 -(UIImage *)fixOrientationOfImage:(UIImage *)image {
     
@@ -1867,48 +1726,48 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     return [self scaleImage:image toSize:newSize contentMode:UIViewContentModeScaleAspectFit];
 }
 
--(NSData*)writeMetadataIntoImageData:(NSData *)imageData metadata:(NSDictionary*)metadata
-{
-    // NOP if metadata == nil
-    if (!metadata) return imageData;
-    
-    // Create an imagesourceref
-    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
-    if (!source) {
-#if defined(DEBUG_UPLOAD)
-        NSLog(@"Error: Could not create source");
-#endif
-    } else {
-        // Type of image (e.g., public.jpeg)
-        CFStringRef UTI = CGImageSourceGetType(source);
-        
-        // Create a new data object and write the new image into it
-        NSMutableData *dest_data = [NSMutableData data];
-        CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
-        if (!destination) {
-#if defined(DEBUG_UPLOAD)
-            NSLog(@"Error: Could not create image destination");
-#endif
-            CFRelease(source);
-        } else {
-            // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
-            CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
-            BOOL success = NO;
-            success = CGImageDestinationFinalize(destination);
-            if (!success) {
-#if defined(DEBUG_UPLOAD)
-                NSLog(@"Error: Could not create data from image destination");
-#endif
-                CFRelease(destination);
-                CFRelease(source);
-            } else {
-                CFRelease(destination);
-                CFRelease(source);
-                return [dest_data copy];
-            }
-        }
-    }
-    return imageData;
-}
+//-(NSData*)writeMetadataIntoImageData:(NSData *)imageData metadata:(NSDictionary*)metadata
+//{
+//    // NOP if metadata == nil
+//    if (!metadata) return imageData;
+//
+//    // Create an imagesourceref
+//    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
+//    if (!source) {
+//#if defined(DEBUG_UPLOAD)
+//        NSLog(@"Error: Could not create source");
+//#endif
+//    } else {
+//        // Type of image (e.g., public.jpeg)
+//        CFStringRef UTI = CGImageSourceGetType(source);
+//
+//        // Create a new data object and write the new image into it
+//        NSMutableData *dest_data = [NSMutableData data];
+//        CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
+//        if (!destination) {
+//#if defined(DEBUG_UPLOAD)
+//            NSLog(@"Error: Could not create image destination");
+//#endif
+//            CFRelease(source);
+//        } else {
+//            // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
+//            CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
+//            BOOL success = NO;
+//            success = CGImageDestinationFinalize(destination);
+//            if (!success) {
+//#if defined(DEBUG_UPLOAD)
+//                NSLog(@"Error: Could not create data from image destination");
+//#endif
+//                CFRelease(destination);
+//                CFRelease(source);
+//            } else {
+//                CFRelease(destination);
+//                CFRelease(source);
+//                return [dest_data copy];
+//            }
+//        }
+//    }
+//    return imageData;
+//}
 
 @end

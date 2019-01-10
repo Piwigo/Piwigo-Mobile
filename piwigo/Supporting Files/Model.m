@@ -70,9 +70,10 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
         instance.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize]);
         
-        // Default image preview size
+        // Default image settings
         instance.didOptimiseImagePreviewSize = NO;
 		instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
+        instance.shareGPSdataOnShare = NO;
         
         // Default image upload settings
         instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
@@ -200,6 +201,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.defaultCategory = modelData.defaultCategory;
         self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
         self.didOptimiseImagePreviewSize = modelData.didOptimiseImagePreviewSize;
+        self.shareGPSdataOnShare = modelData.shareGPSdataOnShare;
 	}
 }
 
@@ -248,7 +250,9 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     [saveObject addObject:[NSNumber numberWithDouble:self.dateOfLastTranslationRequest]];
     // Added in v2.2.5…
     [saveObject addObject:[NSNumber numberWithBool:self.didOptimiseImagePreviewSize]];
-	
+    // Added in v2.2.7…
+    [saveObject addObject:[NSNumber numberWithBool:self.shareGPSdataOnShare]];
+
 	[encoder encodeObject:saveObject forKey:@"Model"];
 }
 
@@ -386,6 +390,11 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.didOptimiseImagePreviewSize = [[savedData objectAtIndex:26] boolValue];
     } else {
         self.didOptimiseImagePreviewSize = NO;
+    }
+    if(savedData.count > 27) {
+        self.shareGPSdataOnShare = [[savedData objectAtIndex:27] boolValue];
+    } else {
+        self.shareGPSdataOnShare = NO;
     }
 	return self;
 }

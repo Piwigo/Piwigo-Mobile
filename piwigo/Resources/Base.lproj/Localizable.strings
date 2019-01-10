@@ -468,6 +468,9 @@
 "defaultSize_disabled" = " (disabled on server)";
 "defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
 
+"settings_shareGPSdata" = "Share Private Metadata";
+"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
+
 "imageSizeSquare" = "Square";
 "imageSizeThumbnail" = "Thumbnail";
 "imageSizeXXSmall" = "Tiny";

@@ -57,4 +57,8 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                    ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
                                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
++(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSMutableDictionary *)metadata;
++(NSMutableDictionary *)fixMetadata:(NSMutableDictionary *)metadata ofImage:(UIImage*)image;
++(NSData*)writeMetadata:(NSDictionary*)metadata intoImageData:(NSData *)imageData;
+
 @end
