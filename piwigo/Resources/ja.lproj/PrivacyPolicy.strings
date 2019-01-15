@@ -6,57 +6,57 @@
   Copyright © 2018 Piwigo.org. All rights reserved.
 */
 
-"privacy_text" = "Piwigo-Android and Piwigo-Mobile are free, libre and open source client applications for Piwigo galleries. This privacy policy applies to these native Android and iOS applications, connecting to Piwigo sites which are out of the control of the authors. Check the privacy policy of the corresponding sites before configuring an account in Piwigo-Android or Piwigo-Mobile to connect to a gallery.\n\nLast updated October 25, 2018";
+"privacy_text" = "Piwigo-AndroidとPiwigo-Mobileは無料で自由でオープンソースのPiwigoギャラリー用クライアントアプリケーションです。この個人情報保護方針は、これらのネイティブAndroidおよびiOSアプリケーションに適用されるものであり、接続するPiwigoサイトは適用対象外です。Piwigo-AndroidまたはPiwigo-Mobileのアカウントをギャラリーへの接続に設定する前に、関連するサイトの個人情報保護方針を確認してください。\n\n最終更新日 2018年10月25日";
 
-"intro_title" = "Introduction";
+"intro_title" = "はじめに";
 
-"intro_text1" = "Developers of Piwigo-Android and Piwigo-Mobile, we (or “us” or “our”) respect the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile applications (the “Applications”). Our names can be extracted from the meta data in the git repositories and the Acknowledgements section within the Applications.";
+"intro_text1" = "Piwigo-AndroidとPiwigo-Mobileの開発者として、我々は利用者の個人情報を尊重します。この個人情報保護方針は、あなたが我々の携帯アプリケーション（以下アプリ）を使用する際に、我々がどのようにあなたの情報を収集し、使用し、保護するのかを説明しています。我々の名前は、gitリポジトリおよびアプリ内の謝辞セクションのメタデータから抽出できます。";
 
-"intro_text2" = "Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Applications.";
+"intro_text2" = "この個人情報保護方針を注意深くお読みください。もしこの個人情報保護方針条項に同意しない場合には、このアプリを使用しないでください。";
 
-"intro_text3" = "We reserve the right to make changes to this Privacy Policy at any time and for any reason. We will alert you about any changes by updating the “Last updated” date of this Privacy Policy.";
+"intro_text3" = "我々は、いつ、いかなる理由でも、この個人情報保護方針を変更する権利を有しています。我々は、この個人情報保護方針の最終更新日を更新することで、変更したことをあなたに警告するつもりです。";
 
-"intro_text4" = "You are encouraged to periodically review this Privacy Policy to stay informed of updates. You will be deemed to have been made aware of, will be subject to, and will be deemed to have accepted the changes in any revised Privacy Policy by your continued use of the Applications after the date such revised Privacy Policy is posted.";
+"intro_text4" = "更新の最新情報を入手するために、この個人情報保護方針を定期的に確認することをお勧めします。そのような個人情報保護方針の改定が掲載された後もあなたがアプリを継続して利用していることで、あなたはその改定された個人情報保護方針を承諾したとみなされます。";
 
-"intro_text5" = "This Privacy Policy does not apply to the third-party online/mobile store from which you install the Applications or make payments, including any in-app virtual items, which may also collect and use data about you. We are not responsible for any of the data collected by any such third party.";
+"intro_text5" = "あなたがアプリをインストールしたサードパーティのオンライン/モバイルストアや他のアプリ内の仮想アイテムを含む支払いでもあなたのデータを収集し使用するかも知れませんが、この個人情報保護方針はそれらには適用されません。我々は、そのようなサードパーティにより収集されたいかなるデータについても責任がありません。";
 
-"what_title" = "What data is processed and stored?";
+"what_title" = "どのようなデータが処理され格納されているか?";
 
-"what_subTitle1" = "Piwigo Gallery Data";
+"what_subTitle1" = "Piwigoギャラリーデータ";
 
-"what_subText1a" = "Account credentials are stored by the Applications and submitted to the configured sites to connect to one or several Piwigo galleries. Beside that, all the photos, videos and other files that are selected for download/upload and the entered content is stored, processed and transmitted to the configured gallery site.";
+"what_subText1a" = "アカウントの資格情報はアプリにより格納され、1つまたは複数のPiwigoギャラリーに接続する際にそれら構成済みサイトに提出されます。その他、ダウンロード/アップロードのために選択された全ての写真や動画、その他のファイルや入力した内容も保存され、処理され、構成済みのギャラリーサイトに転送されます。";
 
-"what_subTitle2" = "Geo-Location Information";
+"what_subTitle2" = "位置情報";
 
-"what_subText2a" = "We may request access or permission to and track location-based information from your mobile device, either continuously or while you are using the Applications, to provide location-based services. If you wish to change our access or permissions, you may do so in your device’s settings.";
+"what_subText2a" = "我々は位置に基づくサービスを提供するために、継続的にまたはアプリ使用中だけ、あなたの携帯端末の位置情報へのアクセスや許可を要求します。もしあなたが我々のアクセスや許可を変更したい場合には、あなたの端末の設定で行うことができます。";
 
-"what_subTitle3" = "Mobile Device Access";
+"what_subTitle3" = "携帯端末へのアクセス";
 
-"what_subText3a" = "The Applications may request access or permission to certain features from your mobile device, including your mobile device’s photo library and file storage, the Android AccountManager, the Apple Keychain, foreign and cloud based storage folders, geolocalisation, and other features. If you wish to change our access or permissions, you may do so in your device’s settings but be aware that some accesses are necessary to upload media files of your mobile to the Piwigo gallery or to store Piwigo media files in your mobile.";
+"what_subText3a" = "このアプリは、あなたの携帯端末の写真ライブラリやファイルストレージ、AndroidのAccountManager、AppleのKeychain、クラウドベースのストレージフォルダ、位置情報などを含む特定の機能へのアクセスや許可を要求します。我々のアクセスや許可を変更したければ、端末設定を変更することで行えますが、あなたの端末からPiwigoギャラリーへアップロードしたり、Piwigoのメディアファイルをあなたの端末に保存するためには、いくらかのアクセス権限が必要であることに注意して下さい。";
 
-"what_subTitle4" = "Mobile Device Data";
+"what_subTitle4" = "携帯端末のデータ";
 
-"what_subText4a" = "When contacting the support team, device information such as your mobile device ID, model, and manufacturer, version of your operating system, email, country, location, and any other data you choose to provide may be transmitted to the development team of the Applications. Beside the data explicitly shared by the user with the developers no content will be stored, transmitted or processed by us.";
+"what_subText4a" = "サポートチームに連絡する際は、あなたの携帯端末IDやモデル、製造元、オペレーティングシステムのバージョン、電子メール、国、場所、その他あなたが選択したデータを、アプリの開発チームに送信して下さい。ユーザと開発者との間で明示的に共有されているデータの他に、コンテンツが保存、送信、処理されることはありません。";
 
-"why_title" = "Why does the mobile app store data?";
+"why_title" = "なぜこの携帯アプリはデータを格納するのか？";
 
-"why_text1" = "The Applications store only data to satisfy one intention: accessing a Piwigo gallery hosted on a remote webserver. No data is collected, transmitted or stored that is not required for its intended functionality.";
+"why_text1" = "アプリは、リモートWebサーバで運営されているPiwigoギャラリーにアクセスするという1つの目的を満たすためのデータだけを格納します。この意図した機能に必要のないデータは収集、送信、または保存されません。";
 
-"why_text2" = "When you access the Applications, your personal information is not collected through the use of tracking technology. We only use caching mechanisms to help customize the Applications and improve your experience. You can disable or clear caches, but be aware that such action could affect the availability and functionality of the Applications.";
+"why_text2" = "あなたがアプリにアクセスするとき、あなたの個人情報はトラッキング技術を使用して集められることはありません。 私たちは、アプリをカスタマイズし、あなたの使用体験を向上させるためにキャッシング技術を使うだけです。 キャッシュを無効にしたり消去したりできますが、そのような操作はアプリケーションの可用性と機能に影響を与える可能性があることに注意してください。";
 
-"how_title" = "How is the data protected?";
+"how_title" = "どのようにデータを保護しているか？";
 
-"how_text1" = "The Applications store data locally on the device it is executed on. You are responsible to protect the stored data from unauthorized access. We strongly recommend to use HTTPS to protect data during transmission and the Applications try to use encrypted connections over HTTPS the first time the user establishes a connection with a Piwigo gallery. Keeping certificates and libraries for HTTPS access up to date is under responsibility of the Piwigo server operator. When the Applications cannot use HTTPS, they switches to HTTP and data are not encrypted during transmission.";
+"how_text1" = "アプリは、データを実行される端末内にローカルに保存します。あなたは、保存されたデータを不正アクセスから保護する責任があります。送信中のデータ保護にはHTTPSを使用することを強くお勧めします。アプリは、ユーザが初めてPiwigoギャラリーとの接続を確立するときにHTTPS経由で暗号化された接続を使用しようとします。HTTPSアクセス用の証明書とライブラリを最新の状態に保つことは、Piwigoサーバ運用者の責任です。アプリがHTTPSを使用できない場合、HTTPに切り替わり、データは送信中に暗号化されません。";
 
-"how_text2" = "When you upload images to a Piwigo gallery, images may contain private data like GPS coordinates or comments. The Applications provide an option for removing these data from image files before upload in the Settings section. It is the responsibility of the user to decide whether those private data are uploaded.";
+"how_text2" = "Piwigoギャラリーに画像をアップロードするとき、画像にGPS座標やコメントなどの個人データが含まれる場合があります。アプリの設定セクションには、アップロード前に画像ファイルからこれらのデータを削除するためのオプションがあります。これらの個人データをアップロードするかどうかを決めるのはユーザの責任です。";
 
-"security_title" = "Security of your information";
+"security_title" = "あなたの情報の安全性";
 
-"security_text" = "We use technical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable, and no method of data transmission can be guaranteed against any interception or other type of misuse. Any information disclosed online is vulnerable to interception and misuse by unauthorized parties. Therefore, we cannot guarantee complete security if you provide personal information.";
+"security_text" = "私達はあなたの個人情報を保護するのを助けるために技術的な安全対策を使います。 あなたから提供された個人情報を保護するために合理的な手段を講じていますが、我々の努力にもかかわらず、完璧で侵入不可能な安全対策は存在せず、傍受またはその他の種類の不正利用からデータ転送を保証する方法も存在しないことに注意して下さい。 オンラインで開示された情報は、不正な第三者による傍受および悪用に対して脆弱です。 したがって、あなたが個人情報を提供した場合、我々は完全な安全性を保証することはできません。";
 
-"contact_title" = "Contact us";
+"contact_title" = "連絡先";
 
-"contact_text" = "If you have questions or comments about this Privacy Policy, please contact us at:";
+"contact_text" = "この個人情報保護方針について質問やコメントがあれば、我々に問い合わせてください：";
 
 "contact_address" = "Piwigo, 42 rue des Vignes, 21800 Quetigny (France)";
 
