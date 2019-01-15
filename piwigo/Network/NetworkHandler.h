@@ -76,7 +76,8 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)postMultiPart:(NSString*)path
-                       parameters:(NSDictionary*)parameters
+                             data:(NSData*)fileData
+                      parameters:(NSDictionary*)parameters
                          progress:(void (^)(NSProgress *))progress
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

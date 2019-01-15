@@ -1253,7 +1253,6 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                         // Release memory
                         imageProperties = nil;
                         self.imageData = nil;
-//                        imageDataToUpload = nil;
 
                         // The image must not be appended to the cache if it is moderated
                         if ([Model sharedInstance].usesCommunityPluginV29) {

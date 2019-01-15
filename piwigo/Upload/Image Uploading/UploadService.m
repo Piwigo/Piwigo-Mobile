@@ -64,10 +64,8 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
 {
     NSInteger length = [imageData length];
     NSUInteger thisChunkSize = length  - offset > kChunkSize ? kChunkSize : length - offset;
-    NSData __autoreleasing *chunk = [imageData subdataWithRange:NSMakeRange(offset, thisChunkSize)];
+    __block NSData *chunk = [imageData subdataWithRange:NSMakeRange(offset, thisChunkSize)];
 
-    [imageInformation setObject:chunk
-                         forKey:kPiwigoImagesUploadParamData];
     [imageInformation setObject:[NSString stringWithFormat:@"%@", @(count)]
                          forKey:kPiwigoImagesUploadParamChunk];
     [imageInformation setObject:[NSString stringWithFormat:@"%@", @(chunks)]
@@ -76,7 +74,10 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
     NSInteger nextChunkNumber = count + 1;
     offset += thisChunkSize;
 
+//    NSLog(@"=> postMultiPart…");
+//    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 5.0, false);
     [self postMultiPart:kPiwigoImagesUpload
+                   data:chunk
              parameters:imageInformation
                progress:^(NSProgress *progress) {
                    dispatch_async(dispatch_get_main_queue(),
@@ -87,6 +88,7 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                     if(count >= chunks - 1)
                     {
                         // Release memory
+                        chunk = nil;
                         [imageInformation removeAllObjects];
 
                         // Done, return
@@ -97,8 +99,9 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                     else
                     {
                         // Release memory
-                        [imageInformation removeObjectsForKeys:@[kPiwigoImagesUploadParamData, kPiwigoImagesUploadParamChunk,kPiwigoImagesUploadParamChunks]];
-                        
+                        chunk = nil;
+                        [imageInformation removeObjectsForKeys:@[kPiwigoImagesUploadParamChunk,kPiwigoImagesUploadParamChunks]];
+
                         // Keep going!
                         [self sendChunk:imageData
                         withInformation:imageInformation
@@ -112,6 +115,7 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
             
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   // Release memory
+                  chunk = nil;
                   [imageInformation removeAllObjects];
                   // failed!
                   if(fail)
