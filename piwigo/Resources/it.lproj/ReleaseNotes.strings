@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.7_text" = "Versione 2.2.7\n\n• Correzioni di bug minori e miglioramento dell'interfaccia\n• Migliora le traduzioni";
+"v2.3.0_text" = "Versione 2.3\n\n• Aggiunge la possibilità di condividere immagini e video\n• Aumentare i limiti di dimensione della cache\n• Correzioni di bug minori e miglioramento dell'interfaccia\n• Migliora le traduzioni";
+
+"v2.2.7_text" = "Versione 2.2.7\n29 dicembre 2018\n\n• Correzioni di bug minori e miglioramento dell'interfaccia\n• Migliora le traduzioni";
 
 "v2.2.6_text" = "Versione 2.2.6\n20 dicembre 2018\n\n• Migliora le traduzioni e la compatibilità con iOS 12\n• Correzioni di bug minori e miglioramento dell'interfaccia\n• Traduzione italiana";
 

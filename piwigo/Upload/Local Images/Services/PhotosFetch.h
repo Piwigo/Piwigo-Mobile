@@ -20,8 +20,8 @@ typedef void(^CompletionBlock)(id responseObject1, id responseObject2);
 
 +(PhotosFetch*)sharedInstance;
 -(void)checkPhotoLibraryAccessForViewController:(UIViewController *)viewController
-                                        onRetry:(void (^)(void))retry
-                                      onSuccess:(void (^)(void))success;
+                             onAuthorizedAccess:(void (^)(void))doWithAccess
+                                 onDeniedAccess:(void (^)(void))doWithoutAccess;
 -(void)getLocalGroupsOnCompletion:(CompletionBlock)completion;
 -(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup;
 

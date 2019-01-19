@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Loading…";
 "completeHUD_label" = "Complete";
+"errorHUD_label" = "Error";
 
 // Upload rights
 "uploadRights_title" = "Upload Rights Needed";
@@ -310,6 +311,7 @@
 "downloadingImages" = "Downloading Images";
 "downloadingImageInfo" = "Downloading Image Info";
 "downloadingImageInfoForSort" = "Downloading Image Info for Sort";
+"downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
 "downloadImageFail_title" = "Download Fail";

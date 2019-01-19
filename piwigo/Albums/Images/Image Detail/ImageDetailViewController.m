@@ -9,6 +9,8 @@
 #import <Photos/Photos.h>
 
 #import "AllCategoriesViewController.h"
+#import "AsyncImageActivityItemProvider.h"
+#import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageDetailsViewController.h"
@@ -26,7 +28,7 @@
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, MoveImageDelegate, UIToolbarDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, MoveImageDelegate, AsyncImageActivityItemProviderDelegate, UIToolbarDelegate>
 
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoImageData *imageData;
@@ -98,7 +100,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
         self.deleteBarButton.tintColor = [UIColor redColor];
         self.deleteBarButton.enabled = NO;
-        self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(downloadImage)];
+        self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareImage)];
         self.shareBarButton.tintColor = [UIColor piwigoOrange];
         self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"paperclip"] landscapeImagePhone:[UIImage imageNamed:@"paperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
         self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
@@ -582,19 +584,23 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                    [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] deincrementImageSizeByOne];
 
                    // Hide HUD
-                   [self hideHUDwithSuccess:YES completion:nil];
+                   [self hideHUDwithSuccess:YES completion:^{
+                       self.hudViewController = nil;
+                   }];
 
                    // Return to album view
                    [self didRemoveImage:self.imageData];
                }
                else {
                    [self hideHUDwithSuccess:NO completion:^{
+                       self.hudViewController = nil;
                        [self showDeleteImageErrorWithMessage:NSLocalizedString(@"alertTryAgainButton", @"Try Again")];
                    }];
                }
            }
               onFailure:^(NSURLSessionTask *task, NSError *error) {
                   [self hideHUDwithSuccess:NO completion:^{
+                      self.hudViewController = nil;
                       [self showDeleteImageErrorWithMessage:[error localizedDescription]];
                   }];
               }];
@@ -612,13 +618,16 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
              ListOnCompletion:^(NSURLSessionTask *task) {
                  
                  // Hide HUD
-                 [self hideHUDwithSuccess:YES completion:nil];
+                 [self hideHUDwithSuccess:YES completion:^{
+                     self.hudViewController = nil;
+                 }];
 
                  // Return to album view
                  [self didRemoveImage:self.imageData];
              }
                     onFailure:^(NSURLSessionTask *task, NSError *error) {
                  [self hideHUDwithSuccess:NO completion:^{
+                     self.hudViewController = nil;
                      [self showDeleteImageErrorWithMessage:[error localizedDescription]];
                  }];
              }];
@@ -645,304 +654,104 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 #pragma mark - Share Image
 
--(void)downloadImage
+-(void)shareImage
 {
-    // Check autorisation to access Photo Library before downloading
-    [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
-           onRetry:^{
-               // Retry if status was not determined
-               [self downloadImage];
-           } onSuccess:^{
-               // Start downloading image
-               [self startDownloadingImage];
-           }
-     ];
-}
-
--(void)startDownloadingImage
-{
-    // Show loading HUD
-    [self showHUDwithTitle:NSLocalizedString(@"downloadingImage", @"Downloading Image") withProgress:YES];
-    
-    // Launch the download
-    if(!self.imageData.isVideo)
-	{
-		[ImageService downloadImage:self.imageData
-                         onProgress:^(NSProgress *progress) {
-                             dispatch_async(dispatch_get_main_queue(),
-                                    ^(void){
-                                        [MBProgressHUD HUDForView:self.hudViewController.view].progress = progress.fractionCompleted;
-                                    });
-                         }
-                  completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-                      // Any error ?
-                      if (error.code) {
-                          // Failed — Inform user and invite to retry
-                          dispatch_async(dispatch_get_main_queue(),
-                             ^(void){
-                                 [self hideHUDwithSuccess:NO completion:^{
-                                     UIAlertController* alert = [UIAlertController
-                                    alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                                        message:[NSString stringWithFormat:NSLocalizedString(@"downloadImageFail_message", @"Failed to download image!\n%@"), [error localizedDescription]]
-                                         preferredStyle:UIAlertControllerStyleAlert];
-                                     
-                                     UIAlertAction* defaultAction = [UIAlertAction
-                                         actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                         style:UIAlertActionStyleCancel
-                                         handler:^(UIAlertAction * action) {}];
-                                     
-                                     UIAlertAction* retryAction = [UIAlertAction
-                                       actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                                       style:UIAlertActionStyleDefault
-                                       handler:^(UIAlertAction * action) {
-                                           [self downloadImage];
-                                       }];
-                                     
-                                     [alert addAction:defaultAction];
-                                     [alert addAction:retryAction];
-                                     [self presentViewController:alert animated:YES completion:nil];
-                                 }];
-                             });
-                      }
-                      else {
-                          // Retrieve image from file
-                          UIImage *image = [[UIImage alloc] initWithContentsOfFile:[filePath path]];
-                          NSMutableData *imageDataFile = [NSMutableData dataWithContentsOfURL:filePath];
-                          
-                          // Prepare file before sharing
-                          [self modifyImage:image withData:imageDataFile andFileURL:filePath];
-                      }
-                  }
-         ];
-	}
-	else
-	{
-        [ImageService downloadVideo:self.imageData
-                         onProgress:^(NSProgress *progress) {
-                             dispatch_async(dispatch_get_main_queue(),
-                                ^(void){
-                                    [MBProgressHUD HUDForView:self.hudViewController.view].progress = progress.fractionCompleted;}
-                                );
-                         }
-                  completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {                      
-                     // Any error ?
-                      if (error.code) {
-                          // Failed — Inform user
-                          dispatch_async(dispatch_get_main_queue(),
-                             ^(void){
-                                 [self hideHUDwithSuccess:NO completion:^{
-                                  UIAlertController* alert = [UIAlertController
-                                      alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-                                      message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), [error localizedDescription]]
-                                      preferredStyle:UIAlertControllerStyleAlert];
-                                  
-                                  UIAlertAction* defaultAction = [UIAlertAction
-                                          actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                          style:UIAlertActionStyleCancel
-                                          handler:^(UIAlertAction * action) {}];
-                              
-                                  UIAlertAction* retryAction = [UIAlertAction
-                                        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                                        style:UIAlertActionStyleDefault
-                                        handler:^(UIAlertAction * action) {
-                                            [self downloadImage];
-                                        }];
-                                  
-                                  [alert addAction:defaultAction];
-                                  [alert addAction:retryAction];
-                                  [self presentViewController:alert animated:YES completion:nil];
-                                 }];
-                             });
-                      } else {
-                          // Retrieve image from file
-                          NSData *imageDataFile = [NSData dataWithContentsOfURL:filePath];
-
-                          // Share video
-                          [self shareImageFile:imageDataFile andDeleteItemWithURL:filePath];
-                          
-//                          // Try to move video in Photos.app
-//#if defined(DEBUG)
-//                          NSLog(@"path= %@", filePath.path);
-//#endif
-//                          dispatch_async(dispatch_get_main_queue(),
-//                             ^(void){
-//                              [self hideHUDwithSuccess:YES completion:^{
-//                                  if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath.path)) {
-//                                      UISaveVideoAtPathToSavedPhotosAlbum(filePath.path, self, @selector(movie:didFinishSavingWithError:contextInfo:), nil);
-//                                  } else {
-//                                      // Failed — Inform user
-//                                      UIAlertController* alert = [UIAlertController
-//                                          alertControllerWithTitle:NSLocalizedString(@"downloadImageFail_title", @"Download Fail")
-//                                          message:[NSString stringWithFormat:NSLocalizedString(@"downloadVideoFail_message", @"Failed to download video!\n%@"), NSLocalizedString(@"downloadVideoFail_Photos", @"Video format not accepted by Photos!")]
-//                                          preferredStyle:UIAlertControllerStyleAlert];
-//
-//                                      UIAlertAction* defaultAction = [UIAlertAction
-//                                              actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-//                                              style:UIAlertActionStyleCancel
-//                                              handler:^(UIAlertAction * action) {}];
-//
-//                                      [alert addAction:defaultAction];
-//                                      [self presentViewController:alert animated:YES completion:nil];
-//                                    }
-//                                 }];
-//                             });
-                      }
-                  }
-         ];
-	}
-}
-
--(void)movie:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
-{
-	if(error)
-	{
-        // Failed — Inform user
-        UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"videoSaveError_title", @"Fail Saving Video")
-                message:[NSString stringWithFormat:NSLocalizedString(@"videoSaveError_message", @"Failed to save video. Error: %@"), [error localizedDescription]]
-                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
-        
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:nil];
-	}
-}
-
--(void)modifyImage:(UIImage *)originalImage withData:(NSMutableData *)originalDataFile andFileURL:(NSURL*)filePath
-{
-    // Create CGI reference from image data (to retrieve complete metadata)
-    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFMutableDataRef) originalDataFile, NULL);
-    if (!source) {
-#if defined(DEBUG_SHARE)
-        NSLog(@"Error: Could not create source");
-#endif
-        // Inform user and propose to cancel or continue
-        [self showErrorWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
-                      andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), NSLocalizedString(@"imageUploadError_source", @"cannot create image source")]
-                    withOptionToRetry:YES];
-        return;
-    }
-    
-    // Get metadata from image data
-    NSMutableDictionary *imageMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) mutableCopy];
-#if defined(DEBUG_SHARE)
-    NSLog(@"modifyImage finds metadata from data:%@",imageMetadata);
-    NSLog(@"originalObject is %.0fw x %.0fh", originalImage.size.width, originalImage.size.height);
-#endif
-    
-    // Strip GPS metadata if user requested it in Settings
-    if(![Model sharedInstance].shareGPSdataOnShare && (imageMetadata != nil))
-    {
-        imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
-    }
-    
-    // Fix image metadata (size, type, etc.)
-    imageMetadata = [ImageService fixMetadata:imageMetadata ofImage:originalImage];
-        
-    // Final metadata…
-#if defined(DEBUG_SHARE)
-    NSLog(@"modifyImage: metadata to share => %@",imageMetadata);
-#endif
-    
-    // Create new image from original one because one cannot modify metadata of existing file
-    CFStringRef UTI = CGImageSourceGetType(source);
-    CFMutableDataRef imageDataRef = CFDataCreateMutable(nil, 0);
-    CGImageDestinationRef destination = CGImageDestinationCreateWithData(imageDataRef, UTI, 1, nil);
-    CGImageDestinationAddImage(destination, originalImage.CGImage, nil);
-    if(!CGImageDestinationFinalize(destination)) {
-#if defined(DEBUG_UPLOAD)
-        NSLog(@"Error: Could not retrieve imageData object");
-#endif
-        CFRelease(source);
-        CFRelease(destination);
-        CFRelease(imageDataRef);
-        // Inform user and propose to cancel or continue
-        [self showErrorWithTitle:NSLocalizedString(@"imageSaveError_title", @"Fail Saving Image")
-                      andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageSaveError_message", @"Failed to save image. Error: %@"), NSLocalizedString(@"imageUploadError_source", @"cannot create image source")]
-                     withOptionToRetry:YES];
-        return;
-    }
-    NSData *newImageData = (__bridge  NSData *)imageDataRef;
-    CFRelease(imageDataRef);
-    CFRelease(destination);
-
-    // Release original CGImageSourceRef
-    CFRelease(source);
-
-    // Add metadata to final image
-    NSData *newImageDataFile = [ImageService writeMetadata:imageMetadata intoImageData:newImageData];
-    
-    // Release memory
-    imageMetadata = nil;
-    originalDataFile = nil;
-    
-    // Share image w/ or w/o private metadata
-    [self shareImageFile:newImageDataFile andDeleteItemWithURL:filePath];
-}
-
--(void)shareImageFile:(NSData *)imageData andDeleteItemWithURL:(NSURL *)filePath
-{
-    // Close HUD and share image
-    dispatch_async(dispatch_get_main_queue(),
-                   ^(void){
-                       [self hideHUDwithSuccess:YES completion:^{
-                           // Create and present view controller
-                           UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[imageData] applicationActivities:nil];
-                           
-                           // Delete resource after share
-                           activityController.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
-                               // Delete temporary image file if exists (might be incomplete, etc.)
-                               [[NSFileManager defaultManager] removeItemAtURL:filePath error:nil];
-                           };
-                           
-                           // Present controller
-                           activityController.popoverPresentationController.barButtonItem = self.shareBarButton;
-                           [self presentViewController:activityController animated:YES completion:nil];
-                       }];
-                   });
-}
-
--(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message withOptionToRetry:(BOOL)retry
-{
-    // Close HUD and share image
-    dispatch_async(dispatch_get_main_queue(),
-                   ^(void){
-        [self hideHUDwithSuccess:YES completion:^{
-            // Determine present view controller
-            UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-            while (topViewController.presentedViewController) {
-                topViewController = topViewController.presentedViewController;
+    // Check autorisation to access Photo Library (camera roll)
+    [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
+            onAuthorizedAccess:^{
+                // User allowed to save image in camera roll
+                [self presentShareImageViewControllerWithCameraRollAccess:YES];
             }
-            
-            // Present alert
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                           message:message preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* dismissAction = [UIAlertAction
-                                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                            style:UIAlertActionStyleCancel
-                                            handler:^(UIAlertAction * action) { }];
-            
-            if (retry) {
-                // Retry to upload the image
-                UIAlertAction* retryAction = [UIAlertAction
-                                              actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                                              style:UIAlertActionStyleDefault
-                                              handler:^(UIAlertAction * action) {
-                                                  // Upload image
-                                                  [self startDownloadingImage];
-                                              }];
-                [alert addAction:retryAction];
+                onDeniedAccess:^{
+                    // User not allowed to save image in camera roll
+                    if ([NSThread isMainThread]) {
+                        [self presentShareImageViewControllerWithCameraRollAccess:NO];
+                    }
+                    else{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self presentShareImageViewControllerWithCameraRollAccess:NO];
+                        });
+                    }
+            }];
+}
+
+-(void)presentShareImageViewControllerWithCameraRollAccess:(BOOL)hasCameraRollAccess
+{
+    // Create new activity provider item to pass to the activity view controller
+    NSMutableArray *itemsToShare = [NSMutableArray new];
+    if (self.imageData.isVideo) {
+        // Case of a video
+        AsyncVideoActivityItemProvider *videoItemProvider = [[AsyncVideoActivityItemProvider alloc]  initWithPlaceholderImage:self.imageData];
+
+        // Use delegation to monitor the progress of the item method
+        videoItemProvider.delegate = self;
+        
+        // Add to list of items to share
+        [itemsToShare addObject:videoItemProvider];
+    }
+    else {
+        // Case of an image
+        AsyncImageActivityItemProvider *imageItemProvider = [[AsyncImageActivityItemProvider alloc]  initWithPlaceholderImage:self.imageData];
+
+        // Use delegation to monitor the progress of the item method
+        imageItemProvider.delegate = self;
+
+        // Add to list of items to share
+        [itemsToShare addObject:imageItemProvider];
+    }
+    
+    // Create an activity view controller with the activity provider item.
+    // AsyncImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
+
+    // Set HUD view controller for displaying progress
+    self.hudViewController = activityViewController;
+    
+    // Exclude camera roll activity if needed
+    if (!hasCameraRollAccess) {
+        activityViewController.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+    }
+    
+    // Delete image/video file and remove observers after dismissing activity view controller
+    [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
+        NSLog(@"Activity Type selected: %@", activityType);
+        if (completed) {
+            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
+            if (self.imageData.isVideo) {
+                // Delete shared video file & remove observers
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
             }
-            
-            [alert addAction:dismissAction];
-            [topViewController presentViewController:alert animated:YES completion:nil];
-        }];
-    });
+            else {
+                // Delete shared image file & remove observers
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
+            }
+        } else {
+            if (activityType == NULL) {
+                NSLog(@"User dismissed the view controller without making a selection.");
+            } else {
+                NSLog(@"Activity was not performed.");
+                if (self.imageData.isVideo)
+                {
+                    // Cancel task
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelShareVideo object:nil];
+                    
+                    // Delete shared video file & remove observers
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
+                }
+                else {
+                    // Cancel task
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelShareImage object:nil];
+                    
+                    // Delete shared image file & remove observers
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
+                }
+            }
+        }
+    }];
+    
+    // Present share image activity view controller
+    activityViewController.popoverPresentationController.barButtonItem = self.shareBarButton;
+    [self presentViewController:activityViewController animated:YES completion:nil];
 }
 
 
@@ -1067,23 +876,18 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                 hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
                 [hud hideAnimated:YES afterDelay:2.f];
             } else {
-                [hud hideAnimated:YES];
+                UIImage *image = [[UIImage imageNamed:@"warning"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"errorHUD_label", @"Error");
+                [hud hideAnimated:YES afterDelay:0.5f];
             }
         }
         if (completion) {
             completion();
         }
     });
-}
-
--(void)hideHUD
-{
-    // Hide and remove the HUD
-    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-    if (hud) {
-        [hud hideAnimated:YES];
-        self.hudViewController = nil;
-    }
 }
 
 
@@ -1216,6 +1020,72 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
     // Return to image collection
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+#pragma mark - AsyncImageActivityItemProviderDelegate
+
+-(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
+{
+    // Show HUD to let the user know the image is being downloaded in the background.
+    dispatch_async(dispatch_get_main_queue(),
+                   ^(void){
+                       [self showHUDwithTitle:title withProgress:YES];
+                   });
+}
+
+-(void)imageActivityItemProvider:(UIActivityItemProvider *)imageActivityItemProvider preprocessingProgressDidUpdate:(float)progress
+{
+    // Update HUD
+    dispatch_async(dispatch_get_main_queue(),
+                   ^(void){
+                       [MBProgressHUD HUDForView:self.hudViewController.view].progress = progress;
+                   });
+}
+
+-(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider
+{
+    // Close HUD
+    dispatch_async(dispatch_get_main_queue(),
+                   ^(void){
+                       if ([imageActivityItemProvider isCancelled]) {
+                           [self hideHUDwithSuccess:NO completion:^{
+                               self.hudViewController = nil;
+                           }];
+                       }
+                       else {
+                           [self hideHUDwithSuccess:YES completion:^{
+                               self.hudViewController = nil;
+                           }];
+                       }
+                   });
+}
+
+-(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
+{
+    // Display error alert after trying to share image
+    dispatch_async(dispatch_get_main_queue(),
+                   ^(void){
+                       // Determine present view controller
+                       UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                       while (topViewController.presentedViewController) {
+                           topViewController = topViewController.presentedViewController;
+                       }
+                       
+                       // Present alert
+                       UIAlertController* alert = [UIAlertController
+                            alertControllerWithTitle:title
+                            message:message
+                            preferredStyle:UIAlertControllerStyleAlert];
+                       
+                       UIAlertAction* dismissAction = [UIAlertAction
+                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                            style:UIAlertActionStyleCancel
+                            handler:^(UIAlertAction * action) { }];
+                       
+                       [alert addAction:dismissAction];
+                       [topViewController presentViewController:alert animated:YES completion:nil];
+                    });
 }
 
 @end

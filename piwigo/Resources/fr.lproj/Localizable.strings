@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Chargement…";
 "completeHUD_label" = "Terminé";
+"errorHUD_label" = "Erreur";
 
 // Upload rights
 "uploadRights_title" = "Droits Requis";
@@ -306,10 +307,11 @@
 "downloadSeveralImages_title" = "Télécharger %@ images";
 "downloadSeveralImage_confirmation" = "Êtes-vous sûr de vouloir télécharger les %@ images sélectionnées ?";
 
-"downloadingImage" = "Téléchargement d’Image";
+"downloadingImage" = "Téléchargement de l’Image";
 "downloadingImages" = "Téléchargement des Images";
 "downloadingImageInfo" = "Téléchargement des Infos de l'Image";
 "downloadingImageInfoForSort" = "Téléchargement des Infos de l'Image pour le Tri";
+"downloadingVideo" = "Téléchargement de la Vidéo";
 
 // Image download — Errors
 "downloadImageFail_title" = "Echec du Téléchargement";
@@ -467,6 +469,9 @@
 "defaultImageSize_recommended" = " (recommandé)";
 "defaultSize_disabled" = " (désactivé sur le serveur)";
 "defaultSizeFooter" = "Les tailles grisées ne sont pas conseillées ou indisponibles sur le serveur Piwigo.";
+
+"settings_shareGPSdata" = "Partager Métadonnées Privées";
+"settings_shareGPSdata>375px" = "Partager les Images avec les Métadonnées Privées";
 
 "imageSizeSquare" = "Carré";
 "imageSizeThumbnail" = "Miniature";

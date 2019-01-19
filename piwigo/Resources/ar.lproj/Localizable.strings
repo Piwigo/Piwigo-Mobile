@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Loading…";
 "completeHUD_label" = "Complete";
+"errorHUD_label" = "خطأ";
 
 // Upload rights
 "uploadRights_title" = "تحميل الحقوق المطلوبة";
@@ -310,6 +311,7 @@
 "downloadingImages" = "تنزيل الصور";
 "downloadingImageInfo" = "تنزيل معلومات الصورة";
 "downloadingImageInfoForSort" = "تحميل معلومات الصورة للفرز";
+"downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
 "downloadImageFail_title" = "أخفق التنزيل";
@@ -467,6 +469,9 @@
 "defaultImageSize_recommended" = " (موصى به)";
 "defaultSize_disabled" = " (معطل على الخادم)";
 "defaultSizeFooter" = "لا ينصح بأحجام الرمادي أو إنها غير متوفرة على خادم Piwigo.";
+
+"settings_shareGPSdata" = "Share Private Metadata";
+"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
 
 "imageSizeSquare" = "مربع";
 "imageSizeThumbnail" = "الصورة المصغرة";

@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Ładowanie…";
 "completeHUD_label" = "Zakończono";
+"errorHUD_label" = "Błąd";
 
 // Upload rights
 "uploadRights_title" = "Wymagane są uprawnienia do wgrywania zdjęć";
@@ -310,6 +311,7 @@
 "downloadingImages" = "Pobieranie Zdjęć";
 "downloadingImageInfo" = "Pobieranie Informacji Zdjęcia";
 "downloadingImageInfoForSort" = "Pobieranie informacji zdjęć do sortowania";
+"downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
 "downloadImageFail_title" = "Błąd Pobierania";
@@ -467,6 +469,9 @@
 "defaultImageSize_recommended" = " (zalecane)";
 "defaultSize_disabled" = " (wyłączone na serwerze)";
 "defaultSizeFooter" = "Wyszarzone rozmiary nie są zalecane lub nie są dostępne na serwerze Piwigo.";
+
+"settings_shareGPSdata" = "Share Private Metadata";
+"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
 
 "imageSizeSquare" = "Kwadrat";
 "imageSizeThumbnail" = "Miniaturka";

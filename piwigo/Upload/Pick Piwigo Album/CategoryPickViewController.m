@@ -559,15 +559,11 @@
 
     // Check autorisation to access Photo Library before uploading
     [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
-           onRetry:^{
-               // Retry if status was not determined
-               [self selectedCategory:categoryId];
-           } onSuccess:^{
-               // Open local albums view controller
-               LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:categoryId];
-               [self.navigationController pushViewController:localAlbums animated:YES];
-           }
-    ];
+            onAuthorizedAccess:^{
+                      // Open local albums view controller
+                      LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:categoryId];
+                      [self.navigationController pushViewController:localAlbums animated:YES];
+            } onDeniedAccess:nil];
 }
 
 

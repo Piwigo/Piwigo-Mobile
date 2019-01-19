@@ -377,21 +377,10 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Full resolution dimensions
-    if (![[imageSizes objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
-        imageData.fullResWidth = [[imageSizes objectForKey:@"width"] integerValue];
-    }
-    else {
-        // When the image dimensions are unknown, use 0
-        imageData.fullResWidth = 0;
-    }
-    if (![[imageSizes objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
-        imageData.fullResHeight = [[imageSizes objectForKey:@"height"] integerValue];
-    }
-    else {
-        // When the image dimensions are unknown, use 0
-        imageData.fullResHeight = 0;
-    }
+    imageData.fullResWidth = [[imageJson objectForKey:@"width"] integerValue];
+    imageData.fullResHeight = [[imageJson objectForKey:@"height"] integerValue];
 
+    // Categories
     NSDictionary *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];
 	for(NSDictionary *category in categories)
@@ -399,7 +388,9 @@ NSString * const kGetImageOrderDescending = @"desc";
 		[categoryIds addObject:[category objectForKey:@"id"]];
 	}
 	imageData.categoryIds = categoryIds;
+    categoryIds = nil;
 	
+    // Tags
     NSDictionary *tags = [imageJson objectForKey:@"tags"];
 	NSMutableArray *imageTags = [NSMutableArray new];
 	for(NSDictionary *tag in tags)
@@ -410,6 +401,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 		[imageTags addObject:tagData];
 	}
 	imageData.tags = imageTags;
+    imageTags = nil;
 	
 	return imageData;
 }
@@ -442,31 +434,49 @@ NSString * const kGetImageOrderDescending = @"desc";
 }
 
 +(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
+                            ofMinimumSize:(NSInteger)minSize
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
 	if(!image) return nil;
     
-    // Download image with highest resolution possible (fullResPath image is not always available)
+    // Download image of optimum size (depends on availability)
     NSString *URLRequest = @"";
-    if ([image.fullResPath length] > 0) {
-        URLRequest = image.fullResPath;
-    } else if ([image.XXLargePath length] > 0) {
-        URLRequest = image.XXLargePath;
-    } else if ([image.XLargePath length] > 0) {
-        URLRequest = image.XLargePath;
-    } else if ([image.LargePath length] > 0) {
-        URLRequest = image.LargePath;
-    } else if ([image.MediumPath length] > 0) {
-        URLRequest = image.MediumPath;
-    } else if ([image.SmallPath length] > 0) {
-        URLRequest = image.SmallPath;
-    } else if ([image.XSmallPath length] > 0) {
-        URLRequest = image.XSmallPath;
-    } else if ([image.XXSmallPath length] > 0) {
+    if (([image.ThumbPath length] > 0) &&
+        (fmin(image.ThumbWidth, image.ThumbHeight) < minSize)) {
+            URLRequest = image.ThumbPath;
+    }
+    if (([image.XXSmallPath length] > 0) &&
+        (fmin(image.XXSmallWidth, image.XXSmallHeight) < minSize)) {
         URLRequest = image.XXSmallPath;
-    } else if ([image.ThumbPath length] > 0) {
-        URLRequest = image.ThumbPath;
+    }
+    if (([image.XSmallPath length] > 0) &&
+        (fmin(image.XSmallWidth, image.XSmallHeight) < minSize)) {
+        URLRequest = image.XSmallPath;
+    }
+    if (([image.SmallPath length] > 0) &&
+        (fmin(image.SmallWidth, image.SmallHeight) < minSize)) {
+        URLRequest = image.SmallPath;
+    }
+    if (([image.MediumPath length] > 0) &&
+        (fmin(image.MediumWidth, image.MediumHeight) < minSize)) {
+        URLRequest = image.MediumPath;
+    }
+    if (([image.LargePath length] > 0) &&
+        (fmin(image.LargeWidth, image.LargeHeight) < minSize)) {
+        URLRequest = image.LargePath;
+    }
+    if (([image.XLargePath length] > 0) &&
+        (fmin(image.XLargeWidth, image.XLargeHeight) > minSize)) {
+        URLRequest = image.XLargePath;
+    }
+    if (([image.XXLargePath length] > 0) &&
+        (fmin(image.XXLargeWidth, image.XXLargeHeight) < minSize)) {
+        URLRequest = image.XXLargePath;
+    }
+    if (([image.fullResPath length] > 0) &&
+        (fmin(image.fullResWidth, image.fullResHeight) < minSize)) {
+        URLRequest = image.fullResPath;
     }
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
 
@@ -474,7 +484,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSString *fileName = [[NSURL URLWithString:URLRequest] lastPathComponent];
     if ([fileName containsString:@".php"]) {
         // The URL does not contain a unique file name but a PHP request
-        // Might happen with full resolution images
+        // Might happen with full resolution images, try with medium resolution file
         fileName = [[NSURL URLWithString:image.MediumPath] lastPathComponent];
         if ([fileName containsString:@".php"]) {
             // The URL does not contain a unique file name but a PHP request
@@ -483,7 +493,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                 fileName = image.fileName;
             } else {
                 // Should never reach this point
-                fileName = @"fileName.jpg";
+                fileName = @"PiwigoImage.jpg";
             }
         }
     }
@@ -493,7 +503,8 @@ NSString * const kGetImageOrderDescending = @"desc";
         [[Model sharedInstance].imagesSessionManager downloadTaskWithRequest:request
                                 progress:progress
                              destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-                                 NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                 NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                 NSLog(@"=> downloaded %@", [documentsDirectoryURL URLByAppendingPathComponent:fileName]);
                                  return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
                              }
                        completionHandler:completionHandler
@@ -549,7 +560,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                     downloadTaskWithRequest:request
                                    progress:progress
                                 destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-                                     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
                                      return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
                                 }
                           completionHandler:completionHandler

@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Laddar…";
 "completeHUD_label" = "Klart";
+"errorHUD_label" = "Fel";
 
 // Upload rights
 "uploadRights_title" = "Behörighet för uppladdning krävs";
@@ -310,6 +311,7 @@
 "downloadingImages" = "Hämtar bilder";
 "downloadingImageInfo" = "Hämtar bildinformation";
 "downloadingImageInfoForSort" = "Hämtar bildinformation för sortering";
+"downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
 "downloadImageFail_title" = "Hämtning misslyckades";
@@ -467,6 +469,9 @@
 "defaultImageSize_recommended" = " (rekommenderas)";
 "defaultSize_disabled" = " (inaktiverad på servern)";
 "defaultSizeFooter" = "Utgråade storlekar är inte rekommenderade eller inte tillgänglig på Piwigo server.";
+
+"settings_shareGPSdata" = "Share Private Metadata";
+"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
 
 "imageSizeSquare" = "Kvadrat";
 "imageSizeThumbnail" = "Miniatyrbild";

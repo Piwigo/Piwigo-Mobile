@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "読み込み中…";
 "completeHUD_label" = "完了";
+"errorHUD_label" = "エラー！";
 
 // Upload rights
 "uploadRights_title" = "アップロードする権限が必要です";
@@ -310,6 +311,7 @@
 "downloadingImages" = "画像をダウンロード中";
 "downloadingImageInfo" = "画像情報をダウンロード中";
 "downloadingImageInfoForSort" = "並べ替えのために画像情報をダウンロード中";
+"downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
 "downloadImageFail_title" = "ダウンロードに失敗しました";
@@ -467,6 +469,9 @@
 "defaultImageSize_recommended" = " (推奨)";
 "defaultSize_disabled" = " （サーバで無効化）";
 "defaultSizeFooter" = "灰色のサイズはPiwigoサーバで非推奨または利用できません。";
+
+"settings_shareGPSdata" = "Share Private Metadata";
+"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
 
 "imageSizeSquare" = "正方形";
 "imageSizeThumbnail" = "サムネイル";

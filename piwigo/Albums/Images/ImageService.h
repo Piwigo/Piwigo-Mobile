@@ -43,6 +43,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
+                            ofMinimumSize:(NSInteger)minSize
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 

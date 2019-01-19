@@ -32,8 +32,8 @@
 }
 
 -(void)checkPhotoLibraryAccessForViewController:(UIViewController *)viewController
-                                        onRetry:(void (^)(void))retry
-                                      onSuccess:(void (^)(void))success
+                             onAuthorizedAccess:(void (^)(void))doWithAccess
+                                 onDeniedAccess:(void (^)(void))doWithoutAccess
 {
     // Check autorisation to access Photo Library
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
@@ -45,75 +45,107 @@
                 // Create "Photos access" in Settings app for Piwigo, return user's choice
                 switch (status) {
                     case PHAuthorizationStatusRestricted:
-                    case PHAuthorizationStatusDenied:
-                        // Inform user that Piwigo cannot access the Photo library
-                        if ([NSThread isMainThread]) {
-                            [self showPhotosLibraryAccessRestrictedInViewController:viewController];
-                        }
-                        else{
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self showPhotosLibraryAccessRestrictedInViewController:viewController];
-                            });
-                        }
-                        break;
-                        
-                    default:
-                        if (retry) {
-                            // Retry as this should be fine
+                    {
+                        // Inform user that he/she cannot access the Photo library
+                        if (viewController) {
                             if ([NSThread isMainThread]) {
-                                retry();
+                                [self showPhotosLibraryAccessRestrictedInViewController:viewController];
                             }
                             else{
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    retry();
+                                    [self showPhotosLibraryAccessRestrictedInViewController:viewController];
+                                });
+                            }
+                        }
+                        // Exceute next steps
+                        if (doWithoutAccess) doWithoutAccess();
+                        break;
+                    }
+                    case PHAuthorizationStatusDenied:
+                    {
+                        // Invite user to provide access to the Photo library
+                        if (viewController) {
+                            if ([NSThread isMainThread]) {
+                                [self requestPhotoLibraryAccessInViewController:viewController];
+                            }
+                            else{
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [self requestPhotoLibraryAccessInViewController:viewController];
+                                });
+                            }
+                        }
+                        // Exceute next steps
+                        if (doWithoutAccess) doWithoutAccess();
+                        break;
+                    }
+                    default:
+                    {
+                        // Access Photo Library
+                        if (doWithAccess) {
+                            // Retry as this should be fine
+                            if ([NSThread isMainThread]) {
+                                doWithAccess();
+                            }
+                            else{
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    doWithAccess();
                                 });
                             }
                         }
                         break;
+                    }
                 }
             }];
-            return;
             break;
         }
             
         case PHAuthorizationStatusRestricted:
         {
             // Inform user that he/she cannot access the Photo library
-            if ([NSThread isMainThread]) {
-                [self showPhotosLibraryAccessRestrictedInViewController:viewController];
-            }
-            else{
-                dispatch_async(dispatch_get_main_queue(), ^{
+            if (viewController) {
+                if ([NSThread isMainThread]) {
                     [self showPhotosLibraryAccessRestrictedInViewController:viewController];
-                });
+                }
+                else{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self showPhotosLibraryAccessRestrictedInViewController:viewController];
+                    });
+                }
             }
+            // Exceute next steps
+            if (doWithoutAccess) doWithoutAccess();
             break;
         }
             
         case PHAuthorizationStatusDenied:
         {
-            // Invite user to provide access to photos
-            if ([NSThread isMainThread]) {
-                [self requestPhotoLibraryAccessInViewController:viewController];
-            }
-            else{
-                dispatch_async(dispatch_get_main_queue(), ^{
+            // Invite user to provide access to the Photo library
+            if (viewController) {
+                if ([NSThread isMainThread]) {
                     [self requestPhotoLibraryAccessInViewController:viewController];
-                });
+                }
+                else{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self requestPhotoLibraryAccessInViewController:viewController];
+                    });
+                }
             }
+            // Exceute next steps
+            if (doWithoutAccess) doWithoutAccess();
             break;
         }
             
         default:
         {
             // Access Photo Library
-            if (success) {
+            if (doWithAccess) {
+                // Retry as this should be fine
                 if ([NSThread isMainThread]) {
-                    success();
+                    doWithAccess();
                 }
                 else{
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        success();
+                        doWithAccess();
                     });
                 }
             }

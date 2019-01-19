@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Bezig met laden…";
 "completeHUD_label" = "Klaar";
+"errorHUD_label" = "Fout";
 
 // Upload rights
 "uploadRights_title" = "Upload-rechten nodig";
@@ -310,6 +311,7 @@
 "downloadingImages" = "Foto's downloaden";
 "downloadingImageInfo" = "Foto-informatie aan het downloaden";
 "downloadingImageInfoForSort" = "Bezig met downloaden van foto-info om te sorteren";
+"downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
 "downloadImageFail_title" = "Download mislukt";
@@ -467,6 +469,9 @@
 "defaultImageSize_recommended" = " (aanbevolen)";
 "defaultSize_disabled" = " (uitgeschakeld op de server)";
 "defaultSizeFooter" = "Greysize formaten worden niet geadviseerd of zijn niet beschikbaar op de Piwigo-server.";
+
+"settings_shareGPSdata" = "Share Private Metadata";
+"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
 
 "imageSizeSquare" = "Vierkant";
 "imageSizeThumbnail" = "Miniatuurafbeelding";

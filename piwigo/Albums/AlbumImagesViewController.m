@@ -1323,14 +1323,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	
     // Check autorisation to access Photo Library before downloading
     [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
-           onRetry:^{
-               // Retry if status was not determined
-               [self downloadImages];
-           } onSuccess:^{
-               // Start downloading image
-               [self askConfirmationForDownloadingImages];
-           }
-     ];
+                                    onAuthorizedAccess:^{
+                                       [self askConfirmationForDownloadingImages];
+                                   } onDeniedAccess:nil];
 }
 
 -(void)askConfirmationForDownloadingImages
@@ -1400,6 +1395,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if(!downloadingImage.isVideo)
 	{
         [ImageService downloadImage:downloadingImage
+                      ofMinimumSize:INFINITY
                          onProgress:^(NSProgress *progress) {
                                dispatch_async(dispatch_get_main_queue(),
                                     ^(void){

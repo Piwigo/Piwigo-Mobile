@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Memuat…";
 "completeHUD_label" = "Selesai";
+"errorHUD_label" = "Kesalahan";
 
 // Upload rights
 "uploadRights_title" = "Hak Unggah Diperlukan";
@@ -310,6 +311,7 @@
 "downloadingImages" = "Mengunduh Gambar";
 "downloadingImageInfo" = "Mengunduh Info Gambar";
 "downloadingImageInfoForSort" = "Mengunduh Info Gambar untuk Penyortiran";
+"downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
 "downloadImageFail_title" = "Gagal Mengunduh";
@@ -467,6 +469,9 @@
 "defaultImageSize_recommended" = " (direkomendasikan)";
 "defaultSize_disabled" = " (nonaktifkan pada peladen)";
 "defaultSizeFooter" = "Ukuran berbayang tidak disarankan atau tidak tersedia dalam peladen Piwigo.";
+
+"settings_shareGPSdata" = "Share Private Metadata";
+"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
 
 "imageSizeSquare" = "Persegi";
 "imageSizeThumbnail" = "Tampilan Besar";

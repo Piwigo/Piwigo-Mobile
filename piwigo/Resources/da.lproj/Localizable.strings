@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Indlæser…";
 "completeHUD_label" = "Udført";
+"errorHUD_label" = "Fejl";
 
 // Upload rights
 "uploadRights_title" = "Rettigheder til Upload Påkrævet";
@@ -310,6 +311,7 @@
 "downloadingImages" = "Henter Billeder";
 "downloadingImageInfo" = "Hent Billed Info";
 "downloadingImageInfoForSort" = "Henter Billedinfo for Sort";
+"downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
 "downloadImageFail_title" = "Hentning Mislykkedes";
@@ -467,6 +469,9 @@
 "defaultImageSize_recommended" = " (anbefales)";
 "defaultSize_disabled" = " (deaktiveret på serveren)";
 "defaultSizeFooter" = "Størrelser i gråt er ikke tilrådelig eller tilgængelig på Piwigo server.";
+
+"settings_shareGPSdata" = "Share Private Metadata";
+"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
 
 "imageSizeSquare" = "Firkant";
 "imageSizeThumbnail" = "Miniature";
