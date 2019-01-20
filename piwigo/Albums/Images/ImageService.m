@@ -32,6 +32,12 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 @implementation ImageService
 
+// API pwg.categories.getImages returns:
+//
+//      id, name, width, height, categories, comment, hit
+//      file, date_creation, data_available
+//      page_url, derivatives
+//
 +(NSURLSessionTask*)getImagesForAlbumId:(NSInteger)albumId
                                  onPage:(NSInteger)page
                                forOrder:(NSString*)order
@@ -106,6 +112,13 @@ NSString * const kGetImageOrderDescending = @"desc";
 	return albumImages;
 }
 
+// API pwg.images.getInfo returns:
+//
+//      (id, name, width, height, categories, comment, hit), comments, comments_paging, rotation, coi, author
+//      (file, date_creation, data_available), date_metadata_update, lastmodified, filesize, md5sum,
+//      (page_url, derivatives), representative_ext
+//      added_by, rating_score, level, rates, tags, latitude, longitude,
+//
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
