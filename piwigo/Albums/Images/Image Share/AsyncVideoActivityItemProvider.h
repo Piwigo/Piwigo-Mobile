@@ -26,13 +26,3 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelShareVideo;
 -(instancetype)initWithPlaceholderImage:(PiwigoImageData *)imageData;
 
 @end
-
-
-//@protocol AsyncImageActivityItemProviderDelegate <NSObject>
-//
-//-(void)imageActivityItemProviderPreprocessingDidBegin:(AsyncImageActivityItemProvider *)imageActivityItemProvider;
-//-(void)imageActivityItemProvider:(AsyncImageActivityItemProvider *)imageActivityItemProvider preprocessingProgressDidUpdate:(float)progress;
-//-(void)imageActivityItemProviderPreprocessingDidEnd:(AsyncImageActivityItemProvider *)imageActivityItemProvider;
-//-(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message withOptionToRetry:(BOOL)retry;
-
-//@end
