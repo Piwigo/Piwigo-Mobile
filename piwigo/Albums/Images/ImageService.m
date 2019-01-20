@@ -35,7 +35,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 // API pwg.categories.getImages returns:
 //
 //      id, name, width, height, categories, comment, hit
-//      file, date_creation, data_available
+//      file, date_creation, date_available
 //      page_url, derivatives
 //
 +(NSURLSessionTask*)getImagesForAlbumId:(NSInteger)albumId
@@ -115,7 +115,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 // API pwg.images.getInfo returns:
 //
 //      (id, name, width, height, categories, comment, hit), comments, comments_paging, rotation, coi, author
-//      (file, date_creation, data_available), date_metadata_update, lastmodified, filesize, md5sum,
+//      (file, date_creation, date_available), date_metadata_update, lastmodified, filesize, md5sum,
 //      (page_url, derivatives), representative_ext
 //      added_by, rating_score, level, rates, tags, latitude, longitude,
 //
@@ -191,6 +191,11 @@ NSString * const kGetImageOrderDescending = @"desc";
 	{
 		imageData.isVideo = YES;
 	}
+    if ([imageJson objectForKey:@"filesize"]) {
+        imageData.fileSize = [[imageJson objectForKey:@"filesize"] integerValue];
+    } else {
+        imageData.fileSize = NSNotFound;
+    }
 
     imageData.name = [imageJson objectForKey:@"name"];
 	if(!imageData.name || [imageData.name isKindOfClass:[NSNull class]])

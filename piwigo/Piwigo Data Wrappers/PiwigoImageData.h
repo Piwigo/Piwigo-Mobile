@@ -27,6 +27,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *imageId;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *fileName;
+@property (nonatomic, assign) NSInteger fileSize;
 @property (nonatomic, assign) NSInteger privacyLevel;
 @property (nonatomic, strong) NSString *author;
 @property (nonatomic, strong) NSString *imageDescription;

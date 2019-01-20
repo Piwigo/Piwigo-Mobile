@@ -69,7 +69,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
         startingImage.imagePreviewDelegate = self;
 		[startingImage setImageScrollViewWithImageData:self.imageData];
-        [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
+        if (self.imageData.fileSize == NSNotFound) {
+            [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
+        }
 		startingImage.imageIndex = imageIndex;
 		
 		[self setViewControllers:@[startingImage]
@@ -272,7 +274,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                   for(PiwigoImageData *image in self.images)
                   {
                       if([image.imageId integerValue] == [imageDataComplete.imageId integerValue]) {
-                          [self.images replaceObjectAtIndex:index withObject:imageDataComplete];
                           break;
                       }
                       index++;
@@ -491,7 +492,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
     // Retrieve image data in case user will want to copy, edit, move, etc. the image
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex];
-    [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
+    if (self.imageData.fileSize == NSNotFound) {
+        [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
+    }
 
     self.imageData = [self.images objectAtIndex:currentIndex];
     [self setTitleViewFromImageData];
