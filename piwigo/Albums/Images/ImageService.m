@@ -390,9 +390,13 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Full resolution dimensions
-    imageData.fullResWidth = [[imageJson objectForKey:@"width"] integerValue];
-    imageData.fullResHeight = [[imageJson objectForKey:@"height"] integerValue];
-
+    if (![[imageJson objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.fullResWidth = [[imageJson objectForKey:@"width"] integerValue];
+    }
+    if (![[imageJson objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.fullResHeight = [[imageJson objectForKey:@"height"] integerValue];
+    }
+    
     // Categories
     NSDictionary *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];
