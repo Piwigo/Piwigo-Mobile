@@ -162,6 +162,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             ([langCode isEqualToString:@"ar"] ||
              [langCode isEqualToString:@"fa"] ||
              [langCode isEqualToString:@"pl"] ||
+             [langCode isEqualToString:@"pt-BR"] ||
+             [langCode isEqualToString:@"ru"] ||
              [langCode isEqualToString:@"sk"] ))
         {
             // Store date of last translation request
