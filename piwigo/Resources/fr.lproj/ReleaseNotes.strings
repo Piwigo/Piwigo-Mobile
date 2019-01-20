@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.0_text" = "Version 2.3\n\n• Ajoute la possibilité de partager des images et des vidéos\n• Augmente les limites de la taille des caches\n• Corrections de bugs mineurs et amélioration de l'interface\n• Amélioration des traductions";
+"v2.3.0_text" = "Version 2.3\n\n• Partager des photos et des vidéos\n• Augmente les limites de la taille des caches\n• Corrections de bugs mineurs et amélioration de l'interface\n• Amélioration des traductions";
 
 "v2.2.7_text" = "Version 2.2.7\n29 Décembre 2018\n\n• Corrections de bugs mineurs et amélioration de l'interface\n• Amélioration des traductions";
 
