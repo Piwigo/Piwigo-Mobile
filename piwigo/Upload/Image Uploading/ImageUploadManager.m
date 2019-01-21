@@ -56,6 +56,7 @@
         self.imageUploadQueue = [NSMutableArray new];
         self.imageNamesUploadQueue = [NSMutableArray new];
         self.imageDeleteQueue = [NSMutableArray new];
+        self.uploadedImagesToBeModerated = [NSString new];
         self.cachedImages = [NSMutableArray new];
         self.cachingManager = [[PHCachingImageManager alloc] init];
         self.options = [[PHImageRequestOptions alloc] init];
@@ -104,6 +105,7 @@
     if(!self.isUploading)
     {
         self.imageDeleteQueue = [NSMutableArray new];
+        self.uploadedImagesToBeModerated = @"";
         [self uploadNextImage];
     }
 }
@@ -1254,19 +1256,26 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                         imageProperties = nil;
                         self.imageData = nil;
 
-                        // The image must not be appended to the cache if it is moderated
+                        // The image must be moderated if the Community plugin is installed
                         if ([Model sharedInstance].usesCommunityPluginV29) {
 
-                            // Append image to cache only if it is not moderated
-                            [self isUploadedImageModerated:response inCategory:image.categoryToUploadTo];
-                            
-                        } else {
-                            // Increment number of images in category
-                            [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
-                            
-                            // Read image/video information and update cache
-                            [self addImageDataToCategoryCache:response];
+                            // Append image to cache and prepare list for moderators
+                            if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+                            {
+                                // Get imageId
+                                NSDictionary *imageResponse = [response objectForKey:@"result"];
+                                NSString *imageId = [imageResponse objectForKey:@"image_id"];
+                                
+                                // Append image to list of images to moderate
+                                self.uploadedImagesToBeModerated = [self.uploadedImagesToBeModerated stringByAppendingFormat:@"%@,", imageId];
+                            }
                         }
+
+                        // Increment number of images in category
+                        [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
+                        
+                        // Read image/video information and update cache
+                        [self addImageDataToCategoryCache:response];
                         
                         // Delete image from Photos library if requested
                         if ([Model sharedInstance].deleteImageAfterUpload) {
@@ -1340,7 +1349,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                             [self.imageNamesUploadQueue removeObject:[nextImage.image stringByDeletingPathExtension]];
                                         }
                                         
-                                        // Tell user how many images have been downloaded
+                                        // Tell user how many images have been uploaded
                                         if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
                                         {
                                             [self.delegate imageUploaded:image placeInQueue:self.onCurrentImageUpload outOf:self.maximumImagesForBatch withResponse:nil];
@@ -1404,59 +1413,6 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                            // fail
                                        }];
         
-    }
-}
-
--(void)isUploadedImageModerated:(NSDictionary*)jsonResponse inCategory:(NSInteger)categoryId
-{
-    if([[jsonResponse objectForKey:@"stat"] isEqualToString:@"ok"])
-    {
-        NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
-        NSString *imageId = [imageResponse objectForKey:@"image_id"];
-        
-        // Determine if the uploaded image is moderated
-        [UploadService getUploadedImageStatusById:imageId
-                                       inCategory:categoryId
-                                       onProgress:^(NSProgress *progress) {
-                                           // progress
-                                       }
-                                     OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-                                         
-                                         if ([[response objectForKey:@"stat"] isEqualToString:@"ok"]) {
-                                             
-                                             // When admin trusts user, pending answer is empty
-                                             id pendingStatus = [[response objectForKey:@"result"] objectForKey:@"pending"];
-                                             if (pendingStatus && [pendingStatus count]) {
-                                                 
-                                                 id pendingState = [pendingStatus objectAtIndex:0];
-                                                 if ([[pendingState objectForKey:@"state"] isEqualToString:@"moderation_pending"]) {
-                                                     
-                                                     // Moderation pending => Don't add this uploaded image/video to cache now
-                                                     
-                                                 } else {    // No moderation pending
-                                                     
-                                                     // Increment number of images in category
-                                                     [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
-                                                     
-                                                     // Read image/video information and update cache
-                                                     [self addImageDataToCategoryCache:jsonResponse];
-                                                 }
-                                             } else {        // No pending status response ! Trusted user
-                                                 
-                                                 // Increment number of images in category
-                                                 [[[CategoriesData sharedInstance] getCategoryById:categoryId] incrementImageSizeByOne];
-                                                 
-                                                 // Read image/video information and update cache
-                                                 [self addImageDataToCategoryCache:jsonResponse];
-                                             }
-                                         }
-                                    }
-                                        onFailure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG_UPLOAD)
-                                            NSLog(@"isUploadedImageModerated error %ld: %@", (long)error.code, error.localizedDescription);
-#endif
-                                        }
-         ];
     }
 }
 

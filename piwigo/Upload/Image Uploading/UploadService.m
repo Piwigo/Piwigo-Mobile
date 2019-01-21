@@ -166,7 +166,7 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                                 parameters:@{
                                              @"pwg_token"   : [Model sharedInstance].pwgToken,
                                              @"image_id"    : imageId,
-                                             @"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
+                                             @"category_id" : @(categoryId),
                                             }
                                   progress:progress
                                    success:completion

@@ -180,6 +180,12 @@
                             [self.delegate imageUploaded:image placeInQueue:rank outOf:totalInQueue withResponse:response];
                         }
                         
+                        // Submit request to moderator (Community plugin)
+                        if ([[ImageUploadManager sharedInstance].uploadedImagesToBeModerated length] > 1) {
+                            [self moderateImages:[ImageUploadManager sharedInstance].uploadedImagesToBeModerated
+                                     uploadedToCategoryId:image.categoryToUploadTo];
+                        }
+
                         // Delete images from Photos library if requested
                         if ([Model sharedInstance].deleteImageAfterUpload) {
                             dispatch_async(dispatch_get_main_queue(), ^{
@@ -213,6 +219,48 @@
 	{
 		[self.delegate imagesToUploadChanged:imagesLeftToUpload];
 	}
+}
+
+-(void)moderateImages:(NSString *)uploadedImages uploadedToCategoryId:(NSInteger)categoryId
+{
+    // Remove extra comma
+    uploadedImages = [uploadedImages substringToIndex:(uploadedImages.length - 1)];
+    
+    // Determine if the uploaded image is moderated
+//    NSArray *moderatedImages = [uploadedImages componentsSeparatedByString:@","];
+//    NSLog(@"Community —> %ld image(s) to submit to moderator (album #%ld)", (long)[moderatedImages count], (long)categoryId);
+//    NSLog(@"Community —> %@", uploadedImages);
+    [UploadService getUploadedImageStatusById:uploadedImages
+                                   inCategory:categoryId
+                                   onProgress:nil
+                                 OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+                                     
+//             if ([[response objectForKey:@"stat"] isEqualToString:@"ok"]) {
+//                 // Request received by server
+//
+//                 // When admin trusts user, pending answer is empty
+//                 id pendingStatus = [[response objectForKey:@"result"] objectForKey:@"pending"];
+//                 if (pendingStatus && [pendingStatus count]) {
+//
+//                     // Moderation pending?
+//                     id pendingState = [pendingStatus objectAtIndex:0];
+//                     if ([[pendingState objectForKey:@"state"] isEqualToString:@"moderation_pending"]) {
+//
+//                     }
+//                     else {
+//
+//                     }
+//                 } else {
+//
+//                 }
+//             }
+                                 }
+                                    onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG_UPLOAD)
+                                        NSLog(@"moderateImages error %ld: %@", (long)error.code, error.localizedDescription);
+#endif
+                                    }
+     ];
 }
 
 @end
