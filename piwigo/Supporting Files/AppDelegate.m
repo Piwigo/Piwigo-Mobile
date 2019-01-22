@@ -13,14 +13,11 @@
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
 
-#import "Model.h"
-#import "SessionService.h"
-#import "KeychainAccess.h"
-#import "SAMKeychain.h"
 #import "AFNetworkActivityIndicatorManager.h"
-#import "CategoriesData.h"
-#import "PhotosFetch.h"
 #import "AlbumImagesViewController.h"
+#import "KeychainAccess.h"
+#import "Model.h"
+#import "SAMKeychain.h"
 
 //#ifndef DEBUG_NOCACHE
 //#define DEBUG_NOCACHE
@@ -271,10 +268,22 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 - (void)applicationDidEnterBackground:(UIApplication *)application {
 	// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 	// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+
+    // Disable network activity indicator
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;
+    
+    // Disable network reachability monitoring
+    [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+
+    // Enable network activity indicator
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    
+    // Enable network reachability monitoring
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
 
     // Should we reopen the session ?
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
