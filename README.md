@@ -1,6 +1,8 @@
 # Piwigo Mobile [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile) [![License: MIT](https://img.shields.io/cocoapods/l/MBProgressHUD.svg?style=flat)](http://opensource.org/licenses/MIT)
 Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
+[![Available on the App Store](http://cl.ly/WouG/Download_on_the_App_Store_Badge_US-UK_135x40.svg)](https://itunes.apple.com/app/piwigo/id472225196?mt=8)
+
 [Piwigo](http://piwigo.org) is a **free and opensource** web photo gallery, built by an active community of users and developers.
 
 [Piwigo](http://piwigo.org) empowers you to create your own photo gallery on the web and includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.
