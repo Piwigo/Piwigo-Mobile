@@ -22,6 +22,9 @@
 		AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD3203662184738F00BAD372 /* PrivacyPolicy.strings */; };
 		AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
+		AD4A8E8A21FDC3EA00749D83 /* LabelImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD4A8E8921FDC3EA00749D83 /* LabelImageTableViewCell.m */; };
+		AD4A8E8C21FDD0CC00749D83 /* LabelImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD4A8E8B21FDCA3A00749D83 /* LabelImageTableViewCell.xib */; };
+		AD5066B821F7AD20008E1B5F /* ShareMetadataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5066B721F7AD20008E1B5F /* ShareMetadataViewController.m */; };
 		AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
@@ -185,6 +188,11 @@
 		AD45949C1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/About.strings; sourceTree = "<group>"; };
 		AD45949D1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD45949E1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/AppStore.strings; sourceTree = "<group>"; };
+		AD4A8E8821FDC3DB00749D83 /* LabelImageTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LabelImageTableViewCell.h; sourceTree = "<group>"; };
+		AD4A8E8921FDC3EA00749D83 /* LabelImageTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LabelImageTableViewCell.m; sourceTree = "<group>"; };
+		AD4A8E8B21FDCA3A00749D83 /* LabelImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LabelImageTableViewCell.xib; sourceTree = "<group>"; };
+		AD5066B621F7AD09008E1B5F /* ShareMetadataViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareMetadataViewController.h; sourceTree = "<group>"; };
+		AD5066B721F7AD20008E1B5F /* ShareMetadataViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareMetadataViewController.m; sourceTree = "<group>"; };
 		AD591A391F9116F9008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD591A3A1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/About.strings; sourceTree = "<group>"; };
 		AD591A3B1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -611,6 +619,9 @@
 				D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */,
 				D83212311A91B937009372D8 /* LabelTableViewCell.h */,
 				D83212321A91B937009372D8 /* LabelTableViewCell.m */,
+				AD4A8E8821FDC3DB00749D83 /* LabelImageTableViewCell.h */,
+				AD4A8E8921FDC3EA00749D83 /* LabelImageTableViewCell.m */,
+				AD4A8E8B21FDCA3A00749D83 /* LabelImageTableViewCell.xib */,
 				D8A94EB31AAE650800E4B287 /* SliderTableViewCell.h */,
 				D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */,
 				D88A685C1AC26FA4002A3259 /* SwitchTableViewCell.h */,
@@ -705,6 +716,8 @@
 				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
 				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
 				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
+				AD5066B621F7AD09008E1B5F /* ShareMetadataViewController.h */,
+				AD5066B721F7AD20008E1B5F /* ShareMetadataViewController.m */,
 				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
 				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
 				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
@@ -1071,9 +1084,7 @@
 				TargetAttributes = {
 					AD1EBB64213404D50012FA44 = {
 						CreatedOnToolsVersion = 9.4.1;
-						DevelopmentTeam = ZEC3W885H6;
 						LastSwiftMigration = 1000;
-						ProvisioningStyle = Automatic;
 						TestTargetID = D82B8CBA1A67820A000E47CA;
 					};
 					AD30FD3321316DA7009AA30E = {
@@ -1165,6 +1176,7 @@
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
+				AD4A8E8C21FDD0CC00749D83 /* LabelImageTableViewCell.xib in Resources */,
 				AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */,
 				AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */,
 				AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */,
@@ -1334,6 +1346,7 @@
 				D8083AA61A82905B00A95605 /* ImageUploadProgressView.m in Sources */,
 				D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */,
 				D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */,
+				AD5066B821F7AD20008E1B5F /* ShareMetadataViewController.m in Sources */,
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
 				D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
@@ -1365,6 +1378,7 @@
 				D860440B1A995C580067E5D1 /* ClearCache.m in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
+				AD4A8E8A21FDC3EA00749D83 /* LabelImageTableViewCell.m in Sources */,
 				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
 				D8F1135A1A9E40EF000EC0A6 /* LoadingView.m in Sources */,
 				AD7B4C1F20E0D6D9003E403A /* CategoryHeaderReusableView.m in Sources */,
@@ -1528,7 +1542,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1542,6 +1556,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoGetPiwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
+				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -1561,7 +1576,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = ZEC3W885H6;
@@ -1576,6 +1591,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoGetPiwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
+				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.2;

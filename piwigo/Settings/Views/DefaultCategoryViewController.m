@@ -32,7 +32,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.title = NSLocalizedString(@"categorySelection_select", @"Select Album");
+		self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 		self.selectedCategory = category;
 
         // List of categories to present in 2nd section
@@ -102,7 +102,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     // Title
-    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"setDefaultCategory_title", @"Default Album")];
     NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
@@ -112,7 +112,7 @@
                                                  context:context];
     
     // Text
-    NSString *textString = NSLocalizedString(@"categoryUpload_defaultAlbum", @"Set as Default Album");
+    NSString *textString = NSLocalizedString(@"categoryUpload_defaultSelect", @"Please select the album or sub-album which will become your default album");
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                options:NSStringDrawingUsesLineFragmentOrigin
@@ -126,14 +126,14 @@
     NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
     
     // Title
-    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"setDefaultCategory_title", @"Default Album")];
     NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
     [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
                                   range:NSMakeRange(0, [titleString length])];
     [headerAttributedString appendAttributedString:titleAttributedString];
     
     // Text
-    NSString *textString = NSLocalizedString(@"categoryUpload_defaultAlbum", @"Set as Default Album");
+    NSString *textString = NSLocalizedString(@"categoryUpload_defaultSelect", @"Please select the album or sub-album which will become your default album");
     NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
     [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
                                  range:NSMakeRange(0, [textString length])];

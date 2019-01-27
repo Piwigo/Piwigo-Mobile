@@ -28,6 +28,7 @@
 #import "SessionService.h"
 #import "SettingsViewController.h"
 #import "SliderTableViewCell.h"
+#import "ShareMetadataViewController.h"
 #import "SwitchTableViewCell.h"
 #import "TextFieldTableViewCell.h"
 
@@ -534,7 +535,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [LabelTableViewCell new];
                     }
                     
-                    cell.leftText = NSLocalizedString(@"setDefaultCategory_title", @"Default Album";);
+                    cell.leftText = NSLocalizedString(@"setDefaultCategory_title", @"Default Album");
                     if ([Model sharedInstance].defaultCategory == 0) {
                         cell.rightText = NSLocalizedString(@"categorySelection_root", @"Root Album");
                     } else {
@@ -673,26 +674,48 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Share private Metadata
+                case 1:     // Share Image Metadata Options
                 {
-                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"gps"];
-                    if(!cell) {
-                        cell = [SwitchTableViewCell new];
+                    if (@available(iOS 10, *)) {
+                        LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultShareOptions"];
+                        if(!cell) {
+                            cell = [LabelTableViewCell new];
+                        }
+                        
+                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                        if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
+                            cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata>375px", @"Share with Private Metadata");
+                        } else {
+                            cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata", @"Share Private Metadata");
+                        }
+                        cell.rightText = @"";
+                        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                        [cell setAccessibilityIdentifier:@"defaultShareOptions"];
+
+                        tableViewCell = cell;
+                    }
+                    else {
+                        // Single On/Off share metadata option
+                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"gps"];
+                        if(!cell) {
+                            cell = [SwitchTableViewCell new];
+                        }
+                        
+                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                        if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
+                            cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata>375px", @"Share Private Metadata");
+                        } else {
+                            cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata", @"Share Metadata");
+                        }
+//                        [cell.cellSwitch setOn:[Model sharedInstance].shareImagePrivateMetadata];
+                        cell.cellSwitchBlock = ^(BOOL switchState) {
+//                            [Model sharedInstance].shareImagePrivateMetadata = switchState * (kPiwigoShareAirDrop + kPiwigoShareCopyToPasteboard + kPiwigoShareMail + kPiwigoShareMessage + kPiwigoShareSignal + kPiwigoShareCameraRoll);
+                            [[Model sharedInstance] saveToDisk];
+                        };
+                        
+                        tableViewCell = cell;
                     }
                     
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
-                        cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata>375px", @"Share Private Metadata");
-                    } else {
-                        cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata", @"Share Metadata");
-                    }
-                    [cell.cellSwitch setOn:[Model sharedInstance].shareGPSdataOnShare];
-                    cell.cellSwitchBlock = ^(BOOL switchState) {
-                        [Model sharedInstance].shareGPSdataOnShare = switchState;
-                        [[Model sharedInstance] saveToDisk];
-                    };
-                    
-                    tableViewCell = cell;
                     break;
                 }
             }
@@ -736,7 +759,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 					
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 Plus screen width
-                        cell.leftText = NSLocalizedString(@"settings_defaultPrivacy>414px", @"Who Can See the Media?");
+                        cell.leftText = NSLocalizedString(@"privacyLevel", @"Privacy Level");
                     } else {
                         cell.leftText = NSLocalizedString(@"settings_defaultPrivacy", @"Privacy");
                     }
@@ -1443,13 +1466,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             switch(indexPath.row)
             {
                 case 0:     // Default Size of Previewed Images
+                case 1:     // Share Image Metadata Options
                 {
                     result = YES;
-                    break;
-                }
-                case 1:     // Share private Metadata
-                {
-                    result = NO;
                     break;
                 }
             }
@@ -1695,6 +1714,12 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
                     [self.navigationController pushViewController:defaultImageSizeVC animated:YES];
                     break;
+                }
+                    break;
+                case 1:                     // Share image metadata options
+                {
+                    ShareMetadataViewController *shareMetadataOptionsVC = [ShareMetadataViewController new];
+                    [self.navigationController pushViewController:shareMetadataOptionsVC animated:YES];
                 }
             }
             break;

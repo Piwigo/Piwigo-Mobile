@@ -24,7 +24,7 @@
 	self = [super init];
     if(self)
     {
-        self.title = NSLocalizedString(@"defaultImageSizeTitle", @"Default Size");
+        self.title = NSLocalizedString(@"settingsHeader_images", @"Images");
         
         self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.tableView.backgroundColor = [UIColor clearColor];
@@ -90,7 +90,7 @@
                                                  context:context];
     
     // Text
-    NSString *textString = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
+    NSString *textString = NSLocalizedString(@"defaultImageSizeHeader", @"Please select an image size");
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                options:NSStringDrawingUsesLineFragmentOrigin
@@ -110,7 +110,7 @@
     [headerAttributedString appendAttributedString:titleAttributedString];
     
     // Text
-    NSString *textString = NSLocalizedString(@"defaultImageSizeHeader", @"Please Select an Image Size");
+    NSString *textString = NSLocalizedString(@"defaultImageSizeHeader", @"Please select an image size");
     NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
     [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
                                  range:NSMakeRange(0, [textString length])];
@@ -151,6 +151,11 @@
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	return kPiwigoImageSizeEnumCount;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44.0;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -268,7 +273,7 @@
 {
     // Footer height?
     NSString *footer = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -284,7 +289,7 @@
     // Footer label
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    footerLabel.font = [UIFont piwigoFontNormal];
+    footerLabel.font = [UIFont piwigoFontSmall];
     footerLabel.textColor = [UIColor piwigoHeaderColor];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;

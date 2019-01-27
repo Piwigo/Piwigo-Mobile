@@ -62,6 +62,7 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
     // Select the most appropriate image size (infinity when undefined)
     // See https://makeawebsitehub.com/social-media-image-sizes-cheat-sheet/
     // High resolution for: AirDrop, Copy, Mail, Message, iBooks, Flickr, Print, SaveToCameraRoll
+//    NSLog(@"=> Activity: %@", self.activityType);
     NSInteger minSize = NSIntegerMax;
     if (@available(iOS 10, *)) {
         if ([self.activityType isEqualToString:UIActivityTypeAssignToContact]) {
@@ -84,19 +85,19 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
             // Weibo
             minSize = 640;  // 9 images max + 1 video
         }
-        else if ([self.activityType isEqualToString:@"net.whatsapp.WhatsApp.ShareExtension"]) {
+        else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToWhatsApp]) {
             // WhatsApp
             minSize = 1920;
         }
-        else if ([self.activityType isEqualToString:@"org.whispersystems.signal.shareextension"]) {
+        else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSignal]) {
             // Signal
             minSize = 1920;
         }
-        else if ([self.activityType isEqualToString:@"com.facebook.Messenger.ShareExtension"]) {
+        else if ([self.activityType isEqualToString:kPiwigoActivityTypeMessenger]) {
             // Messenger
             minSize = 1920;
         }
-        else if ([self.activityType isEqualToString:@"com.burbn.instagram.shareextension"]) {
+        else if ([self.activityType isEqualToString:kPiwigoActivityTypePostInstagram]) {
             // Instagram
             minSize = 1080;
         }
@@ -216,9 +217,88 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
 #endif
     
     // Strip GPS metadata if user requested it in Settings
-    if(![Model sharedInstance].shareGPSdataOnShare && (imageMetadata != nil))
+    if (imageMetadata != nil)
     {
-        imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+        if (@available(iOS 10, *)) {
+            if ([self.activityType isEqualToString:UIActivityTypeAirDrop] &&
+                !([Model sharedInstance].shareMetadataTypeAirDrop)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypeAssignToContact] &&
+                     !([Model sharedInstance].shareMetadataTypeAssignToContact)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypeCopyToPasteboard] &&
+                     !([Model sharedInstance].shareMetadataTypeCopyToPasteboard)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypeMail] &&
+                     !([Model sharedInstance].shareMetadataTypeMail)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypeMessage] &&
+                     !([Model sharedInstance].shareMetadataTypeMessage)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypePostToFacebook] &&
+                     !([Model sharedInstance].shareMetadataTypePostToFacebook)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypeMessenger] &&
+                     !([Model sharedInstance].shareMetadataTypeMessenger)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypePostToFlickr] &&
+                     !([Model sharedInstance].shareMetadataTypePostToFlickr)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostInstagram] &&
+                     !([Model sharedInstance].shareMetadataTypePostInstagram)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSignal] &&
+                     !([Model sharedInstance].shareMetadataTypePostToSignal)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSnapchat] &&
+                     !([Model sharedInstance].shareMetadataTypePostToSnapchat)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypePostToTencentWeibo] &&
+                     !([Model sharedInstance].shareMetadataTypePostToTencentWeibo)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypePostToTwitter] &&
+                     !([Model sharedInstance].shareMetadataTypePostToTwitter)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypePostToVimeo] &&
+                     !([Model sharedInstance].shareMetadataTypePostToVimeo)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypePostToWeibo] &&
+                     !([Model sharedInstance].shareMetadataTypePostToWeibo)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToWhatsApp] &&
+                     !([Model sharedInstance].shareMetadataTypePostToWhatsApp)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if ([self.activityType isEqualToString:UIActivityTypeSaveToCameraRoll] &&
+                     !([Model sharedInstance].shareMetadataTypeSaveToCameraRoll)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+            else if (!([Model sharedInstance].shareMetadataTypeOther)) {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+        }
+        else {
+            // Single On/Off share metadata option (use first boolean)
+            if(![Model sharedInstance].shareMetadataTypeAirDrop)
+            {
+                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            }
+        }
     }
     
     // Notify the delegate on the main thread to show how it makes progress.
