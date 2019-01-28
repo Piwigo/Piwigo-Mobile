@@ -707,9 +707,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         } else {
                             cell.leftLabel.text = NSLocalizedString(@"settings_shareGPSdata", @"Share Metadata");
                         }
-//                        [cell.cellSwitch setOn:[Model sharedInstance].shareImagePrivateMetadata];
+                        [cell.cellSwitch setOn:[Model sharedInstance].shareMetadataTypeAirDrop];
                         cell.cellSwitchBlock = ^(BOOL switchState) {
-//                            [Model sharedInstance].shareImagePrivateMetadata = switchState * (kPiwigoShareAirDrop + kPiwigoShareCopyToPasteboard + kPiwigoShareMail + kPiwigoShareMessage + kPiwigoShareSignal + kPiwigoShareCameraRoll);
+                            [Model sharedInstance].shareMetadataTypeAirDrop = switchState;
                             [[Model sharedInstance] saveToDisk];
                         };
                         

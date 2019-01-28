@@ -62,7 +62,7 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
     // Select the most appropriate image size (infinity when undefined)
     // See https://makeawebsitehub.com/social-media-image-sizes-cheat-sheet/
     // High resolution for: AirDrop, Copy, Mail, Message, iBooks, Flickr, Print, SaveToCameraRoll
-//    NSLog(@"=> Activity: %@", self.activityType);
+    NSLog(@"=> Activity: %@", self.activityType);
     NSInteger minSize = NSIntegerMax;
     if (@available(iOS 10, *)) {
         if ([self.activityType isEqualToString:UIActivityTypeAssignToContact]) {
@@ -220,75 +220,92 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
     if (imageMetadata != nil)
     {
         if (@available(iOS 10, *)) {
-            if ([self.activityType isEqualToString:UIActivityTypeAirDrop] &&
-                !([Model sharedInstance].shareMetadataTypeAirDrop)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            if ([self.activityType isEqualToString:UIActivityTypeAirDrop]) {
+                if (![Model sharedInstance].shareMetadataTypeAirDrop) {
+                    imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypeAssignToContact] &&
-                     !([Model sharedInstance].shareMetadataTypeAssignToContact)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypeAssignToContact]) {
+                     if (![Model sharedInstance].shareMetadataTypeAssignToContact) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypeCopyToPasteboard] &&
-                     !([Model sharedInstance].shareMetadataTypeCopyToPasteboard)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypeCopyToPasteboard]) {
+                     if (![Model sharedInstance].shareMetadataTypeCopyToPasteboard) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypeMail] &&
-                     !([Model sharedInstance].shareMetadataTypeMail)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypeMail]) {
+                     if (![Model sharedInstance].shareMetadataTypeMail) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypeMessage] &&
-                     !([Model sharedInstance].shareMetadataTypeMessage)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypeMessage]) {
+                     if (![Model sharedInstance].shareMetadataTypeMessage) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypePostToFacebook] &&
-                     !([Model sharedInstance].shareMetadataTypePostToFacebook)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypePostToFacebook]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToFacebook) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:kPiwigoActivityTypeMessenger] &&
-                     !([Model sharedInstance].shareMetadataTypeMessenger)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypeMessenger]) {
+                     if (![Model sharedInstance].shareMetadataTypeMessenger) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypePostToFlickr] &&
-                     !([Model sharedInstance].shareMetadataTypePostToFlickr)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypePostToFlickr]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToFlickr) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostInstagram] &&
-                     !([Model sharedInstance].shareMetadataTypePostInstagram)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostInstagram]) {
+                     if (![Model sharedInstance].shareMetadataTypePostInstagram) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSignal] &&
-                     !([Model sharedInstance].shareMetadataTypePostToSignal)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSignal]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToSignal) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSnapchat] &&
-                     !([Model sharedInstance].shareMetadataTypePostToSnapchat)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSnapchat]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToSnapchat) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypePostToTencentWeibo] &&
-                     !([Model sharedInstance].shareMetadataTypePostToTencentWeibo)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypePostToTencentWeibo]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToTencentWeibo) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypePostToTwitter] &&
-                     !([Model sharedInstance].shareMetadataTypePostToTwitter)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypePostToTwitter]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToTwitter) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypePostToVimeo] &&
-                     !([Model sharedInstance].shareMetadataTypePostToVimeo)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypePostToVimeo]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToVimeo) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypePostToWeibo] &&
-                     !([Model sharedInstance].shareMetadataTypePostToWeibo)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypePostToWeibo]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToWeibo) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToWhatsApp] &&
-                     !([Model sharedInstance].shareMetadataTypePostToWhatsApp)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToWhatsApp]) {
+                     if (![Model sharedInstance].shareMetadataTypePostToWhatsApp) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if ([self.activityType isEqualToString:UIActivityTypeSaveToCameraRoll] &&
-                     !([Model sharedInstance].shareMetadataTypeSaveToCameraRoll)) {
-                imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+            else if ([self.activityType isEqualToString:UIActivityTypeSaveToCameraRoll]) {
+                     if (![Model sharedInstance].shareMetadataTypeSaveToCameraRoll) {
+                         imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                     }
             }
-            else if (!([Model sharedInstance].shareMetadataTypeOther)) {
+            else if (![Model sharedInstance].shareMetadataTypeOther) {
                 imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
             }
         }
