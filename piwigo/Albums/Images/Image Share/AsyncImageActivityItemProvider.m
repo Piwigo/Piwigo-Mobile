@@ -62,7 +62,9 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
     // Select the most appropriate image size (infinity when undefined)
     // See https://makeawebsitehub.com/social-media-image-sizes-cheat-sheet/
     // High resolution for: AirDrop, Copy, Mail, Message, iBooks, Flickr, Print, SaveToCameraRoll
+#if defined(DEBUG_SHARE)
     NSLog(@"=> Activity: %@", self.activityType);
+#endif
     NSInteger minSize = NSIntegerMax;
     if (@available(iOS 10, *)) {
         if ([self.activityType isEqualToString:UIActivityTypeAssignToContact]) {

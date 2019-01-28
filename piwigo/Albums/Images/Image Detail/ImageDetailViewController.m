@@ -399,17 +399,17 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
 
     // Does the needed image preview controller already exist?
-    for (UIViewController *viewController in [pageViewController viewControllers]) {
-        // Only consider view controllers of the right class!
-        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
-            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
-            // Return if exists
-            if (imageViewCtrl.imageIndex == currentIndex + 1) {
-                NSLog(@"=> Preview view controller for next image already exists");
-                return nil;
-            }
-        }
-    }
+//    for (UIViewController *viewController in [pageViewController viewControllers]) {
+//        // Only consider view controllers of the right class!
+//        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
+//            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
+//            // Return if exists
+//            if (imageViewCtrl.imageIndex == currentIndex + 1) {
+//                NSLog(@"=> Preview view controller for next image already exists");
+//                return imageViewCtrl;
+//            }
+//        }
+//    }
     
     // Retrieve (incomplete) image data and create view controller
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
@@ -435,17 +435,17 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
     
     // Does the needed image preview controller already exist?
-    for (UIViewController *viewController in [pageViewController viewControllers]) {
-        // Only consider view controllers of the right class!
-        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
-            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
-            // Return if exists
-            if (imageViewCtrl.imageIndex == currentIndex - 1) {
-                NSLog(@"=> Preview view controller for previous image already exists");
-                return nil;
-            }
-        }
-    }
+//    for (UIViewController *viewController in [pageViewController viewControllers]) {
+//        // Only consider view controllers of the right class!
+//        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
+//            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
+//            // Return if exists
+//            if (imageViewCtrl.imageIndex == currentIndex - 1) {
+//                NSLog(@"=> Preview view controller for previous image already exists");
+//                return imageViewCtrl;
+//            }
+//        }
+//    }
 
     // Retrieve (incomplete) image data
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
@@ -460,15 +460,15 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 }
 
 // Called before a gesture-driven transition begins
-- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
-{
+//- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
+//{
     // Stop loading image if needed
-    ImagePreviewViewController *removedVC = [pageViewController.viewControllers firstObject];
-    if (removedVC.downloadTask.state == 0) {                        // Task active?
-        [removedVC.scrollView.imageView cancelImageDownloadTask];   // Cancel thumbnail download
-        [removedVC.downloadTask cancel];                            // Cancel image file download
-    }
-}
+//    ImagePreviewViewController *removedVC = [pageViewController.viewControllers firstObject];
+//    if (removedVC.downloadTask.state == 0) {                        // Task active?
+//        [removedVC.scrollView.imageView cancelImageDownloadTask];   // Cancel thumbnail download
+//        [removedVC.downloadTask cancel];                            // Cancel image file download
+//    }
+//}
 
 // Called after a gesture-driven transition completes
 -(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
@@ -717,9 +717,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     
     // Delete image/video file and remove observers after dismissing activity view controller
     [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
-        NSLog(@"Activity Type selected: %@", activityType);
+//        NSLog(@"Activity Type selected: %@", activityType);
         if (completed) {
-            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
+//            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
             if (self.imageData.isVideo) {
                 // Delete shared video file & remove observers
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
@@ -730,7 +730,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             }
         } else {
             if (activityType == NULL) {
-                NSLog(@"User dismissed the view controller without making a selection.");
+//                NSLog(@"User dismissed the view controller without making a selection.");
             } else {
                 NSLog(@"Activity was not performed.");
                 if (self.imageData.isVideo)

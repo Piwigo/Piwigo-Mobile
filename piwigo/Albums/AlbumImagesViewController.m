@@ -1441,7 +1441,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
     // Delete image/video files and remove observers after dismissing activity view controller
     [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
-        NSLog(@"Activity Type selected: %@", activityType);
+//        NSLog(@"Activity Type selected: %@", activityType);
         if (completed) {
             NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
             [self hideHUDwithSuccess:YES completion:nil];
