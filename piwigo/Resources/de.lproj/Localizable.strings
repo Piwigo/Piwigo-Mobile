@@ -140,6 +140,7 @@
 "categoryUpload_images" = "Lade Bilder hoch";
 "categoryUpload_subAlbum" = "Erstelle Unter-Album";
 "categoryUpload_defaultAlbum" = "Als Standard-Album festlegen";
+"categoryUpload_defaultSelect" = "Please select the album or sub-album which will become your default album";
 
 // Default album
 "setDefaultCategory_title" = "Standard-Album";
@@ -208,7 +209,7 @@
 "moveCategoryError_message" = "Fehler beim Verschieben Deines Albums";
 
 // Album set image thumbnail
-"categorySelection_select" = "Wähle Album";
+//"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Bild";
 "categorySelection_one" = "Wähle ein Album in dem dieses Bild vorkommt";
 "categorySelection_other" = "oder wähle ein anderes Album für dieses Bild";
@@ -393,6 +394,47 @@
 "videoUploadError_unknown" = "Entschuldigung, das Hochladen des Videos schlug aufgrund eines unbekannten Fehlers während der MP4 Konvertierung fehl. Fehler: %@";
 "videoUploadCancelled_message" = "Das Hochladen des Videos wurde abgebrochen.";
 
+// Image share
+"shareImageMetadata_Title" = "Share Metadata";
+"shareImageMetadata_subTitle1" = "Actions sharing images with private metadata";
+"shareImageMetadata_subTitle2" = "Actions sharing images without private metadata";
+"shareActivityCode_AirDrop" = "Transfer with AirDrop";
+"shareActivityCode_AirDrop>375px" = "Transfer images with AirDrop";
+"shareActivityCode_AssignToContact" = "Assign to Contact";
+"shareActivityCode_AssignToContact>375px" = "Assign image to Contact";
+"shareActivityCode_CopyToPasteboard" = "Copy to Pasteboard";
+"shareActivityCode_CopyToPasteboard>375px" = "Copy images to Pasteboard";
+"shareActivityCode_Mail" = "Post by Email";
+"shareActivityCode_Mail>375px" = "Post images by Email";
+"shareActivityCode_Message" = "Post with Message";
+"shareActivityCode_Message>375px" = "Post images with the Message app";
+"shareActivityCode_Facebook" = "Post to Facebook";
+"shareActivityCode_Facebook>375px" = "Post images to Facebook";
+"shareActivityCode_Messenger" = "Post with Messenger";
+"shareActivityCode_Messenger>375px" = "Post images with the Messenger app";
+"shareActivityCode_Flickr" = "Post to Flickr";
+"shareActivityCode_Flickr>375px" = "Post images to Flickr";
+"shareActivityCode_Instagram" = "Post to Instagram";
+"shareActivityCode_Instagram>375px" = "Post images to Instagram";
+"shareActivityCode_Signal" = "Post with Signal";
+"shareActivityCode_Signal>375px" = "Post images with the Signal app";
+"shareActivityCode_Snapchat" = "Post to Snapchat";
+"shareActivityCode_Snapchat>375px" = "Post images to Snapchat app";
+"shareActivityCode_TencentWeibo" = "Post to TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Post images to TencentWeibo";
+"shareActivityCode_Twitter" = "Post to Twitter";
+"shareActivityCode_Twitter>375px" = "Post images to Twitter";
+"shareActivityCode_Vimeo" = "Post to Vimeo";
+"shareActivityCode_Vimeo>375px" = "Post videos to Vimeo";
+"shareActivityCode_Weibo" = "Post to Weibo";
+"shareActivityCode_Weibo>375px" = "Post images to Weibo";
+"shareActivityCode_WhatsApp" = "Post with WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Post images with the WhatsApp app";
+"shareActivityCode_CameraRoll" = "Save to Camera Roll";
+"shareActivityCode_CameraRoll>375px" = "Save images to Camera Roll";
+"shareActivityCode_Other" = "Share with other apps";
+"shareActivityCode_Other>375px" = "Share images with other apps";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
@@ -439,8 +481,8 @@
 "defaultThumbnailSize" = "Größe";
 "defaultThumbnailSize>320px" = "Miniaturbildergröße";
 "defaultThumbnailSize>414px" = "Standardgröße der Miniaturbilder";
-"defaultThumbnailSizeTitle" = "Standardgröße";
-"defaultThumbnailSizeHeader" = "Bitte wähle eine Miniaturbildgröße";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
 "settings_displayTitles" = "Titel bei Miniaturbildern";
 "settings_displayTitles>320px" = "Titel bei Miniaturbildern anzeigen";
 
@@ -464,14 +506,14 @@
 "defaultImageSize" = "Bilder";
 "defaultImageSize>320px" = "Bildergröße";
 "defaultImageSize>414px" = "Standardgröße der Bilder";
-"defaultImageSizeTitle" = "Standardgröße";
+//"defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "Bitte wähle eine Bildgröße";
 "defaultImageSize_recommended" = " (empfohlen)";
 "defaultSize_disabled" = " (auf Server deaktiviert)";
 "defaultSizeFooter" = "Ausgegraute Größen werden nicht empfohlen oder sind nicht auf dem Piwigo Server verfügbar.";
 
 "settings_shareGPSdata" = "Share Private Metadata";
-"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
+"settings_shareGPSdata>375px" = "Share with Private Metadata";
 
 "imageSizeSquare" = "Quadratisch";
 "imageSizeThumbnail" = "Miniaturbild";
@@ -490,7 +532,7 @@
 "settings_defaultAuthor>320px" = "Autorname";
 "settings_defaultAuthorPlaceholder" = "Autorname";
 "settings_defaultPrivacy" = "Sicherheitsstufe";
-"settings_defaultPrivacy>414px" = "Wer darf die Medien sehen?";
+"settings_defaultPrivacy>414px" = "Please select who will be able to see images";
 "settings_stripGPSdata" = "Private Metadaten entfernen";
 "settings_stripGPSdata>375px" = "Private Metadaten vor dem Hochladen entfernen";
 "settings_photoResize" = "Vor dem Hochladen Größe anpassen";

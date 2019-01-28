@@ -140,6 +140,7 @@
 "categoryUpload_images" = "تحميل الصور";
 "categoryUpload_subAlbum" = "إنشاء ألبوم الفرعية";
 "categoryUpload_defaultAlbum" = "تعيين كافتراضي ألبوم";
+"categoryUpload_defaultSelect" = "Please select the album or sub-album which will become your default album";
 
 // Default album
 "setDefaultCategory_title" = "Default Album";
@@ -208,7 +209,7 @@
 "moveCategoryError_message" = "فشل في نقل الألبوم الخاص بك";
 
 // Album set image thumbnail
-"categorySelection_select" = "Select Album";
+//"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Select the current album for this image";
 "categorySelection_one" = "Select one of the albums containing this image";
 "categorySelection_other" = "or select another album for this image";
@@ -393,6 +394,47 @@
 "videoUploadError_unknown" = "عذرا، أخفق تحميل الفيديو بسبب خطأ غير معروف أثناء عملية التحويل MP4. خطأ:%@";
 "videoUploadCancelled_message" = "تم إلغاء تحميل الفيديو.";
 
+// Image share
+"shareImageMetadata_Title" = "Share Metadata";
+"shareImageMetadata_subTitle1" = "Actions sharing images with private metadata";
+"shareImageMetadata_subTitle2" = "Actions sharing images without private metadata";
+"shareActivityCode_AirDrop" = "Transfer with AirDrop";
+"shareActivityCode_AirDrop>375px" = "Transfer images with AirDrop";
+"shareActivityCode_AssignToContact" = "Assign to Contact";
+"shareActivityCode_AssignToContact>375px" = "Assign image to Contact";
+"shareActivityCode_CopyToPasteboard" = "Copy to Pasteboard";
+"shareActivityCode_CopyToPasteboard>375px" = "Copy images to Pasteboard";
+"shareActivityCode_Mail" = "Post by Email";
+"shareActivityCode_Mail>375px" = "Post images by Email";
+"shareActivityCode_Message" = "Post with Message";
+"shareActivityCode_Message>375px" = "Post images with the Message app";
+"shareActivityCode_Facebook" = "Post to Facebook";
+"shareActivityCode_Facebook>375px" = "Post images to Facebook";
+"shareActivityCode_Messenger" = "Post with Messenger";
+"shareActivityCode_Messenger>375px" = "Post images with the Messenger app";
+"shareActivityCode_Flickr" = "Post to Flickr";
+"shareActivityCode_Flickr>375px" = "Post images to Flickr";
+"shareActivityCode_Instagram" = "Post to Instagram";
+"shareActivityCode_Instagram>375px" = "Post images to Instagram";
+"shareActivityCode_Signal" = "Post with Signal";
+"shareActivityCode_Signal>375px" = "Post images with the Signal app";
+"shareActivityCode_Snapchat" = "Post to Snapchat";
+"shareActivityCode_Snapchat>375px" = "Post images to Snapchat app";
+"shareActivityCode_TencentWeibo" = "Post to TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Post images to TencentWeibo";
+"shareActivityCode_Twitter" = "Post to Twitter";
+"shareActivityCode_Twitter>375px" = "Post images to Twitter";
+"shareActivityCode_Vimeo" = "Post to Vimeo";
+"shareActivityCode_Vimeo>375px" = "Post videos to Vimeo";
+"shareActivityCode_Weibo" = "Post to Weibo";
+"shareActivityCode_Weibo>375px" = "Post images to Weibo";
+"shareActivityCode_WhatsApp" = "Post with WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Post images with the WhatsApp app";
+"shareActivityCode_CameraRoll" = "Save to Camera Roll";
+"shareActivityCode_CameraRoll>375px" = "Save images to Camera Roll";
+"shareActivityCode_Other" = "Share with other apps";
+"shareActivityCode_Other>375px" = "Share images with other apps";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
@@ -439,8 +481,8 @@
 "defaultThumbnailSize" = "‮الحجم";
 "defaultThumbnailSize>320px" = "حجم الصور المصغرة";
 "defaultThumbnailSize>414px" = "الحجم الافتراضي للصور المصغرة";
-"defaultThumbnailSizeTitle" = "الحجم الافتراضي";
-"defaultThumbnailSizeHeader" = "الرجاء تحديد حجم الصورة المصغرة";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
 "settings_displayTitles" = "العناوين على الصور المصغرة";
 "settings_displayTitles>320px" = "عرض العناوين على الصور المصغرة";
 
@@ -464,14 +506,14 @@
 "defaultImageSize" = "الصور";
 "defaultImageSize>320px" = "حجم الصورة";
 "defaultImageSize>414px" = "الحجم الافتراضي للصور";
-"defaultImageSizeTitle" = "حجم افتراضى";
+//"defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "الرجاء تحديد حجم الصورة";
 "defaultImageSize_recommended" = " (موصى به)";
 "defaultSize_disabled" = " (معطل على الخادم)";
 "defaultSizeFooter" = "لا ينصح بأحجام الرمادي أو إنها غير متوفرة على خادم Piwigo.";
 
 "settings_shareGPSdata" = "Share Private Metadata";
-"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
+"settings_shareGPSdata>375px" = "Share with Private Metadata";
 
 "imageSizeSquare" = "مربع";
 "imageSizeThumbnail" = "الصورة المصغرة";
@@ -490,7 +532,7 @@
 "settings_defaultAuthor>320px" = "اسم الكاتب";
 "settings_defaultAuthorPlaceholder" = "اسم الكاتب";
 "settings_defaultPrivacy" = "الخصوصية";
-"settings_defaultPrivacy>414px" = "من يمكنه مشاهدة وسائل الإعلام؟";
+"settings_defaultPrivacy>414px" = "Please select who will be able to see images";
 "settings_stripGPSdata" = "قطاع البيانات الوصفية الخاصة";
 "settings_stripGPSdata>375px" = "جرد البيانات الوصفية الخاصة قبل التحميل";
 "settings_photoResize" = "تغيير الحجم قبل التحميل";

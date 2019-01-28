@@ -140,6 +140,7 @@
 "categoryUpload_images" = "Ladda upp bilder";
 "categoryUpload_subAlbum" = "Skapa underalbum";
 "categoryUpload_defaultAlbum" = "Ange som standardalbum";
+"categoryUpload_defaultSelect" = "Please select the album or sub-album which will become your default album";
 
 // Default album
 "setDefaultCategory_title" = "Standardalbum";
@@ -208,7 +209,7 @@
 "moveCategoryError_message" = "Kunde inte flytta ditt album";
 
 // Album set image thumbnail
-"categorySelection_select" = "Välj Album";
+//"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Välj det aktuella albumet för denna bild";
 "categorySelection_one" = "Välj en av de album som innehåller den här bilden";
 "categorySelection_other" = "eller välj ett annat album för denna bild";
@@ -393,6 +394,47 @@
 "videoUploadError_unknown" = "Tyvärr, uppladdning av video misslyckades p.g.a ett okänt fel under MP4 konvertering. Fel: %@";
 "videoUploadCancelled_message" = "Uppladdning av videon har avbrutits.";
 
+// Image share
+"shareImageMetadata_Title" = "Share Metadata";
+"shareImageMetadata_subTitle1" = "Actions sharing images with private metadata";
+"shareImageMetadata_subTitle2" = "Actions sharing images without private metadata";
+"shareActivityCode_AirDrop" = "Transfer with AirDrop";
+"shareActivityCode_AirDrop>375px" = "Transfer images with AirDrop";
+"shareActivityCode_AssignToContact" = "Assign to Contact";
+"shareActivityCode_AssignToContact>375px" = "Assign image to Contact";
+"shareActivityCode_CopyToPasteboard" = "Copy to Pasteboard";
+"shareActivityCode_CopyToPasteboard>375px" = "Copy images to Pasteboard";
+"shareActivityCode_Mail" = "Post by Email";
+"shareActivityCode_Mail>375px" = "Post images by Email";
+"shareActivityCode_Message" = "Post with Message";
+"shareActivityCode_Message>375px" = "Post images with the Message app";
+"shareActivityCode_Facebook" = "Post to Facebook";
+"shareActivityCode_Facebook>375px" = "Post images to Facebook";
+"shareActivityCode_Messenger" = "Post with Messenger";
+"shareActivityCode_Messenger>375px" = "Post images with the Messenger app";
+"shareActivityCode_Flickr" = "Post to Flickr";
+"shareActivityCode_Flickr>375px" = "Post images to Flickr";
+"shareActivityCode_Instagram" = "Post to Instagram";
+"shareActivityCode_Instagram>375px" = "Post images to Instagram";
+"shareActivityCode_Signal" = "Post with Signal";
+"shareActivityCode_Signal>375px" = "Post images with the Signal app";
+"shareActivityCode_Snapchat" = "Post to Snapchat";
+"shareActivityCode_Snapchat>375px" = "Post images to Snapchat app";
+"shareActivityCode_TencentWeibo" = "Post to TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Post images to TencentWeibo";
+"shareActivityCode_Twitter" = "Post to Twitter";
+"shareActivityCode_Twitter>375px" = "Post images to Twitter";
+"shareActivityCode_Vimeo" = "Post to Vimeo";
+"shareActivityCode_Vimeo>375px" = "Post videos to Vimeo";
+"shareActivityCode_Weibo" = "Post to Weibo";
+"shareActivityCode_Weibo>375px" = "Post images to Weibo";
+"shareActivityCode_WhatsApp" = "Post with WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Post images with the WhatsApp app";
+"shareActivityCode_CameraRoll" = "Save to Camera Roll";
+"shareActivityCode_CameraRoll>375px" = "Save images to Camera Roll";
+"shareActivityCode_Other" = "Share with other apps";
+"shareActivityCode_Other>375px" = "Share images with other apps";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
@@ -439,8 +481,8 @@
 "defaultThumbnailSize" = "Storlek";
 "defaultThumbnailSize>320px" = "Miniatyrbilder";
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
-"defaultThumbnailSizeTitle" = "Standardstorlek";
-"defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
 "settings_displayTitles" = "Titlar på miniatyrbilder";
 "settings_displayTitles>320px" = "Visa titlar på miniatyrbilder";
 
@@ -464,14 +506,14 @@
 "defaultImageSize" = "Bilder";
 "defaultImageSize>320px" = "Bildstorlek";
 "defaultImageSize>414px" = "Standardstorlek för bilder";
-"defaultImageSizeTitle" = "Standardstorlek";
+//"defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "Välj en bildstorlek";
 "defaultImageSize_recommended" = " (rekommenderas)";
 "defaultSize_disabled" = " (inaktiverad på servern)";
 "defaultSizeFooter" = "Utgråade storlekar är inte rekommenderade eller inte tillgänglig på Piwigo server.";
 
 "settings_shareGPSdata" = "Share Private Metadata";
-"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
+"settings_shareGPSdata>375px" = "Share with Private Metadata";
 
 "imageSizeSquare" = "Kvadrat";
 "imageSizeThumbnail" = "Miniatyrbild";
@@ -490,7 +532,7 @@
 "settings_defaultAuthor>320px" = "Författarnamn";
 "settings_defaultAuthorPlaceholder" = "Författarnamn";
 "settings_defaultPrivacy" = "Behörighet";
-"settings_defaultPrivacy>414px" = "Vem kan se dessa media?";
+"settings_defaultPrivacy>414px" = "Please select who will be able to see images";
 "settings_stripGPSdata" = "Rensa privat Metadata";
 "settings_stripGPSdata>375px" = "Rensa privat Metadata före uppladdning";
 "settings_photoResize" = "Skala om före uppladdning";

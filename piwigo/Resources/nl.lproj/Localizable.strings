@@ -140,6 +140,7 @@
 "categoryUpload_images" = "Foto's uploaden";
 "categoryUpload_subAlbum" = "Maak sub-album";
 "categoryUpload_defaultAlbum" = "Stel in als standaard-album";
+"categoryUpload_defaultSelect" = "Please select the album or sub-album which will become your default album";
 
 // Default album
 "setDefaultCategory_title" = "Standaard album";
@@ -208,7 +209,7 @@
 "moveCategoryError_message" = "Verplaatsen van jouw album is mislukt";
 
 // Album set image thumbnail
-"categorySelection_select" = "Selecteer album";
+//"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Selecteer voor deze foto het huidig album";
 "categorySelection_one" = "Selecteer één van de albums met deze afbeelding";
 "categorySelection_other" = "of selecteer een ander album voor deze foto";
@@ -311,7 +312,7 @@
 "downloadingImages" = "Foto's downloaden";
 "downloadingImageInfo" = "Foto-informatie aan het downloaden";
 "downloadingImageInfoForSort" = "Bezig met downloaden van foto-info om te sorteren";
-"downloadingVideo" = "Downloading Video";
+"downloadingVideo" = "Video downloaden";
 
 // Image download — Errors
 "downloadImageFail_title" = "Download mislukt";
@@ -393,6 +394,47 @@
 "videoUploadError_unknown" = "Sorry, het uploaden van de video is mislukt vanwege een onbekende fout tijdens de MP4-conversie. Fout: %@";
 "videoUploadCancelled_message" = "De upload van de video is afgebroken.";
 
+// Image share
+"shareImageMetadata_Title" = "Share Metadata";
+"shareImageMetadata_subTitle1" = "Actions sharing images with private metadata";
+"shareImageMetadata_subTitle2" = "Actions sharing images without private metadata";
+"shareActivityCode_AirDrop" = "Transfer with AirDrop";
+"shareActivityCode_AirDrop>375px" = "Transfer images with AirDrop";
+"shareActivityCode_AssignToContact" = "Assign to Contact";
+"shareActivityCode_AssignToContact>375px" = "Assign image to Contact";
+"shareActivityCode_CopyToPasteboard" = "Copy to Pasteboard";
+"shareActivityCode_CopyToPasteboard>375px" = "Copy images to Pasteboard";
+"shareActivityCode_Mail" = "Post by Email";
+"shareActivityCode_Mail>375px" = "Post images by Email";
+"shareActivityCode_Message" = "Post with Message";
+"shareActivityCode_Message>375px" = "Post images with the Message app";
+"shareActivityCode_Facebook" = "Post to Facebook";
+"shareActivityCode_Facebook>375px" = "Post images to Facebook";
+"shareActivityCode_Messenger" = "Post with Messenger";
+"shareActivityCode_Messenger>375px" = "Post images with the Messenger app";
+"shareActivityCode_Flickr" = "Post to Flickr";
+"shareActivityCode_Flickr>375px" = "Post images to Flickr";
+"shareActivityCode_Instagram" = "Post to Instagram";
+"shareActivityCode_Instagram>375px" = "Post images to Instagram";
+"shareActivityCode_Signal" = "Post with Signal";
+"shareActivityCode_Signal>375px" = "Post images with the Signal app";
+"shareActivityCode_Snapchat" = "Post to Snapchat";
+"shareActivityCode_Snapchat>375px" = "Post images to Snapchat app";
+"shareActivityCode_TencentWeibo" = "Post to TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Post images to TencentWeibo";
+"shareActivityCode_Twitter" = "Post to Twitter";
+"shareActivityCode_Twitter>375px" = "Post images to Twitter";
+"shareActivityCode_Vimeo" = "Post to Vimeo";
+"shareActivityCode_Vimeo>375px" = "Post videos to Vimeo";
+"shareActivityCode_Weibo" = "Post to Weibo";
+"shareActivityCode_Weibo>375px" = "Post images to Weibo";
+"shareActivityCode_WhatsApp" = "Post with WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Post images with the WhatsApp app";
+"shareActivityCode_CameraRoll" = "Save to Camera Roll";
+"shareActivityCode_CameraRoll>375px" = "Save images to Camera Roll";
+"shareActivityCode_Other" = "Share with other apps";
+"shareActivityCode_Other>375px" = "Share images with other apps";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
@@ -439,8 +481,8 @@
 "defaultThumbnailSize" = "Grootte";
 "defaultThumbnailSize>320px" = "Miniatuurgrootte";
 "defaultThumbnailSize>414px" = "Standaardgrootte van miniaturen";
-"defaultThumbnailSizeTitle" = "Standaard grootte";
-"defaultThumbnailSizeHeader" = "Selecteer een miniatuurgrootte";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
 "settings_displayTitles" = "Titels op miniaturen";
 "settings_displayTitles>320px" = "Titels op miniaturen weergeven";
 
@@ -464,14 +506,14 @@
 "defaultImageSize" = "Foto's";
 "defaultImageSize>320px" = "Fotogrootte";
 "defaultImageSize>414px" = "Standaardgrootte van foto's";
-"defaultImageSizeTitle" = "Standaard grootte";
+//"defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "Selecteer de grootte van een foto";
 "defaultImageSize_recommended" = " (aanbevolen)";
 "defaultSize_disabled" = " (uitgeschakeld op de server)";
 "defaultSizeFooter" = "Greysize formaten worden niet geadviseerd of zijn niet beschikbaar op de Piwigo-server.";
 
-"settings_shareGPSdata" = "Share Private Metadata";
-"settings_shareGPSdata>375px" = "Send Private Metadata when Sharing";
+"settings_shareGPSdata" = "Deel privé metadata";
+"settings_shareGPSdata>375px" = "Share with Private Metadata";
 
 "imageSizeSquare" = "Vierkant";
 "imageSizeThumbnail" = "Miniatuurafbeelding";
@@ -490,7 +532,7 @@
 "settings_defaultAuthor>320px" = "Naam van de fotograaf";
 "settings_defaultAuthorPlaceholder" = "Naam van de fotograaf";
 "settings_defaultPrivacy" = "Privacy";
-"settings_defaultPrivacy>414px" = "Hvem kan se dette billede?";
+"settings_defaultPrivacy>414px" = "Please select who will be able to see images";
 "settings_stripGPSdata" = "Verwijder privé metadata";
 "settings_stripGPSdata>375px" = "Verwijder privé metadata vóór het uploaden";
 "settings_photoResize" = "Pas grootte aan vóór de upload";

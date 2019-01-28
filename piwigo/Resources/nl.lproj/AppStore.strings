@@ -8,7 +8,7 @@
 
 "description" = "Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software in de cloud Piwigo (v2.7 of hoger):\n\n• Blader door jouw albums,\n• Maak nieuwe albums,\n• Albums verwijderen, verplaatsen en naam wijzigen,\n• Bewerk, download en verwijder foto's en video's,\n• Kopieer en verplaats afbeeldingen tussen albums,\n• Een foto instellen als albumfoto,\n• Foto's uploaden:\n  - van aanpasbare grootte en kwaliteit,\n  - met beschrijving, fotograaf, labels, EXIF-metadata,\n  - met of zonder GPS-metadata.\n• Upload video's,\n• Deel foto's en video's.\n\nPiwigo stelt je in staat om jouw eigen fotogalerij op het web te maken. Het heeft veel krachtige functies zoals albums, labels, geolocatie, veel niveaus van aanpassing, uploaden door bezoekers, privacy, kalender of statistieken.\n\nPiwigo is gratis en opensource.";
 
-"compatibility" = "Piwigo is ook compatibel met de volgende extensies:\n- Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen \n- piwigo-videojs: voegt video ondersteuning toe";
+"compatibility" = "Piwigo is ook compatibel met de volgende extensies:\n- Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen \n- piwigo-videos: voegt video ondersteuning toe";
 
 "feedback" = "Feedback of vragen?\nPiwigo biedt gratis ondersteuning bij %@ en we horen graag van je.";
 
