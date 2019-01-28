@@ -118,7 +118,7 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate imageActivityItemProviderPreprocessingDidEnd:self];
         });
-        return nil;
+        return self.placeholderItem;
     }
     
     // Retrieve image from downloaded file
@@ -137,7 +137,7 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate imageActivityItemProviderPreprocessingDidEnd:self];
         });
-        return nil;
+        return self.placeholderItem;
     }
     
     // Notify the delegate on the main thread to show how it makes progress.

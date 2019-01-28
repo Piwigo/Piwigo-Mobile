@@ -72,7 +72,7 @@ NSString * const kPiwigoNotificationCancelShareVideo = @"kPiwigoNotificationCanc
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate imageActivityItemProviderPreprocessingDidEnd:self];
         });
-        return nil;
+        return self.placeholderItem;
     }
     
     // Notify the delegate on the main thread to show how it makes progress.
