@@ -15,7 +15,7 @@
 
 @implementation LabelImageTableViewCell
 
--(void)setupWithActivityName:(NSString *)activityName sharingPrivateMetadata:(BOOL)isSharing
+-(void)setupWithActivityName:(NSString *)activityName andEditOption:(int)option
 {
     // General settings
     self.backgroundColor = [UIColor piwigoCellBackgroundColor];
@@ -28,12 +28,24 @@
     self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
 
     // Change image according to state
-    if (isSharing) {
-        self.rightAddImage.hidden = YES;
-        self.rightRemoveImage.hidden = NO;
-    } else {
-        self.rightAddImage.hidden = NO;
-        self.rightRemoveImage.hidden = YES;
+    switch (option) {
+        case kPiwigoActionCellEditNone:
+            self.rightAddImage.hidden = YES;
+            self.rightRemoveImage.hidden = YES;
+            break;
+            
+        case kPiwigoActionCellEditAdd:
+            self.rightAddImage.hidden = NO;
+            self.rightRemoveImage.hidden = YES;
+            break;
+            
+        case kPiwigoActionCellEditRemove:
+            self.rightAddImage.hidden = YES;
+            self.rightRemoveImage.hidden = NO;
+            break;
+            
+        default:
+            break;
     }
 }
 

@@ -8,12 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    kPiwigoActionCellEditNone,
+    kPiwigoActionCellEditAdd,
+    kPiwigoActionCellEditRemove
+} kPiwigoEditOption;
+
 @interface LabelImageTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *leftLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *rightAddImage;
 @property (weak, nonatomic) IBOutlet UIImageView *rightRemoveImage;
 
--(void)setupWithActivityName:(NSString *)activity sharingPrivateMetadata:(BOOL)isSharing;
+-(void)setupWithActivityName:(NSString *)activity andEditOption:(int)option;
 
 @end

@@ -15,6 +15,8 @@
 @property (nonatomic, strong) UITableView *privacyTableView;
 @property (nonatomic, strong) NSArray *activitiesSharingMetadata;
 @property (nonatomic, strong) NSArray *activitiesNotSharingMetadata;
+@property (nonatomic, strong) UIBarButtonItem *editBarButton;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
 
 @end
 
@@ -38,6 +40,10 @@
         [self.privacyTableView registerNib:[UINib nibWithNibName:@"LabelImageTableViewCell" bundle:nil] forCellReuseIdentifier:@"LabelImageTableViewCell"];
         [self.view addSubview:self.privacyTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.privacyTableView]];
+        
+        // Buttons
+        self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(startEditingOptions)];
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(stopEditingOptions)];
         
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -76,6 +82,9 @@
 {
     [super viewWillAppear:animated];
     
+    // Add Edit button
+    [self.navigationItem setRightBarButtonItem:self.editBarButton animated:NO];
+
     // Prepare data source
     NSMutableArray *activitiesSharingMetadata = [NSMutableArray new];
     NSMutableArray *activitiesNotSharingMetadata = [NSMutableArray new];
@@ -192,6 +201,30 @@
         // Reload table view
         [self.privacyTableView reloadData];
     } completion:nil];
+}
+
+-(void)startEditingOptions
+{
+    // Hide back button
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+    
+    // Replace "Edit" button with "Done" button
+    [self.navigationItem setRightBarButtonItem:self.doneBarButton animated:YES];
+
+    // Refresh table to display [+] and [-] buttons
+    [self.privacyTableView reloadData];
+}
+
+-(void)stopEditingOptions
+{
+    // Replace "Done" button with "Edit" button
+    [self.navigationItem setRightBarButtonItem:self.editBarButton animated:YES];
+    
+    // Refresh table to remove [+] and [-] buttons
+    [self.privacyTableView reloadData];
+
+    // Show back button
+    [self.navigationItem setHidesBackButton:NO animated:YES];
 }
 
 
@@ -346,19 +379,24 @@
         cell = [LabelImageTableViewCell new];
     }
 
-    NSString *activity = nil;
     CGFloat width = self.view.bounds.size.width;
     switch (indexPath.section) {
         case 0:
-            activity = [self.activitiesSharingMetadata objectAtIndex:indexPath.row];
-            [cell setupWithActivityName:[[Model sharedInstance] getNameForShareActivity:activity forWidth:width] sharingPrivateMetadata:YES];
+        {
+            NSString *activity = [self.activitiesSharingMetadata objectAtIndex:indexPath.row];
+            NSString *name = [[Model sharedInstance] getNameForShareActivity:activity forWidth:width];
+            int option = kPiwigoActionCellEditRemove * [self.navigationItem hidesBackButton];
+            [cell setupWithActivityName:name andEditOption:option];
             break;
-            
+        }
         case 1:
-            activity = [self.activitiesNotSharingMetadata objectAtIndex:indexPath.row];
-            [cell setupWithActivityName:[[Model sharedInstance] getNameForShareActivity:activity forWidth:width] sharingPrivateMetadata:NO];
+        {
+            NSString *activity = [self.activitiesNotSharingMetadata objectAtIndex:indexPath.row];
+            NSString *name = [[Model sharedInstance] getNameForShareActivity:activity forWidth:width];
+            int option = kPiwigoActionCellEditAdd * [self.navigationItem hidesBackButton];
+            [cell setupWithActivityName:name andEditOption:option];
             break;
-            
+        }
         default:
             break;
     }
@@ -370,7 +408,7 @@
 
 -(BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    return TRUE;
+    return [self.navigationItem hidesBackButton];
 }
 
 
