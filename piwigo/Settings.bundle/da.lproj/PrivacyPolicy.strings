@@ -6,17 +6,17 @@
   Copyright © 2018 Piwigo.org. All rights reserved.
 */
 
-"privacy_text" = "Piwigo-Android og Piwigo-Mobile er frit tilgængelige og open source-klientapplikationer til Piwigo. Denne privatlivspolitik gælder disse Android- og iOS-specifikke applikationer, der forbinder sig med Piwigo-websteder, som ikke kontrolleres af forfatterne. Se de tilhørende websteds privatlivspolitik, før der opsættes en konto i Piwigo-Android eller Piwigo-Mobile, for at kunne forbinde sig til et galleri.\n\nSenest opdateret den October 25, 2018";
+"privacy_text" = "Piwigo-Android og Piwigo-Mobile er frit tilgængelige og open source-klientapplikationer til Piwigo. Denne privatlivspolitik gælder disse Android- og iOS-specifikke applikationer, der forbinder til Piwigo-websteder, som ikke kontrolleres af forfatterne. Se de tilhørende websteders privatlivspolitik, før der opsættes en konto i Piwigo-Android eller Piwigo-Mobile, før forbindelse til et galleri.\n\nSenest opdateret den October 25, 2018";
 
-"intro_title" = "Introduction";
+"intro_title" = "Introduktion";
 
-"intro_text1" = "Udviklerne af Piwigo-Android og Piwigo-Mobile, vi (eller \"os\" eller \"vores\") respekterer vores brugeres (\"bruger\" eller \"du\") privatliv. Denne privatlivspolitik forklarer hvordan vi indsamler, anvender, offentlggører og beskytter dine oplysninger, når du anvender vores mobilapplikationer (\"applikationerne\"). Vores navne findes i git-arkivets metadata og i Acknowledgements-afsnittet i applikationen.";
+"intro_text1" = "Udviklerne af Piwigo-Android og Piwigo-Mobile, vi (eller \"os\" eller \"vores\") respekterer vores brugeres (\"bruger\" eller \"du\") privatliv. Denne privatlivspolitik beskriver hvordan vi indsamler, anvender, offentlggører og beskytter dine oplysninger, når du anvender vores mobilapplikationer (\"applikationerne\"). Vores navne findes i git-arkivets metadata og i Acknowledgements-afsnittet i applikationen.";
 
 "intro_text2" = "Læs omhyggeligt disse privatlivsregler Hvis du ikke er enig i betingelserne i denne privatlivspolitik, så bedes du undlade at benytte applikationerne.";
 
 "intro_text3" = "Vi forbeholder os retten til at foretage ændringer af denne privatlivspolitik på ethvert tidspunkt og af enhver grund. Vi gør dig opmærksom på alle ændringer, ved at opdatere denne privatlivspolitiks \"Senest opdateret\"-dato.";
 
-"intro_text4" = "Du opfordres til jævnligt at gennemse denne privatlivspolitik, for at være ajour med opdateringer. Du anses for at være blevet gjort opmærksom på, vil være genstand for, og anses for at have accepteret ændringerne i enhver revideret privatlivspolitik, ved din fortsatte anvendelse af applikatioerne efter den data, hvor en sådan revideret privatlivspoltik offentliggøres.";
+"intro_text4" = "Du opfordres til jævnligt at gennemse denne privatlivspolitik, for at være ajour med opdateringer. Du anses for at være blevet gjort opmærksom på, vil være genstand for, og anses for at have accepteret ændringerne i enhver revideret privatlivspolitik, ved din fortsatte anvendelse af applikatioerne efter den dato, hvor en sådan revideret privatlivspoltik offentliggøres.";
 
 "intro_text5" = "Denne privatlivspolitik gælder ikke tredjeparters online-/mobilbutikker, hvorfra du installerer applikationerne eller foretager betalinger, herunder alle virtuelle genstande i apps, hvilke også kan indsamle og anvende data om dig. Vi er ikke ansvarlige for nogen af de data, der indsamles fra nogen tredjeparter.";
 
@@ -24,7 +24,7 @@
 
 "what_subTitle1" = "Piwigo-galleridata";
 
-"what_subText1a" = "Brugerkontooplysninger opbevares af applikationerne, og overføres til de opsatte websteder, for at kunne forbinde sig til et eller flere Piwigo-gallerier. Desuden, alle fotografier, videoer og andre filer, som er udvalgt til download/upload, og det indtastede indhold, opbevares, behandles og overføres til det opsatte galleriwebsted.";
+"what_subText1a" = "Brugerkontooplysninger opbevares af applikationerne, og overføres til de opsatte websteder, for at kunne forbinde til et eller flere Piwigo-gallerier. Desuden vil, alle fotografier, videoer og andre filer, som er udvalgt til download/upload, og det indtastede indhold, opbevares, behandles og overføres til det konfigurerede galleriwebsted.";
 
 "what_subTitle2" = "Oplysninger om geografisk placering";
 
@@ -32,7 +32,7 @@
 
 "what_subTitle3" = "Adgang til mobilenhed";
 
-"what_subText3a" = "Applikationerne kan bede om adgang til visse funktioner på din mobilenhed, herunder din mobilenheds fotobibliotek og filopbevaring, Android AccountManager, Apple Keychain, fremmede og skybaserede opbevaringsmapper, geografisk placering, samt andre funktioner. Hvis du ønsker at ændre din adgang eller tilladelser, kan du gøre dit i din enheds indstillinger, men vær opmærksom på at nogle adgange er nødvendige for at kunne uploade mediefiler fra din mobilenhed til Piwigo-galleriet eller for at kunne gemme mediefiler fra Piwigo på din mobilenhed.";
+"what_subText3a" = "Applikationerne kan bede om adgang til visse funktioner på din mobilenhed, herunder din mobilenhedens fotobibliotek og filopbevaring, Android AccountManager, Apple Keychain, fremmede og skybaserede opbevaringsmapper, geografisk placering, samt andre funktioner. Hvis du ønsker at ændre din adgang eller tilladelser, kan du gøre dit i din enheds indstillinger, men vær opmærksom på at nogle adgange er nødvendige for at kunne uploade mediefiler fra din mobilenhed til Piwigo-galleriet eller for at kunne gemme mediefiler fra Piwigo på din mobilenhed.";
 
 "what_subTitle4" = "Mobilenhedsdata";
 
@@ -42,7 +42,7 @@
 
 "why_text1" = "Applikationerne opbevarer kun data med et formål: Adgang til et Piwigo-galleri, tilgængeligt fra en fjern webserver. Der indsamles, overføres eller opbevares, ingen data der ikke har med det tilsigtige formål at gøre.";
 
-"why_text2" = "Når du tilgår applikationerne, indsamles ikke personlige oplysninger ved hjælp af sporingsteknologi (tracking). Vi anvender kun cachingmekanismer for at skræddersy applikationerne og for at forbedre din brugeroplevelse. Du kan deaktivere eller tømme cacher, men vær opmærksom på at sådanne handler kan påvirke applikationernes tilgængelig og funktionsdygtighed.";
+"why_text2" = "Når du tilgår applikationerne, indsamles ikke personlige oplysninger ved hjælp af sporingsteknologi (tracking). Vi anvender kun cachingmekanismer for at skræddersy applikationerne og for at forbedre din brugeroplevelse. Du kan deaktivere eller tømme cacher, men vær opmærksom på at dette kan påvirke applikationernes tilgængelig og funktionsdygtighed.";
 
 "how_title" = "Hvordan beskyttes data?";
 
@@ -52,7 +52,7 @@
 
 "security_title" = "Dine oplysningers sikkerhed";
 
-"security_text" = "Vi anvender tekniske sikkerhedsforanstaltninger som en hjælp til at beskytte dine private oplysninger. Om end vi har truffet rimelige foranstaltninger for at sikre de personlige oplysninger, som du afgiver til os, bør du være opmærksom på at på trods af vores arbejde, er ingen sikkerhedsforanstaltninger perfekte eller uigennemtrængelige, og ingen anden metode til datatransmission kan garantere imod opsnapning eller anden form for misbrug. Alle oplysninger der gøres tilgængelige online, risikerer at blive opsnappet og misbrug af uautoriserede parter. Derfor kan vi ikke garantere fuldstændig sikkerhed, hvis du afgiver personlige oplysninger.";
+"security_text" = "Vi anvender tekniske sikkerhedsforanstaltninger som en hjælp til at beskytte dine private oplysninger. Selv om vi har truffet rimelige foranstaltninger for at sikre de personlige oplysninger, som du afgiver til os, bør du være opmærksom på at på trods af vores arbejde, er ingen sikkerhedsforanstaltninger perfekte eller uigennemtrængelige, og ingen anden metode til datatransmission kan garantere imod opsnapning eller anden form for misbrug. Alle oplysninger der gøres tilgængelige online, risikerer at blive opsnappet og misbrug af uautoriserede parter. Derfor kan vi ikke garantere fuldstændig sikkerhed, hvis du afgiver personlige oplysninger.";
 
 "contact_title" = "Kontakt os";
 

@@ -8,7 +8,7 @@
 
 "privacy_text" = "Piwigo-Android and Piwigo-Mobile are free, libre and open source client applications for Piwigo galleries. This privacy policy applies to these native Android and iOS applications, connecting to Piwigo sites which are out of the control of the authors. Check the privacy policy of the corresponding sites before configuring an account in Piwigo-Android or Piwigo-Mobile to connect to a gallery.\n\nLast updated October 25, 2018";
 
-"intro_title" = "Introduction";
+"intro_title" = "Wprowadzenie";
 
 "intro_text1" = "Developers of Piwigo-Android and Piwigo-Mobile, we (or “us” or “our”) respect the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile applications (the “Applications”). Our names can be extracted from the meta data in the git repositories and the Acknowledgements section within the Applications.";
 
@@ -54,9 +54,9 @@
 
 "security_text" = "We use technical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable, and no method of data transmission can be guaranteed against any interception or other type of misuse. Any information disclosed online is vulnerable to interception and misuse by unauthorized parties. Therefore, we cannot guarantee complete security if you provide personal information.";
 
-"contact_title" = "Contact us";
+"contact_title" = "Skontaktuj się z nami";
 
-"contact_text" = "If you have questions or comments about this Privacy Policy, please contact us at:";
+"contact_text" = "Jeśli masz pytania lub komentarze dotyczące tej polityki prywatności, skontaktuj się z nami:";
 
 "contact_address" = "Piwigo, 42 rue des Vignes, 21800 Quetigny (France)";
 
