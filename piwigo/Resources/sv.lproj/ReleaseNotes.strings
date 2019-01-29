@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.0_text" = "Wersja 2.3\n\n• Dela bilder och videoklipp\n• Zwiększyć limity rozmiaru pamięci podręcznej\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
+"v2.3.0_text" = "Version 2.3\n\n• Dela bilder och videoklipp\n• Öka gränsvärdena för cache-storlek\n• Mindre buggfixar och gränssnittsförbättring\n• Förbättrade översättningar";
 
 "v2.2.7_text" = "Version 2.2.7\n29 december 2018\n\n• Mindre buggfixar och förbättring av gränssnittet\n• Förbättrade översättningar";
 
