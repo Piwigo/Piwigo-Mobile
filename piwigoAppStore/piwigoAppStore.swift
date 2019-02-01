@@ -311,7 +311,7 @@ class piwigoAppStore: XCTestCase {
         snapshot("Image4")
         
         // Screenshot #5: upload view
-        app.navigationBars["Castle"].buttons.element(boundBy: 0).tap()
+        app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2);                       // Leave time for animation
         app.buttons["add"].tap();
         snapshot("Image5")
