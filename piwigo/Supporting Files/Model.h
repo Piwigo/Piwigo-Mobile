@@ -14,6 +14,13 @@ FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
 FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
 FOUNDATION_EXPORT NSTimeInterval const k3WeeksInDays;
 
+FOUNDATION_EXPORT NSString *kPiwigoActivityTypeMessenger;
+FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostInstagram;
+FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToSignal;
+FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToSnapchat;
+FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToWhatsApp;
+FOUNDATION_EXPORT NSString *kPiwigoActivityTypeOther;
+
 @class PHPhotoLibrary;
 
 typedef enum {
@@ -80,9 +87,27 @@ typedef enum {
 @property (nonatomic, assign) NSInteger defaultThumbnailSize;
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
-// Default image preview size
+// Default image settings
 @property (nonatomic, assign) BOOL didOptimiseImagePreviewSize;
 @property (nonatomic, assign) NSInteger defaultImagePreviewSize;
+@property (nonatomic, assign) BOOL shareMetadataTypeAirDrop;
+@property (nonatomic, assign) BOOL shareMetadataTypeAssignToContact;
+@property (nonatomic, assign) BOOL shareMetadataTypeCopyToPasteboard;
+@property (nonatomic, assign) BOOL shareMetadataTypeMail;
+@property (nonatomic, assign) BOOL shareMetadataTypeMessage;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToFacebook;
+@property (nonatomic, assign) BOOL shareMetadataTypeMessenger;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToFlickr;
+@property (nonatomic, assign) BOOL shareMetadataTypePostInstagram;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToSignal;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToSnapchat;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToTencentWeibo;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToTwitter;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToVimeo;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToWeibo;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToWhatsApp;
+@property (nonatomic, assign) BOOL shareMetadataTypeSaveToCameraRoll;
+@property (nonatomic, assign) BOOL shareMetadataTypeOther;
 
 // Default image upload settings
 @property (nonatomic, strong) NSString *defaultAuthor;
@@ -108,6 +133,7 @@ typedef enum {
 // Request help for translating Piwigo every month or so
 @property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;
 
--(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
+-(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
+-(NSString *)getNameForShareActivity:(NSString *)activity forWidth:(CGFloat)width;
 
 @end

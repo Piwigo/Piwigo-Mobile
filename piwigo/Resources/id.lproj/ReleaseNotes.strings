@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.7_text" = "Versi 2.2.7\n\n• Perbaikan bug minor dan perbaikan antarmuka\n• Peningkatan terjemahan";
+"v2.3.0_text" = "Versi 2.3\n\n• Bagikan foto dan video\n• Meningkatkan batas ukuran cache\n• Perbaikan bug minor dan perbaikan antarmuka\n• Peningkatan terjemahan";
+
+"v2.2.7_text" = "Versi 2.2.7\n29 Desember 2018\n\n• Perbaikan bug minor dan perbaikan antarmuka\n• Peningkatan terjemahan";
 
 "v2.2.6_text" = "Versi 2.2.6\n20 Desember 2018\n\n• Peningkatan terjemahan dan kompatibilitas iOS 12\n• Perbaikan bug minor dan perbaikan antarmuka\n• Terjemahan Italia";
 

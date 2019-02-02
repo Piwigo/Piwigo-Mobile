@@ -43,6 +43,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
+                            ofMinimumSize:(NSInteger)minSize
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
@@ -56,5 +57,9 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                             forSort:(NSString*)sort
                                    ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
                                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSMutableDictionary *)metadata;
++(NSMutableDictionary *)fixMetadata:(NSMutableDictionary *)metadata ofImage:(UIImage*)image;
++(NSData*)writeMetadata:(NSDictionary*)metadata intoImageData:(NSData *)imageData;
 
 @end

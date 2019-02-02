@@ -12,8 +12,6 @@
 
 @property (nonatomic, strong) UILabel *rightLabel;
 
-@property (nonatomic, strong) NSLayoutConstraint *leftLabelWidthConstraint;
-
 @end
 
 @implementation LabelTableViewCell
@@ -80,13 +78,6 @@
 	_rightText = rightText;
 	
 	self.rightLabel.text = _rightText;
-}
-
--(void)setLeftLabelWidth:(CGFloat)leftLabelWidth
-{
-	_leftLabelWidth = leftLabelWidth;
-	
-	self.leftLabelWidthConstraint.constant = leftLabelWidth;
 }
 
 -(void)prepareForReuse

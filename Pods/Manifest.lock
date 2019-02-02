@@ -19,7 +19,7 @@ PODS:
   - SAMKeychain (1.5.3)
 
 DEPENDENCIES:
-  - AFNetworking (~> 3.2)
+  - AFNetworking (~> 3.2.1)
   - MBProgressHUD (~> 1.1.0)
   - MGSwipeTableCell
   - SAMKeychain
@@ -37,6 +37,6 @@ SPEC CHECKSUMS:
   MGSwipeTableCell: dc4eca3212ed38a563b27d6aa7b3c01ce656c1e2
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
 
-PODFILE CHECKSUM: 63a1f0e7682300e5b8514f83c7edeb8e91fa234d
+PODFILE CHECKSUM: c5cd39a614d6e8e7c29203c117bf5d0c71895d23
 
 COCOAPODS: 1.5.3

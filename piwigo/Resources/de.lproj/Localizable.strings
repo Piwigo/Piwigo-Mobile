@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Laden…";
 "completeHUD_label" = "Abgeschlossen";
+"errorHUD_label" = "Fehler";
 
 // Upload rights
 "uploadRights_title" = "Erforderliche Rechte zum Hochladen benötigt";
@@ -139,6 +140,7 @@
 "categoryUpload_images" = "Lade Bilder hoch";
 "categoryUpload_subAlbum" = "Erstelle Unter-Album";
 "categoryUpload_defaultAlbum" = "Als Standard-Album festlegen";
+"categoryUpload_defaultSelect" = "Bitte wählen Sie ein Album oder Unter-Album das Ihr Standard Fotoalbum werden soll";
 
 // Default album
 "setDefaultCategory_title" = "Standard-Album";
@@ -207,7 +209,7 @@
 "moveCategoryError_message" = "Fehler beim Verschieben Deines Albums";
 
 // Album set image thumbnail
-"categorySelection_select" = "Wähle Album";
+//"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Bild";
 "categorySelection_one" = "Wähle ein Album in dem dieses Bild vorkommt";
 "categorySelection_other" = "oder wähle ein anderes Album für dieses Bild";
@@ -310,6 +312,7 @@
 "downloadingImages" = "Bilder herunterladen";
 "downloadingImageInfo" = "Bildinformationen herunterladen";
 "downloadingImageInfoForSort" = "Bildinformationen für Sortierung herunterladen";
+"downloadingVideo" = "Video wird heruntergeladen";
 
 // Image download — Errors
 "downloadImageFail_title" = "Herunterladen fehlgeschlagen";
@@ -391,6 +394,47 @@
 "videoUploadError_unknown" = "Entschuldigung, das Hochladen des Videos schlug aufgrund eines unbekannten Fehlers während der MP4 Konvertierung fehl. Fehler: %@";
 "videoUploadCancelled_message" = "Das Hochladen des Videos wurde abgebrochen.";
 
+// Image share
+"shareImageMetadata_Title" = "Metadaten teilen";
+"shareImageMetadata_subTitle1" = "Aktionen teilen Bilder mit privaten Metadaten";
+"shareImageMetadata_subTitle2" = "Aktionen Bilder ohne privaten Metadaten teilen";
+"shareActivityCode_AirDrop" = "Über AirDrop teilen";
+"shareActivityCode_AirDrop>375px" = "Bilder mit AirDrop übertragen";
+"shareActivityCode_AssignToContact" = "Kontakt zuweisen";
+"shareActivityCode_AssignToContact>375px" = "Bild Kontakt zuweisen";
+"shareActivityCode_CopyToPasteboard" = "In Zwischenablage kopieren";
+"shareActivityCode_CopyToPasteboard>375px" = "Bild in Zwischenablage kopieren";
+"shareActivityCode_Mail" = "Über E-Mail teilen";
+"shareActivityCode_Mail>375px" = "Bild über E-Mail teilen";
+"shareActivityCode_Message" = "Über Nachricht teilen";
+"shareActivityCode_Message>375px" = "Bild über Nachrichten App teilen";
+"shareActivityCode_Facebook" = "Über Facebook teilen";
+"shareActivityCode_Facebook>375px" = "Bild über Facebook teilen";
+"shareActivityCode_Messenger" = "Über Messenger teilen";
+"shareActivityCode_Messenger>375px" = "Bild über Messenger App teilen";
+"shareActivityCode_Flickr" = "Über Flickr teilen";
+"shareActivityCode_Flickr>375px" = "Bild über Flickr teilen";
+"shareActivityCode_Instagram" = "Über Instragram teilen";
+"shareActivityCode_Instagram>375px" = "Billd über Instragram teilen";
+"shareActivityCode_Signal" = "Über Signal teilen";
+"shareActivityCode_Signal>375px" = "Bild über Signal App teilen";
+"shareActivityCode_Snapchat" = "Über Snapchat teilen";
+"shareActivityCode_Snapchat>375px" = "Bild über Snapchat App teilen";
+"shareActivityCode_TencentWeibo" = "Über TencentWeibo teilen";
+"shareActivityCode_TencentWeibo>375px" = "Bild über TencentWeibo teilen";
+"shareActivityCode_Twitter" = "Über Twitter teilen";
+"shareActivityCode_Twitter>375px" = "Bild über Twitter teilen";
+"shareActivityCode_Vimeo" = "Über Vimeo teilen";
+"shareActivityCode_Vimeo>375px" = "Video über Vimeo teilen";
+"shareActivityCode_Weibo" = "Über Weibo teilen";
+"shareActivityCode_Weibo>375px" = "Bilder über Weibo teilen";
+"shareActivityCode_WhatsApp" = "Über WhatsApp teilen";
+"shareActivityCode_WhatsApp>375px" = "Bilder über WhatsApp App teilen";
+"shareActivityCode_CameraRoll" = "In der Fotos App speichern";
+"shareActivityCode_CameraRoll>375px" = "Bilder in der Fotos App speichern";
+"shareActivityCode_Other" = "Mit anderen Apps teilen";
+"shareActivityCode_Other>375px" = "Bilder mit anderen Apps teilen";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
@@ -407,7 +451,7 @@
 "localAlbums_photosNnil_msg" = "Es gibt ein Problem beim Lesen der lokalen Foto Bibliothek.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Konnte die lokale Foto Bibliothek nicht öffnen. Bitte gehe in die Einstellungen und ermögliche den Zugriff für Piwigo.";
+"localAlbums_photosNotAuthorized_msg" = "Konnte die lokale Foto Bibliothek nicht öffnen. Bitte gehen Sie in die Einstellungen und ermöglichen den Zugriff für Piwigo.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -437,8 +481,8 @@
 "defaultThumbnailSize" = "Größe";
 "defaultThumbnailSize>320px" = "Miniaturbildergröße";
 "defaultThumbnailSize>414px" = "Standardgröße der Miniaturbilder";
-"defaultThumbnailSizeTitle" = "Standardgröße";
-"defaultThumbnailSizeHeader" = "Bitte wähle eine Miniaturbildgröße";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Bitte wählen Sie eine Miniaturbildgröße";
 "settings_displayTitles" = "Titel bei Miniaturbildern";
 "settings_displayTitles>320px" = "Titel bei Miniaturbildern anzeigen";
 
@@ -462,11 +506,14 @@
 "defaultImageSize" = "Bilder";
 "defaultImageSize>320px" = "Bildergröße";
 "defaultImageSize>414px" = "Standardgröße der Bilder";
-"defaultImageSizeTitle" = "Standardgröße";
-"defaultImageSizeHeader" = "Bitte wähle eine Bildgröße";
+//"defaultImageSizeTitle" = "Default Size";
+"defaultImageSizeHeader" = "Bitte wählen Sie eine Bildgröße";
 "defaultImageSize_recommended" = " (empfohlen)";
 "defaultSize_disabled" = " (auf Server deaktiviert)";
 "defaultSizeFooter" = "Ausgegraute Größen werden nicht empfohlen oder sind nicht auf dem Piwigo Server verfügbar.";
+
+"settings_shareGPSdata" = "Private Metadaten teilen";
+"settings_shareGPSdata>375px" = "Mit privaten Metadaten teilen";
 
 "imageSizeSquare" = "Quadratisch";
 "imageSizeThumbnail" = "Miniaturbild";
@@ -485,7 +532,7 @@
 "settings_defaultAuthor>320px" = "Autorname";
 "settings_defaultAuthorPlaceholder" = "Autorname";
 "settings_defaultPrivacy" = "Sicherheitsstufe";
-"settings_defaultPrivacy>414px" = "Wer darf die Medien sehen?";
+"settings_defaultPrivacy>414px" = "Bitte wählen Sie, wer in der Lage sein soll, Bilder zu sehen";
 "settings_stripGPSdata" = "Private Metadaten entfernen";
 "settings_stripGPSdata>375px" = "Private Metadaten vor dem Hochladen entfernen";
 "settings_photoResize" = "Vor dem Hochladen Größe anpassen";

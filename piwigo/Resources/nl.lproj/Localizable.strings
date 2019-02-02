@@ -10,7 +10,7 @@
 // ===========================================================================
 // Tab bar
 
-"tabBar_albums" = "Tabtoets-albums";
+"tabBar_albums" = "Albums";
 "tabBar_upload" = "Uploaden";
 "tabBar_preferences" = "Voorkeuren";
 
@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Bezig met laden…";
 "completeHUD_label" = "Klaar";
+"errorHUD_label" = "Fout";
 
 // Upload rights
 "uploadRights_title" = "Upload-rechten nodig";
@@ -139,6 +140,7 @@
 "categoryUpload_images" = "Foto's uploaden";
 "categoryUpload_subAlbum" = "Maak sub-album";
 "categoryUpload_defaultAlbum" = "Stel in als standaard-album";
+"categoryUpload_defaultSelect" = "Selecteer a. u. b. het album of sub-album dat je standaard album zal worden";
 
 // Default album
 "setDefaultCategory_title" = "Standaard album";
@@ -207,7 +209,7 @@
 "moveCategoryError_message" = "Verplaatsen van jouw album is mislukt";
 
 // Album set image thumbnail
-"categorySelection_select" = "Selecteer album";
+//"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Selecteer voor deze foto het huidig album";
 "categorySelection_one" = "Selecteer één van de albums met deze afbeelding";
 "categorySelection_other" = "of selecteer een ander album voor deze foto";
@@ -310,6 +312,7 @@
 "downloadingImages" = "Foto's downloaden";
 "downloadingImageInfo" = "Foto-informatie aan het downloaden";
 "downloadingImageInfoForSort" = "Bezig met downloaden van foto-info om te sorteren";
+"downloadingVideo" = "Video downloaden";
 
 // Image download — Errors
 "downloadImageFail_title" = "Download mislukt";
@@ -391,6 +394,47 @@
 "videoUploadError_unknown" = "Sorry, het uploaden van de video is mislukt vanwege een onbekende fout tijdens de MP4-conversie. Fout: %@";
 "videoUploadCancelled_message" = "De upload van de video is afgebroken.";
 
+// Image share
+"shareImageMetadata_Title" = "Deel metadata";
+"shareImageMetadata_subTitle1" = "Handelingen met gedeelde foto's met persoonlijke metada";
+"shareImageMetadata_subTitle2" = "Handelingen met gedeelde foto's zonder persoonlijke metada";
+"shareActivityCode_AirDrop" = "Verzenden met AirDrop";
+"shareActivityCode_AirDrop>375px" = "Verzend foto' s met AirDrop";
+"shareActivityCode_AssignToContact" = "Toewijzen aan contact";
+"shareActivityCode_AssignToContact>375px" = "Wijs foto toe aan contact";
+"shareActivityCode_CopyToPasteboard" = "Kopieer naar plakbord";
+"shareActivityCode_CopyToPasteboard>375px" = "Kopieer foto's naar plakbord";
+"shareActivityCode_Mail" = "Verstuur per email";
+"shareActivityCode_Mail>375px" = "Verstuur foto's per email";
+"shareActivityCode_Message" = "Verstuur met Message";
+"shareActivityCode_Message>375px" = "Verstuur foto's met de Message app";
+"shareActivityCode_Facebook" = "Verstuur naar Facebook";
+"shareActivityCode_Facebook>375px" = "Verstuur foto's naar Facebook";
+"shareActivityCode_Messenger" = "Verstuur met Messenger";
+"shareActivityCode_Messenger>375px" = "Verstuur met de Messenger app";
+"shareActivityCode_Flickr" = "Verstuur naar Flickr";
+"shareActivityCode_Flickr>375px" = "Verstuur foto's naar Flickr";
+"shareActivityCode_Instagram" = "Verstuur naar Instagram";
+"shareActivityCode_Instagram>375px" = "Verstuur foto's naar Instagram";
+"shareActivityCode_Signal" = "Verstuur met Signal";
+"shareActivityCode_Signal>375px" = "Verstuur foto's met de Signal app";
+"shareActivityCode_Snapchat" = "Verstuur naar Snapchat";
+"shareActivityCode_Snapchat>375px" = "Verstuur foto's met de Snapchatt app";
+"shareActivityCode_TencentWeibo" = "Verstuur met TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Verstuur foto's naar TencentWeibo";
+"shareActivityCode_Twitter" = "Verstuur naar Twitter";
+"shareActivityCode_Twitter>375px" = "Verstuur foto's naar Twitter";
+"shareActivityCode_Vimeo" = "Verstuur naar Vimeo";
+"shareActivityCode_Vimeo>375px" = "Verstuur foto's naar Vimeo";
+"shareActivityCode_Weibo" = "Verstuur naar Weibo";
+"shareActivityCode_Weibo>375px" = "Verstuur foto's naar Weibo";
+"shareActivityCode_WhatsApp" = "Verstuur met WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Verstuur foto's met de WhatsApp app";
+"shareActivityCode_CameraRoll" = "Save naar Camera Roll";
+"shareActivityCode_CameraRoll>375px" = "Save foto's naar Camero Roll";
+"shareActivityCode_Other" = "Deel met andere apps";
+"shareActivityCode_Other>375px" = "Deel foto's met andere apps";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
@@ -437,8 +481,8 @@
 "defaultThumbnailSize" = "Grootte";
 "defaultThumbnailSize>320px" = "Miniatuurgrootte";
 "defaultThumbnailSize>414px" = "Standaardgrootte van miniaturen";
-"defaultThumbnailSizeTitle" = "Standaard grootte";
-"defaultThumbnailSizeHeader" = "Selecteer een miniatuurgrootte";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Kies een miniatuurformaat";
 "settings_displayTitles" = "Titels op miniaturen";
 "settings_displayTitles>320px" = "Titels op miniaturen weergeven";
 
@@ -462,11 +506,14 @@
 "defaultImageSize" = "Foto's";
 "defaultImageSize>320px" = "Fotogrootte";
 "defaultImageSize>414px" = "Standaardgrootte van foto's";
-"defaultImageSizeTitle" = "Standaard grootte";
+//"defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "Selecteer de grootte van een foto";
 "defaultImageSize_recommended" = " (aanbevolen)";
 "defaultSize_disabled" = " (uitgeschakeld op de server)";
 "defaultSizeFooter" = "Greysize formaten worden niet geadviseerd of zijn niet beschikbaar op de Piwigo-server.";
+
+"settings_shareGPSdata" = "Deel privé metadata";
+"settings_shareGPSdata>375px" = "Deel met Persoonlijke Metadata";
 
 "imageSizeSquare" = "Vierkant";
 "imageSizeThumbnail" = "Miniatuurafbeelding";
@@ -485,7 +532,7 @@
 "settings_defaultAuthor>320px" = "Naam van de fotograaf";
 "settings_defaultAuthorPlaceholder" = "Naam van de fotograaf";
 "settings_defaultPrivacy" = "Privacy";
-"settings_defaultPrivacy>414px" = "Hvem kan se dette billede?";
+"settings_defaultPrivacy>414px" = "Kies wie de foto's mag zien";
 "settings_stripGPSdata" = "Verwijder privé metadata";
 "settings_stripGPSdata>375px" = "Verwijder privé metadata vóór het uploaden";
 "settings_photoResize" = "Pas grootte aan vóór de upload";

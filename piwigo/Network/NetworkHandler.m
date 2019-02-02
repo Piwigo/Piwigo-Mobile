@@ -45,7 +45,6 @@ NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
 NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdminList";
 
 // Parameter keys:
-NSString * const kPiwigoImagesUploadParamData = @"data";
 NSString * const kPiwigoImagesUploadParamFileName = @"fileName";
 NSString * const kPiwigoImagesUploadParamTitle = @"name";
 NSString * const kPiwigoImagesUploadParamChunk = @"chunk";
@@ -356,9 +355,9 @@ NSInteger const loadingViewTag = 899;
         }
     }
     
-    // Remove the .php? prefix if any
+    // Remove the .php?, i? prefixes if any
     NSString *prefix = @"";
-    NSRange pos = [cleanPath rangeOfString:@".php?"];
+    NSRange pos = [cleanPath rangeOfString:@"?"];
     if (pos.location != NSNotFound ) {
         // The path contains .php?
         pos.length += pos.location;
@@ -381,8 +380,8 @@ NSInteger const loadingViewTag = 899;
     
     // For debugging purposes
     if (![encodedImageURL isEqualToString:originalURL]) {
-        NSLog(@"=> %@", originalURL);
-        NSLog(@"   %@", encodedImageURL);
+        NSLog(@"=> originalURL:%@", originalURL);
+        NSLog(@"    encodedURL:%@", encodedImageURL);
         NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
     }
     return encodedImageURL;
@@ -504,6 +503,7 @@ NSInteger const loadingViewTag = 899;
 
 // Only used to upload images
 +(NSURLSessionTask*)postMultiPart:(NSString*)path
+                             data:(NSData*)fileData
                        parameters:(NSDictionary*)parameters
                          progress:(void (^)(NSProgress *))progress
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
@@ -514,7 +514,7 @@ NSInteger const loadingViewTag = 899;
                         parameters:nil
          constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
                   {
-                      [formData appendPartWithFileData:[parameters objectForKey:kPiwigoImagesUploadParamData]
+                      [formData appendPartWithFileData:fileData
                                                   name:@"file"
                                               fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
                                               mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];

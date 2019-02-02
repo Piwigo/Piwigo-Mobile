@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "読み込み中…";
 "completeHUD_label" = "完了";
+"errorHUD_label" = "エラー！";
 
 // Upload rights
 "uploadRights_title" = "アップロードする権限が必要です";
@@ -139,6 +140,7 @@
 "categoryUpload_images" = "画像をアップロードする";
 "categoryUpload_subAlbum" = "サブアルバムを作成します";
 "categoryUpload_defaultAlbum" = "規定のアルバムとして設定します";
+"categoryUpload_defaultSelect" = "規定のアルバムとなるアルバムまたはサブアルバムを選択してください。";
 
 // Default album
 "setDefaultCategory_title" = "既定のアルバム";
@@ -207,7 +209,7 @@
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
 // Album set image thumbnail
-"categorySelection_select" = "アルバムを選択します";
+//"categorySelection_select" = "Select Album";
 "categorySelection_current" = "この画像のためのアルバムを選択します";
 "categorySelection_one" = "この画像を含むアルバムを1つ選択して下さい";
 "categorySelection_other" = "または、この画像のために別のアルバムを選択します";
@@ -310,6 +312,7 @@
 "downloadingImages" = "画像をダウンロード中";
 "downloadingImageInfo" = "画像情報をダウンロード中";
 "downloadingImageInfoForSort" = "並べ替えのために画像情報をダウンロード中";
+"downloadingVideo" = "動画をダウンロード中";
 
 // Image download — Errors
 "downloadImageFail_title" = "ダウンロードに失敗しました";
@@ -391,6 +394,47 @@
 "videoUploadError_unknown" = "申し訳ありませんが、動画のアップロードはMP4変換中に原因不明のエラーのため失敗しました。エラー：%@";
 "videoUploadCancelled_message" = "動画のアップロードは取り消されました。";
 
+// Image share
+"shareImageMetadata_Title" = "メタデータを共有する";
+"shareImageMetadata_subTitle1" = "プライベートなメタデータを持つ画像を共有するアクション";
+"shareImageMetadata_subTitle2" = "プライベートなメタデータを持たない画像を共有するアクション";
+"shareActivityCode_AirDrop" = "AirDropで送信する";
+"shareActivityCode_AirDrop>375px" = "AirDropで画像を送信する";
+"shareActivityCode_AssignToContact" = "連絡先に割り当てる";
+"shareActivityCode_AssignToContact>375px" = "画像を連絡先に割り当てる";
+"shareActivityCode_CopyToPasteboard" = "クリップボードにコピーする";
+"shareActivityCode_CopyToPasteboard>375px" = "画像をクリップボードにコピーする";
+"shareActivityCode_Mail" = "電子メールで投稿する";
+"shareActivityCode_Mail>375px" = "画像を電子メールで投稿する";
+"shareActivityCode_Message" = "メッセージを投稿する";
+"shareActivityCode_Message>375px" = "メッセージアプリでー画像を投稿する";
+"shareActivityCode_Facebook" = "Facebookに投稿する";
+"shareActivityCode_Facebook>375px" = "Facebookに画像を投稿する";
+"shareActivityCode_Messenger" = "Messengerで投稿する";
+"shareActivityCode_Messenger>375px" = "画像をMessengerアプリで投稿する";
+"shareActivityCode_Flickr" = "Flickrに投稿する";
+"shareActivityCode_Flickr>375px" = "Flickrに画像を投稿する";
+"shareActivityCode_Instagram" = "Instagramに投稿する";
+"shareActivityCode_Instagram>375px" = "画像をInstagramに投稿する";
+"shareActivityCode_Signal" = "Signalで投稿する";
+"shareActivityCode_Signal>375px" = "画像をSignalアプリで投稿する";
+"shareActivityCode_Snapchat" = "Snapchatに投稿する";
+"shareActivityCode_Snapchat>375px" = "画像をSnapchatアプリに投稿する";
+"shareActivityCode_TencentWeibo" = "TencentWeiboに投稿する";
+"shareActivityCode_TencentWeibo>375px" = "画像をTencentWeiboに投稿する";
+"shareActivityCode_Twitter" = "Twitterに投稿する";
+"shareActivityCode_Twitter>375px" = "画像をTwitterに投稿する";
+"shareActivityCode_Vimeo" = "Vimeoに投稿する";
+"shareActivityCode_Vimeo>375px" = "動画をVimeoに投稿する";
+"shareActivityCode_Weibo" = "Weiboに投稿する";
+"shareActivityCode_Weibo>375px" = "画像をWeiboに投稿する";
+"shareActivityCode_WhatsApp" = "WhatsAppで投稿する";
+"shareActivityCode_WhatsApp>375px" = "画像をWhatsAppアプリで投稿する";
+"shareActivityCode_CameraRoll" = "カメラロールに保存する";
+"shareActivityCode_CameraRoll>375px" = "画像をカメラロールに保存する";
+"shareActivityCode_Other" = "他のアプリと共有する";
+"shareActivityCode_Other>375px" = "画像を他のアプリと共有する";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
@@ -437,8 +481,8 @@
 "defaultThumbnailSize" = "サイズ";
 "defaultThumbnailSize>320px" = "サムネイルのサイズ";
 "defaultThumbnailSize>414px" = "サムネイルの既定サイズ";
-"defaultThumbnailSizeTitle" = "既定のサイズ";
-"defaultThumbnailSizeHeader" = "サムネイルのサイズを選択してください";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "サムネイルの画像サイズを選択してください";
 "settings_displayTitles" = "サムネイルの題名";
 "settings_displayTitles>320px" = "サムネイルに題名を表示します";
 
@@ -462,11 +506,14 @@
 "defaultImageSize" = "画像";
 "defaultImageSize>320px" = "画像サイズ";
 "defaultImageSize>414px" = "規定の画像サイズ";
-"defaultImageSizeTitle" = "規定のサイズ";
+//"defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "画像サイズを選択して下さい";
 "defaultImageSize_recommended" = " (推奨)";
 "defaultSize_disabled" = " （サーバで無効化）";
 "defaultSizeFooter" = "灰色のサイズはPiwigoサーバで非推奨または利用できません。";
+
+"settings_shareGPSdata" = "プライベートなメタデータを共有する";
+"settings_shareGPSdata>375px" = "プライベートなメタデータと一緒に共有する";
 
 "imageSizeSquare" = "正方形";
 "imageSizeThumbnail" = "サムネイル";
@@ -485,7 +532,7 @@
 "settings_defaultAuthor>320px" = "作成者名";
 "settings_defaultAuthorPlaceholder" = "作成者名";
 "settings_defaultPrivacy" = "プライバシー";
-"settings_defaultPrivacy>414px" = "誰がこのメディアを見ることができますか？";
+"settings_defaultPrivacy>414px" = "画像を見ることができる人を選択してください";
 "settings_stripGPSdata" = "プライベートなメタデータを取り除きます";
 "settings_stripGPSdata>375px" = "アップロードする前にプライベートなメタデータを取り除きます";
 "settings_photoResize" = "アップロードする前にサイズを変更します";

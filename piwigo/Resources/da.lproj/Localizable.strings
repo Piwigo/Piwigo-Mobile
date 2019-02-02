@@ -30,6 +30,7 @@
 // HUD views
 "loadingHUD_label" = "Indlæser…";
 "completeHUD_label" = "Udført";
+"errorHUD_label" = "Fejl";
 
 // Upload rights
 "uploadRights_title" = "Rettigheder til Upload Påkrævet";
@@ -66,10 +67,10 @@
 "serverURLerror_message" = "Ret venligst Piwigo web serveradressen.";
 "serverMethodsError_title" = "Ukendt Protokol";
 "serverMethodsError_message" = "Kunne ikke hente server protokol. Prøv at logge ind igen?";
-"serverInvalidMethodError_message" = "Kunne ikke ringe til servermetoden.";
-"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
-"serverInvalidParamError_message" = "Kunne ikke ringe til servermetoden med de angivne parametre.";
-"serverUnknownError_message" = "Uventet fejl opstod under kaldende server metode med angivne parametre.";
+"serverInvalidMethodError_message" = "Kunne ikke kalde server metode.";
+"serverMissingParamError_message" = "Ikke kunne udføre server metode med manglende parameter.";
+"serverInvalidParamError_message" = "Kunne ikke udføre servermetoden med de angivne parametre.";
+"serverUnknownError_message" = "Uventet fejl opstod under kald af server metode med angivne parametre.";
 
 "loginError_title" = "Log ind Mislykkedes";
 "loginError_message" = "Brugernavnet og adgangskoden er ikke korrekt";
@@ -139,6 +140,7 @@
 "categoryUpload_images" = "Upload billeder";
 "categoryUpload_subAlbum" = "Opret underalbum";
 "categoryUpload_defaultAlbum" = "Marker som standardalbum";
+"categoryUpload_defaultSelect" = "Vælg venligst album eller sub album, der bliver dit standardalbum";
 
 // Default album
 "setDefaultCategory_title" = "Standardalbum";
@@ -207,7 +209,7 @@
 "moveCategoryError_message" = "Kunne ikke flytte dit album";
 
 // Album set image thumbnail
-"categorySelection_select" = "Vælg album";
+//"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Vælg aktuelle album for dette billede";
 "categorySelection_one" = "Vælg en af de album, som indeholder dette billede";
 "categorySelection_other" = "eller vælg et andet album";
@@ -310,6 +312,7 @@
 "downloadingImages" = "Henter Billeder";
 "downloadingImageInfo" = "Hent Billed Info";
 "downloadingImageInfoForSort" = "Henter Billedinfo for Sort";
+"downloadingVideo" = "Henter video";
 
 // Image download — Errors
 "downloadImageFail_title" = "Hentning Mislykkedes";
@@ -391,6 +394,47 @@
 "videoUploadError_unknown" = "Upload af videoen mislykkedes med en ukendt fejl under MP4 konvertering. Fejl: %@";
 "videoUploadCancelled_message" = "Upload af video er annulleret.";
 
+// Image share
+"shareImageMetadata_Title" = "Del Metadata";
+"shareImageMetadata_subTitle1" = "Deling af billeder med privat metadata";
+"shareImageMetadata_subTitle2" = "Deling af billeder uden privat metadata";
+"shareActivityCode_AirDrop" = "Overfør med AirDrop";
+"shareActivityCode_AirDrop>375px" = "Overfør billeder med AirDrop";
+"shareActivityCode_AssignToContact" = "Tildel kontakt";
+"shareActivityCode_AssignToContact>375px" = "Tildel billede til kontakt";
+"shareActivityCode_CopyToPasteboard" = "Kopier til udklipsholder";
+"shareActivityCode_CopyToPasteboard>375px" = "Kopier billeder til udklipsholder";
+"shareActivityCode_Mail" = "Send som Email";
+"shareActivityCode_Mail>375px" = "Send billeder som Email";
+"shareActivityCode_Message" = "Send som besked";
+"shareActivityCode_Message>375px" = "Send billeder som Besked";
+"shareActivityCode_Facebook" = "Send til Facebook";
+"shareActivityCode_Facebook>375px" = "Send billeder til Facebook";
+"shareActivityCode_Messenger" = "Send med Messenger";
+"shareActivityCode_Messenger>375px" = "Send billeder med Messenger";
+"shareActivityCode_Flickr" = "Send til Flickr";
+"shareActivityCode_Flickr>375px" = "Send billeder til Flickr";
+"shareActivityCode_Instagram" = "Send til Instagram";
+"shareActivityCode_Instagram>375px" = "Send billeder til Instagram";
+"shareActivityCode_Signal" = "Send med Signal";
+"shareActivityCode_Signal>375px" = "Send billeder til Signal";
+"shareActivityCode_Snapchat" = "Send til Snapchat";
+"shareActivityCode_Snapchat>375px" = "Send Billeder til Snapchat";
+"shareActivityCode_TencentWeibo" = "Send til TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Send billeder til TencentWeibo";
+"shareActivityCode_Twitter" = "Send til Twitter";
+"shareActivityCode_Twitter>375px" = "Send billeder til Twitter";
+"shareActivityCode_Vimeo" = "Send til Vimeo";
+"shareActivityCode_Vimeo>375px" = "Send billeder til Vimeo";
+"shareActivityCode_Weibo" = "Send til Weibo";
+"shareActivityCode_Weibo>375px" = "Send billeder til Weibo";
+"shareActivityCode_WhatsApp" = "Send med WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Send billeder med WhatsApp";
+"shareActivityCode_CameraRoll" = "Gem i kamerarulle";
+"shareActivityCode_CameraRoll>375px" = "Gem billeder i kamerarulle";
+"shareActivityCode_Other" = "Del med andre programmer";
+"shareActivityCode_Other>375px" = "Del billeder med andre programmer";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
@@ -437,8 +481,8 @@
 "defaultThumbnailSize" = "Størrelse";
 "defaultThumbnailSize>320px" = "Miniaturer";
 "defaultThumbnailSize>414px" = "Standardstørrelse på Miniaturer";
-"defaultThumbnailSizeTitle" = "Standardstørrelse";
-"defaultThumbnailSizeHeader" = "Vælg en Miniaturestørrelse";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Vælg miniature størrelse";
 "settings_displayTitles" = "Vis Titler på Miniaturer";
 "settings_displayTitles>320px" = "Vis Titler på Miniaturer";
 
@@ -462,11 +506,14 @@
 "defaultImageSize" = "Billeder";
 "defaultImageSize>320px" = "Billedstørrelse";
 "defaultImageSize>414px" = "Standardstørrelse på Billeder";
-"defaultImageSizeTitle" = "Standardstørrelse";
+//"defaultImageSizeTitle" = "Default Size";
 "defaultImageSizeHeader" = "Vælg en Billedstørrelse";
 "defaultImageSize_recommended" = " (anbefales)";
 "defaultSize_disabled" = " (deaktiveret på serveren)";
 "defaultSizeFooter" = "Størrelser i gråt er ikke tilrådelig eller tilgængelig på Piwigo server.";
+
+"settings_shareGPSdata" = "Del private Metadata";
+"settings_shareGPSdata>375px" = "Del med private Metadata";
 
 "imageSizeSquare" = "Firkant";
 "imageSizeThumbnail" = "Miniature";
@@ -485,7 +532,7 @@
 "settings_defaultAuthor>320px" = "Forfatternavn";
 "settings_defaultAuthorPlaceholder" = "Forfatternavn";
 "settings_defaultPrivacy" = "Tilladelse";
-"settings_defaultPrivacy>414px" = "Hvem kan se dette billede?";
+"settings_defaultPrivacy>414px" = "Vælg hvem der må kunne se billeder";
 "settings_stripGPSdata" = "Fjern private metadata";
 "settings_stripGPSdata>375px" = "Fjern private Metadata før Upload";
 "settings_photoResize" = "Ændr størrelse før Upload";

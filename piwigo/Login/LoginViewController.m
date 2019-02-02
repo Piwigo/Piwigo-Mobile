@@ -223,9 +223,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [NetworkHandler createImagesSessionManager];        // 60s timeout, 4 connections max
     
     // Create permanent image downloader
-//    AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc]
-//                      initWithMemoryCapacity:1 * 1024*1024
-//                      preferredMemoryCapacity:0 * 1024*1024];
     AFAutoPurgingImageCache *cache = [[AFAutoPurgingImageCache alloc]
                     initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
                    preferredMemoryCapacity:([Model sharedInstance].memoryCache * 0.6) * 1024*1024];
@@ -740,7 +737,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
     // Propagate user's request
     [Model sharedInstance].userCancelledCommunication = YES;
-    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
+    NSArray <NSURLSessionTask *> *tasks = [[Model sharedInstance].sessionManager tasks];
+    for (NSURLSessionTask *task in tasks) {
+        [task cancel];
+    }
 
     dispatch_async(dispatch_get_main_queue(), ^{
         // Update login HUD

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.2.7_text" = "Wersja 2.2.7\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
+"v2.3.0_text" = "Wersja 2.3\n\n• Udostępniaj zdjęcia i filmy\n• Zwiększyć limity rozmiaru pamięci podręcznej\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
+
+"v2.2.7_text" = "Wersja 2.2.7\n29 grudnia 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
 
 "v2.2.6_text" = "Wersja 2.2.6\n20 grudnia 2018\n\n• Poprawki tłumaczenia i obsługi iOS 12\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Włoskie tłumaczenie";
 

@@ -26,8 +26,18 @@ NSString * const kGetImageOrderRandom = @"random";
 NSString * const kGetImageOrderAscending = @"asc";
 NSString * const kGetImageOrderDescending = @"desc";
 
+//#ifndef DEBUG_SHARE
+//#define DEBUG_SHARE
+//#endif
+
 @implementation ImageService
 
+// API pwg.categories.getImages returns:
+//
+//      id, name, width, height, categories, comment, hit
+//      file, date_creation, date_available
+//      page_url, derivatives
+//
 +(NSURLSessionTask*)getImagesForAlbumId:(NSInteger)albumId
                                  onPage:(NSInteger)page
                                forOrder:(NSString*)order
@@ -102,6 +112,13 @@ NSString * const kGetImageOrderDescending = @"desc";
 	return albumImages;
 }
 
+// API pwg.images.getInfo returns:
+//
+//      (id, name, width, height, categories, comment, hit), comments, comments_paging, rotation, coi, author
+//      (file, date_creation, date_available), date_metadata_update, lastmodified, filesize, md5sum,
+//      (page_url, derivatives), representative_ext
+//      added_by, rating_score, level, rates, tags, latitude, longitude,
+//
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
@@ -174,6 +191,11 @@ NSString * const kGetImageOrderDescending = @"desc";
 	{
 		imageData.isVideo = YES;
 	}
+    if ([imageJson objectForKey:@"filesize"]) {
+        imageData.fileSize = [[imageJson objectForKey:@"filesize"] integerValue];
+    } else {
+        imageData.fileSize = NSNotFound;
+    }
 
     imageData.name = [imageJson objectForKey:@"name"];
 	if(!imageData.name || [imageData.name isKindOfClass:[NSNull class]])
@@ -373,21 +395,14 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Full resolution dimensions
-    if (![[imageSizes objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
-        imageData.fullResWidth = [[imageSizes objectForKey:@"width"] integerValue];
+    if (![[imageJson objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.fullResWidth = [[imageJson objectForKey:@"width"] integerValue];
     }
-    else {
-        // When the image dimensions are unknown, use 0
-        imageData.fullResWidth = 0;
+    if (![[imageJson objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.fullResHeight = [[imageJson objectForKey:@"height"] integerValue];
     }
-    if (![[imageSizes objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
-        imageData.fullResHeight = [[imageSizes objectForKey:@"height"] integerValue];
-    }
-    else {
-        // When the image dimensions are unknown, use 0
-        imageData.fullResHeight = 0;
-    }
-
+    
+    // Categories
     NSDictionary *categories = [imageJson objectForKey:@"categories"];
 	NSMutableArray *categoryIds = [NSMutableArray new];
 	for(NSDictionary *category in categories)
@@ -395,7 +410,9 @@ NSString * const kGetImageOrderDescending = @"desc";
 		[categoryIds addObject:[category objectForKey:@"id"]];
 	}
 	imageData.categoryIds = categoryIds;
+    categoryIds = nil;
 	
+    // Tags
     NSDictionary *tags = [imageJson objectForKey:@"tags"];
 	NSMutableArray *imageTags = [NSMutableArray new];
 	for(NSDictionary *tag in tags)
@@ -406,6 +423,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 		[imageTags addObject:tagData];
 	}
 	imageData.tags = imageTags;
+    imageTags = nil;
 	
 	return imageData;
 }
@@ -438,39 +456,57 @@ NSString * const kGetImageOrderDescending = @"desc";
 }
 
 +(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
+                            ofMinimumSize:(NSInteger)minSize
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
 	if(!image) return nil;
     
-    // Download image with highest resolution possible (fullResPath image is not always available)
+    // Download image of optimum size (depends on availability)
     NSString *URLRequest = @"";
-    if ([image.fullResPath length] > 0) {
-        URLRequest = image.fullResPath;
-    } else if ([image.XXLargePath length] > 0) {
-        URLRequest = image.XXLargePath;
-    } else if ([image.XLargePath length] > 0) {
-        URLRequest = image.XLargePath;
-    } else if ([image.LargePath length] > 0) {
-        URLRequest = image.LargePath;
-    } else if ([image.MediumPath length] > 0) {
-        URLRequest = image.MediumPath;
-    } else if ([image.SmallPath length] > 0) {
-        URLRequest = image.SmallPath;
-    } else if ([image.XSmallPath length] > 0) {
-        URLRequest = image.XSmallPath;
-    } else if ([image.XXSmallPath length] > 0) {
+    if (([image.ThumbPath length] > 0) &&
+        (fmin(image.ThumbWidth, image.ThumbHeight) < minSize)) {
+            URLRequest = image.ThumbPath;
+    }
+    if (([image.XXSmallPath length] > 0) &&
+        (fmin(image.XXSmallWidth, image.XXSmallHeight) < minSize)) {
         URLRequest = image.XXSmallPath;
-    } else if ([image.ThumbPath length] > 0) {
-        URLRequest = image.ThumbPath;
+    }
+    if (([image.XSmallPath length] > 0) &&
+        (fmin(image.XSmallWidth, image.XSmallHeight) < minSize)) {
+        URLRequest = image.XSmallPath;
+    }
+    if (([image.SmallPath length] > 0) &&
+        (fmin(image.SmallWidth, image.SmallHeight) < minSize)) {
+        URLRequest = image.SmallPath;
+    }
+    if (([image.MediumPath length] > 0) &&
+        (fmin(image.MediumWidth, image.MediumHeight) < minSize)) {
+        URLRequest = image.MediumPath;
+    }
+    if (([image.LargePath length] > 0) &&
+        (fmin(image.LargeWidth, image.LargeHeight) < minSize)) {
+        URLRequest = image.LargePath;
+    }
+    if (([image.XLargePath length] > 0) &&
+        (fmin(image.XLargeWidth, image.XLargeHeight) > minSize)) {
+        URLRequest = image.XLargePath;
+    }
+    if (([image.XXLargePath length] > 0) &&
+        (fmin(image.XXLargeWidth, image.XXLargeHeight) < minSize)) {
+        URLRequest = image.XXLargePath;
+    }
+    if (([image.fullResPath length] > 0) &&
+        (fmin(image.fullResWidth, image.fullResHeight) < minSize)) {
+        URLRequest = image.fullResPath;
     }
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
 
-    // Download and save image
+    // Set appropriate filename
     NSString *fileName = [[NSURL URLWithString:URLRequest] lastPathComponent];
     if ([fileName containsString:@".php"]) {
         // The URL does not contain a unique file name but a PHP request
-        // Might happen with full resolution images
+        // Might happen with full resolution images, try with medium resolution file
         fileName = [[NSURL URLWithString:image.MediumPath] lastPathComponent];
         if ([fileName containsString:@".php"]) {
             // The URL does not contain a unique file name but a PHP request
@@ -479,16 +515,18 @@ NSString * const kGetImageOrderDescending = @"desc";
                 fileName = image.fileName;
             } else {
                 // Should never reach this point
-                fileName = @"fileName.jpg";
+                fileName = @"PiwigoImage.jpg";
             }
         }
     }
 
+    // Download and save image
     NSURLSessionDownloadTask *task =
         [[Model sharedInstance].imagesSessionManager downloadTaskWithRequest:request
                                 progress:progress
                              destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-                                 NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                 NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                 NSLog(@"=> downloaded %@", [documentsDirectoryURL URLByAppendingPathComponent:fileName]);
                                  return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
                              }
                        completionHandler:completionHandler
@@ -534,17 +572,17 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // Replace .mp4 or .m4v with .mov for compatibility with Photos.app
     NSString *fileName = video.fileName;
-    if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
-        ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {
-        fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
-    }
+//    if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
+//        ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {
+//        fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
+//    }
     
     // Download and save video
     NSURLSessionDownloadTask *task = [[Model sharedInstance].imagesSessionManager
                     downloadTaskWithRequest:request
                                    progress:progress
                                 destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-                                     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+                                     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
                                      return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
                                 }
                           completionHandler:completionHandler
@@ -596,6 +634,230 @@ NSString * const kGetImageOrderDescending = @"desc";
 	
     task.priority = NSOperationQueuePriorityVeryHigh;
 	return task;
+}
+
++(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSMutableDictionary *)metadata
+{
+#if defined(DEBUG_SHARE)
+    NSLog(@"Strip GPS data [Start]: %@",metadata);
+#endif
+
+    // GPS dictionary
+    NSMutableDictionary *GPSDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
+    if (GPSDictionary) {
+#if defined(DEBUG_SHARE)
+        NSLog(@"=> GPS metadata = %@",GPSDictionary);
+#endif
+        [metadata removeObjectForKey:(NSString *)kCGImagePropertyGPSDictionary];
+    }
+    
+    // EXIF dictionary
+    NSMutableDictionary *EXIFDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+    if (EXIFDictionary) {
+#if defined(DEBUG_SHARE)
+        NSLog(@"modifyImage: EXIF User Comment metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifUserComment]);
+        NSLog(@"modifyImage: EXIF Subject Location metadata = %@",[EXIFDictionary valueForKey:(NSString *)kCGImagePropertyExifSubjectLocation]);
+#endif
+        [EXIFDictionary removeObjectForKey:(NSString *)kCGImagePropertyExifUserComment];
+        [EXIFDictionary removeObjectForKey:(NSString *)kCGImagePropertyExifSubjectLocation];
+        [metadata setObject:EXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
+    }
+
+#if defined(DEBUG_SHARE)
+    NSLog(@"Strip GPS data [End]: %@",metadata);
+#endif
+    return metadata;
+}
+
++(NSMutableDictionary *)fixMetadata:(NSMutableDictionary *)metadata ofImage:(UIImage*)image
+{
+#if defined(DEBUG_SHARE)
+    NSLog(@"fixMetadata [Start]: %@",metadata);
+#endif
+
+    // Extract metadata from UIImage object
+    NSData *objectNSData = UIImageJPEGRepresentation(image, 1.0f);
+    CGImageSourceRef objectSource = CGImageSourceCreateWithData((__bridge CFDataRef) objectNSData, NULL);
+    NSMutableDictionary *objectMetadata = [(NSMutableDictionary*) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(objectSource, 0, NULL)) mutableCopy];
+#if defined(DEBUG_SHARE)
+    NSLog(@"modifyImage finds metadata from object:%@",objectMetadata);
+#endif
+    
+    // Update metadata header with correct metadata
+    if ([metadata valueForKey:(NSString *)kCGImagePropertyOrientation]) {
+        [metadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyOrientation]
+                         forKey:(NSString *)kCGImagePropertyOrientation];
+    }
+    
+    // Update metadata with correct size
+    if ([metadata valueForKey:(NSString *)kCGImagePropertyPixelWidth]) {
+        [metadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyPixelWidth]
+                         forKey:(NSString *)kCGImagePropertyPixelWidth];
+        [metadata setValue:[objectMetadata valueForKey:(NSString *)kCGImagePropertyPixelHeight]
+                         forKey:(NSString *)kCGImagePropertyPixelHeight];
+    }
+    
+    // Update 8BIM dictionary with correct metadata
+    NSMutableDictionary *image8BIMDictionary = [[metadata objectForKey:(NSString *)kCGImageProperty8BIMDictionary] mutableCopy];
+    NSMutableDictionary *object8BIMDictionary = [[objectMetadata objectForKey:(NSString *)kCGImageProperty8BIMDictionary] mutableCopy];
+    if (image8BIMDictionary && object8BIMDictionary) {
+        [image8BIMDictionary addEntriesFromDictionary:object8BIMDictionary];
+        [metadata setObject:image8BIMDictionary forKey:(NSString *)kCGImageProperty8BIMDictionary];
+    } else if (!image8BIMDictionary && object8BIMDictionary) {
+        [metadata setObject:object8BIMDictionary forKey:(NSString *)kCGImageProperty8BIMDictionary];
+    }
+    
+    // Update CIFF dictionary with correct metadata
+    NSMutableDictionary *imageCIFFDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyCIFFDictionary] mutableCopy];
+    NSMutableDictionary *objectCIFFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyCIFFDictionary] mutableCopy];
+    if (imageCIFFDictionary && objectCIFFDictionary) {
+        [imageCIFFDictionary addEntriesFromDictionary:objectCIFFDictionary];
+        [metadata setObject:imageCIFFDictionary forKey:(NSString *)kCGImagePropertyCIFFDictionary];
+    } else if (!imageCIFFDictionary && objectCIFFDictionary) {
+        [metadata setObject:objectCIFFDictionary forKey:(NSString *)kCGImagePropertyCIFFDictionary];
+    }
+    
+    // Update DNG dictionary with correct metadata
+    NSMutableDictionary *imageDNGDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyDNGDictionary] mutableCopy];
+    NSMutableDictionary *objectDNGDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyDNGDictionary] mutableCopy];
+    if (imageDNGDictionary && objectDNGDictionary) {
+        [imageDNGDictionary addEntriesFromDictionary:objectDNGDictionary];
+        [metadata setObject:objectDNGDictionary forKey:(NSString *)kCGImagePropertyDNGDictionary];
+    } else if (!imageDNGDictionary && objectDNGDictionary) {
+        [metadata setObject:objectDNGDictionary forKey:(NSString *)kCGImagePropertyDNGDictionary];
+    }
+    
+    // Update Exif dictionary with correct metadata
+    NSMutableDictionary *imageEXIFDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+    NSMutableDictionary *objectEXIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+    if (imageEXIFDictionary && objectEXIFDictionary) {
+        [imageEXIFDictionary addEntriesFromDictionary:objectEXIFDictionary];
+        [metadata setObject:imageEXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
+    } else if (!imageEXIFDictionary && objectEXIFDictionary) {
+        [metadata setObject:objectEXIFDictionary forKey:(NSString *)kCGImagePropertyExifDictionary];
+    }
+    NSMutableDictionary *imageEXIFAuxDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyExifAuxDictionary] mutableCopy];
+    NSMutableDictionary *objectEXIFAuxDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyExifAuxDictionary] mutableCopy];
+    if (imageEXIFAuxDictionary && objectEXIFAuxDictionary) {
+        [imageEXIFAuxDictionary addEntriesFromDictionary:objectEXIFAuxDictionary];
+        [metadata setObject:imageEXIFAuxDictionary forKey:(NSString *)kCGImagePropertyExifAuxDictionary];
+    } else if (!imageEXIFAuxDictionary && objectEXIFAuxDictionary) {
+        [metadata setObject:objectEXIFAuxDictionary forKey:(NSString *)kCGImagePropertyExifAuxDictionary];
+    }
+    
+    // Update GIF dictionary with correct metadata
+    NSMutableDictionary *imageGIFDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyGIFDictionary] mutableCopy];
+    NSMutableDictionary *objectGIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyGIFDictionary] mutableCopy];
+    if (imageGIFDictionary && objectGIFDictionary) {
+        [imageGIFDictionary addEntriesFromDictionary:objectGIFDictionary];
+        [metadata setObject:imageGIFDictionary forKey:(NSString *)kCGImagePropertyGIFDictionary];
+    } else if (!imageGIFDictionary && objectGIFDictionary) {
+        [metadata setObject:objectGIFDictionary forKey:(NSString *)kCGImagePropertyGIFDictionary];
+    }
+    
+    // Update IPTC dictionary with correct metadata
+    NSMutableDictionary *imageIPTCDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyIPTCDictionary] mutableCopy];
+    NSMutableDictionary *objectIPTCDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyIPTCDictionary] mutableCopy];
+    if (imageIPTCDictionary && objectIPTCDictionary) {
+        [imageIPTCDictionary addEntriesFromDictionary:objectIPTCDictionary];
+        [metadata setObject:imageIPTCDictionary forKey:(NSString *)kCGImagePropertyIPTCDictionary];
+    } else if (!imageIPTCDictionary && objectIPTCDictionary) {
+        [metadata setObject:objectIPTCDictionary forKey:(NSString *)kCGImagePropertyIPTCDictionary];
+    }
+    
+    // Update JFIF dictionary with correct metadata
+    NSMutableDictionary *imageJFIFDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyJFIFDictionary] mutableCopy];
+    NSMutableDictionary *objectJFIFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyJFIFDictionary] mutableCopy];
+    if (imageJFIFDictionary && objectJFIFDictionary) {
+        [imageJFIFDictionary addEntriesFromDictionary:objectJFIFDictionary];
+        [metadata setObject:imageJFIFDictionary forKey:(NSString *)kCGImagePropertyJFIFDictionary];
+    } else if (!imageJFIFDictionary && objectJFIFDictionary) {
+        [metadata setObject:objectJFIFDictionary forKey:(NSString *)kCGImagePropertyJFIFDictionary];
+    }
+    
+    // Update PNG dictionary with correct metadata
+    NSMutableDictionary *imagePNGDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyPNGDictionary] mutableCopy];
+    NSMutableDictionary *objectPNGDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyPNGDictionary] mutableCopy];
+    if (imagePNGDictionary && objectPNGDictionary) {
+        [imagePNGDictionary addEntriesFromDictionary:objectPNGDictionary];
+        [metadata setObject:imagePNGDictionary forKey:(NSString *)kCGImagePropertyPNGDictionary];
+    } else if (!imagePNGDictionary && objectPNGDictionary) {
+        [metadata setObject:objectPNGDictionary forKey:(NSString *)kCGImagePropertyPNGDictionary];
+    }
+    
+    // Update RAW dictionary with correct metadata
+    NSMutableDictionary *imageRawDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyRawDictionary] mutableCopy];
+    NSMutableDictionary *objectRawDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyRawDictionary] mutableCopy];
+    if (imageRawDictionary && objectRawDictionary) {
+        [imageRawDictionary addEntriesFromDictionary:objectRawDictionary];
+        [metadata setObject:imageRawDictionary forKey:(NSString *)kCGImagePropertyRawDictionary];
+    } else if (!imageRawDictionary && objectRawDictionary) {
+        [metadata setObject:objectRawDictionary forKey:(NSString *)kCGImagePropertyRawDictionary];
+    }
+    
+    // Update TIFF dictionary with correct metadata
+    NSMutableDictionary *imageTIFFDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyTIFFDictionary] mutableCopy];
+    NSMutableDictionary *objectTIFFDictionary = [[objectMetadata objectForKey:(NSString *)kCGImagePropertyTIFFDictionary] mutableCopy];
+    if (imageTIFFDictionary && objectTIFFDictionary) {
+        [imageTIFFDictionary addEntriesFromDictionary:objectTIFFDictionary];
+        [metadata setObject:imageTIFFDictionary forKey:(NSString *)kCGImagePropertyTIFFDictionary];
+    } else if (!imageTIFFDictionary && objectTIFFDictionary) {
+        [metadata setObject:objectTIFFDictionary forKey:(NSString *)kCGImagePropertyTIFFDictionary];
+    }
+
+    // Release memory
+    CFRelease(objectSource);
+    objectNSData = nil;
+
+#if defined(DEBUG_SHARE)
+    NSLog(@"fixMetadata [End]: %@",metadata);
+#endif
+    return metadata;
+}
+
++(NSData*)writeMetadata:(NSDictionary*)metadata intoImageData:(NSData *)imageData
+{
+    // NOP if metadata == nil
+    if (!metadata) return imageData;
+    
+    // Create an imagesourceref
+    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef) imageData, NULL);
+    if (!source) {
+#if defined(DEBUG_SHARE)
+        NSLog(@"Error: Could not create source");
+#endif
+    } else {
+        // Type of image (e.g., public.jpeg)
+        CFStringRef UTI = CGImageSourceGetType(source);
+        
+        // Create a new data object and write the new image into it
+        NSMutableData *dest_data = [NSMutableData data];
+        CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
+        if (!destination) {
+#if defined(DEBUG_SHARE)
+            NSLog(@"Error: Could not create image destination");
+#endif
+            CFRelease(source);
+        } else {
+            // add the image contained in the image source to the destination, overidding the old metadata with our modified metadata
+            CGImageDestinationAddImageFromSource(destination, source, 0, (__bridge CFDictionaryRef) metadata);
+            BOOL success = NO;
+            success = CGImageDestinationFinalize(destination);
+            if (!success) {
+#if defined(DEBUG_SHARE)
+                NSLog(@"Error: Could not create data from image destination");
+#endif
+                CFRelease(destination);
+                CFRelease(source);
+            } else {
+                CFRelease(destination);
+                CFRelease(source);
+//                return [dest_data copy];
+                return dest_data;
+            }
+        }
+    }
+    return imageData;
 }
 
 @end

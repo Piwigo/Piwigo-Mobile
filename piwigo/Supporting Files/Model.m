@@ -16,6 +16,13 @@ NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
 NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
 NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 
+NSString *kPiwigoActivityTypeMessenger = @"com.facebook.Messenger.ShareExtension";
+NSString *kPiwigoActivityTypePostInstagram = @"com.burbn.instagram.shareextension";
+NSString *kPiwigoActivityTypePostToSignal = @"org.whispersystems.signal.shareextension";
+NSString *kPiwigoActivityTypePostToSnapchat = @"com.toyopagroup.picaboo.share";
+NSString *kPiwigoActivityTypePostToWhatsApp = @"net.whatsapp.WhatsApp.ShareExtension";
+NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
+
 @interface Model()
 
 @end
@@ -70,9 +77,27 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         instance.defaultThumbnailSize = kPiwigoImageSizeThumb;
         instance.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize]);
         
-        // Default image preview size
+        // Default image settings
         instance.didOptimiseImagePreviewSize = NO;
 		instance.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
+        instance.shareMetadataTypeAirDrop = YES;
+        instance.shareMetadataTypeAssignToContact = NO;
+        instance.shareMetadataTypeCopyToPasteboard = NO;
+        instance.shareMetadataTypeMail = YES;
+        instance.shareMetadataTypeMessage = YES;
+        instance.shareMetadataTypePostToFacebook = NO;
+        instance.shareMetadataTypeMessenger = NO;
+        instance.shareMetadataTypePostToFlickr = YES;
+        instance.shareMetadataTypePostInstagram = NO;
+        instance.shareMetadataTypePostToSignal = YES;
+        instance.shareMetadataTypePostToSnapchat = NO;
+        instance.shareMetadataTypePostToTencentWeibo = NO;
+        instance.shareMetadataTypePostToTwitter = NO;
+        instance.shareMetadataTypePostToVimeo = NO;
+        instance.shareMetadataTypePostToWeibo = NO;
+        instance.shareMetadataTypePostToWhatsApp = NO;
+        instance.shareMetadataTypeSaveToCameraRoll = YES;
+        instance.shareMetadataTypeOther = NO;
         
         // Default image upload settings
         instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
@@ -88,8 +113,8 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         
         // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
-		instance.diskCache = 80;
-		instance.memoryCache = 80;
+		instance.diskCache = 512;
+		instance.memoryCache = 128;
 		
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
@@ -109,7 +134,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     return library;
 }
 
--(NSString*)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
+-(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
 {
 	NSString *name = @"";
 	switch(privacyLevel)
@@ -136,6 +161,51 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 	
 	return name;
 }
+
+-(NSString *)getNameForShareActivity:(NSString *)activity forWidth:(CGFloat)width
+{
+    NSString *name = @"";
+    if ([activity isEqualToString:UIActivityTypeAirDrop]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_AirDrop>375px", @"Transfer images with AirDrop") : NSLocalizedString(@"shareActivityCode_AirDrop", @"Transfer with AirDrop");
+    } else if ([activity isEqualToString:UIActivityTypeAssignToContact]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_AssignToContact>375px", @"Assign image to contact") : NSLocalizedString(@"shareActivityCode_AssignToContact", @"Assign to contact");
+    } else if ([activity isEqualToString:UIActivityTypeCopyToPasteboard]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_CopyToPasteboard>375px", @"Copy images to Pasteboard") : NSLocalizedString(@"shareActivityCode_CopyToPasteboard", @"Copy to Pasteboard");
+    } else if ([activity isEqualToString:UIActivityTypeMail]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Mail>375px", @"Post images by email") : NSLocalizedString(@"shareActivityCode_Mail", @"Post by email");
+    } else if ([activity isEqualToString:UIActivityTypeMessage]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Message>375px", @"Post images with the Message app") : NSLocalizedString(@"shareActivityCode_Message", @"Post with Message");
+    } else if ([activity isEqualToString:UIActivityTypePostToFacebook]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Facebook>375px", @"Post images to Facebook") : NSLocalizedString(@"shareActivityCode_Facebook", @"Post to Facebook");
+    } else if ([activity isEqualToString:kPiwigoActivityTypeMessenger]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Messenger>375px", @"Post images with the Messenger app") : NSLocalizedString(@"shareActivityCode_Messenger", @"Post with Messenger");
+    } else if ([activity isEqualToString:UIActivityTypePostToFlickr]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Flickr>375px", @"Post images to Flickr") : NSLocalizedString(@"shareActivityCode_Flickr", @"Post to Flickr");
+    } else if ([activity isEqualToString:kPiwigoActivityTypePostInstagram]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Instagram>375px", @"Post images to Instagram") : NSLocalizedString(@"shareActivityCode_Instagram", @"Post to Instagram");
+    } else if ([activity isEqualToString:kPiwigoActivityTypePostToSignal]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Signal>375px", @"Post images with the Signal app") : NSLocalizedString(@"shareActivityCode_Signal", @"Post with Signal");
+    } else if ([activity isEqualToString:kPiwigoActivityTypePostToSnapchat]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Snapchat>375px", @"Post images to Snapchat app") : NSLocalizedString(@"shareActivityCode_Snapchat", @"Post to Snapchat");
+    } else if ([activity isEqualToString:UIActivityTypePostToTencentWeibo]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_TencentWeibo>375px", @"Post images to TencentWeibo") : NSLocalizedString(@"shareActivityCode_TencentWeibo", @"Post to TencentWeibo");
+    } else if ([activity isEqualToString:UIActivityTypePostToTwitter]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Twitter>375px", @"Post images to Twitter") : NSLocalizedString(@"shareActivityCode_Twitter", @"Post to Twitter");
+    } else if ([activity isEqualToString:UIActivityTypePostToVimeo]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Vimeo>375px", @"Post videos to Vimeo") : NSLocalizedString(@"shareActivityCode_Vimeo", @"Post to Vimeo");
+    } else if ([activity isEqualToString:UIActivityTypePostToWeibo]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Weibo>375px", @"Post images to Weibo") : NSLocalizedString(@"shareActivityCode_Weibo", @"Post to Weibo");
+    } else if ([activity isEqualToString:kPiwigoActivityTypePostToWhatsApp]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_WhatsApp>375px", @"Post images with the WhatsApp app") : NSLocalizedString(@"shareActivityCode_WhatsApp", @"Post with WhatsApp");
+    } else if ([activity isEqualToString:UIActivityTypeSaveToCameraRoll]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_CameraRoll>375px", @"Save images to Camera Roll") : NSLocalizedString(@"shareActivityCode_CameraRoll", @"Save to Camera Roll");
+    } else if ([activity isEqualToString:kPiwigoActivityTypeOther]) {
+        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Other>375px", @"Share images with other apps") : NSLocalizedString(@"shareActivityCode_Other", @"Share with other apps");
+    }
+    
+    return name;
+}
+
 
 #pragma mark - Getter -
 
@@ -200,6 +270,24 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.defaultCategory = modelData.defaultCategory;
         self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
         self.didOptimiseImagePreviewSize = modelData.didOptimiseImagePreviewSize;
+        self.shareMetadataTypeAirDrop = modelData.shareMetadataTypeAirDrop;
+        self.shareMetadataTypeAssignToContact = modelData.shareMetadataTypeAssignToContact;
+        self.shareMetadataTypeCopyToPasteboard = modelData.shareMetadataTypeCopyToPasteboard;
+        self.shareMetadataTypeMail = modelData.shareMetadataTypeMail;
+        self.shareMetadataTypeMessage = modelData.shareMetadataTypeMessage;
+        self.shareMetadataTypePostToFacebook = modelData.shareMetadataTypePostToFacebook;
+        self.shareMetadataTypeMessenger = modelData.shareMetadataTypeMessenger;
+        self.shareMetadataTypePostToFlickr = modelData.shareMetadataTypePostToFlickr;
+        self.shareMetadataTypePostInstagram = modelData.shareMetadataTypePostInstagram;
+        self.shareMetadataTypePostToSignal = modelData.shareMetadataTypePostToSignal;
+        self.shareMetadataTypePostToSnapchat = modelData.shareMetadataTypePostToSnapchat;
+        self.shareMetadataTypePostToTencentWeibo = modelData.shareMetadataTypePostToTencentWeibo;
+        self.shareMetadataTypePostToTwitter = modelData.shareMetadataTypePostToTwitter;
+        self.shareMetadataTypePostToVimeo = modelData.shareMetadataTypePostToVimeo;
+        self.shareMetadataTypePostToWeibo = modelData.shareMetadataTypePostToWeibo;
+        self.shareMetadataTypePostToWhatsApp = modelData.shareMetadataTypePostToWhatsApp;
+        self.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
+        self.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
 	}
 }
 
@@ -248,8 +336,27 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     [saveObject addObject:[NSNumber numberWithDouble:self.dateOfLastTranslationRequest]];
     // Added in v2.2.5…
     [saveObject addObject:[NSNumber numberWithBool:self.didOptimiseImagePreviewSize]];
-	
-	[encoder encodeObject:saveObject forKey:@"Model"];
+    // Added in v2.3…
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeAirDrop]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeAssignToContact]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeCopyToPasteboard]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeMail]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeMessage]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToFacebook]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeMessenger]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToFlickr]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostInstagram]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToSignal]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToSnapchat]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToTencentWeibo]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToTwitter]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToVimeo]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToWeibo]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToWhatsApp]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeSaveToCameraRoll]];
+    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeOther]];
+                           
+    [encoder encodeObject:saveObject forKey:@"Model"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -386,6 +493,96 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.didOptimiseImagePreviewSize = [[savedData objectAtIndex:26] boolValue];
     } else {
         self.didOptimiseImagePreviewSize = NO;
+    }
+    if(savedData.count > 27) {
+        self.shareMetadataTypeAirDrop = [[savedData objectAtIndex:27] boolValue];
+    } else {
+        self.shareMetadataTypeAirDrop = YES;
+    }
+    if(savedData.count > 28) {
+        self.shareMetadataTypeAssignToContact = [[savedData objectAtIndex:28] boolValue];
+    } else {
+        self.shareMetadataTypeAssignToContact = NO;
+    }
+    if(savedData.count > 29) {
+        self.shareMetadataTypeCopyToPasteboard = [[savedData objectAtIndex:29] boolValue];
+    } else {
+        self.shareMetadataTypeCopyToPasteboard = NO;
+    }
+    if(savedData.count > 30) {
+        self.shareMetadataTypeMail = [[savedData objectAtIndex:30] boolValue];
+    } else {
+        self.shareMetadataTypeMail = YES;
+    }
+    if(savedData.count > 31) {
+        self.shareMetadataTypeMessage = [[savedData objectAtIndex:31] boolValue];
+    } else {
+        self.shareMetadataTypeMessage = YES;
+    }
+    if(savedData.count > 32) {
+        self.shareMetadataTypePostToFacebook = [[savedData objectAtIndex:32] boolValue];
+    } else {
+        self.shareMetadataTypePostToFacebook = NO;
+    }
+    if(savedData.count > 33) {
+        self.shareMetadataTypeMessenger = [[savedData objectAtIndex:33] boolValue];
+    } else {
+        self.shareMetadataTypeMessenger = NO;
+    }
+    if(savedData.count > 34) {
+        self.shareMetadataTypePostToFlickr = [[savedData objectAtIndex:34] boolValue];
+    } else {
+        self.shareMetadataTypePostToFlickr = YES;
+    }
+    if(savedData.count > 35) {
+        self.shareMetadataTypePostInstagram = [[savedData objectAtIndex:35] boolValue];
+    } else {
+        self.shareMetadataTypePostInstagram = NO;
+    }
+    if(savedData.count > 36) {
+        self.shareMetadataTypePostToSignal = [[savedData objectAtIndex:36] boolValue];
+    } else {
+        self.shareMetadataTypePostToSignal = YES;
+    }
+    if(savedData.count > 37) {
+        self.shareMetadataTypePostToSnapchat = [[savedData objectAtIndex:37] boolValue];
+    } else {
+        self.shareMetadataTypePostToSnapchat = NO;
+    }
+    if(savedData.count > 38) {
+        self.shareMetadataTypePostToTencentWeibo = [[savedData objectAtIndex:38] boolValue];
+    } else {
+        self.shareMetadataTypePostToTencentWeibo = NO;
+    }
+    if(savedData.count > 39) {
+        self.shareMetadataTypePostToTwitter = [[savedData objectAtIndex:39] boolValue];
+    } else {
+        self.shareMetadataTypePostToTwitter = NO;
+    }
+    if(savedData.count > 40) {
+        self.shareMetadataTypePostToVimeo = [[savedData objectAtIndex:40] boolValue];
+    } else {
+        self.shareMetadataTypePostToVimeo = NO;
+    }
+    if(savedData.count > 41) {
+        self.shareMetadataTypePostToWeibo = [[savedData objectAtIndex:41] boolValue];
+    } else {
+        self.shareMetadataTypePostToWeibo = NO;
+    }
+    if(savedData.count > 42) {
+        self.shareMetadataTypePostToWhatsApp = [[savedData objectAtIndex:42] boolValue];
+    } else {
+        self.shareMetadataTypePostToWhatsApp = NO;
+    }
+    if(savedData.count > 43) {
+        self.shareMetadataTypeSaveToCameraRoll = [[savedData objectAtIndex:43] boolValue];
+    } else {
+        self.shareMetadataTypeSaveToCameraRoll = YES;
+    }
+    if(savedData.count > 44) {
+        self.shareMetadataTypeOther = [[savedData objectAtIndex:44] boolValue];
+    } else {
+        self.shareMetadataTypeOther = NO;
     }
 	return self;
 }
