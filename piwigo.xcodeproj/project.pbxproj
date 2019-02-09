@@ -40,6 +40,9 @@
 		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		ADE936F82182D54D0003F037 /* PrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */; };
+		ADE9744F220AEB3700CA8E8D /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE9744D220AEB3700CA8E8D /* MainInterface.storyboard */; };
+		ADE97453220AEB3700CA8E8D /* uploadExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = ADE97448220AEB3700CA8E8D /* uploadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		ADE9745A220AEBC800CA8E8D /* UploadExtensionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE97459220AEBC800CA8E8D /* UploadExtensionViewController.m */; };
 		ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */; };
 		ADF1FCE821F367D100096D35 /* AsyncVideoActivityItemProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF1FCE721F367C900096D35 /* AsyncVideoActivityItemProvider.m */; };
 		ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E762066D04600D1CE26 /* OpenSansBold.TTF */; };
@@ -136,7 +139,28 @@
 			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
 			remoteInfo = piwigo;
 		};
+		ADE97451220AEB3700CA8E8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ADE97447220AEB3700CA8E8D;
+			remoteInfo = uploadExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		ADE97457220AEB3700CA8E8D /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				ADE97453220AEB3700CA8E8D /* uploadExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		297CC11501571E3E266D8AB5 /* libPods-piwigoAppStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoAppStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -246,6 +270,11 @@
 		ADC5E23E2184D1BE002B0D48 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrivacyPolicyViewController.m; sourceTree = "<group>"; };
 		ADE936F92182D5650003F037 /* PrivacyPolicyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivacyPolicyViewController.h; sourceTree = "<group>"; };
+		ADE97448220AEB3700CA8E8D /* uploadExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = uploadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		ADE9744E220AEB3700CA8E8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		ADE97450220AEB3700CA8E8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ADE97458220AEBC100CA8E8D /* UploadExtensionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadExtensionViewController.h; sourceTree = "<group>"; };
+		ADE97459220AEBC800CA8E8D /* UploadExtensionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadExtensionViewController.m; sourceTree = "<group>"; };
 		ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoryTableViewCell.xib; sourceTree = "<group>"; };
 		ADF1FCE721F367C900096D35 /* AsyncVideoActivityItemProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AsyncVideoActivityItemProvider.m; sourceTree = "<group>"; };
 		ADF1FCE921F367DF00096D35 /* AsyncVideoActivityItemProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AsyncVideoActivityItemProvider.h; sourceTree = "<group>"; };
@@ -430,6 +459,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ADE97445220AEB3700CA8E8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D82B8CB81A67820A000E47CA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -599,6 +635,17 @@
 			path = "Album Thumbnail";
 			sourceTree = "<group>";
 		};
+		ADE97449220AEB3700CA8E8D /* uploadExtension */ = {
+			isa = PBXGroup;
+			children = (
+				ADE97458220AEBC100CA8E8D /* UploadExtensionViewController.h */,
+				ADE97459220AEBC800CA8E8D /* UploadExtensionViewController.m */,
+				ADE9744D220AEB3700CA8E8D /* MainInterface.storyboard */,
+				ADE97450220AEB3700CA8E8D /* Info.plist */,
+			);
+			path = uploadExtension;
+			sourceTree = "<group>";
+		};
 		ADF65A1D20CD2C5C001C567F /* Image Sort */ = {
 			isa = PBXGroup;
 			children = (
@@ -734,6 +781,7 @@
 				D82B8CBD1A67820A000E47CA /* piwigo */,
 				AD30FD3521316DA8009AA30E /* piwigoAppStore */,
 				AD1EBB66213404D50012FA44 /* piwigoGetPiwigo */,
+				ADE97449220AEB3700CA8E8D /* uploadExtension */,
 				D82B8CBC1A67820A000E47CA /* Products */,
 				9BE2F03E92BB4BD667BAA1F0 /* Pods */,
 				1F042DC0C96A55B227088605 /* Frameworks */,
@@ -746,6 +794,7 @@
 				D82B8CBB1A67820A000E47CA /* piwigo.app */,
 				AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */,
 				AD1EBB65213404D50012FA44 /* piwigoGetPiwigo.xctest */,
+				ADE97448220AEB3700CA8E8D /* uploadExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1052,6 +1101,23 @@
 			productReference = AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		ADE97447220AEB3700CA8E8D /* uploadExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ADE97456220AEB3700CA8E8D /* Build configuration list for PBXNativeTarget "uploadExtension" */;
+			buildPhases = (
+				ADE97444220AEB3700CA8E8D /* Sources */,
+				ADE97445220AEB3700CA8E8D /* Frameworks */,
+				ADE97446220AEB3700CA8E8D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = uploadExtension;
+			productName = uploadExtension;
+			productReference = ADE97448220AEB3700CA8E8D /* uploadExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		D82B8CBA1A67820A000E47CA /* piwigo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D82B8CDE1A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigo" */;
@@ -1062,10 +1128,12 @@
 				AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */,
 				D82B8CB91A67820A000E47CA /* Resources */,
 				7A9296FADB36B3093B24E071 /* [CP] Copy Pods Resources */,
+				ADE97457220AEB3700CA8E8D /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				ADE97452220AEB3700CA8E8D /* PBXTargetDependency */,
 			);
 			name = piwigo;
 			productName = piwigo;
@@ -1093,6 +1161,9 @@
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Manual;
 						TestTargetID = D82B8CBA1A67820A000E47CA;
+					};
+					ADE97447220AEB3700CA8E8D = {
+						CreatedOnToolsVersion = 10.2;
 					};
 					D82B8CBA1A67820A000E47CA = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -1139,6 +1210,7 @@
 				D82B8CBA1A67820A000E47CA /* piwigo */,
 				AD30FD3321316DA7009AA30E /* piwigoAppStore */,
 				AD1EBB64213404D50012FA44 /* piwigoGetPiwigo */,
+				ADE97447220AEB3700CA8E8D /* uploadExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1155,6 +1227,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ADE97446220AEB3700CA8E8D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ADE9744F220AEB3700CA8E8D /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1302,6 +1382,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ADE97444220AEB3700CA8E8D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ADE9745A220AEBC800CA8E8D /* UploadExtensionViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D82B8CB71A67820A000E47CA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1407,6 +1495,11 @@
 			isa = PBXTargetDependency;
 			target = D82B8CBA1A67820A000E47CA /* piwigo */;
 			targetProxy = AD30FD3921316DA8009AA30E /* PBXContainerItemProxy */;
+		};
+		ADE97452220AEB3700CA8E8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ADE97447220AEB3700CA8E8D /* uploadExtension */;
+			targetProxy = ADE97451220AEB3700CA8E8D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1526,6 +1619,14 @@
 				ADA6F18E21CA924D006C9DD5 /* it */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		ADE9744D220AEB3700CA8E8D /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ADE9744E220AEB3700CA8E8D /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1666,6 +1767,70 @@
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = piwigo;
+			};
+			name = Release;
+		};
+		ADE97454220AEB3700CA8E8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = ZEC3W885H6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = uploadExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.uploadExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ADE97455220AEB3700CA8E8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = uploadExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.uploadExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1863,6 +2028,15 @@
 			buildConfigurations = (
 				AD30FD3C21316DA8009AA30E /* Debug */,
 				AD30FD3D21316DA8009AA30E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ADE97456220AEB3700CA8E8D /* Build configuration list for PBXNativeTarget "uploadExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ADE97454220AEB3700CA8E8D /* Debug */,
+				ADE97455220AEB3700CA8E8D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
