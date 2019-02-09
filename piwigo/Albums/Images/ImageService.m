@@ -32,12 +32,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 @implementation ImageService
 
-// API pwg.categories.getImages returns:
-//
-//      id, name, width, height, categories, comment, hit
-//      file, date_creation, date_available
-//      page_url, derivatives
-//
 +(NSURLSessionTask*)getImagesForAlbumId:(NSInteger)albumId
                                  onPage:(NSInteger)page
                                forOrder:(NSString*)order
@@ -112,13 +106,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 	return albumImages;
 }
 
-// API pwg.images.getInfo returns:
-//
-//      (id, name, width, height, categories, comment, hit), comments, comments_paging, rotation, coi, author
-//      (file, date_creation, date_available), date_metadata_update, lastmodified, filesize, md5sum,
-//      (page_url, derivatives), representative_ext
-//      added_by, rating_score, level, rates, tags, latitude, longitude,
-//
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
@@ -176,7 +163,40 @@ NSString * const kGetImageOrderDescending = @"desc";
 {
 	PiwigoImageData *imageData = [PiwigoImageData new];
 	
-	imageData.imageId = [imageJson objectForKey:@"id"];
+    // API pwg.categories.getList returns:
+    //      id, categories, name, comment, (hit)
+    //      file, date_creation, date_available, width, height
+    //      element_url, derivatives, (page_url)
+    //
+
+    // Object "id"
+    imageData.imageId = [imageJson objectForKey:@"id"];
+
+    // Object "categories"
+    NSDictionary *categories = [imageJson objectForKey:@"categories"];
+    NSMutableArray *categoryIds = [NSMutableArray new];
+    for(NSDictionary *category in categories)
+    {
+        [categoryIds addObject:[category objectForKey:@"id"]];
+    }
+    imageData.categoryIds = categoryIds;
+    categoryIds = nil;
+
+    // Object "name"
+    imageData.name = [imageJson objectForKey:@"name"];
+    if(!imageData.name || [imageData.name isKindOfClass:[NSNull class]])
+    {
+        imageData.name = @"";
+    }
+    
+    // Object "comment"
+    imageData.imageDescription = [imageJson objectForKey:@"comment"];
+    if(!imageData.imageDescription || [imageData.imageDescription isKindOfClass:[NSNull class]])
+    {
+        imageData.imageDescription = @"";
+    }
+    
+    // Object "file"
     imageData.fileName = [imageJson objectForKey:@"file"];
     if(!imageData.fileName || [imageData.fileName isKindOfClass:[NSNull class]])
     {
@@ -191,43 +211,10 @@ NSString * const kGetImageOrderDescending = @"desc";
 	{
 		imageData.isVideo = YES;
 	}
-    if ([imageJson objectForKey:@"filesize"]) {
-        imageData.fileSize = [[imageJson objectForKey:@"filesize"] integerValue];
-    } else {
-        imageData.fileSize = NSNotFound;
-    }
-
-    imageData.name = [imageJson objectForKey:@"name"];
-	if(!imageData.name || [imageData.name isKindOfClass:[NSNull class]])
-	{
-		imageData.name = @"";
-	}
-    // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
-    // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
-    imageData.fullResPath = [NetworkHandler encodedImageURL:[[imageJson objectForKey:@"element_url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
-	
-	imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
-
-    imageData.author = [imageJson objectForKey:@"author"];
-	if(!imageData.author || [imageData.author isKindOfClass:[NSNull class]])
-	{
-		imageData.author = @"";
-	}
     
-    imageData.imageDescription = [imageJson objectForKey:@"comment"];
-	if(!imageData.imageDescription || [imageData.imageDescription isKindOfClass:[NSNull class]])
-	{
-		imageData.imageDescription = @"";
-	}
-	
+    // Object "date_creation"
     NSDateFormatter *dateFormat = [NSDateFormatter new];
-	NSString *dateAvailableString = [imageJson objectForKey:@"date_available"];
-	[dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    if (![dateAvailableString isKindOfClass:[NSNull class]]) {
-        imageData.datePosted = [dateFormat dateFromString:dateAvailableString];
-    } else {
-        imageData.datePosted = [NSDate date];
-    }
+    [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSString *dateCreatedString = [imageJson objectForKey:@"date_creation"];
     if (![dateCreatedString isKindOfClass:[NSNull class]]) {
         imageData.dateCreated = [dateFormat dateFromString:dateCreatedString];
@@ -237,6 +224,30 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.dateCreated = imageData.datePosted;
     }
 
+    // Object "date_available"
+    NSString *dateAvailableString = [imageJson objectForKey:@"date_available"];
+    if (![dateAvailableString isKindOfClass:[NSNull class]]) {
+        imageData.datePosted = [dateFormat dateFromString:dateAvailableString];
+    } else {
+        imageData.datePosted = [NSDate date];
+    }
+
+    // Object "width"
+    if (![[imageJson objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+        imageData.fullResWidth = [[imageJson objectForKey:@"width"] integerValue];
+    }
+    
+    // Object "height"
+    if (![[imageJson objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+        imageData.fullResHeight = [[imageJson objectForKey:@"height"] integerValue];
+    }
+
+    // Object "element_url"
+    // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
+    // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
+    imageData.fullResPath = [NetworkHandler encodedImageURL:[[imageJson objectForKey:@"element_url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    
+    // Objects "derivatives"
     // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
     // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
@@ -393,39 +404,49 @@ NSString * const kGetImageOrderDescending = @"desc";
         // When the image dimensions are unknown, use 0
         imageData.XXLargeHeight = 0;
     }
-
-    // Full resolution dimensions
-    if (![[imageJson objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
-        imageData.fullResWidth = [[imageJson objectForKey:@"width"] integerValue];
+    
+    // API pwg.images.getInfo returns in addition:
+    //
+    //      author, level, tags, (added_by), (rating_score), (rates), (representative_ext)
+    //      filesize, (md5sum), (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
+    //      (comments), (comments_paging), (coi)
+    //
+    
+    // Object "author"
+    imageData.author = [imageJson objectForKey:@"author"];
+    if(!imageData.author || [imageData.author isKindOfClass:[NSNull class]])
+    {
+        imageData.author = @"NSNotFound";
     }
-    if (![[imageJson objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
-        imageData.fullResHeight = [[imageJson objectForKey:@"height"] integerValue];
+
+    // Object "level"
+    if ([imageJson objectForKey:@"level"]) {
+        imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
+    } else {
+        imageData.privacyLevel = NSNotFound;
     }
     
-    // Categories
-    NSDictionary *categories = [imageJson objectForKey:@"categories"];
-	NSMutableArray *categoryIds = [NSMutableArray new];
-	for(NSDictionary *category in categories)
-	{
-		[categoryIds addObject:[category objectForKey:@"id"]];
-	}
-	imageData.categoryIds = categoryIds;
-    categoryIds = nil;
-	
-    // Tags
+    // Object "tags"
     NSDictionary *tags = [imageJson objectForKey:@"tags"];
-	NSMutableArray *imageTags = [NSMutableArray new];
-	for(NSDictionary *tag in tags)
-	{
-		PiwigoTagData *tagData = [PiwigoTagData new];
-		tagData.tagId = [[tag objectForKey:@"id"] integerValue];
-		tagData.tagName = [tag objectForKey:@"name"];
-		[imageTags addObject:tagData];
-	}
-	imageData.tags = imageTags;
+    NSMutableArray *imageTags = [NSMutableArray new];
+    for(NSDictionary *tag in tags)
+    {
+        PiwigoTagData *tagData = [PiwigoTagData new];
+        tagData.tagId = [[tag objectForKey:@"id"] integerValue];
+        tagData.tagName = [tag objectForKey:@"name"];
+        [imageTags addObject:tagData];
+    }
+    imageData.tags = imageTags;
     imageTags = nil;
-	
-	return imageData;
+    
+    // Object "filesize"
+    if ([imageJson objectForKey:@"filesize"]) {
+        imageData.fileSize = [[imageJson objectForKey:@"filesize"] integerValue];
+    } else {
+        imageData.fileSize = NSNotFound;
+    }
+    
+    return imageData;
 }
 
 +(NSURLSessionTask*)deleteImage:(PiwigoImageData*)image
