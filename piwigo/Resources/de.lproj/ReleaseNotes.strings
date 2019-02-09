@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.0_text" = "Version 2.3\n\n• Teile Fotos und Videos\n• Erhöhen Sie die Grenzen der Cachegröße\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface\n• Aktualisierte Übersetzungen";
+"v2.3.1_text" = "Version 2.3.1\n\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface\n• Aktualisierte Übersetzungen";
+
+"v2.3.0_text" = "Version 2.3\n2. Februar 2019\n\n• Teile Fotos und Videos\n• Erhöhen Sie die Grenzen der Cachegröße\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface\n• Aktualisierte Übersetzungen";
 
 "v2.2.7_text" = "Version 2.2.7\n29. Dezember 2018\n\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface\n• Aktualisierte Übersetzungen";
 
