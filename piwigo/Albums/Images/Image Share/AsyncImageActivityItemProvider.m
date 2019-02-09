@@ -15,7 +15,7 @@
 #import "PhotosFetch.h"
 
 NSString * const kPiwigoNotificationDidShareImage = @"kPiwigoNotificationDidShareImage";
-NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCancelShareImage";
+NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationCancelDownloadImage";
 
 @interface AsyncImageActivityItemProvider ()
 
@@ -57,7 +57,7 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
 
     // Register image share methods to perform on completion
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFinishSharingImage) name:kPiwigoNotificationDidShareImage object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelDownloadImageTask) name:kPiwigoNotificationCancelShareImage object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelDownloadImageTask) name:kPiwigoNotificationCancelDownloadImage object:nil];
 
     // Select the most appropriate image size (infinity when undefined)
     // See https://makeawebsitehub.com/social-media-image-sizes-cheat-sheet/
@@ -404,7 +404,7 @@ NSString * const kPiwigoNotificationCancelShareImage = @"kPiwigoNotificationCanc
 
     // Remove image share observers
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDidShareImage object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCancelShareImage object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCancelDownloadImage object:nil];
 
     // Inform user in case of error after dismissing activity view controller
     if (self.alertTitle) {

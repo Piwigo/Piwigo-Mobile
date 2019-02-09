@@ -526,7 +526,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                 progress:progress
                              destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
                                  NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-                                 NSLog(@"=> downloaded %@", [documentsDirectoryURL URLByAppendingPathComponent:fileName]);
+//                                 NSLog(@"=> downloaded %@", [documentsDirectoryURL URLByAppendingPathComponent:fileName]);
                                  return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
                              }
                        completionHandler:completionHandler

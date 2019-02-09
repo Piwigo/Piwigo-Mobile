@@ -11,7 +11,7 @@
 #import "PiwigoImageData.h"
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShareImage;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelShareImage;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownloadImage;
 
 @class PiwigoImageData;
 

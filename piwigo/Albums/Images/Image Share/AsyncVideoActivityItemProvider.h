@@ -12,7 +12,7 @@
 #import "AsyncImageActivityItemProvider.h"
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShareVideo;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelShareVideo;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownloadVideo;
 
 @class PiwigoImageData;
 

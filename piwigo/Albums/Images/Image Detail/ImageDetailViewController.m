@@ -735,15 +735,15 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                 NSLog(@"Activity was not performed.");
                 if (self.imageData.isVideo)
                 {
-                    // Cancel task
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelShareVideo object:nil];
+                    // Cancel download task
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadVideo object:nil];
                     
                     // Delete shared video file & remove observers
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
                 }
                 else {
-                    // Cancel task
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelShareImage object:nil];
+                    // Cancel download task
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadImage object:nil];
                     
                     // Delete shared image file & remove observers
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
