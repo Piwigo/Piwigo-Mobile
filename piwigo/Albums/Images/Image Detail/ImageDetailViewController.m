@@ -520,6 +520,20 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
 }
 
+-(NSInteger)indexOfSelectedImage
+{
+    NSInteger index = 0;
+    for (UIViewController *viewController in self.viewControllers) {
+        // Look for view controller of the right class!
+        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
+            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
+            // Return if exists
+            index = imageViewCtrl.imageIndex;
+            break;
+        }
+    }
+    return index;
+}
 
 #pragma mark - Edit Image
 
@@ -595,26 +609,36 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                
                if (updatedSuccessfully)
                {
-                   // Update image data
-                   self.imageData.categoryIds = categoryIds;
-                   
-                   // Remove image from current category
-                   [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] removeImages:@[self.imageData]];
-                   [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] deincrementImageSizeByOne];
+                    // Update image data
+                    self.imageData.categoryIds = categoryIds;
 
-                   // Hide HUD
-                   [self hideHUDwithSuccess:YES completion:^{
-                       self.hudViewController = nil;
-                   }];
+                    // Remove image from current category
+                    [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] removeImages:@[self.imageData]];
+                    [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] deincrementImageSizeByOne];
 
-                   // Return to album view
-                   [self didRemoveImage:self.imageData];
+                    // Hide HUD
+                    [self hideHUDwithSuccess:YES completion:^{
+                        self.hudViewController = nil;
+                    }];
+
+                    // Return to album view
+                    NSInteger index = 0;
+                    for (UIViewController *viewController in self.viewControllers) {
+                        // Look for view controller of the right class!
+                        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
+                            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
+                            // Return if exists
+                            index = imageViewCtrl.imageIndex;
+                            break;
+                        }
+                    }
+                    [self didRemoveImage:self.imageData atIndex:index];
                }
                else {
-                   [self hideHUDwithSuccess:NO completion:^{
+                    [self hideHUDwithSuccess:NO completion:^{
                        self.hudViewController = nil;
                        [self showDeleteImageErrorWithMessage:NSLocalizedString(@"alertTryAgainButton", @"Try Again")];
-                   }];
+                    }];
                }
            }
               onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -642,7 +666,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                  }];
 
                  // Return to album view
-                 [self didRemoveImage:self.imageData];
+                 [self didRemoveImage:self.imageData atIndex:[self indexOfSelectedImage]];
              }
                     onFailure:^(NSURLSessionTask *task, NSError *error) {
                  [self hideHUDwithSuccess:NO completion:^{
@@ -801,7 +825,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
-                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId andCopyOption:YES];
+                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId atIndex:[self indexOfSelectedImage] andCopyOption:YES];
                 moveImageVC.moveImageDelegate = self;
                 [self pushView:moveImageVC];
             }];
@@ -810,7 +834,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
-                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId andCopyOption:NO];
+                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId atIndex:[self indexOfSelectedImage] andCopyOption:NO];
                 moveImageVC.moveImageDelegate = self;
                 [self pushView:moveImageVC];
             }];
@@ -1029,12 +1053,12 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     self.imageData.categoryIds = [categoryIds mutableCopy];
 }
 
--(void)didRemoveImage:(PiwigoImageData *)image
+-(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     // Update album data
-    if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:)])
+    if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:atIndex:)])
     {
-        [self.imgDetailDelegate didDeleteImage:self.imageData];
+        [self.imgDetailDelegate didDeleteImage:self.imageData atIndex:index];
     }
 
     // Return to image collection

@@ -1496,6 +1496,20 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)addImagesToCategory
 {
+    // Determine index of first selected cell
+    NSInteger indexOfFirstSelectedImage = INFINITY;
+    for (NSNumber *imageId in self.selectedImageIds) {
+        NSInteger obj1 = [imageId integerValue];
+        NSInteger index = 0;
+        for (PiwigoImageData *image in self.albumData.images) {
+            NSInteger obj2 = [image.imageId integerValue];
+            if (obj1 == obj2) break;
+            index++;
+        }
+        indexOfFirstSelectedImage = MIN(index, indexOfFirstSelectedImage);
+    }
+
+    // Present alert to user
     UIAlertController* alert = [UIAlertController
                                 alertControllerWithTitle:nil message:nil
                                 preferredStyle:UIAlertControllerStyleActionSheet];
@@ -1509,7 +1523,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                  actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * action) {
-                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:nil inCategoryId:self.categoryId andCopyOption:YES];
+                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:nil inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:YES];
                                      moveImageVC.moveImagesDelegate = self;
                                      [self pushView:moveImageVC];
                                  }];
@@ -1518,7 +1532,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                  actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * action) {
-                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:nil inCategoryId:self.categoryId andCopyOption:NO];
+                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:nil inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:NO];
                                      moveImageVC.moveImagesDelegate = self;
                                      [self pushView:moveImageVC];
                                  }];
@@ -1780,7 +1794,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath.section == 1)
+    if (indexPath.section == 1)     // Thumbnails of images
     {
         ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 
@@ -1920,9 +1934,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
 }
 
--(void)didDeleteImage:(PiwigoImageData *)image
+-(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     [self.albumData removeImage:image];
+    index = MAX(0, index-1);                                    // index must be > 0
+    index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
+    self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
     [self.imagesCollection reloadData];
 }
 
@@ -1940,9 +1957,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - MoveImagesDelegate methods
 
--(void)didRemoveImage:(PiwigoImageData *)image
+-(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     [self.albumData removeImage:image];
+    index = MAX(0, index-1);                                    // index must be > 0
+    index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
+    self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
     [self.imagesCollection reloadData];
 }
 

@@ -15,7 +15,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationPinchedImage;
 @protocol ImageDetailDelegate <NSObject>
 
 -(void)didFinishPreviewOfImageWithId:(NSInteger)imageId;
--(void)didDeleteImage:(PiwigoImageData*)image;
+-(void)didDeleteImage:(PiwigoImageData*)image atIndex:(NSInteger)index;
 -(void)needToLoadMoreImages;
 
 @end

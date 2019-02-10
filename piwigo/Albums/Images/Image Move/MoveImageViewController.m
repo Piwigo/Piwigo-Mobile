@@ -27,6 +27,7 @@
 @property (nonatomic, assign) double nberOfSelectedImages;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 @property (nonatomic, assign) NSInteger categoryIdOfSelectedImages;
+@property (nonatomic, assign) NSInteger indexOfFirstSelectedImage;
 @property (nonatomic, assign) BOOL copyImage;
 @property (nonatomic, assign) BOOL isLoadingImageData;
 
@@ -40,7 +41,7 @@
 
 @implementation MoveImageViewController
 
--(instancetype)initWithSelectedImageIds:(NSArray*)imageIds orSingleImageData:(PiwigoImageData *)imageData inCategoryId:(NSInteger)categoryId andCopyOption:(BOOL)copyImage
+-(instancetype)initWithSelectedImageIds:(NSArray*)imageIds orSingleImageData:(PiwigoImageData *)imageData inCategoryId:(NSInteger)categoryId atIndex:(NSInteger)index andCopyOption:(BOOL)copyImage
 {
     self = [super init];
     if(self)
@@ -57,6 +58,7 @@
         if (imageIds != nil) self.selectedImageIds = [imageIds mutableCopy];
         if (imageData != nil) self.selectedImage = imageData;
         self.categoryIdOfSelectedImages = categoryId;
+        self.indexOfFirstSelectedImage = index;
         self.copyImage = copyImage;
         
         // List of categories to present
@@ -181,9 +183,9 @@
     // Return to album view (image moved)
     [self dismissViewControllerAnimated:YES completion:^{
         // Update album view and dismiss image detail view
-        if([self.moveImageDelegate respondsToSelector:@selector(didRemoveImage:)])
+        if([self.moveImageDelegate respondsToSelector:@selector(didRemoveImage:atIndex:)])
         {
-            [self.moveImageDelegate didRemoveImage:self.selectedImage];
+            [self.moveImageDelegate didRemoveImage:self.selectedImage atIndex:self.indexOfFirstSelectedImage];
         }
     }];
 }
@@ -550,9 +552,9 @@
                     else if (self.selectedImages.count > 1) {
                         // Update album view if image moved
                         if (!self.copyImage) {
-                            if([self.moveImagesDelegate respondsToSelector:@selector(didRemoveImage:)])
+                            if([self.moveImagesDelegate respondsToSelector:@selector(didRemoveImage:atIndex:)])
                             {
-                                [self.moveImagesDelegate didRemoveImage:self.selectedImage];
+                                [self.moveImagesDelegate didRemoveImage:self.selectedImage atIndex:self.indexOfFirstSelectedImage];
                             }
                         }
                         
@@ -570,9 +572,9 @@
                             [MBProgressHUD HUDForView:self.hudViewController.view].progress = 1.0;
                         });
                         if (!self.copyImage) {
-                            if([self.moveImagesDelegate respondsToSelector:@selector(didRemoveImage:)])
+                            if([self.moveImagesDelegate respondsToSelector:@selector(didRemoveImage:atIndex:)])
                             {
-                                [self.moveImagesDelegate didRemoveImage:self.selectedImage];
+                                [self.moveImagesDelegate didRemoveImage:self.selectedImage atIndex:self.indexOfFirstSelectedImage];
                             }
                         }
                         
