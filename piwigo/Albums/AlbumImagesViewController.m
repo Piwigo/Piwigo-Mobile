@@ -1102,7 +1102,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         handler:^(UIAlertAction * action) {
 
             // Display HUD during server update
-            self.totalNumberOfImages = self.selectedImagesToRemove.count + self.selectedImagesToDelete.count;
+            self.totalNumberOfImages = self.selectedImagesToRemove.count
+                                     + (self.selectedImagesToDelete.count > 0);
             if (self.totalNumberOfImages > 1) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self showHUDwithTitle:NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:NO];
@@ -1263,63 +1264,66 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)deleteImages
 {
-	if (self.selectedImagesToDelete.count <= 0)
-	{
+    if (self.selectedImagesToDelete.count <= 0)
+    {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self hideHUDwithSuccess:YES completion:^{
                 [self cancelSelect];
             }];
         });
-		return;
-	}
+        return;
+    }
     
-    // Let's delete the image
-    self.selectedImage = [self.selectedImagesToDelete lastObject];
-    [ImageService deleteImage:self.selectedImage
-           ListOnCompletion:^(NSURLSessionTask *task) {
-               
-               // Image deleted
-               [self.albumData removeImageWithId:[self.selectedImage.imageId integerValue]];
-               [self.selectedImageIds removeObject:self.selectedImage.imageId];
-               [self.imagesCollection reloadData];
+    // Let's delete all images at once
+    [ImageService deleteImages:self.selectedImagesToDelete
+              ListOnCompletion:^(NSURLSessionTask *task) {
+                  
+                  // Images deleted
+                  for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
+                      [self.albumData removeImageWithId:[selectedImage.imageId integerValue]];
+                      [self.selectedImageIds removeObject:selectedImage.imageId];
+                  }
+                  
+                  // Reload collection
+                  [self.imagesCollection reloadData];
 
-               // Next image
-               [self.selectedImagesToDelete removeLastObject];
-               dispatch_async(dispatch_get_main_queue(), ^{
-                   [MBProgressHUD HUDForView:self.hudViewController.view].progress = 1.0 - (double)(self.selectedImagesToDelete.count) / self.totalNumberOfImages;
-               });
-               [self deleteImages];
-           }
-           onFailure:^(NSURLSessionTask *task, NSError *error) {
-              // Error — Try again ?
-              UIAlertController* alert = [UIAlertController
-                  alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-                  message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
-                  preferredStyle:UIAlertControllerStyleAlert];
-              
-              UIAlertAction* dismissAction = [UIAlertAction
-                  actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                  style:UIAlertActionStyleCancel
-                  handler:^(UIAlertAction * action) {
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [self hideHUDwithSuccess:NO completion:nil];
-                      });
-                  }];
-          
-              UIAlertAction* retryAction = [UIAlertAction
-                  actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                  style:UIAlertActionStyleDestructive
-                  handler:^(UIAlertAction * action) {
-                      [self deleteImages];
-                  }];
-              
-               // Add actions
-               [alert addAction:dismissAction];
-               [alert addAction:retryAction];
-               
-               // Present list of actions
-               [self presentViewController:alert animated:YES completion:nil];
-           }];
+                  // Hide HUD
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [self hideHUDwithSuccess:YES completion:^{
+                          [self cancelSelect];
+                      }];
+                  });
+              }
+                    onFailure:^(NSURLSessionTask *task, NSError *error) {
+                        // Error — Try again ?
+                        UIAlertController* alert = [UIAlertController
+                            alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                            message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                            preferredStyle:UIAlertControllerStyleAlert];
+                        
+                        UIAlertAction* dismissAction = [UIAlertAction
+                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                            style:UIAlertActionStyleCancel
+                            handler:^(UIAlertAction * action) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [self hideHUDwithSuccess:NO completion:nil];
+                                });
+                            }];
+                        
+                        UIAlertAction* retryAction = [UIAlertAction
+                            actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                            style:UIAlertActionStyleDestructive
+                            handler:^(UIAlertAction * action) {
+                              [self deleteImages];
+                            }];
+                        
+                        // Add actions
+                        [alert addAction:dismissAction];
+                        [alert addAction:retryAction];
+                        
+                        // Present list of actions
+                        [self presentViewController:alert animated:YES completion:nil];
+                    }];
 }
 
 

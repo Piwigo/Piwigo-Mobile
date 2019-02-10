@@ -476,6 +476,44 @@ NSString * const kGetImageOrderDescending = @"desc";
 			  }];
 }
 
++(NSURLSessionTask*)deleteImages:(NSArray *)images
+                ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
+                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    // Create string containing pipe separated list of image ids
+    NSMutableString *listOfImageIds = [NSMutableString new];
+    for (PiwigoImageData *image in images) {
+        [listOfImageIds appendFormat:(NSString *)@"%ld", [image.imageId integerValue]];
+        [listOfImageIds appendString:@"|"];
+    }
+    [listOfImageIds deleteCharactersInRange:NSMakeRange((listOfImageIds.length -1), 1)];
+    
+    // Send request to server
+    return [self post:kPiwigoImageDelete
+        URLParameters:nil
+           parameters:@{
+                        @"image_id" : listOfImageIds,
+                        @"pwg_token" : [Model sharedInstance].pwgToken
+                        }
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  if(completion) {
+                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+                          for (PiwigoImageData *image in images) {
+                              [[CategoriesData sharedInstance] removeImage:image];
+                          }
+                          completion(task);
+                      } else {
+                          fail(task, responseObject);
+                      }
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+                  if(fail) {
+                      fail(task, error);
+                  }
+              }];
+}
+
 +(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
                             ofMinimumSize:(NSInteger)minSize
                        onProgress:(void (^)(NSProgress *))progress
