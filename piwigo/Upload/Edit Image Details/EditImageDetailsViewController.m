@@ -378,13 +378,21 @@ typedef enum {
 	
 	if(indexPath.row == EditImageDetailsOrderPrivacy)
 	{
-		SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
+        // Store recent modifications
+        [self updateImageDetails];
+        
+        // Create view controller
+        SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
 		privacySelectVC.delegate = self;
 		[privacySelectVC setPrivacy:self.imageDetails.privacyLevel];
 		[self.navigationController pushViewController:privacySelectVC animated:YES];
 	}
 	else if(indexPath.row == EditImageDetailsOrderTags)
 	{
+        // Store recent modifications
+        [self updateImageDetails];
+        
+        // Create view controller
 		TagsViewController *tagsVC = [TagsViewController new];
 		tagsVC.delegate = self;
 		tagsVC.alreadySelectedTags = [self.imageDetails.tags mutableCopy];
