@@ -483,7 +483,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Create string containing pipe separated list of image ids
     NSMutableString *listOfImageIds = [NSMutableString new];
     for (PiwigoImageData *image in images) {
-        [listOfImageIds appendFormat:(NSString *)@"%ld", [image.imageId integerValue]];
+        [listOfImageIds appendFormat:(NSString *)@"%ld", (long)[image.imageId integerValue]];
         [listOfImageIds appendString:@"|"];
     }
     [listOfImageIds deleteCharactersInRange:NSMakeRange((listOfImageIds.length -1), 1)];
