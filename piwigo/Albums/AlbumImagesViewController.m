@@ -808,14 +808,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        navController.modalPresentationStyle = UIModalPresentationPopover;
-        navController.popoverPresentationController.sourceView = self.view;
-        [navController.popoverPresentationController setPermittedArrowDirections:0];
-        [navController.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds), 0, 0)];
-    } else {
-        navController.modalPresentationStyle = UIModalPresentationFullScreen;
-    }
+    navController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:navController animated:YES completion:nil];
 }
 
@@ -826,7 +819,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:uploadViewController];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    navController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:navController animated:YES completion:nil];
 }
 
