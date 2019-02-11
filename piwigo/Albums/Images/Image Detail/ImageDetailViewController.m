@@ -364,6 +364,11 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
 }
 
+// Display/hide status bar
+-(BOOL)prefersStatusBarHidden{
+    return self.navigationController.isNavigationBarHidden;
+}
+
 -(void)didPinchView
 {
     // Return to image collection (called by ImageScrollView)
