@@ -28,6 +28,7 @@
     self.cellTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     self.cellTextField.autocorrectionType = UITextAutocorrectionTypeYes;
     self.cellTextField.returnKeyType = UIReturnKeyDefault;
+    self.cellTextField.clearButtonMode = UITextFieldViewModeUnlessEditing;
     [self paletteChanged];
 }
 
@@ -36,6 +37,10 @@
     self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.cellTextField.textColor = [UIColor piwigoRightLabelColor];
     self.cellTextField.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    if ([[self.cellTextField.attributedPlaceholder string] length] > 0) {
+        NSString *placeHolder = [self.cellTextField.attributedPlaceholder string];
+        self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeHolder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoRightLabelColor]}];
+    }
     self.cellTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
@@ -43,7 +48,7 @@
 {
 	self.cellLabel.text = label;
 	self.cellTextField.text = text;
-	self.cellTextField.placeholder = placeholder;
+    self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoRightLabelColor]}];
 }
 
 -(NSString*)getTextFieldText

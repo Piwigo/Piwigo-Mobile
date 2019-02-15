@@ -15,7 +15,7 @@
 #import "PhotosFetch.h"
 
 NSString * const kPiwigoNotificationDidShareVideo = @"kPiwigoNotificationDidShareVideo";
-NSString * const kPiwigoNotificationCancelShareVideo = @"kPiwigoNotificationCancelShareVideo";
+NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationCancelDownloadVideo";
 
 @interface AsyncVideoActivityItemProvider ()
 
@@ -57,7 +57,7 @@ NSString * const kPiwigoNotificationCancelShareVideo = @"kPiwigoNotificationCanc
     
     // Register image share methods to perform on completion
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFinishSharingVideo) name:kPiwigoNotificationDidShareVideo object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelDownloadVideoTask) name:kPiwigoNotificationCancelShareVideo object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelDownloadVideoTask) name:kPiwigoNotificationCancelDownloadVideo object:nil];
     
     // Download video synchronously
     self.imageFilePath = nil;
@@ -132,7 +132,7 @@ NSString * const kPiwigoNotificationCancelShareVideo = @"kPiwigoNotificationCanc
     
     // Remove image share observers
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDidShareVideo object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCancelShareVideo object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCancelDownloadVideo object:nil];
     
     // Inform user in case of error after dismissing activity view controller
     if (self.alertTitle) {

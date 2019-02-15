@@ -13,13 +13,13 @@
 @protocol MoveImageDelegate <NSObject>
 
 -(void)didCopyImageInOneOfCategoryIds:(NSMutableArray*)categoryIds;
--(void)didRemoveImage:(PiwigoImageData*)image;
+-(void)didRemoveImage:(PiwigoImageData*)image atIndex:(NSInteger)index;
 
 @end
 
 @protocol MoveImagesDelegate <NSObject>
 
--(void)didRemoveImage:(PiwigoImageData*)image;
+-(void)didRemoveImage:(PiwigoImageData*)image atIndex:(NSInteger)index;
 -(void)deselectImages;
 
 @end
@@ -29,6 +29,6 @@
 @property (nonatomic, weak) id<MoveImageDelegate> moveImageDelegate;
 @property (nonatomic, weak) id<MoveImagesDelegate> moveImagesDelegate;
 
--(instancetype)initWithSelectedImageIds:(NSArray*)imageIds orSingleImageData:(PiwigoImageData *)imageData inCategoryId:(NSInteger)categoryId andCopyOption:(BOOL)copyImage;
+-(instancetype)initWithSelectedImageIds:(NSArray*)imageIds orSingleImageData:(PiwigoImageData *)imageData inCategoryId:(NSInteger)categoryId atIndex:(NSInteger)index andCopyOption:(BOOL)copyImage;
 
 @end

@@ -281,7 +281,11 @@ typedef enum {
 	self.imageDetails.title = textFieldCell.getTextFieldText;
 	
 	textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-	self.imageDetails.author = textFieldCell.getTextFieldText;
+    if (textFieldCell.getTextFieldText.length > 0) {
+        self.imageDetails.author = textFieldCell.getTextFieldText;
+    } else {
+        self.imageDetails.author = @"NSNotFound";
+    }
 	
 	EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
 	self.imageDetails.imageDescription = textViewCell.getTextViewText;
@@ -335,7 +339,11 @@ typedef enum {
 		case EditImageDetailsOrderAuthor:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"textField"];
-			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_author", @"Author:") andTextField:self.imageDetails.author withPlaceholder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")];
+            NSString *author = self.imageDetails.author;
+            if ([self.imageDetails.author isEqualToString:@"NSNotFound"]) {
+                author = @"";
+            }
+			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_author", @"Author:") andTextField:author withPlaceholder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")];
 			break;
 		}
 		case EditImageDetailsOrderPrivacy:
@@ -370,20 +378,28 @@ typedef enum {
 	
 	if(indexPath.row == EditImageDetailsOrderPrivacy)
 	{
-		SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
+        // Store recent modifications
+        [self updateImageDetails];
+        
+        // Create view controller
+        SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
 		privacySelectVC.delegate = self;
 		[privacySelectVC setPrivacy:self.imageDetails.privacyLevel];
 		[self.navigationController pushViewController:privacySelectVC animated:YES];
 	}
 	else if(indexPath.row == EditImageDetailsOrderTags)
 	{
+        // Store recent modifications
+        [self updateImageDetails];
+        
+        // Create view controller
 		TagsViewController *tagsVC = [TagsViewController new];
 		tagsVC.delegate = self;
 		tagsVC.alreadySelectedTags = [self.imageDetails.tags mutableCopy];
 		[self.navigationController pushViewController:tagsVC animated:YES];
     }
     else if (indexPath.row == EditImageDetailsOrderAuthor) {
-        if (0 == self.imageDetails.author.length) { // only update if not yet set, dont overwrite
+        if ([self.imageDetails.author isEqualToString:@"NSNotFound"]) { // only update if not yet set, dont overwrite
             if (0 < [[[Model sharedInstance] defaultAuthor] length]) { // must know the default author
                 self.imageDetails.author = [[Model sharedInstance] defaultAuthor];
                 [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];

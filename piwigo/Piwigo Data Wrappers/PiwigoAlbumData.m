@@ -166,20 +166,57 @@
 			}
 		}
 		
-		// this image has already been added, so update it
+		// This image has already been added, so update it
+        // API pwg.categories.getList returns:
+        //      id, categories, name, comment, (hit)
+        //      file, date_creation, date_available, width, height
+        //      element_url, derivatives, (page_url)
+        //
+        // API pwg.images.getInfo returns in addition:
+        //
+        //      author, level, tags, (added_by), (rating_score), (rates), (representative_ext)
+        //      filesize, (md5sum), (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
+        //      (comments), (comments_paging), (coi)
+        //
 		for(PiwigoImageData *updateImage in updateImages)
 		{
 			for(PiwigoImageData *existingImage in self.imageList)
 			{
 				if([existingImage.imageId integerValue]  == [updateImage.imageId integerValue])
 				{
-					[newImageUpdateList addObject:updateImage];
+					// Do not update data with unknowns (i.e. when pwg.categories.getList was called)
+                    if ([updateImage.author isEqualToString:@"NSNotFound"]) {
+                        updateImage.author = existingImage.author;
+                    }
+                    if (updateImage.privacyLevel == NSNotFound) {
+                        updateImage.privacyLevel = existingImage.privacyLevel;
+                    }
+                    if (updateImage.fileSize == NSNotFound) {
+                        updateImage.fileSize = existingImage.fileSize;
+                    }
+                    if (updateImage.tags.count == 0) {
+                        updateImage.tags = existingImage.tags;
+                    }
+                    
+                    [newImageUpdateList addObject:updateImage];
 					break;
 				}
 			}
 		}
 		
-		self.imageList = newImageUpdateList;
+//        @property (nonatomic, assign) NSInteger privacyLevel;
+//        @property (nonatomic, strong) NSString *author;
+//        @property (nonatomic, strong) NSString *imageDescription;
+//        @property (nonatomic, strong) NSArray *tags;
+//        @property (nonatomic, strong) NSArray *categoryIds;
+//        @property (nonatomic, strong) NSDate *datePosted;
+//        @property (nonatomic, strong) NSDate *dateCreated;
+//        @property (nonatomic, assign) BOOL isVideo;
+//        @property (nonatomic, strong) NSString *fullResPath;
+//        @property (nonatomic, assign) NSInteger fullResWidth;
+//        @property (nonatomic, assign) NSInteger fullResHeight;
+
+        self.imageList = newImageUpdateList;
 	}
 	
 	NSMutableArray *newImageList = [[NSMutableArray alloc] initWithArray:self.imageList];
@@ -203,15 +240,6 @@
     
     self.imageList = newImageArray;
 }
-
-//-(void)removeImage:(PiwigoImageData*)image
-//{
-//    NSMutableArray *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
-//    [newImageArray removeObject:image];
-//    self.imageList = newImageArray;
-//    
-//    [self.imageIds removeObjectForKey:image.imageId];
-//}
 
 -(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload
 {

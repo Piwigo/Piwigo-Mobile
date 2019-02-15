@@ -90,10 +90,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitSettings)];
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
-        // Keyboard management
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
-
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
@@ -149,6 +145,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     
     // Set navigation buttons
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+
+    // Register keyboard notifications
+    [self registerForKeyboardNotifications];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -199,6 +198,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 -(void)viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
+
+    // Unregister keyboard notifications
+    [self unregisterKeyboardNotifications];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -2050,18 +2052,32 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     return deviceCode;
 }
 
+
+#pragma mark - Keyboard Notifications
+
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+}
+
+- (void)keyboardWillShow:(NSNotification*)aNotification
+{
+    // Scroll the table so that the cell of interest is visible
+    [self.settingsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingsSectionImageUpload] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
+
+- (void)unregisterKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillShowNotification
+                                                  object:nil];
+}
+
+
 #pragma mark - UITextFieldDelegate Methods
-
--(void)keyboardWillChange:(NSNotification*)notification
-{
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-    self.tableViewBottomConstraint.constant = -keyboardSize.height;
-}
-
--(void)keyboardWillDismiss:(NSNotification*)notification
-{
-    self.tableViewBottomConstraint.constant = 0;
-}
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
