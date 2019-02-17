@@ -585,10 +585,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
 -(void)checkSessionStatusAndTryRelogin
 {
-//    // Display HUD during re-login
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
-//    });
+    // Display HUD during re-login
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
+    });
     
     // Don't try to login in if already being trying
     if (self.isAlreadyTryingToLogin) return;
@@ -612,7 +612,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 } else {
                     // Connection still alive. Do nothing.
                     self.isAlreadyTryingToLogin = NO;
-//                [self hideLoading];
+                    [self hideLoading];
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
                     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
