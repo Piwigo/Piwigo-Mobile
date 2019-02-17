@@ -16,9 +16,10 @@
 #import "SAMKeychain.h"
 #import "ImagesCollection.h"
 
-NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderId = @"id";
+NSString * const kGetImageOrderFileName = @"file";
 NSString * const kGetImageOrderName = @"name";
+NSString * const kGetImageOrderVisits = @"hit";
 NSString * const kGetImageOrderRating = @"rating_score";
 NSString * const kGetImageOrderDateCreated = @"date_creation";
 NSString * const kGetImageOrderDatePosted = @"date_available";
@@ -164,7 +165,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 	PiwigoImageData *imageData = [PiwigoImageData new];
 	
     // API pwg.categories.getList returns:
-    //      id, categories, name, comment, (hit)
+    //      id, categories, name, comment, hit
     //      file, date_creation, date_available, width, height
     //      element_url, derivatives, (page_url)
     //
@@ -194,6 +195,11 @@ NSString * const kGetImageOrderDescending = @"desc";
     if(!imageData.imageDescription || [imageData.imageDescription isKindOfClass:[NSNull class]])
     {
         imageData.imageDescription = @"";
+    }
+    
+    // Object "hit"
+    if (![[imageJson objectForKey:@"hit"] isKindOfClass:[NSNull class]]) {
+        imageData.visits = [[imageJson objectForKey:@"hit"] integerValue];
     }
     
     // Object "file"

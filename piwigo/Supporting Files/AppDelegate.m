@@ -157,9 +157,9 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
-//#if defined(DEBUG)
-//                NSLog(@"       Connection changed but again reachable — Login again?");
-//#endif
+#if defined(DEBUG)
+        NSLog(@"       Connection changed but again reachable: Login in again");
+#endif
         [self.loginVC checkSessionStatusAndTryRelogin];
     }
 }

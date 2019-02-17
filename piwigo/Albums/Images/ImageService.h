@@ -8,9 +8,10 @@
 
 #import "NetworkHandler.h"
 
-FOUNDATION_EXPORT NSString * const kGetImageOrderFileName;
 FOUNDATION_EXPORT NSString * const kGetImageOrderId;
+FOUNDATION_EXPORT NSString * const kGetImageOrderFileName;
 FOUNDATION_EXPORT NSString * const kGetImageOrderName;
+FOUNDATION_EXPORT NSString * const kGetImageOrderVisits;
 FOUNDATION_EXPORT NSString * const kGetImageOrderRating;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDateCreated;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDateAdded;

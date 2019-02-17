@@ -18,9 +18,17 @@ typedef enum {
     kPiwigoSortCategoryDatePostedDescending,        // Date posted, new → old
     kPiwigoSortCategoryDatePostedAscending,         // Date posted, old → new
     
-    kPiwigoSortCategoryFileNameAscending,           // File name, A —> Z
-    kPiwigoSortCategoryFileNameDescending,          // File name, Z —> A
+    kPiwigoSortCategoryFileNameAscending,           // File name, A → Z
+    kPiwigoSortCategoryFileNameDescending,          // File name, Z → A
     
+    kPiwigoSortCategoryVisitsDescending,            // Visits, high → low
+    kPiwigoSortCategoryVisitsAscending,             // Visits, low → high
+    
+// Data not returned by API pwg.categories.getList
+//    kPiwigoSortCategoryRatingScoreDescending,       // Rating score, high → low
+//    kPiwigoSortCategoryRatingScoreAscending,        // Rating score, low → high
+// and level (permissions)
+
 //	kPiwigoSortCategoryVideoOnly,
 //	kPiwigoSortCategoryImageOnly,
 	

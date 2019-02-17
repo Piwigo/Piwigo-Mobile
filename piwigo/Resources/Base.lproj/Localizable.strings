@@ -119,6 +119,8 @@
 "categorySort_dateCreatedAscending" = "Date Created, old → new";
 "categorySort_datePostedDescending" = "Date Posted, new → old";
 "categorySort_datePostedAscending" = "Date Posted, old → new";
+"categorySort_visitsDescending" = "Visits, high → low";
+"categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_videosOnly" = "Videos Only";
 "categorySort_imagesOnly" = "Images Only";
 
