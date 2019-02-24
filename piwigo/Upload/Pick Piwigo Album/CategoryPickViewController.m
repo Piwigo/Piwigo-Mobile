@@ -34,7 +34,6 @@
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId;
 {
-
     self = [super init];
     if(self)
     {
@@ -44,8 +43,6 @@
         if(([Model sharedInstance].hasAdminRights) ||
            ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
         {
-            self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
-            
             // Current category
             self.currentCategoryId = categoryId;
             
@@ -164,6 +161,8 @@
 {
     [super viewWillAppear:animated];
     
+    self.title = NSLocalizedString(@"alertAddButton", @"Add");
+
     // Set colors, fonts, etc.
     [self paletteChanged];
     

@@ -49,8 +49,8 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
         
         // Button for returning to albums/images
-        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
-        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitUpload)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Cancel"];
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
@@ -125,7 +125,7 @@
 {
     [super viewWillDisappear:animated];
     
-    // Do not show album title in backButtonItem of child view to provide enough space for image title
+    // Do not show title in backButtonItem of child view to provide enough space for title
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";

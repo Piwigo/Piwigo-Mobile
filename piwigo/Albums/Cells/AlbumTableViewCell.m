@@ -115,21 +115,21 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         // Right => Left swipe
         self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
         self.rightButtons = @[[MGSwipeButton buttonWithTitle:@""
-                                                        icon:[UIImage imageNamed:@"SwipeTrash.png"]
+                                                        icon:[UIImage imageNamed:@"swipeTrash.png"]
                                              backgroundColor:[UIColor redColor]
                                                     callback:^BOOL(MGSwipeTableCell *sender) {
                                                         [self deleteCategory];
                                                         return YES;
                                                     }],
                               [MGSwipeButton buttonWithTitle:@""
-                                                      icon:[UIImage imageNamed:@"SwipeMove.png"]
+                                                      icon:[UIImage imageNamed:@"swipeMove.png"]
                                            backgroundColor:[UIColor piwigoBrown]
                                                   callback:^BOOL(MGSwipeTableCell *sender) {
                                                       [self moveCategory];
                                                       return YES;
                                                   }],
                               [MGSwipeButton buttonWithTitle:@""
-                                                        icon:[UIImage imageNamed:@"SwipeRename.png"]
+                                                        icon:[UIImage imageNamed:@"swipeRename.png"]
                                              backgroundColor:[UIColor piwigoOrange]
                                                     callback:^BOOL(MGSwipeTableCell *sender) {
                                                         [self renameCategory];

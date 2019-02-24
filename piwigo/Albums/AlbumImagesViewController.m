@@ -814,10 +814,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)displayUpload
 {
-    CategoryPickViewController *uploadViewController = [[CategoryPickViewController alloc] initWithCategoryId:self.categoryId];
-    uploadViewController.title = NSLocalizedString(@"tabBar_upload", @"Upload");
+    CategoryPickViewController *addViewController = [[CategoryPickViewController alloc] initWithCategoryId:self.categoryId];
+    addViewController.title = NSLocalizedString(@"alertAddButton", @"Add");
 
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:uploadViewController];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addViewController];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     navController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:navController animated:YES completion:nil];

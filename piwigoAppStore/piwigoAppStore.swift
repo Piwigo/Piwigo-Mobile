@@ -332,7 +332,7 @@ class piwigoAppStore: XCTestCase {
 
         // Screenshot #7: settings
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        app.navigationBars.buttons["Done"].tap()
+        app.navigationBars.buttons["Cancel"].tap()
         app.buttons["rootAlbum"].tap()
         app.navigationBars.buttons["preferences"].tap()
         app.tables["preferences"].cells["server"].swipeUp()

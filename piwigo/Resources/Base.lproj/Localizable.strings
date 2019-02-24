@@ -108,6 +108,7 @@
 "categoryTableView_subCategoryCount" = "sub-album";
 "categoryTableView_subCategoriesCount" = "sub-albums";
 "categoryImageList_selectButton" = "Select";
+"categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "Error No Data";
 
 // Albums sort
