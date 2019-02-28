@@ -8,6 +8,7 @@
 
 #import <Photos/Photos.h>
 
+#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "ImageDetailViewController.h"
 #import "ImageUpload.h"
@@ -96,6 +97,9 @@
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -113,14 +117,11 @@
     }
 }
 
--(void)viewWillAppear:(BOOL)animated
+-(void)paletteChanged
 {
-    [super viewWillAppear:animated];
-    
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -130,6 +131,17 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    
+    // Collection view
+    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Set colors, fonts, etc.
+    [self paletteChanged];
     
     // Update navigation bar and title
     [self updateNavBar];

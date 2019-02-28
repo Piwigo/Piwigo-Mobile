@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "CategoryPickViewController.h"
 #import "CategoryTableViewCell.h"
@@ -161,6 +161,7 @@
 {
     [super viewWillAppear:animated];
     
+    // Title
     self.title = NSLocalizedString(@"alertAddButton", @"Add");
 
     // Set colors, fonts, etc.

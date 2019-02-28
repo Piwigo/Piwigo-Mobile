@@ -8,8 +8,9 @@
 
 #import <Photos/Photos.h>
 
-#import "LocalAlbumsViewController.h"
+#import "AppDelegate.h"
 #import "CategoryTableViewCell.h"
+#import "LocalAlbumsViewController.h"
 #import "Model.h"
 #import "PhotosFetch.h"
 #import "UploadViewController.h"
@@ -54,6 +55,9 @@
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -92,18 +96,14 @@
     }];
 }
 
+
 #pragma mark - View Lifecycle
 
--(void)viewWillAppear:(BOOL)animated
+-(void)paletteChanged
 {
-    [super viewWillAppear:animated];
-    
-    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
-
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.localAlbumsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -113,11 +113,25 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
-
+    
     // Table view
     self.localAlbumsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.localAlbumsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.localAlbumsTableView reloadData];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Title
+    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
+
+    // Set colors, fonts, etc.
+    [self paletteChanged];
+    
+    // Navigation bar button
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 }
 
 
@@ -139,12 +153,7 @@
 }
 
 
-#pragma mark - UITableView Methods
-
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1 + (self.iCloudGroups.count != 0);
-}
+#pragma mark - UITableView - Header
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -241,6 +250,14 @@
     return header;
 }
 
+
+#pragma mark - UITableView - Rows
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1 + (self.iCloudGroups.count != 0);
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSInteger nberRows = 0;
@@ -290,6 +307,9 @@
     return cell;
 }
 
+
+#pragma mark - UITableViewDelegate Methods
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -306,6 +326,7 @@
     [self.navigationController pushViewController:uploadVC animated:YES];
     
 }
+
 
 #pragma mark - Changes occured in the Photo library
 
