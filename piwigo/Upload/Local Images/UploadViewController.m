@@ -17,14 +17,12 @@
 #import "ImageUploadViewController.h"
 #import "ImagesCollection.h"
 #import "LocalImageHeaderReusableView.h"
-#import "LoadingView.h"
 #import "LocalImageCollectionViewCell.h"
 #import "MBProgressHUD.h"
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "SortLocalImages.h"
 #import "StickyLocalImageHeadersCollectionViewFlowLayout.h"
-#import "UICountingLabel.h"
 #import "UploadViewController.h"
 
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, ImagesHeaderDelegate>
@@ -48,7 +46,6 @@
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
 @property (nonatomic, strong) UIViewController *hudViewController;
-@property (nonatomic, strong) LoadingView *loadingView;
 
 @end
 

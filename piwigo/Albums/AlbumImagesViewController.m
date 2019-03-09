@@ -24,7 +24,6 @@
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
-#import "LoadingView.h"
 #import "LocalAlbumsViewController.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
@@ -35,7 +34,6 @@
 #import "PhotosFetch.h"
 #import "SAMKeychain.h"
 #import "SettingsViewController.h"
-#import "UICountingLabel.h"
 
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
@@ -74,8 +72,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
-@property (nonatomic, strong) LoadingView *loadingView;
-
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
