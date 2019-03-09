@@ -19,6 +19,7 @@
 #import "LocalImageHeaderReusableView.h"
 #import "LoadingView.h"
 #import "LocalImageCollectionViewCell.h"
+#import "MBProgressHUD.h"
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "SortLocalImages.h"
@@ -46,6 +47,7 @@
 @property (nonatomic, strong) NSMutableArray *touchedImages;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
+@property (nonatomic, strong) UIViewController *hudViewController;
 @property (nonatomic, strong) LoadingView *loadingView;
 
 @end
@@ -358,66 +360,29 @@
     
     _sortType = sortType;
     
-    PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-    
     if(sortType == kPiwigoSortByNotUploaded)
     {
-        if(!self.loadingView.superview)
-        {
-            self.loadingView = [LoadingView new];
-            self.loadingView.translatesAutoresizingMaskIntoConstraints = NO;
-            NSString *progressLabelFormat = [NSString stringWithFormat:@"%@ / %@", @"%d", @(downloadingCategory.numberOfImages)];
-            self.loadingView.progressLabel.format = progressLabelFormat;
-            self.loadingView.progressLabel.method = UILabelCountingMethodLinear;
-            [self.loadingView showLoadingWithLabel:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") andProgressLabel:[NSString stringWithFormat:progressLabelFormat, 0]];
-            [self.view addSubview:self.loadingView];
-            [self.view addConstraints:[NSLayoutConstraint constraintCenterView:self.loadingView]];
-            self.loadingView.hidden = YES;
-            
-            if(downloadingCategory.numberOfImages != downloadingCategory.imageList.count)
-            {
-                self.loadingView.hidden = NO;
-                if(downloadingCategory.numberOfImages >= 100)
-                {
-                    [self.loadingView.progressLabel countFrom:0 to:100 withDuration:1];
-                }
-                else
-                {
-                    [self.loadingView.progressLabel countFrom:0 to:downloadingCategory.numberOfImages withDuration:1];
-                }
-            }
-        }
+        // Show HUD to let the user know the image is being downloaded in the background.
+        PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+        [self showHUDwithTitle:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") withDetailLabel:[NSString stringWithFormat:@"%d / %ld", 0, downloadingCategory.numberOfImages]];
     }
-    
-    __block NSDate *lastTime = [NSDate date];
     
     [SortLocalImages getSortedImageArrayFromSortType:sortType
                 forImages:self.images
               forCategory:self.categoryId
-              forProgress:^(NSInteger onPage, NSInteger outOf) {
-                  
-                  // Calculate the number of thumbnails displayed per page
-                  NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:self.nberOfImagesPerRow];
-                  
-                  NSInteger lastImageCount = (onPage + 1) * imagesPerPage;
-                  NSInteger currentDownloaded = (onPage + 2) * imagesPerPage;
-                  
-                  NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:lastTime];
-                  
-                  if(currentDownloaded > downloadingCategory.numberOfImages)
-                  {
-                      currentDownloaded = downloadingCategory.numberOfImages;
-                  }
-                  
-                  [self.loadingView.progressLabel countFrom:lastImageCount to:currentDownloaded withDuration:duration];
-                  
-                  lastTime = [NSDate date];
+              forProgress:^(NSInteger onPage, NSInteger outOf)
+    {
+                  // Update HUD
+                  [self showHUDwithTitle:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") withDetailLabel:[NSString stringWithFormat:@"%ld / %ld", (long)onPage, (long)outOf]];
               }
              onCompletion:^(NSArray *images) {
                  
-                 if(sortType == kPiwigoSortByNotUploaded && !self.loadingView.hidden)
+                 if(sortType == kPiwigoSortByNotUploaded)
                  {
-                     [self.loadingView hideLoadingWithLabel:NSLocalizedString(@"completeHUD_label", @"Complete") showCheckMark:YES withDelay:0.5];
+                     // Hide HUD
+                     [self hideHUDwithSuccess:YES completion:^{
+                         self.hudViewController = nil;
+                     }];
                  }
                  self.images = images;
                  
@@ -425,6 +390,71 @@
                  [self splitImages];
                  [self.localImagesCollection reloadData];
              }];
+}
+
+
+#pragma mark - HUD methods
+
+-(void)showHUDwithTitle:(NSString *)title withDetailLabel:(NSString*)label
+{
+    // Determine the present view controller if needed (not necessarily self.view)
+    if (!self.hudViewController) {
+        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (self.hudViewController.presentedViewController) {
+            self.hudViewController = self.hudViewController.presentedViewController;
+        }
+    }
+    
+    // Create the login HUD if needed
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+    if (!hud) {
+        // Create the HUD
+        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
+        [hud setTag:loadingViewTag];
+        
+        // Change the background view shape, style and color.
+        hud.square = NO;
+        hud.animationType = MBProgressHUDAnimationFade;
+        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+        hud.contentColor = [UIColor piwigoHudContentColor];
+        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        
+        // Will look best, if we set a minimum size.
+        hud.minSize = CGSizeMake(200.f, 100.f);
+    }
+    
+    // Set title
+    hud.label.text = title;
+    hud.label.font = [UIFont piwigoFontNormal];
+    
+    // Set label
+    hud.mode = MBProgressHUDModeIndeterminate;
+    hud.detailsLabel.text = label;
+    hud.detailsLabel.font = [UIFont piwigoFontSmall];
+}
+
+-(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Hide and remove the HUD
+        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+        if (hud) {
+            if (success) {
+                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
+                [hud hideAnimated:YES afterDelay:1.f];
+            } else {
+                [hud hideAnimated:YES];
+            }
+        }
+        if (completion) {
+            completion();
+        }
+    });
 }
 
 
