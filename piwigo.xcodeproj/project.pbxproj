@@ -40,7 +40,6 @@
 		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
 		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
-		ADC34C6E2232AAE400EFD49C /* StickyLocalImageHeadersCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC34C6D2232AAE400EFD49C /* StickyLocalImageHeadersCollectionViewFlowLayout.m */; };
 		ADE936F82182D54D0003F037 /* PrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */; };
 		ADE99713221B2E00007B33AB /* LocalImageHeaderReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE99712221B2E00007B33AB /* LocalImageHeaderReusableView.m */; };
 		ADE99715221B2EB8007B33AB /* LocalImageHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADE99714221B2EB8007B33AB /* LocalImageHeaderReusableView.xib */; };
@@ -245,8 +244,6 @@
 		ADC06AE21F40B1ED0081B4FA /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		ADC34C6C2232AAB000EFD49C /* StickyLocalImageHeadersCollectionViewFlowLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StickyLocalImageHeadersCollectionViewFlowLayout.h; sourceTree = "<group>"; };
-		ADC34C6D2232AAE400EFD49C /* StickyLocalImageHeadersCollectionViewFlowLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StickyLocalImageHeadersCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		ADC5E23E2184D1BE002B0D48 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrivacyPolicyViewController.m; sourceTree = "<group>"; };
 		ADE936F92182D5650003F037 /* PrivacyPolicyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivacyPolicyViewController.h; sourceTree = "<group>"; };
@@ -603,8 +600,6 @@
 				ADE99711221B2DDD007B33AB /* LocalImageHeaderReusableView.h */,
 				ADE99712221B2E00007B33AB /* LocalImageHeaderReusableView.m */,
 				ADE99714221B2EB8007B33AB /* LocalImageHeaderReusableView.xib */,
-				ADC34C6C2232AAB000EFD49C /* StickyLocalImageHeadersCollectionViewFlowLayout.h */,
-				ADC34C6D2232AAE400EFD49C /* StickyLocalImageHeadersCollectionViewFlowLayout.m */,
 			);
 			path = Headers;
 			sourceTree = "<group>";
@@ -1364,7 +1359,6 @@
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
-				ADC34C6E2232AAE400EFD49C /* StickyLocalImageHeadersCollectionViewFlowLayout.m in Sources */,
 				D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,

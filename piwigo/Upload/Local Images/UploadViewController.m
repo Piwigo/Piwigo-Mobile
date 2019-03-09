@@ -22,7 +22,6 @@
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "SortLocalImages.h"
-#import "StickyLocalImageHeadersCollectionViewFlowLayout.h"
 #import "UploadViewController.h"
 
 @interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, ImagesHeaderDelegate>
@@ -64,8 +63,11 @@
         [self splitImages];
         
         // Collection of images
-        StickyLocalImageHeadersCollectionViewFlowLayout *collectionFlowLayout = [StickyLocalImageHeadersCollectionViewFlowLayout new];
+        UICollectionViewFlowLayout *collectionFlowLayout = [UICollectionViewFlowLayout new];
         collectionFlowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        if (@available(iOS 9.0, *)) {
+            collectionFlowLayout.sectionHeadersPinToVisibleBounds = YES;
+        }
         self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:collectionFlowLayout];
         self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
         self.localImagesCollection.backgroundColor = [UIColor clearColor];
@@ -136,6 +138,12 @@
     
     // Collection view
     self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    NSArray *visibleCells = self.localImagesCollection.visibleCells;
+    NSMutableIndexSet *sectionsToUpdate = [NSMutableIndexSet indexSet];
+    for (UICollectionViewCell *cell in visibleCells) {
+        [sectionsToUpdate addIndex:[self.localImagesCollection indexPathForCell:cell].section];
+    }
+    [self.localImagesCollection reloadSections:sectionsToUpdate];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -377,7 +385,7 @@
     {
         // Show HUD to let the user know the image is being downloaded in the background.
         PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-        [self showHUDwithTitle:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") withDetailLabel:[NSString stringWithFormat:@"%d / %ld", 0, downloadingCategory.numberOfImages]];
+        [self showHUDwithTitle:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") withDetailLabel:[NSString stringWithFormat:@"%d / %ld", 0, (long)downloadingCategory.numberOfImages]];
     }
     
     [SortLocalImages getSortedImageArrayFromSortType:sortType
@@ -665,6 +673,7 @@
 {
     if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         view.layer.zPosition = 0;
+        view.backgroundColor = [[UIColor piwigoBackgroundColor] colorWithAlphaComponent:0.75];
     }
 }
 
