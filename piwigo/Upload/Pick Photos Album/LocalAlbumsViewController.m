@@ -250,6 +250,11 @@
     return header;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    view.layer.zPosition = 0;
+}
+
 
 #pragma mark - UITableView - Rows
 
