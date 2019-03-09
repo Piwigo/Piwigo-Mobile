@@ -16,12 +16,13 @@
 #import "ImageUploadProgressView.h"
 #import "ImageUploadViewController.h"
 #import "ImagesCollection.h"
-#import "ImagesHeaderReusableView.h"
+#import "LocalImageHeaderReusableView.h"
 #import "LoadingView.h"
 #import "LocalImageCollectionViewCell.h"
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "SortLocalImages.h"
+#import "StickyLocalImageHeadersCollectionViewFlowLayout.h"
 #import "UICountingLabel.h"
 #import "UploadViewController.h"
 
@@ -64,7 +65,9 @@
         [self splitImages];
         
         // Collection of images
-        self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
+        StickyLocalImageHeadersCollectionViewFlowLayout *collectionFlowLayout = [StickyLocalImageHeadersCollectionViewFlowLayout new];
+        collectionFlowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        self.localImagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:collectionFlowLayout];
         self.localImagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
         self.localImagesCollection.backgroundColor = [UIColor clearColor];
         self.localImagesCollection.alwaysBounceVertical = YES;
@@ -74,7 +77,7 @@
 
         [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"LocalImageCollectionViewCell"];
         [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
-        [self.localImagesCollection registerNib:[UINib nibWithNibName:@"ImagesHeaderReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"ImagesHeaderReusableView"];
+        [self.localImagesCollection registerNib:[UINib nibWithNibName:@"LocalImageHeaderReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImageHeaderReusableView"];
 
         [self.view addSubview:self.localImagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
@@ -133,7 +136,7 @@
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Collection view
-    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -283,6 +286,23 @@
     // Append last section to collection
     [self.imagesInSections addObject:[imagesOfSameDate copy]];
     [self.selectedSections addObject:[NSNumber numberWithBool:NO]];
+}
+
+-(NSIndexPath *)indexPathOfImageAsset:(PHAsset *)imageAsset
+{
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    
+    // Loop over all sections
+    for (NSInteger section = 0; section < [self.localImagesCollection numberOfSections]; section++)
+    {
+        // Index of image in section?
+        NSInteger item = [[self.imagesInSections objectAtIndex:section] indexOfObject:imageAsset];
+        if (item != NSNotFound) {
+            indexPath = [NSIndexPath indexPathForItem:item inSection:section];
+            break;
+        }
+    }
+    return indexPath;
 }
 
 -(void)askSortType
@@ -553,6 +573,7 @@
     }
 }
 
+
 #pragma mark - UICollectionView - Headers
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
@@ -564,13 +585,13 @@
 {
     if (self.images.count > 0) {
         // Display data in header of section
-        ImagesHeaderReusableView *header = nil;
+        LocalImageHeaderReusableView *header = nil;
         
         if(kind == UICollectionElementKindSectionHeader)
         {
-            UINib *nib = [UINib nibWithNibName:@"ImagesHeaderReusableView" bundle:nil];
-            [collectionView registerNib:nib forCellWithReuseIdentifier:@"ImagesHeaderReusableView"];
-            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"ImagesHeaderReusableView" forIndexPath:indexPath];
+            UINib *nib = [UINib nibWithNibName:@"LocalImageHeaderReusableView" bundle:nil];
+            [collectionView registerNib:nib forCellWithReuseIdentifier:@"LocalImageHeaderReusableView"];
+            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImageHeaderReusableView" forIndexPath:indexPath];
             
             [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
             header.headerDelegate = self;
@@ -595,6 +616,13 @@
 
     UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
     return view;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplaySupplementaryView:(UICollectionReusableView *)view forElementKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath
+{
+    if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+        view.layer.zPosition = 0;
+    }
 }
 
 
@@ -690,7 +718,7 @@
 }
 
 
-#pragma mark - UICollectionViewDelegate Methods
+#pragma mark - UICollectionView Delegate Methods
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -719,13 +747,13 @@
 }
 
 
-#pragma mark - ImageUploadProgressDelegate Methods
+#pragma mark - ImageUploadProgress Delegate Methods
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
-    NSLog(@"UploadViewController[imageProgress:]");
-    NSInteger row = [self.images indexOfObject:image.imageAsset];
-    LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+//    NSLog(@"UploadViewController[imageProgress:]");
+    NSIndexPath *indexPath = [self indexPathOfImageAsset:image.imageAsset];
+    LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:indexPath];
     
     CGFloat chunkPercent = 100.0 / totalChunks / 100.0;
     CGFloat onChunkPercent = chunkPercent * (currentChunk - 1);
@@ -739,19 +767,19 @@
     cell.cellUploading = YES;
     if (iCloudProgress < 0) {
         cell.progress = uploadProgress;
-        NSLog(@"UploadViewController[ImageProgress]: %.2f", uploadProgress);
+//        NSLog(@"UploadViewController[ImageProgress]: %.2f", uploadProgress);
     } else {
         cell.progress = (iCloudProgress + uploadProgress) / 2.0;
-        NSLog(@"UploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
+//        NSLog(@"UploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
     }
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-    NSLog(@"UploadViewController[imageUploaded:]");
-    NSInteger row = [self.images indexOfObject:image.imageAsset];
-    LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-    
+//    NSLog(@"UploadViewController[imageUploaded:]");
+    NSIndexPath *indexPath = [self indexPathOfImageAsset:image.imageAsset];
+    LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:indexPath];
+
     // Image upload ended, deselect cell
     cell.cellUploading = NO;
     cell.cellSelected = NO;
@@ -763,13 +791,13 @@
         [newList removeObject:image.imageAsset];
         self.images = newList;
         
-        // Update image collection
-        [self.localImagesCollection reloadData];
+        // Update image cell
+        [self.localImagesCollection reloadItemsAtIndexPaths:@[indexPath]];
     }
 }
 
 
-#pragma mark - SortSelectViewControllerDelegate Methods
+#pragma mark - SortSelectViewController Delegate Methods
 
 -(void)didSelectSortTypeOf:(kPiwigoSortBy)sortType
 {

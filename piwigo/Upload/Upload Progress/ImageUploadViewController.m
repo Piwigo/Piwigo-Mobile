@@ -122,7 +122,8 @@
 	[self.uploadImagesTableView reloadData];
     
     // Update navigation items
-    [self.navigationItem setHidesBackButton:YES];
+    self.navigationItem.leftBarButtonItem.title = @"";
+    [self.navigationItem setHidesBackButton:NO];
     self.navigationItem.rightBarButtonItem = self.doneBarButton;
 }
 
@@ -200,7 +201,6 @@
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontBold];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
-//    headerLabel.backgroundColor = [UIColor piwigoBackgroundColor];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;

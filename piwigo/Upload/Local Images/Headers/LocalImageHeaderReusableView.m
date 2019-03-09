@@ -1,5 +1,5 @@
 //
-//  ImagesHeaderReusableView.m
+//  LocalImageHeaderReusableView.m
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 18/02/2019.
@@ -8,16 +8,16 @@
 
 #import <Photos/Photos.h>
 
-#import "ImagesHeaderReusableView.h"
+#import "LocalImageHeaderReusableView.h"
 #import "UploadViewController.h"
 
-@interface ImagesHeaderReusableView()
+@interface LocalImageHeaderReusableView()
 
 @property (nonatomic, assign) NSInteger section;
 
 @end
 
-@implementation ImagesHeaderReusableView
+@implementation LocalImageHeaderReusableView
 
 -(void)setupWithImages:(NSArray *)images inSection:(NSInteger)section andSelectionMode:(BOOL)selected
 {

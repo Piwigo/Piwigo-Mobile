@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.2_text" = "Version 2.3.2\n\n• Local images sorted by date before upload\n• Minor bug fixes and improvement of the interface";
+"v2.3.2_text" = "Version 2.3.2\n\n• Local images presented in a timeline view by day before download\n• Minor bug fixes and improvement of the interface";
 
 "v2.3.1_text" = "Version 2.3.1\nFebruary 15, 2019\n\n• Minor bug fixes and improvement of the interface\n• Improved translations";
 

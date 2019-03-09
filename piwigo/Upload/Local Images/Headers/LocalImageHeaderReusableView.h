@@ -1,5 +1,5 @@
 //
-//  ImageCollectionHeader.h
+//  LocalImageHeaderReusableView.h
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 18/02/2019.
@@ -14,7 +14,7 @@
 
 @end
 
-@interface ImagesHeaderReusableView : UICollectionReusableView
+@interface LocalImageHeaderReusableView : UICollectionReusableView
 
 @property (nonatomic, weak) id<ImagesHeaderDelegate> headerDelegate;
 
