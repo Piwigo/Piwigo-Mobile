@@ -8,8 +8,6 @@
 // See https://cocoacasts.com/how-to-add-sticky-section-headers-to-a-collection-view/
 // See https://gist.github.com/toblerpwn/5393460
 
-//#import <UIKit/UIKit.h>
-
 static NSString *kDecorationReuseIdentifier = @"sectionBackground";
 
 #import "StickyLocalImageHeadersCollectionViewFlowLayout.h"

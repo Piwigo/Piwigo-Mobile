@@ -339,9 +339,25 @@
     
     // Add actions
     [alert addAction:cancelAction];
-    [alert addAction:newestAction];
-    [alert addAction:oldestAction];
-    [alert addAction:notUploadedAction];
+    switch (self.sortType) {
+        case kPiwigoSortByNewest:
+            [alert addAction:oldestAction];
+            [alert addAction:notUploadedAction];
+            break;
+            
+        case kPiwigoSortByOldest:
+            [alert addAction:newestAction];
+            [alert addAction:notUploadedAction];
+            break;
+            
+        case kPiwigoSortByNotUploaded:
+            [alert addAction:newestAction];
+            [alert addAction:oldestAction];
+            break;
+            
+        default:
+            break;
+    }
     
     // Present list of actions
     alert.popoverPresentationController.barButtonItem = self.sortBarButton;
