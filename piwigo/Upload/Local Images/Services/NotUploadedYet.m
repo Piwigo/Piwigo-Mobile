@@ -33,8 +33,8 @@
              if (imgData.fileName && [imgData.fileName length]) {
                  
                  // Don't forget to replace the extension of video files (.mov in iOS device, .mp4 in Piwigo server)
-                 if([[[imgData.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) {
-                     
+                 if([[[imgData.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"])
+                 {
                      // Replace file extension
                      imgData.fileName = [[imgData.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"MOV"];
                  }
@@ -53,7 +53,14 @@
              NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
              NSString *imageAssetKey;
              if ([resources count] > 0) {
+                 // File name is available
                  imageAssetKey = ((PHAssetResource*)resources[0]).originalFilename;
+                 // HEIC images were converted to JPEG if uploaded
+                 if([[[imageAssetKey pathExtension] uppercaseString] isEqualToString:@"HEIC"])
+                 {
+                     // Replace file extension
+                     imageAssetKey = [[imageAssetKey stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
+                 }
              } else {
                  // No filename => Build filename from 32 characters of local identifier
                  NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
@@ -61,13 +68,13 @@
                  // Filename extension required by Piwigo so that it knows how to deal with it
                  if (imageAsset.mediaType == PHAssetMediaTypeImage) {
                      // Adopt JPEG photo format by default, will be rechecked
-                     imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"jpg"];
+                     imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"JPG"];
                  } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
                      // Videos are exported in MP4 format
-                     imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"mp4"];
+                     imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"MP4"];
                  } else if (imageAsset.mediaType == PHAssetMediaTypeAudio) {
                      // Arbitrary extension, not managed yet
-                     imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"m4a"];
+                     imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"M4A"];
                  }
              }
              
