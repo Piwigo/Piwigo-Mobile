@@ -138,12 +138,15 @@
     
     // Collection view
     self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    
     NSArray *visibleCells = self.localImagesCollection.visibleCells;
-    NSMutableIndexSet *sectionsToUpdate = [NSMutableIndexSet indexSet];
-    for (UICollectionViewCell *cell in visibleCells) {
-        [sectionsToUpdate addIndex:[self.localImagesCollection indexPathForCell:cell].section];
+    if ([visibleCells count] > 1) {
+        NSInteger firstSection = MAX(0,
+                [self.localImagesCollection indexPathForCell:[visibleCells firstObject]].section - 1);
+        NSInteger lastSection = MIN([self.localImagesCollection numberOfSections] - 1,
+                [self.localImagesCollection indexPathForCell:[visibleCells lastObject]].section + 1);
+        [self.localImagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(firstSection, lastSection)]];
     }
-    [self.localImagesCollection reloadSections:sectionsToUpdate];
 }
 
 -(void)viewWillAppear:(BOOL)animated
