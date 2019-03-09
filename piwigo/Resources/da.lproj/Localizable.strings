@@ -108,6 +108,7 @@
 "categoryTableView_subCategoryCount" = "underalbum";
 "categoryTableView_subCategoriesCount" = "underalbum";
 "categoryImageList_selectButton" = "Vælg";
+"categoryImageList_deselectButton" = "Fravælg";
 "categoryImageList_noDataError" = "Fejl ingen Data";
 
 // Albums sort
@@ -119,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Oprettelsdato, gammel → ny";
 "categorySort_datePostedDescending" = "Oprettelsdato, ny → gammel";
 "categorySort_datePostedAscending" = "Oprettelsdato, gammel → ny";
+"categorySort_visitsDescending" = "Besøg, høj → lav";
+"categorySort_visitsAscending" = "Besøg, lav → høj";
 "categorySort_videosOnly" = "Kun Videoer";
 "categorySort_imagesOnly" = "Kun Billeder";
 

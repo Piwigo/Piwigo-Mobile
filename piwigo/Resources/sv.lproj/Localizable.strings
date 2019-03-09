@@ -108,6 +108,7 @@
 "categoryTableView_subCategoryCount" = "underalbum";
 "categoryTableView_subCategoriesCount" = "underalbum";
 "categoryImageList_selectButton" = "Välj";
+"categoryImageList_deselectButton" = "Avmarkera";
 "categoryImageList_noDataError" = "Fel inga Data";
 
 // Albums sort
@@ -119,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Skapelsedatum, gammal → ny";
 "categorySort_datePostedDescending" = "Skapelsedatum, ny → gammal";
 "categorySort_datePostedAscending" = "Skapelsedatum, gammal → ny";
+"categorySort_visitsDescending" = "Besökare, hög → låg";
+"categorySort_visitsAscending" = "Besökare, låg → hög";
 "categorySort_videosOnly" = "Endast filmer";
 "categorySort_imagesOnly" = "Endast bilder";
 
