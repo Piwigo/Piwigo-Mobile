@@ -1436,7 +1436,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
 //        NSLog(@"Activity Type selected: %@", activityType);
         if (completed) {
-            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
+//            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
             [self hideHUDwithSuccess:YES completion:nil];
             [self cancelSelect];
             for (PiwigoImageData *imageData in self.selectedImagesToShare) {
@@ -1451,9 +1451,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             }
         } else {
             if (activityType == NULL) {
-                NSLog(@"User dismissed the view controller without making a selection.");
+//                NSLog(@"User dismissed the view controller without making a selection.");
             } else {
-                NSLog(@"Activity was not performed.");
+//                NSLog(@"Activity was not performed.");
+                [self cancelSelect];
                 for (PiwigoImageData *imageData in self.selectedImagesToShare) {
                     if (imageData.isVideo)
                     {
@@ -2018,7 +2019,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                    });
 }
 
--(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider
+-(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSString *)imageId
 {
     // Close HUD
     dispatch_async(dispatch_get_main_queue(),
@@ -2027,6 +2028,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                            [self hideHUDwithSuccess:NO completion:^{
                                self.hudViewController = nil;
                            }];
+                       } else {
+                           if ([self.selectedImageIds containsObject:imageId]) {
+                               [self.selectedImageIds removeObject:imageId];
+                           }
                        }
                    });
 }
