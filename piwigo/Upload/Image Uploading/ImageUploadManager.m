@@ -1278,7 +1278,8 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                         [self addImageDataToCategoryCache:response];
                         
                         // Delete image from Photos library if requested
-                        if ([Model sharedInstance].deleteImageAfterUpload) {
+                        if ([Model sharedInstance].deleteImageAfterUpload &&
+                            (image.imageAsset.sourceType != PHAssetSourceTypeCloudShared)) {
                             [self.imageDeleteQueue addObject:image.imageAsset];
                         }
 
