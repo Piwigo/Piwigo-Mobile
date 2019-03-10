@@ -122,8 +122,6 @@
 	[self.uploadImagesTableView reloadData];
     
     // Update navigation items
-    self.navigationItem.leftBarButtonItem.title = @"";
-    [self.navigationItem setHidesBackButton:NO];
     self.navigationItem.rightBarButtonItem = self.doneBarButton;
 }
 

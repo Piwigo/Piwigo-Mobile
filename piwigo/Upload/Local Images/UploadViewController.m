@@ -197,8 +197,6 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
-    self.title = NSLocalizedString(@"alertCancelButton", @"Cancel");
 }
 
 -(void)updateNavBar
