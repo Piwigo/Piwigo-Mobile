@@ -218,9 +218,17 @@ NSString * const kGetImageOrderDescending = @"desc";
 		imageData.isVideo = YES;
 	}
     
-    // Object "date_creation"
+    // Object "date_available"
     NSDateFormatter *dateFormat = [NSDateFormatter new];
     [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *dateAvailableString = [imageJson objectForKey:@"date_available"];
+    if (![dateAvailableString isKindOfClass:[NSNull class]]) {
+        imageData.datePosted = [dateFormat dateFromString:dateAvailableString];
+    } else {
+        imageData.datePosted = [NSDate date];
+    }
+    
+    // Object "date_creation"
     NSString *dateCreatedString = [imageJson objectForKey:@"date_creation"];
     if (![dateCreatedString isKindOfClass:[NSNull class]]) {
         imageData.dateCreated = [dateFormat dateFromString:dateCreatedString];
@@ -228,14 +236,6 @@ NSString * const kGetImageOrderDescending = @"desc";
     else {
         // When creation is unknown, use posted date so that image sort becomes possible
         imageData.dateCreated = imageData.datePosted;
-    }
-
-    // Object "date_available"
-    NSString *dateAvailableString = [imageJson objectForKey:@"date_available"];
-    if (![dateAvailableString isKindOfClass:[NSNull class]]) {
-        imageData.datePosted = [dateFormat dateFromString:dateAvailableString];
-    } else {
-        imageData.datePosted = [NSDate date];
     }
 
     // Object "width"
@@ -426,27 +426,29 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Object "level"
-    if ([imageJson objectForKey:@"level"]) {
+    if (![[imageJson objectForKey:@"level"] isKindOfClass:[NSNull class]]) {
         imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
     } else {
         imageData.privacyLevel = NSNotFound;
     }
     
     // Object "tags"
-    NSDictionary *tags = [imageJson objectForKey:@"tags"];
-    NSMutableArray *imageTags = [NSMutableArray new];
-    for(NSDictionary *tag in tags)
-    {
-        PiwigoTagData *tagData = [PiwigoTagData new];
-        tagData.tagId = [[tag objectForKey:@"id"] integerValue];
-        tagData.tagName = [tag objectForKey:@"name"];
-        [imageTags addObject:tagData];
+    if (![[imageJson objectForKey:@"tags"] isKindOfClass:[NSNull class]]) {
+        NSDictionary *tags = [imageJson objectForKey:@"tags"];
+        NSMutableArray *imageTags = [NSMutableArray new];
+        for(NSDictionary *tag in tags)
+        {
+            PiwigoTagData *tagData = [PiwigoTagData new];
+            tagData.tagId = [[tag objectForKey:@"id"] integerValue];
+            tagData.tagName = [tag objectForKey:@"name"];
+            [imageTags addObject:tagData];
+        }
+        imageData.tags = imageTags;
+        imageTags = nil;
     }
-    imageData.tags = imageTags;
-    imageTags = nil;
     
     // Object "filesize"
-    if ([imageJson objectForKey:@"filesize"]) {
+    if (![[imageJson objectForKey:@"filesize"] isKindOfClass:[NSNull class]]) {
         imageData.fileSize = [[imageJson objectForKey:@"filesize"] integerValue];
     } else {
         imageData.fileSize = NSNotFound;
