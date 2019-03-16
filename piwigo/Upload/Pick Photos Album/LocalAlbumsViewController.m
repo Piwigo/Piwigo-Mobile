@@ -328,8 +328,8 @@
             uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.iCloudGroups objectAtIndex:indexPath.row]];
             break;
     }
-    [self.navigationController pushViewController:uploadVC animated:YES];
     
+    [self.navigationController pushViewController:uploadVC animated:YES];
 }
 
 

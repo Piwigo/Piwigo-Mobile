@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    kPiwigoSortByNewest,
+    kPiwigoSortByOldest,
+    kPiwigoSortByCount
+} kPiwigoSortBy;
+
 typedef void(^CompletionBlock)(id responseObject1, id responseObject2);
 
 @class PHAsset;
@@ -23,6 +29,8 @@ typedef void(^CompletionBlock)(id responseObject1, id responseObject2);
                              onAuthorizedAccess:(void (^)(void))doWithAccess
                                  onDeniedAccess:(void (^)(void))doWithoutAccess;
 -(void)getLocalGroupsOnCompletion:(CompletionBlock)completion;
--(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup;
+
++(NSString*)getNameForSortType:(kPiwigoSortBy)sortType;
+-(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup inAscendingOrder:(BOOL)ascending;
 
 @end

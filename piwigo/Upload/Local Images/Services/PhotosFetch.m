@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "PhotosFetch.h"
-#import "Model.h"
+#import "SplitLocalImages.h"
 
 @interface PhotosFetch()
 
@@ -292,21 +292,39 @@
     }
 }
 
--(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup
++(NSString*)getNameForSortType:(kPiwigoSortBy)sortType
 {
-	NSMutableArray *imageAssets = [NSMutableArray new];
-	
-    PHFetchResult *imagesInCollection = [PHAsset fetchAssetsInAssetCollection:assetGroup options:nil];
-    [imagesInCollection enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if(!obj) {
-            return;
-        }
+    NSString *name = @"";
+    
+    switch(sortType)
+    {
+        case kPiwigoSortByNewest:
+            name = NSLocalizedString(@"categorySort_dateCreatedDescending", @"Date Created, new → old");
+            break;
+        case kPiwigoSortByOldest:
+            name = NSLocalizedString(@"categorySort_dateCreatedAscending", @"Date Created, old → new");
+            break;
+            
+        default:
+            name = NSLocalizedString(@"localImageSort_undefined", @"Undefined");
+            break;
+    }
+    
+    return name;
+}
 
-        // Append image
-        [imageAssets addObject:obj];
-    }];
-	
-	return imageAssets;
+-(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup inAscendingOrder:(BOOL)ascending
+{
+    // Retrieve imageAssets
+    PHFetchOptions *fetchOptions = [PHFetchOptions new];
+    fetchOptions.sortDescriptors = @[
+                                     [NSSortDescriptor sortDescriptorWithKey:@"creationDate"
+                                                                   ascending:ascending],
+                                     ];
+    PHFetchResult *imagesInCollection = [PHAsset fetchAssetsInAssetCollection:assetGroup options:fetchOptions];
+    
+    // Sort images by day
+    return [SplitLocalImages splitImagesByDate:(NSArray *)imagesInCollection];
 }
 
 @end

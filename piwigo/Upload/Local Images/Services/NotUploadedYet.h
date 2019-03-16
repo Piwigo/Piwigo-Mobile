@@ -11,8 +11,8 @@
 @interface NotUploadedYet : NSObject
 
 +(void)getListOfImageNamesThatArentUploadedForCategory:(NSInteger)categoryId
-											withImages:(NSArray*)images
+											withImages:(NSArray*)imagesInSections
 										   forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-										  onCompletion:(void (^)(NSArray *missingImages))completion;
+										  onCompletion:(void (^)(NSArray *imagesNotUploaded))completion;
 
 @end
