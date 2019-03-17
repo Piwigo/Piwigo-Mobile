@@ -9,6 +9,7 @@
 #import <Photos/Photos.h>
 
 #import "LocalImagesHeaderReusableView.h"
+#import "LocationsData.h"
 #import "UploadViewController.h"
 
 @interface LocalImagesHeaderReusableView()
@@ -19,7 +20,7 @@
 
 @implementation LocalImagesHeaderReusableView
 
--(void)setupWithImages:(NSArray *)images andPlaceNames:(NSString *)placeName inSection:(NSInteger)section andSelectionMode:(BOOL)selected
+-(void)setupWithImages:(NSArray *)images andLocation:(CLLocation *)location inSection:(NSInteger)section andSelectionMode:(BOOL)selected
 {
     // General settings
     self.backgroundColor = [UIColor clearColor];
@@ -53,14 +54,22 @@
     self.placeLabel.textColor = [UIColor piwigoLeftLabelColor];
 
     // Use label accoring to place name availability
-    if (placeName && ([placeName length] > 0)) {
-        self.placeLabel.text = placeName;
-        self.dateLabel.text = [NSDateFormatter localizedStringFromDate:dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
-        self.dateLabelNoPlace.text = @"";
-    } else {
+    if ((location == nil) || !CLLocationCoordinate2DIsValid(location.coordinate)) {
         self.placeLabel.text = @"";
         self.dateLabel.text = @"";
         self.dateLabelNoPlace.text = [NSDateFormatter localizedStringFromDate:dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+    } else {
+        self.placeLabel.text = @"";
+        self.dateLabel.text = @"";
+        self.dateLabelNoPlace.text = @"";
+        [[LocationsData sharedInstance] getPlaceNameForLocation:location completion:^(NSString *placeName) {
+            if (placeName && [placeName length] > 0) {
+                self.placeLabel.text = placeName;
+                self.dateLabel.text = [NSDateFormatter localizedStringFromDate:dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+            } else {
+                self.dateLabelNoPlace.text = [NSDateFormatter localizedStringFromDate:dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+            }
+        }];
     }
     
     // Select/deselect button

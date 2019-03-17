@@ -27,8 +27,8 @@
     self.knownPlaceNames = [NSArray new];
 }
 
--(void)getPlaceMarkForLocation:(CLLocation *)location
-                    completion:(void (^)(NSArray<CLPlacemark *> *placemarks))completion
+-(void)getPlaceNameForLocation:(CLLocation *)location
+                    completion:(void (^)(NSString *placeName))completion
 {
     // Check location validity
     if (!CLLocationCoordinate2DIsValid(location.coordinate)) {
@@ -40,27 +40,35 @@
     for (PiwigoLocationData *locationData in self.knownPlaceNames)
     {
         // Is this location known?
-        if ([location distanceFromLocation:locationData.location] < 1.0)
+        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(locationData.latitude, locationData.longitude);
+        CLLocation *cachedLocation = [[CLLocation alloc] initWithCoordinate:coordinate
+                                    altitude:locationData.altitude
+                                    horizontalAccuracy:locationData.horizontalAccuracy
+                                    verticalAccuracy:locationData.verticalAccuracy
+                                    timestamp:locationData.timestamp];
+
+        if ([location distanceFromLocation:cachedLocation] < 1.0)
         {
-            // Done
+            // Is requested location
             if (completion) {
-                completion(locationData.placemarks);
+                completion(locationData.placeName);
             }
+            return;
         }
     }
 
     // Location is not in cache
-    [self addPlaceMarksForLocation:location
-                        completion:^(NSArray<CLPlacemark *> *placemarks) {
+    [self addLocationInCache:location
+                        completion:^(NSString *placeName) {
                             // Done
                             if (completion) {
-                                completion(placemarks);
+                                completion(placeName);
                             }
                         }];
 }
 
--(void)addPlaceMarksForLocation:(CLLocation *)location
-                     completion:(void (^)(NSArray<CLPlacemark *> *placemarks))completion
+-(void)addLocationInCache:(CLLocation *)location
+               completion:(void (^)(NSString *placeName))completion
 {
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     [geocoder reverseGeocodeLocation:location
@@ -69,14 +77,6 @@
                // Extract existing data
                if (!error && placemarks && placemarks.count > 0)
                {
-                   // Add new placemarks to cache
-                   NSMutableArray *cachedPlaces = [[NSMutableArray alloc] initWithArray:self.knownPlaceNames];
-                   PiwigoLocationData *newPlace = [PiwigoLocationData new];
-                   newPlace.location = location;
-                   newPlace.placemarks = placemarks;
-                   [cachedPlaces addObject:newPlace];
-                   self.knownPlaceNames = cachedPlaces;
-
                    // Log placemarks[0]
                    CLPlacemark *placeMark = [placemarks objectAtIndex:0];
                    NSLog(@"%@", [NSString stringWithFormat:@"name:%@, country:%@, administrativeArea:%@, subAdministrativeArea:%@, locality:%@, subLocality:%@, thoroughfare:%@, subThoroughfare:%@, region:%@, areasOfInterest:%@",
@@ -91,9 +91,25 @@
                           [placeMark region],
                           [placeMark areasOfInterest]]);
 
+                   // Define place name
+                   NSString *placeName = [NSString stringWithFormat:@"%@", [placeMark locality]];
+                   
+                   // Add new placemarks to cache
+                   NSMutableArray *cachedPlaces = [[NSMutableArray alloc] initWithArray:self.knownPlaceNames];
+                   PiwigoLocationData *newPlace = [PiwigoLocationData new];
+                   newPlace.latitude = location.coordinate.latitude;
+                   newPlace.longitude = location.coordinate.longitude;
+                   newPlace.altitude = location.altitude;
+                   newPlace.horizontalAccuracy = location.horizontalAccuracy;
+                   newPlace.verticalAccuracy = location.verticalAccuracy;
+                   newPlace.timestamp = location.timestamp;
+                   newPlace.placeName = placeName;
+                   [cachedPlaces addObject:newPlace];
+                   self.knownPlaceNames = cachedPlaces;
+                   
                    // Done
                    if (completion) {
-                       completion(placemarks);
+                       completion(placeName);
                    }
                } else {
                    // Done

@@ -17,8 +17,8 @@
 
 @property (nonatomic, strong) NSArray *knownPlaceNames;
 
--(void)getPlaceMarkForLocation:(CLLocation *)location
-                    completion:(void (^)(NSArray<CLPlacemark *> *placemarks))completion;
+-(void)getPlaceNameForLocation:(CLLocation *)location
+                    completion:(void (^)(NSString *placeName))completion;
 -(void)clearCache;
 
 @end

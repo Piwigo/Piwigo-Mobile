@@ -18,12 +18,10 @@
 #import "ImagesCollection.h"
 #import "LocalImagesHeaderReusableView.h"
 #import "LocalImageCollectionViewCell.h"
-#import "LocationsData.h"
 #import "MBProgressHUD.h"
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
-//#import "SortLocalImages.h"
 #import "UploadViewController.h"
 
 NSInteger const kMaxNberOfLocationsToDecode = 10;
@@ -131,26 +129,6 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
     }
 }
 
--(void)paletteChanged
-{
-    // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
-    // Collection view
-    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self.localImagesCollection reloadData];
-}
-
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -211,6 +189,26 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
     [super viewWillDisappear:animated];
 }
 
+-(void)paletteChanged
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar appearence
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    
+    // Collection view
+    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    [self.localImagesCollection reloadData];
+}
+
 -(void)updateNavBar
 {
     switch (self.selectedImages.count) {
@@ -261,23 +259,6 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
 
 #pragma mark - Manage Images
 
--(void)initSelectButtons
-{
-    self.selectedSections = [NSMutableArray arrayWithCapacity:[self.imagesInSections count]];
-    for (NSInteger section = 0; section < [self.imagesInSections count]; section++) {
-        [self.selectedSections addObject:[NSNumber numberWithBool:NO]];
-    }
-}
-
--(void)updateSelectButtons
-{
-    // Update status of Select buttons
-    // Same number of sections, or fewer if uploaded images removed
-    for (NSInteger section = 0; section < [self.imagesInSections count]; section++) {
-        [self updateSelectButtonForSection:section];
-    }
-}
-
 -(void)initLocationsOfSections
 {
     // Initalisation
@@ -304,8 +285,36 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
             }
             
             // Location found => Store it and move to next section
-            locationForSection = imageAsset.location;
-            break;
+            if (!CLLocationCoordinate2DIsValid(locationForSection.coordinate)) {
+                // First valid location => Store it
+                locationForSection = imageAsset.location;
+            } else {
+                // Another valid location => Compare to first one
+                if ([imageAsset.location distanceFromLocation:locationForSection] < 1000000) {
+                    // Reduce precision - Latitude
+//                    CGFloat dif = fabs(imageAsset.location.coordinate.latitude - locationForSection.coordinate.latitude);
+//                    CGFloat latitude = locationForSection.coordinate.latitude;
+//                    CGFloat longitude = locationForSection.coordinate.longitude;
+//                    if (dif > 0) {
+//                        CGFloat corr = roundf(1.0 / dif);
+//                        latitude = roundf(locationForSection.coordinate.latitude * corr) / corr;
+//                    }
+//                    // Reduce precision - Longitude
+//                    dif = fabs(imageAsset.location.coordinate.longitude - locationForSection.coordinate.longitude);
+//                    if (dif > 0) {
+//                        CGFloat corr = roundf(1.0 / dif);
+//                        longitude = roundf(locationForSection.coordinate.longitude * corr) / corr;
+//                    }
+//                    // Update location for section
+//                    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+//                    CLLocation *newLocation = [[CLLocation alloc] initWithCoordinate:coordinate
+//                                                altitude:locationForSection.altitude
+//                                                horizontalAccuracy:locationForSection.horizontalAccuracy
+//                                                verticalAccuracy:locationForSection.verticalAccuracy
+//                                                timestamp:locationForSection.timestamp];
+//                    locationForSection = newLocation;
+                }
+            }
         }
         
         // Store location for current section
@@ -556,6 +565,23 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
 
 #pragma mark - Select Images
 
+-(void)initSelectButtons
+{
+    self.selectedSections = [NSMutableArray arrayWithCapacity:[self.imagesInSections count]];
+    for (NSInteger section = 0; section < [self.imagesInSections count]; section++) {
+        [self.selectedSections addObject:[NSNumber numberWithBool:NO]];
+    }
+}
+
+-(void)updateSelectButtons
+{
+    // Update status of Select buttons
+    // Same number of sections, or fewer if uploaded images removed
+    for (NSInteger section = 0; section < [self.imagesInSections count]; section++) {
+        [self updateSelectButtonForSection:section];
+    }
+}
+
 -(void)cancelSelect
 {
     // Loop over all sections
@@ -727,8 +753,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
             
             // Any location ?
             CLLocation *location = [self.locationOfImagesInSections objectAtIndex:indexPath.section];
-
-            [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] andPlaceNames:nil inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
+            [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] andLocation:location inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
             header.headerDelegate = self;
             
             return header;
