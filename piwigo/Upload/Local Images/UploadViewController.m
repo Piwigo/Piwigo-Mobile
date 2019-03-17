@@ -449,8 +449,10 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
     [self.localImagesCollection reloadData];
     
     // Scroll to previous position
-    indexPath = [self indexPathOfImageAsset:imageAsset];
-    [self.localImagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    if (indexPath.section != 0) {
+        indexPath = [self indexPathOfImageAsset:imageAsset];
+        [self.localImagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    }
 }
 
 -(void)removeUploadedImagesFromCollection
