@@ -29,9 +29,51 @@
     self.section = section;
 
     // Creation date of images (or of availability)
-    PHAsset *imageAsset = [images objectAtIndex:0];
-    NSDate *dateCreated = [imageAsset creationDate];
+    PHAsset *imageAsset = [images firstObject];
+    NSDate *dateCreated1 = [imageAsset creationDate];
     
+    // Determine if images of this section were taken today
+    NSString *dateLabel = @"";
+    if (dateCreated1)
+    {
+        // Display date of day by default
+        dateLabel = [NSDateFormatter localizedStringFromDate:dateCreated1 dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+        
+        // Define start time of today
+        NSDate *start;
+        NSTimeInterval extends;
+        NSCalendar *calendar = [NSCalendar autoupdatingCurrentCalendar];
+        NSDate *today = [NSDate date];
+        BOOL success = [calendar rangeOfUnit:NSCalendarUnitDay startDate:&start interval:&extends forDate:today];
+        
+        // If start time defined with success, gets creation date of other image, etc.
+        if(success)
+        {
+            // Set day start time
+            NSTimeInterval dayStartInSecs = [start timeIntervalSinceReferenceDate];
+
+            // Get creation date of last image
+            imageAsset = [images lastObject];
+            NSDate *dateCreated2 = [imageAsset creationDate];
+            if (dateCreated2)
+            {
+                // Set dates in right order
+                NSDate *firstImageDate = MIN(dateCreated1, dateCreated2);
+                NSDate *lastImageDate = MAX(dateCreated1, dateCreated2);
+                NSTimeInterval dateInSecs = [firstImageDate timeIntervalSinceReferenceDate];
+                
+                // Images taken today?
+                if (dateInSecs > dayStartInSecs)
+                {
+                    // Images taken today
+                    dateLabel = [NSString stringWithFormat:@"%@ - %@", [NSDateFormatter localizedStringFromDate:firstImageDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle], [NSDateFormatter localizedStringFromDate:lastImageDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+                } else {
+                    dateLabel = [NSDateFormatter localizedStringFromDate:dateCreated1 dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+                }
+            }
+        }
+    }
+
     // Data label used when place name known
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.dateLabel.numberOfLines = 1;
@@ -57,7 +99,7 @@
     if ((location == nil) || !CLLocationCoordinate2DIsValid(location.coordinate)) {
         self.placeLabel.text = @"";
         self.dateLabel.text = @"";
-        self.dateLabelNoPlace.text = [NSDateFormatter localizedStringFromDate:dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+        self.dateLabelNoPlace.text = dateLabel;
     } else {
         self.placeLabel.text = @"";
         self.dateLabel.text = @"";
@@ -65,9 +107,9 @@
         [[LocationsData sharedInstance] getPlaceNameForLocation:location completion:^(NSString *placeName) {
             if (placeName && [placeName length] > 0) {
                 self.placeLabel.text = placeName;
-                self.dateLabel.text = [NSDateFormatter localizedStringFromDate:dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+                self.dateLabel.text = dateLabel;
             } else {
-                self.dateLabelNoPlace.text = [NSDateFormatter localizedStringFromDate:dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+                self.dateLabelNoPlace.text = dateLabel;
             }
         }];
     }
