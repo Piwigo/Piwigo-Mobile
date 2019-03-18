@@ -1002,14 +1002,8 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
 
 -(void)didSelectImagesOfSection:(NSInteger)section
 {
-    // Change selection mode of whole section
+    // What is the current selection mode of the whole section?
     BOOL wasSelected = [[self.selectedSections objectAtIndex:section] boolValue];
-    if (wasSelected) {
-        [self.selectedSections replaceObjectAtIndex:section withObject:[NSNumber numberWithBool:NO]];
-    }
-    else {
-        [self.selectedSections replaceObjectAtIndex:section withObject:[NSNumber numberWithBool:YES]];
-    }
     
     // Number of images in section
     NSInteger nberOfImages = [[self.imagesInSections objectAtIndex:section] count];
