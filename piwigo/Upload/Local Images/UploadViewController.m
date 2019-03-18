@@ -994,6 +994,9 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
             default:
                 break;
         }
+        
+        // Reload local image collection
+        [self.localImagesCollection reloadData];
     });
 }
 
