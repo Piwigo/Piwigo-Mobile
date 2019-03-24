@@ -410,38 +410,35 @@
        });
 
     // Remove uploaded images from the collection
-//    [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId
-//                 withImages:self.imagesInSections
-//                forProgress:^(NSInteger onPage, NSInteger outOf) {
-//
-//                    // Update HUD
-//                    dispatch_async(dispatch_get_main_queue(),
-//                       ^(void){
-//                           [self showHUDwithTitle:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") withDetailLabel:[NSString stringWithFormat:@"%ld / %ld", (long)onPage, (long)outOf]];
-//                       });
-//
-//                } onCompletion:^(NSArray *imagesNotUploaded) {
-//
-//                    // Update image list
-//                    self.imagesInSections = imagesNotUploaded;
-//
-//                    // Initialise locations of sections
-//                    [self initLocationsOfSections];
-//
-//                    // Update Select buttons status
-//                    [self updateSelectButtons];
-//
-//                    // Hide HUD
-//                    dispatch_async(dispatch_get_main_queue(),
-//                       ^(void){
-//                           [self hideHUDwithSuccess:YES completion:^{
-//                               self.hudViewController = nil;
-//
-//                               // Refresh collection view
-//                               [self.localImagesCollection reloadData];
-//                           }];
-//                       });
-//                }];
+    [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId
+                 withImages:self.imagesInSections
+                forProgress:^(NSInteger onPage, NSInteger outOf) {
+
+                    // Update HUD
+                    dispatch_async(dispatch_get_main_queue(),
+                       ^(void){
+                           [self showHUDwithTitle:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") withDetailLabel:[NSString stringWithFormat:@"%ld / %ld", (long)onPage, (long)outOf]];
+                       });
+
+                } onCompletion:^(NSArray *imagesNotUploaded) {
+
+                    // Update image list
+                    self.imagesInSections = imagesNotUploaded;
+
+                    // Update Select buttons status
+                    [self updateSelectButtons];
+
+                    // Hide HUD
+                    dispatch_async(dispatch_get_main_queue(),
+                       ^(void){
+                           [self hideHUDwithSuccess:YES completion:^{
+                               self.hudViewController = nil;
+
+                               // Refresh collection view
+                               [self.localImagesCollection reloadData];
+                           }];
+                       });
+                }];
 }
 
 

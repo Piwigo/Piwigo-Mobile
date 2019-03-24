@@ -458,8 +458,7 @@
 -(NSArray *)sortActivities:(NSArray *)listOfActivities
 {
     // Sort lists of activities
-    NSArray *sortedActivities = [NSArray new];
-    sortedActivities = [listOfActivities
+    NSArray *sortedActivities = [listOfActivities
                         sortedArrayUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
         NSString *obj1 = [[Model sharedInstance] getNameForShareActivity:a forWidth:INFINITY];
         NSString *obj2 = [[Model sharedInstance] getNameForShareActivity:b forWidth:INFINITY];

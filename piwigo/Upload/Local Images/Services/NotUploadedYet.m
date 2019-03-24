@@ -95,8 +95,7 @@
          }
          
          // Sort images by day
-         NSArray *imagesByDate = [NSMutableArray new];
-         imagesByDate = [SplitLocalImages splitImagesByDate:localImagesThatNeedToBeUploaded];
+         NSArray *imagesByDate = [SplitLocalImages splitImagesByDate:localImagesThatNeedToBeUploaded];
          
          if(completion)
          {
