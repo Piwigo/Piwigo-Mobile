@@ -10,7 +10,7 @@
 
 #import "LocalImagesHeaderReusableView.h"
 #import "LocationsData.h"
-#import "UploadViewController.h"
+#import "AlbumUploadViewController.h"
 
 @interface LocalImagesHeaderReusableView()
 
@@ -20,7 +20,7 @@
 
 @implementation LocalImagesHeaderReusableView
 
--(void)setupWithImages:(NSArray *)images andLocation:(CLLocation *)location inSection:(NSInteger)section andSelectionMode:(BOOL)selected
+-(void)setupWithImages:(NSArray *)images andPlaceNames:(NSDictionary *)placeNames inSection:(NSInteger)section andSelectionMode:(BOOL)selected
 {
     // General settings
     self.backgroundColor = [UIColor clearColor];
@@ -95,23 +95,21 @@
     self.placeLabel.font = [UIFont piwigoFontSemiBold];
     self.placeLabel.textColor = [UIColor piwigoLeftLabelColor];
 
-    // Use label accoring to place name availability
-    if ((location == nil) || !CLLocationCoordinate2DIsValid(location.coordinate)) {
-        self.placeLabel.text = @"";
-        self.dateLabel.text = @"";
-        self.dateLabelNoPlace.text = dateLabel;
+    // Use label according to name availabilities
+    NSString *placeLabelName = [placeNames objectForKey:@"placeLabel"];
+    if (placeLabelName && [placeLabelName length] > 0) {
+        self.placeLabel.text = placeLabelName;
+        NSString *dateLabelName = [placeNames objectForKey:@"dateLabel"];
+        if (dateLabelName && [dateLabelName length] > 0) {
+            self.dateLabel.text = [NSString stringWithFormat:@"%@ • %@", dateLabel, dateLabelName];
+        } else {
+            self.dateLabel.text = dateLabel;
+        }
+        self.dateLabelNoPlace.text = @"";
     } else {
         self.placeLabel.text = @"";
         self.dateLabel.text = @"";
-        self.dateLabelNoPlace.text = @"";
-        [[LocationsData sharedInstance] getPlaceNameForLocation:location completion:^(NSString *placeName) {
-            if (placeName && [placeName length] > 0) {
-                self.placeLabel.text = placeName;
-                self.dateLabel.text = dateLabel;
-            } else {
-                self.dateLabelNoPlace.text = dateLabel;
-            }
-        }];
+        self.dateLabelNoPlace.text = dateLabel;
     }
     
     // Select/deselect button
@@ -139,6 +137,7 @@
     [super prepareForReuse];
     
     self.dateLabel.text = @"";
+    self.dateLabelNoPlace.text = @"";
     self.placeLabel.text = @"";
 }
 

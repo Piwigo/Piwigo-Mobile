@@ -10,10 +10,11 @@
 
 #import "AppDelegate.h"
 #import "CategoryTableViewCell.h"
+#import "CameraRollUploadViewController.h"
 #import "LocalAlbumsViewController.h"
 #import "Model.h"
 #import "PhotosFetch.h"
-#import "UploadViewController.h"
+#import "AlbumUploadViewController.h"
 
 @interface LocalAlbumsViewController () <UITableViewDelegate, UITableViewDataSource, PHPhotoLibraryChangeObserver>
 
@@ -319,17 +320,29 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    UploadViewController *uploadVC;
     switch (indexPath.section) {
         case 0:
-            uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.localGroups objectAtIndex:indexPath.row]];
+        {
+            PHAssetCollection *groupAsset = [self.localGroups objectAtIndex:indexPath.row];
+            if ((groupAsset.assetCollectionType == PHAssetCollectionTypeSmartAlbum) &&
+                (groupAsset.assetCollectionSubtype == PHAssetCollectionSubtypeSmartAlbumUserLibrary))
+            {
+                CameraRollUploadViewController *uploadVC = [[CameraRollUploadViewController alloc] initWithCategoryId:self.categoryId];
+                [self.navigationController pushViewController:uploadVC animated:YES];
+           }
+            else {
+                AlbumUploadViewController *uploadVC = [[AlbumUploadViewController alloc] initWithCategoryId:self.categoryId andCollection:[self.localGroups objectAtIndex:indexPath.row]];
+                [self.navigationController pushViewController:uploadVC animated:YES];
+            }
             break;
+        }
         case 1:
-            uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.iCloudGroups objectAtIndex:indexPath.row]];
+        {
+            AlbumUploadViewController *uploadVC = [[AlbumUploadViewController alloc] initWithCategoryId:self.categoryId andCollection:[self.iCloudGroups objectAtIndex:indexPath.row]];
+            [self.navigationController pushViewController:uploadVC animated:YES];
             break;
+        }
     }
-    
-    [self.navigationController pushViewController:uploadVC animated:YES];
 }
 
 

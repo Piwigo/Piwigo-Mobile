@@ -23,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *selectButton;
 @property (weak, nonatomic) IBOutlet UILabel *placeLabel;
 
--(void)setupWithImages:(NSArray *)imagesInSection andLocation:(CLLocation *)location inSection:(NSInteger)section andSelectionMode:(BOOL)selected;
+-(void)setupWithImages:(NSArray *)images andPlaceNames:(NSDictionary *)placeNames
+             inSection:(NSInteger)section andSelectionMode:(BOOL)selected;
 
 @end

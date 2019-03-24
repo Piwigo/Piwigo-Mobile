@@ -18,19 +18,23 @@ typedef void(^CompletionBlock)(id responseObject1, id responseObject2);
 
 @class PHAsset;
 @class PHAssetCollection;
+@class PHFetchResult;
 
 @interface PhotosFetch : NSObject
 
 @property (nonatomic, strong) NSArray *assetGroups;
 @property (nonatomic, strong) NSArray *sortedImageKeys;
 
-+(PhotosFetch*)sharedInstance;
++(PhotosFetch *)sharedInstance;
 -(void)checkPhotoLibraryAccessForViewController:(UIViewController *)viewController
                              onAuthorizedAccess:(void (^)(void))doWithAccess
                                  onDeniedAccess:(void (^)(void))doWithoutAccess;
 -(void)getLocalGroupsOnCompletion:(CompletionBlock)completion;
 
-+(NSString*)getNameForSortType:(kPiwigoSortBy)sortType;
--(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup inAscendingOrder:(BOOL)ascending;
++(NSString *)getNameForSortType:(kPiwigoSortBy)sortType;
++(PHFetchResult *)getMomentCollectionsWithSortType:(kPiwigoSortBy)sortType;
+-(NSArray *)getImagesOfAlbumCollection:(PHAssetCollection*)imageCollection
+                          withSortType:(kPiwigoSortBy)sortType;
+-(NSArray *)getImagesOfMomentCollections:(PHFetchResult *)imageCollections;
 
 @end

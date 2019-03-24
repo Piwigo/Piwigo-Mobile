@@ -1,5 +1,5 @@
 //
-//  UploadViewController.m
+//  AlbumUploadViewController.m
 //  piwigo
 //
 //  Created by Spencer Baker on 1/20/15.
@@ -8,6 +8,7 @@
 
 #import <Photos/Photos.h>
 
+#import "AlbumUploadViewController.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "ImageDetailViewController.h"
@@ -18,22 +19,24 @@
 #import "ImagesCollection.h"
 #import "LocalImagesHeaderReusableView.h"
 #import "LocalImageCollectionViewCell.h"
+#import "LocationsData.h"
 #import "MBProgressHUD.h"
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
-#import "UploadViewController.h"
 
-NSInteger const kMaxNberOfLocationsToDecode = 10;
+NSInteger const kMaxNberOfLocationsToDecode = 30;
 
-@interface UploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, LocalImagesHeaderDelegate>
+@interface AlbumUploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, LocalImagesHeaderDelegate>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
+@property (nonatomic, strong) PHAssetCollection *imageCollection;
 @property (nonatomic, assign) NSInteger nberOfImagesPerRow;
 @property (nonatomic, strong) NSArray *imagesInSections;
-@property (nonatomic, strong) NSMutableArray *locationOfImagesInSections;
-@property (nonatomic, strong) PHAssetCollection *groupAsset;
+
+@property (nonatomic, strong) NSMutableArray *locationsOfImagesInSections;
+@property (nonatomic, assign) NSRange rangeOfCachedPlaces;
 
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
@@ -51,29 +54,29 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
 
 @end
 
-@implementation UploadViewController
+@implementation AlbumUploadViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId andGroupAsset:(PHAssetCollection*)groupAsset
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andCollection:(PHAssetCollection*)imageCollection
 {
     self = [super init];
     if(self)
     {
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
         self.categoryId = categoryId;
-        self.groupAsset = groupAsset;
         self.sortType = kPiwigoSortByNewest;
-        self.removeUploadedImages = NO;
-        self.imagesInSections = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset
-                                 inAscendingOrder:NO];
+        self.imageCollection = imageCollection;
+        self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
+                                                                            withSortType:self.sortType];
 
+        // Initialise locations of sections
+        [self initLocationsOfSections];
+        
         // Initialise arrays used to manage selections
+        self.removeUploadedImages = NO;
         self.touchedImages = [NSMutableArray new];
         self.selectedImages = [NSMutableArray new];
         [self initSelectButtons];
         
-        // Initialise locations of sections
-        [self initLocationsOfSections];
-
         // Collection of images
         UICollectionViewFlowLayout *collectionFlowLayout = [UICollectionViewFlowLayout new];
         collectionFlowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -160,8 +163,11 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
         [[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
     }
     
-    // Reload collection (and display those being uploaded)
-    [self.localImagesCollection reloadData];
+    // Reload collection after feeding cache (and display images being uploaded)
+    self.rangeOfCachedPlaces = NSMakeRange(0, MIN(kMaxNberOfLocationsToDecode, [self.locationsOfImagesInSections count]) - 1);
+    [self cachePlaceNamesOfLocations:[self.locationsOfImagesInSections subarrayWithRange:self.rangeOfCachedPlaces] completion:^{
+        [self.localImagesCollection reloadData];
+    }];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -262,7 +268,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
 -(void)initLocationsOfSections
 {
     // Initalisation
-    self.locationOfImagesInSections = [NSMutableArray new];
+    self.locationsOfImagesInSections = [NSMutableArray new];
 
     // Determine locations of images in sections
     for (NSArray *imagesInSection in self.imagesInSections) {
@@ -318,8 +324,16 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
         }
         
         // Store location for current section
-        [self.locationOfImagesInSections addObject:locationForSection];
+        [self.locationsOfImagesInSections addObject:locationForSection];
     }
+}
+
+-(void)cachePlaceNamesOfLocations:(NSArray *)locationsOfImagesInSections
+                       completion:(void (^)(void))completion
+{
+    // Add place names to cache
+    [[LocationsData sharedInstance] addLocationsToCache:[locationsOfImagesInSections mutableCopy]
+                                             completion:completion];
 }
 
 -(NSIndexPath *)indexPathOfImageAsset:(PHAsset *)imageAsset
@@ -437,8 +451,8 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
     PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
     // Retrieve images according to chosen sort order
-    self.imagesInSections = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset
-                                                                inAscendingOrder:ascending];
+    self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
+                                                                        withSortType:self.sortType];
     // Initialise locations of sections
     [self initLocationsOfSections];
     
@@ -451,7 +465,9 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
     // Scroll to previous position
     if (indexPath.section != 0) {
         indexPath = [self indexPathOfImageAsset:imageAsset];
-        [self.localImagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        if (indexPath) {
+            [self.localImagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        }
     }
 }
 
@@ -753,9 +769,21 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
             [collectionView registerNib:nib forCellWithReuseIdentifier:@"LocalImagesHeaderReusableView"];
             header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView" forIndexPath:indexPath];
             
-            // Any location ?
-            CLLocation *location = [self.locationOfImagesInSections objectAtIndex:indexPath.section];
-            [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] andLocation:location inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
+            // Cache place names if needed
+            NSInteger lastCachedPlace = NSMaxRange(self.rangeOfCachedPlaces);
+            if (indexPath.section > (lastCachedPlace - kMaxNberOfLocationsToDecode / 2.0)) {
+                self.rangeOfCachedPlaces = NSMakeRange(lastCachedPlace, MIN(lastCachedPlace + kMaxNberOfLocationsToDecode, [self.locationsOfImagesInSections count]) - lastCachedPlace);
+                [self cachePlaceNamesOfLocations:[self.locationsOfImagesInSections subarrayWithRange:self.rangeOfCachedPlaces] completion:nil];
+            }
+            
+            // Retrieve place names
+            NSMutableDictionary *placeNames = [NSMutableDictionary new];
+            CLLocation *location = [self.locationsOfImagesInSections objectAtIndex:indexPath.section];
+            NSString *name = [[LocationsData sharedInstance] getPlaceNameForLocation:location];
+            if (name) [placeNames setValue:name forKey:@"placeLabel"];
+
+            // Set up header
+            [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] andPlaceNames:placeNames inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
             header.headerDelegate = self;
             
             return header;
@@ -916,7 +944,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
-//    NSLog(@"UploadViewController[imageProgress:]");
+//    NSLog(@"AlbumUploadViewController[imageProgress:]");
     NSIndexPath *indexPath = [self indexPathOfImageAsset:image.imageAsset];
     LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:indexPath];
     
@@ -932,16 +960,16 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
     cell.cellUploading = YES;
     if (iCloudProgress < 0) {
         cell.progress = uploadProgress;
-//        NSLog(@"UploadViewController[ImageProgress]: %.2f", uploadProgress);
+//        NSLog(@"AlbumUploadViewController[ImageProgress]: %.2f", uploadProgress);
     } else {
         cell.progress = (iCloudProgress + uploadProgress) / 2.0;
-//        NSLog(@"UploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
+//        NSLog(@"AlbumUploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
     }
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-//    NSLog(@"UploadViewController[imageUploaded:]");
+//    NSLog(@"AlbumUploadViewController[imageUploaded:]");
     NSIndexPath *indexPath = [self indexPathOfImageAsset:image.imageAsset];
     LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:indexPath];
 
@@ -965,15 +993,6 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
 }
 
 
-#pragma mark - SortSelectViewController Delegate Methods
-
-//-(void)didSelectSortTypeOf:(kPiwigoSortBy)sortType
-//{
-//    // Sort images according to new choice
-//    self.sortType = sortType;
-//}
-
-
 #pragma mark - Changes occured in the Photo library
 
 - (void)photoLibraryDidChange:(PHChange *)changeInfo {
@@ -982,18 +1001,8 @@ NSInteger const kMaxNberOfLocationsToDecode = 10;
     dispatch_async(dispatch_get_main_queue(), ^{
 
         // Collect new list of images
-        switch (self.sortType) {
-            case kPiwigoSortByNewest:
-                self.imagesInSections = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset inAscendingOrder:NO];
-                break;
-                
-            case kPiwigoSortByOldest:
-                self.imagesInSections = [[PhotosFetch sharedInstance] getImagesForAssetGroup:self.groupAsset inAscendingOrder:YES];
-                break;
-                
-            default:
-                break;
-        }
+        self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
+                                                                            withSortType:self.sortType];
         
         // Reload local image collection
         [self.localImagesCollection reloadData];

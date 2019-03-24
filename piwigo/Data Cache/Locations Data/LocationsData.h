@@ -16,9 +16,11 @@
 +(LocationsData*)sharedInstance;
 
 @property (nonatomic, strong) NSArray *knownPlaceNames;
+@property (nonatomic, strong) CLGeocoder *geocoder;
 
--(void)getPlaceNameForLocation:(CLLocation *)location
-                    completion:(void (^)(NSString *placeName))completion;
+-(void)addLocationsToCache:(NSMutableArray *)locations
+                completion:(void (^)(void))completion;
+-(NSString *)getPlaceNameForLocation:(CLLocation *)location;
 -(void)clearCache;
 
 @end

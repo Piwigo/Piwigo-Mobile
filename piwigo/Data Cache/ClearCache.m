@@ -8,6 +8,7 @@
 
 #import "ClearCache.h"
 #import "CategoriesData.h"
+#import "LocationsData.h"
 #import "TagsData.h"
 
 @implementation ClearCache
@@ -20,6 +21,9 @@
     
     // Images
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    
+    // Place names
+    [[LocationsData sharedInstance] clearCache];
 }
 
 @end

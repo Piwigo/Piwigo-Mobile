@@ -313,18 +313,83 @@
     return name;
 }
 
--(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup inAscendingOrder:(BOOL)ascending
++(PHFetchResult *)getMomentCollectionsWithSortType:(kPiwigoSortBy)sortType
 {
     // Retrieve imageAssets
     PHFetchOptions *fetchOptions = [PHFetchOptions new];
-    fetchOptions.sortDescriptors = @[
-                                     [NSSortDescriptor sortDescriptorWithKey:@"creationDate"
-                                                                   ascending:ascending],
-                                     ];
-    PHFetchResult *imagesInCollection = [PHAsset fetchAssetsInAssetCollection:assetGroup options:fetchOptions];
+    switch (sortType) {
+        case kPiwigoSortByNewest:
+            fetchOptions.sortDescriptors = @[
+                                             [NSSortDescriptor sortDescriptorWithKey:@"startDate"
+                                                                           ascending:NO],
+                                             ];
+            break;
+            
+        case kPiwigoSortByOldest:
+            fetchOptions.sortDescriptors = @[
+                                             [NSSortDescriptor sortDescriptorWithKey:@"startDate"
+                                                                           ascending:YES],
+                                             ];
+            break;
+            
+        default:
+            fetchOptions = nil;
+            break;
+    }
+
+    // Retrieve imageAssets
+    return [PHAssetCollection
+            fetchAssetCollectionsWithType:PHAssetCollectionTypeMoment
+            subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:fetchOptions];
+}
+
+-(NSArray *)getImagesOfAlbumCollection:(PHAssetCollection*)imageCollection
+                          withSortType:(kPiwigoSortBy)sortType
+{
+    PHFetchOptions *fetchOptions = [PHFetchOptions new];
+    switch (sortType) {
+        case kPiwigoSortByNewest:
+            fetchOptions.sortDescriptors = @[
+                                             [NSSortDescriptor sortDescriptorWithKey:@"creationDate"
+                                                                           ascending:NO],
+                                             ];
+            break;
+            
+        case kPiwigoSortByOldest:
+            fetchOptions.sortDescriptors = @[
+                                             [NSSortDescriptor sortDescriptorWithKey:@"creationDate"
+                                                                           ascending:YES],
+                                             ];
+            break;
+            
+        default:
+            fetchOptions = nil;
+            break;
+    }
+    
+    // Retrieve imageAssets
+    PHFetchResult *imagesInCollection = [PHAsset fetchAssetsInAssetCollection:imageCollection options:fetchOptions];
     
     // Sort images by day
     return [SplitLocalImages splitImagesByDate:(NSArray *)imagesInCollection];
+}
+
+-(NSArray *)getImagesOfMomentCollections:(PHFetchResult *)imageCollections
+{
+    // Fetch sort option
+    PHFetchOptions *fetchOptions = [PHFetchOptions new];
+    fetchOptions.sortDescriptors = @[
+                                     [NSSortDescriptor sortDescriptorWithKey:@"creationDate"
+                                                                   ascending:YES],
+                                     ];
+
+    // Build array of images split in moments
+    NSMutableArray *images = [NSMutableArray new];
+    for (PHAssetCollection *sectionCollection in imageCollections) {
+        // Retrieve imageAssets
+        [images addObject:[PHAsset fetchAssetsInAssetCollection:sectionCollection options:fetchOptions]];
+    }
+    return images;
 }
 
 @end
