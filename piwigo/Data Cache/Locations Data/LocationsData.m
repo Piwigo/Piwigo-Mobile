@@ -139,7 +139,7 @@ CGFloat const kDistanceOfIncertainty = 10.0;
                         [newLocations addObject:newPlace];
                     } else {
                         if (error) {
-                            NSLog(@"Geocoder error %d: %@", error.code, [error localizedDescription]);
+                            NSLog(@"Geocoder error %ld: %@", error.code, [error localizedDescription]);
                         } else {
                             NSLog(@"Geocoder: no place mark returned!");
                         }
