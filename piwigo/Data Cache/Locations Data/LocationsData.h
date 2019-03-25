@@ -20,7 +20,7 @@
 
 -(void)addLocationsToCache:(NSMutableArray *)locations
                 completion:(void (^)(void))completion;
--(NSString *)getPlaceNameForLocation:(CLLocation *)location;
+-(NSDictionary *)getPlaceNameForLocation:(CLLocation *)location;
 -(void)clearCache;
 
 @end

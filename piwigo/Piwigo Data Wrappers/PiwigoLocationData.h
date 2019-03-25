@@ -18,5 +18,6 @@
 @property (nonatomic, assign) CLLocationAccuracy verticalAccuracy;
 @property (nonatomic, strong) NSDate *timestamp;
 @property (nonatomic, strong) NSString *placeName;
+@property (nonatomic, strong) NSString *streetName;
 
 @end

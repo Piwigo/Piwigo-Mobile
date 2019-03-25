@@ -75,7 +75,7 @@ CGFloat const kDistanceOfIncertainty = 10.0;
                 break;
             }
         }
-        [locations removeObject:knownLocation];
+        if (knownLocation) [locations removeObject:knownLocation];
     }
     
     // Done if all locations already in cache
@@ -107,25 +107,31 @@ CGFloat const kDistanceOfIncertainty = 10.0;
                 completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
                     
                     // Extract existing data
-                    NSString *placeName = @"";
+                    NSString *placeName = @"", *streetName = @"";
                     if (!error && placemarks && placemarks.count > 0)
                     {
                         // Define place name
                         CLPlacemark *placeMark = [placemarks objectAtIndex:0];
-                        placeName = [NSString stringWithFormat:@"%@", [placeMark locality]];
+                        if ([[placeMark thoroughfare] length] > 0) {
+                            placeName = [NSString stringWithFormat:@"%@, %@", [placeMark locality], [placeMark administrativeArea]];
+                            streetName = [NSString stringWithFormat:@"%@", [placeMark thoroughfare]];
+                        } else {
+                            placeName = [NSString stringWithFormat:@"%@", [placeMark locality]];
+                            streetName = [NSString stringWithFormat:@"%@", [placeMark administrativeArea]];
+                        }
                         
                         // Log placemarks[0]
-//                        NSLog(@"%@", [NSString stringWithFormat:@"name:%@, country:%@, administrativeArea:%@, subAdministrativeArea:%@, locality:%@, subLocality:%@, thoroughfare:%@, subThoroughfare:%@, region:%@, areasOfInterest:%@",
-//                                      [placeMark name],
-//                                      [placeMark country],
-//                                      [placeMark administrativeArea],
-//                                      [placeMark subAdministrativeArea],
-//                                      [placeMark locality],
-//                                      [placeMark subLocality],
-//                                      [placeMark thoroughfare],
-//                                      [placeMark subThoroughfare],
-//                                      [placeMark region],
-//                                      [placeMark areasOfInterest]]);
+                        NSLog(@"%@", [NSString stringWithFormat:@"name:%@, country:%@, administrativeArea:%@, subAdministrativeArea:%@, locality:%@, subLocality:%@, thoroughfare:%@, subThoroughfare:%@, region:%@, areasOfInterest:%@",
+                                      [placeMark name],
+                                      [placeMark country],
+                                      [placeMark administrativeArea],
+                                      [placeMark subAdministrativeArea],
+                                      [placeMark locality],
+                                      [placeMark subLocality],
+                                      [placeMark thoroughfare],
+                                      [placeMark subThoroughfare],
+                                      [placeMark region],
+                                      [placeMark areasOfInterest]]);
                         
                         // Add new placemarks to cache
                         PiwigoLocationData *newPlace = [PiwigoLocationData new];
@@ -136,6 +142,7 @@ CGFloat const kDistanceOfIncertainty = 10.0;
                         newPlace.verticalAccuracy = location.verticalAccuracy;
                         newPlace.timestamp = location.timestamp;
                         newPlace.placeName = placeName;
+                        newPlace.streetName = streetName;
                         [newLocations addObject:newPlace];
                     } else {
                         if (error) {
@@ -157,14 +164,14 @@ CGFloat const kDistanceOfIncertainty = 10.0;
     [[NSOperationQueue mainQueue] addOperation:completionOperation];
 }
 
--(NSString *)getPlaceNameForLocation:(CLLocation *)location
+-(NSDictionary *)getPlaceNameForLocation:(CLLocation *)location
 {
-    NSString *placeName;
+    NSMutableDictionary *placeNames = [NSMutableDictionary new];
     
     // Check location validity
     if (!CLLocationCoordinate2DIsValid(location.coordinate)) {
         // Invalid location
-        return placeName;
+        return placeNames;
     }
     
     // Loop over known locations
@@ -181,12 +188,13 @@ CGFloat const kDistanceOfIncertainty = 10.0;
         // Is this location known?
         if ([location distanceFromLocation:cachedLocation] < kDistanceOfIncertainty)
         {
-            placeName = locationData.placeName;
+            if (locationData.placeName) [placeNames setValue:locationData.placeName forKey:@"placeLabel"];
+            if (locationData.streetName) [placeNames setValue:locationData.streetName forKey:@"dateLabel"];
             break;
         }
     }
     
-    return placeName;
+    return placeNames;
 }
 
 @end

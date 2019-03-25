@@ -296,30 +296,17 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                 locationForSection = imageAsset.location;
             } else {
                 // Another valid location => Compare to first one
-                if ([imageAsset.location distanceFromLocation:locationForSection] < 1000000) {
-                    // Reduce precision - Latitude
-//                    CGFloat dif = fabs(imageAsset.location.coordinate.latitude - locationForSection.coordinate.latitude);
-//                    CGFloat latitude = locationForSection.coordinate.latitude;
-//                    CGFloat longitude = locationForSection.coordinate.longitude;
-//                    if (dif > 0) {
-//                        CGFloat corr = roundf(1.0 / dif);
-//                        latitude = roundf(locationForSection.coordinate.latitude * corr) / corr;
-//                    }
-//                    // Reduce precision - Longitude
-//                    dif = fabs(imageAsset.location.coordinate.longitude - locationForSection.coordinate.longitude);
-//                    if (dif > 0) {
-//                        CGFloat corr = roundf(1.0 / dif);
-//                        longitude = roundf(locationForSection.coordinate.longitude * corr) / corr;
-//                    }
-//                    // Update location for section
-//                    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
-//                    CLLocation *newLocation = [[CLLocation alloc] initWithCoordinate:coordinate
-//                                                altitude:locationForSection.altitude
-//                                                horizontalAccuracy:locationForSection.horizontalAccuracy
-//                                                verticalAccuracy:locationForSection.verticalAccuracy
-//                                                timestamp:locationForSection.timestamp];
-//                    locationForSection = newLocation;
-                }
+//                NSLog(@"=> %@", imageAsset.location);
+                CGFloat latitude = locationForSection.coordinate.latitude;
+                CGFloat longitude = locationForSection.coordinate.longitude;
+                CLLocationAccuracy distance = MAX(locationForSection.verticalAccuracy, [imageAsset.location distanceFromLocation:locationForSection]);
+                CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+                CLLocation *newLocation = [[CLLocation alloc] initWithCoordinate:coordinate
+                                            altitude:locationForSection.altitude
+                                            horizontalAccuracy:distance
+                                            verticalAccuracy:locationForSection.verticalAccuracy
+                                            timestamp:locationForSection.timestamp];
+                locationForSection = newLocation;
             }
         }
         
@@ -778,11 +765,9 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             }
             
             // Retrieve place name (=> placeLabel)
-            NSMutableDictionary *placeNames = [NSMutableDictionary new];
             CLLocation *location = [self.locationsOfImagesInSections objectAtIndex:indexPath.section];
-            NSString *placeLabelName = [[LocationsData sharedInstance] getPlaceNameForLocation:location];
-            if (placeLabelName) [placeNames setValue:placeLabelName forKey:@"placeLabel"];
-
+            NSDictionary *placeNames = [[LocationsData sharedInstance] getPlaceNameForLocation:location];
+            
             // Set up header
             [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] andPlaceNames:placeNames inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
             header.headerDelegate = self;
