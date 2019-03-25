@@ -60,7 +60,7 @@
         self.categoryId = categoryId;
         self.sortType = kPiwigoSortByNewest;
         self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:kPiwigoSortByNewest];
-        NSLog(@"=> %lu sections", (unsigned long)self.imageCollections.count);
+//        NSLog(@"=> %lu sections", (unsigned long)self.imageCollections.count);
 
         // Log first collection (i.e. section)
 //        if (self.imageCollections.count > 0) {
