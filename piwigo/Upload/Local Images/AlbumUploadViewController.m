@@ -771,16 +771,17 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             
             // Cache place names if needed
             NSInteger lastCachedPlace = NSMaxRange(self.rangeOfCachedPlaces);
-            if (indexPath.section > (lastCachedPlace - kMaxNberOfLocationsToDecode / 2.0)) {
-                self.rangeOfCachedPlaces = NSMakeRange(lastCachedPlace, MIN(lastCachedPlace + kMaxNberOfLocationsToDecode, [self.locationsOfImagesInSections count]) - lastCachedPlace);
+            if ((indexPath.section > (lastCachedPlace - kMaxNberOfLocationsToDecode / 2.0)) &&
+                (lastCachedPlace < (self.imagesInSections.count - 1))) {
+                self.rangeOfCachedPlaces = NSMakeRange(lastCachedPlace, MIN(kMaxNberOfLocationsToDecode, [self.locationsOfImagesInSections count]) - lastCachedPlace);
                 [self cachePlaceNamesOfLocations:[self.locationsOfImagesInSections subarrayWithRange:self.rangeOfCachedPlaces] completion:nil];
             }
             
-            // Retrieve place names
+            // Retrieve place name (=> placeLabel)
             NSMutableDictionary *placeNames = [NSMutableDictionary new];
             CLLocation *location = [self.locationsOfImagesInSections objectAtIndex:indexPath.section];
-            NSString *name = [[LocationsData sharedInstance] getPlaceNameForLocation:location];
-            if (name) [placeNames setValue:name forKey:@"placeLabel"];
+            NSString *placeLabelName = [[LocationsData sharedInstance] getPlaceNameForLocation:location];
+            if (placeLabelName) [placeNames setValue:placeLabelName forKey:@"placeLabel"];
 
             // Set up header
             [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] andPlaceNames:placeNames inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
