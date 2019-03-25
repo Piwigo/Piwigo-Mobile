@@ -66,9 +66,20 @@
                 if (dateInSecs > dayStartInSecs)
                 {
                     // Images taken today
-                    dateLabel = [NSString stringWithFormat:@"%@ - %@", [NSDateFormatter localizedStringFromDate:firstImageDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle], [NSDateFormatter localizedStringFromDate:lastImageDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+                    NSString *firstImageDateStr = [NSDateFormatter localizedStringFromDate:firstImageDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
+                    NSString *lastImageDateStr = [NSDateFormatter localizedStringFromDate:lastImageDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
+                    if ([firstImageDateStr isEqualToString:lastImageDateStr]) {
+                        dateLabel = firstImageDateStr;
+                    } else {
+                        dateLabel = [NSString stringWithFormat:@"%@ - %@", firstImageDateStr, lastImageDateStr];
+                    }
                 } else {
-                    dateLabel = [NSDateFormatter localizedStringFromDate:dateCreated1 dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if([UIScreen mainScreen].bounds.size.width > 414) {     // i.e. larger than iPhones 6, 7 screen width
+                        dateLabel = [NSDateFormatter localizedStringFromDate:dateCreated1 dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+                    } else {
+                        dateLabel = [NSDateFormatter localizedStringFromDate:dateCreated1 dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
+                    }
                 }
             }
         }
