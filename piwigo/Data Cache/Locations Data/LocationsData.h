@@ -20,7 +20,7 @@
 
 -(void)addLocationsToCache:(NSMutableArray *)locations
                 completion:(void (^)(void))completion;
--(NSDictionary *)getPlaceNameForLocation:(CLLocation *)location;
+-(NSDictionary *)getPlaceNameForLocation:(PiwigoLocationData *)location;
 -(void)clearCache;
 
 @end

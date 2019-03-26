@@ -24,6 +24,7 @@
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
+#import "PiwigoLocationData.h"
 
 NSInteger const kMaxNberOfLocationsToDecode = 30;
 
@@ -274,11 +275,11 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     for (NSArray *imagesInSection in self.imagesInSections) {
         
         // Initialise location of section with invalid location
-        CLLocation *locationForSection = [[CLLocation alloc]
-                                          initWithCoordinate:kCLLocationCoordinate2DInvalid
-                                          altitude:0.0
-                                          horizontalAccuracy:0.0 verticalAccuracy:0.0
-                                          timestamp:[NSDate date]];
+        PiwigoLocationData *locationForSection = [PiwigoLocationData new];
+        locationForSection.coordinate = kCLLocationCoordinate2DInvalid;
+        locationForSection.radius = 0.0;
+        locationForSection.placeName = @"";
+        locationForSection.streetName = @"";
         
         // Loop over images of section
         for (PHAsset *imageAsset in imagesInSection) {
@@ -293,20 +294,20 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             // Location found => Store it and move to next section
             if (!CLLocationCoordinate2DIsValid(locationForSection.coordinate)) {
                 // First valid location => Store it
-                locationForSection = imageAsset.location;
+                locationForSection.coordinate = imageAsset.location.coordinate;
             } else {
                 // Another valid location => Compare to first one
 //                NSLog(@"=> %@", imageAsset.location);
                 CGFloat latitude = locationForSection.coordinate.latitude;
                 CGFloat longitude = locationForSection.coordinate.longitude;
-                CLLocationAccuracy distance = MAX(locationForSection.verticalAccuracy, [imageAsset.location distanceFromLocation:locationForSection]);
                 CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
                 CLLocation *newLocation = [[CLLocation alloc] initWithCoordinate:coordinate
-                                            altitude:locationForSection.altitude
-                                            horizontalAccuracy:distance
-                                            verticalAccuracy:locationForSection.verticalAccuracy
-                                            timestamp:locationForSection.timestamp];
-                locationForSection = newLocation;
+                                                                        altitude:0.0
+                                                              horizontalAccuracy:0.0
+                                                                verticalAccuracy:0.0                         timestamp:[NSDate date]];
+
+                CLLocationAccuracy distance = MAX(locationForSection.radius, [imageAsset.location distanceFromLocation:newLocation]);
+                locationForSection.radius = distance;
             }
         }
         
@@ -765,7 +766,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             }
             
             // Retrieve place name (=> placeLabel)
-            CLLocation *location = [self.locationsOfImagesInSections objectAtIndex:indexPath.section];
+            PiwigoLocationData *location = [self.locationsOfImagesInSections objectAtIndex:indexPath.section];
             NSDictionary *placeNames = [[LocationsData sharedInstance] getPlaceNameForLocation:location];
             
             // Set up header

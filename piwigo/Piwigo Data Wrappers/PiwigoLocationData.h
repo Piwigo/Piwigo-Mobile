@@ -11,12 +11,8 @@
 
 @interface PiwigoLocationData : NSObject
 
-@property (nonatomic, assign) CLLocationDegrees latitude;
-@property (nonatomic, assign) CLLocationDegrees longitude;
-@property (nonatomic, assign) CLLocationDistance altitude;
-@property (nonatomic, assign) CLLocationAccuracy horizontalAccuracy;
-@property (nonatomic, assign) CLLocationAccuracy verticalAccuracy;
-@property (nonatomic, strong) NSDate *timestamp;
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+@property (nonatomic, assign) CLLocationDistance radius;
 @property (nonatomic, strong) NSString *placeName;
 @property (nonatomic, strong) NSString *streetName;
 

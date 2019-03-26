@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class PHAssetCollection;
+@class PiwigoLocationData;
 
 @interface AlbumUploadViewController : UIViewController
 

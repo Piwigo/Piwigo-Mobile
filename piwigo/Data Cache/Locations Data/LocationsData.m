@@ -35,7 +35,7 @@ CGFloat const kDistanceOfIncertainty = 10.0;
 {
     // Remove invalid locations
     NSMutableArray *invalidLocations = [NSMutableArray new];
-    for (CLLocation *location in locations) {
+    for (PiwigoLocationData *location in locations) {
         
         // Check location validity
         if (!CLLocationCoordinate2DIsValid(location.coordinate))
@@ -56,21 +56,24 @@ CGFloat const kDistanceOfIncertainty = 10.0;
     for (PiwigoLocationData *locationData in self.knownPlaceNames)
     {
         // Known location
-        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(locationData.latitude, locationData.longitude);
-        CLLocation *cachedLocation = [[CLLocation alloc] initWithCoordinate:coordinate
-                                                                   altitude:locationData.altitude
-                                                         horizontalAccuracy:locationData.horizontalAccuracy
-                                                           verticalAccuracy:locationData.verticalAccuracy
-                                                                  timestamp:locationData.timestamp];
+        CLLocationDegrees latitude = locationData.coordinate.latitude;
+        CLLocationDegrees longitude = locationData.coordinate.longitude;
+        CLLocation *cachedLocation = [[CLLocation alloc] initWithLatitude:latitude
+                                                                longitude:longitude];
         
         // Compare known location to list of requested locations
-        CLLocation *knownLocation;
-        for (CLLocation *location in locations) {
+        PiwigoLocationData *knownLocation;
+        for (PiwigoLocationData *location in locations) {
             
             // Already in cache ?
-            if ([location distanceFromLocation:cachedLocation] < kDistanceOfIncertainty)
+            CLLocationDegrees latitude = location.coordinate.latitude;
+            CLLocationDegrees longitude = location.coordinate.longitude;
+            CLLocation *testedLocation = [[CLLocation alloc] initWithLatitude:latitude
+                                                                 longitude:longitude];
+
+            if ([testedLocation distanceFromLocation:cachedLocation] < MAX(locationData.radius, kDistanceOfIncertainty))
             {
-                // Within 10 m => Will be removed
+                // Within 10 m or inside region => Will be removed
                 knownLocation = location;
                 break;
             }
@@ -97,50 +100,77 @@ CGFloat const kDistanceOfIncertainty = 10.0;
     }];
     
     // Loop over remaining locations
-    for (CLLocation *location in locations) {
+    for (PiwigoLocationData *location in locations) {
 
         // Add Geocoder request
         NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
             dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
             
-            [self.geocoder reverseGeocodeLocation:location
+            // Initialise
+            CLLocationDegrees latitude = location.coordinate.latitude;
+            CLLocationDegrees longitude = location.coordinate.longitude;
+            CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:latitude
+                                                                    longitude:longitude];
+            
+            // Request place name
+            [self.geocoder reverseGeocodeLocation:newLocation
                 completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
                     
                     // Extract existing data
-                    NSString *placeName = @"", *streetName = @"";
                     if (!error && placemarks && placemarks.count > 0)
                     {
-                        // Define place name
+                        // Extract data
                         CLPlacemark *placeMark = [placemarks objectAtIndex:0];
-                        if ([[placeMark thoroughfare] length] > 0) {
-                            placeName = [NSString stringWithFormat:@"%@, %@", [placeMark locality], [placeMark administrativeArea]];
-                            streetName = [NSString stringWithFormat:@"%@", [placeMark thoroughfare]];
-                        } else {
-                            placeName = [NSString stringWithFormat:@"%@", [placeMark locality]];
-                            streetName = [NSString stringWithFormat:@"%@", [placeMark administrativeArea]];
+                        CLCircularRegion *region = (CLCircularRegion *)[placeMark region];
+                        NSString *locality = [placeMark locality] ? [placeMark locality] : @"";
+                        NSString *thoroughfare = [placeMark thoroughfare] ? [placeMark thoroughfare] : @"";
+                        NSString *administrativeArea = [placeMark administrativeArea] ? [placeMark administrativeArea] : @"";
+                        
+                        // Define place name
+                        NSString *placeName = @"", *streetName = @"";
+                        if (locality && [locality length] > 0)
+                        {
+                            // Locality returned
+                            if (region.radius > location.radius)
+                            {
+                                // Images of section are in the same region
+                                if (locality.length && administrativeArea.length && thoroughfare.length) {
+                                    placeName = [NSString stringWithFormat:@"%@, %@", locality, administrativeArea];
+                                    streetName = [NSString stringWithFormat:@"%@", thoroughfare];
+                                } else {
+                                    placeName = [NSString stringWithFormat:@"%@", locality];
+                                    streetName = [NSString stringWithFormat:@"%@", administrativeArea];
+                                }
+                            }
+                            else {
+                                // Images of section are in not in the same region
+                                if (locality.length && administrativeArea.length) {
+                                    placeName = [NSString stringWithFormat:@"%@, …", locality];
+                                    streetName = [NSString stringWithFormat:@"%@, …", administrativeArea];
+                                } else {
+                                    placeName = [NSString stringWithFormat:@"%@, …", locality];
+                                }
+                            }
+
                         }
                         
                         // Log placemarks[0]
-                        NSLog(@"%@", [NSString stringWithFormat:@"name:%@, country:%@, administrativeArea:%@, subAdministrativeArea:%@, locality:%@, subLocality:%@, thoroughfare:%@, subThoroughfare:%@, region:%@, areasOfInterest:%@",
-                                      [placeMark name],
-                                      [placeMark country],
-                                      [placeMark administrativeArea],
-                                      [placeMark subAdministrativeArea],
-                                      [placeMark locality],
-                                      [placeMark subLocality],
-                                      [placeMark thoroughfare],
-                                      [placeMark subThoroughfare],
-                                      [placeMark region],
-                                      [placeMark areasOfInterest]]);
+//                        NSLog(@"%@", [NSString stringWithFormat:@"name:%@, country:%@, administrativeArea:%@, subAdministrativeArea:%@, locality:%@, subLocality:%@, thoroughfare:%@, subThoroughfare:%@, region:%@, areasOfInterest:%@",
+//                                      [placeMark name],
+//                                      [placeMark country],
+//                                      [placeMark administrativeArea],
+//                                      [placeMark subAdministrativeArea],
+//                                      [placeMark locality],
+//                                      [placeMark subLocality],
+//                                      [placeMark thoroughfare],
+//                                      [placeMark subThoroughfare],
+//                                      [placeMark region],
+//                                      [placeMark areasOfInterest]]);
                         
                         // Add new placemarks to cache
                         PiwigoLocationData *newPlace = [PiwigoLocationData new];
-                        newPlace.latitude = location.coordinate.latitude;
-                        newPlace.longitude = location.coordinate.longitude;
-                        newPlace.altitude = location.altitude;
-                        newPlace.horizontalAccuracy = location.horizontalAccuracy;
-                        newPlace.verticalAccuracy = location.verticalAccuracy;
-                        newPlace.timestamp = location.timestamp;
+                        newPlace.coordinate = location.coordinate;
+                        newPlace.radius = region.radius;
                         newPlace.placeName = placeName;
                         newPlace.streetName = streetName;
                         [newLocations addObject:newPlace];
@@ -164,7 +194,7 @@ CGFloat const kDistanceOfIncertainty = 10.0;
     [[NSOperationQueue mainQueue] addOperation:completionOperation];
 }
 
--(NSDictionary *)getPlaceNameForLocation:(CLLocation *)location
+-(NSDictionary *)getPlaceNameForLocation:(PiwigoLocationData *)location
 {
     NSMutableDictionary *placeNames = [NSMutableDictionary new];
     
@@ -174,19 +204,23 @@ CGFloat const kDistanceOfIncertainty = 10.0;
         return placeNames;
     }
     
+    // Initialise
+    CLLocationDegrees latitude = location.coordinate.latitude;
+    CLLocationDegrees longitude = location.coordinate.longitude;
+    CLLocation *requestedLocation = [[CLLocation alloc] initWithLatitude:latitude
+                                                            longitude:longitude];
+
     // Loop over known locations
     for (PiwigoLocationData *locationData in self.knownPlaceNames)
     {
         // Known location
-        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(locationData.latitude, locationData.longitude);
-        CLLocation *cachedLocation = [[CLLocation alloc] initWithCoordinate:coordinate
-                                                                   altitude:locationData.altitude
-                                                         horizontalAccuracy:locationData.horizontalAccuracy
-                                                           verticalAccuracy:locationData.verticalAccuracy
-                                                                  timestamp:locationData.timestamp];
+        CLLocationDegrees latitude = locationData.coordinate.latitude;
+        CLLocationDegrees longitude = locationData.coordinate.longitude;
+        CLLocation *cachedLocation = [[CLLocation alloc] initWithLatitude:latitude
+                                                                longitude:longitude];
         
         // Is this location known?
-        if ([location distanceFromLocation:cachedLocation] < kDistanceOfIncertainty)
+        if ([requestedLocation distanceFromLocation:cachedLocation] < MAX(locationData.radius, kDistanceOfIncertainty))
         {
             if (locationData.placeName) [placeNames setValue:locationData.placeName forKey:@"placeLabel"];
             if (locationData.streetName) [placeNames setValue:locationData.streetName forKey:@"dateLabel"];
