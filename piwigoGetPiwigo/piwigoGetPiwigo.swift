@@ -67,7 +67,7 @@ public enum Model : String {
 // #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 public extension UIDevice {
-    public var type: Model {
+    var type: Model {
         var systemInfo = utsname()
         uname(&systemInfo)
         let modelCode = withUnsafePointer(to: &systemInfo.machine) {
