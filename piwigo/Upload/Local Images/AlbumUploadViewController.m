@@ -221,7 +221,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     switch (self.selectedImages.count) {
         case 0:
             self.navigationItem.leftBarButtonItems = @[];
-            // Do not show two buttons provide enough space for title
+            // Do not show two buttons to provide enough space for title
             // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
             if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
                 self.navigationItem.rightBarButtonItems = @[self.sortBarButton];
@@ -235,7 +235,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             
         case 1:
             self.navigationItem.leftBarButtonItems = @[self.cancelBarButton];
-            // Do not show two buttons provide enough space for title
+            // Do not show two buttons to provide enough space for title
             // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
             if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
                 self.navigationItem.rightBarButtonItems = @[self.uploadBarButton];
@@ -249,7 +249,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             
         default:
             self.navigationItem.leftBarButtonItems = @[self.cancelBarButton];
-            // Do not show two buttons provide enough space for title
+            // Do not show two buttons to provide enough space for title
             // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
             if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
                 self.navigationItem.rightBarButtonItems = @[self.uploadBarButton];

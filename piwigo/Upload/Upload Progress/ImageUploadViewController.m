@@ -82,7 +82,8 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"ImageUploadNav"];
+
     // Table view
     self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.uploadImagesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;

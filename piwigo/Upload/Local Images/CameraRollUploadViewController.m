@@ -93,6 +93,7 @@
         self.localImagesCollection.showsVerticalScrollIndicator = YES;
         self.localImagesCollection.dataSource = self;
         self.localImagesCollection.delegate = self;
+        [self.localImagesCollection setAccessibilityIdentifier:@"CameraRoll"];
 
         [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
         [self.localImagesCollection registerNib:[UINib nibWithNibName:@"LocalImagesHeaderReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView"];
@@ -209,6 +210,7 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"CameraRollNav"];
     
     // Collection view
     self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
@@ -220,7 +222,7 @@
     switch (self.selectedImages.count) {
         case 0:
             self.navigationItem.leftBarButtonItems = @[];
-            // Do not show two buttons provide enough space for title
+            // Do not show two buttons to provide enough space for title
             // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
             if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
                 self.navigationItem.rightBarButtonItems = @[self.sortBarButton];
@@ -234,7 +236,7 @@
             
         case 1:
             self.navigationItem.leftBarButtonItems = @[self.cancelBarButton];
-            // Do not show two buttons provide enough space for title
+            // Do not show two buttons to provide enough space for title
             // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
             if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
                 self.navigationItem.rightBarButtonItems = @[self.uploadBarButton];
@@ -248,7 +250,7 @@
             
         default:
             self.navigationItem.leftBarButtonItems = @[self.cancelBarButton];
-            // Do not show two buttons provide enough space for title
+            // Do not show two buttons to provide enough space for title
             // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
             if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
                 self.navigationItem.rightBarButtonItems = @[self.uploadBarButton];
