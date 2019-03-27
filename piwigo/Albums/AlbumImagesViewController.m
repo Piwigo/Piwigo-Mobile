@@ -220,7 +220,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
+
     // Toolbar
     [self.navigationController.toolbar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;

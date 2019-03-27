@@ -314,11 +314,12 @@ class piwigoAppStore: XCTestCase {
         if deviceType == "iPad Pro 3 12.9\"" {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
+        sleep(1)                        // Leave time for animation
         snapshot("Image4")
         
         // Screenshot #5: upload view
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        sleep(2);                       // Leave time for animation
+        sleep(2)                        // Leave time for animation
         app.buttons["add"].tap();
         snapshot("Image5")
         
@@ -332,16 +333,20 @@ class piwigoAppStore: XCTestCase {
         
         // Screenshot #7: upload images
         app.navigationBars.buttons["upload"].tap()
-        sleep(1);
+        sleep(1)
         app.tables.children(matching: .cell).element(boundBy: 1).swipeLeft()
         snapshot("Image7")
 
         // Screenshot #8: settings
         app.navigationBars["ImageUploadNav"].buttons.element(boundBy: 0).tap()
+        sleep(1)                        // Leave time for animation
         app.navigationBars["CameraRollNav"].buttons.element(boundBy: 0).tap()
+        sleep(1)                        // Leave time for animation
         app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
-        app.buttons["rootAlbum"].tap()
-        app.navigationBars.buttons["preferences"].tap()
+        sleep(1)                        // Leave time for animation
+        app.navigationBars["AlbumImagesNav"].buttons.element(boundBy: 0).tap()
+        sleep(1)                        // Leave time for animation
+        app.navigationBars["AlbumImagesNav"].buttons["preferences"].tap()
         app.tables["preferences"].cells["server"].swipeUp()
         snapshot("Image8")
     }
