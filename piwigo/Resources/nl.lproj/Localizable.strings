@@ -108,7 +108,7 @@
 "categoryTableView_subCategoryCount" = "sub-album";
 "categoryTableView_subCategoriesCount" = "sub-albums";
 "categoryImageList_selectButton" = "Selecteer";
-"categoryImageList_deselectButton" = "Hef de selectie op van de lijst foto-categorie\nBestand: In-app strings";
+"categoryImageList_deselectButton" = "Deselecteren";
 "categoryImageList_noDataError" = "Fout geen gegevens";
 
 // Albums sort
