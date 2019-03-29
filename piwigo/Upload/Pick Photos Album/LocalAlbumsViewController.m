@@ -8,11 +8,13 @@
 
 #import <Photos/Photos.h>
 
-#import "LocalAlbumsViewController.h"
+#import "AppDelegate.h"
 #import "CategoryTableViewCell.h"
+#import "CameraRollUploadViewController.h"
+#import "LocalAlbumsViewController.h"
 #import "Model.h"
 #import "PhotosFetch.h"
-#import "UploadViewController.h"
+#import "AlbumUploadViewController.h"
 
 @interface LocalAlbumsViewController () <UITableViewDelegate, UITableViewDataSource, PHPhotoLibraryChangeObserver>
 
@@ -49,11 +51,14 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
         
         // Button for returning to albums/images
-        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
-        [self.doneBarButton setAccessibilityIdentifier:@"Done"];
+        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitUpload)];
+        [self.doneBarButton setAccessibilityIdentifier:@"Cancel"];
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+
+        // Register palette changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -92,18 +97,14 @@
     }];
 }
 
+
 #pragma mark - View Lifecycle
 
--(void)viewWillAppear:(BOOL)animated
+-(void)paletteChanged
 {
-    [super viewWillAppear:animated];
-    
-    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
-
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.localAlbumsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -113,11 +114,26 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
 
     // Table view
     self.localAlbumsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.localAlbumsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.localAlbumsTableView reloadData];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Title
+    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
+
+    // Set colors, fonts, etc.
+    [self paletteChanged];
+    
+    // Navigation bar button
+    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 }
 
 
@@ -125,7 +141,7 @@
 {
     [super viewWillDisappear:animated];
     
-    // Do not show album title in backButtonItem of child view to provide enough space for image title
+    // Do not show title in backButtonItem of child view to provide enough space for title
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";
@@ -139,12 +155,7 @@
 }
 
 
-#pragma mark - UITableView Methods
-
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1 + (self.iCloudGroups.count != 0);
-}
+#pragma mark - UITableView - Header
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -241,6 +252,19 @@
     return header;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    view.layer.zPosition = 0;
+}
+
+
+#pragma mark - UITableView - Rows
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1 + (self.iCloudGroups.count != 0);
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSInteger nberRows = 0;
@@ -290,22 +314,38 @@
     return cell;
 }
 
+
+#pragma mark - UITableViewDelegate Methods
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    UploadViewController *uploadVC;
     switch (indexPath.section) {
         case 0:
-            uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.localGroups objectAtIndex:indexPath.row]];
+        {
+            PHAssetCollection *groupAsset = [self.localGroups objectAtIndex:indexPath.row];
+            if ((groupAsset.assetCollectionType == PHAssetCollectionTypeSmartAlbum) &&
+                (groupAsset.assetCollectionSubtype == PHAssetCollectionSubtypeSmartAlbumUserLibrary))
+            {
+                CameraRollUploadViewController *uploadVC = [[CameraRollUploadViewController alloc] initWithCategoryId:self.categoryId];
+                [self.navigationController pushViewController:uploadVC animated:YES];
+           }
+            else {
+                AlbumUploadViewController *uploadVC = [[AlbumUploadViewController alloc] initWithCategoryId:self.categoryId andCollection:[self.localGroups objectAtIndex:indexPath.row]];
+                [self.navigationController pushViewController:uploadVC animated:YES];
+            }
             break;
+        }
         case 1:
-            uploadVC = [[UploadViewController alloc] initWithCategoryId:self.categoryId andGroupAsset:[self.iCloudGroups objectAtIndex:indexPath.row]];
+        {
+            AlbumUploadViewController *uploadVC = [[AlbumUploadViewController alloc] initWithCategoryId:self.categoryId andCollection:[self.iCloudGroups objectAtIndex:indexPath.row]];
+            [self.navigationController pushViewController:uploadVC animated:YES];
             break;
+        }
     }
-    [self.navigationController pushViewController:uploadVC animated:YES];
-    
 }
+
 
 #pragma mark - Changes occured in the Photo library
 

@@ -24,7 +24,6 @@
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
-#import "LoadingView.h"
 #import "LocalAlbumsViewController.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
@@ -35,7 +34,6 @@
 #import "PhotosFetch.h"
 #import "SAMKeychain.h"
 #import "SettingsViewController.h"
-#import "UICountingLabel.h"
 
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
@@ -74,8 +72,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
-@property (nonatomic, strong) LoadingView *loadingView;
-
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -224,7 +220,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
+
     // Toolbar
     [self.navigationController.toolbar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
@@ -814,10 +811,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)displayUpload
 {
-    CategoryPickViewController *uploadViewController = [[CategoryPickViewController alloc] initWithCategoryId:self.categoryId];
-    uploadViewController.title = NSLocalizedString(@"tabBar_upload", @"Upload");
+    CategoryPickViewController *addViewController = [[CategoryPickViewController alloc] initWithCategoryId:self.categoryId];
+    addViewController.title = NSLocalizedString(@"alertAddButton", @"Add");
 
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:uploadViewController];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addViewController];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     navController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:navController animated:YES completion:nil];
@@ -1440,7 +1437,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
 //        NSLog(@"Activity Type selected: %@", activityType);
         if (completed) {
-            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
+//            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
             [self hideHUDwithSuccess:YES completion:nil];
             [self cancelSelect];
             for (PiwigoImageData *imageData in self.selectedImagesToShare) {
@@ -1455,9 +1452,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             }
         } else {
             if (activityType == NULL) {
-                NSLog(@"User dismissed the view controller without making a selection.");
+//                NSLog(@"User dismissed the view controller without making a selection.");
             } else {
-                NSLog(@"Activity was not performed.");
+//                NSLog(@"Activity was not performed.");
+                [self cancelSelect];
                 for (PiwigoImageData *imageData in self.selectedImagesToShare) {
                     if (imageData.isVideo)
                     {
@@ -2022,7 +2020,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                    });
 }
 
--(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider
+-(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSString *)imageId
 {
     // Close HUD
     dispatch_async(dispatch_get_main_queue(),
@@ -2031,6 +2029,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                            [self hideHUDwithSuccess:NO completion:^{
                                self.hudViewController = nil;
                            }];
+                       } else {
+                           if ([self.selectedImageIds containsObject:imageId]) {
+                               [self.selectedImageIds removeObject:imageId];
+                           }
                        }
                    });
 }

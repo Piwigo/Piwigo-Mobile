@@ -168,7 +168,7 @@
 		
 		// This image has already been added, so update it
         // API pwg.categories.getList returns:
-        //      id, categories, name, comment, (hit)
+        //      id, categories, name, comment, hit
         //      file, date_creation, date_available, width, height
         //      element_url, derivatives, (page_url)
         //
@@ -191,13 +191,13 @@
                     if (updateImage.privacyLevel == NSNotFound) {
                         updateImage.privacyLevel = existingImage.privacyLevel;
                     }
-                    if (updateImage.fileSize == NSNotFound) {
-                        updateImage.fileSize = existingImage.fileSize;
-                    }
                     if (updateImage.tags.count == 0) {
                         updateImage.tags = existingImage.tags;
                     }
-                    
+                    if (updateImage.fileSize == NSNotFound) {
+                        updateImage.fileSize = existingImage.fileSize;
+                    }
+
                     [newImageUpdateList addObject:updateImage];
 					break;
 				}

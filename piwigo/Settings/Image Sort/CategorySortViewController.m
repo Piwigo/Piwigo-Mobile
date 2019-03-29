@@ -239,6 +239,22 @@
 		case kPiwigoSortCategoryDatePostedAscending:
 			name = NSLocalizedString(@"categorySort_datePostedAscending", @"Date Posted, old → new");
 			break;
+        case kPiwigoSortCategoryVisitsDescending:
+            name = NSLocalizedString(@"categorySort_visitsDescending", @"Visits, high → low");
+            break;
+        case kPiwigoSortCategoryVisitsAscending:
+            name = NSLocalizedString(@"categorySort_visitsAscending", @"Visits, low → high");
+            break;
+        
+// Data not returned by API pwg.categories.getList
+//        case kPiwigoSortCategoryRatingScoreDescending:  // Rating score, high → low
+//        {
+//        }
+//        case kPiwigoSortCategoryRatingScoreAscending:   // Rating score, low → high
+//        {
+//        }
+// and level (permissions)
+
 //		case kPiwigoSortCategoryVideoOnly:
 //			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
 //			break;

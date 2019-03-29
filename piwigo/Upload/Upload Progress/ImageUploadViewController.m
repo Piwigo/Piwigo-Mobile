@@ -82,7 +82,8 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"ImageUploadNav"];
+
     // Table view
     self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.uploadImagesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
@@ -122,7 +123,6 @@
 	[self.uploadImagesTableView reloadData];
     
     // Update navigation items
-    [self.navigationItem setHidesBackButton:YES];
     self.navigationItem.rightBarButtonItem = self.doneBarButton;
 }
 
@@ -200,7 +200,6 @@
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontBold];
     headerLabel.textColor = [UIColor piwigoHeaderColor];
-//    headerLabel.backgroundColor = [UIColor piwigoBackgroundColor];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;

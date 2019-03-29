@@ -70,6 +70,16 @@
         NSRange spacerRange = NSMakeRange(0, [spacerAttributedString length]);
         [spacerAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall] range:spacerRange];
 
+        // Release 2.3.2 — Bundle string
+        NSString *v232String = NSLocalizedStringFromTableInBundle(@"v2.3.2_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.3.2 Release Notes text");
+        NSMutableAttributedString *v232AttributedString = [[NSMutableAttributedString alloc] initWithString:v232String];
+        NSRange v232Range = NSMakeRange(0, [v232String length]);
+        [v232AttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall] range:v232Range];
+        v232Range = NSMakeRange(0, [v232String rangeOfString:@"\n"].location);
+        [v232AttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold] range:v232Range];
+        [notesAttributedString appendAttributedString:v232AttributedString];
+        [notesAttributedString appendAttributedString:spacerAttributedString];
+        
         // Release 2.3.1 — Bundle string
         NSString *v231String = NSLocalizedStringFromTableInBundle(@"v2.3.1_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.3.1 Release Notes text");
         NSMutableAttributedString *v231AttributedString = [[NSMutableAttributedString alloc] initWithString:v231String];

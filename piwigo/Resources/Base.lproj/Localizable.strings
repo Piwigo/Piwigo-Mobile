@@ -108,6 +108,7 @@
 "categoryTableView_subCategoryCount" = "sub-album";
 "categoryTableView_subCategoriesCount" = "sub-albums";
 "categoryImageList_selectButton" = "Select";
+"categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "Error No Data";
 
 // Albums sort
@@ -119,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Date Created, old → new";
 "categorySort_datePostedDescending" = "Date Posted, new → old";
 "categorySort_datePostedAscending" = "Date Posted, old → new";
+"categorySort_visitsDescending" = "Visits, high → low";
+"categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_videosOnly" = "Videos Only";
 "categorySort_imagesOnly" = "Images Only";
 

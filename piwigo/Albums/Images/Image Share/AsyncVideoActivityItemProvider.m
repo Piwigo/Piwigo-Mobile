@@ -70,7 +70,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         
         // Notify the delegate on the main thread that the processing is cancelled
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate imageActivityItemProviderPreprocessingDidEnd:self];
+            [self.delegate imageActivityItemProviderPreprocessingDidEnd:self withImageId:self.imageData.imageId];
         });
         return self.placeholderItem;
     }
@@ -82,7 +82,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     
     // Notify the delegate on the main thread that the processing has finished.
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate imageActivityItemProviderPreprocessingDidEnd:self];
+        [self.delegate imageActivityItemProviderPreprocessingDidEnd:self withImageId:self.imageData.imageId];
     });
     
     // Return image to share

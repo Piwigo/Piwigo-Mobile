@@ -108,6 +108,7 @@
 "categoryTableView_subCategoryCount" = "sub-album";
 "categoryTableView_subCategoriesCount" = "sub-album";
 "categoryImageList_selectButton" = "Seleziona";
+"categoryImageList_deselectButton" = "Deseleziona";
 "categoryImageList_noDataError" = "Errore dati";
 
 // Albums sort
@@ -119,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Data di creazione, vecchio → nuovo";
 "categorySort_datePostedDescending" = "Data di inserimento, nuovo → vecchio";
 "categorySort_datePostedAscending" = "Data di inserimento, vecchio → nuovo";
+"categorySort_visitsDescending" = "Visite, alto → basso";
+"categorySort_visitsAscending" = "Visite, basso → alto";
 "categorySort_videosOnly" = "Soli Video";
 "categorySort_imagesOnly" = "Solo Immagini";
 

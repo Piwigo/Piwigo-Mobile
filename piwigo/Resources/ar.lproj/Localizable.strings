@@ -108,6 +108,7 @@
 "categoryTableView_subCategoryCount" = "ألبوم فرعي";
 "categoryTableView_subCategoriesCount" = "ألبومات فرعية";
 "categoryImageList_selectButton" = "حدد";
+"categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "خطأ لا توجد بيانات";
 
 // Albums sort
@@ -119,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "تاريخ الإنشاء، القديم → جديد";
 "categorySort_datePostedDescending" = "تاريخ النشر، جديد → القديم";
 "categorySort_datePostedAscending" = "تاريخ النشر، القديم → جديد";
+"categorySort_visitsDescending" = "Visits, high → low";
+"categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_videosOnly" = "مقاطع الفيديو فقط";
 "categorySort_imagesOnly" = "الصور فقط";
 

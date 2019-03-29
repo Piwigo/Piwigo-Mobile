@@ -67,7 +67,7 @@ public enum Model : String {
 // #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 public extension UIDevice {
-    public var type: Model {
+    var type: Model {
         var systemInfo = utsname()
         uname(&systemInfo)
         let modelCode = withUnsafePointer(to: &systemInfo.machine) {
@@ -299,43 +299,55 @@ class piwigoAppStore: XCTestCase {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.49, velocity: -2.0)
         }
-        if (deviceType == "iPad Pro 9.7\"") {
+        if deviceType == "iPad Pro 9.7\"" {
             app.images.element(boundBy: 0).pinch(withScale: 1.15, velocity: 2.0)
         }
-        if (deviceType == "iPad Pro 10.5\"") {
+        if deviceType == "iPad Pro 10.5\"" {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
-        if (deviceType == "iPad Pro 12.9\"") {
+        if deviceType == "iPad Pro 11\"" {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
+        if deviceType == "iPad Pro 2 12.9\"" {
+            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+        }
+        if deviceType == "iPad Pro 3 12.9\"" {
+            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+        }
+        sleep(1)                        // Leave time for animation
         snapshot("Image4")
         
         // Screenshot #5: upload view
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        sleep(2);                       // Leave time for animation
+        sleep(2)                        // Leave time for animation
         app.buttons["add"].tap();
         snapshot("Image5")
         
-        // Screenshot #6: upload images
+        // Screenshot #6: local images
         app.tables.children(matching: .cell).element(boundBy: 0).tap()
         app.tables.children(matching: .cell).element(boundBy: 0).tap()
-        app.collectionViews.children(matching: .cell).element(boundBy: 0).children(matching: .other).element.tap()
-        app.collectionViews.children(matching: .cell).element(boundBy: 1).children(matching: .other).element.tap()
-        app.collectionViews.children(matching: .cell).element(boundBy: 2).children(matching: .other).element.tap()
-        app.collectionViews.children(matching: .cell).element(boundBy: 3).children(matching: .other).element.tap()
-        app.collectionViews.children(matching: .cell).element(boundBy: 4).children(matching: .other).element.tap()
-        app.collectionViews.children(matching: .cell).element(boundBy: 5).children(matching: .other).element.tap()
-        app.navigationBars.buttons["upload"].tap()
-        sleep(1);
-        app.tables.children(matching: .cell).element(boundBy: 1).swipeLeft()
+        app.collectionViews["CameraRoll"].children(matching: .cell).element(boundBy: 0).children(matching: .other).element.tap()
+        app.collectionViews["CameraRoll"].children(matching: .cell).element(boundBy: 1).children(matching: .other).element.tap()
+        app.collectionViews["CameraRoll"].children(matching: .cell).element(boundBy: 2).children(matching: .other).element.tap()
         snapshot("Image6")
-
-        // Screenshot #7: settings
-        app.navigationBars.buttons.element(boundBy: 0).tap()
-        app.navigationBars.buttons["Done"].tap()
-        app.buttons["rootAlbum"].tap()
-        app.navigationBars.buttons["preferences"].tap()
-        app.tables["preferences"].cells["server"].swipeUp()
+        
+        // Screenshot #7: upload images
+        app.navigationBars.buttons["upload"].tap()
+        sleep(1)
+        app.tables.children(matching: .cell).element(boundBy: 1).swipeLeft()
         snapshot("Image7")
+
+        // Screenshot #8: settings
+        app.navigationBars["ImageUploadNav"].buttons.element(boundBy: 0).tap()
+        sleep(1)                        // Leave time for animation
+        app.navigationBars["CameraRollNav"].buttons.element(boundBy: 0).tap()
+        sleep(1)                        // Leave time for animation
+        app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
+        sleep(1)                        // Leave time for animation
+        app.navigationBars["AlbumImagesNav"].buttons.element(boundBy: 0).tap()
+        sleep(1)                        // Leave time for animation
+        app.navigationBars["AlbumImagesNav"].buttons["preferences"].tap()
+        app.tables["preferences"].cells["server"].swipeUp()
+        snapshot("Image8")
     }
 }

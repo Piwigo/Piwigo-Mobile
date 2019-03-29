@@ -107,7 +107,8 @@
 "categoryTableView_photosCount" = "photos";
 "categoryTableView_subCategoryCount" = "sous-album";
 "categoryTableView_subCategoriesCount" = "sous-albums";
-"categoryImageList_selectButton" = "Sélection";
+"categoryImageList_selectButton" = "Sélectionner";
+"categoryImageList_deselectButton" = "Désélectionner";
 "categoryImageList_noDataError" = "Erreur Aucune Donnée";
 
 // Albums sort
@@ -119,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Date de Création, ancien → récent";
 "categorySort_datePostedDescending" = "Date d'Ajout, récent → ancien";
 "categorySort_datePostedAscending" = "Date d'Ajout, ancien → récent";
+"categorySort_visitsDescending" = "Nombre de visites, élevé → faible";
+"categorySort_visitsAscending" = "Nombre de visites, faible → élevé";
 "categorySort_videosOnly" = "Vidéos Uniquement";
 "categorySort_imagesOnly" = "Images Uniquement";
 
@@ -365,32 +368,32 @@
 "imageUploadDetailsUploading_title" = "Images en cours d'Envoi";
 "imageUploadDetailsCell_uploadComplete" = "Envoyée ! Vérification...";
 
-"imageUploadTableCell_uploading" = "Envoi...";
-"imageUploadProgressBar_zero" = "Envoi 0/0";
-"imageUploadProgressBar_nonZero" = "Envoi %@/%@";
+"imageUploadTableCell_uploading" = "Téléversement...";
+"imageUploadProgressBar_zero" = "Téléversement 0/0";
+"imageUploadProgressBar_nonZero" = "Téléversement %@/%@";
 "imageUploadProgressBar_completed" = "Terminé";
-"imageUploadCompleted_title" = "Envoi Terminé";
+"imageUploadCompleted_title" = "Téléversement Terminé";
 "imageUploadCompleted_message" = "image/vidéo envoyée à votre serveur Piwigo.";
 "imageUploadCompleted_message>1" = "images/vidéos envoyées à votre serveur Piwigo.";
 
 // Image upload — Errors
-"uploadError_title" = "Echec de l'Envoi";
+"uploadError_title" = "Echec du Téléversement";
 "uploadError_message" = "N'a pas pu envoyer votre image. Erreur : %@";
 "uploadCancelled_title" = "Transfert Annulé";
 
-"imageUploadError_title" = "Echec d'Envoi d'Image";
+"imageUploadError_title" = "Echec du Téléversement";
 "imageUploadError_format" = "Désolé, les fichiers d'image ayant comme extension .%@ et .jpg ne sont pas acceptés par le serveur Piwigo.";
 "imageUploadError_source" = "impossible de créer le source de l’image";
 "imageUploadError_destination" = "impossible de créer la destination de l’image";
 "imageUploadError_iCloud" = "Echec de la récupération de l'image stockée sur iCloud. Erreur : %@";
 
-"audioUploadError_title" = "Echec d'Envoi d'Audio";
+"audioUploadError_title" = "Echec du Téléversement";
 "audioUploadError_format" = "Désolé, les fichiers audio ne sont pas encore supportés par Piwigo Mobile.";
 
-"videoUploadError_title" = "Erreur Envoi Video";
+"videoUploadError_title" = "Echec du Téléversement";
 "videoUploadError_format" = "Désolé, les fichiers de vidéo ayant comme extension .%@ ne sont pas acceptés par le serveur Piwigo.";
 "videoUploadError_iCloud" = "Echec de la récupération de la vidéo stockée sur iCloud. Erreur : %@";
-"videoUploadError_export" = "Désolé, la vidéo n'a pas pu être récupérée pour l'envoi vers votre Piwigo. Erreur : %@";
+"videoUploadError_export" = "Désolé, la vidéo n'a pas pu être récupérée pour le téléversement vers votre Piwigo. Erreur : %@";
 "videoUploadError_unknown" = "Désolé, le transfert vers votre Piwigo de la vidéo a échoué pour une erreur inconnue lors de la conversion MP4. Erreur : %@";
 "videoUploadCancelled_message" = "Le transfert de la vidéo vers votre Piwigo a été annulé.";
 
@@ -527,7 +530,7 @@
 "imageSizexFullRes" = "Haute Résolution";
 
 // Settings — Upload
-"settingsHeader_upload" = "Paramètres d'Envoi par Défaut";
+"settingsHeader_upload" = "Paramètres de Téléversement";
 "settings_defaultAuthor" = "Auteur";
 "settings_defaultAuthor>320px" = "Nom d'Auteur";
 "settings_defaultAuthorPlaceholder" = "Nom de l'Auteur";

@@ -99,6 +99,22 @@
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
 			break;
 
+        case kPiwigoSortCategoryVisitsAscending:
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderAscending];
+            break;
+        case kPiwigoSortCategoryVisitsDescending:
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderDescending];
+            break;
+
+// Data not returned by API pwg.categories.getList
+//        case kPiwigoSortCategoryRatingScoreDescending:  // Rating score, high → low
+//        {
+//        }
+//        case kPiwigoSortCategoryRatingScoreAscending:   // Rating score, low → high
+//        {
+//        }
+// and level (permissions)
+
 //		case kPiwigoSortCategoryVideoOnly:
 //			//			sort = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
 //			break;

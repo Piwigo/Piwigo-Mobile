@@ -62,21 +62,43 @@
 			break;
 		}
             
-        case kPiwigoSortCategoryFileNameAscending:      // File name, A —> Z
+        case kPiwigoSortCategoryFileNameAscending:      // File name, A → Z
         {
             newImageList = [images sortedArrayUsingComparator:^NSComparisonResult(PiwigoImageData *obj1, PiwigoImageData *obj2) {
                 return [obj1.fileName compare:obj2.fileName] != NSOrderedAscending;
             }];
             break;
         }
-        case kPiwigoSortCategoryFileNameDescending:     // File name, Z —> A
+        case kPiwigoSortCategoryFileNameDescending:     // File name, Z → A
         {
             newImageList = [images sortedArrayUsingComparator:^NSComparisonResult(PiwigoImageData *obj1, PiwigoImageData *obj2) {
                 return [obj1.fileName compare:obj2.fileName] != NSOrderedDescending;
             }];
             break;
         }
-            
+        case kPiwigoSortCategoryVisitsDescending:       // Visits, high → low
+        {
+            newImageList = [images sortedArrayUsingComparator:^NSComparisonResult(PiwigoImageData *obj1, PiwigoImageData *obj2) {
+                return [@(obj1.visits) compare:@(obj2.visits)] != NSOrderedDescending;
+            }];
+            break;
+        }
+        case kPiwigoSortCategoryVisitsAscending:        // Visits, low → high
+        {
+            newImageList = [images sortedArrayUsingComparator:^NSComparisonResult(PiwigoImageData *obj1, PiwigoImageData *obj2) {
+                return [@(obj1.visits) compare:@(obj2.visits)] != NSOrderedAscending;
+            }];
+        }
+
+// Data not returned by API pwg.categories.getList
+//        case kPiwigoSortCategoryRatingScoreDescending:  // Rating score, high → low
+//        {
+//        }
+//        case kPiwigoSortCategoryRatingScoreAscending:   // Rating score, low → high
+//        {
+//        }
+// and level (permissions)
+
 //		case kPiwigoSortCategoryVideoOnly:
 //		{
 //			NSIndexSet *set = [images indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {

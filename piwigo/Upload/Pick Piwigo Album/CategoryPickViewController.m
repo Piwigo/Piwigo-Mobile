@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "CategoryPickViewController.h"
 #import "CategoryTableViewCell.h"
@@ -34,7 +34,6 @@
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId;
 {
-
     self = [super init];
     if(self)
     {
@@ -44,8 +43,6 @@
         if(([Model sharedInstance].hasAdminRights) ||
            ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession))
         {
-            self.title = NSLocalizedString(@"tabBar_upload", @"Upload");
-            
             // Current category
             self.currentCategoryId = categoryId;
             
@@ -164,6 +161,9 @@
 {
     [super viewWillAppear:animated];
     
+    // Title
+    self.title = NSLocalizedString(@"alertAddButton", @"Add");
+
     // Set colors, fonts, etc.
     [self paletteChanged];
     
@@ -333,6 +333,12 @@
     }
 	return header;
 }
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    view.layer.zPosition = 0;
+}
+
 
 #pragma mark - UITableView - Rows
 

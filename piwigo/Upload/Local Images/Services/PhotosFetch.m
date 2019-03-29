@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "PhotosFetch.h"
-#import "Model.h"
+#import "SplitLocalImages.h"
 
 @interface PhotosFetch()
 
@@ -292,21 +292,104 @@
     }
 }
 
--(NSArray*)getImagesForAssetGroup:(PHAssetCollection*)assetGroup
++(NSString*)getNameForSortType:(kPiwigoSortBy)sortType
 {
-	NSMutableArray *imageAssets = [NSMutableArray new];
-	
-    PHFetchResult *imagesInCollection = [PHAsset fetchAssetsInAssetCollection:assetGroup options:nil];
-    [imagesInCollection enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if(!obj) {
-            return;
-        }
+    NSString *name = @"";
+    
+    switch(sortType)
+    {
+        case kPiwigoSortByNewest:
+            name = NSLocalizedString(@"categorySort_dateCreatedDescending", @"Date Created, new → old");
+            break;
+        case kPiwigoSortByOldest:
+            name = NSLocalizedString(@"categorySort_dateCreatedAscending", @"Date Created, old → new");
+            break;
+            
+        default:
+            name = NSLocalizedString(@"localImageSort_undefined", @"Undefined");
+            break;
+    }
+    
+    return name;
+}
 
-        // Append image
-        [imageAssets addObject:obj];
-    }];
-	
-	return imageAssets;
++(PHFetchResult *)getMomentCollectionsWithSortType:(kPiwigoSortBy)sortType
+{
+    // Retrieve imageAssets
+    PHFetchOptions *fetchOptions = [PHFetchOptions new];
+    switch (sortType) {
+        case kPiwigoSortByNewest:
+            fetchOptions.sortDescriptors = @[
+                                             [NSSortDescriptor sortDescriptorWithKey:@"startDate"
+                                                                           ascending:NO],
+                                             ];
+            break;
+            
+        case kPiwigoSortByOldest:
+            fetchOptions.sortDescriptors = @[
+                                             [NSSortDescriptor sortDescriptorWithKey:@"startDate"
+                                                                           ascending:YES],
+                                             ];
+            break;
+            
+        default:
+            fetchOptions = nil;
+            break;
+    }
+
+    // Retrieve imageAssets
+    return [PHAssetCollection
+            fetchAssetCollectionsWithType:PHAssetCollectionTypeMoment
+            subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:fetchOptions];
+}
+
+-(NSArray *)getImagesOfAlbumCollection:(PHAssetCollection*)imageCollection
+                          withSortType:(kPiwigoSortBy)sortType
+{
+    PHFetchOptions *fetchOptions = [PHFetchOptions new];
+    switch (sortType) {
+        case kPiwigoSortByNewest:
+            fetchOptions.sortDescriptors = @[
+                                             [NSSortDescriptor sortDescriptorWithKey:@"creationDate"
+                                                                           ascending:NO],
+                                             ];
+            break;
+            
+        case kPiwigoSortByOldest:
+            fetchOptions.sortDescriptors = @[
+                                             [NSSortDescriptor sortDescriptorWithKey:@"creationDate"
+                                                                           ascending:YES],
+                                             ];
+            break;
+            
+        default:
+            fetchOptions = nil;
+            break;
+    }
+    
+    // Retrieve imageAssets
+    PHFetchResult *imagesInCollection = [PHAsset fetchAssetsInAssetCollection:imageCollection options:fetchOptions];
+    
+    // Sort images by day
+    return [SplitLocalImages splitImagesByDate:(NSArray *)imagesInCollection];
+}
+
+-(NSArray *)getImagesOfMomentCollections:(PHFetchResult *)imageCollections
+{
+    // Fetch sort option
+    PHFetchOptions *fetchOptions = [PHFetchOptions new];
+    fetchOptions.sortDescriptors = @[
+                                     [NSSortDescriptor sortDescriptorWithKey:@"creationDate"
+                                                                   ascending:YES],
+                                     ];
+
+    // Build array of images split in moments
+    NSMutableArray *images = [NSMutableArray new];
+    for (PHAssetCollection *sectionCollection in imageCollections) {
+        // Retrieve imageAssets
+        [images addObject:[PHAsset fetchAssetsInAssetCollection:sectionCollection options:fetchOptions]];
+    }
+    return images;
 }
 
 @end
