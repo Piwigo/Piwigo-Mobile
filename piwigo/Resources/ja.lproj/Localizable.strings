@@ -242,6 +242,7 @@
 // Image sort
 "sortBy" = "並び順";
 "imageSortTitle" = "画像を並べ換える";
+"imageSortingHUD" = "Sorting Images";
 "imageSortMessage" = "画像の並び順を選択してください";
 
 // Image options (actions)
@@ -313,8 +314,6 @@
 
 "downloadingImage" = "画像をダウンロード中";
 "downloadingImages" = "画像をダウンロード中";
-"downloadingImageInfo" = "画像情報をダウンロード中";
-"downloadingImageInfoForSort" = "並べ替えのために画像情報をダウンロード中";
 "downloadingVideo" = "動画をダウンロード中";
 
 // Image download — Errors
@@ -367,6 +366,8 @@
 "imageUploadDetailsEdit_title" = "アップロードする画像を編集します";
 "imageUploadDetailsUploading_title" = "アップロード中の画像";
 "imageUploadDetailsCell_uploadComplete" = "完了！終了中...";
+
+"imageUploadRemove" = "Removing uploaded images";
 
 "imageUploadTableCell_uploading" = "アップロード中...";
 "imageUploadProgressBar_zero" = "アップロード中 0/0";

@@ -367,7 +367,7 @@
 "imageUploadDetailsUploading_title" = "Images that are Being Uploaded";
 "imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
 
-"imageUploadRemove" = "Removing Uploaded Images";
+"imageUploadRemove" = "Removing uploaded images";
 
 "imageUploadTableCell_uploading" = "Uploading...";
 "imageUploadProgressBar_zero" = "Uploading 0/0";

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.2_text" = "Version 2.3.2\n\n• Local images presented in a timeline view by day before upload\n• Minor bug fixes and improvement of the interface";
+"v2.3.3_text" = "Versi 2.3.3\n\n• Perbaikan bug minor dan perbaikan antarmuka";
+
+"v2.3.2_text" = "Versi 2.3.2\n27 Maret 2019\n\n• Gambar lokal disajikan dalam tampilan garis waktu sehari sebelum diunggah\n• Perbaikan bug minor dan perbaikan antarmuka";
 
 "v2.3.1_text" = "Versi 2.3.1\n15 Februari 2019\n\n• Perbaikan bug minor dan perbaikan antarmuka\n• Peningkatan terjemahan";
 

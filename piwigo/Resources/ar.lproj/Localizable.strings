@@ -242,6 +242,7 @@
 // Image sort
 "sortBy" = "التصنيف حسب";
 "imageSortTitle" = "فرز الصور";
+"imageSortingHUD" = "Sorting Images";
 "imageSortMessage" = "الرجاء تحديد الطريقة التي ترغب في فرز الصور بها";
 
 // Image options (actions)
@@ -313,8 +314,6 @@
 
 "downloadingImage" = "تنزيل الصورة";
 "downloadingImages" = "تنزيل الصور";
-"downloadingImageInfo" = "تنزيل معلومات الصورة";
-"downloadingImageInfoForSort" = "تحميل معلومات الصورة للفرز";
 "downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
@@ -367,6 +366,8 @@
 "imageUploadDetailsEdit_title" = "تعديل الصور للتحميل";
 "imageUploadDetailsUploading_title" = "الصور التي يتم تحميلها";
 "imageUploadDetailsCell_uploadComplete" = "اكتملت! جار الانتهاء...";
+
+"imageUploadRemove" = "Removing uploaded images";
 
 "imageUploadTableCell_uploading" = "تحميل...";
 "imageUploadProgressBar_zero" = "جار التحميل 0/0";
