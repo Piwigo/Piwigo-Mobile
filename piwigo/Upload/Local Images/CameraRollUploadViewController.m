@@ -44,7 +44,7 @@
 @property (nonatomic, strong) NSMutableArray *selectedSections;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
-@property (nonatomic, assign) BOOL removeUploadedImages;
+@property (nonatomic, assign) BOOL removedUploadedImages;
 @property (nonatomic, strong) UIViewController *hudViewController;
 
 @end
@@ -75,7 +75,7 @@
         self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
 
         // Initialise arrays used to manage selections
-        self.removeUploadedImages = NO;
+        self.removedUploadedImages = NO;
         self.touchedImages = [NSMutableArray new];
         self.selectedImages = [NSMutableArray new];
         [self initSelectButtons];
@@ -302,40 +302,42 @@
            handler:^(UIAlertAction *action) {
                // Change sort option
                self.sortType = kPiwigoSortByNewest;
-               
+               self.removedUploadedImages = NO;
+
                // Sort images
-               [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+               [self sortImagesInAscendingOrder];
            }];
     
     UIAlertAction* oldestAction = [UIAlertAction
         actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByOldest]
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
-           // Change sort option
-           self.sortType = kPiwigoSortByOldest;
-           
-           // Sort images
-           [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+            // Change sort option
+            self.sortType = kPiwigoSortByOldest;
+            self.removedUploadedImages = NO;
+
+            // Sort images
+            [self sortImagesInAscendingOrder];
         }];
     
     UIAlertAction* uploadedAction = [UIAlertAction
-        actionWithTitle:self.removeUploadedImages ? [NSString stringWithFormat:@"✓ %@", NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")] : NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")
+        actionWithTitle:self.removedUploadedImages ? [NSString stringWithFormat:@"✓ %@", NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")] : NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
          // Remove uploaded images?
-         if (self.removeUploadedImages)
+         if (self.removedUploadedImages)
          {
              // Store choice
-             self.removeUploadedImages = NO;
+             self.removedUploadedImages = NO;
              
              // Sort images
              switch (self.sortType) {
                  case kPiwigoSortByNewest:
-                     [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+                     [self sortImagesInAscendingOrder];
                      break;
                      
                  case kPiwigoSortByOldest:
-                     [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+                     [self sortImagesInAscendingOrder];
                      break;
                      
                  default:
@@ -344,10 +346,10 @@
          }
          else {
              // Store choice
-             self.removeUploadedImages = YES;
+             self.removedUploadedImages = YES;
              
              // Remove uploaded images from collection
-             [self performSelectorInBackground:@selector(removeUploadedImagesFromCollection) withObject:nil];
+             [self removeUploadedImagesFromCollection];
          }
         }];
     
@@ -376,10 +378,7 @@
 -(void)sortImagesInAscendingOrder
 {
     // Show HUD during job
-    dispatch_async(dispatch_get_main_queue(),
-       ^(void){
-           [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
-       });
+    [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
     
     // Collect new list of images
     self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:self.sortType];
@@ -387,63 +386,55 @@
     // Images in sections
     self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
     
-    // Update Select buttons status
-    [self updateSelectButtons];
-    
     // Hide HUD
-    dispatch_async(dispatch_get_main_queue(),
-       ^(void){
-           [self hideHUDwithSuccess:YES completion:^{
-               self.hudViewController = nil;
-               
-               // Refresh collection view
-               [self.localImagesCollection reloadData];
-           }];
-       });
+    [self hideHUDwithSuccess:YES completion:^{
+        self.hudViewController = nil;
+
+        // Refresh collection view
+        [self.localImagesCollection reloadData];
+
+        // Update Select buttons status
+        [self updateSelectButtons];
+    }];
 }
 
 -(void)removeUploadedImagesFromCollection
 {
     // Show HUD during download
-    dispatch_async(dispatch_get_main_queue(),
-       ^(void){
-           [self showHUDwithTitle:NSLocalizedString(@"imageUploadRemove", @"Removing Uploaded Images")];
-       });
+    [self showHUDwithTitle:NSLocalizedString(@"imageUploadRemove", @"Removing Uploaded Images")];
     
     // Remove uploaded images from the collection
     [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId
          withImages:self.imagesInSections
+      andSelections:self.selectedSections
         forProgress:nil
-       onCompletion:^(NSArray *imagesNotUploaded)
+       onCompletion:^(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete)
            {
-               // Check returned data
-               if (imagesNotUploaded)
-               {
-                   // Update image list
-                   self.imagesInSections = imagesNotUploaded;
-                   
-                   // Update Select buttons status
-                   [self updateSelectButtons];
-                   
-                   // Hide HUD
-                   dispatch_async(dispatch_get_main_queue(),
-                      ^(void){
-                          [self hideHUDwithSuccess:YES completion:^{
+               dispatch_async(dispatch_get_main_queue(),
+                              ^(void){
+                   // Check returned data
+                   if (imagesNotUploaded)
+                   {
+                       // Update image list
+                       self.imagesInSections = imagesNotUploaded;
+                       
+                       // Hide HUD
+                       [self hideHUDwithSuccess:YES completion:^{
+                           self.hudViewController = nil;
+                          
+                           // Refresh collection view
+                           [self.localImagesCollection deleteSections:sectionsToDelete];
+                           
+                           // Update selections
+                           [self updateSelectButtons];
+                        }];
+                   }
+                   else {
+                        [self hideHUDwithSuccess:NO completion:^{
                               self.hudViewController = nil;
-                              
-                              // Refresh collection view
-                              [self.localImagesCollection reloadData];
-                          }];
-                      });
-               }
-               else {
-                   dispatch_async(dispatch_get_main_queue(),
-                      ^(void){
-                          [self hideHUDwithSuccess:NO completion:^{
-                              self.hudViewController = nil;
-                          }];
-                      });
-               }
+                        }];
+                   }
+                });
            }];
 }
 
@@ -906,7 +897,7 @@
     }
     
     // Update list of "Not Uploaded" images
-    if (self.removeUploadedImages)
+    if (self.removedUploadedImages)
     {
         NSMutableArray *newList = [self.imagesInSections mutableCopy];
         [newList removeObject:image.imageAsset];

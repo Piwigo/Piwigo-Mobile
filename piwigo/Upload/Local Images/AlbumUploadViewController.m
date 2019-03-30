@@ -359,9 +359,10 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             handler:^(UIAlertAction *action) {
                 // Change sort option
                 self.sortType = kPiwigoSortByNewest;
-                
+                self.removedUploadedImages = NO;
+
                 // Sort images
-                [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+                [self sortImagesInAscendingOrder];
             }];
     
     UIAlertAction* oldestAction = [UIAlertAction
@@ -370,13 +371,14 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             handler:^(UIAlertAction * action) {
                 // Change sort option
                 self.sortType = kPiwigoSortByOldest;
-                
+                self.removedUploadedImages = NO;
+
                 // Sort images
-                [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+                [self sortImagesInAscendingOrder];
             }];
     
     UIAlertAction* uploadedAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")
+            actionWithTitle:self.removedUploadedImages ? [NSString stringWithFormat:@"✓ %@", NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")] : NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
                 // Remove uploaded images?
@@ -388,11 +390,11 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                     // Sort images
                     switch (self.sortType) {
                         case kPiwigoSortByNewest:
-                            [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+                            [self sortImagesInAscendingOrder];
                             break;
                             
                         case kPiwigoSortByOldest:
-                            [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+                            [self sortImagesInAscendingOrder];
                             break;
                             
                         default:
@@ -404,7 +406,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                     self.removedUploadedImages = YES;
                     
                     // Remove uploaded images from collection
-                    [self performSelectorInBackground:@selector(removeUploadedImagesFromCollection) withObject:nil];
+                    [self removeUploadedImagesFromCollection];
                 }
             }];
     
@@ -433,30 +435,24 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 -(void)sortImagesInAscendingOrder
 {
     // Show HUD during job
-    dispatch_async(dispatch_get_main_queue(),
-       ^(void){
-           [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
-       });
+    [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
     
     // Retrieve images according to chosen sort order
     self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
                                                                         withSortType:self.sortType];
-    // Initialise locations of sections
-    [self initLocationsOfSections];
-    
-    // Update Select buttons status
-    [self updateSelectButtons];
-    
     // Hide HUD
-    dispatch_async(dispatch_get_main_queue(),
-       ^(void){
-           [self hideHUDwithSuccess:YES completion:^{
-               self.hudViewController = nil;
-               
-               // Refresh collection view
-               [self.localImagesCollection reloadData];
-           }];
-       });
+    [self hideHUDwithSuccess:YES completion:^{
+        self.hudViewController = nil;
+
+        // Initialise locations of sections
+        [self initLocationsOfSections];
+
+        // Refresh collection view
+        [self.localImagesCollection reloadData];
+
+        // Update Select buttons status
+        [self updateSelectButtons];
+    }];
 }
 
 -(void)removeUploadedImagesFromCollection
@@ -470,40 +466,38 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     // Remove uploaded images from the collection
     [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId
                  withImages:self.imagesInSections
+              andSelections:self.selectedSections
                 forProgress:nil
-               onCompletion:^(NSArray *imagesNotUploaded)
+               onCompletion:^(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete)
                 {
-                   // Check returned data
-                   if (imagesNotUploaded)
-                   {
-                       // Update image list
-                       self.imagesInSections = imagesNotUploaded;
-                       
-                       // Initialise locations of sections
-                       [self initLocationsOfSections];
-                       
-                       // Update Select buttons status
-                       [self updateSelectButtons];
-                       
-                       // Hide HUD
-                       dispatch_async(dispatch_get_main_queue(),
-                          ^(void){
-                              [self hideHUDwithSuccess:YES completion:^{
-                                  self.hudViewController = nil;
-                                  
-                                  // Refresh collection view
-                                  [self.localImagesCollection reloadData];
-                              }];
-                          });
-                   }
-                   else {
-                       dispatch_async(dispatch_get_main_queue(),
-                          ^(void){
-                              [self hideHUDwithSuccess:NO completion:^{
-                                  self.hudViewController = nil;
-                              }];
-                          });
-                   }
+                    dispatch_async(dispatch_get_main_queue(),
+                                   ^(void){
+                        // Check returned data
+                        if (imagesNotUploaded)
+                        {
+                            // Update image list
+                            self.imagesInSections = imagesNotUploaded;
+
+                            // Hide HUD
+                            [self hideHUDwithSuccess:YES completion:^{
+                                self.hudViewController = nil;
+                                
+                                // Refresh collection view
+                                [self.localImagesCollection deleteSections:sectionsToDelete];
+                                
+                                // Initialise locations of sections
+                                [self initLocationsOfSections];
+                                
+                                // Update selections
+                                [self updateSelectButtons];
+                            }];
+                        }
+                        else {
+                            [self hideHUDwithSuccess:NO completion:^{
+                                self.hudViewController = nil;
+                            }];
+                        }
+                    });
                 }];
 }
 
