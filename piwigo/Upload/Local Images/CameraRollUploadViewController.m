@@ -305,7 +305,7 @@
                self.removedUploadedImages = NO;
 
                // Sort images
-               [self sortImagesInAscendingOrder];
+               [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
            }];
     
     UIAlertAction* oldestAction = [UIAlertAction
@@ -317,7 +317,7 @@
             self.removedUploadedImages = NO;
 
             // Sort images
-            [self sortImagesInAscendingOrder];
+            [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
         }];
     
     UIAlertAction* uploadedAction = [UIAlertAction
@@ -331,25 +331,14 @@
              self.removedUploadedImages = NO;
              
              // Sort images
-             switch (self.sortType) {
-                 case kPiwigoSortByNewest:
-                     [self sortImagesInAscendingOrder];
-                     break;
-                     
-                 case kPiwigoSortByOldest:
-                     [self sortImagesInAscendingOrder];
-                     break;
-                     
-                 default:
-                     break;
-             }
+             [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
          }
          else {
              // Store choice
              self.removedUploadedImages = YES;
              
              // Remove uploaded images from collection
-             [self removeUploadedImagesFromCollection];
+             [self performSelectorInBackground:@selector(removeUploadedImagesFromCollection) withObject:nil];
          }
         }];
     
@@ -378,7 +367,9 @@
 -(void)sortImagesInAscendingOrder
 {
     // Show HUD during job
-    [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
+    });
     
     // Collect new list of images
     self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:self.sortType];
@@ -387,21 +378,25 @@
     self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
     
     // Hide HUD
-    [self hideHUDwithSuccess:YES completion:^{
-        self.hudViewController = nil;
-
-        // Refresh collection view
-        [self.localImagesCollection reloadData];
-
-        // Update Select buttons status
-        [self updateSelectButtons];
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self hideHUDwithSuccess:YES completion:^{
+            self.hudViewController = nil;
+            
+            // Refresh collection view
+            [self.localImagesCollection reloadData];
+            
+            // Update Select buttons status
+            [self updateSelectButtons];
+        }];
+    });
 }
 
 -(void)removeUploadedImagesFromCollection
 {
     // Show HUD during download
-    [self showHUDwithTitle:NSLocalizedString(@"imageUploadRemove", @"Removing Uploaded Images")];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"imageUploadRemove", @"Removing Uploaded Images")];
+    });
     
     // Remove uploaded images from the collection
     [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId

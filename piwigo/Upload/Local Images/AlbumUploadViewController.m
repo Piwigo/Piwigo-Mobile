@@ -362,7 +362,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                 self.removedUploadedImages = NO;
 
                 // Sort images
-                [self sortImagesInAscendingOrder];
+                [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
             }];
     
     UIAlertAction* oldestAction = [UIAlertAction
@@ -374,7 +374,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                 self.removedUploadedImages = NO;
 
                 // Sort images
-                [self sortImagesInAscendingOrder];
+                [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
             }];
     
     UIAlertAction* uploadedAction = [UIAlertAction
@@ -388,25 +388,14 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                     self.removedUploadedImages = NO;
                     
                     // Sort images
-                    switch (self.sortType) {
-                        case kPiwigoSortByNewest:
-                            [self sortImagesInAscendingOrder];
-                            break;
-                            
-                        case kPiwigoSortByOldest:
-                            [self sortImagesInAscendingOrder];
-                            break;
-                            
-                        default:
-                            break;
-                    }
+                    [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
                 }
                 else {
                     // Store choice
                     self.removedUploadedImages = YES;
                     
                     // Remove uploaded images from collection
-                    [self removeUploadedImagesFromCollection];
+                    [self performSelectorInBackground:@selector(removeUploadedImagesFromCollection) withObject:nil];
                 }
             }];
     
@@ -435,24 +424,28 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 -(void)sortImagesInAscendingOrder
 {
     // Show HUD during job
-    [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
+    });
+
     // Retrieve images according to chosen sort order
     self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
                                                                         withSortType:self.sortType];
     // Hide HUD
-    [self hideHUDwithSuccess:YES completion:^{
-        self.hudViewController = nil;
-
-        // Initialise locations of sections
-        [self initLocationsOfSections];
-
-        // Refresh collection view
-        [self.localImagesCollection reloadData];
-
-        // Update Select buttons status
-        [self updateSelectButtons];
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self hideHUDwithSuccess:YES completion:^{
+            self.hudViewController = nil;
+            
+            // Initialise locations of sections
+            [self initLocationsOfSections];
+            
+            // Refresh collection view
+            [self.localImagesCollection reloadData];
+            
+            // Update Select buttons status
+            [self updateSelectButtons];
+        }];
+    });
 }
 
 -(void)removeUploadedImagesFromCollection
