@@ -234,6 +234,8 @@ class piwigoAppStore: XCTestCase {
         tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
         snapshot("Image1")
         
+        return
+        
         // Screenshot #2: collection of images
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
         app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
