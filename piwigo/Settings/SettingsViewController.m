@@ -9,6 +9,7 @@
 #import <sys/utsname.h>
 
 #import "AboutViewController.h"
+#import "AFAutoPurgingImageCache.h"
 #import "AlbumService.h"
 #import "AppDelegate.h"
 #import "ButtonTableViewCell.h"
@@ -1889,6 +1890,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                            {
                                // Session closed
                                [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
+                               [[Model sharedInstance].imageCache removeAllImages];
                                [Model sharedInstance].imageDownloader = nil;
                                [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
                                [Model sharedInstance].hadOpenedSession = NO;

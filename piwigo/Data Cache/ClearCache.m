@@ -19,7 +19,7 @@
     [[TagsData sharedInstance] clearCache];
 	[[CategoriesData sharedInstance] clearCache];
     
-    // Images
+    // URL requests
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
     // Place names

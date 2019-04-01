@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+
+#import "AFAutoPurgingImageCache.h"
 #import "CategorySortViewController.h"
 
 FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
@@ -57,6 +59,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL performedHTTPauthentication;
 @property (nonatomic, assign) BOOL userCancelledCommunication;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
+@property (nonatomic, strong) AFAutoPurgingImageCache *imageCache;
 @property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
 @property (nonatomic, strong) AFImageDownloader *imageDownloader;
 @property (nonatomic, strong) AFHTTPSessionManager *imageUploadManager;
