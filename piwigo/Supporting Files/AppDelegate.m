@@ -50,18 +50,15 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
                                                        diskCapacity:0
                                                            diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
-    // set it back to default value
-	URLCache = [[NSURLCache alloc]
-                            initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-								      diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                                          diskPath:nil];
-	[NSURLCache setSharedURLCache:URLCache];
 #else
-    NSURLCache *URLCache = [[NSURLCache alloc]
-                            initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-                            diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                            diskPath:nil];
-    [NSURLCache setSharedURLCache:URLCache];
+    if ([NSURLCache sharedURLCache] == nil)
+    {
+        NSURLCache *URLCache = [[NSURLCache alloc]
+                                initWithMemoryCapacity:0
+                                diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                                diskPath:nil];
+        [NSURLCache setSharedURLCache:URLCache];
+    }
 #endif
 
     // Login ?

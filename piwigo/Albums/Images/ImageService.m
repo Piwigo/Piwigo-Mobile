@@ -531,9 +531,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // Download image of optimum size (depends on availability)
     NSString *URLRequest = @"";
-    if (([image.ThumbPath length] > 0) &&
-        (fmin(image.ThumbWidth, image.ThumbHeight) < minSize)) {
-            URLRequest = image.ThumbPath;
+    if ([image.ThumbPath length] > 0) {
+        // Should always be true (smallest considered size)
+        URLRequest = image.ThumbPath;
     }
     if (([image.XXSmallPath length] > 0) &&
         (fmin(image.XXSmallWidth, image.XXSmallHeight) < minSize)) {
@@ -556,7 +556,7 @@ NSString * const kGetImageOrderDescending = @"desc";
         URLRequest = image.LargePath;
     }
     if (([image.XLargePath length] > 0) &&
-        (fmin(image.XLargeWidth, image.XLargeHeight) > minSize)) {
+        (fmin(image.XLargeWidth, image.XLargeHeight) < minSize)) {
         URLRequest = image.XLargePath;
     }
     if (([image.XXLargePath length] > 0) &&

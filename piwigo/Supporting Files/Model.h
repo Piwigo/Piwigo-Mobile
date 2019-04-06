@@ -12,6 +12,11 @@
 #import "AFAutoPurgingImageCache.h"
 #import "CategorySortViewController.h"
 
+FOUNDATION_EXPORT NSInteger const kPiwigoMinMemoryCache;
+FOUNDATION_EXPORT NSInteger const kPiwigoMinDiskCache;
+FOUNDATION_EXPORT NSInteger const kPiwigoMaxMemoryCache;
+FOUNDATION_EXPORT NSInteger const kPiwigoMaxDiskCache;
+
 FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
 FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
 FOUNDATION_EXPORT NSTimeInterval const k3WeeksInDays;

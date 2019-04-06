@@ -226,7 +226,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     if ([Model sharedInstance].imageCache == nil) {
         [Model sharedInstance].imageCache = [[AFAutoPurgingImageCache alloc]
                     initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-                   preferredMemoryCapacity:([Model sharedInstance].memoryCache * 0.6) * 1024*1024];
+                   preferredMemoryCapacity:([Model sharedInstance].memoryCache * 0.8) * 1024*1024];
     }
     if ([Model sharedInstance].imageDownloader == nil) {
         [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc]

@@ -184,7 +184,9 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                   else
                   {
                       NSURL *URL = [NSURL URLWithString:imageData.MediumPath];
-                      [self.backgroundImage setImageWithURLRequest:[NSURLRequest requestWithURL:URL]
+                      NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+                      [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+                      [self.backgroundImage setImageWithURLRequest:request
                             placeholderImage:[UIImage imageNamed:@"placeholder"]
                             success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                albumData.categoryImage = image;

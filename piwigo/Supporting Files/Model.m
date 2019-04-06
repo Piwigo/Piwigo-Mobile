@@ -12,6 +12,11 @@
 #import "PiwigoImageData.h"
 #import "ImagesCollection.h"
 
+NSInteger const kPiwigoMinMemoryCache = 32;     // Min size and slider increment
+NSInteger const kPiwigoMinDiskCache   = 128;    // 32 MB memory cache, 128 MB disk cache
+NSInteger const kPiwigoMaxMemoryCache = 512;    // Max size
+NSInteger const kPiwigoMaxDiskCache   = 2048;   // 512 MB memory cache, 2 GB disk cache
+
 NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
 NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
 NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
@@ -113,8 +118,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
-		instance.diskCache = 512;
-		instance.memoryCache = 128;
+		instance.diskCache = kPiwigoMinDiskCache;
+		instance.memoryCache = kPiwigoMinMemoryCache;
 		
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
@@ -365,9 +370,13 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	self.serverName = [savedData objectAtIndex:0];
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
-	self.diskCache = [[savedData objectAtIndex:3] integerValue];
-	self.memoryCache = [[savedData objectAtIndex:4] integerValue];
-	self.photoQuality = [[savedData objectAtIndex:5] integerValue];
+
+    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoMinDiskCache);
+    self.diskCache = MIN(self.diskCache, kPiwigoMaxDiskCache);
+	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMinMemoryCache);
+    self.memoryCache = MIN(self.memoryCache, kPiwigoMaxMemoryCache);
+
+    self.photoQuality = [[savedData objectAtIndex:5] integerValue];
 	self.photoResize = [[savedData objectAtIndex:6] integerValue];
 	if(savedData.count > 7)
 	{

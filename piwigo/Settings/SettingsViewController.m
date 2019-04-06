@@ -1178,8 +1178,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
-                    cell.slider.minimumValue = 16;
-                    cell.slider.maximumValue = 2048;
+                    cell.slider.minimumValue = kPiwigoMinDiskCache;
+                    cell.slider.maximumValue = kPiwigoMaxDiskCache;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
@@ -1188,7 +1188,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
                     }
                     cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = 16;
+                    cell.incrementSliderBy = kPiwigoMinDiskCache;
                     cell.sliderValue = [Model sharedInstance].diskCache;
                     [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
@@ -1197,7 +1197,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 2:     // Memory
                 {
-                    NSInteger currentMemSize = [[NSURLCache sharedURLCache] currentMemoryUsage];
+                    NSInteger currentMemSize = [[Model sharedInstance].imageCache memoryUsage];
                     float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
                     if(!cell)
@@ -1205,8 +1205,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
-                    cell.slider.minimumValue = 16;
-                    cell.slider.maximumValue = 512;
+                    cell.slider.minimumValue = kPiwigoMinMemoryCache;
+                    cell.slider.maximumValue = kPiwigoMaxMemoryCache;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
@@ -1215,7 +1215,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
                     }
                     cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = 16;
+                    cell.incrementSliderBy = kPiwigoMinMemoryCache;
                     cell.sliderValue = [Model sharedInstance].memoryCache;
                     [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
