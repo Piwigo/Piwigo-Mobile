@@ -1,4 +1,19 @@
-# Piwigo Mobile [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile) [![License: MIT](https://img.shields.io/cocoapods/l/MBProgressHUD.svg?style=flat)](http://opensource.org/licenses/MIT)
+# Piwigo Mobile
+
+[![OpenedIssues](https://img.shields.io/github/issues-raw/Piwigo/Piwigo-Mobile.svg?style=flat)](https://github.com/Piwigo/Piwigo-Mobile/issues)
+[![ClosedIssues](https://img.shields.io/github/issues-closed-raw/Piwigo/Piwigo-Mobile.svg?color=success)](https://github.com/Piwigo/Piwigo-Mobile/issues?utf8=✓&q=is%3Aissue+is%3Aclosed)
+[![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile) 
+
+[![Version](https://img.shields.io/github/release/Piwigo/Piwigo-Mobile.svg)](https://itunes.apple.com/app/piwigo/id472225196?mt=8)
+[![ReleaseDate](https://img.shields.io/github/release-date/Piwigo/Piwigo-Mobile.svg?color=screen)](https://itunes.apple.com/app/piwigo/id472225196?mt=8)
+![Language](https://img.shields.io/github/languages/top/Piwigo/Piwigo-Mobile.svg)
+[![License: MIT](https://img.shields.io/github/license/Piwigo/Piwigo-Mobile.svg)](http://opensource.org/licenses/MIT)
+
+[![Git](https://img.shields.io/badge/GitHub-Piwigo-blue.svg?style=flat)](https://github.com/Piwigo)
+[![Twitter](https://img.shields.io/badge/twitter-@piwigo-blue.svg?style=flat)](http://twitter.com/piwigo)
+[![Website](https://img.shields.io/badge/website-piwigo.org-orange.svg?style=flat)](http://piwigo.org)
+[![eMail](https://img.shields.io/badge/email-ios@piwigo.org-orange.svg?style=flat)](mailto:ios@piwigo.org?SUBJECT=About%20Piwigo%20Mobile%20for%20iOS)
+
 Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
 [![Available on the App Store](http://cl.ly/WouG/Download_on_the_App_Store_Badge_US-UK_135x40.svg)](https://itunes.apple.com/app/piwigo/id472225196?mt=8)
