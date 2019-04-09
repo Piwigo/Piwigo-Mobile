@@ -264,15 +264,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.SquareWidth = [[[imageSizes objectForKey:@"square"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.SquareWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.SquareWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"square"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.SquareHeight = [[[imageSizes objectForKey:@"square"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.SquareHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.SquareHeight = 1;
     }
 
     // Thumbnail image
@@ -281,15 +281,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.ThumbWidth = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.ThumbWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.ThumbWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"thumb"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.ThumbHeight = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.ThumbHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.ThumbHeight = 1;
     }
 
     // Medium image
@@ -298,15 +298,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.MediumWidth = [[[imageSizes objectForKey:@"medium"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.MediumWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.MediumWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"medium"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.MediumHeight = [[[imageSizes objectForKey:@"medium"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.MediumHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.MediumHeight = 1;
     }
 
     // XX small image
@@ -315,15 +315,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.XXSmallWidth = [[[imageSizes objectForKey:@"2small"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.XXSmallWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.XXSmallWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"2small"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.XXSmallHeight = [[[imageSizes objectForKey:@"2small"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.XXSmallHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.XXSmallHeight = 1;
     }
 
     // X small image
@@ -332,15 +332,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.XSmallWidth = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.XSmallWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.XSmallWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"xsmall"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.XSmallHeight = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.XSmallHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.XSmallHeight = 1;
     }
 
     // Small image
@@ -349,15 +349,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.SmallWidth = [[[imageSizes objectForKey:@"small"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.SmallWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.SmallWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"small"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.SmallHeight = [[[imageSizes objectForKey:@"small"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.SmallHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.SmallHeight = 1;
     }
 
     // Large image
@@ -366,15 +366,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.LargeWidth = [[[imageSizes objectForKey:@"large"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.LargeWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.LargeWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"large"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.LargeHeight = [[[imageSizes objectForKey:@"large"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.LargeHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.LargeHeight = 1;
     }
 
     // X large image
@@ -383,15 +383,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.XLargeWidth = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.XLargeWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.XLargeWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"xlarge"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.XLargeHeight = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.XLargeHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.XLargeHeight = 1;
     }
 
     // XX large image
@@ -400,15 +400,15 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.XXLargeWidth = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"width"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.XXLargeWidth = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.XXLargeWidth = 1;
     }
     if (![[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
         imageData.XXLargeHeight = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"height"] integerValue];
     }
     else {
-        // When the image dimensions are unknown, use 0
-        imageData.XXLargeHeight = 0;
+        // When the image dimensions are unknown, use 1
+        imageData.XXLargeHeight = 1;
     }
     
     // API pwg.images.getInfo returns in addition:
@@ -527,48 +527,54 @@ NSString * const kGetImageOrderDescending = @"desc";
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
-	if(!image) return nil;
+	// NOP if image unknown
+    if(!image) return nil;
     
     // Download image of optimum size (depends on availability)
+    // Note: image.width and .height are always > 1
     NSString *URLRequest = @"";
+    CGFloat scaleFactor = INFINITY;
     if ([image.ThumbPath length] > 0) {
-        // Should always be true (smallest considered size)
+        // Path should always be provided (thumbnail size)
         URLRequest = image.ThumbPath;
+        scaleFactor = minSize / fmin(image.XXSmallWidth, image.XXSmallHeight);
     }
-    if (([image.XXSmallPath length] > 0) &&
-        (fmin(image.XXSmallWidth, image.XXSmallHeight) < minSize)) {
+    if (([image.XXSmallPath length] > 0) && (scaleFactor > 1.0)) {
         URLRequest = image.XXSmallPath;
+        scaleFactor = minSize / fmin(image.XXSmallWidth, image.XXSmallHeight);
     }
-    if (([image.XSmallPath length] > 0) &&
-        (fmin(image.XSmallWidth, image.XSmallHeight) < minSize)) {
+    if (([image.XSmallPath length] > 0) && (scaleFactor > 1.0)) {
         URLRequest = image.XSmallPath;
+        scaleFactor = minSize / fmin(image.XSmallWidth, image.XSmallHeight);
     }
-    if (([image.SmallPath length] > 0) &&
-        (fmin(image.SmallWidth, image.SmallHeight) < minSize)) {
+    if (([image.SmallPath length] > 0) && (scaleFactor > 1.0)) {
         URLRequest = image.SmallPath;
+        scaleFactor = minSize / fmin(image.SmallWidth, image.SmallHeight);
     }
-    if (([image.MediumPath length] > 0) &&
-        (fmin(image.MediumWidth, image.MediumHeight) < minSize)) {
+    if (([image.MediumPath length] > 0) && (scaleFactor > 1.0)) {
+        // Path should always be provided (medium size)
         URLRequest = image.MediumPath;
+        scaleFactor = minSize / fmin(image.MediumWidth, image.MediumHeight);
     }
-    if (([image.LargePath length] > 0) &&
-        (fmin(image.LargeWidth, image.LargeHeight) < minSize)) {
+    if (([image.LargePath length] > 0) && (scaleFactor > 1.0)) {
         URLRequest = image.LargePath;
+        scaleFactor = minSize / fmin(image.LargeWidth, image.LargeHeight);
     }
-    if (([image.XLargePath length] > 0) &&
-        (fmin(image.XLargeWidth, image.XLargeHeight) < minSize)) {
+    if (([image.XLargePath length] > 0) && (scaleFactor > 1.0)) {
         URLRequest = image.XLargePath;
+        scaleFactor = minSize / fmin(image.XLargeWidth, image.XLargeHeight);
     }
-    if (([image.XXLargePath length] > 0) &&
-        (fmin(image.XXLargeWidth, image.XXLargeHeight) < minSize)) {
+    if (([image.XXLargePath length] > 0) && (scaleFactor > 1.0)) {
         URLRequest = image.XXLargePath;
+        scaleFactor = minSize / fmin(image.XXLargeWidth, image.XXLargeHeight);
     }
-    if (([image.fullResPath length] > 0) &&
-        (fmin(image.fullResWidth, image.fullResHeight) < minSize)) {
+    if ((([image.fullResPath length] > 0) && (scaleFactor > 1.0)) || (URLRequest.length == 0)) {
         URLRequest = image.fullResPath;
     }
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
 
+    // NOP if image cannot be downloaded
+    if (URLRequest.length == 0) return nil;
+    
     // Set appropriate filename
     NSString *fileName = [[NSURL URLWithString:URLRequest] lastPathComponent];
     if ([fileName containsString:@".php"]) {
@@ -588,6 +594,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Download and save image
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
     NSURLSessionDownloadTask *task =
         [[Model sharedInstance].imagesSessionManager downloadTaskWithRequest:request
                                 progress:progress
