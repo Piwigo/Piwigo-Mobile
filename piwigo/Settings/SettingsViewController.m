@@ -1065,7 +1065,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
  
                         // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate screenBrightnessChanged:nil];
+                        [appDelegate screenBrightnessChanged];
                     };
                     
                     tableViewCell = cell;
@@ -1101,7 +1101,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         
                         // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate screenBrightnessChanged:nil];
+                        [appDelegate screenBrightnessChanged];
                     };
                     
                     tableViewCell = cell;
@@ -1197,7 +1197,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 2:     // Memory
                 {
-                    NSInteger currentMemSize = [[Model sharedInstance].imageCache memoryUsage];
+                    NSInteger currentMemSize = (int)[[Model sharedInstance].imageCache memoryUsage];
                     float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
                     if(!cell)
@@ -2158,7 +2158,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
     // Update palette if needed
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate screenBrightnessChanged:nil];
+    [appDelegate screenBrightnessChanged];
 }
 
 - (IBAction)updateDiskCacheSize:(id)sender
