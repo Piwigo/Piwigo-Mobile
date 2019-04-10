@@ -2171,7 +2171,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         ![Model sharedInstance].hadOpenedSession)
     {
         // Bypass the Upload section
-        if (section > SettingsSectionImages) section++;
+        if (section > SettingsSectionImages) section--;
     }
 
     SliderTableViewCell *sliderSettingsDisk = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:section]];
@@ -2191,7 +2191,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         ![Model sharedInstance].hadOpenedSession)
     {
         // Bypass the Upload section
-        if (section > SettingsSectionImages) section++;
+        if (section > SettingsSectionImages) section--;
     }
     
     SliderTableViewCell *sliderSettingsMem = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:section]];
