@@ -242,6 +242,7 @@
 // Image sort
 "sortBy" = "Sorteren op";
 "imageSortTitle" = "Sorteer foto's";
+"imageSortingHUD" = "Afbeeldingen sorteren";
 "imageSortMessage" = "Selecteer hoe je de foto's wilt sorteren";
 
 // Image options (actions)
@@ -313,8 +314,6 @@
 
 "downloadingImage" = "Download foto";
 "downloadingImages" = "Foto's downloaden";
-"downloadingImageInfo" = "Foto-informatie aan het downloaden";
-"downloadingImageInfoForSort" = "Bezig met downloaden van foto-info om te sorteren";
 "downloadingVideo" = "Video downloaden";
 
 // Image download — Errors
@@ -367,6 +366,8 @@
 "imageUploadDetailsEdit_title" = "Bewerk foto's vóór uploaden";
 "imageUploadDetailsUploading_title" = "Foto's die worden ge-upload";
 "imageUploadDetailsCell_uploadComplete" = "Klaar! Afronden...";
+
+"imageUploadRemove" = "Geüploade afbeeldingen verwijderen";
 
 "imageUploadTableCell_uploading" = "Bezig met uploaden...";
 "imageUploadProgressBar_zero" = "Bezig met uploaden 0/0";

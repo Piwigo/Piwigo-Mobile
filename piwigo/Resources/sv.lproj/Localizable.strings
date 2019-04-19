@@ -242,6 +242,7 @@
 // Image sort
 "sortBy" = "Sortera efter";
 "imageSortTitle" = "Sortera bilder";
+"imageSortingHUD" = "Sortera bilder";
 "imageSortMessage" = "Välj hur du vill sortera bilder";
 
 // Image options (actions)
@@ -313,8 +314,6 @@
 
 "downloadingImage" = "Hämtar bild";
 "downloadingImages" = "Hämtar bilder";
-"downloadingImageInfo" = "Hämtar bildinformation";
-"downloadingImageInfoForSort" = "Hämtar bildinformation för sortering";
 "downloadingVideo" = "Laddar ner video";
 
 // Image download — Errors
@@ -367,6 +366,8 @@
 "imageUploadDetailsEdit_title" = "Bearbeta bilder för uppladdning";
 "imageUploadDetailsUploading_title" = "Bilder som laddas upp";
 "imageUploadDetailsCell_uploadComplete" = "Klart! Färdigställer...";
+
+"imageUploadRemove" = "Ta bort uppladdade bilder";
 
 "imageUploadTableCell_uploading" = "Laddar upp...";
 "imageUploadProgressBar_zero" = "Laddar upp 0/0";

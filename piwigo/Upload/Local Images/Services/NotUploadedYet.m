@@ -17,9 +17,10 @@
 @implementation NotUploadedYet
 
 +(void)getListOfImageNamesThatArentUploadedForCategory:(NSInteger)categoryId
-                                            withImages:(NSArray*)imagesInSections
+                                            withImages:(NSArray *)imagesInSections
+                                         andSelections:(NSArray *)selectedSections
                                            forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-                                          onCompletion:(void (^)(NSArray *imagesNotUploaded))completion
+                                          onCompletion:(void (^)(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete))completion
 {
     [[[CategoriesData sharedInstance] getCategoryById:categoryId]
      loadAllCategoryImageDataForProgress:progress
@@ -47,12 +48,24 @@
          }
          
          // Collect list of local images
+         NSMutableIndexSet *sectionsToDelete = [NSMutableIndexSet new];
          NSMutableArray *localImagesThatNeedToBeUploaded = [NSMutableArray new];
+         if (imagesInSections.count != selectedSections.count) {
+             if(completion)
+             {
+                 completion(imagesInSections, sectionsToDelete);
+             }
+             return;
+         }
          
          // Build list of images which have not already been uploaded to the Piwigo server
-         for (NSArray *imagesInSection in imagesInSections) {
+         for (NSInteger index = 0; index < imagesInSections.count; index++) {
 
+             // Images in section
+             NSArray *imagesInSection = [imagesInSections objectAtIndex:index];
+             
              // Loop over images of section
+             NSMutableArray *images = [NSMutableArray new];
              for (PHAsset *imageAsset in imagesInSection) {
                  
                  // For some unknown reason, the asset resource may be empty
@@ -89,17 +102,21 @@
                  // Compare filenames of local and remote images
                  if(imageAssetKey && ![imageAssetKey isEqualToString:@""] && ![onlineImageNamesLookup objectForKey:imageAssetKey])
                  {    // This image doesn't exist in this online category
-                     [localImagesThatNeedToBeUploaded addObject:imageAsset];
+                     [images addObject:imageAsset];
                  }
+             }
+             
+             // Add section if not empty
+             if (images.count) {
+                 [localImagesThatNeedToBeUploaded addObject:images];
+             } else {
+                 [sectionsToDelete addIndex:index];
              }
          }
          
-         // Sort images by day
-         NSArray *imagesByDate = [SplitLocalImages splitImagesByDate:localImagesThatNeedToBeUploaded];
-         
          if(completion)
          {
-             completion(imagesByDate);
+             completion(localImagesThatNeedToBeUploaded, sectionsToDelete);
          }
      }];
 }

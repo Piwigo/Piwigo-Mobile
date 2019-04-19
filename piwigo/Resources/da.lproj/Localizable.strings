@@ -242,6 +242,7 @@
 // Image sort
 "sortBy" = "Sortér efter";
 "imageSortTitle" = "Sorter billeder";
+"imageSortingHUD" = "Sortering af billeder";
 "imageSortMessage" = "Vælg hvordan du ønsker at sortere billeder";
 
 // Image options (actions)
@@ -313,8 +314,6 @@
 
 "downloadingImage" = "Henter Billede";
 "downloadingImages" = "Henter Billeder";
-"downloadingImageInfo" = "Hent Billed Info";
-"downloadingImageInfoForSort" = "Henter Billedinfo for Sort";
 "downloadingVideo" = "Henter video";
 
 // Image download — Errors
@@ -367,6 +366,8 @@
 "imageUploadDetailsEdit_title" = "Vælg Billeder til Upload";
 "imageUploadDetailsUploading_title" = "Billeder der Bliver Uploadet";
 "imageUploadDetailsCell_uploadComplete" = "Fuldført! Efterbehandling...";
+
+"imageUploadRemove" = "Fjernelse af uploadede billeder";
 
 "imageUploadTableCell_uploading" = "Uploader...";
 "imageUploadProgressBar_zero" = "Uploader 0/0";

@@ -50,7 +50,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 @property (nonatomic, strong) NSMutableArray *selectedSections;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
-@property (nonatomic, assign) BOOL removeUploadedImages;
+@property (nonatomic, assign) BOOL removedUploadedImages;
 @property (nonatomic, strong) UIViewController *hudViewController;
 
 @end
@@ -73,7 +73,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         [self initLocationsOfSections];
         
         // Initialise arrays used to manage selections
-        self.removeUploadedImages = NO;
+        self.removedUploadedImages = NO;
         self.touchedImages = [NSMutableArray new];
         self.selectedImages = [NSMutableArray new];
         [self initSelectButtons];
@@ -359,9 +359,10 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             handler:^(UIAlertAction *action) {
                 // Change sort option
                 self.sortType = kPiwigoSortByNewest;
-                
+                self.removedUploadedImages = NO;
+
                 // Sort images
-                [self sortImagesInAscendingOrder:NO];
+                [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
             }];
     
     UIAlertAction* oldestAction = [UIAlertAction
@@ -370,41 +371,31 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             handler:^(UIAlertAction * action) {
                 // Change sort option
                 self.sortType = kPiwigoSortByOldest;
-                
+                self.removedUploadedImages = NO;
+
                 // Sort images
-                [self sortImagesInAscendingOrder:YES];
+                [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
             }];
     
     UIAlertAction* uploadedAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")
+            actionWithTitle:self.removedUploadedImages ? [NSString stringWithFormat:@"✓ %@", NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")] : NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
                 // Remove uploaded images?
-                if (self.removeUploadedImages)
+                if (self.removedUploadedImages)
                 {
                     // Store choice
-                    self.removeUploadedImages = NO;
+                    self.removedUploadedImages = NO;
                     
                     // Sort images
-                    switch (self.sortType) {
-                        case kPiwigoSortByNewest:
-                            [self sortImagesInAscendingOrder:NO];
-                            break;
-                            
-                        case kPiwigoSortByOldest:
-                            [self sortImagesInAscendingOrder:YES];
-                            break;
-                            
-                        default:
-                            break;
-                    }
+                    [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
                 }
                 else {
                     // Store choice
-                    self.removeUploadedImages = YES;
+                    self.removedUploadedImages = YES;
                     
                     // Remove uploaded images from collection
-                    [self removeUploadedImagesFromCollection];
+                    [self performSelectorInBackground:@selector(removeUploadedImagesFromCollection) withObject:nil];
                 }
             }];
     
@@ -430,83 +421,83 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
--(void)sortImagesInAscendingOrder:(BOOL)ascending
+-(void)sortImagesInAscendingOrder
 {
-    // Save position of collection view
-    NSArray *visibleCells = [self.localImagesCollection visibleCells];
-    LocalImageCollectionViewCell *cell = [visibleCells firstObject];
-    NSIndexPath *indexPath = [self.localImagesCollection indexPathForCell:cell];
-    PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    
+    // Show HUD during job
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
+    });
+
     // Retrieve images according to chosen sort order
     self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
                                                                         withSortType:self.sortType];
-    // Initialise locations of sections
-    [self initLocationsOfSections];
-    
-    // Update Select buttons status
-    [self updateSelectButtons];
-    
-    // Refresh collection view
-    [self.localImagesCollection reloadData];
-    
-    // Scroll to previous position
-    if (indexPath.section != 0) {
-        indexPath = [self indexPathOfImageAsset:imageAsset];
-        if (indexPath) {
-            [self.localImagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-        }
-    }
+    // Hide HUD
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self hideHUDwithSuccess:YES completion:^{
+            self.hudViewController = nil;
+            
+            // Initialise locations of sections
+            [self initLocationsOfSections];
+            
+            // Refresh collection view
+            [self.localImagesCollection reloadData];
+            
+            // Update Select buttons status
+            [self updateSelectButtons];
+        }];
+    });
 }
 
 -(void)removeUploadedImagesFromCollection
 {
     // Show HUD during download
-    PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
     dispatch_async(dispatch_get_main_queue(),
        ^(void){
-           [self showHUDwithTitle:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") withDetailLabel:[NSString stringWithFormat:@"%d / %ld", 0, (long)downloadingCategory.numberOfImages]];
+           [self showHUDwithTitle:NSLocalizedString(@"imageUploadRemove", @"Removing Uploaded Images")];
        });
 
     // Remove uploaded images from the collection
     [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId
                  withImages:self.imagesInSections
-                forProgress:^(NSInteger onPage, NSInteger outOf) {
-                    
-                    // Update HUD
+              andSelections:self.selectedSections
+                forProgress:nil
+               onCompletion:^(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete)
+                {
                     dispatch_async(dispatch_get_main_queue(),
-                       ^(void){
-                           [self showHUDwithTitle:NSLocalizedString(@"downloadingImageInfo", @"Downloading Image Info") withDetailLabel:[NSString stringWithFormat:@"%ld / %ld", (long)onPage, (long)outOf]];
-                       });
+                                   ^(void){
+                        // Check returned data
+                        if (imagesNotUploaded)
+                        {
+                            // Update image list
+                            self.imagesInSections = imagesNotUploaded;
 
-                } onCompletion:^(NSArray *imagesNotUploaded) {
-
-                    // Update image list
-                    self.imagesInSections = imagesNotUploaded;
-
-                    // Initialise locations of sections
-                    [self initLocationsOfSections];
-                    
-                    // Update Select buttons status
-                    [self updateSelectButtons];
-                    
-                    // Hide HUD
-                    dispatch_async(dispatch_get_main_queue(),
-                       ^(void){
-                           [self hideHUDwithSuccess:YES completion:^{
-                               self.hudViewController = nil;
-                               
-                               // Refresh collection view
-                               [self.localImagesCollection reloadData];
-                           }];
-                       });
+                            // Hide HUD
+                            [self hideHUDwithSuccess:YES completion:^{
+                                self.hudViewController = nil;
+                                
+                                // Refresh collection view
+                                [self.localImagesCollection deleteSections:sectionsToDelete];
+                                
+                                // Initialise locations of sections
+                                [self initLocationsOfSections];
+                                
+                                // Update selections
+                                [self updateSelectButtons];
+                            }];
+                        }
+                        else {
+                            [self hideHUDwithSuccess:NO completion:^{
+                                self.hudViewController = nil;
+                            }];
+                        }
+                    });
                 }];
 }
 
 
 #pragma mark - HUD methods
 
--(void)showHUDwithTitle:(NSString *)title withDetailLabel:(NSString*)label
+-(void)showHUDwithTitle:(NSString *)title
 {
     // Determine the present view controller if needed (not necessarily self.view)
     if (!self.hudViewController) {
@@ -538,11 +529,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     // Set title
     hud.label.text = title;
     hud.label.font = [UIFont piwigoFontNormal];
-    
-    // Set label
     hud.mode = MBProgressHUDModeIndeterminate;
-    hud.detailsLabel.text = label;
-    hud.detailsLabel.font = [UIFont piwigoFontSmall];
 }
 
 -(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
@@ -968,7 +955,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     }
     
     // Update list of "Not Uploaded" images
-    if (self.removeUploadedImages)
+    if (self.removedUploadedImages)
     {
         NSMutableArray *newList = [self.imagesInSections mutableCopy];
         [newList removeObject:image.imageAsset];

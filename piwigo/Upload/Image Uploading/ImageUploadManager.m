@@ -1360,6 +1360,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                         self.isUploading = NO;
                                     }];
     
+    // Should we propose to retry?
     if (retry) {
         // Retry to upload the image
         UIAlertAction* retryAction = [UIAlertAction
@@ -1370,8 +1371,10 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                           [self uploadNextImage];
                                       }];
         [alert addAction:retryAction];
-    } else {
-        // Upload next image
+    }
+
+    // Should we propose to upload the next image
+    if (self.imageUploadQueue.count > 1) {
         UIAlertAction* nextAction = [UIAlertAction
                                      actionWithTitle:NSLocalizedString(@"alertNextButton", @"Next Image")
                                      style:UIAlertActionStyleDefault

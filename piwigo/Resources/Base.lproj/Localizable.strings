@@ -242,6 +242,7 @@
 // Image sort
 "sortBy" = "Sort by";
 "imageSortTitle" = "Sort Images";
+"imageSortingHUD" = "Sorting Images";
 "imageSortMessage" = "Please select how you wish to sort images";
 
 // Image options (actions)
@@ -313,8 +314,6 @@
 
 "downloadingImage" = "Downloading Image";
 "downloadingImages" = "Downloading Images";
-"downloadingImageInfo" = "Downloading Image Info";
-"downloadingImageInfoForSort" = "Downloading Image Info for Sort";
 "downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
@@ -367,6 +366,8 @@
 "imageUploadDetailsEdit_title" = "Edit Images to Upload";
 "imageUploadDetailsUploading_title" = "Images that are Being Uploaded";
 "imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
+
+"imageUploadRemove" = "Removing uploaded images";
 
 "imageUploadTableCell_uploading" = "Uploading...";
 "imageUploadProgressBar_zero" = "Uploading 0/0";

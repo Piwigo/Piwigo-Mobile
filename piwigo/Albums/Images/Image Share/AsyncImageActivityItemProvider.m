@@ -174,7 +174,7 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
                       dispatch_semaphore_signal(sema);
                   }
                   else {
-                      // Retrieve image from file
+                      // Retrieve image file path
                       self.imageFilePath = filePath;
                       dispatch_semaphore_signal(sema);
                   }

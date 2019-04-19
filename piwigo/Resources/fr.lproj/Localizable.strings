@@ -242,6 +242,7 @@
 // Image sort
 "sortBy" = "Trier par";
 "imageSortTitle" = "Tri d’Images";
+"imageSortingHUD" = "Tri des images";
 "imageSortMessage" = "Veuillez sélectionner comment vous souhaitez trier les images";
 
 // Image options (actions)
@@ -313,8 +314,6 @@
 
 "downloadingImage" = "Téléchargement de l’Image";
 "downloadingImages" = "Téléchargement des Images";
-"downloadingImageInfo" = "Téléchargement des Infos de l'Image";
-"downloadingImageInfoForSort" = "Téléchargement des Infos de l'Image pour le Tri";
 "downloadingVideo" = "Téléchargement de la Vidéo";
 
 // Image download — Errors
@@ -367,6 +366,8 @@
 "imageUploadDetailsEdit_title" = "Éditer les Images à Envoyer";
 "imageUploadDetailsUploading_title" = "Images en cours d'Envoi";
 "imageUploadDetailsCell_uploadComplete" = "Envoyée ! Vérification...";
+
+"imageUploadRemove" = "Suppression des images téléversées";
 
 "imageUploadTableCell_uploading" = "Téléversement...";
 "imageUploadProgressBar_zero" = "Téléversement 0/0";

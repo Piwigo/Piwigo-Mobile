@@ -1124,6 +1124,12 @@
 						LastSwiftMigration = 1010;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+							com.apple.AutoFillCredentialProvider = {
+								enabled = 0;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 0;
 							};
@@ -1813,10 +1819,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = ZEC3W885H6;
+				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				GCC_PREFIX_HEADER = piwigo/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1832,7 +1838,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "21fe80f9-851b-4da9-93bc-779c033d04e7";
-				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				PROVISIONING_PROFILE_SPECIFIER = "Eddy's Dev profile for Piwigo";
 				SWIFT_OBJC_BRIDGING_HEADER = "piwigo/piwigo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -1866,7 +1872,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
-				PROVISIONING_PROFILE_SPECIFIER = Eddy;
+				PROVISIONING_PROFILE_SPECIFIER = "iOS distribution";
 				SWIFT_OBJC_BRIDGING_HEADER = "piwigo/piwigo-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";

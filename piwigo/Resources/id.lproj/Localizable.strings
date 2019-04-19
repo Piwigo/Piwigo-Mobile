@@ -242,6 +242,7 @@
 // Image sort
 "sortBy" = "Sortir Berdasarkan";
 "imageSortTitle" = "Pilah Gambar";
+"imageSortingHUD" = "Sorting Images";
 "imageSortMessage" = "Silakan pilih bagaimana Anda ingin memilah gambar";
 
 // Image options (actions)
@@ -313,8 +314,6 @@
 
 "downloadingImage" = "Mengunduh Gambar";
 "downloadingImages" = "Mengunduh Gambar";
-"downloadingImageInfo" = "Mengunduh Info Gambar";
-"downloadingImageInfoForSort" = "Mengunduh Info Gambar untuk Penyortiran";
 "downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
@@ -367,6 +366,8 @@
 "imageUploadDetailsEdit_title" = "Sunting Gambar untuk Diunggah";
 "imageUploadDetailsUploading_title" = "Gambar yang Akan Diunggah";
 "imageUploadDetailsCell_uploadComplete" = "Lengkap! Selesaikan...";
+
+"imageUploadRemove" = "Removing uploaded images";
 
 "imageUploadTableCell_uploading" = "Mengunggah...";
 "imageUploadProgressBar_zero" = "Mengunggah 0/0";

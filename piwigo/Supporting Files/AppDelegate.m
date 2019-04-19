@@ -50,18 +50,15 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
                                                        diskCapacity:0
                                                            diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
-    // set it back to default value
-	URLCache = [[NSURLCache alloc]
-                            initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-								      diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                                          diskPath:nil];
-	[NSURLCache setSharedURLCache:URLCache];
 #else
-    NSURLCache *URLCache = [[NSURLCache alloc]
-                            initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-                            diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                            diskPath:nil];
-    [NSURLCache setSharedURLCache:URLCache];
+    if ([NSURLCache sharedURLCache] == nil)
+    {
+        NSURLCache *URLCache = [[NSURLCache alloc]
+                                initWithMemoryCapacity:0
+                                diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                                diskPath:nil];
+        [NSURLCache setSharedURLCache:URLCache];
+    }
 #endif
 
     // Login ?
@@ -126,7 +123,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     
     // Observe the UIScreenBrightnessDidChangeNotification.
     // When that notification is posted, the method screenBrightnessChanged will be called.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged:) name:UIScreenBrightnessDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged) name:UIScreenBrightnessDidChangeNotification object:nil];
 
     // Observe the PiwigoNetworkErrorEncounteredNotification.
     // When that notification is posted, the app checks the login.
@@ -165,7 +162,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 }
 
 // Called when the screen brightness has changed or when user changed settings
--(void)screenBrightnessChanged:(NSNotification *)note
+-(void)screenBrightnessChanged
 {
 //    NSLog(@"Screen Brightness: %f",[[UIScreen mainScreen] brightness]);
     if (![Model sharedInstance].isDarkPaletteModeActive) {
@@ -310,7 +307,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     }
 
     // Should we change the theme ?
-    [self screenBrightnessChanged:nil];    
+    [self screenBrightnessChanged];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
