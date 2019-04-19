@@ -8,12 +8,15 @@
 
 extern NSInteger const kAlbumCellSpacing;
 extern NSInteger const kAlbumMarginsSpacing;
-extern NSInteger const kImageCellSpacing;
+extern NSInteger const kImageCellSpacing4iPhone;
+extern NSInteger const kImageCellHorSpacing4iPad;
+extern NSInteger const kImageCellVertSpacing4iPad;
 extern NSInteger const kImageMarginsSpacing;
 extern NSInteger const kThumbnailFileSize;
 
 @interface ImagesCollection : NSObject
 
++(NSInteger)imageCellHorizontalSpacing;
 +(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth;
 +(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
 +(NSInteger)numberOfImagesPerPageForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;

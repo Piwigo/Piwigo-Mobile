@@ -30,17 +30,21 @@
 	self = [super initWithFrame:frame];
 	if(self)
 	{
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor clearColor];
 		self.isSelected = NO;
 		
         // Thumbnails
 		self.cellImage = [UIImageView new];
 		self.cellImage.translatesAutoresizingMaskIntoConstraints = NO;
-		self.cellImage.contentMode = UIViewContentModeScaleAspectFill;
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            self.cellImage.contentMode = UIViewContentModeScaleAspectFill;
+        } else {
+            self.cellImage.contentMode = UIViewContentModeScaleAspectFit;
+        }
 		self.cellImage.clipsToBounds = YES;
 		self.cellImage.image = [UIImage imageNamed:@"placeholderImage"];
 		[self.contentView addSubview:self.cellImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
 		// Selected images are darker
         self.darkenView = [UIView new];

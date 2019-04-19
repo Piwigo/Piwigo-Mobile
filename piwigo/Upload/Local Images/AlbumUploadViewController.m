@@ -804,12 +804,20 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kImageCellSpacing;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return (CGFloat)kImageCellSpacing4iPhone;
+    } else {
+        return (CGFloat)kImageCellVertSpacing4iPad;
+    }
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
 {
-    return (CGFloat)kImageCellSpacing;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return (CGFloat)kImageCellSpacing4iPhone;
+    } else {
+        return (CGFloat)kImageCellHorSpacing4iPad;
+    }
 }
 
 
