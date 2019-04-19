@@ -37,6 +37,7 @@ typedef enum {
 	SettingsSectionServer,
 	SettingsSectionLogout,
     SettingsSectionAlbums,
+    SettingsSectionThumbnails,
     SettingsSectionImages,
 	SettingsSectionImageUpload,
     SettingsSectionColor,
@@ -260,6 +261,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionAlbums:
             titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
             break;
+        case SettingsSectionThumbnails:
+            titleString = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
+            break;
         case SettingsSectionImages:
             titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
             break;
@@ -331,6 +335,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             return nil;
         case SettingsSectionAlbums:
             titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
+            break;
+        case SettingsSectionThumbnails:
+            titleString = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
             break;
         case SettingsSectionImages:
             titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
@@ -425,7 +432,10 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 1;
             break;
         case SettingsSectionAlbums:
-            nberOfRows = 5;
+            nberOfRows = 2;
+            break;
+        case SettingsSectionThumbnails:
+            nberOfRows = 3;
             break;
         case SettingsSectionImages:
             nberOfRows = 2;
@@ -573,13 +583,22 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
 					break;
 				}
-				case 2:     // Default Thumbnail File
-				{
-					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailFile"];
-					if(!cell) {
-						cell = [LabelTableViewCell new];
-					}
-					
+			}
+			break;
+		}
+
+#pragma mark Thumbnails
+        case SettingsSectionThumbnails:       // Albums thumbnails
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Thumbnail file
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailFile"];
+                    if(!cell) {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
                         cell.leftText = NSLocalizedString(@"defaultThumbnailFile>414px", @"Thumbnail Image File");
@@ -588,14 +607,14 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultThumbnailFile", @"File");
                     }
-					cell.rightText = [PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
+                    cell.rightText = [PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     [cell setAccessibilityIdentifier:@"defaultThumbnailFile"];
-
-					tableViewCell = cell;
-					break;
-				}
-                case 3:     // Default Thumbnail Size
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 1:     // Number of thumbnails
                 {
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailSize"];
                     if(!cell)
@@ -603,27 +622,28 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
-                        cell.sliderName.text = NSLocalizedString(@"defaultThumbnailSize>414px", @"Default Size of Thumbnails");
+                        cell.sliderName.text = NSLocalizedString(@"defaultNberOfThumbnails>414px", @"Number per Row");
                     } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
-                        cell.sliderName.text = NSLocalizedString(@"defaultThumbnailSize>320px", @"Thumbnails Size");
+                        cell.sliderName.text = NSLocalizedString(@"defaultNberOfThumbnails>320px", @"Number/Row");
                     } else {
-                        cell.sliderName.text = NSLocalizedString(@"defaultThumbnailSize", @"Size");
+                        cell.sliderName.text = NSLocalizedString(@"defaultNberOfThumbnails", @"Number");
                     }
                     
                     NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:kThumbnailFileSize];
-                    cell.slider.minimumValue = 1;
-                    cell.slider.maximumValue = 1 + minNberOfImages; // Allows to double the number of thumbnails
+                    NSInteger maxNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:roundf((float)kThumbnailFileSize / 2.3)];
+                    cell.slider.minimumValue = minNberOfImages;
+                    cell.slider.maximumValue = maxNberOfImages;
                     cell.incrementSliderBy = 1;
                     cell.sliderCountPrefix = @"";
                     cell.sliderCountSuffix = [NSString stringWithFormat:@"/%d", (int)cell.slider.maximumValue];
-                    cell.sliderValue = 2 * minNberOfImages - [Model sharedInstance].thumbnailsPerRowInPortrait + 1;
+                    cell.sliderValue = [Model sharedInstance].thumbnailsPerRowInPortrait;
                     [cell.slider addTarget:self action:@selector(updateThumbnailSize:) forControlEvents:UIControlEventValueChanged];
                     [cell setAccessibilityIdentifier:@"defaultThumbnailSize"];
-
+                    
                     tableViewCell = cell;
                     break;
                 }
-                case 4:     // Display titles on thumbnails
+                case 2:     // Display titles on thumbnails
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titles"];
                     if(!cell)
@@ -643,14 +663,14 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         [[Model sharedInstance] saveToDisk];
                     };
                     [cell setAccessibilityIdentifier:@"titles"];
-
+                    
                     tableViewCell = cell;
                     break;
                 }
-			}
-			break;
-		}
-
+            }
+            break;
+        }
+            
 #pragma mark Images
         case SettingsSectionImages:     // Images
         {
@@ -1446,6 +1466,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             result = YES;
             break;
         }
+
 #pragma mark Albums
         case SettingsSectionAlbums:         // Albums
         {
@@ -1463,6 +1484,23 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         }
+
+#pragma mark Thumbnails
+        case SettingsSectionThumbnails:     // Album thumbnails
+        {
+            switch(indexPath.row)
+            {
+                case 0:     // Default Thumbnail File
+                    result = YES;
+                    break;
+                case 1:     // Number of thumbnails
+                case 2:     // Display titles on thumbnails
+                    result = NO;
+                    break;
+            }
+            break;
+        }
+            
 #pragma mark Images
         case SettingsSectionImages:     // Images
         {
@@ -1477,6 +1515,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         }
+
 #pragma mark Default Upload Settings
         case SettingsSectionImageUpload:     // Default Upload Settings
         {
@@ -1501,12 +1540,14 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             }
             break;
         }
+
 #pragma mark Colors
         case SettingsSectionColor:      // Colors
         {
             result = NO;
             break;
         }
+
 #pragma mark Cache Settings
         case SettingsSectionCache:       // Cache Settings
         {
@@ -1518,6 +1559,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             result = YES;
             break;
         }
+
 #pragma mark Information
         case SettingsSectionAbout:      // Information
         {
@@ -1699,15 +1741,22 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 					[self.navigationController pushViewController:categoryVC animated:YES];
 					break;
 				}
-				case 2:                     // Thumbnail file selection
-				{
-					DefaultThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultThumbnailSizeViewController new];
-					[self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
-					break;
-				}
 			}
 			break;
 		}
+        case SettingsSectionThumbnails:     // Albums thumbnails
+        {
+            switch(indexPath.row)
+            {
+                case 0:                     // Thumbnail file selection
+                {
+                    DefaultThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultThumbnailSizeViewController new];
+                    [self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
+                    break;
+                }
+            }
+            break;
+        }
         case SettingsSectionImages:         // Images
         {
             switch(indexPath.row)
@@ -2129,9 +2178,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (IBAction)updateThumbnailSize:(id)sender
 {
-    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingsSectionAlbums]];
-    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:kThumbnailFileSize];
-    [Model sharedInstance].thumbnailsPerRowInPortrait = 2 * minNberOfImages - ([thumbnailsSizeCell getCurrentSliderValue] - 1);
+    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionThumbnails]];
+    [Model sharedInstance].thumbnailsPerRowInPortrait = [thumbnailsSizeCell getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
 }
 
