@@ -242,7 +242,7 @@
 // Image sort
 "sortBy" = "Sortera efter";
 "imageSortTitle" = "Sortera bilder";
-"imageSortingHUD" = "Sortera bilder";
+"imageSortingHUD" = "Sorterar bilder";
 "imageSortMessage" = "Välj hur du vill sortera bilder";
 
 // Image options (actions)
@@ -367,7 +367,7 @@
 "imageUploadDetailsUploading_title" = "Bilder som laddas upp";
 "imageUploadDetailsCell_uploadComplete" = "Klart! Färdigställer...";
 
-"imageUploadRemove" = "Ta bort uppladdade bilder";
+"imageUploadRemove" = "Tar bort uppladdade bilder";
 
 "imageUploadTableCell_uploading" = "Laddar upp...";
 "imageUploadProgressBar_zero" = "Laddar upp 0/0";
@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "Storlek";
 "defaultThumbnailSize>320px" = "Miniatyrbilder";
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
+"defaultNberOfThumbnails" = "Antal";
+"defaultNberOfThumbnails>320px" = "Antal/rad";
+"defaultNberOfThumbnails>414px" = "Antal per rad";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
 "settings_displayTitles" = "Titlar på miniatyrbilder";

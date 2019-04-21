@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "Størrelse";
 "defaultThumbnailSize>320px" = "Miniaturer";
 "defaultThumbnailSize>414px" = "Standardstørrelse på Miniaturer";
+"defaultNberOfThumbnails" = "Antal";
+"defaultNberOfThumbnails>320px" = "Antal / Række";
+"defaultNberOfThumbnails>414px" = "Antal pr. Række";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Vælg miniature størrelse";
 "settings_displayTitles" = "Vis Titler på Miniaturer";

@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "Größe";
 "defaultThumbnailSize>320px" = "Miniaturbildergröße";
 "defaultThumbnailSize>414px" = "Standardgröße der Miniaturbilder";
+"defaultNberOfThumbnails" = "Nummer";
+"defaultNberOfThumbnails>320px" = "Nummer/Zeile";
+"defaultNberOfThumbnails>414px" = "Nummer pro Zeile";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Bitte wählen Sie eine Miniaturbildgröße";
 "settings_displayTitles" = "Titel bei Miniaturbildern";

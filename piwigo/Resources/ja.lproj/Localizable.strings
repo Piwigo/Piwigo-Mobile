@@ -242,7 +242,7 @@
 // Image sort
 "sortBy" = "並び順";
 "imageSortTitle" = "画像を並べ換える";
-"imageSortingHUD" = "Sorting Images";
+"imageSortingHUD" = "画像を並べ換える";
 "imageSortMessage" = "画像の並び順を選択してください";
 
 // Image options (actions)
@@ -367,7 +367,7 @@
 "imageUploadDetailsUploading_title" = "アップロード中の画像";
 "imageUploadDetailsCell_uploadComplete" = "完了！終了中...";
 
-"imageUploadRemove" = "Removing uploaded images";
+"imageUploadRemove" = "アップロードした画像を削除する";
 
 "imageUploadTableCell_uploading" = "アップロード中...";
 "imageUploadProgressBar_zero" = "アップロード中 0/0";
@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "サイズ";
 "defaultThumbnailSize>320px" = "サムネイルのサイズ";
 "defaultThumbnailSize>414px" = "サムネイルの既定サイズ";
+"defaultNberOfThumbnails" = "Number";
+"defaultNberOfThumbnails>320px" = "Number/Row";
+"defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "サムネイルの画像サイズを選択してください";
 "settings_displayTitles" = "サムネイルの題名";
