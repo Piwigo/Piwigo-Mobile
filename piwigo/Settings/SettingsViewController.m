@@ -607,7 +607,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultThumbnailFile", @"File");
                     }
-                    cell.rightText = [PiwigoImageData nameForThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
+                    cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize withInfo:NO];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     [cell setAccessibilityIdentifier:@"defaultThumbnailFile"];
                     
@@ -629,13 +629,22 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderName.text = NSLocalizedString(@"defaultNberOfThumbnails", @"Number");
                     }
                     
-                    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:kThumbnailFileSize];
-                    NSInteger maxNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:roundf((float)kThumbnailFileSize / 2.3)];
+                    // Min/max number of thumbnails per row depends on selected file
+                    NSInteger thumbnailWidth = [PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
+                    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:thumbnailWidth];
                     cell.slider.minimumValue = minNberOfImages;
-                    cell.slider.maximumValue = maxNberOfImages;
+                    cell.slider.maximumValue = minNberOfImages * 2;
                     cell.incrementSliderBy = 1;
                     cell.sliderCountPrefix = @"";
                     cell.sliderCountSuffix = [NSString stringWithFormat:@"/%d", (int)cell.slider.maximumValue];
+                    
+                    // Chek that default number fits inside selected range
+                    if ([Model sharedInstance].thumbnailsPerRowInPortrait > 2 * minNberOfImages) {
+                        [Model sharedInstance].thumbnailsPerRowInPortrait = 2 * minNberOfImages;
+                    }
+                    if ([Model sharedInstance].thumbnailsPerRowInPortrait < minNberOfImages) {
+                        [Model sharedInstance].thumbnailsPerRowInPortrait = minNberOfImages;
+                    }
                     cell.sliderValue = [Model sharedInstance].thumbnailsPerRowInPortrait;
                     [cell.slider addTarget:self action:@selector(updateThumbnailSize:) forControlEvents:UIControlEventValueChanged];
                     [cell setAccessibilityIdentifier:@"defaultThumbnailSize"];
@@ -691,7 +700,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultPreviewFile", @"Preview");
                     }
-                    cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize withAdvice:NO];
+                    cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize withInfo:NO];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     
                     tableViewCell = cell;

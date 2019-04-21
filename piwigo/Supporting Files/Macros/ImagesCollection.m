@@ -38,6 +38,12 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     return pageSize;
 }
 
++(float)minNberOfImagesPerRow   // => 3 on iPhone, 5 on iPad
+{
+    return [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 3.0 : 5.0;
+}
+
+
 #pragma mark - Images
 
 +(NSInteger)imageCellHorizontalSpacing
@@ -51,7 +57,7 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     // We display at least 3 thumbnails per row and images never exceed the thumbnails size
     CGSize pageSize = [self sizeOfPageForView:view];
     float viewWidth = fmin(pageSize.width, pageSize.height);
-    return fmax(3.0, roundf((viewWidth - 2.0 * kImageMarginsSpacing + [self imageCellHorizontalSpacing]) / ([self imageCellHorizontalSpacing] + maxWidth)));
+    return fmax([self minNberOfImagesPerRow], roundf((viewWidth - 2.0 * kImageMarginsSpacing + [self imageCellHorizontalSpacing]) / ([self imageCellHorizontalSpacing] + maxWidth)));
 }
 
 +(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
@@ -63,7 +69,7 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     float imagesSizeInPortrait = floorf((fmin(pageSize.width,pageSize.height) - 2.0 * kImageMarginsSpacing - (imagesPerRowInPortrait - 1.0) * [self imageCellHorizontalSpacing]) / imagesPerRowInPortrait);
     
     // Images per row in whichever mode we are displaying them
-    float imagesPerRow = fmax(3.0, roundf((pageSize.width - 2.0 * kImageMarginsSpacing + [self imageCellHorizontalSpacing]) / ([self imageCellHorizontalSpacing] + imagesSizeInPortrait)));
+    float imagesPerRow = fmax([self minNberOfImagesPerRow], roundf((pageSize.width - 2.0 * kImageMarginsSpacing + [self imageCellHorizontalSpacing]) / ([self imageCellHorizontalSpacing] + imagesSizeInPortrait)));
     
     // Size of squared images for that number
     return floorf((pageSize.width - 2.0 * kImageMarginsSpacing - (imagesPerRow - 1.0) * [self imageCellHorizontalSpacing]) / imagesPerRow);

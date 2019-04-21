@@ -16,6 +16,7 @@ extern NSInteger const kThumbnailFileSize;
 
 @interface ImagesCollection : NSObject
 
++(float)minNberOfImagesPerRow;
 +(NSInteger)imageCellHorizontalSpacing;
 +(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth;
 +(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;

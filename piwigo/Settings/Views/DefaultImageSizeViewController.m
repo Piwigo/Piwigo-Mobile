@@ -164,14 +164,14 @@
 	if(!cell) {
 		cell = [UITableViewCell new];
 	}
-	
+    kPiwigoImageSize imageSize = (kPiwigoImageSize)indexPath.row;
+
     // Name of the image size
     cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
     cell.tintColor = [UIColor piwigoOrange];
     cell.textLabel.font = [UIFont piwigoFontNormal];
     cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
     cell.textLabel.adjustsFontSizeToFitWidth = NO;
-    cell.textLabel.text = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)indexPath.row withAdvice:YES];
     
     // Add checkmark in front of selected item
 	if([Model sharedInstance].defaultImagePreviewSize == indexPath.row) {
@@ -186,77 +186,99 @@
             cell.userInteractionEnabled = NO;
             cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasSquareSizeImages) {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
+            } else {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             }
             break;
         case kPiwigoImageSizeThumb:
             cell.userInteractionEnabled = NO;
             cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasThumbSizeImages) {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
+            } else {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             }
             break;
         case kPiwigoImageSizeXXSmall:
             cell.userInteractionEnabled = NO;
             cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasXXSmallSizeImages) {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
+            } else {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             }
             break;
         case kPiwigoImageSizeXSmall:
             cell.userInteractionEnabled = NO;
             cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasXSmallSizeImages) {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
+            } else {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             }
             break;
         case kPiwigoImageSizeSmall:
-            if ([Model sharedInstance].hasSmallSizeImages) {
-                cell.userInteractionEnabled = YES;
-            } else {
-                cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.userInteractionEnabled = NO;
+            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            if (![Model sharedInstance].hasSmallSizeImages) {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
+            } else {
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             }
             break;
         case kPiwigoImageSizeMedium:
             if ([Model sharedInstance].hasMediumSizeImages) {
                 cell.userInteractionEnabled = YES;
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeLarge:
             if ([Model sharedInstance].hasLargeSizeImages) {
                 cell.userInteractionEnabled = YES;
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXLarge:
             if ([Model sharedInstance].hasXLargeSizeImages) {
                 cell.userInteractionEnabled = YES;
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXXLarge:
             if ([Model sharedInstance].hasXXLargeSizeImages) {
                 cell.userInteractionEnabled = YES;
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+                cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeFullRes:
             cell.userInteractionEnabled = YES;
+            cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             break;
             
         default:

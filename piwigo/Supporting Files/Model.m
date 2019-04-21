@@ -482,11 +482,12 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     }
     if(savedData.count > 23) {
         self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
-        NSInteger minValue = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize];
-        if ((self.thumbnailsPerRowInPortrait < minValue) || (self.thumbnailsPerRowInPortrait > 2*minValue))
-            self.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:(float)kThumbnailFileSize]);
+        // Chek that default number fits inside selected range
+        NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)self.defaultThumbnailSize]];
+        self.thumbnailsPerRowInPortrait = MIN(2*minNberOfImages, self.thumbnailsPerRowInPortrait);
+        self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, self.thumbnailsPerRowInPortrait);
     } else {
-        self.thumbnailsPerRowInPortrait = 4;
+        self.thumbnailsPerRowInPortrait = roundf(1.5 * [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:kThumbnailFileSize]);
     }
     if(savedData.count > 24) {
         self.defaultCategory = [[savedData objectAtIndex:24] integerValue];
