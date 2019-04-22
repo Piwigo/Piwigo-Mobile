@@ -91,6 +91,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL isVideo;
 
 -(NSString*)getURLFromImageSizeType:(kPiwigoImageSize)imageSize;
++(NSInteger)optimumThumbnailSizeForDevice;
 +(NSInteger)optimumImageSizeForDevice;
 +(NSInteger)widthForImageSizeType:(kPiwigoImageSize)imageSize;
 +(NSString*)nameForThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
