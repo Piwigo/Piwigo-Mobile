@@ -50,7 +50,7 @@ scheme("piwigoAppStore")
 output_directory("Assets/Screenshots/AppStore")
 
 # remove the '#' to clear all previously generated screenshots before creating new ones
-# clear_previous_screenshots(true)
+clear_previous_screenshots(true)
 
 # reinstall the app before producing screenshots
 # reinstall_app
