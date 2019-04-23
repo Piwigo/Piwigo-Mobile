@@ -91,6 +91,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         self.localImagesCollection.showsVerticalScrollIndicator = YES;
         self.localImagesCollection.dataSource = self;
         self.localImagesCollection.delegate = self;
+        [self.localImagesCollection setAccessibilityIdentifier:@"LocalAlbum"];
 
         [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
         [self.localImagesCollection registerNib:[UINib nibWithNibName:@"LocalImagesHeaderReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView"];
@@ -210,7 +211,8 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumNav"];
+
     // Collection view
     self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.localImagesCollection reloadData];

@@ -284,6 +284,7 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.49, velocity: -2.0)
         }
@@ -291,6 +292,7 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.52, velocity: -2.0)
         }
@@ -298,6 +300,7 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.59, velocity: -2.0)
         }
@@ -305,6 +308,7 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.735, velocity: -2.0)
         }
@@ -312,6 +316,7 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
         }
@@ -328,14 +333,19 @@ class piwigoAppStore: XCTestCase {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
         if deviceType == "iPad Pro 2 12.9\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
+            sleep(2)
+            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
         if deviceType == "iPad Pro 3 12.9\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
+            sleep(2)
+            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
-        sleep(1)                        // Leave time for animation
+        sleep(2)                        // Leave time for animation
         snapshot("Image4")
         
         // Screenshot #5: upload view
@@ -346,10 +356,17 @@ class piwigoAppStore: XCTestCase {
         
         // Screenshot #6: local images
         app.tables.children(matching: .cell).element(boundBy: 0).tap()
-        app.tables.children(matching: .cell).element(boundBy: 0).tap()
-        app.collectionViews["CameraRoll"].children(matching: .cell).element(boundBy: 0).children(matching: .other).element.tap()
-        app.collectionViews["CameraRoll"].children(matching: .cell).element(boundBy: 1).children(matching: .other).element.tap()
-        app.collectionViews["CameraRoll"].children(matching: .cell).element(boundBy: 2).children(matching: .other).element.tap()
+        sleep(2)                        // Leave time for animation
+        let cell = app.tables.children(matching: .cell).element(boundBy: 0)
+        if cell.label.hasPrefix("Test") {
+            cell.tap()
+        } else {
+            app.tables.children(matching: .cell).element(boundBy: 1).tap()
+        }
+        app.collectionViews["LocalAlbum"].children(matching: .cell).element(boundBy: 0).children(matching: .other).element.tap()
+        app.collectionViews["LocalAlbum"].children(matching: .cell).element(boundBy: 1).children(matching: .other).element.tap()
+        app.collectionViews["LocalAlbum"].children(matching: .cell).element(boundBy: 2).children(matching: .other).element.tap()
+        app.collectionViews["LocalAlbum"].children(matching: .cell).element(boundBy: 3).children(matching: .other).element.tap()
         snapshot("Image6")
         
         // Screenshot #7: upload images
@@ -361,7 +378,7 @@ class piwigoAppStore: XCTestCase {
         // Screenshot #8: settings
         app.navigationBars["ImageUploadNav"].buttons.element(boundBy: 0).tap()
         sleep(1)                        // Leave time for animation
-        app.navigationBars["CameraRollNav"].buttons.element(boundBy: 0).tap()
+        app.navigationBars["LocalAlbumNav"].buttons.element(boundBy: 0).tap()
         sleep(1)                        // Leave time for animation
         app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
         sleep(1)                        // Leave time for animation

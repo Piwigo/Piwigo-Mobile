@@ -236,15 +236,15 @@ class piwigoGetPiwigo: XCTestCase {
             tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
         } else {
             app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
-            sleep(2);
-            app.navigationBars.buttons["Select"].tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 31).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 30).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 29).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
+//            sleep(2);
+//            app.navigationBars.buttons["Select"].tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 31).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 30).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 29).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
         }
         snapshot("Image")
     }
