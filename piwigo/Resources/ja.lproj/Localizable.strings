@@ -485,9 +485,9 @@
 "defaultThumbnailSize" = "サイズ";
 "defaultThumbnailSize>320px" = "サムネイルのサイズ";
 "defaultThumbnailSize>414px" = "サムネイルの既定サイズ";
-"defaultNberOfThumbnails" = "Number";
-"defaultNberOfThumbnails>320px" = "Number/Row";
-"defaultNberOfThumbnails>414px" = "Number per Row";
+"defaultNberOfThumbnails" = "個数";
+"defaultNberOfThumbnails>320px" = "1行あたりの個数";
+"defaultNberOfThumbnails>414px" = "1行あたりの個数";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "サムネイルの画像サイズを選択してください";
 "settings_displayTitles" = "サムネイルの題名";
