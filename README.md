@@ -22,7 +22,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
 [Piwigo](http://piwigo.org) empowers you to create your own photo gallery on the web and includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.
 
-[![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/v2.4/Assets/Screenshots/iPhone-XS%2BiPad-Pro-13-Landscape-Silver-Twitter.png)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/v2.4/Assets/Screenshots/iPhone-XS%2BiPad-Pro-13-Landscape-Silver-Twitter.png)
+[![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/v2.3.4/Assets/Screenshots/iPhone-XS+iPad-Pro-13-Landscape-Silver-en-small.png)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/v2.3.4/Assets/Screenshots/iPhone-XS+iPad-Pro-13-Landscape-Silver-en-small.png)
 ## Description
 [Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.com](http://iwigo.com) and self-hosted Piwigo galleries (2.7 or higher):
 
