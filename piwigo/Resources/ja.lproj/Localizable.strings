@@ -108,7 +108,7 @@
 "categoryTableView_subCategoryCount" = "サブアルバム";
 "categoryTableView_subCategoriesCount" = "サブアルバム";
 "categoryImageList_selectButton" = "選択";
-"categoryImageList_deselectButton" = "Deselect";
+"categoryImageList_deselectButton" = "選択を解除";
 "categoryImageList_noDataError" = "エラー データがありません";
 
 // Albums sort
@@ -120,8 +120,8 @@
 "categorySort_dateCreatedAscending" = "作成日、古い → 新しい";
 "categorySort_datePostedDescending" = "掲載日、新しい → 古い";
 "categorySort_datePostedAscending" = "掲載日、古い → 新しい";
-"categorySort_visitsDescending" = "Visits, high → low";
-"categorySort_visitsAscending" = "Visits, low → high";
+"categorySort_visitsDescending" = "訪問, 高 → 低";
+"categorySort_visitsAscending" = "訪問, 低 → 高";
 "categorySort_videosOnly" = "動画のみ";
 "categorySort_imagesOnly" = "画像のみ";
 

@@ -486,7 +486,7 @@
 "defaultThumbnailSize>320px" = "Taille des Vignettes";
 "defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";
 "defaultNberOfThumbnails" = "Nombre";
-"defaultNberOfThumbnails>320px" = "Numéro/Ligne";
+"defaultNberOfThumbnails>320px" = "Nombre/ligne";
 "defaultNberOfThumbnails>414px" = "Nombre par ligne";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Veuillez sélectionner une taille de vignette d'image";
