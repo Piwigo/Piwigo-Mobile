@@ -306,32 +306,61 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
         ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
         
-        // Scroll cell to center of screen
+        // Not the root album, album contains images and thumbnail of interest is not the first one
+        // => Scroll and highlight cell of interest
 //        NSLog(@"=> Try to scroll to item=%ld in section=%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
 
-        // Calculate the number of thumbnails displayed per page
-        NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-        
-        // Scroll and load more images if necessary (page after page…)
-        NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
-        if ((self.imageOfInterest.item > fmaxf(roundf(2 * imagesPerPage / 3.0), nberOfItems - roundf(imagesPerPage / 3.0))) &&
-            (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
-        {
-//            NSLog(@"=> Load more images…");
-            [self.albumData loadMoreImagesOnCompletion:^{
-                [self.imagesCollection reloadData];
-//                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
-                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-            }];
+        // Thumbnail of interest already visible?
+        NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
+        if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
+            // Thumbnail is already visible and is highlighted
+            [self highlightCell];
         }
         else {
-            if (self.imageOfInterest.item <= imagesPerPage / 2) {
-//                NSLog(@"=> Highlight with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
-                [self highlightCell];
+            // Search for the first visible thumbnail
+            NSIndexPath *indexPathOfFirstVisibleThumbnail = nil;
+            for (NSInteger index = 0; index < [indexPathsForVisibleItems count]; index++) {
+                if ([indexPathsForVisibleItems objectAtIndex:index].section == 1) {
+                    indexPathOfFirstVisibleThumbnail = [indexPathsForVisibleItems objectAtIndex:index];
+                    break;
+                }
             }
-            else {
-//                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+            
+            // Thumbnail of interest above visible items?
+            if (self.imageOfInterest.item < indexPathOfFirstVisibleThumbnail.item) {
+                // Scroll up collection and highlight cell
+//                NSLog(@"=> Scroll to item #%ld in section #%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
                 [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+            }
+            
+            // Thumbnail is below visible items
+            // Get number of already loaded items
+            NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
+            if (self.imageOfInterest.item < nberOfItems) {
+                // Already loaded => scroll to it
+//                NSLog(@"=> Scroll to item #%ld in section #%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
+                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+                
+                // Calculate the number of thumbnails displayed per page
+                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+
+                // Load more images if seems to be a good idea
+                if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
+                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])) {
+//                    NSLog(@"=> Load more images…");
+                    [self.albumData loadMoreImagesOnCompletion:^{
+                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                    }];
+                }
+            } else {
+                // No yet loaded => load more images
+                // Should not happen as needToLoadMoreImages() should be called when previewing images
+                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]) {
+//                    NSLog(@"=> Load more images…");
+                    [self.albumData loadMoreImagesOnCompletion:^{
+                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                    }];
+                }
             }
         }
     }
