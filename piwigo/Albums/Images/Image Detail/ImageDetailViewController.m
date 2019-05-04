@@ -398,7 +398,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 //        }
 //    }
     NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-    if ((currentIndex > fmaxf(roundf(2 * imagesPerPage / 3.0), self.images.count - roundf(imagesPerPage / 3.0))) &&
+    if ((currentIndex > (self.images.count - roundf(imagesPerPage / 3.0))) &&
         (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
     {
         if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])

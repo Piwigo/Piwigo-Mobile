@@ -242,7 +242,7 @@
 // Image sort
 "sortBy" = "Sorteren op";
 "imageSortTitle" = "Sorteer foto's";
-"imageSortingHUD" = "Afbeeldingen sorteren";
+"imageSortingHUD" = "Foto's sorteren";
 "imageSortMessage" = "Selecteer hoe je de foto's wilt sorteren";
 
 // Image options (actions)
@@ -367,7 +367,7 @@
 "imageUploadDetailsUploading_title" = "Foto's die worden ge-upload";
 "imageUploadDetailsCell_uploadComplete" = "Klaar! Afronden...";
 
-"imageUploadRemove" = "Geüploade afbeeldingen verwijderen";
+"imageUploadRemove" = "Geüploade foto's verwijderen";
 
 "imageUploadTableCell_uploading" = "Bezig met uploaden...";
 "imageUploadProgressBar_zero" = "Bezig met uploaden 0/0";
@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "Grootte";
 "defaultThumbnailSize>320px" = "Miniatuurgrootte";
 "defaultThumbnailSize>414px" = "Standaardgrootte van miniaturen";
+"defaultNberOfThumbnails" = "Aantal";
+"defaultNberOfThumbnails>320px" = "Aantal/rij";
+"defaultNberOfThumbnails>414px" = "Aantal per rij";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Kies een miniatuurformaat";
 "settings_displayTitles" = "Titels op miniaturen";

@@ -22,10 +22,10 @@ devices([
   "iPhone 8",										# 4.7-inch
   "iPhone 8 Plus",									# 5.5-inch
   "iPhone X",										# 5.8-inch
-  "iPhone Xs Max",								# 6.5-inch
+  "iPhone Xs Max",									# 6.5-inch
   "iPad Pro (9.7-inch)",							# 9.7-inch
   "iPad Pro (10.5-inch)",							# 10.5-inch
-  "iPad Pro (11-inch)",							# 11-inch
+ "iPad Pro (11-inch)",								# 11-inch
   "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
   "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
 ])

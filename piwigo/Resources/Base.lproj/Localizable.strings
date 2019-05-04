@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "Size";
 "defaultThumbnailSize>320px" = "Thumbnails Size";
 "defaultThumbnailSize>414px" = "Default Size of Thumbnails";
+"defaultNberOfThumbnails" = "Number";
+"defaultNberOfThumbnails>320px" = "Number/Row";
+"defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
 "settings_displayTitles" = "Titles on Thumbnails";

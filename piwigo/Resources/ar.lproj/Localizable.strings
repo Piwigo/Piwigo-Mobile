@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "‮الحجم";
 "defaultThumbnailSize>320px" = "حجم الصور المصغرة";
 "defaultThumbnailSize>414px" = "الحجم الافتراضي للصور المصغرة";
+"defaultNberOfThumbnails" = "Number";
+"defaultNberOfThumbnails>320px" = "Number/Row";
+"defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
 "settings_displayTitles" = "العناوين على الصور المصغرة";

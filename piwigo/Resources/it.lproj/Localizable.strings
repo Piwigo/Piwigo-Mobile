@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "Dimensione";
 "defaultThumbnailSize>320px" = "Dimensioni dell'anteprima";
 "defaultThumbnailSize>414px" = "Dimensione predefinita delle miniature";
+"defaultNberOfThumbnails" = "Numero";
+"defaultNberOfThumbnails>320px" = "Numero/linea";
+"defaultNberOfThumbnails>414px" = "Numero per linea";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Si prega di selezionare una dimensione per l'anteprima";
 "settings_displayTitles" = "Titoli sulle miniature";

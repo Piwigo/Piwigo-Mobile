@@ -485,6 +485,9 @@
 "defaultThumbnailSize" = "Ukuran";
 "defaultThumbnailSize>320px" = "Ukuran Gambar Mini";
 "defaultThumbnailSize>414px" = "Ukuran Standar untuk Gambar Mini";
+"defaultNberOfThumbnails" = "Number";
+"defaultNberOfThumbnails>320px" = "Number/Row";
+"defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
 "settings_displayTitles" = "Judul dalam Gambar Mini";

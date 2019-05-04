@@ -306,32 +306,61 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
         ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
         
-        // Scroll cell to center of screen
+        // Not the root album, album contains images and thumbnail of interest is not the first one
+        // => Scroll and highlight cell of interest
 //        NSLog(@"=> Try to scroll to item=%ld in section=%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
 
-        // Calculate the number of thumbnails displayed per page
-        NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-        
-        // Scroll and load more images if necessary (page after page…)
-        NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
-        if ((self.imageOfInterest.item > fmaxf(roundf(2 * imagesPerPage / 3.0), nberOfItems - roundf(imagesPerPage / 3.0))) &&
-            (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
-        {
-//            NSLog(@"=> Load more images…");
-            [self.albumData loadMoreImagesOnCompletion:^{
-                [self.imagesCollection reloadData];
-//                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
-                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-            }];
+        // Thumbnail of interest already visible?
+        NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
+        if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
+            // Thumbnail is already visible and is highlighted
+            [self highlightCell];
         }
         else {
-            if (self.imageOfInterest.item <= imagesPerPage / 2) {
-//                NSLog(@"=> Highlight with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
-                [self highlightCell];
+            // Search for the first visible thumbnail
+            NSIndexPath *indexPathOfFirstVisibleThumbnail = nil;
+            for (NSInteger index = 0; index < [indexPathsForVisibleItems count]; index++) {
+                if ([indexPathsForVisibleItems objectAtIndex:index].section == 1) {
+                    indexPathOfFirstVisibleThumbnail = [indexPathsForVisibleItems objectAtIndex:index];
+                    break;
+                }
             }
-            else {
-//                NSLog(@"=> Scroll with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+            
+            // Thumbnail of interest above visible items?
+            if (self.imageOfInterest.item < indexPathOfFirstVisibleThumbnail.item) {
+                // Scroll up collection and highlight cell
+//                NSLog(@"=> Scroll to item #%ld in section #%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
                 [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+            }
+            
+            // Thumbnail is below visible items
+            // Get number of already loaded items
+            NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
+            if (self.imageOfInterest.item < nberOfItems) {
+                // Already loaded => scroll to it
+//                NSLog(@"=> Scroll to item #%ld in section #%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
+                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+                
+                // Calculate the number of thumbnails displayed per page
+                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+
+                // Load more images if seems to be a good idea
+                if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
+                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])) {
+//                    NSLog(@"=> Load more images…");
+                    [self.albumData loadMoreImagesOnCompletion:^{
+                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                    }];
+                }
+            } else {
+                // No yet loaded => load more images
+                // Should not happen as needToLoadMoreImages() should be called when previewing images
+                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]) {
+//                    NSLog(@"=> Load more images…");
+                    [self.albumData loadMoreImagesOnCompletion:^{
+                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                    }];
+                }
             }
         }
     }
@@ -1675,109 +1704,137 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    if (section == 1) {
-        // Avoid unwanted spaces
-        if ([collectionView numberOfItemsInSection:section] == 0)
-            return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
-        else
-            return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
-    }
-    else {
-        // Avoid unwanted spaces
-        if ([collectionView numberOfItemsInSection:section] == 0)
-            return UIEdgeInsetsMake(0, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
-        else
-            return UIEdgeInsetsMake(10, kAlbumMarginsSpacing, 10, kAlbumMarginsSpacing);
+    // Avoid unwanted spaces
+    switch (section) {
+        case 0:             // Albums
+            if ([collectionView numberOfItemsInSection:section] == 0) {
+                return UIEdgeInsetsMake(0, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
+            } else {
+                return UIEdgeInsetsMake(10, kAlbumMarginsSpacing, 10, kAlbumMarginsSpacing);
+            }
+            break;
+            
+        default:            // Images
+            if ([collectionView numberOfItemsInSection:section] == 0) {
+                return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
+            } else {
+                return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
+            }
+            break;
     }
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
 {
-    if (section == 1)
-        return (CGFloat)kImageCellSpacing;
-    else
-        return 0.0;
+    switch (section) {
+        case 0:             // Albums
+            return 0.0;
+            break;
+            
+        default:            // Images
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+                return (CGFloat)kImageCellSpacing4iPhone;
+            } else {
+                return (CGFloat)kImageCellVertSpacing4iPad;
+            }
+    }
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
 {
-    if (section == 1)
-        return (CGFloat)kImageCellSpacing;
-    else
-        return (CGFloat)kAlbumCellSpacing;
+    switch (section) {
+        case 0:             // Albums
+            return (CGFloat)kAlbumCellSpacing;
+            break;
+            
+        default:            // Images
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+                return (CGFloat)kImageCellSpacing4iPhone;
+            } else {
+                return (CGFloat)kImageCellHorSpacing4iPad;
+            }
+    }
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath.section == 1)
-	{
-        // Calculate the optimum image size
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-        return CGSizeMake(size, size);                     // Images
-	}
-	else
-	{
-        float nberAlbumsPerRow = [ImagesCollection numberOfAlbumsPerRowForViewInPortrait:collectionView withMaxWidth:384];
-        CGFloat size = (CGFloat)[ImagesCollection albumSizeForView:collectionView andNberOfAlbumsPerRowInPortrait:nberAlbumsPerRow];
-        return CGSizeMake(size, 156.5);                    // Albums (see XIB file)
-	}
+    switch (indexPath.section) {
+        case 0:             // Albums (see XIB file)
+        {
+            float nberAlbumsPerRow = [ImagesCollection numberOfAlbumsPerRowForViewInPortrait:collectionView withMaxWidth:384];
+            CGFloat size = (CGFloat)[ImagesCollection albumSizeForView:collectionView andNberOfAlbumsPerRowInPortrait:nberAlbumsPerRow];
+            return CGSizeMake(size, 156.5);
+            break;
+        }
+            
+        default:            // Images
+        {
+            // Calculate the optimum image size
+            CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+            return CGSizeMake(size, size);
+        }
+    }
 }
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(indexPath.section == 1)      // Images
-	{
-		ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCollectionViewCell" forIndexPath:indexPath];
-		
-		if (self.albumData.images.count > indexPath.row) {
-			// Create cell from Piwigo data
-            PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-			[cell setupWithImageData:imageData];
-            cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
-
-            // Add pan gesture recognition
-            UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
-            imageSeriesRocognizer.minimumNumberOfTouches = 1;
-            imageSeriesRocognizer.maximumNumberOfTouches = 1;
-            imageSeriesRocognizer.cancelsTouchesInView = NO;
-            imageSeriesRocognizer.delegate = self;
-            [cell addGestureRecognizer:imageSeriesRocognizer];
-            cell.userInteractionEnabled = YES;
-		}
-		
-        // Calculate the number of thumbnails displayed per page
-        NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-
-        // Load image data in advance if possible (page after page…)
-        if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
-            (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
+    switch (indexPath.section) {
+        case 0:             // Albums (see XIB file)
         {
-            [self.albumData loadMoreImagesOnCompletion:^{
-                [self.imagesCollection reloadData];
-            }];
+            CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CategoryCollectionViewCell" forIndexPath:indexPath];
+            cell.categoryDelegate = self;
+            
+            PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
+            [cell setupWithAlbumData:albumData];
+            
+            // Disable category cells in Image selection mode
+            if (self.isSelect) {
+                [cell setAlpha:0.5];
+                [cell setUserInteractionEnabled:NO];
+            } else {
+                [cell setAlpha:1.0];
+                [cell setUserInteractionEnabled:YES];
+            }
+            
+            return cell;
+            break;
         }
-
-        return cell;
-	}
-	else        // Albums
-	{
-		CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CategoryCollectionViewCell" forIndexPath:indexPath];
-		cell.categoryDelegate = self;
-		
-		PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
-		[cell setupWithAlbumData:albumData];
-        
-        // Disable category cells in Image selection mode
-        if (self.isSelect) {
-            [cell setAlpha:0.5];
-            [cell setUserInteractionEnabled:NO];
-        } else {
-            [cell setAlpha:1.0];
-            [cell setUserInteractionEnabled:YES];
+            
+        default:            // Images
+        {
+            ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCollectionViewCell" forIndexPath:indexPath];
+            
+            if (self.albumData.images.count > indexPath.row) {
+                // Create cell from Piwigo data
+                PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
+                [cell setupWithImageData:imageData];
+                cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
+                
+                // Add pan gesture recognition
+                UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
+                imageSeriesRocognizer.minimumNumberOfTouches = 1;
+                imageSeriesRocognizer.maximumNumberOfTouches = 1;
+                imageSeriesRocognizer.cancelsTouchesInView = NO;
+                imageSeriesRocognizer.delegate = self;
+                [cell addGestureRecognizer:imageSeriesRocognizer];
+                cell.userInteractionEnabled = YES;
+            }
+            
+            // Calculate the number of thumbnails displayed per page
+            NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+            
+            // Load image data in advance if possible (page after page…)
+            if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
+                (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
+            {
+                [self.albumData loadMoreImagesOnCompletion:^{
+                    [self.imagesCollection reloadData];
+                }];
+            }
+            
+            return cell;
         }
-        
-		return cell;
-	}
+    }
 }
 
 
@@ -1785,39 +1842,44 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 1)     // Thumbnails of images
-    {
-        ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
-
-        // Avoid rare crashes…
-        if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
-            // forget this call!
-            return;
-        }
-
-        // Action depends on mode
-        if(!self.isSelect)
+    switch (indexPath.section) {
+        case 0:             // Albums
+            break;
+            
+        default:            // Images
         {
-            // Selection mode not active => display full screen image
-            self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
-            self.imageDetailView.hidesBottomBarWhenPushed = YES;
-            self.imageDetailView.imgDetailDelegate = self;
-            [self.navigationController pushViewController:self.imageDetailView animated:YES];
-        }
-        else
-        {
-            // Selection mode active => add/remove image from selection
-            if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
-                [self.selectedImageIds addObject:selectedCell.imageData.imageId];
-                selectedCell.isSelected = YES;
-            } else {
-                selectedCell.isSelected = NO;
-                [self.selectedImageIds removeObject:selectedCell.imageData.imageId];
+            ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+            
+            // Avoid rare crashes…
+            if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
+                // forget this call!
+                return;
             }
-            [collectionView reloadData];
-
-            // and display nav buttons
-            [self updateNavBar];
+            
+            // Action depends on mode
+            if(!self.isSelect)
+            {
+                // Selection mode not active => display full screen image
+                self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+                self.imageDetailView.hidesBottomBarWhenPushed = YES;
+                self.imageDetailView.imgDetailDelegate = self;
+                [self.navigationController pushViewController:self.imageDetailView animated:YES];
+            }
+            else
+            {
+                // Selection mode active => add/remove image from selection
+                if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
+                    [self.selectedImageIds addObject:selectedCell.imageData.imageId];
+                    selectedCell.isSelected = YES;
+                } else {
+                    selectedCell.isSelected = NO;
+                    [self.selectedImageIds removeObject:selectedCell.imageData.imageId];
+                }
+                [collectionView reloadData];
+                
+                // and display nav buttons
+                [self updateNavBar];
+            }
         }
     }
 }

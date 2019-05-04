@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.3_text" = "Versie 2.3.3\n\n• Kleine foutjes gerepareerd en verbetering van de interface";
+"v2.3.4_text" = "Versie 2.3.4\n\n• Verbeterde albums presentatie op iPad (en iPhone)\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
+"v2.3.3_text" = "Versie 2.3.3\n10 april 2019\n\n• Kleine foutjes gerepareerd en verbetering van de interface";
 
 "v2.3.2_text" = "Versie 2.3.2\n27 maart 2019\n\n• Lokale foto's die een dag vóór het uploaden worden weergegeven in een tijdlijnweergave\n• Kleine foutjes verbeterd en verbetering van de interface";
 
