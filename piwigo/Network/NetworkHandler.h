@@ -83,6 +83,6 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(void)showConnectionError:(NSError*)error;
-+(void)showPiwigoError:(NSInteger)code forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams;
++(void)showPiwigoError:(NSInteger)code withMessage:(NSString *)message forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams;
 
 @end
