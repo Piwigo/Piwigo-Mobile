@@ -33,12 +33,13 @@
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "SAMKeychain.h"
+#import "SearchImagesViewController.h"
 #import "SettingsViewController.h"
 
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -71,6 +72,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
+@property (nonatomic, strong) UISearchController *searchController;
+
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -88,7 +91,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.isCachedAtInit = isCached;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
-		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
+		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
 		
@@ -188,6 +191,60 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - View Lifecycle
 
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    // Initialise search controller
+    SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+    self.searchController.delegate = self;
+    self.searchController.hidesNavigationBarDuringPresentation = YES;
+    self.searchController.searchResultsUpdater = self;
+    
+    [self.searchController.searchBar setTintColor:[UIColor piwigoOrange]];
+    self.searchController.searchBar.showsCancelButton = YES;
+    self.searchController.searchBar.showsSearchResultsButton = YES;
+    self.searchController.searchBar.placeholder = NSLocalizedString(@"searchBarServer_placeholder", @"Search on Piwigo server");
+    self.searchController.searchBar.delegate = self;
+    self.definesPresentationContext = YES;
+
+    for (UIView *subView in self.searchController.searchBar.subviews)
+    {
+        if ([subView isKindOfClass: [UITextField class]])
+        {
+            [(UITextField *)subView setKeyboardAppearance:[Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault];
+        }
+    }
+
+    if (@available(iOS 11.0, *)) {
+        // For iOS 11 and later, place the search bar in the navigation bar.
+        self.navigationItem.searchController = self.searchController;
+    }
+    else {
+        // For iOS 10 and earlier, place the search controller's search bar in the navigation bar titleview.
+//        self.navigationItem.titleView = self.searchController.searchBar;
+    }
+}
+
+//-(void)setKeyboardAppearence: (UIKeyboardAppearance) appearence {
+//    [(id<UITextInputTraits>) [self firstSubviewConformingToProtocol: @protocol(UITextInputTraits)] setKeyboardAppearance: appearence];
+//}
+//
+//- (UIView *)firstSubviewConformingToProtocol: (Protocol *) pro {
+//    for (UIView *sub in self.searchController.searchBar.subviews)
+//        if ([sub conformsToProtocol: pro])
+//            return sub;
+//
+//    for (UIView *sub in self.searchController.searchBar.subviews) {
+//        UIView *ret = [sub firstSubviewConformingToProtocol: pro];
+//        if (ret)
+//            return ret;
+//    }
+//
+//    return nil;
+//}
+
 -(void)paletteChanged
 {
     // Background color of the view
@@ -221,7 +278,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
-
+    
     // Toolbar
     [self.navigationController.toolbar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
@@ -246,7 +303,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
     
-    // Sort images and reload collection
+    // Load, sort images and reload collection
     if (self.categoryId != 0) {
         self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
@@ -276,9 +333,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         }
     }
 
-    // Always open this view with a navigation bar
+    // Always open this view with a navigation bar and the search bar
     // (might have been hidden during Image Previewing)
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.hidesSearchBarWhenScrolling = false;
+    }
 
     // Set navigation bar buttons
     [self updateNavBar];
@@ -301,6 +361,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
     
+    // Allows hiding search bar when scrolling
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.hidesSearchBarWhenScrolling = true;
+    }
+
     // Should we scroll to image of interest?
 //    NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
@@ -1691,15 +1756,18 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     // Returns number of images or albums
+    NSInteger numberOfItems;
     switch (section) {
         case 0:             // Albums
-            return [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
+            numberOfItems = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
+            numberOfItems -= [self isSearchCategoryInCache];    // Remove search album
             break;
             
         default:            // Images
-            return self.albumData.images.count;
+            numberOfItems = self.albumData.images.count;
             break;
     }
+    return numberOfItems;
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -2124,6 +2192,45 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                        [alert addAction:dismissAction];
                        [topViewController presentViewController:alert animated:YES completion:nil];
                    });
+}
+
+
+#pragma mark - UISearchControllerDelegate
+
+
+
+#pragma mark - UISearchResultsUpdating
+
+-(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    
+    // Query string
+    NSString *searchString = [self.searchController.searchBar text];
+    
+    // Initialise search cache
+    PiwigoAlbumData *searchAlbum = [[PiwigoAlbumData alloc] initSearchAlbumForQuery:searchString];
+    [[CategoriesData sharedInstance] updateCategories:@[searchAlbum]];
+    
+    // Resfresh image collection for new query
+    if ([searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
+        SearchImagesViewController *resultsController = (SearchImagesViewController *)searchController.searchResultsController;
+        resultsController.searchQuery = searchString;
+        [resultsController searchAndLoadImages];
+    }
+}
+
+-(BOOL)isSearchCategoryInCache
+{
+    PiwigoAlbumData *searchAlbum = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId];
+    return (searchAlbum != nil);
+}
+
+
+#pragma mark - UISearchBarDelegate
+
+// Workaround for bug: -updateSearchResultsForSearchController: is not called when scope buttons change
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
+{
+    [self updateSearchResultsForSearchController:self.searchController];
 }
 
 @end

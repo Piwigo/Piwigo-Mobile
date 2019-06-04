@@ -400,7 +400,7 @@ typedef enum {
     }
     else if (indexPath.row == EditImageDetailsOrderAuthor) {
         if ([self.imageDetails.author isEqualToString:@"NSNotFound"]) { // only update if not yet set, dont overwrite
-            if (0 < [[[Model sharedInstance] defaultAuthor] length]) { // must know the default author
+            if (0 < [[[Model sharedInstance] defaultAuthor] length]) {  // must know the default author
                 self.imageDetails.author = [[Model sharedInstance] defaultAuthor];
                 [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }

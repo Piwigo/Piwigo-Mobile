@@ -98,6 +98,178 @@ NSString * const kGetImageOrderDescending = @"desc";
 			  }];
 }
 
++(NSURLSessionTask*)getImagesForQuery:(NSString *)query
+                               onPage:(NSInteger)page
+                             forOrder:(NSString *)order
+                         OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *searchedImages))completion
+                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    // API pwg.images.search returns:
+    //  "paging":{"page":0,"per_page":500,"count":1,"total_count":1}
+    //  "images":[{"id":240,"width":2016,"height":1342,"hit":1,
+    //  "file":"DSC01229.JPG","name":"DSC01229","comment":null,
+    //  "date_creation":"2013-01-31 18:32:21","date_available":"2018-08-23 18:32:23",
+    //  "page_url":"https:…","element_url":"https:….jpg",
+    //  "derivatives":{"square":{"url":"https:….jpg","width":120,"height":120},
+    //                "thumb":{"url":"https:…-th.jpg","width":144,"height":95},
+    //                "2small":{"url":"https:…-2s.jpg","width":240,"height":159},
+    //                "xsmall":{"url":"https:…-xs.jpg","width":432,"height":287},
+    //                "small":{"url":"https:…-sm.jpg","width":576,"height":383},
+    //                "medium":{"url":"https:…-me.jpg","width":792,"height":527},
+    //                "large":{"url":"https:…-la.jpg","width":1008,"height":671},
+    //                "xlarge":{"url":"https:…-xl.jpg","width":1224,"height":814},
+    //                "xxlarge":{"url":"https:…-xx.jpg","width":1656,"height":1102}}
+    
+    // Calculate the number of thumbnails displayed per page
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    
+    // Compile parameters
+    NSDictionary *parameters = @{
+                                 @"query"    : query,
+                                 @"per_page" : @(imagesPerPage),
+                                 @"page"     : @(page),
+                                 @"order"    : order     // Percent-encoded should not be used here!
+                                 };
+    
+    // Send request
+    return [self post:kPiwigoImageSearch
+        URLParameters:nil
+           parameters:parameters
+             progress:nil
+              success:^(NSURLSessionTask *task, id responseObject) {
+                  
+                  if(completion) {
+                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+                          // Store number of images in cache
+                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
+                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages = nberImages;
+                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages = nberImages;
+                          
+                          // Parse images
+                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
+                          completion(task, searchedImages);
+                      }
+                      else
+                      {
+                          // NOP if query was empty
+                          if (!query || (query.length == 0)) {
+                              [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages = 0;
+                              [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages = 0;
+                              completion(task, @[]);
+                          }
+                          else {
+                              // Display Piwigo error
+                              NSInteger errorCode = NSNotFound;
+                              if ([responseObject objectForKey:@"err"]) {
+                                  errorCode = [[responseObject objectForKey:@"err"] intValue];
+                              }
+                              NSString *errorMsg = @"";
+                              if ([responseObject objectForKey:@"message"]) {
+                                  errorMsg = [responseObject objectForKey:@"message"];
+                              }
+                              [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImageSearch andURLparams:nil];
+                              
+                              completion(task, nil);
+                          }
+                      }
+                  }
+              } failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                  NSLog(@"=> getImagesForQuery: %@ — Failed!", query);
+#endif
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
+                  {
+                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                      });
+                  }
+                  if(fail) {
+                      fail(task, error);
+                  }
+              }];
+}
+
++(NSURLSessionTask*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
+                                        forCategory:(NSInteger)categoryId orQuery:(NSString*)query
+                                             onPage:(NSInteger)onPage
+                                            forSort:(NSString *)sort
+                                   ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
+                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList.count;
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages;
+
+    if (((categoryId < kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+        ((categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
+    {    // done. don't need anymore
+        if(fail)
+        {
+            fail(nil, nil);
+        }
+        return nil;
+    }
+    
+    NSURLSessionTask *task = [NSURLSessionTask new];
+    if (categoryId == kPiwigoSearchCategoryId) {
+        // Load search image data for query
+        task = [ImageService getImagesForQuery:query
+                                        onPage:onPage
+                                      forOrder:sort
+                                  OnCompletion:^(NSURLSessionTask *task, NSArray *searchedImages) {
+                                      if (searchedImages)
+                                      {
+                                          PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
+                                          [albumData addImages:searchedImages];
+                                      }
+                                      
+                                      if (completion) {
+                                          completion(task, searchedImages.count);
+                                      }
+
+                                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                                      NSLog(@"loadImageChunkForLastChunkCount fail: %@", error);
+#endif
+                                      if(fail) {
+                                          fail(nil, error);
+                                      }
+                                  }];
+    }
+    else
+    {
+        // Load category image data
+        task = [ImageService getImagesForAlbumId:categoryId
+                                          onPage:onPage
+                                        forOrder:sort
+                                    OnCompletion:^(NSURLSessionTask *task, NSArray *albumImages) {
+                                          if (albumImages)
+                                          {
+                                              PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
+                                              [albumData addImages:albumImages];
+                                          }
+                                    
+                                          if (completion) {
+                                              completion(task, albumImages.count);
+                                          }
+                                      } onFailure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+                                          NSLog(@"loadImageChunkForLastChunkCount fail: %@", error);
+#endif
+                                          if(fail) {
+                                              fail(nil, error);
+                                          }
+                                      }
+                              ];
+    }
+    
+    task.priority = NSOperationQueuePriorityVeryHigh;
+    return task;
+}
+
 +(NSArray*)parseAlbumImagesJSON:(NSDictionary*)json
 {
 	NSDictionary *paging = [json objectForKey:@"paging"];

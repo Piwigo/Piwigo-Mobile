@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "PiwigoImageData.h"
 
+FOUNDATION_EXPORT NSInteger const kPiwigoSearchCategoryId;
+
 typedef enum {
 	ImageListOrderId,
 	ImageListOrderFileName,
@@ -21,6 +23,7 @@ typedef enum {
 @interface PiwigoAlbumData : NSObject
 
 @property (nonatomic, assign) NSInteger albumId;
+@property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) NSInteger parentAlbumId;
 @property (nonatomic, strong) NSArray *upperCategories;
 @property (nonatomic, assign) NSInteger nearestUpperCategory;
@@ -38,6 +41,8 @@ typedef enum {
 
 @property (nonatomic, readonly) NSArray *imageList;
 @property (nonatomic, readonly) NSInteger onPage;
+
+-(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query;
 
 -(void)addImages:(NSArray*)images;
 -(void)removeImages:(NSArray*)images;

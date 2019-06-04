@@ -14,8 +14,10 @@
 @interface AlbumData : NSObject
 
 @property (nonatomic, readonly) NSArray *images;
+@property (nonatomic, strong) NSString *searchQuery;
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId;
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andQuery:(NSString *)query;
+
 -(void)loadMoreImagesOnCompletion:(void (^)(void))completion;
 -(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)(void))completion;
 -(void)loadAllImagesOnCompletion:(void (^)(void))completion;

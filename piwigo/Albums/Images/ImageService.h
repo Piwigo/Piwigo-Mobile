@@ -29,6 +29,19 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                            OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albumImages))completion
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
++(NSURLSessionTask*)getImagesForQuery:(NSString *)query
+                               onPage:(NSInteger)page
+                             forOrder:(NSString *)order
+                         OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *searchedImages))completion
+                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
+                                        forCategory:(NSInteger)categoryId orQuery:(NSString*)query
+                                             onPage:(NSInteger)onPage
+                                            forSort:(NSString*)sort
+                                   ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
+                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

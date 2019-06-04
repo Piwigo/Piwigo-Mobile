@@ -34,6 +34,7 @@ FOUNDATION_EXPORT NSString * const kCommunityImagesUploadCompleted;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesGetInfo;
 FOUNDATION_EXPORT NSString * const kPiwigoImageSetInfo;
 FOUNDATION_EXPORT NSString * const kPiwigoImageDelete;
+FOUNDATION_EXPORT NSString * const kPiwigoImageSearch;
 
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetList;
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetAdminList;

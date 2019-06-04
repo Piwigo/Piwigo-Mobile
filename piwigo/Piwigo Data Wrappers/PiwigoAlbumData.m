@@ -13,6 +13,8 @@
 #import "ImageUpload.h"
 #import "ImagesCollection.h"
 
+NSInteger const kPiwigoSearchCategoryId = 1e12;
+
 @interface PiwigoAlbumData()
 
 @property (nonatomic, strong) NSArray *imageList;
@@ -40,13 +42,47 @@
 	return self;
 }
 
+// Search data are stored in a virtual album with Id = 1.000.000.000.000
+-(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query
+{
+    PiwigoAlbumData *albumData = [PiwigoAlbumData new];
+    albumData.albumId = kPiwigoSearchCategoryId;
+    if (query == nil) query = @"";
+    albumData.query = [NSString stringWithString:query];
+    
+    // No parent album
+    albumData.parentAlbumId = 0;
+    albumData.upperCategories = [NSArray new];
+    albumData.nearestUpperCategory = 0;
+    
+    // Empty album at start
+    albumData.name = [NSString stringWithString:query];
+    albumData.comment = @"";
+    albumData.globalRank = 0.0;
+    albumData.numberOfImages = 0;
+    albumData.totalNumberOfImages = 0;
+    albumData.numberOfSubCategories = 0;
+    
+    // No album image
+    albumData.albumThumbnailId = 0;
+    albumData.albumThumbnailUrl = @"";
+    
+    // Date of creation
+    albumData.dateLast = [NSDate date];
+    
+    // No upload rights
+    albumData.hasUploadRights = NO;
+    
+    return albumData;
+}
+
 -(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  OnCompletion:(void (^)(BOOL completed))completion
 {
 	self.onPage = 0;
 	[self loopLoadImagesForSort:@""
 				   withProgress:progress
-					   onCompletion:^(BOOL completed) {
+                   onCompletion:^(BOOL completed) {
 		if(completion)
 		{
 			completion(YES);
@@ -65,7 +101,7 @@
 		{
 			[self loopLoadImagesForSort:sort
 						   withProgress:progress
-							   onCompletion:completion];
+                           onCompletion:completion];
 		}
 		else
 		{
@@ -79,16 +115,16 @@
 
 -(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-								OnCompletion:(void (^)(BOOL completed))completion
+                             OnCompletion:(void (^)(BOOL completed))completion
 {
-    if(self.isLoadingMoreImages) {
+    if (self.isLoadingMoreImages) {
         return;
     }
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
-									  forCategory:self.albumId
+                                      forCategory:self.albumId orQuery:self.query
 										   onPage:self.onPage
 										  forSort:sort
 								 ListOnCompletion:^(NSURLSessionTask *task, NSInteger count) {

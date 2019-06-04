@@ -24,24 +24,60 @@
 
 @implementation AlbumData
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andQuery:(NSString *)query
 {
 	self = [super init];
 	if(self)
 	{
 		self.images = [NSArray new];
+        self.searchQuery = [NSString stringWithString:query];
 		self.categoryId = categoryId;
 		self.sortType = -1;
 	}
 	return self;
 }
 
+// Search data are stored in a virtual album with Id = 1.000.000.000.000
+//-(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query
+//{
+//    PiwigoAlbumData *albumData = [PiwigoAlbumData new];
+//    albumData.albumId = 1e12;
+//    if (query == nil) query = @"";
+//    albumData.query = [NSString stringWithString:query];
+//    
+//    // No parent album
+//    albumData.parentAlbumId = 0;
+//    albumData.upperCategories = [NSArray new];
+//    albumData.nearestUpperCategory = 0;
+//    
+//    // Empty album at start
+//    albumData.name = [NSString stringWithString:query];
+//    albumData.comment = @"";
+//    albumData.globalRank = 0.0;
+//    albumData.numberOfImages = 0;
+//    albumData.totalNumberOfImages = 0;
+//    albumData.numberOfSubCategories = 0;
+//    
+//    // No album image
+//    albumData.albumThumbnailId = 0;
+//    albumData.albumThumbnailUrl = @"";
+//    
+//    // Date of creation
+//    albumData.dateLast = [NSDate date];
+//    
+//    // No upload rights
+//    albumData.hasUploadRights = NO;
+//    
+//    return albumData;
+//}
+
 -(void)loadMoreImagesOnCompletion:(void (^)(void))completion
 {
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
-	if(downloadedImageDataCount == totalImageCount)
+    if (((self.categoryId < kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+        ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
 	{
 		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
 		if(completion)
@@ -141,7 +177,8 @@
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
-	if(downloadedImageDataCount == totalImageCount)
+	if (((self.categoryId < kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+        ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
 	{	// we have all the image data, just manually sort it
 		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
 		if(completion)
