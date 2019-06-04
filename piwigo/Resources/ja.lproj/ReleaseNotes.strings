@@ -6,11 +6,13 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.4_text" = "バージョン 2.3.4\n\n• iPadでのアルバム表示の改善 (iPhoneも)\n• マイナーなバグの修正とインターフェイスの改善";
+"v2.3.5_text" = "バージョン 2.3.5\n\n• Fix a crash which sometimes happens when editing the server address after logout";
 
-"v2.3.3_text" = "バージョン 2.3.3\n\n• 軽微なバグの修正とインタフェースの改善";
+"v2.3.4_text" = "バージョン 2.3.4\n2019年5月2日\n\n• iPadでのアルバム表示の改善 (iPhoneも)\n• マイナーなバグの修正とインターフェイスの改善";
 
-"v2.3.2_text" = "Version 2.3.2\nMarch 27, 2019\n\n• Local images presented in a timeline view by day before upload\n• Minor bug fixes and improvement of the interface";
+"v2.3.3_text" = "バージョン 2.3.3\n2019年4月10日\n\n• 軽微なバグの修正とインタフェースの改善";
+
+"v2.3.2_text" = "バージョン 2.3.3\n2019年3月27日\n\n• Local images presented in a timeline view by day before upload\n• Minor bug fixes and improvement of the interface";
 
 "v2.3.1_text" = "バージョン 2.3.1\n2019年2月15日\n\n• 軽微なバグの修正とインタフェースの改善\n• 翻訳の改善";
 

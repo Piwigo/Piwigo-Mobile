@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.4_text" = "Versione 2.3.4\n\n• Presentazione degli album migliorata su iPad (e iPhone)\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+"v2.3.5_text" = "Versione 2.3.5\n\n• Risolto un crash che a volte si verifica quando si modifica l'indirizzo del server dopo il logout";
+
+"v2.3.4_text" = "Versione 2.3.4\n2 maggio 2019\n\n• Presentazione degli album migliorata su iPad (e iPhone)\n• Correzioni di bug minori e miglioramento dell'interfaccia";
 
 "v2.3.3_text" = "Versione 2.3.3\n10 aprile 2018\n\n• Correzioni di bug minori e miglioramento dell'interfaccia";
 
