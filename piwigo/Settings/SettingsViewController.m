@@ -1946,6 +1946,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                        [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
                            if(sucessfulLogout)
                            {
+                               // Unregister keyboard notifications
+                               [self unregisterKeyboardNotifications];
+
                                // Session closed
                                [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
                                [[Model sharedInstance].imageCache removeAllImages];
