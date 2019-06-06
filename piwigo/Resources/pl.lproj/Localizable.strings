@@ -67,9 +67,9 @@
 "serverURLerror_message" = "Popraw adres serwera sieci web Piwigo.";
 "serverMethodsError_title" = "Nieznane metody";
 "serverMethodsError_message" = "Nie udało się uzyskać metod serwera. Problem z serwerem Piwigo?";
-"serverInvalidMethodError_message" = "Failed to call server method.";
-"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
-"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
+"serverInvalidMethodError_message" = "Nie można wywołać metody serwera.";
+"serverMissingParamError_message" = "Nie można wykonać metody serwera z brakującym parametrem.";
+"serverInvalidParamError_message" = "Nie można wywołać metody serwera z podanymi parametrami.";
 "serverUnknownError_message" = "Napotkano niespodziewany błąd podczas wywoływania serwera z dostarczonymi parametrami.";
 
 "loginError_title" = "Logowanie nieudane";
@@ -242,7 +242,7 @@
 // Image sort
 "sortBy" = "Sortuj wg";
 "imageSortTitle" = "Sortuj Zdjęcia";
-"imageSortingHUD" = "Sorting Images";
+"imageSortingHUD" = "Sortowanie obrazów";
 "imageSortMessage" = "Wybierz sposób sortowania zdjęć";
 
 // Image options (actions)
@@ -367,7 +367,7 @@
 "imageUploadDetailsUploading_title" = "Zdjęcia, które są przesyłane";
 "imageUploadDetailsCell_uploadComplete" = "Zakończone! Finalizowanie...";
 
-"imageUploadRemove" = "Removing uploaded images";
+"imageUploadRemove" = "Usuwanie przesłanych obrazów";
 
 "imageUploadTableCell_uploading" = "Przesyłanie...";
 "imageUploadProgressBar_zero" = "Przesyłanie 0/0";
@@ -485,9 +485,9 @@
 "defaultThumbnailSize" = "Rozmiar";
 "defaultThumbnailSize>320px" = "Rozmiar Miniatur";
 "defaultThumbnailSize>414px" = "Domyślny Rozmiar Miniatur";
-"defaultNberOfThumbnails" = "Number";
-"defaultNberOfThumbnails>320px" = "Number/Row";
-"defaultNberOfThumbnails>414px" = "Number per Row";
+"defaultNberOfThumbnails" = "Liczba";
+"defaultNberOfThumbnails>320px" = "Liczba / wierszu";
+"defaultNberOfThumbnails>414px" = "Liczba w wierszu";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Wybierz rozmiar miniaturki";
 "settings_displayTitles" = "Tytułów na Miniaturkach";
