@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.4_text" = "Version 2.3.4\n\n• Verbesserte Alben Präsentation auf iPad (und iPhone)\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
+"v2.3.5_text" = "Version 2.3.5\n\n• Behebung eines Absturzes, der manchmal beim Bearbeiten der Serveradresse nach dem Abmelden auftritt";
+
+"v2.3.4_text" = "Version 2.3.4\n2. Mai 2019\n\n• Verbesserte Alben Präsentation auf iPad (und iPhone)\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 
 "v2.3.3_text" = "Version 2.3.3\n10. April 2019\n\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 

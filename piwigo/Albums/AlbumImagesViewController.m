@@ -205,7 +205,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.searchController.searchBar setTintColor:[UIColor piwigoOrange]];
     self.searchController.searchBar.showsCancelButton = YES;
     self.searchController.searchBar.showsSearchResultsButton = YES;
-    self.searchController.searchBar.placeholder = NSLocalizedString(@"searchBarServer_placeholder", @"Search on Piwigo server");
+//    self.searchController.searchBar.placeholder = NSLocalizedString(@"searchBarServer_placeholder", @"Search on Piwigo server");
     self.searchController.searchBar.delegate = self;
     self.definesPresentationContext = YES;
 

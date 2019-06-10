@@ -8,6 +8,8 @@
 
 "v2.4.0_text" = "Version 2.4\n\n• Adds search ability\n• Minor bug fixes";
 
+"v2.3.5_text" = "Version 2.3.5\n\n• Fix a crash which sometimes happens when editing the server address after logout";
+
 "v2.3.4_text" = "Version 2.3.4\n\n• Improved albums presentation on iPad (and iPhone)\n• Minor bug fixes and improvement of the interface";
 
 "v2.3.3_text" = "Version 2.3.3\nApril 10, 2019\n\n• Minor bug fixes and improvement of the interface";

@@ -6,11 +6,13 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.4_text" = "Version 2.3.4\n\n• Improved albums presentation on iPad (and iPhone)\n• Minor bug fixes and improvement of the interface";
+"v2.3.5_text" = "Wersja 2.3.5\n\n• Napraw awarię, która czasami zdarza się podczas edycji adresu serwera po wylogowaniu";
 
-"v2.3.3_text" = "Wersja 2.3.3\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.3.4_text" = "Wersja 2.3.4\n2 maja 2019\n\n• Udoskonalona prezentacja albumów na iPadzie (i iPhonie)\n• Drobne poprawki błędów i ulepszenie interfejsu";
 
-"v2.3.2_text" = "Version 2.3.2\nMarch 27, 2019\n\n• Local images presented in a timeline view by day before upload\n• Minor bug fixes and improvement of the interface";
+"v2.3.3_text" = "Wersja 2.3.3\n10 kwietnia 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.3.2_text" = "Wersja 2.3.2\n27 marca 2019\n\n• Lokalne obrazy prezentowane w widoku osi czasu przed dniem przesłania\n• Drobne poprawki błędów i ulepszenie interfejsu";
 
 "v2.3.1_text" = "Wersja 2.3.1\n15 lutego 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
 
