@@ -36,6 +36,9 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	return instance;
 }
 
+
+# pragma mark - Update cache
+
 -(void)clearCache
 {
 	self.allCategories = [NSArray new];
@@ -217,6 +220,9 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
+
+# pragma mark - Get categories from cache
+
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId
 {
 	for(PiwigoAlbumData *existingCategory in self.allCategories)
@@ -229,6 +235,24 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	}
 	return nil;
 }
+
+-(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory
+{
+    NSMutableArray *categories = [NSMutableArray new];
+    
+    for(PiwigoAlbumData *category in self.allCategories)
+    {
+        if(category.parentAlbumId == parentCategory)
+        {
+            [categories addObject:category];
+        }
+    }
+    
+    return categories;
+}
+
+
+# pragma mark - Get and remove images from cache
 
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index
 {
@@ -267,19 +291,13 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	}
 }
 
--(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory
+
+# pragma mark - Cached Search category
+
+-(BOOL)isSearchCategoryInCache
 {
-	NSMutableArray *categories = [NSMutableArray new];
-	
-	for(PiwigoAlbumData *category in self.allCategories)
-	{
-		if(category.parentAlbumId == parentCategory)
-		{
-			[categories addObject:category];
-		}
-	}
-	
-	return categories;
+    PiwigoAlbumData *searchAlbum = [self getCategoryById:kPiwigoSearchCategoryId];
+    return (searchAlbum != nil);
 }
 
 @end

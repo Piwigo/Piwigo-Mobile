@@ -585,8 +585,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Add actions
     [alert addAction:cancelAction];
     [alert addAction:deleteAction];
-    if ([self.imageData.categoryIds count] > 1) {
-        // This image is used in another album!
+    if (([self.imageData.categoryIds count] > 1) &&
+        (self.categoryId != kPiwigoSearchCategoryId)) {
+        // This image is used in another album
+        // Proposes to remove it from the current album, unless it was selected from a Search
         [alert addAction:removeAction];
     }
 
@@ -817,6 +819,15 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)addImageToCategory
 {
+    // If image selected from Search, immediatley propose to copy it
+    if (self.categoryId == kPiwigoSearchCategoryId) {
+        MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId atIndex:[self indexOfSelectedImage] andCopyOption:YES];
+        moveImageVC.moveImageDelegate = self;
+        [self pushView:moveImageVC];
+        return;
+    }
+    
+    // Image selected from album collection
     UIAlertController* alert = [UIAlertController
             alertControllerWithTitle:nil message:nil
             preferredStyle:UIAlertControllerStyleActionSheet];

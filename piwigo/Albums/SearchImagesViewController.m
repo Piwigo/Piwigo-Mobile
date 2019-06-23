@@ -13,12 +13,13 @@
 #import "CategoryCollectionViewCell.h"
 #import "CategoryHeaderReusableView.h"
 #import "ImageCollectionViewCell.h"
+#import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
 #import "Model.h"
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "SearchImagesViewController.h"
 
-@interface SearchImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
+@interface SearchImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
 
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
@@ -35,6 +36,7 @@
 //@property (nonatomic, strong) NSMutableArray *touchedImageIds;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
+@property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
 
@@ -148,8 +150,8 @@
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     // Returns number of images
-    NSLog(@"items: %ld", [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count);
-    NSLog(@"items: %ld", self.albumData.images.count);
+//    NSLog(@"items: %ld", [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count);
+//    NSLog(@"items: %ld", self.albumData.images.count);
     return [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count;
 }
 
@@ -223,6 +225,59 @@
     return cell;
 }
 
+
+#pragma mark - UICollectionViewDelegate Methods
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Avoid rare crashes…
+    if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
+        // forget this call!
+        return;
+    }
+
+    // Display full screen image
+    if (@available(iOS 11.0, *)) {
+        self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:kPiwigoSearchCategoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+        self.imageDetailView.hidesBottomBarWhenPushed = YES;
+        self.imageDetailView.imgDetailDelegate = self;
+        [self.presentingViewController.navigationController pushViewController:self.imageDetailView animated:YES];
+    }
+}
+
+
+#pragma mark - ImageDetailDelegate Methods
+
+-(void)didFinishPreviewOfImageWithId:(NSInteger)imageId
+{
+    NSInteger index = 0;
+    for (PiwigoImageData *image in self.albumData.images) {
+        if ([image.imageId integerValue] == imageId) break;
+        index++;
+    }
+    if (index < [self.albumData.images count])
+        self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
+}
+
+-(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
+{
+    [self.albumData removeImage:image];
+    index = MAX(0, index-1);                                    // index must be > 0
+    index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
+    self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:0];
+    [self.imagesCollection reloadData];
+}
+
+-(void)needToLoadMoreImages
+{
+    [self.albumData loadMoreImagesOnCompletion:^{
+        if(self.imageDetailView != nil)
+        {
+            self.imageDetailView.images = [self.albumData.images mutableCopy];
+        }
+        [self.imagesCollection reloadData];
+    }];
+}
 
 
 @end

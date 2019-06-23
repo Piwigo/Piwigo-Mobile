@@ -21,17 +21,19 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 @property (nonatomic, readonly) NSArray *allCategories;
 @property (nonatomic, readonly) NSArray *communityCategoriesForUploadOnly;
 
+-(void)clearCache;
+-(void)deleteCategory:(NSInteger)categoryId;
 -(void)replaceAllCategories:(NSArray*)categories;
 -(void)updateCategories:(NSArray*)categories;
+-(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
+
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId;
+-(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory;
+
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId;
 -(void)removeImage:(PiwigoImageData*)image;
 
--(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory;
-
--(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
--(void)deleteCategory:(NSInteger)categoryId;
--(void)clearCache;
+-(BOOL)isSearchCategoryInCache;
 
 @end

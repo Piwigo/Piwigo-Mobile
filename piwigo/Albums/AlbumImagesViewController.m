@@ -195,35 +195,33 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     [super viewDidLoad];
     
-    // Initialise search controller
-    SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-    self.searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-    self.searchController.delegate = self;
-    self.searchController.hidesNavigationBarDuringPresentation = YES;
-    self.searchController.searchResultsUpdater = self;
-    
-    [self.searchController.searchBar setTintColor:[UIColor piwigoOrange]];
-    self.searchController.searchBar.showsCancelButton = NO;
-    self.searchController.searchBar.showsSearchResultsButton = NO;
-//    self.searchController.searchBar.placeholder = NSLocalizedString(@"searchBarServer_placeholder", @"Search on Piwigo server");
-    self.searchController.searchBar.delegate = self;
-    self.definesPresentationContext = YES;
-
-    for (UIView *subView in self.searchController.searchBar.subviews)
-    {
-        if ([subView isKindOfClass: [UITextField class]])
-        {
-            [(UITextField *)subView setKeyboardAppearance:[Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault];
-        }
-    }
-
+    // For iOS 11 and later: place search bar in navigation bar or root album
     if (@available(iOS 11.0, *)) {
-        // For iOS 11 and later, place the search bar in the navigation bar.
-        self.navigationItem.searchController = self.searchController;
-    }
-    else {
-        // For iOS 10 and earlier, place the search controller's search bar in the navigation bar titleview.
-//        self.navigationItem.titleView = self.searchController.searchBar;
+        // Initialise search controller when displaying root album
+        if (self.categoryId == 0) {
+            SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+            self.searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+            self.searchController.delegate = self;
+            self.searchController.hidesNavigationBarDuringPresentation = YES;
+            self.searchController.searchResultsUpdater = self;
+            
+            [self.searchController.searchBar setTintColor:[UIColor piwigoOrange]];
+            self.searchController.searchBar.showsCancelButton = NO;
+            self.searchController.searchBar.showsSearchResultsButton = NO;
+            self.searchController.searchBar.delegate = self;
+            self.definesPresentationContext = YES;
+            
+            // Place the search bar in the navigation bar.
+            self.navigationItem.searchController = self.searchController;
+
+//        for (UIView *subView in self.searchController.searchBar.subviews)
+//        {
+//            if ([subView isKindOfClass: [UITextField class]])
+//            {
+//                [(UITextField *)subView setKeyboardAppearance:[Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault];
+//            }
+//        }
+        }
     }
 }
 
@@ -1760,7 +1758,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     switch (section) {
         case 0:             // Albums
             numberOfItems = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
-            numberOfItems -= [self isSearchCategoryInCache];    // Don't display Search album
+            numberOfItems -= [[CategoriesData sharedInstance] isSearchCategoryInCache];    // Don't display Search album
             break;
             
         default:            // Images
@@ -1850,7 +1848,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         case 0:             // Albums (see XIB file)
         {
             // Bypass Search category if exists
-            if ([self isSearchCategoryInCache]) {
+            if ([[CategoriesData sharedInstance] isSearchCategoryInCache]) {
                 indexPath = [NSIndexPath indexPathForItem:(indexPath.item + 1)
                                                 inSection:indexPath.section];
             }
@@ -2222,12 +2220,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         resultsController.searchQuery = searchString;
         [resultsController searchAndLoadImages];
     }
-}
-
--(BOOL)isSearchCategoryInCache
-{
-    PiwigoAlbumData *searchAlbum = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId];
-    return (searchAlbum != nil);
 }
 
 
