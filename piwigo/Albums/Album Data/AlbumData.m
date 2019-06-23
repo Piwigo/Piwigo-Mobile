@@ -37,40 +37,6 @@
 	return self;
 }
 
-// Search data are stored in a virtual album with Id = 1.000.000.000.000
-//-(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query
-//{
-//    PiwigoAlbumData *albumData = [PiwigoAlbumData new];
-//    albumData.albumId = 1e12;
-//    if (query == nil) query = @"";
-//    albumData.query = [NSString stringWithString:query];
-//    
-//    // No parent album
-//    albumData.parentAlbumId = 0;
-//    albumData.upperCategories = [NSArray new];
-//    albumData.nearestUpperCategory = 0;
-//    
-//    // Empty album at start
-//    albumData.name = [NSString stringWithString:query];
-//    albumData.comment = @"";
-//    albumData.globalRank = 0.0;
-//    albumData.numberOfImages = 0;
-//    albumData.totalNumberOfImages = 0;
-//    albumData.numberOfSubCategories = 0;
-//    
-//    // No album image
-//    albumData.albumThumbnailId = 0;
-//    albumData.albumThumbnailUrl = @"";
-//    
-//    // Date of creation
-//    albumData.dateLast = [NSDate date];
-//    
-//    // No upload rights
-//    albumData.hasUploadRights = NO;
-//    
-//    return albumData;
-//}
-
 -(void)loadMoreImagesOnCompletion:(void (^)(void))completion
 {
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;

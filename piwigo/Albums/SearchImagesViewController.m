@@ -29,10 +29,10 @@
 
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
-@property (nonatomic, assign) BOOL isSelect;
-@property (nonatomic, assign) NSInteger totalNumberOfImages;
-@property (nonatomic, strong) NSMutableArray *selectedImageIds;
-@property (nonatomic, strong) NSMutableArray *touchedImageIds;
+//@property (nonatomic, assign) BOOL isSelect;
+//@property (nonatomic, assign) NSInteger totalNumberOfImages;
+//@property (nonatomic, strong) NSMutableArray *selectedImageIds;
+//@property (nonatomic, strong) NSMutableArray *touchedImageIds;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 
@@ -53,9 +53,9 @@
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         
         // Initialise selection mode
-        self.isSelect = NO;
-        self.touchedImageIds = [NSMutableArray new];
-        self.selectedImageIds = [NSMutableArray new];
+//        self.isSelect = NO;
+//        self.touchedImageIds = [NSMutableArray new];
+//        self.selectedImageIds = [NSMutableArray new];
         
         // Collection of images
         self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
@@ -196,7 +196,7 @@
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
         [cell setupWithImageData:imageData];
-        cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
+//        cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
         
         // Add pan gesture recognition
 //        UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];

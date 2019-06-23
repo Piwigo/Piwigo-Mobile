@@ -203,8 +203,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     self.searchController.searchResultsUpdater = self;
     
     [self.searchController.searchBar setTintColor:[UIColor piwigoOrange]];
-    self.searchController.searchBar.showsCancelButton = YES;
-    self.searchController.searchBar.showsSearchResultsButton = YES;
+    self.searchController.searchBar.showsCancelButton = NO;
+    self.searchController.searchBar.showsSearchResultsButton = NO;
 //    self.searchController.searchBar.placeholder = NSLocalizedString(@"searchBarServer_placeholder", @"Search on Piwigo server");
     self.searchController.searchBar.delegate = self;
     self.definesPresentationContext = YES;
@@ -1760,7 +1760,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     switch (section) {
         case 0:             // Albums
             numberOfItems = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
-            numberOfItems -= [self isSearchCategoryInCache];    // Remove search album
+            numberOfItems -= [self isSearchCategoryInCache];    // Don't display Search album
             break;
             
         default:            // Images
@@ -1849,6 +1849,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     switch (indexPath.section) {
         case 0:             // Albums (see XIB file)
         {
+            // Bypass Search category if exists
+            if ([self isSearchCategoryInCache]) {
+                indexPath = [NSIndexPath indexPathForItem:(indexPath.item + 1)
+                                                inSection:indexPath.section];
+            }
+            
             CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CategoryCollectionViewCell" forIndexPath:indexPath];
             cell.categoryDelegate = self;
             

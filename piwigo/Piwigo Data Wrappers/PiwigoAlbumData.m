@@ -13,7 +13,7 @@
 #import "ImageUpload.h"
 #import "ImagesCollection.h"
 
-NSInteger const kPiwigoSearchCategoryId = 1e12;
+NSInteger const kPiwigoSearchCategoryId = -1;
 
 @interface PiwigoAlbumData()
 
