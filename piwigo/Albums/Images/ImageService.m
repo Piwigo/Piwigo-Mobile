@@ -613,21 +613,25 @@ NSString * const kGetImageOrderDescending = @"desc";
     //
     
     // Object "author"
-    imageData.author = [imageJson objectForKey:@"author"];
-    if(!imageData.author || [imageData.author isKindOfClass:[NSNull class]])
-    {
+    if([imageJson objectForKey:@"author"] &&
+       ![[imageJson objectForKey:@"author"] isKindOfClass:[NSNull class]]) {
+        imageData.author = [imageJson objectForKey:@"author"];
+    }
+    else {
         imageData.author = @"NSNotFound";
     }
 
     // Object "level"
-    if (![[imageJson objectForKey:@"level"] isKindOfClass:[NSNull class]]) {
+    if ([imageJson objectForKey:@"level"] &&
+        ![[imageJson objectForKey:@"level"] isKindOfClass:[NSNull class]]) {
         imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
     } else {
         imageData.privacyLevel = NSNotFound;
     }
     
     // Object "tags"
-    if (![[imageJson objectForKey:@"tags"] isKindOfClass:[NSNull class]]) {
+    if ([imageJson objectForKey:@"tags"] &&
+        ![[imageJson objectForKey:@"tags"] isKindOfClass:[NSNull class]]) {
         NSDictionary *tags = [imageJson objectForKey:@"tags"];
         NSMutableArray *imageTags = [NSMutableArray new];
         for(NSDictionary *tag in tags)
@@ -642,7 +646,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Object "filesize"
-    if (![[imageJson objectForKey:@"filesize"] isKindOfClass:[NSNull class]]) {
+    if ([imageJson objectForKey:@"filesize"] &&
+        ![[imageJson objectForKey:@"filesize"] isKindOfClass:[NSNull class]]) {
         imageData.fileSize = [[imageJson objectForKey:@"filesize"] integerValue];
     } else {
         imageData.fileSize = NSNotFound;
