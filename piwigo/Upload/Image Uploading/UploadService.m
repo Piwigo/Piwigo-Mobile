@@ -133,8 +133,14 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	
-	NSString *tagIdList = [[[imageInformation objectForKey:kPiwigoImagesUploadParamTags]
-                            valueForKey:@"description"] componentsJoinedByString:@", "];
+    NSString *tagIdList;
+    if ([[[imageInformation objectForKey:kPiwigoImagesUploadParamTags]
+          valueForKey:@"description"] count]) {
+        tagIdList = [[[imageInformation objectForKey:kPiwigoImagesUploadParamTags]
+                            valueForKey:@"description"] componentsJoinedByString:@","];
+    } else {
+        tagIdList = @"";
+    }
 	
 	NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
                              URLParameters:nil
@@ -146,7 +152,8 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                                              @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription],
                                              @"tag_ids" : tagIdList,
                                              @"level" : [imageInformation objectForKey:kPiwigoImagesUploadParamPrivacy],
-                                             @"single_value_mode" : @"replace"
+                                             @"single_value_mode" : @"replace",
+                                             @"multiple_value_mode" : @"replace"
                                              }
                                   progress:progress
                                    success:completion
