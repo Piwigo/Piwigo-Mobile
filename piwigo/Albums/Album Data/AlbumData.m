@@ -42,10 +42,11 @@
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
-    if (((self.categoryId < kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+    if (((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
         ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
 	{
-		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+//        NSLog(@"loadMoreImagesOnCompletion: we have all image data, sort them");
+        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
 		if(completion)
 		{
 			completion();
@@ -143,13 +144,15 @@
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
-	if (((self.categoryId < kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+//    NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
+	if (((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
         ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
 	{	// we have all the image data, just manually sort it
 		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
 		if(completion)
 		{
-			completion();
+//            NSLog(@"updateImageSort: we have all image data");
+            completion();
 		}
 		return;
 	}

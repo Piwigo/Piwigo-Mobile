@@ -203,7 +203,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList.count;
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages;
 
-    if (((categoryId < kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+    if (((categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
         ((categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
     {    // done. don't need anymore
         if(fail)

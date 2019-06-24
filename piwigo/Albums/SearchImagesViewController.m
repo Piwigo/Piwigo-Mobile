@@ -24,7 +24,6 @@
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 //@property (nonatomic, strong) NSString *currentSort;
-@property (nonatomic, assign) BOOL loadingImages;
 @property (nonatomic, assign) BOOL displayImageTitles;
 //@property (nonatomic, strong) UIViewController *hudViewController;
 
@@ -47,7 +46,6 @@
     self = [super init];
     if(self)
     {
-        self.loadingImages = NO;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
@@ -127,14 +125,13 @@
 -(void)searchAndLoadImages
 {
     // Load, sort images and reload collection
-    self.loadingImages = YES;
+//    NSLog(@"new query: %@", self.searchQuery);
     self.albumData.searchQuery = self.searchQuery;
     [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
         
         // Set navigation bar buttons
 //        [self updateNavBar];
         
-        self.loadingImages = NO;
         [self.imagesCollection reloadData];
     }];
 }

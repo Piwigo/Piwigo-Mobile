@@ -123,6 +123,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
+//    NSLog(@"loadCategoryImageDataChunkWithSort: next chunk of image data (page %ld)", self.onPage);
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
                                       forCategory:self.albumId orQuery:self.query
 										   onPage:self.onPage
