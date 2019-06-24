@@ -32,6 +32,7 @@
 		self.tagsTableView = [UITableView new];
         self.tagsTableView.backgroundColor = [UIColor clearColor];
 		self.tagsTableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.tagsTableView.sectionIndexColor = [UIColor piwigoOrange];
 		self.tagsTableView.delegate = self;
 		self.tagsTableView.dataSource = self;
 		[self.view addSubview:self.tagsTableView];
