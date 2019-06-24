@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.0_text" = "Version 2.4\n\n• Adds search ability\n• Minor bug fixes";
+"v2.4.0_text" = "Version 2.4\n\n• Adds search ability\n• Fixes impossibility to remove tags\n• Fixes inaccurate image data in some circumstances";
 
 "v2.3.5_text" = "Version 2.3.5\n\n• Fix a crash which sometimes happens when editing the server address after logout";
 
