@@ -189,7 +189,8 @@
 
 #pragma mark - UITableView - Rows
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
     return 2;
 }
 

@@ -358,7 +358,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 {
 	PiwigoImageData *imageData = [PiwigoImageData new];
 	
-    // API pwg.categories.getList returns:
+    // API pwg.categories.getImages returns:
     //      id, categories, name, comment, hit
     //      file, date_creation, date_available, width, height
     //      element_url, derivatives, (page_url)
