@@ -157,54 +157,36 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.backgroundImage.layer.cornerRadius = 10;
     NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
     
-    if(albumData.categoryImage && imageSize > 0)
+    if (albumData.categoryImage && imageSize > 0)
     {
+        // Album thumbnail in memory
         self.backgroundImage.image = albumData.categoryImage;
     }
-    else if(albumData.albumThumbnailId <= 0)
+    else if (albumData.albumThumbnailUrl.length <= 0)
     {
+        // No album thumbnail
         return;
     }
     else
     {
-        [self downloadBackgroundImageOfAlbum:albumData];
+        // Load album thumbnail
+        NSLog(@"URL: %@", albumData.albumThumbnailUrl);
+        __weak typeof(self) weakSelf = self;
+        NSURL *URL = [NSURL URLWithString:albumData.albumThumbnailUrl];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+        [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+        [self.backgroundImage setImageWithURLRequest:request
+                                    placeholderImage:[UIImage imageNamed:@"placeholder"]
+                                             success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                 albumData.categoryImage = image;
+                                                 weakSelf.backgroundImage.image = image;
+                                             }
+                                             failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+#if defined(DEBUG)
+                                                 NSLog(@"setupWithAlbumData — Fail to get album bg image for album at %@", albumData.albumThumbnailUrl);
+#endif
+                                             }];
     }
-}
-
--(void)downloadBackgroundImageOfAlbum:(PiwigoAlbumData*)albumData
-{
-    __weak typeof(self) weakSelf = self;
-    [ImageService getImageInfoById:albumData.albumThumbnailId
-          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-              // Success if imageData is not nil
-              if (imageData != nil)
-              {
-                  if (imageData.MediumPath.length <= 0)
-                      albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
-                  else
-                  {
-                      NSURL *URL = [NSURL URLWithString:imageData.MediumPath];
-                      NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-                      [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-                      [self.backgroundImage setImageWithURLRequest:request
-                            placeholderImage:[UIImage imageNamed:@"placeholder"]
-                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                               albumData.categoryImage = image;
-                               weakSelf.backgroundImage.image = image;
-                           }
-                            failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-#if defined(DEBUG)
-                               NSLog(@"setupWithAlbumData — Fail to get album bg image for album at %@", imageData.MediumPath);
-#endif
-                       }];
-                  }
-              }
-          }
-                 onFailure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-                     NSLog(@"setupWithAlbumData — Fail to get album bg image: %@", [error localizedDescription]);
-#endif
-          }];
 }
 
 

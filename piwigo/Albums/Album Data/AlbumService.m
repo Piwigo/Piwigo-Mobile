@@ -104,7 +104,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     NSDictionary *parameters = @{
                                  @"cat_id" : @(categoryId),
                                  @"recursive" : recursiveString,
-                                 @"faked_by_community" : fakedString
+                                 @"faked_by_community" : fakedString,
+                                 @"thumbnail_size" : @"medium"
                                  };
     
     // Get albums list for category
