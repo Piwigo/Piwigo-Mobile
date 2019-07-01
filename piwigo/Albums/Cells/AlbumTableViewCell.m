@@ -170,7 +170,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     else
     {
         // Load album thumbnail
-        NSLog(@"URL: %@", albumData.albumThumbnailUrl);
         __weak typeof(self) weakSelf = self;
         NSURL *URL = [NSURL URLWithString:albumData.albumThumbnailUrl];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];

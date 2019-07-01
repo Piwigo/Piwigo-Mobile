@@ -16,6 +16,8 @@
 
 @property (nonatomic, strong) UITableView *tagsTableView;
 @property (nonatomic, strong) NSArray *letterIndex;
+@property (nonatomic, strong) NSMutableArray *notSelectedTags;
+
 
 @end
 
@@ -38,7 +40,13 @@
 		[self.view addSubview:self.tagsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tagsTableView]];
 		
+        // ABC index
 		[[TagsData sharedInstance] getTagsOnCompletion:^(NSArray *tags) {
+            
+            // Build list of not selected tags
+            [self updateListOfNotSelectedTags];
+
+            // Build ABC index
             NSMutableSet *firstCharacters = [NSMutableSet setWithCapacity:0];
             for( NSString *string in [[TagsData sharedInstance].tagList valueForKey:@"tagName"] )
                 [firstCharacters addObject:[[string substringToIndex:1] uppercaseString]];
@@ -46,7 +54,7 @@
             self.letterIndex = [[firstCharacters allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 			[self.tagsTableView reloadData];
 		}];
-		
+
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
 	}
@@ -98,7 +106,7 @@
 }
 
 
-#pragma mark - Abcindex
+#pragma mark - ABC index
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
     return self.letterIndex;
@@ -199,7 +207,7 @@
     if (section == 0) {
         return self.alreadySelectedTags.count;
     } else {
-        return [TagsData sharedInstance].tagList.count;
+        return self.notSelectedTags.count;
     }
 }
 
@@ -217,22 +225,16 @@
 
     PiwigoTagData *currentTag;
     if (indexPath.section == 0) {
+        // Selected tags
         currentTag = self.alreadySelectedTags[indexPath.row];
         cell.textLabel.text = currentTag.tagName;
     }
     else {
-        currentTag = [TagsData sharedInstance].tagList[indexPath.row];
+        // Not selected tags
+        currentTag = self.notSelectedTags[indexPath.row];
         
         // Number of images not known if getAdminList called
         cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag];
-
-        // Display checkmark if image tagged with current tag
-        NSArray *selectedTagIDs = [self.alreadySelectedTags valueForKey:@"tagId"];
-        if ([selectedTagIDs containsObject:@(currentTag.tagId)]) {
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        } else {
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
     }
     
     return cell;
@@ -247,44 +249,62 @@
 
     PiwigoTagData *currentTag;
     if (indexPath.section == 0) {
-        // Delete tag tapped in image tag list
-        [self.alreadySelectedTags removeObjectAtIndex:indexPath.row];
+        // Tapped selected tag
+        currentTag = self.alreadySelectedTags[indexPath.row];
+        
+        // Delete tag tapped in tag list
+        [self.alreadySelectedTags removeObject:currentTag];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        [tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-    else {
-        // Add if not yet selected or remove if already selected
-        currentTag = [TagsData sharedInstance].tagList[indexPath.row];
-        NSUInteger indexOfSelection = [self.alreadySelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
+        
+        // Add deselected tag to list of not selected tags
+        [self updateListOfNotSelectedTags];
+        
+        // Determine index of added tag
+        NSUInteger indexOfTag = [self.notSelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
             return (someTag.tagId == currentTag.tagId);
         }];
+        NSIndexPath *insertPath = [NSIndexPath indexPathForRow:indexOfTag inSection:1];
+        [tableView insertRowsAtIndexPaths:@[insertPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else {
+        // Tapped not selected tag
+        currentTag = self.notSelectedTags[indexPath.row];
         
-        if (NSNotFound == indexOfSelection ) {
-            // Add if not yet selected
-            [self.alreadySelectedTags addObject:currentTag];
-            [self.alreadySelectedTags sortUsingDescriptors:
-             [NSArray arrayWithObjects:
-              [NSSortDescriptor sortDescriptorWithKey:@"tagName" ascending:YES], nil]];
+        // Delete tag tapped in list of not selected tag
+        [self.notSelectedTags removeObject:currentTag];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        // Add tag to list of selected tags
+        [self.alreadySelectedTags addObject:currentTag];
+        [self.alreadySelectedTags sortUsingDescriptors:
+         [NSArray arrayWithObjects:
+          [NSSortDescriptor sortDescriptorWithKey:@"tagName" ascending:YES], nil]];
 
-            // Insert tag at right place in first section
-            NSUInteger indexOfTag = [self.alreadySelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
-                return (someTag.tagId == currentTag.tagId);
-            }];
-            NSIndexPath *insertPath = [NSIndexPath indexPathForRow:indexOfTag inSection:0];
-            [tableView insertRowsAtIndexPaths:@[insertPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-        else {
-            // Remove if already selected
-            NSUInteger indexOfTag = [self.alreadySelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
-                return (someTag.tagId == currentTag.tagId);
-            }];
-            [self.alreadySelectedTags removeObjectAtIndex:indexOfTag];
-            NSIndexPath *removePath = [NSIndexPath indexPathForRow:indexOfTag inSection:0];
-            [tableView deleteRowsAtIndexPaths:@[removePath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
+        // Determine index of added tag
+        NSUInteger indexOfTag = [self.alreadySelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
+            return (someTag.tagId == currentTag.tagId);
+        }];
+        NSIndexPath *insertPath = [NSIndexPath indexPathForRow:indexOfTag inSection:0];
+        [tableView insertRowsAtIndexPaths:@[insertPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+
+#pragma mark - Utilities
+
+-(void)updateListOfNotSelectedTags
+{
+    // Build list of not selected tags
+    self.notSelectedTags = [[NSMutableArray alloc] initWithArray:[TagsData sharedInstance].tagList];
+    for (PiwigoTagData *selectedTag in self.alreadySelectedTags) {
         
-        // Update the checkmark
-        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        // Index of selected tag in full list
+        NSUInteger indexOfSelection = [self.notSelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
+            return (someTag.tagId == selectedTag.tagId);
+        }];
+        
+        // Remove selected tag from full list
+        [self.notSelectedTags removeObjectAtIndex:indexOfSelection];
     }
 }
 
