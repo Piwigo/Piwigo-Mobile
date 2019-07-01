@@ -520,7 +520,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                                   OnCompletion:^(NSDictionary *responseObject) {
             if(responseObject)
             {
-                if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
+                if([@"2.8" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
                 {
                     // They need to update, ask user what to do
                     // Close loading or re-login view and ask what to do
@@ -528,7 +528,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                         dispatch_async(dispatch_get_main_queue(), ^{
                             UIAlertController* alert = [UIAlertController
                                     alertControllerWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
-                                    message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
+                                    message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
                                     preferredStyle:UIAlertControllerStyleAlert];
                             
                             UIAlertAction* defaultAction = [UIAlertAction
