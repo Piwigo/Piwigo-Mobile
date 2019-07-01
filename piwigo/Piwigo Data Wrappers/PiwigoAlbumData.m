@@ -51,7 +51,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
     albumData.query = [NSString stringWithString:query];
     
     // No parent album
-    albumData.parentAlbumId = 0;
+    albumData.parentAlbumId = kPiwigoSearchCategoryId;
     albumData.upperCategories = [NSArray new];
     albumData.nearestUpperCategory = 0;
     

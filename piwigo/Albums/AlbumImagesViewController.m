@@ -1758,7 +1758,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     switch (section) {
         case 0:             // Albums
             numberOfItems = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
-            numberOfItems -= [[CategoriesData sharedInstance] isSearchCategoryInCache];    // Don't display Search album
             break;
             
         default:            // Images
@@ -1847,12 +1846,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     switch (indexPath.section) {
         case 0:             // Albums (see XIB file)
         {
-            // Bypass Search category if exists
-            if ([[CategoriesData sharedInstance] isSearchCategoryInCache]) {
-                indexPath = [NSIndexPath indexPathForItem:(indexPath.item + 1)
-                                                inSection:indexPath.section];
-            }
-            
             CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CategoryCollectionViewCell" forIndexPath:indexPath];
             cell.categoryDelegate = self;
             
