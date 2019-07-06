@@ -96,10 +96,10 @@
             break;
             
         case kPiwigoSortCategoryDatePostedAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
+			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDatePosted, kGetImageOrderAscending];
 			break;
 		case kPiwigoSortCategoryDatePostedDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
+			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDatePosted, kGetImageOrderDescending];
 			break;
 
         case kPiwigoSortCategoryVisitsAscending:

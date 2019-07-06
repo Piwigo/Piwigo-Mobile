@@ -14,7 +14,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderName;
 FOUNDATION_EXPORT NSString * const kGetImageOrderVisits;
 FOUNDATION_EXPORT NSString * const kGetImageOrderRating;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDateCreated;
-FOUNDATION_EXPORT NSString * const kGetImageOrderDateAdded;
+FOUNDATION_EXPORT NSString * const kGetImageOrderDatePosted;
 FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 FOUNDATION_EXPORT NSString * const kGetImageOrderAscending;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
