@@ -173,7 +173,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         __weak typeof(self) weakSelf = self;
         NSURL *URL = [NSURL URLWithString:albumData.albumThumbnailUrl];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-        [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
         [self.backgroundImage setImageWithURLRequest:request
                                     placeholderImage:[UIImage imageNamed:@"placeholder"]
                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
