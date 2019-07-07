@@ -131,6 +131,18 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  @"order"    : order     // Percent-encoded should not be used here!
                                  };
     
+    // Cancel active Search request if any
+    NSArray <NSURLSessionTask *> *searchTasks = [[Model sharedInstance].sessionManager tasks];
+    for (NSURLSessionTask *task in searchTasks) {
+        [task cancel];
+    }
+    
+    // Cancel active image downloads if any
+    NSArray <NSURLSessionTask *> *downloadTasks = [[Model sharedInstance].imagesSessionManager tasks];
+    for (NSURLSessionTask *task in downloadTasks) {
+        [task cancel];
+    }
+
     // Send request
     return [self post:kPiwigoImageSearch
         URLParameters:nil
@@ -174,6 +186,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
+                  // No error returned if task was cancelled
+                  if (task.state == NSURLSessionTaskStateCanceling) {
+                      completion(task, @[]);
+                  }
+                  
+                  // Error !
 #if defined(DEBUG)
                   NSLog(@"=> getImagesForQuery: %@ — Failed!", query);
 #endif
@@ -312,7 +330,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  PiwigoImageData *imageData = [ImageService parseBasicImageInfoJSON:[responseObject objectForKey:@"result"]];
 						  for(NSNumber *categoryId in imageData.categoryIds)
 						  {
-							  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] addImages:@[imageData]];
+							  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] updateImages:@[imageData]];
 						  }
 						  completion(task, imageData);
 					  }
@@ -607,7 +625,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // API pwg.images.getInfo returns in addition:
     //
-    //      author, level, tags, (added_by), (rating_score), (rates), (representative_ext)
+    //      author, level, tags, (added_by), rating_score, (rates), (representative_ext)
     //      filesize, (md5sum), (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
     //      (comments), (comments_paging), (coi)
     //
@@ -643,6 +661,14 @@ NSString * const kGetImageOrderDescending = @"desc";
         }
         imageData.tags = imageTags;
         imageTags = nil;
+    }
+    
+    // Object "rating_score"
+    if ([imageJson objectForKey:@"rating_score"] &&
+        ![[imageJson objectForKey:@"rating_score"] isKindOfClass:[NSNull class]]) {
+        imageData.ratingScore = [[imageJson objectForKey:@"rating_score"] floatValue];
+    } else {
+        imageData.ratingScore = NSNotFound;
     }
     
     // Object "filesize"
