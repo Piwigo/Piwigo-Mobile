@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.5_text" = "Version 2.3.5\n\n• Fixa en krasch som ibland händer när du redigerar serverns adress efter utloggning";
+"v2.4.0_text" = "Version 2.4\n\n• Lägger till ett sökverktyg (kräver iOS 11 eller senare)\n• Lägger till bildsortering med betygsättning\n• Snabbare nedladdning av miniatyrer i albumet (kräver Piwigo 2.8 eller senare)\n• Fixar omöjligt att ta bort taggar\n• Lösar felaktiga bilddata under vissa omständigheter";
 
-"v2.3.4_text" = "Version 2.3.4\n2 maj 2019\n\n• Förbättrad albumpresentation på iPad (och iPhone)\n• Mindre buggfixar och förbättring av gränssnittet";
+"v2.3.5_text" = "Version 2.3.5\n6 juni 2019\n\n• Fixa en krasch som ibland händer när du redigerar serverns adress efter utloggning";
+
+"v2.3.4_text" = "Version 2.3.4\n1 maj 2019\n\n• Förbättrad albumpresentation på iPad (och iPhone)\n• Mindre buggfixar och förbättring av gränssnittet";
 
 "v2.3.3_text" = "Version 2.3.3\n10 april 2018\n\n• Mindre buggfixar och förbättring av gränssnittet";
 
