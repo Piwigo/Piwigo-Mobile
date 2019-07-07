@@ -120,8 +120,10 @@
 "categorySort_dateCreatedAscending" = "Data Utworzenia, stare → nowe";
 "categorySort_datePostedDescending" = "Data Wysłania, nowe → stare";
 "categorySort_datePostedAscending" = "Data Wysłania, stare → nowe";
-"categorySort_visitsDescending" = "Wizyt, wysoki → niskie";
-"categorySort_visitsAscending" = "Wizyt, niska → wysokiej";
+"categorySort_ratingScoreDescending" = "Ocena, wysoka → niska";
+"categorySort_ratingScoreAscending" = "Ocena, niska → wysoka";
+"categorySort_visitsDescending" = "Liczba odwiedzin, wysoka → niska";
+"categorySort_visitsAscending" = "Liczba odwiedzin, niska → wysoka";
 "categorySort_videosOnly" = "Tylko Filmy";
 "categorySort_imagesOnly" = "Tylko Zdjęcia";
 

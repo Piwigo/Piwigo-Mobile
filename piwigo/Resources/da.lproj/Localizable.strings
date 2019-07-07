@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Oprettelsdato, gammel → ny";
 "categorySort_datePostedDescending" = "Oprettelsdato, ny → gammel";
 "categorySort_datePostedAscending" = "Oprettelsdato, gammel → ny";
+"categorySort_ratingScoreDescending" = "Bedømmelse, høj → lav";
+"categorySort_ratingScoreAscending" = "Bedømmelse, lav → høj";
 "categorySort_visitsDescending" = "Besøg, høj → lav";
 "categorySort_visitsAscending" = "Besøg, lav → høj";
 "categorySort_videosOnly" = "Kun Videoer";

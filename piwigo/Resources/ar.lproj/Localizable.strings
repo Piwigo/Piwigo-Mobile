@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "تاريخ الإنشاء، القديم → جديد";
 "categorySort_datePostedDescending" = "تاريخ النشر، جديد → القديم";
 "categorySort_datePostedAscending" = "تاريخ النشر، القديم → جديد";
+"categorySort_ratingScoreDescending" = "Rating Score, high → low";
+"categorySort_ratingScoreAscending" = "Rating Score, low → high";
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_videosOnly" = "مقاطع الفيديو فقط";

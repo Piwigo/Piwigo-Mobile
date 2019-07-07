@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Erstelldatum, Alt → Neu";
 "categorySort_datePostedDescending" = "Veröffentlichung, Neu → Alt";
 "categorySort_datePostedAscending" = "Veröffentlichung, Alt → Neu";
+"categorySort_ratingScoreDescending" = "Bewertung, hoch → niedrig";
+"categorySort_ratingScoreAscending" = "Bewertung, niedrig → hoch";
 "categorySort_visitsDescending" = "Besuche, hoch → niedrig";
 "categorySort_visitsAscending" = "Besuche, niedrig → hoch";
 "categorySort_videosOnly" = "Nur Videos";
