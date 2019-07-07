@@ -268,11 +268,12 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         // If Piwigo server requires HTTP basic authentication, ask credentials
         if ([Model sharedInstance].performedHTTPauthentication){
             // Without prior knowledge, the app already tried Piwigo credentials
-            // But unsuccessfully, so must now request HTTP credentials
+            // but unsuccessfully, so must now request HTTP credentials
             [self requestHttpCredentialsAfterError:error];
         } else {
             // HTTPS login request failed ?
-            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"])
+            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"] &&
+                ![Model sharedInstance].userCancelledCommunication)
             {
                 // Suggest HTTP connection if HTTPS attempt failed
                 [self tryNonSecuredAccessAfterError:error];
@@ -752,10 +753,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         if (hud) {
             // Update text
             hud.detailsLabel.text = NSLocalizedString(@"internetCancellingConnection_button", @"Cancelling Connection…");;
-            
-            // Reconfigure the button
-            [hud.button isSelected];
-            [hud.button removeTarget:self action:@selector(hideLoading) forControlEvents:UIControlEventTouchUpInside];
         }
     });
 }
