@@ -44,16 +44,15 @@ typedef enum {
 
 -(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query;
 
--(void)addImages:(NSArray*)images;
--(void)removeImages:(NSArray*)images;
-//-(void)removeImage:(PiwigoImageData*)image;
-
+-(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+                              OnCompletion:(void (^)(BOOL completed))completion;
 -(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion;
--(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-							  OnCompletion:(void (^)(BOOL completed))completion;
--(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
+-(void)addImages:(NSArray*)images;
+-(void)updateImages:(NSArray*)updatedImages;
+-(void)removeImages:(NSArray*)images;
+//-(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
 -(NSInteger)getDepthOfCategory;
 -(BOOL)containsUpperCategory:(NSInteger)category;
 -(void)resetData;

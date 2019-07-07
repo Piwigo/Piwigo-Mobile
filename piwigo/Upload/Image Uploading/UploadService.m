@@ -208,7 +208,7 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                                    
                                    // Update cache
-                                   [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateCacheWithImageUploadInfo:imageInfo];
+                                   [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImages:@[imageInfo]];
                                    
                                    if(completion)
                                    {
