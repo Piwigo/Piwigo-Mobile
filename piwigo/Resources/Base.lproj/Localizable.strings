@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Date Created, old → new";
 "categorySort_datePostedDescending" = "Date Posted, new → old";
 "categorySort_datePostedAscending" = "Date Posted, old → new";
+"categorySort_ratingScoreDescending" = "Rating Score, high → low";
+"categorySort_ratingScoreAscending" = "Rating Score, low → high";
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_videosOnly" = "Videos Only";

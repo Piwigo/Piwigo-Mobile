@@ -21,13 +21,11 @@ typedef enum {
     kPiwigoSortCategoryFileNameAscending,           // File name, A → Z
     kPiwigoSortCategoryFileNameDescending,          // File name, Z → A
     
+    kPiwigoSortCategoryRatingScoreDescending,       // Rating score, high → low
+    kPiwigoSortCategoryRatingScoreAscending,        // Rating score, low → high
+
     kPiwigoSortCategoryVisitsDescending,            // Visits, high → low
     kPiwigoSortCategoryVisitsAscending,             // Visits, low → high
-    
-// Data not returned by API pwg.categories.getList
-//    kPiwigoSortCategoryRatingScoreDescending,       // Rating score, high → low
-//    kPiwigoSortCategoryRatingScoreAscending,        // Rating score, low → high
-// and level (permissions)
 
 //	kPiwigoSortCategoryVideoOnly,
 //	kPiwigoSortCategoryImageOnly,
