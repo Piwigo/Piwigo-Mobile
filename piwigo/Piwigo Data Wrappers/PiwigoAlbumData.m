@@ -147,7 +147,8 @@ NSInteger const kPiwigoSearchCategoryId = -1;
 									 }
 								 } onFailure:^(NSURLSessionTask *task, NSError *error) {
 									 
-									 if(error)
+                                     // Don't return an error is the task was cancelled
+									 if (error && (task || (task.state == NSURLSessionTaskStateCanceling)))
 									 {
                                          // Determine the present view controller
                                          UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
