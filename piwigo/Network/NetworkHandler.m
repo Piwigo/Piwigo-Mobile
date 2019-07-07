@@ -157,9 +157,10 @@ NSInteger const loadingViewTag = 899;
     [policy setValidatesDomainName:NO];
     [[Model sharedInstance].imagesSessionManager setSecurityPolicy:policy];
     
-    // Add "text/plain" to response serializer
+    // Add "text/plain" and "text/html" to response serializer (cases where URLs are forwarded)
     AFImageResponseSerializer *serializer = [[AFImageResponseSerializer alloc] init];
     serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/html"];
     [Model sharedInstance].imagesSessionManager.responseSerializer = serializer;
 
     // For servers performing HTTP Authentication
