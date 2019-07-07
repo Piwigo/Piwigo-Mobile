@@ -72,51 +72,49 @@
 -(void)updateSortString
 {
 	NSString *sort = @"";
-	switch(self.sortType)
+	switch (self.sortType)
 	{
-		case kPiwigoSortCategoryNameAscending:
+		case kPiwigoSortCategoryNameAscending:          // Photo title, A → Z
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderAscending];
 			break;
-		case kPiwigoSortCategoryNameDescending:
+		case kPiwigoSortCategoryNameDescending:         // Photo title, Z → A
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderDescending];
 			break;
 
-        case kPiwigoSortCategoryFileNameAscending:
+        case kPiwigoSortCategoryFileNameAscending:      // File name, A → Z
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderAscending];
 			break;
-		case kPiwigoSortCategoryFileNameDescending:
+		case kPiwigoSortCategoryFileNameDescending:     // File name, Z → A
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderDescending];
 			break;
 		
-        case kPiwigoSortCategoryDateCreatedAscending:
+        case kPiwigoSortCategoryDateCreatedAscending:   // Date created, old → new
             sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
             break;
-        case kPiwigoSortCategoryDateCreatedDescending:
+        case kPiwigoSortCategoryDateCreatedDescending:  // Date created, new → old
             sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
             break;
             
-        case kPiwigoSortCategoryDatePostedAscending:
+        case kPiwigoSortCategoryDatePostedAscending:    // Date posted, new → old
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDatePosted, kGetImageOrderAscending];
 			break;
-		case kPiwigoSortCategoryDatePostedDescending:
+		case kPiwigoSortCategoryDatePostedDescending:   // Date posted, old → new
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDatePosted, kGetImageOrderDescending];
 			break;
 
-        case kPiwigoSortCategoryVisitsAscending:
-            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderAscending];
+        case kPiwigoSortCategoryRatingScoreDescending:  // Rating score, high → low
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderRating, kGetImageOrderDescending];
             break;
-        case kPiwigoSortCategoryVisitsDescending:
-            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderDescending];
+        case kPiwigoSortCategoryRatingScoreAscending:   // Rating score, low → high
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderRating, kGetImageOrderAscending];
             break;
 
-// Data not returned by API pwg.categories.getList
-//        case kPiwigoSortCategoryRatingScoreDescending:  // Rating score, high → low
-//        {
-//        }
-//        case kPiwigoSortCategoryRatingScoreAscending:   // Rating score, low → high
-//        {
-//        }
-// and level (permissions)
+        case kPiwigoSortCategoryVisitsAscending:        // Visits, high → low
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderAscending];
+            break;
+        case kPiwigoSortCategoryVisitsDescending:       // Visits, low → high
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderDescending];
+            break;
 
 //		case kPiwigoSortCategoryVideoOnly:
 //			//			sort = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
