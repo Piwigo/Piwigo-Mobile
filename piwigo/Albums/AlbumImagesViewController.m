@@ -18,7 +18,7 @@
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
 #import "CategoryHeaderReusableView.h"
-#import "CategoryImageSort.h"
+//#import "CategoryImageSort.h"
 #import "CategoryPickViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
@@ -305,7 +305,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (self.categoryId != 0) {
         self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-//            NSLog(@"viewWillAppear:Sorting images…");
 
             // Set navigation bar buttons
             [self updateNavBar];
@@ -1872,6 +1871,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             if (self.albumData.images.count > indexPath.row) {
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
+//                NSLog(@"Index:%ld => image ID:%@ - %@", indexPath.row, imageData.imageId, imageData.name);
                 [cell setupWithImageData:imageData];
                 cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
                 

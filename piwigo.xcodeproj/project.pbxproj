@@ -112,7 +112,6 @@
 		D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */; };
 		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
-		D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */; };
 		D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */; };
 		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
 		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
@@ -1425,7 +1424,6 @@
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
 				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
 				ADE936F82182D54D0003F037 /* PrivacyPolicyViewController.m in Sources */,
-				D8D63B9F1AA69E0000F0ED39 /* CategoryImageSort.m in Sources */,
 				D8172E201AB7D2EA00271DB0 /* AllCategoriesViewController.m in Sources */,
 				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,

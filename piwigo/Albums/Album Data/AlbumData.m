@@ -10,7 +10,7 @@
 #import "PiwigoAlbumData.h"
 #import "ImageService.h"
 #import "CategoriesData.h"
-#import "CategoryImageSort.h"
+//#import "CategoryImageSort.h"
 
 @interface AlbumData()
 
@@ -42,26 +42,31 @@
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
+    // Return if job done
     if (((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
         ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
 	{
 //        NSLog(@"loadMoreImagesOnCompletion: we have all image data, sort them");
-        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+//        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if(completion)
 		{
 			completion();
 		}
 		return;
 	}
-		
+    
+    // Set sort string parameter from sort type
 	[self updateSortString];
 	
+    // Load more category image data
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkWithSort:self.sortString forProgress:nil OnCompletion:^(BOOL completed) {
 		if(!completed)
 		{
 			return;
 		}
-		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+//        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if(completion)
 		{
 			completion();
@@ -137,16 +142,17 @@
 //    {    // nothing changed, return
 //        return;
 //    }
-	self.sortType = imageSort;
+//    self.sortType = imageSort;
 	
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
 //    NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
-	if (((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
-        ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
+	if ((((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+         ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount)) && (imageSort == self.sortType))
 	{	// we have all the image data, just manually sort it
-		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+//        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if(completion)
 		{
 //            NSLog(@"updateImageSort: we have all image data");
@@ -155,6 +161,7 @@
 		return;
 	}
 	
+    self.sortType = imageSort;
 	self.images = [NSArray new];
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
 	[self loadMoreImagesOnCompletion:completion];
