@@ -79,7 +79,7 @@ typedef enum {
 
 // API pwg.images.getInfo returns in addition:
 //
-//      author, level, tags, (added_by), (rating_score), (rates), (representative_ext)
+//      author, level, tags, (added_by), rating_score, (rates), (representative_ext)
 //      filesize, (md5sum), (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
 //      (comments), (comments_paging), (coi)
 //
