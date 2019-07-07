@@ -82,7 +82,8 @@
 		self.nameLabel.font = [UIFont piwigoFontTiny];
 		self.nameLabel.textColor = [UIColor piwigoLeftLabelColor];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
-		self.nameLabel.minimumScaleFactor = 0.5;
+		self.nameLabel.minimumScaleFactor = 0.7;
+        self.nameLabel.numberOfLines = 1;
 		[self.contentView addSubview:self.nameLabel];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.nameLabel]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.nameLabel amount:1]];
@@ -254,6 +255,12 @@
         self.bottomLayer.hidden = NO;
         self.nameLabel.hidden = NO;
         self.nameLabel.text = imageData.name;
+//        self.nameLabel.text = [NSString stringWithFormat:@"%.2f", imageData.ratingScore];
+//        self.nameLabel.text = [NSString stringWithFormat:@"%ld", (long)imageData.visits];
+//        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+//        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
+//        self.nameLabel.text = [dateFormatter stringFromDate:imageData.dateCreated];
     } else {
         self.bottomLayer.hidden = YES;
         self.nameLabel.hidden = YES;
