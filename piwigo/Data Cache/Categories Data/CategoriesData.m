@@ -292,12 +292,4 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 }
 
 
-# pragma mark - Cached Search category
-
--(BOOL)isSearchCategoryInCache
-{
-    PiwigoAlbumData *searchAlbum = [self getCategoryById:kPiwigoSearchCategoryId];
-    return (searchAlbum != nil);
-}
-
 @end

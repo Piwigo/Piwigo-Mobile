@@ -34,6 +34,4 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId;
 -(void)removeImage:(PiwigoImageData*)image;
 
--(BOOL)isSearchCategoryInCache;
-
 @end
