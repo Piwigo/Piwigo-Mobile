@@ -264,15 +264,13 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	return nil;
 }
 
--(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSString*)imageId
+-(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSInteger)imageId
 {
 	PiwigoAlbumData *selectedCategory = [self getCategoryById:category];
-	
-	[imageId isKindOfClass:[NSString class]];
-	
+		
 	for(PiwigoImageData *img in selectedCategory.imageList)
 	{
-		if([imageId integerValue] == [img.imageId integerValue])
+		if (imageId == img.imageId)
 		{
 			return img;
 		}

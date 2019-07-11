@@ -383,7 +383,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //
 
     // Object "id"
-    imageData.imageId = [imageJson objectForKey:@"id"];
+    imageData.imageId = [[imageJson objectForKey:@"id"] integerValue];
 
     // Object "categories"
     NSDictionary *categories = [imageJson objectForKey:@"categories"];
@@ -689,7 +689,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoImageDelete
 		URLParameters:nil
 		   parameters:@{
-                        @"image_id" : @([image.imageId integerValue]),
+                        @"image_id" : [NSString stringWithFormat:@"%ld", image.imageId],
                         @"pwg_token" : [Model sharedInstance].pwgToken
                         }
              progress:nil
@@ -716,7 +716,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Create string containing pipe separated list of image ids
     NSMutableString *listOfImageIds = [NSMutableString new];
     for (PiwigoImageData *image in images) {
-        [listOfImageIds appendFormat:(NSString *)@"%ld", (long)[image.imageId integerValue]];
+        [listOfImageIds appendFormat:(NSString *)@"%ld", image.imageId];
         [listOfImageIds appendString:@"|"];
     }
     [listOfImageIds deleteCharactersInRange:NSMakeRange((listOfImageIds.length -1), 1)];
@@ -845,7 +845,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
                              URLParameters:nil
                                 parameters:@{
-                                             @"image_id" : image.imageId,
+                                             @"image_id" : [NSString stringWithFormat:@"%ld", image.imageId],
                                              @"categories" : newImageCategories,
                                              @"multiple_value_mode" : @"replace"
                                              }

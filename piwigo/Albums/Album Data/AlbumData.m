@@ -207,13 +207,13 @@
 
 -(void)removeImage:(PiwigoImageData*)image
 {
-	[self removeImageWithId:[image.imageId integerValue]];
+	[self removeImageWithId:image.imageId];
 }
 
 -(void)removeImageWithId:(NSInteger)imageId
 {
 	NSIndexSet *set = [self.images indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
-		return [obj.imageId integerValue] != imageId;
+		return obj.imageId != imageId;
 	}];
 	self.images = [self.images objectsAtIndexes:set];
 }

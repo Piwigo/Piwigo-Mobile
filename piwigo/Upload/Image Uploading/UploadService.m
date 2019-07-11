@@ -194,7 +194,7 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
 	}
 	
 	NSDictionary *imageProperties = @{
-                                      kPiwigoImagesUploadParamFileName : imageInfo.image,
+                                      kPiwigoImagesUploadParamFileName : imageInfo.fileName,
                                       kPiwigoImagesUploadParamTitle : imageInfo.title,
 									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(imageInfo.privacyLevel)],
 									  kPiwigoImagesUploadParamAuthor : imageInfo.author,
@@ -208,7 +208,7 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                                    
                                    // Update cache
-                                   [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImages:@[imageInfo]];
+                                   [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImageAfterUpload:imageInfo];
                                    
                                    if(completion)
                                    {

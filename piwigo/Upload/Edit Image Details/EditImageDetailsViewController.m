@@ -148,12 +148,6 @@ typedef enum {
 -(void)prepareImageForChanges
 {
 	[self updateImageDetails];
-	
-    // Set image title to filename without extension if not defined
-	if(self.imageDetails.title.length == 0)
-	{
-		self.imageDetails.title = [self.imageDetails.image stringByDeletingPathExtension];
-	}
 }
 
 // NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
@@ -277,9 +271,11 @@ typedef enum {
 
 -(void)updateImageDetails
 {
-	EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+	// Title
+    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
 	self.imageDetails.title = textFieldCell.getTextFieldText;
 	
+    // Author
 	textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
     if (textFieldCell.getTextFieldText.length > 0) {
         self.imageDetails.author = textFieldCell.getTextFieldText;
@@ -287,6 +283,7 @@ typedef enum {
         self.imageDetails.author = @"NSNotFound";
     }
 	
+    // Description
 	EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
 	self.imageDetails.imageDescription = textViewCell.getTextViewText;
 }

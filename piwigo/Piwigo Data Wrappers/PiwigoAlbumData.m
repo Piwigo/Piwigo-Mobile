@@ -191,7 +191,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
         //      element_url, derivatives, (page_url)
         //
 		[newImageList addObject:imageData];
-		[self.imageIds setValue:@(0) forKey:imageData.imageId];
+		[self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", imageData.imageId]];
 	}
     
     // Store updated list
@@ -207,7 +207,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
     // Create new image list
     NSMutableArray *newImageList = [self.imageList mutableCopy];
     
-    // Update image list before appending new ones
+    // Update image list
     for(NSInteger index = 0; index < self.imageList.count; index++)
     {
         // Known image data
@@ -216,7 +216,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
         // Update this image if needed
         for(PiwigoImageData *updatedImage in updatedImages)
         {
-            if([updatedImage.imageId integerValue] == [existingImage.imageId integerValue])
+            if(updatedImage.imageId == existingImage.imageId)
             {
                 // API pwg.images.getInfo returns in addition:
                 //      author, level, tags, (added_by), rating_score, (rates), (representative_ext)
@@ -234,13 +234,46 @@ NSInteger const kPiwigoSearchCategoryId = -1;
     self.imageList = newImageList;
 }
 
+-(void)updateImageAfterUpload:(ImageUpload *)uploadedImage
+{
+    // Check that there is something to do
+    if (uploadedImage == nil) return;
+    
+    // Create new image list
+    NSMutableArray *newImageList = [self.imageList mutableCopy];
+    
+    // Update image list
+    for(NSInteger index = 0; index < self.imageList.count; index++)
+    {
+        // Known image data
+        PiwigoImageData *existingImage = self.imageList[index];
+        
+        // Update this image
+        if(uploadedImage.imageId == existingImage.imageId)
+        {
+            // New data replaces old once
+            PiwigoImageData *updatedImage = existingImage;
+            updatedImage.name = uploadedImage.title;
+            updatedImage.author = uploadedImage.author;
+            updatedImage.privacyLevel = uploadedImage.privacyLevel;
+            updatedImage.imageDescription = [NSString stringWithString:uploadedImage.imageDescription];
+            updatedImage.tags = [uploadedImage.tags copy];
+            [newImageList replaceObjectAtIndex:index withObject:updatedImage];
+            break;
+        }
+    }
+    
+    // Store updated list
+    self.imageList = newImageList;
+}
+
 -(void)removeImages:(NSArray*)images
 {
     NSMutableArray *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
     for (PiwigoImageData *image in images) {
         if ([newImageArray containsObject:image]) {
             [newImageArray removeObject:image];
-            [self.imageIds removeObjectForKey:image.imageId];
+            [self.imageIds removeObjectForKey:[NSString stringWithFormat:@"%ld", image.imageId]];
         }
     }
     

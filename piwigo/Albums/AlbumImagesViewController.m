@@ -792,7 +792,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
                 [imageCell setupWithImageData:imageData];
 
-                if([self.selectedImageIds containsObject:imageData.imageId])
+                if([self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", imageData.imageId]])
                 {
                     imageCell.isSelected = YES;
                 }
@@ -1029,18 +1029,19 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
             
             // Update the selection if not already done
-            if (![self.touchedImageIds containsObject:imageCell.imageData.imageId]) {
+            NSString *imageIdObject = [NSString stringWithFormat:@"%ld", imageCell.imageData.imageId];
+            if (![self.touchedImageIds containsObject:imageIdObject]) {
                 
                 // Store that the user touched this cell during this gesture
-                [self.touchedImageIds addObject:imageCell.imageData.imageId];
+                [self.touchedImageIds addObject:imageIdObject];
                 
                 // Update the selection state
-                if(![self.selectedImageIds containsObject:imageCell.imageData.imageId]) {
-                    [self.selectedImageIds addObject:imageCell.imageData.imageId];
+                if(![self.selectedImageIds containsObject:imageIdObject]) {
+                    [self.selectedImageIds addObject:imageIdObject];
                     imageCell.isSelected = YES;
                 } else {
                     imageCell.isSelected = NO;
-                    [self.selectedImageIds removeObject:imageCell.imageData.imageId];
+                    [self.selectedImageIds removeObject:imageIdObject];
                 }
                 
                 // Reload the cell and update the navigation bar
@@ -1264,8 +1265,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                if (updatedSuccessfully)
                {
                    // Remove image from current category
-                   [self.albumData removeImageWithId:[self.selectedImage.imageId integerValue]];
-                   [self.selectedImageIds removeObject:self.selectedImage.imageId];
+                   [self.albumData removeImageWithId:self.selectedImage.imageId];
+                   [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", self.selectedImage.imageId]];
                    [self.imagesCollection reloadData];
 
                    // Update cache
@@ -1361,8 +1362,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                   
                   // Images deleted
                   for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
-                      [self.albumData removeImageWithId:[selectedImage.imageId integerValue]];
-                      [self.selectedImageIds removeObject:selectedImage.imageId];
+                      [self.albumData removeImageWithId:selectedImage.imageId];
+                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", selectedImage.imageId]];
                   }
                   
                   // Reload collection
@@ -1584,7 +1585,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         NSInteger obj1 = [imageId integerValue];
         NSInteger index = 0;
         for (PiwigoImageData *image in self.albumData.images) {
-            NSInteger obj2 = [image.imageId integerValue];
+            NSInteger obj2 = image.imageId;
             if (obj1 == obj2) break;
             index++;
         }
@@ -1873,7 +1874,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 //                NSLog(@"Index:%ld => image ID:%@ - %@", indexPath.row, imageData.imageId, imageData.name);
                 [cell setupWithImageData:imageData];
-                cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
+                cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", imageData.imageId]];
                 
                 // Add pan gesture recognition
                 UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
@@ -1933,12 +1934,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             else
             {
                 // Selection mode active => add/remove image from selection
-                if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
-                    [self.selectedImageIds addObject:selectedCell.imageData.imageId];
+                NSString *imageIdObject = [NSString stringWithFormat:@"%ld", selectedCell.imageData.imageId];
+                if(![self.selectedImageIds containsObject:imageIdObject]) {
+                    [self.selectedImageIds addObject:imageIdObject];
                     selectedCell.isSelected = YES;
                 } else {
                     selectedCell.isSelected = NO;
-                    [self.selectedImageIds removeObject:selectedCell.imageData.imageId];
+                    [self.selectedImageIds removeObject:imageIdObject];
                 }
                 [collectionView reloadData];
                 
@@ -2045,7 +2047,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     NSInteger index = 0;
     for (PiwigoImageData *image in self.albumData.images) {
-        if ([image.imageId integerValue] == imageId) break;
+        if (image.imageId == imageId) break;
         index++;
     }
     if (index < [self.albumData.images count])
@@ -2147,9 +2149,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                    });
 }
 
--(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSString *)imageId
+-(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
 {
     // Close HUD
+    NSString *imageIdObject = [NSString stringWithFormat:@"%ld", imageId];
     dispatch_async(dispatch_get_main_queue(),
                    ^(void){
                        if ([imageActivityItemProvider isCancelled]) {
@@ -2157,8 +2160,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                self.hudViewController = nil;
                            }];
                        } else {
-                           if ([self.selectedImageIds containsObject:imageId]) {
-                               [self.selectedImageIds removeObject:imageId];
+                           if ([self.selectedImageIds containsObject:imageIdObject]) {
+                               [self.selectedImageIds removeObject:imageIdObject];
                            }
                        }
                    });

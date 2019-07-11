@@ -19,33 +19,40 @@
     if(self)
     {
         self.imageAsset = imageAsset;
+        self.title = @"";
         if (imageAsset) {
             // For some unknown reason, the asset resource may be empty
             NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
             if ([resources count] > 0) {
-                self.image = ((PHAssetResource*)resources[0]).originalFilename;
-                self.title = [((PHAssetResource*)resources[0]).originalFilename stringByDeletingPathExtension];
+                self.fileName = ((PHAssetResource*)resources[0]).originalFilename;
             } else {
+                // No filename => Build filename from current date
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                [dateFormatter setDateFormat:@"yyyyMMdd-HHmmssSSSS"];
+                [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
+                self.fileName = [dateFormatter stringFromDate:[NSDate date]];
+
                 // No filename => Build filename from 32 characters of local identifier
-                NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
-                self.image = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+//                NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
+//                self.fileName = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+
                 // Filename extension required by Piwigo so that it knows how to deal with it
                 if (imageAsset.mediaType == PHAssetMediaTypeImage) {
                     // Adopt JPEG photo format by default, will be rechecked
-                    self.image = [self.image stringByAppendingPathExtension:@"jpg"];
-                    self.title = NSLocalizedString(@"singleImage", @"Image");
+                    self.fileName = [self.fileName stringByAppendingPathExtension:@"jpg"];
+//                    self.title = NSLocalizedString(@"singleImage", @"Image");
                 } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
                     // Videos are exported in MP4 format
-                    self.image = [self.image stringByAppendingPathExtension:@"mp4"];
-                    self.title = NSLocalizedString(@"singleVideo", @"Video");
+                    self.fileName = [self.fileName stringByAppendingPathExtension:@"mp4"];
+//                    self.title = NSLocalizedString(@"singleVideo", @"Video");
                 } else if (imageAsset.mediaType == PHAssetMediaTypeAudio) {
                     // Arbitrary extension, not managed yet
-                    self.image = [self.image stringByAppendingPathExtension:@"m4a"];
-                    self.title = NSLocalizedString(@"singleAudio", @"Audio");
+                    self.fileName = [self.fileName stringByAppendingPathExtension:@"m4a"];
+//                    self.title = NSLocalizedString(@"singleAudio", @"Audio");
                 }
             }
         } else {
-            self.image = @"";
+            self.fileName = @"";
             self.title = @"";
         }
         self.categoryToUploadTo = category;
@@ -79,11 +86,11 @@
 -(instancetype)initWithImageData:(PiwigoImageData*)imageData
 {
     self = [self initWithImageAsset:nil forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
-    self.image = imageData.fileName;
+    self.fileName = imageData.fileName;
     self.title = imageData.name;
     if(self)
     {
-        self.imageId = [imageData.imageId integerValue];
+        self.imageId = imageData.imageId;
     }
     return self;
 }
@@ -130,7 +137,7 @@
                      }
     ];
 
-    [descriptionArray addObject:[NSString stringWithFormat:@"image              = %@", (nil == self.image ? objectIsNil :(0 == self.image.length ? @"''" : self.image))]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"image              = %@", (nil == self.fileName ? objectIsNil :(0 == self.fileName.length ? @"''" : self.fileName))]];
     [descriptionArray addObject:[NSString stringWithFormat:@"title    = %@", (nil == self.title ? objectIsNil : (0 == self.title.length ? @"''" : self.title))]];
     
     [descriptionArray addObject:[NSString stringWithFormat:@"categoryToUploadTo = %ld", (long)self.categoryToUploadTo]];

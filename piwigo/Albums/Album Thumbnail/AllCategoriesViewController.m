@@ -364,16 +364,16 @@
     
     // Set image as representative
 	[AlbumService setCategoryRepresentativeForCategory:categoryId
-                forImageId:[self.imageData.imageId integerValue]
+                forImageId:self.imageData.imageId
               OnCompletion:^(NSURLSessionTask *task, BOOL setSuccessfully) {
                   if(setSuccessfully)
                   {
                       // Update image Id of album
                       PiwigoAlbumData *category = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-                      category.albumThumbnailId = [self.imageData.imageId integerValue];
+                      category.albumThumbnailId = self.imageData.imageId;
                       
                       // Update image URL of album
-                      PiwigoImageData *imgData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%@", @([self.imageData.imageId integerValue])]];
+                      PiwigoImageData *imgData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:self.imageData.imageId];
                       category.albumThumbnailUrl = imgData.ThumbPath;
 
                       // Image will be downloaded when displaying list of albums

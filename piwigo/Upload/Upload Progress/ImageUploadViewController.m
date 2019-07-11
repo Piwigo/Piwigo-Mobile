@@ -158,7 +158,7 @@
 {
 	for(NSInteger i = 0; i < self.imagesToEdit.count; i++)
 	{
-		if([((ImageUpload*)[self.imagesToEdit objectAtIndex:i]).image isEqualToString:imageToRemove.image])
+		if([((ImageUpload*)[self.imagesToEdit objectAtIndex:i]).fileName isEqualToString:imageToRemove.fileName])
 		{
 			[self.imagesToEdit removeObjectAtIndex:i];
 			[self.uploadImagesTableView reloadData];
@@ -341,7 +341,7 @@
             // Remove image from upload queue (both in table and collection view) or stop iCloud download or Piwigo upload
             ImageUpload *image = [[ImageUploadManager sharedInstance].imageUploadQueue objectAtIndex:indexPath.row];
             [[ImageUploadManager sharedInstance].imageUploadQueue removeObjectAtIndex:indexPath.row];
-            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObject:[image.image stringByDeletingPathExtension]];
+            [[ImageUploadManager sharedInstance].imageNamesUploadQueue removeObject:[image.fileName stringByDeletingPathExtension]];
             [ImageUploadManager sharedInstance].maximumImagesForBatch--;
         }
 
@@ -391,7 +391,7 @@
 	NSInteger index = 0;
 	for(ImageUpload *image in self.imagesToEdit)
 	{
-		if([image.image isEqualToString:details.image]) break;
+		if([image.fileName isEqualToString:details.fileName]) break;
 		index++;
 	}
 	

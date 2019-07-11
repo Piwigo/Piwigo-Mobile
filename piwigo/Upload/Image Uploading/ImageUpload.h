@@ -15,7 +15,7 @@
 @interface ImageUpload : NSObject
 
 @property (nonatomic, strong) PHAsset *imageAsset;
-@property (nonatomic, strong) NSString *image;
+@property (nonatomic, strong) NSString *fileName;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) NSInteger categoryToUploadTo;
 @property (nonatomic, assign) kPiwigoPrivacy privacyLevel;

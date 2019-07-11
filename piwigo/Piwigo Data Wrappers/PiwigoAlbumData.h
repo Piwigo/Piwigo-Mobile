@@ -51,6 +51,7 @@ typedef enum {
 								OnCompletion:(void (^)(BOOL completed))completion;
 -(void)addImages:(NSArray*)images;
 -(void)updateImages:(NSArray*)updatedImages;
+-(void)updateImageAfterUpload:(ImageUpload *)uploadedImage;
 -(void)removeImages:(NSArray*)images;
 //-(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
 -(NSInteger)getDepthOfCategory;

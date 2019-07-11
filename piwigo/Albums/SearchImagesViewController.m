@@ -249,7 +249,7 @@
 {
     NSInteger index = 0;
     for (PiwigoImageData *image in self.albumData.images) {
-        if ([image.imageId integerValue] == imageId) break;
+        if (image.imageId == imageId) break;
         index++;
     }
     if (index < [self.albumData.images count])

@@ -31,7 +31,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownloadImage;
 
 -(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title;
 -(void)imageActivityItemProvider:(UIActivityItemProvider *)imageActivityItemProvider preprocessingProgressDidUpdate:(float)progress;
--(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSString *)imageId;
+-(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId;
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message;
 
 @end

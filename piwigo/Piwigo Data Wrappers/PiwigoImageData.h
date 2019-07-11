@@ -29,12 +29,12 @@ typedef enum {
 //      file, date_creation, date_available, width, height
 //      element_url, derivatives, (page_url)
 //
-@property (nonatomic, strong) NSString *imageId;                // id
+@property (nonatomic, assign) NSInteger imageId;               // id
 @property (nonatomic, strong) NSArray *categoryIds;             // categories
 @property (nonatomic, strong) NSString *name;                   // name
 @property (nonatomic, strong) NSString *imageDescription;       // comment
 @property (nonatomic, assign) NSInteger visits;                 // hit
-@property (nonatomic, strong) NSString *fileName;               // file
+@property (nonatomic, strong) NSString *fileName;               // file name
 @property (nonatomic, strong) NSDate *dateCreated;              // date_creation
 @property (nonatomic, strong) NSDate *datePosted;               // date_available
 @property (nonatomic, assign) NSInteger fullResWidth;           // width
