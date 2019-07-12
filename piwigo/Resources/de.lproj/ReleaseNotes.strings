@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.0_text" = "Version 2.4\n\n• Fügt ein Suchwerkzeug hinzu (erfordert iOS 11 oder neuer)\n• Fügt eine Bildsortierung nach Bewertungspunktzahl hinzu\n• Schnellerer Download von Album-Thumbnails (erfordert Piwigo 2.8 oder neuer)\n• Die Titel der hochgeladenen Bilder sind standardmäßig nicht mehr der Dateiname\n• Behebt die Unmöglichkeit, Tags zu entfernen\n• Korrigiert unter bestimmten Umständen ungenaue Bilddaten";
+"v2.4.0_text" = "Version 2.4\n\n• Fügt ein Suchwerkzeug hinzu (erfordert iOS 11 oder neuer)\n• Fügt eine Bildsortierung nach Bewertungspunktzahl hinzu\n• Schnellerer Download von Album-Thumbnails (erfordert Piwigo 2.8 oder neuer)\n• Titel von hochgeladenen Bildern sind nicht mehr standardmäßig Dateinamen\n• Behebt die Unmöglichkeit, Tags zu entfernen\n• Korrigiert unter bestimmten Umständen ungenaue Bilddaten";
 
 "v2.3.5_text" = "Version 2.3.5\n6. Juni 2019\n\n• Behebung eines Absturzes, der manchmal beim Bearbeiten der Serveradresse nach dem Abmelden auftritt";
 
