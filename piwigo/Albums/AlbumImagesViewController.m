@@ -792,7 +792,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
                 [imageCell setupWithImageData:imageData];
 
-                if([self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", imageData.imageId]])
+                if([self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]])
                 {
                     imageCell.isSelected = YES;
                 }
@@ -1029,7 +1029,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
             
             // Update the selection if not already done
-            NSString *imageIdObject = [NSString stringWithFormat:@"%ld", imageCell.imageData.imageId];
+            NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageCell.imageData.imageId];
             if (![self.touchedImageIds containsObject:imageIdObject]) {
                 
                 // Store that the user touched this cell during this gesture
@@ -1266,7 +1266,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                {
                    // Remove image from current category
                    [self.albumData removeImageWithId:self.selectedImage.imageId];
-                   [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", self.selectedImage.imageId]];
+                   [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)self.selectedImage.imageId]];
                    [self.imagesCollection reloadData];
 
                    // Update cache
@@ -1363,7 +1363,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                   // Images deleted
                   for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
                       [self.albumData removeImageWithId:selectedImage.imageId];
-                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", selectedImage.imageId]];
+                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)selectedImage.imageId]];
                   }
                   
                   // Reload collection
@@ -1874,7 +1874,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 //                NSLog(@"Index:%ld => image ID:%@ - %@", indexPath.row, imageData.imageId, imageData.name);
                 [cell setupWithImageData:imageData];
-                cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", imageData.imageId]];
+                cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
                 
                 // Add pan gesture recognition
                 UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
@@ -1934,7 +1934,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             else
             {
                 // Selection mode active => add/remove image from selection
-                NSString *imageIdObject = [NSString stringWithFormat:@"%ld", selectedCell.imageData.imageId];
+                NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)selectedCell.imageData.imageId];
                 if(![self.selectedImageIds containsObject:imageIdObject]) {
                     [self.selectedImageIds addObject:imageIdObject];
                     selectedCell.isSelected = YES;
@@ -2152,7 +2152,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
 {
     // Close HUD
-    NSString *imageIdObject = [NSString stringWithFormat:@"%ld", imageId];
+    NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageId];
     dispatch_async(dispatch_get_main_queue(),
                    ^(void){
                        if ([imageActivityItemProvider isCancelled]) {

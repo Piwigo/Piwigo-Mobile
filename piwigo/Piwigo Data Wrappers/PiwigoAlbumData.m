@@ -191,7 +191,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
         //      element_url, derivatives, (page_url)
         //
 		[newImageList addObject:imageData];
-		[self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", imageData.imageId]];
+        [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
 	}
     
     // Store updated list
@@ -273,7 +273,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
     for (PiwigoImageData *image in images) {
         if ([newImageArray containsObject:image]) {
             [newImageArray removeObject:image];
-            [self.imageIds removeObjectForKey:[NSString stringWithFormat:@"%ld", image.imageId]];
+            [self.imageIds removeObjectForKey:[NSString stringWithFormat:@"%ld", (long)image.imageId]];
         }
     }
     
