@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.0_text" = "Wersja 2.4\n\n• Dodaje narzędzie wyszukiwania (wymaga systemu iOS 11 lub nowszego)\n• Dodaje sortowanie obrazów według wyniku oceny\n• Szybsze pobieranie miniatur albumów (wymaga Piwigo 2.8 lub nowszego)\n• Naprawiono niemożność usunięcia znaczników\n• Naprawia niedokładne dane obrazu w niektórych okolicznościach";
+"v2.4.0_text" = "Wersja 2.4\n\n• Dodaje narzędzie wyszukiwania (wymaga systemu iOS 11 lub nowszego)\n• Dodaje sortowanie obrazów według wyniku oceny\n• Szybsze pobieranie miniatur albumów (wymaga Piwigo 2.8 lub nowszego)\n• Tytuły przesłanych obrazów nie są już domyślnie nazwą pliku\n• Naprawiono niemożność usunięcia znaczników\n• Naprawia niedokładne dane obrazu w niektórych okolicznościach";
 
 "v2.3.5_text" = "Wersja 2.3.5\n6 czerwca 2019\n\n• Napraw awarię, która czasami zdarza się podczas edycji adresu serwera po wylogowaniu";
 
