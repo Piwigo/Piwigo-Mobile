@@ -2161,7 +2161,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                            }];
                        } else {
                            if ([self.selectedImageIds containsObject:imageIdObject]) {
+                               // Remove image from selection
                                [self.selectedImageIds removeObject:imageIdObject];
+                               // Close HUD if last image
+                               if ([self.selectedImageIds count] == 0) {
+                                   [self hideHUDwithSuccess:NO completion:^{
+                                       self.hudViewController = nil;
+                                   }];
+                               }
                            }
                        }
                    });
