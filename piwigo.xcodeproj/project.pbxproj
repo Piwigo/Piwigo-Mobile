@@ -1268,17 +1268,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh",
-				"${PODS_ROOT}/SAMKeychain/Support/SAMKeychain.bundle",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SAMKeychain.bundle",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A1B3467A8BF4F6AC0BC928CF /* [CP] Check Pods Manifest.lock */ = {
