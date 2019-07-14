@@ -777,10 +777,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
             } else {
                 hud.label.text = NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error");
                 hud.detailsLabel.text = [NSString stringWithFormat:@"%@", [error localizedDescription]];
-
-                // Return to secured connection mode before user retries with updated address and/or credentials
-                [Model sharedInstance].serverProtocol = @"https://";
-                self.websiteNotSecure.hidden = YES;
             }
         }
     });
