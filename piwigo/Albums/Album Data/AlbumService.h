@@ -12,8 +12,6 @@ FOUNDATION_EXPORT NSString * const kCategoryDeletionModeNone;
 FOUNDATION_EXPORT NSString * const kCategoryDeletionModeOrphaned;
 FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
 
-@class PiwigoImageData;
-
 @interface AlbumService : NetworkHandler
 
 +(NSURLSessionTask*)getInfosOnCompletion:(void (^)(NSURLSessionTask *task, NSArray

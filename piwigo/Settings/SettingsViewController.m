@@ -1286,7 +1286,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 		{
             switch(indexPath.row)
             {
-                case 0:     // @piwigo
+                case 0:     // @piwigo (Twitter)
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"twitter"];
                     if(!cell)
@@ -1296,11 +1296,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     
                     cell.leftText = NSLocalizedString(@"settings_twitter", @"@piwigo");
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    //                    if ([Model sharedInstance].isAppLanguageRTL) {
-                    //                        cell.rightText = @"<";
-                    //                    } else {
-                    //                        cell.rightText = @">";
-                    //                    }
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
                     
                     tableViewCell = cell;
                     break;
@@ -1313,7 +1313,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [LabelTableViewCell new];
                     }
                     
-                    cell.leftText = NSLocalizedString(@"settings_contactUs", @"iOS@piwigo.org");
+                    cell.leftText = NSLocalizedString(@"settings_contactUs", @"Contact Us");
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     if (![MFMailComposeViewController canSendMail]) {
                         cell.leftLabel.textColor = [UIColor piwigoRightLabelColor];
@@ -1948,7 +1948,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                            {
                                // Unregister keyboard notifications
                                [self unregisterKeyboardNotifications];
-
+                               
                                // Session closed
                                [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
                                [[Model sharedInstance].imageCache removeAllImages];

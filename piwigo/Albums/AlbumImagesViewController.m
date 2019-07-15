@@ -18,7 +18,7 @@
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
 #import "CategoryHeaderReusableView.h"
-#import "CategoryImageSort.h"
+//#import "CategoryImageSort.h"
 #import "CategoryPickViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
@@ -33,12 +33,13 @@
 #import "NoImagesHeaderCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "SAMKeychain.h"
+#import "SearchImagesViewController.h"
 #import "SettingsViewController.h"
 
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -71,6 +72,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
+@property (nonatomic, strong) UISearchController *searchController;
+
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -88,7 +91,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.isCachedAtInit = isCached;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
-		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId];
+		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
 		self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
 		
@@ -188,6 +191,58 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - View Lifecycle
 
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    // For iOS 11 and later: place search bar in navigation bar or root album
+    if (@available(iOS 11.0, *)) {
+        // Initialise search controller when displaying root album
+        if (self.categoryId == 0) {
+            SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+            self.searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+            self.searchController.delegate = self;
+            self.searchController.hidesNavigationBarDuringPresentation = YES;
+            self.searchController.searchResultsUpdater = self;
+            
+            [self.searchController.searchBar setTintColor:[UIColor piwigoOrange]];
+            self.searchController.searchBar.showsCancelButton = NO;
+            self.searchController.searchBar.showsSearchResultsButton = NO;
+            self.searchController.searchBar.delegate = self;
+            self.definesPresentationContext = YES;
+            
+            // Place the search bar in the navigation bar.
+            self.navigationItem.searchController = self.searchController;
+
+//        for (UIView *subView in self.searchController.searchBar.subviews)
+//        {
+//            if ([subView isKindOfClass: [UITextField class]])
+//            {
+//                [(UITextField *)subView setKeyboardAppearance:[Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault];
+//            }
+//        }
+        }
+    }
+}
+
+//-(void)setKeyboardAppearence: (UIKeyboardAppearance) appearence {
+//    [(id<UITextInputTraits>) [self firstSubviewConformingToProtocol: @protocol(UITextInputTraits)] setKeyboardAppearance: appearence];
+//}
+//
+//- (UIView *)firstSubviewConformingToProtocol: (Protocol *) pro {
+//    for (UIView *sub in self.searchController.searchBar.subviews)
+//        if ([sub conformsToProtocol: pro])
+//            return sub;
+//
+//    for (UIView *sub in self.searchController.searchBar.subviews) {
+//        UIView *ret = [sub firstSubviewConformingToProtocol: pro];
+//        if (ret)
+//            return ret;
+//    }
+//
+//    return nil;
+//}
+
 -(void)paletteChanged
 {
     // Background color of the view
@@ -221,7 +276,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
-
+    
     // Toolbar
     [self.navigationController.toolbar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
@@ -246,11 +301,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
     
-    // Sort images and reload collection
+    // Load, sort images and reload collection
     if (self.categoryId != 0) {
         self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-//            NSLog(@"viewWillAppear:Sorting images…");
 
             // Set navigation bar buttons
             [self updateNavBar];
@@ -276,9 +330,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         }
     }
 
-    // Always open this view with a navigation bar
+    // Always open this view with a navigation bar and the search bar
     // (might have been hidden during Image Previewing)
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.hidesSearchBarWhenScrolling = false;
+    }
 
     // Set navigation bar buttons
     [self updateNavBar];
@@ -301,6 +358,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.imagesCollection addSubview:refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
     
+    // Allows hiding search bar when scrolling
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.hidesSearchBarWhenScrolling = true;
+    }
+
     // Should we scroll to image of interest?
 //    NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
@@ -730,7 +792,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
                 [imageCell setupWithImageData:imageData];
 
-                if([self.selectedImageIds containsObject:imageData.imageId])
+                if([self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]])
                 {
                     imageCell.isSelected = YES;
                 }
@@ -967,18 +1029,19 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
             
             // Update the selection if not already done
-            if (![self.touchedImageIds containsObject:imageCell.imageData.imageId]) {
+            NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageCell.imageData.imageId];
+            if (![self.touchedImageIds containsObject:imageIdObject]) {
                 
                 // Store that the user touched this cell during this gesture
-                [self.touchedImageIds addObject:imageCell.imageData.imageId];
+                [self.touchedImageIds addObject:imageIdObject];
                 
                 // Update the selection state
-                if(![self.selectedImageIds containsObject:imageCell.imageData.imageId]) {
-                    [self.selectedImageIds addObject:imageCell.imageData.imageId];
+                if(![self.selectedImageIds containsObject:imageIdObject]) {
+                    [self.selectedImageIds addObject:imageIdObject];
                     imageCell.isSelected = YES;
                 } else {
                     imageCell.isSelected = NO;
-                    [self.selectedImageIds removeObject:imageCell.imageData.imageId];
+                    [self.selectedImageIds removeObject:imageIdObject];
                 }
                 
                 // Reload the cell and update the navigation bar
@@ -1202,8 +1265,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                if (updatedSuccessfully)
                {
                    // Remove image from current category
-                   [self.albumData removeImageWithId:[self.selectedImage.imageId integerValue]];
-                   [self.selectedImageIds removeObject:self.selectedImage.imageId];
+                   [self.albumData removeImageWithId:self.selectedImage.imageId];
+                   [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)self.selectedImage.imageId]];
                    [self.imagesCollection reloadData];
 
                    // Update cache
@@ -1299,8 +1362,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                   
                   // Images deleted
                   for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
-                      [self.albumData removeImageWithId:[selectedImage.imageId integerValue]];
-                      [self.selectedImageIds removeObject:selectedImage.imageId];
+                      [self.albumData removeImageWithId:selectedImage.imageId];
+                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)selectedImage.imageId]];
                   }
                   
                   // Reload collection
@@ -1522,7 +1585,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         NSInteger obj1 = [imageId integerValue];
         NSInteger index = 0;
         for (PiwigoImageData *image in self.albumData.images) {
-            NSInteger obj2 = [image.imageId integerValue];
+            NSInteger obj2 = image.imageId;
             if (obj1 == obj2) break;
             index++;
         }
@@ -1691,15 +1754,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     // Returns number of images or albums
+    NSInteger numberOfItems;
     switch (section) {
         case 0:             // Albums
-            return [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
+            numberOfItems = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
             break;
             
         default:            // Images
-            return self.albumData.images.count;
+            numberOfItems = self.albumData.images.count;
             break;
     }
+    return numberOfItems;
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -1807,8 +1872,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             if (self.albumData.images.count > indexPath.row) {
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
+//                NSLog(@"Index:%ld => image ID:%@ - %@", indexPath.row, imageData.imageId, imageData.name);
                 [cell setupWithImageData:imageData];
-                cell.isSelected = [self.selectedImageIds containsObject:imageData.imageId];
+                cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
                 
                 // Add pan gesture recognition
                 UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
@@ -1868,12 +1934,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             else
             {
                 // Selection mode active => add/remove image from selection
-                if(![self.selectedImageIds containsObject:selectedCell.imageData.imageId]) {
-                    [self.selectedImageIds addObject:selectedCell.imageData.imageId];
+                NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)selectedCell.imageData.imageId];
+                if(![self.selectedImageIds containsObject:imageIdObject]) {
+                    [self.selectedImageIds addObject:imageIdObject];
                     selectedCell.isSelected = YES;
                 } else {
                     selectedCell.isSelected = NO;
-                    [self.selectedImageIds removeObject:selectedCell.imageData.imageId];
+                    [self.selectedImageIds removeObject:imageIdObject];
                 }
                 [collectionView reloadData];
                 
@@ -1980,7 +2047,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     NSInteger index = 0;
     for (PiwigoImageData *image in self.albumData.images) {
-        if ([image.imageId integerValue] == imageId) break;
+        if (image.imageId == imageId) break;
         index++;
     }
     if (index < [self.albumData.images count])
@@ -2082,9 +2149,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                    });
 }
 
--(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSString *)imageId
+-(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
 {
     // Close HUD
+    NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageId];
     dispatch_async(dispatch_get_main_queue(),
                    ^(void){
                        if ([imageActivityItemProvider isCancelled]) {
@@ -2092,8 +2160,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                self.hudViewController = nil;
                            }];
                        } else {
-                           if ([self.selectedImageIds containsObject:imageId]) {
-                               [self.selectedImageIds removeObject:imageId];
+                           if ([self.selectedImageIds containsObject:imageIdObject]) {
+                               // Remove image from selection
+                               [self.selectedImageIds removeObject:imageIdObject];
+                               // Close HUD if last image
+                               if ([self.selectedImageIds count] == 0) {
+                                   [self hideHUDwithSuccess:NO completion:^{
+                                       self.hudViewController = nil;
+                                   }];
+                               }
                            }
                        }
                    });
@@ -2124,6 +2199,39 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                        [alert addAction:dismissAction];
                        [topViewController presentViewController:alert animated:YES completion:nil];
                    });
+}
+
+
+#pragma mark - UISearchControllerDelegate
+
+
+
+#pragma mark - UISearchResultsUpdating
+
+-(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    
+    // Query string
+    NSString *searchString = [self.searchController.searchBar text];
+    
+    // Initialise search cache
+    PiwigoAlbumData *searchAlbum = [[PiwigoAlbumData alloc] initSearchAlbumForQuery:searchString];
+    [[CategoriesData sharedInstance] updateCategories:@[searchAlbum]];
+    
+    // Resfresh image collection for new query
+    if ([searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
+        SearchImagesViewController *resultsController = (SearchImagesViewController *)searchController.searchResultsController;
+        resultsController.searchQuery = searchString;
+        [resultsController searchAndLoadImages];
+    }
+}
+
+
+#pragma mark - UISearchBarDelegate
+
+// Workaround for bug: -updateSearchResultsForSearchController: is not called when scope buttons change
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
+{
+    [self updateSearchResultsForSearchController:self.searchController];
 }
 
 @end

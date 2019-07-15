@@ -120,8 +120,10 @@
 "categorySort_dateCreatedAscending" = "作成日、古い → 新しい";
 "categorySort_datePostedDescending" = "掲載日、新しい → 古い";
 "categorySort_datePostedAscending" = "掲載日、古い → 新しい";
-"categorySort_visitsDescending" = "訪問, 高 → 低";
-"categorySort_visitsAscending" = "訪問, 低 → 高";
+"categorySort_ratingScoreDescending" = "評価スコア、高い→低い";
+"categorySort_ratingScoreAscending" = "評価スコア、低い→高い";
+"categorySort_visitsDescending" = "訪問回数, 高 → 低";
+"categorySort_visitsAscending" = "訪問回数, 低 → 高";
 "categorySort_videosOnly" = "動画のみ";
 "categorySort_imagesOnly" = "画像のみ";
 
@@ -573,7 +575,7 @@
 "settingsHeader_about" = "情報";
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
-"settings_contactUs" = "iOS@piwigo.org";
+"settings_contactUs" = "お問合わせ";
 "settings_feedback" = "フィードバック";
 "settings_supportForum" = "サポートフォーラム";
 "settings_releaseNotes" = "リリースノート";

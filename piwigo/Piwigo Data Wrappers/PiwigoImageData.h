@@ -29,12 +29,12 @@ typedef enum {
 //      file, date_creation, date_available, width, height
 //      element_url, derivatives, (page_url)
 //
-@property (nonatomic, strong) NSString *imageId;                // id
+@property (nonatomic, assign) NSInteger imageId;               // id
 @property (nonatomic, strong) NSArray *categoryIds;             // categories
 @property (nonatomic, strong) NSString *name;                   // name
 @property (nonatomic, strong) NSString *imageDescription;       // comment
 @property (nonatomic, assign) NSInteger visits;                 // hit
-@property (nonatomic, strong) NSString *fileName;               // file
+@property (nonatomic, strong) NSString *fileName;               // file name
 @property (nonatomic, strong) NSDate *dateCreated;              // date_creation
 @property (nonatomic, strong) NSDate *datePosted;               // date_available
 @property (nonatomic, assign) NSInteger fullResWidth;           // width
@@ -79,13 +79,14 @@ typedef enum {
 
 // API pwg.images.getInfo returns in addition:
 //
-//      author, level, tags, (added_by), (rating_score), (rates), (representative_ext)
+//      author, level, tags, (added_by), rating_score, (rates), (representative_ext)
 //      filesize, (md5sum), (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
 //      (comments), (comments_paging), (coi)
 //
 @property (nonatomic, strong) NSString *author;                 // author
 @property (nonatomic, assign) NSInteger privacyLevel;           // level
 @property (nonatomic, strong) NSArray *tags;                    // tags
+@property (nonatomic, assign) float ratingScore;                // rating score
 @property (nonatomic, assign) NSInteger fileSize;               // filesize
 
 @property (nonatomic, assign) BOOL isVideo;

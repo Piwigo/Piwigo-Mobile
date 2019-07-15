@@ -80,12 +80,19 @@
 	
 	for(NSDictionary *tagData in tagsArray)
 	{
-		PiwigoTagData *newTagData = [PiwigoTagData new];
-		newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
-		newTagData.tagName = [tagData objectForKey:@"name"];
+        // => pwg.tags.getAdminList returns:
+        // id, (lastmodified), name e.g. "Médicaments", (url_name) e.g. "divers_medicaments"
+        PiwigoTagData *newTagData = [PiwigoTagData new];
+        newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
+        newTagData.tagName = [tagData objectForKey:@"name"];
         
-        // Number of images not known if getAdminList called
-		newTagData.numberOfImagesUnderTag = [[tagData objectForKey:@"counter"] integerValue];
+        // => pwg.tags.getList returns in addition:
+        // counter, url
+        if ([tagData objectForKey:@"counter"]) {
+            newTagData.numberOfImagesUnderTag = [[tagData objectForKey:@"counter"] integerValue];
+        } else {
+            newTagData.numberOfImagesUnderTag = NSNotFound;
+        }
 
         [tags addObject:newTagData];
 	}

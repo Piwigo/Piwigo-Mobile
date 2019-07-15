@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.3.5_text" = "Versi 2.3.5\n\n• Perbaiki crash yang terkadang terjadi saat mengedit alamat server setelah logout";
+"v2.4.0_text" = "Versi 2.4\n\n• Menambahkan alat pencarian (membutuhkan iOS 11 atau lebih baru)\n• Menambahkan penyortiran gambar berdasarkan skor penilaian\n• Unduhan thumbnail album lebih cepat (membutuhkan Piwigo 2.8 atau lebih baru)\n• Judul gambar yang diunggah sudah tidak lagi menjadi nama file\n• Memperbaiki ketidakmungkinan untuk menghapus tag\n• Memperbaiki data gambar yang tidak akurat dalam beberapa keadaan";
 
-"v2.3.4_text" = "Versi 2.3.4\n2 Mei 2019\n\n• Improved albums presentation on iPad (and iPhone)\n• Perbaikan bug minor dan perbaikan antarmuka";
+"v2.3.5_text" = "Versi 2.3.5\n6 Juni 2019\n\n• Perbaiki crash yang terkadang terjadi saat mengedit alamat server setelah logout";
+
+"v2.3.4_text" = "Versi 2.3.4\n1 Mei 2019\n\n• Improved albums presentation on iPad (and iPhone)\n• Perbaikan bug minor dan perbaikan antarmuka";
 
 "v2.3.3_text" = "Versi 2.3.3\n10 April 2018\n\n• Perbaikan bug minor dan perbaikan antarmuka";
 

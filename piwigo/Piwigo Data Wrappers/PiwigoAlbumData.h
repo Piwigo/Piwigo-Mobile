@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "PiwigoImageData.h"
 
+FOUNDATION_EXPORT NSInteger const kPiwigoSearchCategoryId;
+
 typedef enum {
 	ImageListOrderId,
 	ImageListOrderFileName,
@@ -21,6 +23,7 @@ typedef enum {
 @interface PiwigoAlbumData : NSObject
 
 @property (nonatomic, assign) NSInteger albumId;
+@property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) NSInteger parentAlbumId;
 @property (nonatomic, strong) NSArray *upperCategories;
 @property (nonatomic, assign) NSInteger nearestUpperCategory;
@@ -39,16 +42,18 @@ typedef enum {
 @property (nonatomic, readonly) NSArray *imageList;
 @property (nonatomic, readonly) NSInteger onPage;
 
--(void)addImages:(NSArray*)images;
--(void)removeImages:(NSArray*)images;
-//-(void)removeImage:(PiwigoImageData*)image;
+-(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query;
 
+-(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+                              OnCompletion:(void (^)(BOOL completed))completion;
 -(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion;
--(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-							  OnCompletion:(void (^)(BOOL completed))completion;
--(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
+-(void)addImages:(NSArray*)images;
+-(void)updateImages:(NSArray*)updatedImages;
+-(void)updateImageAfterUpload:(ImageUpload *)uploadedImage;
+-(void)removeImages:(NSArray*)images;
+//-(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
 -(NSInteger)getDepthOfCategory;
 -(BOOL)containsUpperCategory:(NSInteger)category;
 -(void)resetData;

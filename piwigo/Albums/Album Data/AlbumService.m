@@ -8,7 +8,6 @@
 
 #import "AlbumService.h"
 #import "AppDelegate.h"
-#import "PiwigoAlbumData.h"
 #import "Model.h"
 #import "CategoriesData.h"
 
@@ -21,7 +20,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 +(NSURLSessionTask*)getInfosOnCompletion:(void (^)(NSURLSessionTask *task, NSArray *infos))completion
                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Get albums list for category
+    // Send request
     return [self post:kPiwigoGetInfos
         URLParameters:nil
            parameters:nil
@@ -41,8 +40,15 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   else
                   {
                       // Display Piwigo error
-                      NSInteger errorCode = [[responseObject objectForKey:@"err"] intValue];
-                      [NetworkHandler showPiwigoError:errorCode forPath:kPiwigoGetInfos andURLparams:nil];
+                      NSInteger errorCode = NSNotFound;
+                      if ([responseObject objectForKey:@"err"]) {
+                          errorCode = [[responseObject objectForKey:@"err"] intValue];
+                      }
+                      NSString *errorMsg = @"";
+                      if ([responseObject objectForKey:@"message"]) {
+                          errorMsg = [responseObject objectForKey:@"message"];
+                      }
+                      [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoGetInfos andURLparams:nil];
 
                       if(completion)
                       {
@@ -94,15 +100,19 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
-//    NSLog(@"                => getAlbumListForCategory(%ld,%@)", (long)categoryId, recursiveString);
+    // Compile parameters
+    NSDictionary *parameters = @{
+                                 @"cat_id" : @(categoryId),
+                                 @"recursive" : recursiveString,
+                                 @"faked_by_community" : fakedString,
+                                 @"thumbnail_size" : @"medium"
+                                 };
+    
     // Get albums list for category
+//    NSLog(@"                => getAlbumListForCategory(%ld,%@)", (long)categoryId, recursiveString);
     return [self post:kPiwigoCategoriesGetList
         URLParameters:nil
-           parameters:@{
-                        @"cat_id" : @(categoryId),
-                        @"recursive" : recursiveString,
-                        @"faked_by_community" : fakedString
-                        }
+           parameters:parameters
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -135,8 +145,15 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   else
                   {
                       // Display Piwigo error
-                      NSInteger errorCode = [[responseObject objectForKey:@"err"] intValue];
-                      [NetworkHandler showPiwigoError:errorCode forPath:kPiwigoGetInfos andURLparams:nil];
+                      NSInteger errorCode = NSNotFound;
+                      if ([responseObject objectForKey:@"err"]) {
+                          errorCode = [[responseObject objectForKey:@"err"] intValue];
+                      }
+                      NSString *errorMsg = @"";
+                      if ([responseObject objectForKey:@"message"]) {
+                          errorMsg = [responseObject objectForKey:@"message"];
+                      }
+                      [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesGetList andURLparams:nil];
 
                       if(completion)
                       {
@@ -247,12 +264,16 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                                         OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
                                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Compile parameters
+    NSDictionary *parameters = @{
+                                 @"cat_id" : @(categoryId),
+                                 @"recursive"  : recursive
+                                 };
+    
+    // Send request
     return [self post:kCommunityCategoriesGetList
         URLParameters:nil
-           parameters:@{
-                        @"cat_id" : @(categoryId),
-                        @"recursive"  : recursive
-                        }
+           parameters:parameters
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -264,8 +285,15 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       else
                       {
                           // Display Piwigo error
-                          NSInteger errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          [NetworkHandler showPiwigoError:errorCode forPath:kPiwigoGetInfos andURLparams:nil];
+                          NSInteger errorCode = NSNotFound;
+                          if ([responseObject objectForKey:@"err"]) {
+                              errorCode = [[responseObject objectForKey:@"err"] intValue];
+                          }
+                          NSString *errorMsg = @"";
+                          if ([responseObject objectForKey:@"message"]) {
+                              errorMsg = [responseObject objectForKey:@"message"];
+                          }
+                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kCommunityCategoriesGetList andURLparams:nil];
 
                           completion(task, nil);
                       }

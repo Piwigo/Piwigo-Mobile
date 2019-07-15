@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Erstelldatum, Alt → Neu";
 "categorySort_datePostedDescending" = "Veröffentlichung, Neu → Alt";
 "categorySort_datePostedAscending" = "Veröffentlichung, Alt → Neu";
+"categorySort_ratingScoreDescending" = "Bewertung, hoch → niedrig";
+"categorySort_ratingScoreAscending" = "Bewertung, niedrig → hoch";
 "categorySort_visitsDescending" = "Besuche, hoch → niedrig";
 "categorySort_visitsAscending" = "Besuche, niedrig → hoch";
 "categorySort_videosOnly" = "Nur Videos";
@@ -573,7 +575,7 @@
 "settingsHeader_about" = "Informationen";
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
-"settings_contactUs" = "iOS@piwigo.org";
+"settings_contactUs" = "Kontakt";
 "settings_feedback" = "Rückmeldung";
 "settings_supportForum" = "Support-Forum";
 "settings_releaseNotes" = "Versionshinweise";

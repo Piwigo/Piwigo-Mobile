@@ -14,7 +14,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderName;
 FOUNDATION_EXPORT NSString * const kGetImageOrderVisits;
 FOUNDATION_EXPORT NSString * const kGetImageOrderRating;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDateCreated;
-FOUNDATION_EXPORT NSString * const kGetImageOrderDateAdded;
+FOUNDATION_EXPORT NSString * const kGetImageOrderDatePosted;
 FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
 FOUNDATION_EXPORT NSString * const kGetImageOrderAscending;
 FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
@@ -28,6 +28,19 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                forOrder:(NSString*)order
                            OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albumImages))completion
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)getImagesForQuery:(NSString *)query
+                               onPage:(NSInteger)page
+                             forOrder:(NSString *)order
+                         OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *searchedImages))completion
+                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
+                                        forCategory:(NSInteger)categoryId orQuery:(NSString*)query
+                                             onPage:(NSInteger)onPage
+                                            forSort:(NSString*)sort
+                                   ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
+                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
@@ -55,13 +68,6 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
 +(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
-
-+(NSURLSessionTask*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
-                                        forCategory:(NSInteger)categoryId
-                                             onPage:(NSInteger)onPage
-                                            forSort:(NSString*)sort
-                                   ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
-                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSMutableDictionary *)metadata;
 +(NSMutableDictionary *)fixMetadata:(NSMutableDictionary *)metadata ofImage:(UIImage*)image;

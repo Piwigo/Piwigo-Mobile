@@ -213,7 +213,7 @@
 +(NSString*)getNameForCategorySortType:(kPiwigoSortCategory)sortType
 {
 	NSString *name = @"";
-	switch(sortType)
+	switch (sortType)
 	{
 		case kPiwigoSortCategoryNameAscending:
 			name = NSLocalizedString(@"categorySort_nameAscending", @"Photo Title, A → Z");
@@ -239,21 +239,18 @@
 		case kPiwigoSortCategoryDatePostedAscending:
 			name = NSLocalizedString(@"categorySort_datePostedAscending", @"Date Posted, old → new");
 			break;
+        case kPiwigoSortCategoryRatingScoreDescending:
+            name = NSLocalizedString(@"categorySort_ratingScoreDescending", @"Rating Score, high → low");
+            break;
+        case kPiwigoSortCategoryRatingScoreAscending:
+            name = NSLocalizedString(@"categorySort_ratingScoreAscending", @"Rating Score, low → high");
+            break;
         case kPiwigoSortCategoryVisitsDescending:
             name = NSLocalizedString(@"categorySort_visitsDescending", @"Visits, high → low");
             break;
         case kPiwigoSortCategoryVisitsAscending:
             name = NSLocalizedString(@"categorySort_visitsAscending", @"Visits, low → high");
             break;
-        
-// Data not returned by API pwg.categories.getList
-//        case kPiwigoSortCategoryRatingScoreDescending:  // Rating score, high → low
-//        {
-//        }
-//        case kPiwigoSortCategoryRatingScoreAscending:   // Rating score, low → high
-//        {
-//        }
-// and level (permissions)
 
 //		case kPiwigoSortCategoryVideoOnly:
 //			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");

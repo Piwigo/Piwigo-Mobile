@@ -81,7 +81,7 @@
 "serverConnectionError_message" = "A secured HTTPS connection could not be established. Please check the address or try in unencrypted HTTP mode?";
 
 "serverVersionNotCompatible_title" = "Server Incompatible";
-"serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile. Do you still want to continue?";
+"serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile. Do you still want to continue?";
 
 "sessionStatusError_title" = "Authentication Fail";
 "sessionStatusError_message" = "Failed to authenticate with the server. Try logging in again.";
@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Date Created, old → new";
 "categorySort_datePostedDescending" = "Date Posted, new → old";
 "categorySort_datePostedAscending" = "Date Posted, old → new";
+"categorySort_ratingScoreDescending" = "Rating Score, high → low";
+"categorySort_ratingScoreAscending" = "Rating Score, low → high";
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_videosOnly" = "Videos Only";
@@ -573,7 +575,7 @@
 "settingsHeader_about" = "Information";
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
-"settings_contactUs" = "iOS@piwigo.org";
+"settings_contactUs" = "Contact Us";
 "settings_feedback" = "Feedback";
 "settings_supportForum" = "Support Forum";
 "settings_releaseNotes" = "Release Notes";

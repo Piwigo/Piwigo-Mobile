@@ -10,7 +10,7 @@
 #import "PiwigoAlbumData.h"
 #import "ImageService.h"
 #import "CategoriesData.h"
-#import "CategoryImageSort.h"
+//#import "CategoryImageSort.h"
 
 @interface AlbumData()
 
@@ -24,12 +24,13 @@
 
 @implementation AlbumData
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andQuery:(NSString *)query
 {
 	self = [super init];
 	if(self)
 	{
 		self.images = [NSArray new];
+        self.searchQuery = [NSString stringWithString:query];
 		self.categoryId = categoryId;
 		self.sortType = -1;
 	}
@@ -41,24 +42,31 @@
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
-	if(downloadedImageDataCount == totalImageCount)
+    // Return if job done
+    if (((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+        ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
 	{
-		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+//        NSLog(@"loadMoreImagesOnCompletion: we have all image data, sort them");
+//        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if(completion)
 		{
 			completion();
 		}
 		return;
 	}
-		
+    
+    // Set sort string parameter from sort type
 	[self updateSortString];
 	
+    // Load more category image data
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkWithSort:self.sortString forProgress:nil OnCompletion:^(BOOL completed) {
 		if(!completed)
 		{
 			return;
 		}
-		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+//        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if(completion)
 		{
 			completion();
@@ -69,51 +77,49 @@
 -(void)updateSortString
 {
 	NSString *sort = @"";
-	switch(self.sortType)
+	switch (self.sortType)
 	{
-		case kPiwigoSortCategoryNameAscending:
+		case kPiwigoSortCategoryNameAscending:          // Photo title, A → Z
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderAscending];
 			break;
-		case kPiwigoSortCategoryNameDescending:
+		case kPiwigoSortCategoryNameDescending:         // Photo title, Z → A
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderDescending];
 			break;
 
-        case kPiwigoSortCategoryFileNameAscending:
+        case kPiwigoSortCategoryFileNameAscending:      // File name, A → Z
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderAscending];
 			break;
-		case kPiwigoSortCategoryFileNameDescending:
+		case kPiwigoSortCategoryFileNameDescending:     // File name, Z → A
 			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderDescending];
 			break;
 		
-        case kPiwigoSortCategoryDateCreatedAscending:
+        case kPiwigoSortCategoryDateCreatedAscending:   // Date created, old → new
             sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
             break;
-        case kPiwigoSortCategoryDateCreatedDescending:
+        case kPiwigoSortCategoryDateCreatedDescending:  // Date created, new → old
             sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
             break;
             
-        case kPiwigoSortCategoryDatePostedAscending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
+        case kPiwigoSortCategoryDatePostedAscending:    // Date posted, new → old
+			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDatePosted, kGetImageOrderAscending];
 			break;
-		case kPiwigoSortCategoryDatePostedDescending:
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
+		case kPiwigoSortCategoryDatePostedDescending:   // Date posted, old → new
+			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDatePosted, kGetImageOrderDescending];
 			break;
 
-        case kPiwigoSortCategoryVisitsAscending:
+        case kPiwigoSortCategoryRatingScoreDescending:  // Rating score, high → low
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderRating, kGetImageOrderDescending];
+            break;
+        case kPiwigoSortCategoryRatingScoreAscending:   // Rating score, low → high
+            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderRating, kGetImageOrderAscending];
+            break;
+
+        case kPiwigoSortCategoryVisitsAscending:        // Visits, high → low
             sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderAscending];
             break;
-        case kPiwigoSortCategoryVisitsDescending:
+        case kPiwigoSortCategoryVisitsDescending:       // Visits, low → high
             sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderDescending];
             break;
-
-// Data not returned by API pwg.categories.getList
-//        case kPiwigoSortCategoryRatingScoreDescending:  // Rating score, high → low
-//        {
-//        }
-//        case kPiwigoSortCategoryRatingScoreAscending:   // Rating score, low → high
-//        {
-//        }
-// and level (permissions)
 
 //		case kPiwigoSortCategoryVideoOnly:
 //			//			sort = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
@@ -136,21 +142,26 @@
 //    {    // nothing changed, return
 //        return;
 //    }
-	self.sortType = imageSort;
+//    self.sortType = imageSort;
 	
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
-	if(downloadedImageDataCount == totalImageCount)
+//    NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
+	if ((((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+         ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount)) && (imageSort == self.sortType))
 	{	// we have all the image data, just manually sort it
-		self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+//        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList forSortOrder:self.sortType];
+        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if(completion)
 		{
-			completion();
+//            NSLog(@"updateImageSort: we have all image data");
+            completion();
 		}
 		return;
 	}
 	
+    self.sortType = imageSort;
 	self.images = [NSArray new];
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
 	[self loadMoreImagesOnCompletion:completion];
@@ -196,13 +207,13 @@
 
 -(void)removeImage:(PiwigoImageData*)image
 {
-	[self removeImageWithId:[image.imageId integerValue]];
+	[self removeImageWithId:image.imageId];
 }
 
 -(void)removeImageWithId:(NSInteger)imageId
 {
 	NSIndexSet *set = [self.images indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {
-		return [obj.imageId integerValue] != imageId;
+		return obj.imageId != imageId;
 	}];
 	self.images = [self.images objectsAtIndexes:set];
 }

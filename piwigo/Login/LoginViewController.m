@@ -268,11 +268,12 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         // If Piwigo server requires HTTP basic authentication, ask credentials
         if ([Model sharedInstance].performedHTTPauthentication){
             // Without prior knowledge, the app already tried Piwigo credentials
-            // But unsuccessfully, so must now request HTTP credentials
+            // but unsuccessfully, so must now request HTTP credentials
             [self requestHttpCredentialsAfterError:error];
         } else {
             // HTTPS login request failed ?
-            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"])
+            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"] &&
+                ![Model sharedInstance].userCancelledCommunication)
             {
                 // Suggest HTTP connection if HTTPS attempt failed
                 [self tryNonSecuredAccessAfterError:error];
@@ -520,7 +521,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                                   OnCompletion:^(NSDictionary *responseObject) {
             if(responseObject)
             {
-                if([@"2.7" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
+                if([@"2.8" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
                 {
                     // They need to update, ask user what to do
                     // Close loading or re-login view and ask what to do
@@ -528,7 +529,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                         dispatch_async(dispatch_get_main_queue(), ^{
                             UIAlertController* alert = [UIAlertController
                                     alertControllerWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
-                                    message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.7. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
+                                    message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), [Model sharedInstance].version]
                                     preferredStyle:UIAlertControllerStyleAlert];
                             
                             UIAlertAction* defaultAction = [UIAlertAction
@@ -752,10 +753,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         if (hud) {
             // Update text
             hud.detailsLabel.text = NSLocalizedString(@"internetCancellingConnection_button", @"Cancelling Connection…");;
-            
-            // Reconfigure the button
-            [hud.button isSelected];
-            [hud.button removeTarget:self action:@selector(hideLoading) forControlEvents:UIControlEventTouchUpInside];
         }
     });
 }
@@ -780,6 +777,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
             } else {
                 hud.label.text = NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error");
                 hud.detailsLabel.text = [NSString stringWithFormat:@"%@", [error localizedDescription]];
+
+                // Return to secured connection mode before user retries with updated address and/or credentials
+                [Model sharedInstance].serverProtocol = @"https://";
+                self.websiteNotSecure.hidden = YES;
             }
         }
     });

@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Datum gemaakt, oud → nieuw";
 "categorySort_datePostedDescending" = "Datum geplaatst, nieuw → oud";
 "categorySort_datePostedAscending" = "Datum geplaatst, oud → nieuw";
+"categorySort_ratingScoreDescending" = "Waarderingsscore, hoog → laag";
+"categorySort_ratingScoreAscending" = "Waarderingsscore, laag → hoog";
 "categorySort_visitsDescending" = "Bezoeken, hoog → laag";
 "categorySort_visitsAscending" = "Bezoeken, laag → hoog";
 "categorySort_videosOnly" = "Alleen video's";
@@ -573,7 +575,7 @@
 "settingsHeader_about" = "Informatie";
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
-"settings_contactUs" = "iOS@piwigo.org";
+"settings_contactUs" = "Neem contact met ons op";
 "settings_feedback" = "Terugkoppeling";
 "settings_supportForum" = "Ondersteuningsforum";
 "settings_releaseNotes" = "Uitgave opmerkingen";

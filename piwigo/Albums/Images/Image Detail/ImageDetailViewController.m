@@ -52,14 +52,14 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 @implementation ImageDetailViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray *)array
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray *)arrayOfImages
 {
 	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	if(self)
 	{
 		// Current category and images data
         self.categoryId = categoryId;
-		self.images = [array mutableCopy];
+		self.images = [arrayOfImages mutableCopy];
 		
 		self.dataSource = self;
 		self.delegate = self;
@@ -111,7 +111,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         
         // Retrieve complete image data if needed (buttons are greyed until job done)
         if (self.imageData.fileSize == NSNotFound) {
-            [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
+            [self retrieveCompleteImageDataOfImageId:self.imageData.imageId];
         }
         
         // For managing taps
@@ -175,7 +175,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Scroll previewed image to visible area
     if([self.imgDetailDelegate respondsToSelector:@selector(didFinishPreviewOfImageWithId:)])
     {
-        [self.imgDetailDelegate didFinishPreviewOfImageWithId:[self.imageData.imageId integerValue]];
+        [self.imgDetailDelegate didFinishPreviewOfImageWithId:self.imageData.imageId];
     }
 }
 
@@ -281,7 +281,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                   NSInteger index = 0;
                   for(PiwigoImageData *image in self.images)
                   {
-                      if([image.imageId integerValue] == [imageDataComplete.imageId integerValue]) {
+                      if(image.imageId == imageDataComplete.imageId) {
                           break;
                       }
                       index++;
@@ -318,7 +318,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
-          [self retrieveCompleteImageDataOfImageId:[self.imageData.imageId integerValue]];
+          [self retrieveCompleteImageDataOfImageId:self.imageData.imageId];
         }];
     
     [alert addAction:dismissAction];
@@ -486,7 +486,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         // Retrieve image data in case user will want to copy, edit, move, etc. the image
         PiwigoImageData *imageData = [self.images objectAtIndex:pendingVC.imageIndex];
         if (imageData.fileSize == NSNotFound) {
-            [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
+            [self retrieveCompleteImageDataOfImageId:imageData.imageId];
         }
     }
 }
@@ -585,8 +585,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Add actions
     [alert addAction:cancelAction];
     [alert addAction:deleteAction];
-    if ([self.imageData.categoryIds count] > 1) {
-        // This image is used in another album!
+    if (([self.imageData.categoryIds count] > 1) &&
+        (self.categoryId != kPiwigoSearchCategoryId)) {
+        // This image is used in another album
+        // Proposes to remove it from the current album, unless it was selected from a Search
         [alert addAction:removeAction];
     }
 
@@ -817,6 +819,15 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)addImageToCategory
 {
+    // If image selected from Search, immediatley propose to copy it
+    if (self.categoryId == kPiwigoSearchCategoryId) {
+        MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId atIndex:[self indexOfSelectedImage] andCopyOption:YES];
+        moveImageVC.moveImageDelegate = self;
+        [self pushView:moveImageVC];
+        return;
+    }
+    
+    // Image selected from album collection
     UIAlertController* alert = [UIAlertController
             alertControllerWithTitle:nil message:nil
             preferredStyle:UIAlertControllerStyleActionSheet];
@@ -956,7 +967,12 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     if (@available(iOS 9, *)) {
         titleLabel.allowsDefaultTighteningForTruncation = YES;
     }
-    titleLabel.text = self.imageData.name;
+    if ([self.imageData.name length] == 0) {
+        // No title => Use file name
+        titleLabel.text = self.imageData.fileName;
+    } else {
+        titleLabel.text = self.imageData.name;
+    }
     [titleLabel sizeToFit];
 
     // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
@@ -1030,7 +1046,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     NSInteger index = 0;
     for(PiwigoImageData *image in self.images)
     {
-        if([image.imageId integerValue] == details.imageId) {
+        if(image.imageId == details.imageId) {
             image.name = details.title;
             image.author = details.author;
             image.privacyLevel = details.privacyLevel;
@@ -1043,7 +1059,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     }
 
     // Update previewed image
-    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[NSString stringWithFormat:@"%ld", (long)details.imageId]];
+    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:details.imageId];
     
     // Update current view
     [self setTitleViewFromImageData];
@@ -1091,7 +1107,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
                    });
 }
 
--(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSString *)imageId
+-(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
 {
     // Close HUD
     dispatch_async(dispatch_get_main_queue(),

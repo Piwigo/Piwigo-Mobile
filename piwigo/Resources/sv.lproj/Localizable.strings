@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Skapelsedatum, gammal → ny";
 "categorySort_datePostedDescending" = "Skapelsedatum, ny → gammal";
 "categorySort_datePostedAscending" = "Skapelsedatum, gammal → ny";
+"categorySort_ratingScoreDescending" = "Betyg, hög → låg";
+"categorySort_ratingScoreAscending" = "Betyg, låg → hög";
 "categorySort_visitsDescending" = "Besökare, hög → låg";
 "categorySort_visitsAscending" = "Besökare, låg → hög";
 "categorySort_videosOnly" = "Endast filmer";
@@ -573,7 +575,7 @@
 "settingsHeader_about" = "Information";
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
-"settings_contactUs" = "iOS@piwigo.org";
+"settings_contactUs" = "Kontakta oss";
 "settings_feedback" = "Återkoppling";
 "settings_supportForum" = "Supportforum";
 "settings_releaseNotes" = "Ändringslogg";

@@ -97,7 +97,7 @@
     [self startUploadIfNeeded];
     
     // The file name extension may change e.g. MOV => MP4, HEIC => JPG
-    [self.imageNamesUploadQueue addObject:[image.image stringByDeletingPathExtension]];
+    [self.imageNamesUploadQueue addObject:[image.fileName stringByDeletingPathExtension]];
 }
 
 -(void)startUploadIfNeeded
@@ -164,7 +164,7 @@
     
     // Image or video to be uploaded
     ImageUpload *nextImageToBeUploaded = [self.imageUploadQueue firstObject];
-    NSString *fileExt = [[nextImageToBeUploaded.image pathExtension] lowercaseString];
+    NSString *fileExt = [[nextImageToBeUploaded.fileName pathExtension] lowercaseString];
     PHAsset *originalAsset = nextImageToBeUploaded.imageAsset;
     
     // Retrieve Photo, Live Photo or Video
@@ -201,7 +201,7 @@
 
         // Videos are always exported in MP4 format (whenever possible)
         fileExt = @"mp4";
-        nextImageToBeUploaded.image = [[nextImageToBeUploaded.image stringByDeletingPathExtension] stringByAppendingPathExtension:fileExt];
+        nextImageToBeUploaded.fileName = [[nextImageToBeUploaded.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:fileExt];
 
         // Chek that the video format is accepted by the Piwigo server
         if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
@@ -243,7 +243,7 @@
     // Remove image from queue (in both tables)
     if (self.imageUploadQueue.count > 0) {                  // Added to prevent crash
         [self.imageUploadQueue removeObjectAtIndex:0];
-        [self.imageNamesUploadQueue removeObject:[image.image stringByDeletingPathExtension]];
+        [self.imageNamesUploadQueue removeObject:[image.fileName stringByDeletingPathExtension]];
 
         // Update progress infos
         if([self.delegate respondsToSelector:@selector(imageUploaded:placeInQueue:outOf:withResponse:)])
@@ -461,21 +461,21 @@
     
     // Apply compression if user requested it in Settings, or convert to JPEG if necessary
     NSData *imageCompressed = nil;
-    NSString *fileExt = [[image.image pathExtension] lowercaseString];
+    NSString *fileExt = [[image.fileName pathExtension] lowercaseString];
     if ([Model sharedInstance].compressImageOnUpload && ([Model sharedInstance].photoQuality < 100.0)) {
         // Compress image (only possible in JPEG)
         CGFloat compressionQuality = [Model sharedInstance].photoQuality / 100.0;
         imageCompressed = UIImageJPEGRepresentation(originalObject, compressionQuality);
 
         // Final image file will be in JPEG format
-        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
+        image.fileName = [[image.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
     }
     else if (![[Model sharedInstance].uploadFileTypes containsString:fileExt]) {
         // Image in unaccepted file format for Piwigo server => convert to JPEG format
         imageCompressed = UIImageJPEGRepresentation(originalObject, 1.0);
         
         // Final image file will be in JPEG format
-        image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
+        image.fileName = [[image.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
     }
     
     // If compression failed or imageCompressed nil, try to use original image
@@ -521,10 +521,10 @@
     
     // Re-check filename extension if MIME type known
     if (mimeType != nil) {
-        fileExt = [[image.image pathExtension] lowercaseString];
+        fileExt = [[image.fileName pathExtension] lowercaseString];
         NSString *expectedFileExtension = [self fileExtensionForImageData:self.imageData];
         if (![fileExt isEqualToString:expectedFileExtension]) {
-            image.image = [[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:expectedFileExtension];
+            image.fileName = [[image.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:expectedFileExtension];
         }
     } else {
         // Could not determine image file format from image data,
@@ -853,7 +853,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     NSString *mimeType = @"video/mp4";
 
     // Temporary filename and path
-    [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[image.image stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]]];
+    [exportSession setOutputURL:[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[image.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]]];
 
     // Deletes temporary video file if exists (might be incomplete, etc.)
     [[NSFileManager defaultManager] removeItemAtURL:exportSession.outputURL error:nil];
@@ -886,7 +886,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                 
                 // Try to upload original file
                 if ([originalVideo isKindOfClass:[AVURLAsset class]] &&
-                    [[Model sharedInstance].uploadFileTypes containsString:[image.image pathExtension]]) {
+                    [[Model sharedInstance].uploadFileTypes containsString:[image.fileName pathExtension]]) {
                     AVURLAsset *originalFileURL = (AVURLAsset *)originalVideo;
                     self.imageData = [[NSData dataWithContentsOfURL:originalFileURL.URL] copy];
                     NSArray *assetMetadata = [originalVideo commonMetadata];
@@ -1196,7 +1196,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 -(void)uploadImage:(ImageUpload *)image withMimeType:(NSString *)mimeType
 {
     // Chek that the final image format will be accepted by the Piwigo server
-    if (![[Model sharedInstance].uploadFileTypes containsString:[[image.image pathExtension] lowercaseString]]) {
+    if (![[Model sharedInstance].uploadFileTypes containsString:[[image.fileName pathExtension] lowercaseString]]) {
         [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
                       andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_destination", @"cannot create image destination")]
                      forRetrying:YES
@@ -1205,7 +1205,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     }
 
     // Check that title is not empty (should never happen)
-    if ([image.title length] == 0) image.title = @"Image";
+//    if ([image.title length] == 0) image.title = @"Image";
     
     // Append Tags
     NSMutableArray *tagIds = [NSMutableArray new];
@@ -1218,7 +1218,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
     // pwg.images.upload: file name key is kPiwigoImagesUploadParamTitle
     // pwg.images.setInfo: file name key is kPiwigoImagesUploadParamFileName
     __block NSDictionary *imageProperties = @{
-                                      kPiwigoImagesUploadParamFileName : image.image,
+                                      kPiwigoImagesUploadParamFileName : image.fileName,
                                       kPiwigoImagesUploadParamTitle : image.title,
                                       kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
                                       kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(image.privacyLevel)],
@@ -1347,7 +1347,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                             self.onCurrentImageUpload++;
                                             ImageUpload *nextImage = [self.imageUploadQueue firstObject];
                                             [self.imageUploadQueue removeObjectAtIndex:0];
-                                            [self.imageNamesUploadQueue removeObject:[nextImage.image stringByDeletingPathExtension]];
+                                            [self.imageNamesUploadQueue removeObject:[nextImage.fileName stringByDeletingPathExtension]];
                                         }
                                         
                                         // Tell user how many images have been uploaded

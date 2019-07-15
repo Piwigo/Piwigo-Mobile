@@ -120,6 +120,8 @@
 "categorySort_dateCreatedAscending" = "Tanggal Dibuat, lama → baru";
 "categorySort_datePostedDescending" = "Tanggal Dikirim, baru → lama";
 "categorySort_datePostedAscending" = "Tanggal Dikirim, lama → baru";
+"categorySort_ratingScoreDescending" = "Rating Score, high → low";
+"categorySort_ratingScoreAscending" = "Rating Score, low → high";
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_videosOnly" = "Hanya Video";
@@ -573,7 +575,7 @@
 "settingsHeader_about" = "Informasi";
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
-"settings_contactUs" = "iOS@piwigo.org";
+"settings_contactUs" = "Hubungi Kami";
 "settings_feedback" = "Umpan Balik";
 "settings_supportForum" = "Forum Bantuan";
 "settings_releaseNotes" = "Catatan Rilis";

@@ -40,6 +40,7 @@ NSString * const kCommunityImagesUploadCompleted = @"format=json&method=communit
 NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo";
 NSString * const kPiwigoImageSetInfo = @"format=json&method=pwg.images.setInfo";
 NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
+NSString * const kPiwigoImageSearch = @"format=json&method=pwg.images.search";
 
 NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
 NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdminList";
@@ -156,9 +157,10 @@ NSInteger const loadingViewTag = 899;
     [policy setValidatesDomainName:NO];
     [[Model sharedInstance].imagesSessionManager setSecurityPolicy:policy];
     
-    // Add "text/plain" to response serializer
+    // Add "text/plain" and "text/html" to response serializer (cases where URLs are forwarded)
     AFImageResponseSerializer *serializer = [[AFImageResponseSerializer alloc] init];
     serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/html"];
     [Model sharedInstance].imagesSessionManager.responseSerializer = serializer;
 
     // For servers performing HTTP Authentication
@@ -580,26 +582,26 @@ NSInteger const loadingViewTag = 899;
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
-+(void)showPiwigoError:(NSInteger)code forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams
++(void)showPiwigoError:(NSInteger)code withMessage:(NSString *)msg forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams
 {
     NSError *error;
     NSString *url = [self getURLWithPath:path withURLParams:urlParams];
 
     switch (code) {
         case kInvalidMethod:
-            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", NSLocalizedString(@"serverInvalidMethodError_message", @"Failed to call server method."), url]}];
+            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverInvalidMethodError_message", @"Failed to call server method."), url]}];
             break;
             
         case kMissingParameter:
-            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", NSLocalizedString(@"serverMissingParamError_message", @"Failed to execute server method with missing parameter."), url]}];
+            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverMissingParamError_message", @"Failed to execute server method with missing parameter."), url]}];
             break;
             
         case kInvalidParameter:
-            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", NSLocalizedString(@"serverInvalidParamError_message", @"Failed to call server method with provided parameters."), url]}];
+            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverInvalidParamError_message", @"Failed to call server method with provided parameters."), url]}];
             break;
             
         default:
-            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", NSLocalizedString(@"serverUnknownError_message", @"Unexpected error encountered while calling server method with provided parameters."), url]}];
+            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverUnknownError_message", @"Unexpected error encountered while calling server method with provided parameters."), url]}];
             break;
     }
     [self showConnectionError:error];
