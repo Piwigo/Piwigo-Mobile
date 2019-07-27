@@ -42,7 +42,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
 	return self;
 }
 
-// Search data are stored in a virtual album with Id = 1.000.000.000.000
+// Search data are stored in a virtual album with Id = kPiwigoSearchCategoryId
 -(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query
 {
     PiwigoAlbumData *albumData = [PiwigoAlbumData new];
