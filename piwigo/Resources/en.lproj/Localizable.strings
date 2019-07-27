@@ -111,6 +111,13 @@
 "categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "Error No Data";
 
+// Albums "Discover"
+"categoryDiscover_title" = "Discover";
+"categoryDiscoverVisits_title" = "Most visited";
+"categoryDiscoverVisits_legend" = "hits";
+"categoryDiscoverBest_title" = "Best rated";
+"categoryDiscoverRecent_title" = "Recent photos";
+
 // Albums sort
 "categorySort_nameAscending" = "Photo Title, A → Z";
 "categorySort_nameDescending" = "Photo Title, Z → A";
