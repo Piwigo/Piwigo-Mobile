@@ -111,6 +111,13 @@
 "categoryImageList_deselectButton" = "選択を解除";
 "categoryImageList_noDataError" = "エラー データがありません";
 
+// Albums "Discover"
+"categoryDiscover_title" = "Discover";
+"categoryDiscoverVisits_title" = "最多アクセス";
+"categoryDiscoverVisits_legend" = "景色";
+"categoryDiscoverBest_title" = "最高評価";
+"categoryDiscoverRecent_title" = "最近の写真";
+
 // Albums sort
 "categorySort_nameAscending" = "写真題名、A → Z";
 "categorySort_nameDescending" = "写真題名、Z → A";

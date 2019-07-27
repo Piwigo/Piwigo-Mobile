@@ -111,6 +111,13 @@
 "categoryImageList_deselectButton" = "Fravælg";
 "categoryImageList_noDataError" = "Fejl ingen Data";
 
+// Albums "Discover"
+"categoryDiscover_title" = "Opdag";
+"categoryDiscoverVisits_title" = "Mest sete";
+"categoryDiscoverVisits_legend" = "visninger";
+"categoryDiscoverBest_title" = "Bedst bedømte";
+"categoryDiscoverRecent_title" = "Nye fotografier";
+
 // Albums sort
 "categorySort_nameAscending" = "Billedtitel, A → Z";
 "categorySort_nameDescending" = "Billedtitel, Z → A";
