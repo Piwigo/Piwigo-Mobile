@@ -20,6 +20,7 @@
 #import "CategoryHeaderReusableView.h"
 //#import "CategoryImageSort.h"
 #import "CategoryPickViewController.h"
+#import "DiscoverImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
@@ -51,6 +52,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) UIViewController *hudViewController;
 
 @property (nonatomic, strong) UIBarButtonItem *settingsBarButton;
+@property (nonatomic, strong) UIBarButtonItem *discoverBarButton;
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *spaceBetweenButtons;
@@ -124,6 +126,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         // Bar buttons
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] landscapeImagePhone:[UIImage imageNamed:@"preferencesCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
         [self.settingsBarButton setAccessibilityIdentifier:@"preferences"];
+        self.discoverBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"list"] landscapeImagePhone:[UIImage imageNamed:@"listCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(discoverImages)];
+        [self.discoverBarButton setAccessibilityIdentifier:@"discover"];
+
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
         [self.selectBarButton setAccessibilityIdentifier:@"Select"];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
@@ -394,7 +399,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
         if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
             // Thumbnail is already visible and is highlighted
-            [self highlightCell];
+            UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
+            if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+                ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+                [imageCell highlightOnCompletion:^{
+                    // Apply effect when returning from image preview mode
+                    self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+                }];
+            } else {
+                self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+            }
         }
         else {
             // Search for the first visible thumbnail
@@ -459,33 +473,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Highlight image which is now visible
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
 //        NSLog(@"=> Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
-        [self highlightCell];
-    }
-}
-
--(void)highlightCell
-{
-    // Select cell of image of interest and apply effect
-    UICollectionViewCell *cell = nil;
-    cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
-    if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
-        ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
-        imageCell.backgroundColor = [UIColor piwigoBackgroundColor];
-        imageCell.contentMode = UIViewContentModeScaleAspectFit;
-        [UIView animateWithDuration:0.4 delay:0.3 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            [imageCell.cellImage setAlpha:0.2];
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.4 delay:0.7 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                [imageCell.cellImage setAlpha:1.0];
-            } completion:^(BOOL finished) {
-                // Apply effect only when returning from image preview mode
+        UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+            [imageCell highlightOnCompletion:^{
+                // Apply effect when returning from image preview mode
                 self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
             }];
-        }];
-    }
-    else {
-        // Apply effect only when returning from image preview mode
-        self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+        } else {
+           self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+        }
     }
 }
 
@@ -587,14 +584,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         }
         
         // Right side of navigation bar
-        if ((self.categoryId != 0) &&
-            (self.albumData.images.count > 0)){
-            
+        if (self.categoryId == 0) {
+            // Root album => Discover menu button
+            [self.navigationItem setRightBarButtonItems:@[self.discoverBarButton] animated:YES];
+        }
+        else if (self.albumData.images.count > 0) {
             // Button for activating the selection mode
             [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
-        }
-        else {
-            // No images: no button
+        } else {
+            // No button
             [self.navigationItem setRightBarButtonItems:@[] animated:YES];
         }
     }
@@ -806,7 +804,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             if ([self.albumData.images count] > indexPath.row) {
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
                 ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
-                [imageCell setupWithImageData:imageData];
+                [imageCell setupWithImageData:imageData forCategoryId:self.categoryId];
 
                 if([self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]])
                 {
@@ -1889,7 +1887,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
 //                NSLog(@"Index:%ld => image ID:%@ - %@", indexPath.row, imageData.imageId, imageData.name);
-                [cell setupWithImageData:imageData];
+                [cell setupWithImageData:imageData forCategoryId:self.categoryId];
                 cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
                 
                 // Add pan gesture recognition
@@ -2264,6 +2262,70 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
 {
     [self updateSearchResultsForSearchController:self.searchController];
+}
+
+
+#pragma mark - Discover images
+
+// Create Discover images view i.e. Most visited, Best rated, etc.
+-(void)discoverImages
+{
+    // Do we really want to delete these images?
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:nil
+        message:NSLocalizedString(@"categoryDiscover_title", @"Discover")
+        preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+       actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+       style:UIAlertActionStyleCancel
+       handler:^(UIAlertAction * action) {}];
+
+    UIAlertAction* mostVisitedAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            // Show most visited images
+            [self discoverImagesInCategoryId:kPiwigoVisitsCategoryId];
+         }];
+    
+    UIAlertAction* bestRatedAction = [UIAlertAction
+          actionWithTitle:NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated")
+          style:UIAlertActionStyleDefault
+          handler:^(UIAlertAction * action) {
+              // Show best rated images
+              [self discoverImagesInCategoryId:kPiwigoBestCategoryId];
+          }];
+
+    UIAlertAction* recentAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent photos")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+          // Show best rated images
+          [self discoverImagesInCategoryId:kPiwigoRecentCategoryId];
+        }];
+    
+    // Add actions
+    [alert addAction:cancelAction];
+    [alert addAction:mostVisitedAction];
+    [alert addAction:bestRatedAction];
+    [alert addAction:recentAction];
+    
+    // Present list of Discover views
+    alert.popoverPresentationController.barButtonItem = self.discoverBarButton;
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)discoverImagesInCategoryId:(NSInteger)categoryId
+{
+    // Create Discover view
+    DiscoverImagesViewController *discoverController = [[DiscoverImagesViewController alloc] initWithCategoryId:categoryId];
+    
+    // Embed Discover view in navigation interface
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:discoverController];
+    [self presentViewController:navController animated:YES completion:^{
+//        NSLog(@"THE END");
+    }];
 }
 
 @end

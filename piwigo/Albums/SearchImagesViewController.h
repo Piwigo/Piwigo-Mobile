@@ -13,5 +13,6 @@
 @property (nonatomic, strong) NSString *searchQuery;
 
 -(void)searchAndLoadImages;
+-(void)scrollToHighlightedCell;
 
 @end

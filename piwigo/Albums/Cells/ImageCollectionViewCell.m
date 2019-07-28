@@ -8,6 +8,7 @@
 
 #import "ImageCollectionViewCell.h"
 #import "PiwigoImageData.h"
+#import "PiwigoAlbumData.h"
 #import "Model.h"
 #import "NetworkHandler.h"
 #import "SAMKeychain.h"
@@ -152,7 +153,7 @@
 	return self;
 }
 
--(void)setupWithImageData:(PiwigoImageData*)imageData
+-(void)setupWithImageData:(PiwigoImageData*)imageData forCategoryId:(NSInteger)categoryId
 {
 	self.imageData = imageData;
     self.isAccessibilityElement = YES;
@@ -251,16 +252,23 @@
             break;
     }
 
-    if ([Model sharedInstance].displayImageTitles) {
+    // Title
+    if (([Model sharedInstance].displayImageTitles) ||
+        (categoryId == kPiwigoVisitsCategoryId)     ||
+        (categoryId == kPiwigoBestCategoryId)       ||
+        (categoryId == kPiwigoRecentCategoryId)) {
         self.bottomLayer.hidden = NO;
         self.nameLabel.hidden = NO;
-        self.nameLabel.text = imageData.name;
-//        self.nameLabel.text = [NSString stringWithFormat:@"%.2f", imageData.ratingScore];
-//        self.nameLabel.text = [NSString stringWithFormat:@"%ld", (long)imageData.visits];
-//        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-//        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-//        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
-//        self.nameLabel.text = [dateFormatter stringFromDate:imageData.dateCreated];
+        if (categoryId == kPiwigoVisitsCategoryId) {
+            self.nameLabel.text = [NSString stringWithFormat:@"%ld %@", (long)imageData.visits, NSLocalizedString(@"categoryDiscoverVisits_legend", @"hits")];
+        } else if (categoryId == kPiwigoBestCategoryId) {
+//            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
+            self.nameLabel.text = imageData.name;
+        } else if (categoryId == kPiwigoRecentCategoryId) {
+            self.nameLabel.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
+        } else {
+            self.nameLabel.text = imageData.name;
+        }
     } else {
         self.bottomLayer.hidden = YES;
         self.nameLabel.hidden = YES;
@@ -287,6 +295,22 @@
 
 	self.selectedImage.hidden = !isSelected;
 	self.darkenView.hidden = !isSelected;
+}
+
+-(void)highlightOnCompletion:(void (^)(void))completion
+{
+    // Select cell of image of interest and apply effect
+    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.contentMode = UIViewContentModeScaleAspectFit;
+    [UIView animateWithDuration:0.4 delay:0.3 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        [self.cellImage setAlpha:0.2];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.4 delay:0.7 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            [self.cellImage setAlpha:1.0];
+        } completion:^(BOOL finished) {
+            completion();
+        }];
+    }];
 }
 
 @end

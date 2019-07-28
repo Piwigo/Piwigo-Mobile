@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -20,7 +20,6 @@
 		AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */; };
 		AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */; };
 		AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD3203662184738F00BAD372 /* PrivacyPolicy.strings */; };
-		AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD39165922A06FDF00414E4B /* SearchImagesViewController.m */; };
 		AD41BEC7223D4C1400A5DEE3 /* SplitLocalImages.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6ABBDD2223192D00346E5A /* SplitLocalImages.m */; };
@@ -39,9 +38,11 @@
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADA36E0E21D777D900133708 /* OpenSansSemiBold.TTF */; };
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
+		ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */; };
 		ADABACB3223591630095C4D0 /* LocalImagesHeaderReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADABACB2223591630095C4D0 /* LocalImagesHeaderReusableView.m */; };
 		ADABACB5223591720095C4D0 /* LocalImagesHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADABACB4223591720095C4D0 /* LocalImagesHeaderReusableView.xib */; };
 		ADABACBD2235A7120095C4D0 /* PiwigoLocationData.m in Sources */ = {isa = PBXBuildFile; fileRef = ADABACBC2235A7120095C4D0 /* PiwigoLocationData.m */; };
+		ADAEED8822E2665000CB1B12 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAEED8622E2665000CB1B12 /* Launch Screen.storyboard */; };
 		ADB22CAA2247AAA700C9B66C /* CameraRollUploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB22CA92247AAA700C9B66C /* CameraRollUploadViewController.m */; };
 		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
 		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
@@ -162,7 +163,6 @@
 		AD1F90B020724A63004BA1AA /* NoImagesHeaderCollectionReusableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoImagesHeaderCollectionReusableView.h; sourceTree = "<group>"; };
 		AD1F90B120724A82004BA1AA /* NoImagesHeaderCollectionReusableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NoImagesHeaderCollectionReusableView.m; sourceTree = "<group>"; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
-		AD294B281F2CE87200CD3769 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD294B2A1F2CE87400CD3769 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultThumbnailSizeViewController.h; sourceTree = "<group>"; };
 		AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultThumbnailSizeViewController.m; sourceTree = "<group>"; };
@@ -178,7 +178,6 @@
 		AD32036D2184739600BAD372 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD32036E2184739800BAD372 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD32036F2184739800BAD372 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
-		AD35CA371E9BF8A600E3B897 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "piwigo/Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AD39165922A06FDF00414E4B /* SearchImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchImagesViewController.m; sourceTree = "<group>"; };
 		AD39165B22A06FF200414E4B /* SearchImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchImagesViewController.h; sourceTree = "<group>"; };
@@ -206,10 +205,9 @@
 		AD591A3D1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DefaultCategoryViewController.m; sourceTree = "<group>"; };
 		AD5E8F0F20EEA06B00E93426 /* DefaultCategoryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultCategoryViewController.h; sourceTree = "<group>"; };
+		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD6ABBDC2223191400346E5A /* SplitLocalImages.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SplitLocalImages.h; sourceTree = "<group>"; };
 		AD6ABBDD2223192D00346E5A /* SplitLocalImages.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SplitLocalImages.m; sourceTree = "<group>"; };
-		AD6B2E741F0930B40040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		AD6B2E771F0930CE0040EAD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/About.strings; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
 		AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansRegular.TTF; sourceTree = "<group>"; };
@@ -234,7 +232,6 @@
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesCollection.h; sourceTree = "<group>"; };
 		AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseNotesViewController.h; sourceTree = "<group>"; };
 		AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseNotesViewController.m; sourceTree = "<group>"; };
-		AD92B8FF1F200083006E5B63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		ADA36E0E21D777D900133708 /* OpenSansSemiBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansSemiBold.TTF; sourceTree = "<group>"; };
 		ADA6DA4621B2AD9900F941F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -245,20 +242,26 @@
 		ADA6F18E21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADA6F18F21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADA6F19321CA99F7006C9DD5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ADAA57CF22DD006C00EB4EAA /* DiscoverImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscoverImagesViewController.h; sourceTree = "<group>"; };
+		ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscoverImagesViewController.m; sourceTree = "<group>"; };
 		ADABACB1223591530095C4D0 /* LocalImagesHeaderReusableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalImagesHeaderReusableView.h; sourceTree = "<group>"; };
 		ADABACB2223591630095C4D0 /* LocalImagesHeaderReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImagesHeaderReusableView.m; sourceTree = "<group>"; };
 		ADABACB4223591720095C4D0 /* LocalImagesHeaderReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocalImagesHeaderReusableView.xib; sourceTree = "<group>"; };
 		ADABACBB2235A7080095C4D0 /* PiwigoLocationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoLocationData.h; sourceTree = "<group>"; };
 		ADABACBC2235A7120095C4D0 /* PiwigoLocationData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoLocationData.m; sourceTree = "<group>"; };
+		ADAEED8722E2665000CB1B12 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = "en.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		ADB22CA82247AA9900C9B66C /* CameraRollUploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraRollUploadViewController.h; sourceTree = "<group>"; };
 		ADB22CA92247AAA700C9B66C /* CameraRollUploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraRollUploadViewController.m; sourceTree = "<group>"; };
 		ADB607E61FC9D75700AF28DB /* VideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoView.h; sourceTree = "<group>"; };
 		ADB607E71FC9D79000AF28DB /* VideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoView.m; sourceTree = "<group>"; };
-		ADC06AE01F40B15E0081B4FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE21F40B1ED0081B4FA /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		ADC5E23E2184D1BE002B0D48 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
+		ADD6AE9F22E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
+		ADD6AEA022E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/About.strings; sourceTree = "<group>"; };
+		ADD6AEA122E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		ADD6AEA222E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADD6AEA322E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppStore.strings; sourceTree = "<group>"; };
 		ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrivacyPolicyViewController.m; sourceTree = "<group>"; };
 		ADE936F92182D5650003F037 /* PrivacyPolicyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivacyPolicyViewController.h; sourceTree = "<group>"; };
 		ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoryTableViewCell.xib; sourceTree = "<group>"; };
@@ -798,7 +801,7 @@
 				D87C5A971A6F4F93001763BC /* Network */,
 				ADA6F19321CA99F7006C9DD5 /* Info.plist */,
 				D82B8CEE1A6790BF000E47CA /* PrefixHeader.pch */,
-				AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */,
+				ADAEED8622E2665000CB1B12 /* Launch Screen.storyboard */,
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8CBE1A67820A000E47CA /* Supporting Files */,
@@ -961,6 +964,8 @@
 				D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */,
 				AD39165B22A06FF200414E4B /* SearchImagesViewController.h */,
 				AD39165922A06FDF00414E4B /* SearchImagesViewController.m */,
+				ADAA57CF22DD006C00EB4EAA /* DiscoverImagesViewController.h */,
+				ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */,
 				AD7B4C2220E360C3003E403A /* Album Data */,
 				D818E9F51A74BF1100733991 /* Cells */,
 				AD7B4C2120E0E0AC003E403A /* Headers */,
@@ -1148,13 +1153,11 @@
 				};
 			};
 			buildConfigurationList = D82B8CB61A67820A000E47CA /* Build configuration list for PBXProject "piwigo" */;
-			compatibilityVersion = "Xcode 9.3";
-			developmentRegion = English;
+			compatibilityVersion = "Xcode 10.0";
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
-				Base,
 				fr,
 				da,
 				pl,
@@ -1214,8 +1217,8 @@
 				AD4A8E8C21FDD0CC00749D83 /* LabelImageTableViewCell.xib in Resources */,
 				AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */,
 				AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */,
-				AD35CA381E9BF8A600E3B897 /* Launch Screen.storyboard in Resources */,
 				ADABACB5223591720095C4D0 /* LocalImagesHeaderReusableView.xib in Resources */,
+				ADAEED8822E2665000CB1B12 /* Launch Screen.storyboard in Resources */,
 				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1402,6 +1405,7 @@
 				D8083A631A7FF30800A95605 /* TextFieldTableViewCell.m in Sources */,
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
+				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
 				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
 				D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
@@ -1450,7 +1454,6 @@
 		AD294B291F2CE87200CD3769 /* AppStore.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD294B281F2CE87200CD3769 /* Base */,
 				AD294B2A1F2CE87400CD3769 /* fr */,
 				AD3FDDEB1F2E23F700F71C81 /* da */,
 				AD45949E1F36765200CF9438 /* pl */,
@@ -1461,6 +1464,7 @@
 				AD8452621FEC70740035047B /* ar */,
 				ADF3B312207F1EEE0082C384 /* ja */,
 				ADA6F18D21CA924C006C9DD5 /* it */,
+				ADD6AEA322E25DA800347BC8 /* en */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -1477,25 +1481,15 @@
 				AD32036D2184739600BAD372 /* nl */,
 				AD32036E2184739800BAD372 /* ar */,
 				AD32036F2184739800BAD372 /* ja */,
-				ADC5E23E2184D1BE002B0D48 /* Base */,
 				ADA6F18F21CA924D006C9DD5 /* it */,
+				ADD6AE9F22E25DA800347BC8 /* en */,
 			);
 			name = PrivacyPolicy.strings;
-			sourceTree = "<group>";
-		};
-		AD35CA361E9BF8A600E3B897 /* Launch Screen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AD35CA371E9BF8A600E3B897 /* Base */,
-			);
-			name = "Launch Screen.storyboard";
-			path = ..;
 			sourceTree = "<group>";
 		};
 		AD6B2E751F0930B40040EAD9 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD6B2E741F0930B40040EAD9 /* Base */,
 				AD6B2E791F0930FD0040EAD9 /* fr */,
 				AD3FDDE81F2E23F700F71C81 /* da */,
 				AD45949B1F36765200CF9438 /* pl */,
@@ -1506,6 +1500,7 @@
 				AD84525F1FEC70740035047B /* ar */,
 				ADF3B30F207F1EEE0082C384 /* ja */,
 				ADA6F18A21CA924C006C9DD5 /* it */,
+				ADD6AEA222E25DA800347BC8 /* en */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1513,7 +1508,6 @@
 		AD6B2E781F0930CE0040EAD9 /* About.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD6B2E771F0930CE0040EAD9 /* Base */,
 				AD6B2E7A1F0930FD0040EAD9 /* fr */,
 				AD3FDDE91F2E23F700F71C81 /* da */,
 				AD45949C1F36765200CF9438 /* pl */,
@@ -1524,6 +1518,7 @@
 				AD8452601FEC70740035047B /* ar */,
 				ADF3B310207F1EEE0082C384 /* ja */,
 				ADA6F18B21CA924C006C9DD5 /* it */,
+				ADD6AEA022E25DA800347BC8 /* en */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -1531,7 +1526,6 @@
 		AD92B9001F200083006E5B63 /* ReleaseNotes.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD92B8FF1F200083006E5B63 /* Base */,
 				AD92B9011F200092006E5B63 /* fr */,
 				AD3FDDEA1F2E23F700F71C81 /* da */,
 				AD45949D1F36765200CF9438 /* pl */,
@@ -1542,14 +1536,22 @@
 				AD8452611FEC70740035047B /* ar */,
 				ADF3B311207F1EEE0082C384 /* ja */,
 				ADA6F18C21CA924C006C9DD5 /* it */,
+				ADD6AEA122E25DA800347BC8 /* en */,
 			);
 			name = ReleaseNotes.strings;
+			sourceTree = "<group>";
+		};
+		ADAEED8622E2665000CB1B12 /* Launch Screen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ADAEED8722E2665000CB1B12 /* en */,
+			);
+			name = "Launch Screen.storyboard";
 			sourceTree = "<group>";
 		};
 		ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				ADC06AE01F40B15E0081B4FA /* Base */,
 				ADC06AE21F40B1ED0081B4FA /* fr */,
 				ADC06AE31F40B2BB0081B4FA /* da */,
 				ADC06AE41F40B2BC0081B4FA /* pl */,
@@ -1560,6 +1562,7 @@
 				AD8452631FEC70750035047B /* ar */,
 				ADF3B313207F1EEE0082C384 /* ja */,
 				ADA6F18E21CA924D006C9DD5 /* it */,
+				AD5FCE2122EC629D00F37B1E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
