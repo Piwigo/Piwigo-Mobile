@@ -39,7 +39,7 @@
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -208,7 +208,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [self.searchController.searchBar setTintColor:[UIColor piwigoOrange]];
             self.searchController.searchBar.showsCancelButton = NO;
             self.searchController.searchBar.showsSearchResultsButton = NO;
-            self.searchController.searchBar.delegate = self;
+            self.searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
             self.definesPresentationContext = YES;
             
             // Place the search bar in the navigation bar.
@@ -290,6 +290,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
 	[super viewWillAppear:animated];
 	
+    // Called before displaying SearchImagesViewController?
+    UIViewController *presentedViewController = [self presentedViewController];
+    if ([presentedViewController isKindOfClass:[UISearchController class]]) {
+        // Hide toolbar
+        [self.navigationController setToolbarHidden:YES animated:YES];
+        return;
+    }
+    
     // Set colors, fonts, etc.
     [self paletteChanged];
     
@@ -345,7 +353,18 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
 	[super viewDidAppear:animated];
 	
-	// Refresh controller
+    // Called after displaying SearchImagesViewController?
+    UIViewController *presentedViewController = [self presentedViewController];
+    if ([presentedViewController isKindOfClass:[UISearchController class]]) {
+        // Scroll to image of interest if needed
+        if ([self.searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
+            SearchImagesViewController *resultsController = (SearchImagesViewController *)self.searchController.searchResultsController;
+            [resultsController scrollToHighlightedCell];
+        }
+        return;
+    }
+    
+    // Refresh controller
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
 	refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
 	refreshControl.tintColor = [UIColor piwigoOrange];
@@ -364,9 +383,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
 
     // Should we scroll to image of interest?
-//    NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
-    if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
-        ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
+//        NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+    if ((self.categoryId != 0) && ([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
         
         // Not the root album, album contains images and thumbnail of interest is not the first one
         // => Scroll and highlight cell of interest
@@ -438,9 +456,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
 
-    // Apply effect on cell of lastly previewed image
-    if ((self.categoryId != 0) && ([self.albumData.images count] > 0) &&
-        ([self.imageOfInterest compare:[NSIndexPath indexPathForItem:0 inSection:1]] != NSOrderedSame)) {
+    // Highlight image which is now visible
+    if ((self.categoryId != 0) && ([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
 //        NSLog(@"=> Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
         [self highlightCell];
     }
@@ -470,7 +487,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         // Apply effect only when returning from image preview mode
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
     }
-    
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -2204,6 +2220,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - UISearchControllerDelegate
 
+- (void)willPresentSearchController:(UISearchController *)searchController
+{
+    // Unregister category data updates
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
+}
+
+- (void)didDismissSearchController:(UISearchController *)searchController
+{
+    // Register category data updates
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+}
 
 
 #pragma mark - UISearchResultsUpdating
@@ -2213,15 +2240,20 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Query string
     NSString *searchString = [self.searchController.searchBar text];
     
-    // Initialise search cache
-    PiwigoAlbumData *searchAlbum = [[PiwigoAlbumData alloc] initSearchAlbumForQuery:searchString];
-    [[CategoriesData sharedInstance] updateCategories:@[searchAlbum]];
-    
-    // Resfresh image collection for new query
+    // Resfresh image collection for new query only
     if ([searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
         SearchImagesViewController *resultsController = (SearchImagesViewController *)searchController.searchResultsController;
-        resultsController.searchQuery = searchString;
-        [resultsController searchAndLoadImages];
+        
+        if (![resultsController.searchQuery isEqualToString:searchString] || !searchString.length) {
+            
+            // Initialise search cache
+            PiwigoAlbumData *searchAlbum = [[PiwigoAlbumData alloc] initSearchAlbumForQuery:searchString];
+            [[CategoriesData sharedInstance] updateCategories:@[searchAlbum]];
+            
+            // Resfresh image collection
+            resultsController.searchQuery = searchString;
+            [resultsController searchAndLoadImages];
+        }
     }
 }
 

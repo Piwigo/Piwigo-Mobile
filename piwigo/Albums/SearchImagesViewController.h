@@ -11,7 +11,6 @@
 @interface SearchImagesViewController : UIViewController
 
 @property (nonatomic, strong) NSString *searchQuery;
-@property (nonatomic, strong) UICollectionView *imagesCollection;
 
 -(void)searchAndLoadImages;
 

@@ -10,7 +10,6 @@
 #import "AlbumService.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
-#import "CategoryCollectionViewCell.h"
 #import "CategoryHeaderReusableView.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
@@ -21,18 +20,12 @@
 
 @interface SearchImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
 
+@property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
-//@property (nonatomic, strong) NSString *currentSort;
 @property (nonatomic, assign) BOOL displayImageTitles;
-//@property (nonatomic, strong) UIViewController *hudViewController;
 
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
-
-//@property (nonatomic, assign) BOOL isSelect;
-//@property (nonatomic, assign) NSInteger totalNumberOfImages;
-//@property (nonatomic, strong) NSMutableArray *selectedImageIds;
-//@property (nonatomic, strong) NSMutableArray *touchedImageIds;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
@@ -46,16 +39,11 @@
     self = [super init];
     if(self)
     {
-        self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+        self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
         self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
-        
-        // Initialise selection mode
-//        self.isSelect = NO;
-//        self.touchedImageIds = [NSMutableArray new];
-//        self.selectedImageIds = [NSMutableArray new];
         
         // Collection of images
         self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
@@ -66,7 +54,6 @@
         self.imagesCollection.delegate = self;
         
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
-        [self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
         [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
         [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
         
@@ -128,9 +115,6 @@
 //    NSLog(@"new query: %@", self.searchQuery);
     self.albumData.searchQuery = self.searchQuery;
     [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-        
-        // Set navigation bar buttons
-//        [self updateNavBar];
         
         [self.imagesCollection reloadData];
     }];
@@ -253,7 +237,10 @@
         index++;
     }
     if (index < [self.albumData.images count])
-        self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
+        self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:0];
+
+    // Scroll to cell and highlight it
+//    [self scrollToHighlightedCell];
 }
 
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
