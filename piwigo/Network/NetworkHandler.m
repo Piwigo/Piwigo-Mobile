@@ -210,7 +210,10 @@ NSInteger const loadingViewTag = 899;
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.allowsCellularAccess = YES;
     config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
-    config.HTTPMaximumConnectionsPerHost = 1;       // 4 is the advised default value
+    config.timeoutIntervalForResource = 60;         // Maximum amount of time that a resource request is allowed to take
+    config.HTTPMaximumConnectionsPerHost = 2;       // 4 is the advised default value
+    config.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
+    config.URLCache = nil;
     
     // Create session manager
     [Model sharedInstance].imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
