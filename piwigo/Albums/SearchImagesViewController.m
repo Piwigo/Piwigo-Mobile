@@ -216,6 +216,65 @@
 }
 
 
+#pragma mark - UICollectionView Headers
+
+-(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    // Display number of images
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages;
+    NoImagesHeaderCollectionReusableView *header = nil;
+    
+    if(kind == UICollectionElementKindSectionHeader)
+    {
+        header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection" forIndexPath:indexPath];
+        header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+        
+        if (totalImageCount != 0) {
+            // Display number of images…
+            header.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (self.albumData.images.count > 1) ? NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")];
+            }
+        else {
+            // No images
+            header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+        }
+        
+        return header;
+    }
+    
+    UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
+    return view;
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    // Display number of images
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages;
+
+    NSString *header = @"";
+    if (totalImageCount != 0) {
+        // Display number of images…
+        header = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")];
+    }
+    else {
+        // No images
+        header = NSLocalizedString(@"noImages", @"No Images");
+    }
+
+    if ([header length] > 0) {
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+        NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+        context.minimumScaleFactor = 1.0;
+        CGRect headerRect = [header boundingRectWithSize:CGSizeMake(collectionView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:attributes
+                                                 context:context];
+        return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(headerRect.size.height));
+    }
+    
+    return CGSizeZero;
+}
+
+
 #pragma mark - UICollectionView - Rows
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
