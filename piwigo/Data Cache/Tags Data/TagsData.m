@@ -84,10 +84,9 @@
         // id, (lastmodified), name e.g. "Médicaments", (url_name) e.g. "divers_medicaments"
         PiwigoTagData *newTagData = [PiwigoTagData new];
         newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
-        newTagData.tagName = [tagData objectForKey:@"name"];
+        newTagData.tagName = [NetworkHandler UTF8EncodedStringFromString:[tagData objectForKey:@"name"]];
         
-        // => pwg.tags.getList returns in addition:
-        // counter, url
+        // => pwg.tags.getList returns in addition: counter, url
         if ([tagData objectForKey:@"counter"]) {
             newTagData.numberOfImagesUnderTag = [[tagData objectForKey:@"counter"] integerValue];
         } else {

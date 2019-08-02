@@ -35,6 +35,18 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                          OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *searchedImages))completion
                             onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
++(NSURLSessionTask*)getImagesForDiscoverId:(NSInteger)categoryId
+                                    onPage:(NSInteger)page
+                                  forOrder:(NSString *)order
+                              OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *searchedImages))completion
+                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)getImagesForTagName:(NSString *)tagName
+                                 onPage:(NSInteger)page
+                               forOrder:(NSString *)order
+                           OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *searchedImages))completion
+                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
 +(NSURLSessionTask*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
                                         forCategory:(NSInteger)categoryId orQuery:(NSString*)query
                                              onPage:(NSInteger)onPage

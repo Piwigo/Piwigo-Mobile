@@ -36,6 +36,7 @@
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
 #import "SettingsViewController.h"
+#import "TagSelectViewController.h"
 
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
@@ -2281,6 +2282,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
        style:UIAlertActionStyleCancel
        handler:^(UIAlertAction * action) {}];
 
+    UIAlertAction* tagSelectorAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"tags", @"Tags")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            // Show tags for selecting images
+            [self discoverImagesByTag];
+         }];
+    
     UIAlertAction* mostVisitedAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited")
         style:UIAlertActionStyleDefault
@@ -2307,6 +2316,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Add actions
     [alert addAction:cancelAction];
+    [alert addAction:tagSelectorAction];
     [alert addAction:mostVisitedAction];
     [alert addAction:bestRatedAction];
     [alert addAction:recentAction];
@@ -2321,6 +2331,18 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Create Discover view
     DiscoverImagesViewController *discoverController = [[DiscoverImagesViewController alloc] initWithCategoryId:categoryId];
     
+    // Embed Discover view in navigation interface
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:discoverController];
+    [self presentViewController:navController animated:YES completion:^{
+//        NSLog(@"THE END");
+    }];
+}
+
+-(void)discoverImagesByTag
+{
+    // Create tag selector view
+    TagSelectViewController *discoverController = [[TagSelectViewController alloc] init];
+        
     // Embed Discover view in navigation interface
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:discoverController];
     [self presentViewController:navController animated:YES completion:^{

@@ -207,7 +207,6 @@
 -(void)searchAndLoadImages
 {
     // Load, sort images and reload collection
-//    NSLog(@"new query: %@", self.searchQuery);
     self.albumData.searchQuery = self.searchQuery;
     [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
         
@@ -382,9 +381,6 @@
     }
     if (index < [self.albumData.images count])
         self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:0];
-
-    // Scroll to cell and highlight it
-//    [self scrollToHighlightedCell];
 }
 
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index

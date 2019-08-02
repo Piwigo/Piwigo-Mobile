@@ -61,6 +61,7 @@
 	return self;
 }
 
+
 #pragma mark - View Lifecycle
 
 -(void)paletteChanged

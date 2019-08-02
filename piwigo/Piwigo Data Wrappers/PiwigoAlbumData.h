@@ -13,6 +13,7 @@ FOUNDATION_EXPORT NSInteger const kPiwigoSearchCategoryId;
 FOUNDATION_EXPORT NSInteger const kPiwigoVisitsCategoryId;
 FOUNDATION_EXPORT NSInteger const kPiwigoBestCategoryId;
 FOUNDATION_EXPORT NSInteger const kPiwigoRecentCategoryId;
+FOUNDATION_EXPORT NSInteger const kPiwigoTagsCategoryId;
 
 typedef enum {
 	ImageListOrderId,
