@@ -124,19 +124,27 @@
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
+                          NSDictionary *result = [responseObject objectForKey:@"result"];
+
                           if (isLogginIn) {
-                              [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result"] objectForKey:@"pwg_token"];
-                              [Model sharedInstance].language = [[responseObject objectForKey:@"result"] objectForKey:@"language"];
-                              [Model sharedInstance].version = [[responseObject objectForKey:@"result"] objectForKey:@"version"];
-                              NSString *uploadFileTypes = [[responseObject objectForKey:@"result"] objectForKey:@"upload_file_types"];
+                              [Model sharedInstance].pwgToken = [result objectForKey:@"pwg_token"];
+                              [Model sharedInstance].language = [result objectForKey:@"language"];
+                              [Model sharedInstance].version = [result objectForKey:@"version"];
+                              
+                              NSInteger uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
+                              // Upload chunk size is null if not provided by server
+                              if (uploadChunkSize != 0) {
+                                  [Model sharedInstance].uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
+                              }
 
                               // Images and videos can be uploaded if their file types are found.
                               // The iPhone creates mov files that will be uploaded in mp4 format.
-                              [Model sharedInstance].uploadFileTypes = uploadFileTypes;
+                              // This string is nil if the server does not provide it.
+                              [Model sharedInstance].uploadFileTypes = [result objectForKey:@"upload_file_types"];
                               
                               // User rights are determined by Community extension (if installed)
                               if(![Model sharedInstance].usesCommunityPluginV29) {
-                                  NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
+                                  NSString *userStatus = [result objectForKey:@"status"];
                                   [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                               }
                               
@@ -153,7 +161,7 @@
                               [Model sharedInstance].hasXXLargeSizeImages = NO;
                               
                               // Update list of available sizes
-                              id availableSizesList = [[responseObject objectForKey:@"result"] objectForKey:@"available_sizes"];
+                              id availableSizesList = [result objectForKey:@"available_sizes"];
                               for (NSString *size in availableSizesList) {
                                   if ([size isEqualToString:@"square"]) {
                                       [Model sharedInstance].hasSquareSizeImages = YES;
@@ -291,7 +299,7 @@
                           }
                           [[Model sharedInstance] saveToDisk];
 
-                          completion([responseObject objectForKey:@"result"]);
+                          completion(result);
                       } else {
                           completion(nil);
                       }

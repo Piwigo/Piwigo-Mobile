@@ -49,8 +49,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.serverName = @"";
         instance.username = @"";
         instance.HttpUsername = @"";
-		instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
-		instance.defaultAuthor = @"";
 		instance.hasAdminRights = NO;
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
@@ -110,6 +108,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.shareMetadataTypeOther = NO;
         
         // Default image upload settings
+        instance.uploadChunkSize = 500;             // 500 KB chunk size
+        instance.defaultAuthor = @"";
+        instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
         instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
         instance.photoQuality = 95;                 // 95% image quality at compression
         instance.photoResize = 100;                 // Do not resize images
@@ -298,6 +299,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.shareMetadataTypePostToWhatsApp = modelData.shareMetadataTypePostToWhatsApp;
         self.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
         self.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
+        self.uploadChunkSize = modelData.uploadChunkSize;
 	}
 }
 
@@ -365,6 +367,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToWhatsApp]];
     [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeSaveToCameraRoll]];
     [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeOther]];
+    // Added in v2.4.1…
+    [saveObject addObject:[NSNumber numberWithInteger:self.uploadChunkSize]];
                            
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -603,6 +607,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.shareMetadataTypeOther = [[savedData objectAtIndex:44] boolValue];
     } else {
         self.shareMetadataTypeOther = NO;
+    }
+    if(savedData.count > 45) {
+        self.uploadChunkSize = [[savedData objectAtIndex:45] integerValue];
+    } else {
+        self.uploadChunkSize = 500;
     }
 	return self;
 }

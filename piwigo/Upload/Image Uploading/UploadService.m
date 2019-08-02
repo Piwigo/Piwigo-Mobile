@@ -12,8 +12,6 @@
 #import "PiwigoTagData.h"
 #import "CategoriesData.h"
 
-NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
-
 @implementation UploadService
 
 +(void)uploadImage:(NSData *)imageData
@@ -22,12 +20,15 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
 		  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
 			 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Calculate chunk size
+    NSInteger chunkSize = ([Model sharedInstance].uploadChunkSize * 1024);
+    
     // Create upload session
-    [NetworkHandler createUploadSessionManager];        // 60s timeout, 1 connections max
+    [NetworkHandler createUploadSessionManager];        // 60s timeout, 2 connections max
 
     // Calculate number of chunks
-    NSInteger chunks = imageData.length / kChunkSize;
-	if(imageData.length % kChunkSize != 0) {
+    NSInteger chunks = imageData.length / chunkSize;
+	if(imageData.length % chunkSize != 0) {
 		chunks++;
 	}
 	
@@ -62,8 +63,10 @@ NSInteger const kChunkSize = 500 * 1024;       // i.e. 500 kB
 				   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
 					  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Calculate this chunk size
+    NSInteger chunkSize = ([Model sharedInstance].uploadChunkSize * 1024);
     NSInteger length = [imageData length];
-    NSUInteger thisChunkSize = length  - offset > kChunkSize ? kChunkSize : length - offset;
+    NSUInteger thisChunkSize = length  - offset > chunkSize ? chunkSize : length - offset;
     __block NSData *chunk = [imageData subdataWithRange:NSMakeRange(offset, thisChunkSize)];
 
     [imageInformation setObject:[NSString stringWithFormat:@"%@", @(count)]

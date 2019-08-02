@@ -118,6 +118,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL shareMetadataTypeOther;
 
 // Default image upload settings
+@property (nonatomic, assign) NSInteger uploadChunkSize;
 @property (nonatomic, strong) NSString *defaultAuthor;
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, assign) BOOL stripGPSdataOnUpload;
