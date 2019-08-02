@@ -5,8 +5,12 @@
 # Update fastlane:
 #	export LC_ALL=en_US.UTF-8
 #	export LANG=en_US.UTF-8
-#	sudo gem install fastlane
+# Every time you run fastlane, use bundle exec fastlane [lane]
+# On your CI, add [sudo] bundle install as your first build step
+# To update fastlane, just run [sudo] bundle update fastlane
+#	sudo gem install fastlane -NV
 #	fastlane snapshot update
+#	bundle update fastlane
 # Clean to speed up: sudo gem cleanup
 # install bundle: bundle install
 # Launch fastlane: fastlane snapshot
@@ -16,12 +20,12 @@
 devices([
   "iPhone SE",										# 4-inch
   "iPhone 8",										# 4.7-inch
-  "iPhone 8 Plus",								# 5.5-inch
+  "iPhone 8 Plus",									# 5.5-inch
   "iPhone X",										# 5.8-inch
-  "iPhone XS Max",								# 6.5-inch
+  "iPhone Xs Max",									# 6.5-inch
   "iPad Pro (9.7-inch)",							# 9.7-inch
   "iPad Pro (10.5-inch)",							# 10.5-inch
-  "iPad Pro (11-inch)",							# 11-inch
+  "iPad Pro (11-inch)",								# 11-inch
   "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
   "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
 ])

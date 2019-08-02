@@ -8,7 +8,7 @@
 # Every time you run fastlane, use bundle exec fastlane [lane]
 # On your CI, add [sudo] bundle install as your first build step
 # To update fastlane, just run [sudo] bundle update fastlane
-#	sudo gem install fastlane
+#	sudo gem install fastlane -NV
 #	fastlane snapshot update
 #	bundle update fastlane
 # Clean to speed up: sudo gem cleanup
@@ -18,10 +18,10 @@
 
 # A list of devices you want to take the screenshots from
 devices([
-#  "iPhone SE",										# 4-inch
+  "iPhone SE",										# 4-inch
 #  "iPhone 8",										# 4.7-inch
 #  "iPhone 8 Plus",									# 5.5-inch
-  "iPhone X",										# 5.8-inch
+#  "iPhone X",										# 5.8-inch
 #  "iPhone Xs Max",									# 6.5-inch
 #  "iPad Pro (9.7-inch)",							# 9.7-inch
 #  "iPad Pro (10.5-inch)",							# 10.5-inch
@@ -33,14 +33,14 @@ devices([
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
    "en",
-   "da",
-   "nl",
-   "fr",
-   "de",
-   "id",
-   "it",
-   "ja",
-   "sv"
+#   "da",
+#   "nl",
+#   "fr",
+#   "de",
+#   "id",
+#   "it",
+#   "ja",
+#   "sv"
 ])
 
 # The name of the scheme which contains the UI Tests
