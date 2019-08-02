@@ -130,9 +130,54 @@
                               [Model sharedInstance].pwgToken = [result objectForKey:@"pwg_token"];
                               [Model sharedInstance].language = [result objectForKey:@"language"];
                               [Model sharedInstance].version = [result objectForKey:@"version"];
+                              NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
+                              if ([charset isEqualToString:@"UTF-8"]) {
+                                  [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;
+                              } else if ([charset isEqualToString:@"UTF-16"]) {
+                                  [Model sharedInstance].stringEncoding = NSUTF16StringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-8859-1"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1252StringEncoding;
+                              } else if ([charset isEqualToString:@"US-ASCII"]) {
+                                  [Model sharedInstance].stringEncoding = NSASCIIStringEncoding;
+                              } else if ([charset isEqualToString:@"X-EUC"]) {
+                                  [Model sharedInstance].stringEncoding = NSJapaneseEUCStringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-8859-3"]) {
+                                  [Model sharedInstance].stringEncoding = NSISOLatin1StringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-8859-3"]) {
+                                  [Model sharedInstance].stringEncoding = NSISOLatin1StringEncoding;
+                              } else if ([charset isEqualToString:@"SHIFT-JIS"]) {
+                                  [Model sharedInstance].stringEncoding = NSShiftJISStringEncoding;
+                              } else if ([charset isEqualToString:@"CP870"]) {
+                                  [Model sharedInstance].stringEncoding = NSISOLatin2StringEncoding;
+                              } else if ([charset isEqualToString:@"UNICODE"]) {
+                                  [Model sharedInstance].stringEncoding = NSUnicodeStringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1251"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1251StringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1252"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1252StringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1253"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1253StringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1254"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1254StringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1250"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1250StringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-2022-JP"]) {
+                                  [Model sharedInstance].stringEncoding = NSISO2022JPStringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-2022-JP"]) {
+                                  [Model sharedInstance].stringEncoding = NSISO2022JPStringEncoding;
+                              } else if ([charset isEqualToString:@"MACINTOSH"]) {
+                                  [Model sharedInstance].stringEncoding = NSMacOSRomanStringEncoding;
+                              } else if ([charset isEqualToString:@"UNICODEFFFE"]) {
+                                  [Model sharedInstance].stringEncoding = NSUTF16BigEndianStringEncoding;
+                              } else if ([charset isEqualToString:@"UTF-32"]) {
+                                  [Model sharedInstance].stringEncoding = NSUTF32StringEncoding;
+                              } else {
+                                  // UTF-8 string encoding by default
+                                  [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;
+                              }
                               
-                              NSInteger uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                               // Upload chunk size is null if not provided by server
+                              NSInteger uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                               if (uploadChunkSize != 0) {
                                   [Model sharedInstance].uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                               }

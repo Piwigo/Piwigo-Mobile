@@ -469,6 +469,18 @@ NSInteger const loadingViewTag = 899;
     return url;
 }
 
++(NSString*)UTF8EncodedStringFromString:(NSString *)string
+{
+    // Return empty string is nothing provided
+    if(!string || [string isKindOfClass:[NSNull class]]) {
+        return @"";
+    }
+    
+    // Convert to UTF-8 string encoding
+    NSData *strData = [string dataUsingEncoding:[Model sharedInstance].stringEncoding allowLossyConversion:YES];
+    return [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
+}
+
 // path: format={param1}
 // URLParams: {@"param1" : @"hello" }
 +(NSURLSessionTask*)post:(NSString*)path

@@ -538,18 +538,10 @@ NSString * const kGetImageOrderDescending = @"desc";
     categoryIds = nil;
 
     // Object "name"
-    imageData.name = [imageJson objectForKey:@"name"];
-    if(!imageData.name || [imageData.name isKindOfClass:[NSNull class]])
-    {
-        imageData.name = @"";
-    }
+    imageData.name = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"name"]];
     
     // Object "comment"
-    imageData.imageDescription = [imageJson objectForKey:@"comment"];
-    if(!imageData.imageDescription || [imageData.imageDescription isKindOfClass:[NSNull class]])
-    {
-        imageData.imageDescription = @"";
-    }
+    imageData.imageDescription = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"comment"]];
     
     // Object "hit"
     if (![[imageJson objectForKey:@"hit"] isKindOfClass:[NSNull class]]) {
@@ -557,11 +549,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Object "file"
-    imageData.fileName = [imageJson objectForKey:@"file"];
-    if(!imageData.fileName || [imageData.fileName isKindOfClass:[NSNull class]])
-    {
-        imageData.fileName = @"";
-    }
+    imageData.fileName = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"file"]];
     NSString *fileExt = [[imageData.fileName pathExtension] uppercaseString];
     if([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
        [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
@@ -773,11 +761,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     //
     
     // Object "author"
-    if([imageJson objectForKey:@"author"] &&
-       ![[imageJson objectForKey:@"author"] isKindOfClass:[NSNull class]]) {
-        imageData.author = [imageJson objectForKey:@"author"];
-    }
-    else {
+    imageData.author = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"author"]];
+    if(imageData.author.length == 0) {
         imageData.author = @"NSNotFound";
     }
 
@@ -798,7 +783,7 @@ NSString * const kGetImageOrderDescending = @"desc";
         {
             PiwigoTagData *tagData = [PiwigoTagData new];
             tagData.tagId = [[tag objectForKey:@"id"] integerValue];
-            tagData.tagName = [tag objectForKey:@"name"];
+            tagData.tagName = [NetworkHandler UTF8EncodedStringFromString:[tag objectForKey:@"name"]];
             [imageTags addObject:tagData];
         }
         imageData.tags = imageTags;

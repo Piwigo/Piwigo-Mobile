@@ -47,6 +47,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		
         instance.serverProtocol = @"https://";
         instance.serverName = @"";
+        instance.stringEncoding = NSUTF8StringEncoding; // UTF-8 by default
         instance.username = @"";
         instance.HttpUsername = @"";
 		instance.hasAdminRights = NO;
@@ -300,6 +301,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
         self.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
         self.uploadChunkSize = modelData.uploadChunkSize;
+        self.stringEncoding = modelData.stringEncoding;
 	}
 }
 
@@ -369,6 +371,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeOther]];
     // Added in v2.4.1…
     [saveObject addObject:[NSNumber numberWithInteger:self.uploadChunkSize]];
+    [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.stringEncoding]];
                            
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -612,6 +615,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.uploadChunkSize = [[savedData objectAtIndex:45] integerValue];
     } else {
         self.uploadChunkSize = 500;
+    }
+    if(savedData.count > 46) {
+        self.stringEncoding = [[savedData objectAtIndex:46] unsignedIntegerValue];
+    } else {
+        self.stringEncoding = NSUTF8StringEncoding;
     }
 	return self;
 }
