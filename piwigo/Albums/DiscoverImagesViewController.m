@@ -126,8 +126,8 @@
     // Title is name of the category
     self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 
-    // Left side of navigation bar
-    [self.navigationItem setLeftBarButtonItem:self.cancelBarButton animated:YES];
+    // Right side of navigation bar
+    [self.navigationItem setRightBarButtonItem:self.cancelBarButton animated:YES];
 
     // Hide toolbar
     [self.navigationController setToolbarHidden:YES animated:YES];
