@@ -10,8 +10,6 @@
 
 @interface DiscoverImagesViewController : UIViewController
 
-@property (nonatomic, strong) UICollectionView *imagesCollection;
-
 -(instancetype)initWithCategoryId:(NSInteger)categoryId;
 
 @end

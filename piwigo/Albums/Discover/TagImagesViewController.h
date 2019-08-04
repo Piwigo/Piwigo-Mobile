@@ -10,8 +10,6 @@
 
 @interface TagImagesViewController : UIViewController
 
-@property (nonatomic, strong) UICollectionView *imagesCollection;
-
 -(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName;
 
 @end

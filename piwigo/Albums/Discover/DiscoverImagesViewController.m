@@ -19,6 +19,7 @@
 
 @interface DiscoverImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
 
+@property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
@@ -54,7 +55,6 @@
         self.imagesCollection.delegate = self;
         
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
-//        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
         [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
         
         [self.view addSubview:self.imagesCollection];
@@ -427,6 +427,5 @@
         [self.imagesCollection reloadData];
     }];
 }
-
 
 @end

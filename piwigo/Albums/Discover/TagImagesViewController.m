@@ -20,6 +20,7 @@
 
 @interface TagImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
 
+@property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger tagId;
 @property (nonatomic, strong) NSString *tagName;
 @property (nonatomic, strong) AlbumData *albumData;
