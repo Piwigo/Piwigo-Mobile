@@ -64,7 +64,7 @@
 
 // Login — Errors
 "serverURLerror_title" = "Niepoprawny adres URL";
-"serverURLerror_message" = "Popraw adres serwera sieci web Piwigo.";
+"serverURLerror_message" = "Popraw adres serwera Piwigo.";
 "serverMethodsError_title" = "Nieznane metody";
 "serverMethodsError_message" = "Nie udało się uzyskać metod serwera. Problem z serwerem Piwigo?";
 "serverInvalidMethodError_message" = "Nie można wywołać metody serwera.";
@@ -112,10 +112,10 @@
 "categoryImageList_noDataError" = "Błąd. Brak danych";
 
 // Albums "Discover"
-"categoryDiscover_title" = "Odkryj";
+"categoryDiscover_title" = "Odkrywaj";
 "categoryDiscoverVisits_title" = "Najczęściej odwiedzane";
 "categoryDiscoverVisits_legend" = "wejść";
-"categoryDiscoverBest_title" = "Najlepiej oceniane";
+"categoryDiscoverBest_title" = "Najwyżej oceniane";
 "categoryDiscoverRecent_title" = "Najnowsze zdjęcia";
 
 // Albums sort
@@ -129,8 +129,8 @@
 "categorySort_datePostedAscending" = "Data Wysłania, stare → nowe";
 "categorySort_ratingScoreDescending" = "Ocena, wysoka → niska";
 "categorySort_ratingScoreAscending" = "Ocena, niska → wysoka";
-"categorySort_visitsDescending" = "Liczba odwiedzin, wysoka → niska";
-"categorySort_visitsAscending" = "Liczba odwiedzin, niska → wysoka";
+"categorySort_visitsDescending" = "Odwiedzin, mniej → więcej";
+"categorySort_visitsAscending" = "Odwiedzin, mniej → więcej";
 "categorySort_videosOnly" = "Tylko Filmy";
 "categorySort_imagesOnly" = "Tylko Zdjęcia";
 
@@ -225,7 +225,7 @@
 "categorySelection_current" = "Wybierz bieżący album dla tego zdjęcia";
 "categorySelection_one" = "Wybierz jeden z albumów zawierających ten obraz";
 "categorySelection_other" = "lub wybierz inny album dla tego zdjęcia";
-"categoryImageSet_title" = "Miniaturę albumu";
+"categoryImageSet_title" = "Miniatura albumu";
 "categoryImageSet_message" = "Czy na pewno chcesz ustawić to zdjęcie dla albumu \"%@\"?";
 "categoryImageSetHUD_updating" = "Aktualizowanie miniatury albumu…";
 
@@ -289,6 +289,8 @@
 // Image tags
 "none" = "brak";
 "tags" = "Tagi";
+"tag" = "Tag";
+"tagsTitle_selectOne" = "Wybierz tag";
 "tagsHeader_selected" = "Wybrane";
 "tagsHeader_all" = "Wszystkie";
 
@@ -303,8 +305,8 @@
 "deleteImageProgress_title" = "Usuwanie %@%% zakończone";
 
 "deleteSingleImage_title" = "Usuń Zdjęcie";
-"deleteSingleImageHUD_deleting" = "Usuwanie zdjęć…";
-"deleteSeveralImagesHUD_deleting" = "Usuwanie zdjęć…";
+"deleteSingleImageHUD_deleting" = "Usuwanie obrazu…";
+"deleteSeveralImagesHUD_deleting" = "Usuwanie obrazów…";
 "removeSingleImage_title" = "Usuń z albumu";
 "removeSingleImageHUD_removing" = "Usuwanie obrazu…";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
@@ -338,30 +340,30 @@
 "videoSaveError_message" = "Nie można zapisać filmu. Błąd: %@";
 
 // Image move
-"moveImage_title" = "Przenieść do albumu";
-"moveSingleImage_selectAlbum" = "Wybierz album, który chcesz przenieść obraz \"%@\"";
-"moveSeveralImages_selectAlbum" = "Wybierz album, który chcesz przenieść zdjęcia do";
+"moveImage_title" = "Przenieś do albumu";
+"moveSingleImage_selectAlbum" = "Wybierz album, do którego chcesz przenieść obraz \"%@\"";
+"moveSeveralImages_selectAlbum" = "Wybierz album, do którego chcesz przenieść obrazy";
 "moveSingleImage_message" = "Czy na pewno chcesz przenieść obraz \"%@\" do albumu \"%@\"?";
-"moveSeveralImages_message" = "Czy na pewno chcesz przenieść zdjęcia do albumu \"%@\"?";
-"moveSingleImageHUD_moving" = "Ruchomy obraz…";
-"moveSeveralImagesHUD_moving" = "Ruchome obrazy…";
+"moveSeveralImages_message" = "Czy na pewno chcesz przenieść obrazy do albumu \"%@\"?";
+"moveSingleImageHUD_moving" = "Przenoszenie obrazu…";
+"moveSeveralImagesHUD_moving" = "Przenoszenie obrazów…";
 
 // Image move — Errors
-"moveImageError_title" = "Błąd Przenoszenia";
-"moveSingleImageError_message" = "Nie można przenieść swój obraz";
+"moveImageError_title" = "Błąd przenoszenia";
+"moveSingleImageError_message" = "Nie można przenieść obrazu";
 
 // Image copy
 "copyImage_title" = "Skopiuj do albumu";
-"copySingleImage_selectAlbum" = "Wybierz album, aby skopiować obraz \"%@\"";
-"copySeveralImages_selectAlbum" = "Wybierz album, który chcesz skopiować obrazy";
+"copySingleImage_selectAlbum" = "Wybierz album, do którego skopiować obraz \"%@\"";
+"copySeveralImages_selectAlbum" = "Wybierz album, do którego chcesz skopiować obrazy";
 "copySingleImage_message" = "Czy na pewno chcesz skopiować obraz \"%@\" do albumu \"%@\"?";
-"copySeveralImages_message" = "Czy na pewno chcesz skopiować zdjęcia do albumu \"%@\"?";
+"copySeveralImages_message" = "Czy na pewno chcesz skopiować obrazy do albumu \"%@\"?";
 "copySingleImageHUD_copying" = "Kopiowanie obrazu…";
 "copySeveralImagesHUD_copying" = "Kopiowanie obrazów…";
 
 // Image copy — Errors
-"copyImageError_title" = "Skopiuj Fail";
-"copySingleImageError_message" = "Nie można skopiować obraz";
+"copyImageError_title" = "Kopiowanie nie powiodło się";
+"copySingleImageError_message" = "Nie można skopiować obrazu";
 
 // Images upload
 "imageUploadDetails_title" = "Tytuł:";
@@ -408,45 +410,45 @@
 "videoUploadCancelled_message" = "Wysyłanie wideo zostało anulowane.";
 
 // Image share
-"shareImageMetadata_Title" = "Współdziel metadane";
-"shareImageMetadata_subTitle1" = "Funkcje udostępniania zdjęć z prywatnymi metadanymi";
-"shareImageMetadata_subTitle2" = "Funkcje udostępniania zdjęć bez prywatnych metadanych";
+"shareImageMetadata_Title" = "Udostępnij metadane";
+"shareImageMetadata_subTitle1" = "Funkcje udostępniania obrazów z prywatnymi metadanymi";
+"shareImageMetadata_subTitle2" = "Funkcje udostępniania obrazów bez prywatnych metadanych";
 "shareActivityCode_AirDrop" = "Udostępnij za pomocą AirDrop";
-"shareActivityCode_AirDrop>375px" = "Udostępnij zdjęcia za pomocą AirDrop";
+"shareActivityCode_AirDrop>375px" = "Udostępnij obrazy za pomocą AirDrop";
 "shareActivityCode_AssignToContact" = "Przypisz do kontaktu";
 "shareActivityCode_AssignToContact>375px" = "Przypisz obraz do kontaktu";
 "shareActivityCode_CopyToPasteboard" = "Kopiuj do schowka";
-"shareActivityCode_CopyToPasteboard>375px" = "Kopiuj zdjęcia do schowka";
+"shareActivityCode_CopyToPasteboard>375px" = "Kopiuj obrazy do schowka";
 "shareActivityCode_Mail" = "Publikacja przez email";
 "shareActivityCode_Mail>375px" = "Publikacja obrazów przez email";
-"shareActivityCode_Message" = "Publikacja przez Message";
-"shareActivityCode_Message>375px" = "Publikacja zdjęć przez aplikację Message";
-"shareActivityCode_Facebook" = "Udostępnij na Facebooku";
-"shareActivityCode_Facebook>375px" = "Publikuj zdjęcia na Facebook'u";
+"shareActivityCode_Message" = "Publikacja jako wiadomość";
+"shareActivityCode_Message>375px" = "Publikacja obrazów jako wiadomość";
+"shareActivityCode_Facebook" = "Publikacja na Facebooku";
+"shareActivityCode_Facebook>375px" = "Publikacja obrazów na Facebooku";
 "shareActivityCode_Messenger" = "Publikacja przez Messenger";
-"shareActivityCode_Messenger>375px" = "Publikacja zdjęć przez aplikację Messenger";
-"shareActivityCode_Flickr" = "Publikuj na Flickr";
-"shareActivityCode_Flickr>375px" = "Publikuj zdjęcia na Flickr";
-"shareActivityCode_Instagram" = "Publikuj na Instagram";
-"shareActivityCode_Instagram>375px" = "Publikuj zdjęcia na Instagramie";
-"shareActivityCode_Signal" = "Publikuj z Signal";
-"shareActivityCode_Signal>375px" = "Publikuj zdjęcia z aplikacją Signal";
-"shareActivityCode_Snapchat" = "Publikuj na Snapchat";
-"shareActivityCode_Snapchat>375px" = "Publikuj zdjęcia przez aplikację Snapchat";
-"shareActivityCode_TencentWeibo" = "Publikuj na TencentWeibo";
-"shareActivityCode_TencentWeibo>375px" = "Publikuj zdjęcia na TencentWeibo";
-"shareActivityCode_Twitter" = "Publikuj na Twitterze";
-"shareActivityCode_Twitter>375px" = "Publikuj zdjęcia na Twitterze";
-"shareActivityCode_Vimeo" = "Publikuj na Vimeo";
-"shareActivityCode_Vimeo>375px" = "Publikuj wideo na Vimeo";
-"shareActivityCode_Weibo" = "Publikuj na Weibo";
-"shareActivityCode_Weibo>375px" = "Publikuj zdjęcia na Weibo";
-"shareActivityCode_WhatsApp" = "Publikuj z WhatsApp";
-"shareActivityCode_WhatsApp>375px" = "Publikuj zdjęcia przez aplikację WhatsApp";
-"shareActivityCode_CameraRoll" = "Zapisz w rolce aparatu";
-"shareActivityCode_CameraRoll>375px" = "Zachowuje zdjęcia w rolce aparatu";
+"shareActivityCode_Messenger>375px" = "Publikacja obrazów przez Messenger";
+"shareActivityCode_Flickr" = "Publikacja na Flickr";
+"shareActivityCode_Flickr>375px" = "Publikacja obrazów na Flickr";
+"shareActivityCode_Instagram" = "Publikacja na Instagram";
+"shareActivityCode_Instagram>375px" = "Publikacja obrazów na Instagram";
+"shareActivityCode_Signal" = "Publikacja przez Signal";
+"shareActivityCode_Signal>375px" = "Publikacja obrazów przez Signal";
+"shareActivityCode_Snapchat" = "Publikacja przez Snapchat";
+"shareActivityCode_Snapchat>375px" = "Publikacja obrazów przez Snapchat";
+"shareActivityCode_TencentWeibo" = "Publikacja na TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Publikacja obrazów na TencentWeibo";
+"shareActivityCode_Twitter" = "Publikacja na Twitterze";
+"shareActivityCode_Twitter>375px" = "Publikacja obrazów na Twitterze";
+"shareActivityCode_Vimeo" = "Publikacja na Vimeo";
+"shareActivityCode_Vimeo>375px" = "Publikacja wideo na Vimeo";
+"shareActivityCode_Weibo" = "Publikacja na Weibo";
+"shareActivityCode_Weibo>375px" = "Publikacja obrazów na Weibo";
+"shareActivityCode_WhatsApp" = "Publikacja przez WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Publikacja obrazów przez WhatsApp";
+"shareActivityCode_CameraRoll" = "Zapis w rolce aparatu";
+"shareActivityCode_CameraRoll>375px" = "Zapis obrazów w rolce aparatu";
 "shareActivityCode_Other" = "Udostępnianie innym aplikacjom";
-"shareActivityCode_Other>375px" = "Udostępnij zdjęcia innym aplikacjom";
+"shareActivityCode_Other>375px" = "Udostępnianie obrazów innym aplikacjom";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
@@ -495,7 +497,7 @@
 "defaultThumbnailSize>320px" = "Rozmiar Miniatur";
 "defaultThumbnailSize>414px" = "Domyślny Rozmiar Miniatur";
 "defaultNberOfThumbnails" = "Liczba";
-"defaultNberOfThumbnails>320px" = "Liczba / wierszu";
+"defaultNberOfThumbnails>320px" = "Liczba / wierszy";
 "defaultNberOfThumbnails>414px" = "Liczba w wierszu";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Wybierz rozmiar miniaturki";
@@ -523,13 +525,13 @@
 "defaultImageSize>320px" = "Rozmiar Zdjęć";
 "defaultImageSize>414px" = "Domyślny Rozmiar Zdjęć";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "Proszę Wybrać Rozmiar Zdjęcia";
+"defaultImageSizeHeader" = "Wybierz rozmiar obrazu";
 "defaultImageSize_recommended" = " (zalecane)";
 "defaultSize_disabled" = " (wyłączone na serwerze)";
 "defaultSizeFooter" = "Wyszarzone rozmiary nie są zalecane lub nie są dostępne na serwerze Piwigo.";
 
-"settings_shareGPSdata" = "Współdziel prywatne metadane";
-"settings_shareGPSdata>375px" = "Współdziel z prywatnymi metadanymi";
+"settings_shareGPSdata" = "Udostępnij prywatne metadane";
+"settings_shareGPSdata>375px" = "Udostępnij z prywatnymi metadanymi";
 
 "imageSizeSquare" = "Kwadrat";
 "imageSizeThumbnail" = "Miniaturka";
@@ -567,9 +569,9 @@
 "settings_cacheDisk" = "Dysk";
 "settings_cacheMemory" = "Pamięć";
 "settings_cacheMegabytes" = "MB";
-"settings_cacheClear" = "Wyczyść cache";
-"settings_cacheClearAll" = "Wyczyść cache obrazków";
-"settings_cacheClearMsg" = "Na pewno chcesz wyczyścić cache obrazków? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";
+"settings_cacheClear" = "Wyczyść bufor";
+"settings_cacheClearAll" = "Wyczyść bufor obrazów";
+"settings_cacheClearMsg" = "Na pewno chcesz wyczyścić bufor obrazów? Spowoduje to, że albumy i obrazy będą się dłużej wczytywały.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Kolory";
@@ -582,7 +584,7 @@
 "settingsHeader_about" = "Informacje";
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
-"settings_contactUs" = "Skontaktuj się z nami";
+"settings_contactUs" = "Kontakt z nami";
 "settings_feedback" = "Opinie";
 "settings_supportForum" = "Forum Wsparcia";
 "settings_releaseNotes" = "Lista Zmian";
@@ -591,5 +593,5 @@
 "settings_pwgForumURL" = "http://pl.piwigo.org/forum";
 "settings_acknowledgements" = "Podziękowania";
 "settings_privacy" = "Polityka prywatności";
-"settings_users" = "Użytkownik";
+"settings_users" = "Użytkownicy";
 "settings_groups" = "Grupy";

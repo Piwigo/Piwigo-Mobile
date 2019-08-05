@@ -41,7 +41,7 @@
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectViewDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -2123,13 +2123,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)pushView:(UIViewController *)viewController
 {
-    if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
-        // Push sub-album view controller
+    if (([viewController isKindOfClass:[AlbumImagesViewController class]]) ||
+        ([viewController isKindOfClass:[DiscoverImagesViewController class]])) {
+        // Push sub-album view
         [self.navigationController pushViewController:viewController animated:YES];
     }
     else if (([viewController isKindOfClass:[MoveCategoryViewController class]]) ||
-             ([viewController isKindOfClass:[MoveImageViewController class]])) {
-        // Present album list for moving current album
+             ([viewController isKindOfClass:[MoveImageViewController class]]) ||
+             ([viewController isKindOfClass:[TagSelectViewController class]])) {
+        // Present album list for moving current album or images, for selecting a tag
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
         navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -2143,6 +2145,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         [self presentViewController:navController animated:YES completion:nil];
     }
 }
+
 
 #pragma mark - AsyncImageActivityItemProviderDelegate
 
@@ -2330,24 +2333,24 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     // Create Discover view
     DiscoverImagesViewController *discoverController = [[DiscoverImagesViewController alloc] initWithCategoryId:categoryId];
-    
-    // Embed Discover view in navigation interface
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:discoverController];
-    [self presentViewController:navController animated:YES completion:^{
-//        NSLog(@"THE END");
-    }];
+    [self pushView:discoverController];
 }
 
 -(void)discoverImagesByTag
 {
-    // Create tag selector view
+    // Push tag select view
     TagSelectViewController *discoverController = [[TagSelectViewController alloc] init];
-        
-    // Embed Discover view in navigation interface
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:discoverController];
-    [self presentViewController:navController animated:YES completion:^{
-//        NSLog(@"THE END");
-    }];
+    discoverController.tagSelectDelegate = self;
+    [self pushView:discoverController];
+}
+
+
+#pragma mark - TagSelectViewDelegate Methods
+
+-(void)pushTaggedImagesView:(UIViewController *)viewController
+{
+    // Push sub-album view
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

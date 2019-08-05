@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol TagSelectViewDelegate <NSObject>
+
+-(void)pushTaggedImagesView:(UIViewController*)viewController;
+
+@end
+
 @interface TagSelectViewController : UIViewController
+
+@property (nonatomic, weak) id<TagSelectViewDelegate> tagSelectDelegate;
 
 @end

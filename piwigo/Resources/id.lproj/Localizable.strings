@@ -289,6 +289,8 @@
 // Image tags
 "none" = "tidak ada";
 "tags" = "Tag";
+"tag" = "Tag";
+"tagsTitle_selectOne" = "Pilih tag";
 "tagsHeader_selected" = "Dipilih";
 "tagsHeader_all" = "Semua";
 

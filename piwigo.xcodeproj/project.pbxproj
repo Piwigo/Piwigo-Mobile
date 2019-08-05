@@ -31,7 +31,7 @@
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD77109A22F48FCD00E64797 /* TagSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109922F48FCD00E64797 /* TagSelectViewController.m */; };
-		AD77109D22F49A6000E64797 /* TagImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109C22F49A6000E64797 /* TagImagesViewController.m */; };
+		AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */; };
 		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
 		AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
 		AD7B4C1F20E0D6D9003E403A /* CategoryHeaderReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7B4C1C20E0D6D8003E403A /* CategoryHeaderReusableView.m */; };
@@ -214,8 +214,8 @@
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
 		AD77109622F48F6600E64797 /* TagSelectViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TagSelectViewController.h; sourceTree = "<group>"; };
 		AD77109922F48FCD00E64797 /* TagSelectViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TagSelectViewController.m; sourceTree = "<group>"; };
-		AD77109B22F49A5300E64797 /* TagImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TagImagesViewController.h; sourceTree = "<group>"; };
-		AD77109C22F49A6000E64797 /* TagImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TagImagesViewController.m; sourceTree = "<group>"; };
+		AD77109B22F49A5300E64797 /* TaggedImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TaggedImagesViewController.h; sourceTree = "<group>"; };
+		AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TaggedImagesViewController.m; sourceTree = "<group>"; };
 		AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansRegular.TTF; sourceTree = "<group>"; };
 		AD7B4C1C20E0D6D8003E403A /* CategoryHeaderReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryHeaderReusableView.m; sourceTree = "<group>"; };
 		AD7B4C1D20E0D6D8003E403A /* CategoryHeaderReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryHeaderReusableView.h; sourceTree = "<group>"; };
@@ -539,8 +539,8 @@
 				ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */,
 				AD77109622F48F6600E64797 /* TagSelectViewController.h */,
 				AD77109922F48FCD00E64797 /* TagSelectViewController.m */,
-				AD77109B22F49A5300E64797 /* TagImagesViewController.h */,
-				AD77109C22F49A6000E64797 /* TagImagesViewController.m */,
+				AD77109B22F49A5300E64797 /* TaggedImagesViewController.h */,
+				AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */,
 			);
 			path = Discover;
 			sourceTree = "<group>";
@@ -1367,7 +1367,7 @@
 				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
 				D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */,
 				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
-				AD77109D22F49A6000E64797 /* TagImagesViewController.m in Sources */,
+				AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
 				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,

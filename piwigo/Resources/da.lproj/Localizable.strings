@@ -289,6 +289,8 @@
 // Image tags
 "none" = "ingen";
 "tags" = "Etiketter";
+"tag" = "Etiket";
+"tagsTitle_selectOne" = "Vælg Etiket";
 "tagsHeader_selected" = "Valgte";
 "tagsHeader_all" = "Alle";
 

@@ -1,5 +1,5 @@
 //
-//  TagImagesViewController.m
+//  TaggedImagesViewController.m
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 02/08/2019.
@@ -16,9 +16,10 @@
 #import "ImagesCollection.h"
 #import "Model.h"
 #import "NoImagesHeaderCollectionReusableView.h"
-#import "TagImagesViewController.h"
+#import "TaggedImagesViewController.h"
+#import "TagSelectViewController.h"
 
-@interface TagImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
+@interface TaggedImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger tagId;
@@ -27,14 +28,14 @@
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
-@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
+@property (nonatomic, strong) UIBarButtonItem *tagSelectBarButton;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
 
-@implementation TagImagesViewController
+@implementation TaggedImagesViewController
 
 -(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName
 {
@@ -67,10 +68,6 @@
         } else {
             // Fallback on earlier versions
         }
-
-        // Bar buttons
-        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitTagImages)];
-        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -127,9 +124,6 @@
     
     // Title
     self.title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"tag" , @"Tag"), self.tagName];
-
-    // Right side of navigation bar
-    [self.navigationItem setRightBarButtonItem:self.cancelBarButton animated:YES];
 
     // Hide toolbar
     [self.navigationController setToolbarHidden:YES animated:YES];
@@ -228,12 +222,6 @@
             }
         }
     }
-}
-
--(void)quitTagImages
-{
-    // Leave Discover images view and return to Albums and Images
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated

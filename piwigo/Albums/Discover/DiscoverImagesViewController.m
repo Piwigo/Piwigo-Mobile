@@ -25,8 +25,6 @@
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
-@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
-
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -47,27 +45,24 @@
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         
         // Collection of images
-        self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
+        self.imagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
         self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
+        self.imagesCollection.backgroundColor = [UIColor clearColor];
         self.imagesCollection.alwaysBounceVertical = YES;
         self.imagesCollection.showsVerticalScrollIndicator = YES;
-        self.imagesCollection.dataSource = self;
         self.imagesCollection.delegate = self;
+        self.imagesCollection.dataSource = self;
         
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
         [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
         
         [self.view addSubview:self.imagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
-        if (@available(iOS 11.0, *)) {
-            [self.imagesCollection setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentAlways];
-        } else {
-            // Fallback on earlier versions
-        }
-
-        // Bar buttons
-        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitDiscover)];
-        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
+//        if (@available(iOS 11.0, *)) {
+//            [self.imagesCollection setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentAlways];
+//        } else {
+//            // Fallback on earlier versions
+//        }
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -123,9 +118,6 @@
 
     // Title is name of the category
     self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-
-    // Right side of navigation bar
-    [self.navigationItem setRightBarButtonItem:self.cancelBarButton animated:YES];
 
     // Hide toolbar
     [self.navigationController setToolbarHidden:YES animated:YES];
@@ -235,12 +227,6 @@
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";
     }
-}
-
--(void)quitDiscover
-{
-    // Leave Discover images view and return to Albums and Images
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -391,7 +377,7 @@
     self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
     self.imageDetailView.hidesBottomBarWhenPushed = YES;
     self.imageDetailView.imgDetailDelegate = self;
-    [[self navigationController] pushViewController:self.imageDetailView animated:YES];
+    [self.navigationController pushViewController:self.imageDetailView animated:YES];
 }
 
 

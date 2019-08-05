@@ -6,13 +6,13 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.1_text" = "Wersja 2.4.1\n\n• Dodaje albumy „Najczęściej odwiedzane”, „Najlepiej oceniane” i „Najnowsze zdjęcia”\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.4.1_text" = "Wersja 2.4.1\n\n• Dodaje albumy „Tagi”, „Najczęściej odwiedzane”, „Najlepiej oceniane” i „Najnowsze zdjęcia”\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
 "v2.4.0_text" = "Wersja 2.4\n15 lipca 2019\n\n• Dodaje narzędzie wyszukiwania (wymaga systemu iOS 11 lub nowszego)\n• Dodaje sortowanie obrazów według wyniku oceny\n• Szybsze pobieranie miniatur albumów (wymaga Piwigo 2.8 lub nowszego)\n• Tytuły przesłanych obrazów nie są już domyślnie nazwami plików\n• Naprawiono niemożność usunięcia znaczników\n• Naprawia niedokładne dane obrazu w niektórych okolicznościach";
 
-"v2.3.5_text" = "Wersja 2.3.5\n6 czerwca 2019\n\n• Napraw awarię, która czasami zdarza się podczas edycji adresu serwera po wylogowaniu";
+"v2.3.5_text" = "Wersja 2.3.5\n6 czerwca 2019\n\n• Naprawia awarię, która czasami zdarza się podczas edycji adresu serwera po wylogowaniu";
 
-"v2.3.4_text" = "Wersja 2.3.4\n1 maja 2019\n\n• Udoskonalona prezentacja albumów na iPadzie (i iPhonie)\n• Drobne poprawki błędów i ulepszenie interfejsu";
+"v2.3.4_text" = "Wersja 2.3.4\n1 maja 2019\n\n• Udoskonala prezentację albumów na iPadzie (i iPhonie)\n• Drobne poprawki błędów i ulepszenie interfejsu";
 
 "v2.3.3_text" = "Wersja 2.3.3\n10 kwietnia 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
@@ -20,11 +20,11 @@
 
 "v2.3.1_text" = "Wersja 2.3.1\n15 lutego 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
 
-"v2.3.0_text" = "Wersja 2.3\n2 lutego 2019\n\n• Udostępniaj zdjęcia i filmy\n• Zwiększyć limity rozmiaru pamięci podręcznej\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
+"v2.3.0_text" = "Wersja 2.3\n2 lutego 2019\n\n• Udostępniaj zdjęcia i filmy\n• Zwiększa limit rozmiaru pamięci podręcznej\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawa tłumaczenia";
 
-"v2.2.7_text" = "Wersja 2.2.7\n29 grudnia 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
+"v2.2.7_text" = "Wersja 2.2.7\n29 grudnia 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawa tłumaczenia";
 
-"v2.2.6_text" = "Wersja 2.2.6\n20 grudnia 2018\n\n• Poprawki tłumaczenia i obsługi iOS 12\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Włoskie tłumaczenie";
+"v2.2.6_text" = "Wersja 2.2.6\n20 grudnia 2018\n\n• Poprawa tłumaczenia i obsługi iOS 12\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Włoskie tłumaczenie";
 
 "v2.2.5_text" = "Wersja 2.2.5\n28 października 2018\n\n• Prześlij nam opinię e-mailem\n• Polityka prywatności\n• Poprawki błędów";
 
@@ -32,7 +32,7 @@
 
 "v2.2.3_text" = "Wersja 2.2.3\n27 sierpnia 2018\n\n• Nowy projekt albumu\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
-"v2.2.2_text" = "Wersja 2.2.2\n14 sierpnia 2018\n\n• Copy and move images between albums\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.2.2_text" = "Wersja 2.2.2\n14 sierpnia 2018\n\n• Kopiowanie i przenoszenie obrazów pomiędzy albumami\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
 "v2.2.1_text" = "Wersja 2.2.1\n25 lipca 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
 

@@ -289,6 +289,8 @@
 // Image tags
 "none" = "niets";
 "tags" = "Labels";
+"tag" = "Label";
+"tagsTitle_selectOne" = "Selecteer een Label";
 "tagsHeader_selected" = "Geselecteerd";
 "tagsHeader_all" = "Alles";
 

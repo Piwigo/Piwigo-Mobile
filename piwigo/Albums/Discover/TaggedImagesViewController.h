@@ -1,5 +1,5 @@
 //
-//  TagImagesViewController.h
+//  TaggedImagesViewController.h
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 02/08/2019.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TagImagesViewController : UIViewController
+@interface TaggedImagesViewController : UIViewController
 
 -(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName;
 

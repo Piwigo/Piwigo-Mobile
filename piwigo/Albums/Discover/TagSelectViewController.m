@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "Model.h"
 #import "PiwigoTagData.h"
-#import "TagImagesViewController.h"
+#import "TaggedImagesViewController.h"
 #import "TagSelectViewController.h"
 #import "TagsData.h"
 
@@ -17,8 +17,6 @@
 
 @property (nonatomic, strong) UITableView *tagsTableView;
 @property (nonatomic, strong) NSArray *letterIndex;
-
-@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
@@ -31,10 +29,12 @@
     {
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
                 
-        self.tagsTableView = [UITableView new];
-        self.tagsTableView.backgroundColor = [UIColor clearColor];
+        self.tagsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.tagsTableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.tagsTableView.backgroundColor = [UIColor clearColor];
         self.tagsTableView.sectionIndexColor = [UIColor piwigoOrange];
+        self.tagsTableView.alwaysBounceVertical = YES;
+        self.tagsTableView.showsVerticalScrollIndicator = YES;
         self.tagsTableView.delegate = self;
         self.tagsTableView.dataSource = self;
         [self.view addSubview:self.tagsTableView];
@@ -51,10 +51,6 @@
             self.letterIndex = [[firstCharacters allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
             [self.tagsTableView reloadData];
         }];
-
-        // Bar buttons
-        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitTagSelector)];
-        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -96,17 +92,8 @@
     // Title
     self.title = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
 
-    // Right side of navigation bar
-    [self.navigationItem setRightBarButtonItem:self.cancelBarButton animated:YES];
-
     // Set colors, fonts, etc.
     [self paletteChanged];
-}
-
--(void)quitTagSelector
-{
-    // Leave Discover images view and return to Albums and Images
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -130,7 +117,7 @@
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
     
     NSInteger newRow = [self indexForFirstChar:title inArray:[[TagsData sharedInstance].tagList valueForKey:@"tagName"]];
-    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newRow inSection:1];
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newRow inSection:0];
     [tableView scrollToRowAtIndexPath:newIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
     
     return index;
@@ -173,7 +160,6 @@
     cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
     cell.tintColor = [UIColor piwigoOrange];
     cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
     PiwigoTagData *currentTag;
     currentTag = [TagsData sharedInstance].tagList[indexPath.row];
@@ -191,11 +177,17 @@
 {
     // Deselect row
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-    // Display images of selected tag
-    PiwigoTagData *currentTag = [TagsData sharedInstance].tagList[indexPath.row];
-    TagImagesViewController *vc = [[TagImagesViewController alloc] initWithTagId:currentTag.tagId andTagName:currentTag.tagName];
-    [self.navigationController pushViewController:vc animated:YES];
+    
+    // Dismiss tag select
+    [self dismissViewControllerAnimated:YES completion:^{
+        // Push tagged images view
+        if([self.tagSelectDelegate respondsToSelector:@selector(pushTaggedImagesView:)])
+        {
+            PiwigoTagData *currentTag = [TagsData sharedInstance].tagList[indexPath.row];
+            TaggedImagesViewController *taggedImagesVC = [[TaggedImagesViewController alloc] initWithTagId:currentTag.tagId andTagName:currentTag.tagName];
+            [self.tagSelectDelegate pushTaggedImagesView:taggedImagesVC];
+        }
+    }];
 }
 
 @end
