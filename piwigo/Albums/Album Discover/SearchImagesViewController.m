@@ -298,7 +298,7 @@
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
     // Avoid unwanted spaces
-    if ([collectionView numberOfItemsInSection:section] == 0) {
+    if (section == 0) {
         return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
     } else {
         return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);

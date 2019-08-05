@@ -1682,19 +1682,19 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     // Only albums in Root Album
                     footer.noImagesLabel.text = @"";
                 }
-                else if (self.albumData.images.count == 0) {
-                    // Still loading images…
-                    if (self.loadingImages) {
-                        // Currently trying to load images…
-                        footer.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
-                    }
-                    else {
-                        // Not loading —> No images
+                else if (self.loadingImages) {
+                    // Currently trying to load images…
+                    footer.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
+                }
+                else if (totalImageCount == 0) {
+                        // Not loading and no images
                         footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-                    }
-                } else {
+                }
+                else {
                     // Display number of images…
-                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
                 }
                 return footer;
             }
@@ -1753,19 +1753,19 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 // Only albums in Root Album
                 return CGSizeZero;
             }
-            else if (self.albumData.images.count == 0) {
-                // Still loading images…
-                if (self.loadingImages) {
-                    // Currently trying to load images…
-                    footer = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
-                }
-                else {
-                    // Not loading —> No images
-                    footer = NSLocalizedString(@"noImages", @"No Images");
-                }
-            } else {
+            else if (self.loadingImages) {
+                // Currently trying to load images…
+                footer = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
+            }
+            else if (totalImageCount == 0) {
+                // Not loading and no images
+                footer = NSLocalizedString(@"noImages", @"No Images");
+            }
+            else {
                 // Display number of images…
-                footer = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                [numberFormatter setPositiveFormat:@"#,##0"];
+                footer = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
             }
  
             if ([footer length] > 0) {
@@ -1814,20 +1814,25 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Avoid unwanted spaces
     switch (section) {
         case 0:             // Albums
-            if ([collectionView numberOfItemsInSection:section] == 0) {
+        {
+            if (([collectionView numberOfItemsInSection:section] == 0) || (self.categoryId == 0)) {
                 return UIEdgeInsetsMake(0, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
             } else {
                 return UIEdgeInsetsMake(10, kAlbumMarginsSpacing, 10, kAlbumMarginsSpacing);
             }
             break;
+        }
             
         default:            // Images
-            if ([collectionView numberOfItemsInSection:section] == 0) {
+        {
+            PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+            if (([collectionView numberOfItemsInSection:section] == 0) || ([albumData.comment length] == 0)) {
                 return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
             } else {
                 return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
             }
             break;
+        }
     }
 }
 

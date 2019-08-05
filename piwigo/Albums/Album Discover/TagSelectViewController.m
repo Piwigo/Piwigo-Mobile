@@ -178,16 +178,16 @@
     // Deselect row
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    // Push tagged images view
+    if([self.tagSelectDelegate respondsToSelector:@selector(pushTaggedImagesView:)])
+    {
+        PiwigoTagData *currentTag = [TagsData sharedInstance].tagList[indexPath.row];
+        TaggedImagesViewController *taggedImagesVC = [[TaggedImagesViewController alloc] initWithTagId:currentTag.tagId andTagName:currentTag.tagName];
+        [self.tagSelectDelegate pushTaggedImagesView:taggedImagesVC];
+    }
+
     // Dismiss tag select
-    [self dismissViewControllerAnimated:YES completion:^{
-        // Push tagged images view
-        if([self.tagSelectDelegate respondsToSelector:@selector(pushTaggedImagesView:)])
-        {
-            PiwigoTagData *currentTag = [TagsData sharedInstance].tagList[indexPath.row];
-            TaggedImagesViewController *taggedImagesVC = [[TaggedImagesViewController alloc] initWithTagId:currentTag.tagId andTagName:currentTag.tagName];
-            [self.tagSelectDelegate pushTaggedImagesView:taggedImagesVC];
-        }
-    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
