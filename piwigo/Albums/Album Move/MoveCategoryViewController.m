@@ -22,7 +22,7 @@
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
 @property (nonatomic, strong) UIViewController *hudViewController;
-@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
@@ -53,7 +53,7 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
         // Button for returning to albums/images
-        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitMoveCategory)];
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitMoveCategory)];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -100,7 +100,7 @@
     [self paletteChanged];
 
     // Add Done button
-    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+    [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
