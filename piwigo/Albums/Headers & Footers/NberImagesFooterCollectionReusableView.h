@@ -1,5 +1,5 @@
 //
-//  NoImagesHeaderCollectionReusableView.h
+//  NberImagesFooterCollectionReusableView.h
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 02/04/2018.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NoImagesHeaderCollectionReusableView : UICollectionReusableView
+@interface NberImagesFooterCollectionReusableView : UICollectionReusableView
 
 @property (nonatomic, strong) UILabel *noImagesLabel;
 

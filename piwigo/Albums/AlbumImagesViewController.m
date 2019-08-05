@@ -31,7 +31,7 @@
 #import "MoveCategoryViewController.h"
 #import "MoveImageViewController.h"
 #import "NetworkHandler.h"
-#import "NoImagesHeaderCollectionReusableView.h"
+#import "NberImagesFooterCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
@@ -114,7 +114,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
 		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
         [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
-        [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
+        [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
 
 		[self.view addSubview:self.imagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
@@ -1646,7 +1646,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 }
 
 
-#pragma mark - UICollectionView Headers
+#pragma mark - UICollectionView Headers & Footers
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
@@ -1667,32 +1667,36 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             break;
         }
             
-        default:    // Section 1 — Image collection
+        case 1:    // Section 1 — Image collection
         {
-            // Display "No Images" except in root album
-            NoImagesHeaderCollectionReusableView *header = nil;
-            
-            if(kind == UICollectionElementKindSectionHeader)
+            if(kind == UICollectionElementKindSectionFooter)
             {
-                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection" forIndexPath:indexPath];
-                header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+                // Display number of images
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+
+                // Display number of images except in root album
+                NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
+                footer.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
 
                 if (self.categoryId == 0) {
                     // Only albums in Root Album
-                    header.noImagesLabel.text = @"";
+                    footer.noImagesLabel.text = @"";
                 }
                 else if (self.albumData.images.count == 0) {
                     // Still loading images…
                     if (self.loadingImages) {
                         // Currently trying to load images…
-                        header.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
+                        footer.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
                     }
-                    else if (self.categoryId != 0) {
+                    else {
                         // Not loading —> No images
-                        header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+                        footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
                     }
+                } else {
+                    // Display number of images…
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
                 }
-                return header;
+                return footer;
             }
             break;
         }
@@ -1700,6 +1704,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 	UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
 	return view;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplaySupplementaryView:(UICollectionReusableView *)view forElementKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath
+{
+    if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+        view.layer.zPosition = 0;       // Below scroll indicator
+        view.backgroundColor = [[UIColor piwigoBackgroundColor] colorWithAlphaComponent:0.75];
+    }
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
@@ -1722,34 +1734,49 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             }
             break;
         }
-        default:    // Section 1 — Image collection
+    }
+
+    return CGSizeZero;
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
+{
+    switch (section) {
+        case 1:    // Section 1 — Image collection
         {
-            NSString *header = @"";
+            // Display number of images
+            NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+
+            // Display number of images except in root album
+            NSString *footer = @"";
             if (self.categoryId == 0) {
                 // Only albums in Root Album
-                header = @"";
+                return CGSizeZero;
             }
             else if (self.albumData.images.count == 0) {
                 // Still loading images…
                 if (self.loadingImages) {
                     // Currently trying to load images…
-                    header = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
+                    footer = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
                 }
-                else if (self.categoryId != 0) {
+                else {
                     // Not loading —> No images
-                    header = NSLocalizedString(@"noImages", @"No Images");
+                    footer = NSLocalizedString(@"noImages", @"No Images");
                 }
+            } else {
+                // Display number of images…
+                footer = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
             }
  
-            if ([header length] > 0) {
-                NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+            if ([footer length] > 0) {
+                NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
                 NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
                 context.minimumScaleFactor = 1.0;
-                CGRect headerRect = [header boundingRectWithSize:CGSizeMake(collectionView.frame.size.width - 30.0, CGFLOAT_MAX)
+                CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(collectionView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                          options:NSStringDrawingUsesLineFragmentOrigin
                                                       attributes:attributes
                                                          context:context];
-                return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(headerRect.size.height));
+                return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height));
             }
             break;
         }

@@ -21,7 +21,7 @@
 #import "LocalImageCollectionViewCell.h"
 #import "LocationsData.h"
 #import "MBProgressHUD.h"
-#import "NoImagesHeaderCollectionReusableView.h"
+#import "NberImagesFooterCollectionReusableView.h"
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
 #import "PiwigoLocationData.h"
@@ -93,7 +93,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         self.localImagesCollection.delegate = self;
         [self.localImagesCollection setAccessibilityIdentifier:@"LocalAlbum"];
 
-        [self.localImagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
+        [self.localImagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NberImagesFooterCollection"];
         [self.localImagesCollection registerNib:[UINib nibWithNibName:@"LocalImagesHeaderReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView"];
         [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"LocalImageCollectionViewCell"];
 
@@ -727,24 +727,18 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 }
 
 
-#pragma mark - UICollectionView - Headers
-
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
-{
-    return CGSizeMake(collectionView.frame.size.width, 40.0);
-}
+#pragma mark - UICollectionView - Headers & Footers
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.imagesInSections.count > 0)    // Display data in header of section
+    // Header with place name
+    if (kind == UICollectionElementKindSectionHeader)
     {
-        // Header with place name
-        LocalImagesHeaderReusableView *header = nil;
-        if (kind == UICollectionElementKindSectionHeader)
+        if (self.imagesInSections.count > 0)    // Display data in header of section
         {
             UINib *nib = [UINib nibWithNibName:@"LocalImagesHeaderReusableView" bundle:nil];
             [collectionView registerNib:nib forCellWithReuseIdentifier:@"LocalImagesHeaderReusableView"];
-            header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView" forIndexPath:indexPath];
+            LocalImagesHeaderReusableView *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView" forIndexPath:indexPath];
             
             // Cache place names if needed
             NSInteger lastCachedPlace = NSMaxRange(self.rangeOfCachedPlaces);
@@ -764,19 +758,22 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             
             return header;
         }
-    } else {
-        // No images!
-        if (indexPath.section == 0) {
-            // Display "No Images"
-            NoImagesHeaderCollectionReusableView *header = nil;
-            if(kind == UICollectionElementKindSectionHeader)
-            {
-                header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection" forIndexPath:indexPath];
-                header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
-                
-                return header;
-            }
+    }
+    else if (kind == UICollectionElementKindSectionFooter)
+    {
+        // Display "No Images" if needed
+        NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
+        footer.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+
+        if ([[self.imagesInSections objectAtIndex:indexPath.section] count] == 0) {
+            // Display "No images"
+            footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+        } else {
+            // Display number of images…
+            footer.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)[[self.imagesInSections objectAtIndex:indexPath.section] count], ([[self.imagesInSections objectAtIndex:indexPath.section] count] > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
         }
+
+        return footer;
     }
 
     UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
@@ -789,6 +786,36 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         view.layer.zPosition = 0;       // Below scroll indicator
         view.backgroundColor = [[UIColor piwigoBackgroundColor] colorWithAlphaComponent:0.75];
     }
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    return CGSizeMake(collectionView.frame.size.width, 40.0);
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
+{
+    // Display "No Images" if needed
+    NSString *footer = @"";
+    if ([[self.imagesInSections objectAtIndex:section] count] == 0) {
+        footer = NSLocalizedString(@"noImages", @"No Images");
+    } else {
+        // Display number of images…
+        footer = [NSString stringWithFormat:@"%ld %@", (long)[[self.imagesInSections objectAtIndex:section] count], ([[self.imagesInSections objectAtIndex:section] count] > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+    }
+
+    if ([footer length] > 0) {
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
+        NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+        context.minimumScaleFactor = 1.0;
+        CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(collectionView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:attributes
+                                                 context:context];
+        return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height));
+    }
+    
+    return CGSizeZero;
 }
 
 

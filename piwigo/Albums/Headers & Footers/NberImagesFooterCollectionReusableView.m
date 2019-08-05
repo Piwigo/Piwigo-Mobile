@@ -1,19 +1,19 @@
 //
-//  NoImagesHeaderCollectionReusableView.m
+//  NberImagesFooterCollectionReusableView.m
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 02/04/2018.
 //  Copyright © 2018 Piwigo.org. All rights reserved.
 //
 
-#import "NoImagesHeaderCollectionReusableView.h"
+#import "NberImagesFooterCollectionReusableView.h"
 #import "Model.h"
 
-@interface NoImagesHeaderCollectionReusableView()
+@interface NberImagesFooterCollectionReusableView()
 
 @end
 
-@implementation NoImagesHeaderCollectionReusableView
+@implementation NberImagesFooterCollectionReusableView
 
 -(instancetype)initWithFrame:(CGRect)frame
 {
@@ -27,7 +27,7 @@
         self.noImagesLabel.adjustsFontSizeToFitWidth = NO;
         self.noImagesLabel.lineBreakMode = NSLineBreakByWordWrapping;
         self.noImagesLabel.textAlignment = NSTextAlignmentCenter;
-        self.noImagesLabel.font = [UIFont piwigoFontBold];
+        self.noImagesLabel.font = [UIFont piwigoFontLight];
         self.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
 
         [self addSubview:self.noImagesLabel];

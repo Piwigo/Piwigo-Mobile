@@ -1,8 +1,8 @@
 //
-//  TaggedImagesViewController.m
+//  DiscoverImagesViewController.m
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 02/08/2019.
+//  Created by Eddy Lelièvre-Berna on 15/07/2019.
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
@@ -15,51 +15,46 @@
 #import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
 #import "Model.h"
-#import "NoImagesHeaderCollectionReusableView.h"
-#import "TaggedImagesViewController.h"
-#import "TagSelectViewController.h"
+#import "NberImagesFooterCollectionReusableView.h"
 
-@interface TaggedImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
+@interface DiscoverImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
-@property (nonatomic, assign) NSInteger tagId;
-@property (nonatomic, strong) NSString *tagName;
+@property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
-
-@property (nonatomic, strong) UIBarButtonItem *tagSelectBarButton;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
 
-@implementation TaggedImagesViewController
+@implementation DiscoverImagesViewController
 
--(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName
+-(instancetype)initWithCategoryId:(NSInteger)categoryId
 {
     self = [super init];
     if(self)
     {
-        self.tagId = tagId;
-        self.tagName = tagName;
+        self.categoryId = categoryId;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
-        self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoTagsCategoryId andQuery:@""];
+        self.albumData = [[AlbumData alloc] initWithCategoryId:categoryId andQuery:@""];
         self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         
         // Collection of images
-        self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
+        self.imagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
         self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
+        self.imagesCollection.backgroundColor = [UIColor clearColor];
         self.imagesCollection.alwaysBounceVertical = YES;
         self.imagesCollection.showsVerticalScrollIndicator = YES;
-        self.imagesCollection.dataSource = self;
         self.imagesCollection.delegate = self;
+        self.imagesCollection.dataSource = self;
         
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
-        [self.imagesCollection registerClass:[NoImagesHeaderCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection"];
+        [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
         
         [self.view addSubview:self.imagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
@@ -104,11 +99,10 @@
 -(void)viewDidLoad
 {
     // Initialise discover cache
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
+    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
     [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
 
     // Load, sort images and reload collection
-    discoverAlbum.query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
     [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
         
         [self.imagesCollection reloadData];
@@ -121,9 +115,9 @@
     
     // Set colors, fonts, etc.
     [self paletteChanged];
-    
-    // Title
-    self.title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"tag" , @"Tag"), self.tagName];
+
+    // Title is name of the category
+    self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 
     // Hide toolbar
     [self.navigationController setToolbarHidden:YES animated:YES];
@@ -180,7 +174,7 @@
                 
                 // Load more images if seems to be a good idea
                 if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
-                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages])) {
+                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])) {
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -189,7 +183,7 @@
             } else {
                 // No yet loaded => load more images
                 // Should not happen as needToLoadMoreImages() should be called when previewing images
-                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages]) {
+                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]) {
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -236,59 +230,65 @@
 }
 
 
-#pragma mark - UICollectionView Headers
+#pragma mark - UICollectionView Headers & Footers
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    // Display number of images
-    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages;
-    NoImagesHeaderCollectionReusableView *header = nil;
-    
-    if(kind == UICollectionElementKindSectionHeader)
+    if(kind == UICollectionElementKindSectionFooter)
     {
-        header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NoImagesHeaderCollection" forIndexPath:indexPath];
-        header.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+        // Display number of images
+        NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
+        NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
+        footer.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
         
-        if (totalImageCount != 0) {
-            // Display number of images…
-            header.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (self.albumData.images.count > 1) ? NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")];
+        if (totalImageCount == 0) {
+            // Display "No images"
+            footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
             }
         else {
-            // No images
-            header.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+            // Display number of images…
+            footer.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
         }
-        
-        return header;
+
+        return footer;
     }
     
     UICollectionReusableView *view = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
     return view;
 }
 
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+- (void)collectionView:(UICollectionView *)collectionView willDisplaySupplementaryView:(UICollectionReusableView *)view forElementKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath
+{
+    if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+        view.layer.zPosition = 0;       // Below scroll indicator
+        view.backgroundColor = [[UIColor piwigoBackgroundColor] colorWithAlphaComponent:0.75];
+    }
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
 {
     // Display number of images
-    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages;
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
+    NSString *footer = @"";
 
-    NSString *header = @"";
-    if (totalImageCount != 0) {
-        // Display number of images…
-        header = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")];
+    if (totalImageCount == 0) {
+        // Display "No images"
+        footer = NSLocalizedString(@"noImages", @"No Images");
     }
     else {
-        // No images
-        header = NSLocalizedString(@"noImages", @"No Images");
+        // Display number of images…
+        footer = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
     }
 
-    if ([header length] > 0) {
-        NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+    if ([footer length] > 0) {
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
         NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
         context.minimumScaleFactor = 1.0;
-        CGRect headerRect = [header boundingRectWithSize:CGSizeMake(collectionView.frame.size.width - 30.0, CGFLOAT_MAX)
+        CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(collectionView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                  options:NSStringDrawingUsesLineFragmentOrigin
                                               attributes:attributes
                                                  context:context];
-        return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(headerRect.size.height));
+        return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height));
     }
     
     return CGSizeZero;
@@ -305,9 +305,7 @@
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     // Returns number of images
-//    NSLog(@"items: %ld", [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].imageList.count);
-//    NSLog(@"items: %ld", self.albumData.images.count);
-    return [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].imageList.count;
+    return [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -352,7 +350,7 @@
     if (self.albumData.images.count > indexPath.row) {
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData forCategoryId:kPiwigoTagsCategoryId];
+        [cell setupWithImageData:imageData forCategoryId:self.categoryId];
     }
     
     // Calculate the number of thumbnails displayed per page
@@ -360,7 +358,7 @@
     
     // Load image data in advance if possible (page after page…)
     if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:0] - roundf(imagesPerPage / 3.0))) &&
-        (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages]))
+        (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
     {
         [self.albumData loadMoreImagesOnCompletion:^{
             [self.imagesCollection reloadData];
@@ -382,7 +380,7 @@
     }
 
     // Display full screen image
-    self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:kPiwigoTagsCategoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+    self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
     self.imageDetailView.hidesBottomBarWhenPushed = YES;
     self.imageDetailView.imgDetailDelegate = self;
     [self.navigationController pushViewController:self.imageDetailView animated:YES];
@@ -421,6 +419,5 @@
         [self.imagesCollection reloadData];
     }];
 }
-
 
 @end
