@@ -44,7 +44,7 @@
 		ADABACB3223591630095C4D0 /* LocalImagesHeaderReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADABACB2223591630095C4D0 /* LocalImagesHeaderReusableView.m */; };
 		ADABACB5223591720095C4D0 /* LocalImagesHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADABACB4223591720095C4D0 /* LocalImagesHeaderReusableView.xib */; };
 		ADABACBD2235A7120095C4D0 /* PiwigoLocationData.m in Sources */ = {isa = PBXBuildFile; fileRef = ADABACBC2235A7120095C4D0 /* PiwigoLocationData.m */; };
-		ADAEED8822E2665000CB1B12 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAEED8622E2665000CB1B12 /* Launch Screen.storyboard */; };
+		ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */; };
 		ADB22CAA2247AAA700C9B66C /* CameraRollUploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB22CA92247AAA700C9B66C /* CameraRollUploadViewController.m */; };
 		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
 		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
@@ -229,6 +229,7 @@
 		AD8452611FEC70740035047B /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD8452621FEC70740035047B /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD8452631FEC70750035047B /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD85324222F98E5800AE752E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		AD8549311FE98CE200155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8549321FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/About.strings; sourceTree = "<group>"; };
 		AD8549331FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -255,7 +256,6 @@
 		ADABACB4223591720095C4D0 /* LocalImagesHeaderReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocalImagesHeaderReusableView.xib; sourceTree = "<group>"; };
 		ADABACBB2235A7080095C4D0 /* PiwigoLocationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoLocationData.h; sourceTree = "<group>"; };
 		ADABACBC2235A7120095C4D0 /* PiwigoLocationData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoLocationData.m; sourceTree = "<group>"; };
-		ADAEED8722E2665000CB1B12 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = "en.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		ADB22CA82247AA9900C9B66C /* CameraRollUploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraRollUploadViewController.h; sourceTree = "<group>"; };
 		ADB22CA92247AAA700C9B66C /* CameraRollUploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraRollUploadViewController.m; sourceTree = "<group>"; };
 		ADB607E61FC9D75700AF28DB /* VideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoView.h; sourceTree = "<group>"; };
@@ -281,6 +281,7 @@
 		ADF88E762066D04600D1CE26 /* OpenSansBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansBold.TTF; sourceTree = "<group>"; };
 		ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansExtraBold.TTF; sourceTree = "<group>"; };
 		ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansLight.TTF; sourceTree = "<group>"; };
+		ADFD9B3B22F981F3008FE480 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC2EF1B4D6E942B22B2385A1 /* Pods-piwigoGetPiwigo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoGetPiwigo.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoGetPiwigo/Pods-piwigoGetPiwigo.release.xcconfig"; sourceTree = "<group>"; };
 		CF89AF9D04D25606B05A868A /* Pods-piwigoAppStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoAppStore.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoAppStore/Pods-piwigoAppStore.release.xcconfig"; sourceTree = "<group>"; };
@@ -822,7 +823,7 @@
 				D87C5A971A6F4F93001763BC /* Network */,
 				ADA6F19321CA99F7006C9DD5 /* Info.plist */,
 				D82B8CEE1A6790BF000E47CA /* PrefixHeader.pch */,
-				ADAEED8622E2665000CB1B12 /* Launch Screen.storyboard */,
+				ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */,
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8CBE1A67820A000E47CA /* Supporting Files */,
@@ -1186,6 +1187,7 @@
 				ar,
 				ja,
 				it,
+				Base,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -1236,7 +1238,7 @@
 				AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */,
 				AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */,
 				ADABACB5223591720095C4D0 /* LocalImagesHeaderReusableView.xib in Resources */,
-				ADAEED8822E2665000CB1B12 /* Launch Screen.storyboard in Resources */,
+				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
 				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1561,12 +1563,13 @@
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
 		};
-		ADAEED8622E2665000CB1B12 /* Launch Screen.storyboard */ = {
+		ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				ADAEED8722E2665000CB1B12 /* en */,
+				ADFD9B3B22F981F3008FE480 /* Base */,
+				AD85324222F98E5800AE752E /* fr */,
 			);
-			name = "Launch Screen.storyboard";
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 		ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */ = {
@@ -1843,7 +1846,6 @@
 			baseConfigurationReference = 4638715CC0ABD46A2178FEC6 /* Pods-piwigo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1877,7 +1879,6 @@
 			baseConfigurationReference = 7C4B704898B5BF42D1A475AB /* Pods-piwigo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
