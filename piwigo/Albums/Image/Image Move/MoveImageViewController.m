@@ -410,6 +410,14 @@
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+    if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)]) return NO;
+
+    return YES;
+}
+
 
 #pragma mark - UITableViewDelegate Methods
 
