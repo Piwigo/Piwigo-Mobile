@@ -101,10 +101,6 @@
     self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
 }
 
--(void)viewDidLoad
-{
-}
-
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
