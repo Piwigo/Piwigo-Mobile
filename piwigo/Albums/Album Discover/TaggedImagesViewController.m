@@ -316,10 +316,10 @@
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
     // Avoid unwanted spaces
-    if (section == 0) {
+    if (self.albumData.images.count == 0) {
         return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
     } else {
-        return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
+        return UIEdgeInsetsMake(4, kImageMarginsSpacing, 4, kImageMarginsSpacing);
     }
 }
 
