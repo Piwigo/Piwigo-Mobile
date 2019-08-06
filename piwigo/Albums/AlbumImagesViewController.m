@@ -1815,10 +1815,18 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     switch (section) {
         case 0:             // Albums
         {
-            if (([collectionView numberOfItemsInSection:section] == 0) || (self.categoryId == 0)) {
+            if ([collectionView numberOfItemsInSection:section] == 0) {
                 return UIEdgeInsetsMake(0, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
-            } else {
-                return UIEdgeInsetsMake(10, kAlbumMarginsSpacing, 10, kAlbumMarginsSpacing);
+            }
+            else if (self.categoryId == 0) {
+                if (@available(iOS 13.0, *)) {
+                    return UIEdgeInsetsMake(0, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
+                } else {
+                    return UIEdgeInsetsMake(10, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
+                }
+            }
+            else {
+                return UIEdgeInsetsMake(10, kAlbumMarginsSpacing, 0, kAlbumMarginsSpacing);
             }
             break;
         }
@@ -1826,10 +1834,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         default:            // Images
         {
             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-            if (([collectionView numberOfItemsInSection:section] == 0) || ([albumData.comment length] == 0)) {
+            if ([collectionView numberOfItemsInSection:section] == 0) {
                 return UIEdgeInsetsMake(0, kImageMarginsSpacing, 0, kImageMarginsSpacing);
-            } else {
-                return UIEdgeInsetsMake(10, kImageMarginsSpacing, 10, kImageMarginsSpacing);
+            }
+            else if ([albumData.comment length] == 0) {
+                return UIEdgeInsetsMake(4, kImageMarginsSpacing, 4, kImageMarginsSpacing);
+            }
+            else {
+                return UIEdgeInsetsMake(10, kImageMarginsSpacing, 4, kImageMarginsSpacing);
             }
             break;
         }
