@@ -355,13 +355,11 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
     
     // Compile parameters
-    NSDictionary *parameters = [NSDictionary new];
-    parameters = @{
-                   @"tag_id"                : @(tagId),
-                   @"per_page"              : @(imagesPerPage),
-                   @"page"                  : @(page),
-                   @"order"                 : @"rank asc, id desc"
-                 };
+    NSDictionary *parameters = @{@"tag_id"         : @(tagId),
+                                 @"per_page"       :@(imagesPerPage),
+                                 @"page"           : @(page),
+                                 @"order"          : @"rank asc, id desc"
+                                  };
     
     // Cancel active Search request if any
     NSArray <NSURLSessionTask *> *searchTasks = [[Model sharedInstance].sessionManager tasks];
