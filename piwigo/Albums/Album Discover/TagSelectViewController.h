@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-FOUNDATION_EXPORT CGFloat const kTagSelectViewWidth;
-
 @protocol TagSelectViewDelegate <NSObject>
 
 -(void)pushTaggedImagesView:(UIViewController*)viewController;

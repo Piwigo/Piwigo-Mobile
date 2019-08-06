@@ -869,20 +869,33 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 #pragma mark - push view
 -(void)pushView:(UIViewController *)viewController
 {
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    navController.modalPresentationStyle = UIModalPresentationFullScreen;
-
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        navController.modalPresentationStyle = UIModalPresentationPopover;
-        navController.popoverPresentationController.sourceView = self.view;
-        [navController.popoverPresentationController setPermittedArrowDirections:0];
-        [navController.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds), 0, 0)];
+        viewController.modalPresentationStyle = UIModalPresentationPopover;
+        viewController.popoverPresentationController.sourceView = self.view;
+        
+        if ([viewController isKindOfClass:[AllCategoriesViewController class]]) {
+            viewController.popoverPresentationController.barButtonItem = self.setThumbnailBarButton;
+            viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            [self.navigationController presentViewController:viewController animated:YES completion:nil];
+       } else if ([viewController isKindOfClass:[MoveImageViewController class]]) {
+            viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
+            viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        } else if ([viewController isKindOfClass:[EditImageDetailsViewController class]]) {
+            // Push Edit view embedded in navigation controller
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            navController.modalPresentationStyle = UIModalPresentationPopover;
+            navController.popoverPresentationController.sourceView = self.view;
+            navController.popoverPresentationController.barButtonItem = self.editBarButton;
+            navController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            [self.navigationController presentViewController:navController animated:YES completion:nil];
+        }
     } else {
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+        navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         navController.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:navController animated:YES completion:nil];
     }
-
-    [self presentViewController:navController animated:YES completion:nil];
 }
 
 

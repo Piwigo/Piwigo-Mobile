@@ -14,6 +14,8 @@
 #import "CategoryTableViewCell.h"
 #import "MBProgressHUD.h"
 
+CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
+
 @interface AllCategoriesViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
@@ -114,8 +116,7 @@
         // On iPad, the Settings section is presented in a centered popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
-            [self.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(mainScreenBounds), CGRectGetMidY(mainScreenBounds), 0, 0)];
-            self.preferredContentSize = CGSizeMake(ceil(CGRectGetWidth(mainScreenBounds)*2/3), ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.preferredContentSize = CGSizeMake(kAllCategoriesWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
         }
         
         // Reload table view
