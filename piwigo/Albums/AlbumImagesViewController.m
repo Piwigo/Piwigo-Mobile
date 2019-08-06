@@ -1671,30 +1671,35 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         {
             if(kind == UICollectionElementKindSectionFooter)
             {
-                // Display number of images
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-
-                // Display number of images except in root album
                 NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
                 footer.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
 
-                if (self.categoryId == 0) {
-                    // Only albums in Root Album
-                    footer.noImagesLabel.text = @"";
-                }
-                else if (self.loadingImages) {
+                if (self.loadingImages) {
                     // Currently trying to load images…
                     footer.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
-                }
-                else if (totalImageCount == 0) {
+                } else {
+                    // Get number of images
+                    NSInteger totalImageCount = 0;
+                    if (self.categoryId == 0) {
+                        // Only albums in Root Album => total number of images
+                        for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
+                            totalImageCount += albumData.totalNumberOfImages;
+                        }
+                    } else {
+                        // Number of images in current album
+                        totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+                    }
+
+                    if (totalImageCount == 0) {
                         // Not loading and no images
                         footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-                }
-                else {
-                    // Display number of images…
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setPositiveFormat:@"#,##0"];
-                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                    }
+                    else {
+                        // Display number of images…
+                        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                        [numberFormatter setPositiveFormat:@"#,##0"];
+                        footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                    }
                 }
                 return footer;
             }
@@ -1744,28 +1749,33 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     switch (section) {
         case 1:    // Section 1 — Image collection
         {
-            // Display number of images
-            NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-
-            // Display number of images except in root album
             NSString *footer = @"";
-            if (self.categoryId == 0) {
-                // Only albums in Root Album
-                return CGSizeZero;
-            }
-            else if (self.loadingImages) {
+            if (self.loadingImages) {
                 // Currently trying to load images…
                 footer = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
-            }
-            else if (totalImageCount == 0) {
-                // Not loading and no images
-                footer = NSLocalizedString(@"noImages", @"No Images");
-            }
-            else {
-                // Display number of images…
-                NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                [numberFormatter setPositiveFormat:@"#,##0"];
-                footer = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+            } else {
+                // Get number of images
+                NSInteger totalImageCount = 0;
+                if (self.categoryId == 0) {
+                    // Only albums in Root Album => total number of images
+                    for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
+                        totalImageCount += albumData.totalNumberOfImages;
+                    }
+                } else {
+                    // Number of images in current album
+                    totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+                }
+
+                if (totalImageCount == 0) {
+                    // Not loading and no images
+                    footer = NSLocalizedString(@"noImages", @"No Images");
+                }
+                else {
+                    // Display number of images…
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                }
             }
  
             if ([footer length] > 0) {
