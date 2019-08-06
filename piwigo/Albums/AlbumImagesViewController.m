@@ -2155,26 +2155,37 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)pushView:(UIViewController *)viewController
 {
+    // Push sub-album or Discover album
     if (([viewController isKindOfClass:[AlbumImagesViewController class]]) ||
         ([viewController isKindOfClass:[DiscoverImagesViewController class]])) {
         // Push sub-album view
         [self.navigationController pushViewController:viewController animated:YES];
     }
-    else if (([viewController isKindOfClass:[MoveCategoryViewController class]]) ||
-             ([viewController isKindOfClass:[MoveImageViewController class]]) ||
-             ([viewController isKindOfClass:[TagSelectViewController class]])) {
-        // Present album list for moving current album or images, for selecting a tag
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-        navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            navController.modalPresentationStyle = UIModalPresentationPopover;
-            navController.popoverPresentationController.sourceView = self.view;
-            [navController.popoverPresentationController setPermittedArrowDirections:0];
-            [navController.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds), 0, 0)];
-        } else {
-            navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    else {
+        // Push album list or tag list
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+        {
+            viewController.modalPresentationStyle = UIModalPresentationPopover;
+            viewController.popoverPresentationController.sourceView = self.imagesCollection;
+            if ([viewController isKindOfClass:[MoveCategoryViewController class]]) {
+                viewController.popoverPresentationController.permittedArrowDirections = 0;
+            }
+            else if ([viewController isKindOfClass:[MoveImageViewController class]]) {
+                viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
+                viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            }
+            else if ([viewController isKindOfClass:[TagSelectViewController class]]) {
+                viewController.popoverPresentationController.barButtonItem = self.discoverBarButton;
+                viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            }
+            [self.navigationController presentViewController:viewController animated:YES completion:nil];
         }
-        [self presentViewController:navController animated:YES completion:nil];
+        else {
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            navController.modalPresentationStyle = UIModalPresentationFullScreen;
+            [self.navigationController presentViewController:navController animated:YES completion:nil];
+        }
     }
 }
 
