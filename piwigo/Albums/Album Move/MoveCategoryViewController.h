@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+FOUNDATION_EXPORT CGFloat const kMoveCategoryViewWidth;
+
 @class PiwigoAlbumData;
 
 @interface MoveCategoryViewController : UIViewController

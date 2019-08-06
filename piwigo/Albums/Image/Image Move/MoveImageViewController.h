@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+FOUNDATION_EXPORT CGFloat const kMoveImageViewWidth;
+
 @class PiwigoImageData;
 
 @protocol MoveImageDelegate <NSObject>
