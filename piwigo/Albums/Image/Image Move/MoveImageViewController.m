@@ -17,6 +17,8 @@
 #import "MoveImageViewController.h"
 #import "PiwigoAlbumData.h"
 
+CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
+
 @class PiwigoAlbumData;
 
 @interface MoveImageViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
@@ -151,8 +153,7 @@
         // On iPad, the Settings section is presented in a centered popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
-            [self.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(mainScreenBounds), CGRectGetMidY(mainScreenBounds), 0, 0)];
-            self.preferredContentSize = CGSizeMake(ceil(CGRectGetWidth(mainScreenBounds)*2/3), ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.preferredContentSize = CGSizeMake(kMoveImageViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
         }
         
         // Reload table view
@@ -395,6 +396,7 @@
     // Category contains selected image?
     if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
     {
+        cell.userInteractionEnabled = NO;
         cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
     }
     
@@ -408,14 +410,6 @@
     
     cell.isAccessibilityElement = YES;
     return cell;
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-    if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)]) return NO;
-
-    return YES;
 }
 
 

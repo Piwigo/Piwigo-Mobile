@@ -200,6 +200,7 @@
     // Cell accessory
     if(categoryData.albumId == self.selectedCategory.albumId)
     {
+        cell.userInteractionEnabled = NO;
         cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
     }
 

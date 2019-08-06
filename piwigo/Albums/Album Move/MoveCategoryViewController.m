@@ -15,6 +15,8 @@
 #import "CategoryTableViewCell.h"
 #import "MBProgressHUD.h"
 
+CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
+
 @interface MoveCategoryViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
@@ -106,14 +108,14 @@
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    //Reload the tableview on orientation change, to match the new width of the table.
+    // Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         
-        // On iPad, the Settings section is presented in a centered popover view
+        // On iPad, the MoveCategory view is presented in a centered popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
-            [self.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(mainScreenBounds), CGRectGetMidY(mainScreenBounds), 0, 0)];
-            self.preferredContentSize = CGSizeMake(ceil(CGRectGetWidth(mainScreenBounds)*2/3), ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.preferredContentSize = CGSizeMake(kMoveCategoryViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.popoverPresentationController.sourceRect = CGRectMake(CGRectGetMidX(mainScreenBounds), ceil(CGRectGetHeight(mainScreenBounds)*1/3),0,0);
         }
         
         // Reload table view
@@ -230,6 +232,7 @@
     // Cell is parent category?
     if(categoryData.albumId == self.selectedCategory.parentAlbumId)
     {
+        cell.userInteractionEnabled = NO;
         cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
     }
 
@@ -243,17 +246,6 @@
 
     cell.isAccessibilityElement = YES;
     return cell;
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    PiwigoAlbumData *categoryData;
-    categoryData = [self.categories objectAtIndex:indexPath.row];
-
-    // User cannot move album at current place
-    if (categoryData.albumId == self.selectedCategory.parentAlbumId) return NO;
-    
-    return YES;
 }
 
 
