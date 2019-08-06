@@ -98,6 +98,8 @@
 
 -(void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     // Initialise discover cache
     PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
     [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
