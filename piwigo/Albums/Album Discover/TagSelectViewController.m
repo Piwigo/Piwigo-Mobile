@@ -19,6 +19,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
 
 @property (nonatomic, strong) UITableView *tagsTableView;
 @property (nonatomic, strong) NSArray *letterIndex;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
@@ -42,6 +43,9 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         [self.view addSubview:self.tagsTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tagsTableView]];
 
+        // Button for returning to albums/images
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitTagSelect)];
+        
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
     }
@@ -85,6 +89,9 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     // Title
     self.title = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
 
+    // Add Cancel button
+    [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
+
     // Load tags and build ABC index
     [[TagsData sharedInstance] getTagsForAdmin:NO onCompletion:^(NSArray *tags) {
         
@@ -126,6 +133,10 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     }
 }
 
+-(void)quitTagSelect
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 #pragma mark - ABC index
 
@@ -208,6 +219,61 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
             [self.tagSelectDelegate pushTaggedImagesView:taggedImagesVC];
         }
     }];
+}
+
+
+#pragma mark - UITableView - Footer
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    // Footer height?
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setPositiveFormat:@"#,##0"];
+    NSString *footer = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[TagsData sharedInstance].tagList.count]], [TagsData sharedInstance].tagList.count > 1 ? NSLocalizedString(@"tags", @"Tags").lowercaseString : NSLocalizedString(@"tag" , @"Tag").lowercaseString];
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    CGRect footerRect = [footer boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:attributes
+                                             context:context];
+    
+    return fmax(44.0, ceil(footerRect.size.height));
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    // Footer label
+    UILabel *footerLabel = [UILabel new];
+    footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    footerLabel.font = [UIFont piwigoFontLight];
+    footerLabel.textColor = [UIColor piwigoHeaderColor];
+    footerLabel.textAlignment = NSTextAlignmentCenter;
+    footerLabel.numberOfLines = 1;
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setPositiveFormat:@"#,##0"];
+    footerLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:[TagsData sharedInstance].tagList.count]], [TagsData sharedInstance].tagList.count > 1 ? NSLocalizedString(@"tags", @"Tags").lowercaseString : NSLocalizedString(@"tag" , @"Tag").lowercaseString];
+    footerLabel.adjustsFontSizeToFitWidth = NO;
+    
+    // Footer view
+    UIView *footer = [[UIView alloc] init];
+    footer.backgroundColor = [UIColor clearColor];
+    [footer addSubview:footerLabel];
+    [footer addConstraint:[NSLayoutConstraint constraintViewFromTop:footerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[footer]-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"footer" : footerLabel}]];
+    } else {
+        [footer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[footer]-15-|"
+                                                                       options:kNilOptions
+                                                                       metrics:nil
+                                                                         views:@{@"footer" : footerLabel}]];
+    }
+    
+    return footer;
 }
 
 @end

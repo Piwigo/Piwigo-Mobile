@@ -101,7 +101,7 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
     // Set colors, fonts, etc.
     [self paletteChanged];
 
-    // Add Done button
+    // Add Cancel button
     [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
 }
 
