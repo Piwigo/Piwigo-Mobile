@@ -41,7 +41,8 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tagsTableView]];
 		
         // ABC index
-		[[TagsData sharedInstance] getTagsOnCompletion:^(NSArray *tags) {
+        [[TagsData sharedInstance] getTagsForAdmin:[Model sharedInstance].hasAdminRights
+                                      onCompletion:^(NSArray *tags) {
             
             // Build list of not selected tags
             [self updateListOfNotSelectedTags];

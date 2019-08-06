@@ -103,16 +103,6 @@
 
 -(void)viewDidLoad
 {
-    // Initialise discover cache
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
-
-    // Load, sort images and reload collection
-    discoverAlbum.query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-        
-        [self.imagesCollection reloadData];
-    }];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -127,6 +117,17 @@
 
     // Hide toolbar
     [self.navigationController setToolbarHidden:YES animated:YES];
+
+    // Initialise discover cache
+    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
+    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
+
+    // Load, sort images and reload collection
+    discoverAlbum.query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
+    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+        
+        [self.imagesCollection reloadData];
+    }];
 }
 
 -(void)viewDidAppear:(BOOL)animated

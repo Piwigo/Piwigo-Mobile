@@ -6,6 +6,8 @@
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
+CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
+
 #import "AppDelegate.h"
 #import "Model.h"
 #import "PiwigoTagData.h"
@@ -39,18 +41,6 @@
         self.tagsTableView.dataSource = self;
         [self.view addSubview:self.tagsTableView];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tagsTableView]];
-        
-        // ABC index
-        [[TagsData sharedInstance] getTagsOnCompletion:^(NSArray *tags) {
-            
-            // Build ABC index
-            NSMutableSet *firstCharacters = [NSMutableSet setWithCapacity:0];
-            for( NSString *string in [[TagsData sharedInstance].tagList valueForKey:@"tagName"] )
-                [firstCharacters addObject:[[string substringToIndex:1] uppercaseString]];
-            
-            self.letterIndex = [[firstCharacters allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-            [self.tagsTableView reloadData];
-        }];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -88,12 +78,41 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    // Title
-    self.title = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
 
     // Set colors, fonts, etc.
     [self paletteChanged];
+
+    // Title
+    self.title = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
+
+    // Load tags and build ABC index
+    [[TagsData sharedInstance] getTagsForAdmin:NO onCompletion:^(NSArray *tags) {
+        
+        // Build ABC index
+        NSMutableSet *firstCharacters = [NSMutableSet setWithCapacity:0];
+        for( NSString *string in [[TagsData sharedInstance].tagList valueForKey:@"tagName"] )
+            [firstCharacters addObject:[[string substringToIndex:1] uppercaseString]];
+        
+        self.letterIndex = [[firstCharacters allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+        [self.tagsTableView reloadData];
+    }];
+}
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    // Reload the tableview on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        
+        // On iPad, the TagSelect view is presented attached to the Discover button
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
+            self.preferredContentSize = CGSizeMake(kTagSelectViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+        }
+        
+        // Reload table view
+        [self.tagsTableView reloadData];
+    } completion:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -165,7 +184,8 @@
     currentTag = [TagsData sharedInstance].tagList[indexPath.row];
         
     // => pwg.tags.getList returns in addition: counter, url
-    cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag];
+    NSInteger nber = currentTag.numberOfImagesUnderTag;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld %@)", currentTag.tagName, (long)nber, nber > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
     
     return cell;
 }
@@ -178,16 +198,16 @@
     // Deselect row
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    // Push tagged images view
-    if([self.tagSelectDelegate respondsToSelector:@selector(pushTaggedImagesView:)])
-    {
-        PiwigoTagData *currentTag = [TagsData sharedInstance].tagList[indexPath.row];
-        TaggedImagesViewController *taggedImagesVC = [[TaggedImagesViewController alloc] initWithTagId:currentTag.tagId andTagName:currentTag.tagName];
-        [self.tagSelectDelegate pushTaggedImagesView:taggedImagesVC];
-    }
-
     // Dismiss tag select
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        // Push tagged images view
+        if([self.tagSelectDelegate respondsToSelector:@selector(pushTaggedImagesView:)])
+        {
+            PiwigoTagData *currentTag = [TagsData sharedInstance].tagList[indexPath.row];
+            TaggedImagesViewController *taggedImagesVC = [[TaggedImagesViewController alloc] initWithTagId:currentTag.tagId andTagName:currentTag.tagName];
+            [self.tagSelectDelegate pushTaggedImagesView:taggedImagesVC];
+        }
+    }];
 }
 
 @end
