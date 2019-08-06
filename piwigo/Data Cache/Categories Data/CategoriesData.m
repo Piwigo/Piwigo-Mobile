@@ -79,10 +79,10 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
                 return NO;
         }];
         
-        // Update exisiting data with new ones
+        // Reuse some data if possible
         if (index != NSNotFound)
         {
-            // Retrieve exisiting data
+            // Retrieve existing data
             PiwigoAlbumData *existingData = [self.allCategories objectAtIndex:index];
             categoryData.hasUploadRights = existingData.hasUploadRights;
             
