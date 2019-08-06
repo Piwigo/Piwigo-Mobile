@@ -245,6 +245,17 @@
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PiwigoAlbumData *categoryData;
+    categoryData = [self.categories objectAtIndex:indexPath.row];
+
+    // User cannot move album at current place
+    if (categoryData.albumId == self.selectedCategory.parentAlbumId) return NO;
+    
+    return YES;
+}
+
 
 #pragma mark - UITableViewDelegate Methods
 
