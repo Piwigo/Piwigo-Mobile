@@ -211,7 +211,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             self.searchController.hidesNavigationBarDuringPresentation = YES;
             self.searchController.searchResultsUpdater = self;
             
-            [self.searchController.searchBar setTintColor:[UIColor piwigoOrange]];
+            self.searchController.searchBar.tintColor = [UIColor piwigoOrange];
             self.searchController.searchBar.showsCancelButton = NO;
             self.searchController.searchBar.showsSearchResultsButton = NO;
             self.searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
