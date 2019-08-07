@@ -10,7 +10,7 @@
 # To update fastlane, just run [sudo] bundle update fastlane
 #	sudo gem install fastlane -NV
 #	fastlane snapshot update
-#	bundle update fastlane
+#	sudo bundle update fastlane
 # Clean to speed up: sudo gem cleanup
 # install bundle: bundle install
 # Launch fastlane: fastlane snapshot
