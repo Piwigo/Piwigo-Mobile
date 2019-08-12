@@ -17,9 +17,10 @@
 @property (nonatomic, strong) NSArray *tagList;
 
 -(void)getTagsForAdmin:(BOOL)isAdmin onCompletion:(void (^)(NSArray *tags))completion;
-+(NSString*)getTagsStringFromList:(NSArray*)tagList;
+-(NSString*)getTagsStringFromList:(NSArray*)tagList;
 -(NSInteger)getIndexOfTag:(PiwigoTagData*)tag;
 
+-(void)addTagToList:(NSArray*)newTags;
 -(void)clearCache;
 
 @end

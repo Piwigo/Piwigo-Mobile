@@ -127,7 +127,7 @@
     self.privacyLevel.textColor = [UIColor piwigoRightLabelColor];
     self.privacyUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
 
-	self.tags.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_tags", @"Tags:")], [TagsData getTagsStringFromList:imageInfo.tags]];
+	self.tags.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_tags", @"Tags:")], [[TagsData sharedInstance] getTagsStringFromList:imageInfo.tags]];
     self.tags.textColor = [UIColor piwigoRightLabelColor];
     self.tagsUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
 

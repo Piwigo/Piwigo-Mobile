@@ -7,17 +7,21 @@
 //
 
 #import "AppDelegate.h"
+#import "MBProgressHUD.h"
 #import "Model.h"
 #import "PiwigoTagData.h"
 #import "TagsData.h"
 #import "TagsViewController.h"
+#import "TagsService.h"
 
-@interface TagsViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface TagsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 @property (nonatomic, strong) UITableView *tagsTableView;
 @property (nonatomic, strong) NSArray *letterIndex;
 @property (nonatomic, strong) NSMutableArray *notSelectedTags;
 
+@property (nonatomic, strong) UIBarButtonItem *addBarButton;
+@property (nonatomic, strong) UIAlertAction *addAction;
 
 @end
 
@@ -55,6 +59,9 @@
             self.letterIndex = [[firstCharacters allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 			[self.tagsTableView reloadData];
 		}];
+
+        // Button
+        self.addBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addTag)];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -95,6 +102,11 @@
     
     // Set colors, fonts, etc.
     [self paletteChanged];
+    
+    // Add button for Admins
+    if ([Model sharedInstance].hasAdminRights) {
+        [self.navigationItem setRightBarButtonItem:self.addBarButton animated:NO];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -291,6 +303,129 @@
     }
 }
 
+#pragma mark - Add tag (for admins only)
+
+-(void)addTag
+{
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"tagsAdd_title", @"Add Tag")
+        message:NSLocalizedString(@"tagsAdd_message", @"Enter a name for this new tag")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = NSLocalizedString(@"tagsAdd_placeholder", @"New tag");
+        textField.clearButtonMode = UITextFieldViewModeAlways;
+        textField.keyboardType = UIKeyboardTypeDefault;
+        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        textField.autocorrectionType = UITextAutocorrectionTypeYes;
+        textField.returnKeyType = UIReturnKeyContinue;
+        textField.delegate = self;
+    }];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+           actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+           style:UIAlertActionStyleCancel
+           handler:^(UIAlertAction * action) {}];
+    
+    self.addAction = [UIAlertAction
+           actionWithTitle:NSLocalizedString(@"alertAddButton", @"Add")
+           style:UIAlertActionStyleDefault
+           handler:^(UIAlertAction * action) {
+               // Rename album if possible
+               if(alert.textFields.firstObject.text.length > 0) {
+                   [self addTagWithName:alert.textFields.firstObject.text andViewController:topViewController];
+               }
+           }];
+
+    [alert addAction:cancelAction];
+    [alert addAction:self.addAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)addTagWithName:(NSString *)tagName andViewController:(UIViewController *)topViewController
+{
+    // Display HUD during the update
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithLabel:NSLocalizedString(@"tagsAddHUD_label", @"Creating Tag…") inView:topViewController.view];
+    });
+    
+    // Rename album
+    [TagsService addTagWithName:tagName
+               onCompletion:^(NSURLSessionTask *task, NSInteger tagId) {
+                        
+                   if (tagId != NSNotFound)
+                        {
+                            [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    
+                                    // Add tag to cached list
+                                    PiwigoTagData *newTag = [PiwigoTagData new];
+                                    newTag.tagId = tagId;
+                                    newTag.tagName = tagName;
+                                    newTag.numberOfImagesUnderTag = 0;
+                                    [[TagsData sharedInstance] addTagToList:@[newTag]];
+                                    
+                                    // Add tag to list of selected tags
+                                    [self.alreadySelectedTags addObject:newTag];
+                                    [self.alreadySelectedTags sortUsingDescriptors:
+                                     [NSArray arrayWithObjects:
+                                      [NSSortDescriptor sortDescriptorWithKey:@"tagName" ascending:YES], nil]];
+                                    
+                                    // Determine index of added tag
+                                    NSUInteger indexOfTag = [self.alreadySelectedTags indexOfObjectPassingTest:^BOOL(PiwigoTagData *someTag, NSUInteger idx, BOOL *stop) {
+                                        return (someTag.tagId == newTag.tagId);
+                                    }];
+                                    NSIndexPath *insertPath = [NSIndexPath indexPathForRow:indexOfTag inSection:0];
+                                    [self.tagsTableView insertRowsAtIndexPaths:@[insertPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                });
+                            }];
+                        }
+                        else
+                        {
+                            [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
+                                [self showAddErrorWithMessage:nil andViewController:topViewController];
+                            }];
+                        }
+                } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                        [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
+                            [self showAddErrorWithMessage:[error localizedDescription] andViewController:topViewController];
+                        }];
+                    }];
+}
+
+-(void)showAddErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
+{
+    NSString *errorMessage = NSLocalizedString(@"tagsAddError_message", @"Failed to create new tag");
+    if(message)
+    {
+        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
+    }
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"tagsAddError_title", @"Create Fail")
+        message:errorMessage
+        preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* defaultAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {}];
+    
+    // Add actions
+    [alert addAction:defaultAction];
+    
+    // Present list of actions
+    alert.popoverPresentationController.barButtonItem = self.addBarButton;
+    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
 
 #pragma mark - Utilities
 
@@ -308,6 +443,99 @@
         // Remove selected tag from full list
         [self.notSelectedTags removeObjectAtIndex:indexOfSelection];
     }
+}
+
+-(BOOL)existTagWithName:(NSString *)tagName
+{
+    // Loop over existing tags (admin list)
+    for( NSString *string in [[TagsData sharedInstance].tagList valueForKey:@"tagName"] ) {
+        if ([string isEqualToString:tagName]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+#pragma mark - HUD methods
+
+-(void)showHUDwithLabel:(NSString *)label inView:(UIView *)topView
+{
+    // Create the loading HUD if needed
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
+    if (!hud) {
+        hud = [MBProgressHUD showHUDAddedTo:topView animated:YES];
+    }
+    
+    // Change the background view shape, style and color.
+    hud.square = NO;
+    hud.animationType = MBProgressHUDAnimationFade;
+    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+    hud.contentColor = [UIColor piwigoHudContentColor];
+    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+    
+    // Define the text
+    hud.label.text = label;
+    hud.label.font = [UIFont piwigoFontNormal];
+}
+
+-(void)hideHUDwithSuccess:(BOOL)success inView:(UIView *)topView completion:(void (^)(void))completion
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Hide and remove the HUD
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
+        if (hud) {
+            if (success) {
+                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
+                [hud hideAnimated:YES afterDelay:0.5f];
+            } else {
+                [hud hideAnimated:YES];
+            }
+        }
+        if (completion) {
+            completion();
+        }
+    });
+}
+
+
+#pragma mark - UITextField Delegate Methods
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    // Disable Add/Delete Category action
+    [self.addAction setEnabled:NO];
+    return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    // Enable Add/Delete Category action if text field not empty
+    NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    [self.addAction setEnabled:((finalString.length >= 1) && ![self existTagWithName:finalString])];
+    return YES;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    // Disable Add/Delete Category action
+    [self.addAction setEnabled:NO];
+    return YES;
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    return YES;
 }
 
 @end

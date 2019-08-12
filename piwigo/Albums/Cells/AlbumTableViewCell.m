@@ -6,17 +6,17 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AlbumService.h"
 #import "AlbumTableViewCell.h"
-#import "PiwigoAlbumData.h"
+#import "CategoriesData.h"
 #import "ImageService.h"
 #import "LEColorPicker.h"
-#import "OutlinedText.h"
+#import "MBProgressHUD.h"
 #import "Model.h"
-#import "AlbumService.h"
-#import "CategoriesData.h"
 #import "MoveCategoryViewController.h"
 #import "NetworkHandler.h"
-#import "MBProgressHUD.h"
+#import "OutlinedText.h"
+#import "PiwigoAlbumData.h"
 #import "SAMKeychain.h"
 
 NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";

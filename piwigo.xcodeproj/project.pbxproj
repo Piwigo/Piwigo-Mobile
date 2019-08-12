@@ -49,7 +49,6 @@
 		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
 		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
-		ADD714542301E1B100A1B7B2 /* CategoryImageSort.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */; };
 		ADE936F82182D54D0003F037 /* PrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */; };
 		ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */; };
 		ADF1FCE821F367D100096D35 /* AsyncVideoActivityItemProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF1FCE721F367C900096D35 /* AsyncVideoActivityItemProvider.m */; };
@@ -1413,7 +1412,6 @@
 				D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				ADABACBD2235A7120095C4D0 /* PiwigoLocationData.m in Sources */,
-				ADD714542301E1B100A1B7B2 /* CategoryImageSort.m in Sources */,
 				D89045BF1A950FF700A306FE /* TagsTableViewCell.m in Sources */,
 				AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */,
 				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
