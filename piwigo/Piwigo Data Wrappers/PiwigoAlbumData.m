@@ -13,7 +13,11 @@
 #import "ImageUpload.h"
 #import "ImagesCollection.h"
 
-NSInteger const kPiwigoSearchCategoryId = -1;
+NSInteger const kPiwigoSearchCategoryId = -1;           // Search
+NSInteger const kPiwigoVisitsCategoryId = -2;           // Most visited
+NSInteger const kPiwigoBestCategoryId = -3;             // Best rated
+NSInteger const kPiwigoRecentCategoryId = -4;           // Recent photos
+NSInteger const kPiwigoTagsCategoryId = -5;             // Tag images
 
 @interface PiwigoAlbumData()
 
@@ -42,7 +46,7 @@ NSInteger const kPiwigoSearchCategoryId = -1;
 	return self;
 }
 
-// Search data are stored in a virtual album with Id = 1.000.000.000.000
+// Search data are stored in a virtual album with Id = kPiwigoSearchCategoryId
 -(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query
 {
     PiwigoAlbumData *albumData = [PiwigoAlbumData new];
@@ -57,6 +61,49 @@ NSInteger const kPiwigoSearchCategoryId = -1;
     
     // Empty album at start
     albumData.name = [NSString stringWithString:query];
+    albumData.comment = @"";
+    albumData.globalRank = 0.0;
+    albumData.numberOfImages = 0;
+    albumData.totalNumberOfImages = 0;
+    albumData.numberOfSubCategories = 0;
+    
+    // No album image
+    albumData.albumThumbnailId = 0;
+    albumData.albumThumbnailUrl = @"";
+    
+    // Date of creation
+    albumData.dateLast = [NSDate date];
+    
+    // No upload rights
+    albumData.hasUploadRights = NO;
+    
+    return albumData;
+}
+
+// Discover images are stored in a virtual album with Id = kPiwigoSearchCategoryId
+-(PiwigoAlbumData *)initDiscoverAlbumForCategory:(NSInteger)categoryId
+{
+    PiwigoAlbumData *albumData = [PiwigoAlbumData new];
+    albumData.albumId = categoryId;
+    albumData.query = @"";
+    
+    // No parent album
+    albumData.parentAlbumId = kPiwigoSearchCategoryId;
+    albumData.upperCategories = [NSArray new];
+    albumData.nearestUpperCategory = 0;
+    
+    // Empty album at start
+    if (categoryId == kPiwigoVisitsCategoryId) {
+        albumData.name = NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited");
+    } else if (categoryId == kPiwigoBestCategoryId) {
+        albumData.name = NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated");
+    } else if (categoryId == kPiwigoRecentCategoryId) {
+        albumData.name = NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent photos");
+    } else if (categoryId == kPiwigoTagsCategoryId) {
+        albumData.name = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
+    } else {
+        albumData.name = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
+    }
     albumData.comment = @"";
     albumData.globalRank = 0.0;
     albumData.numberOfImages = 0;

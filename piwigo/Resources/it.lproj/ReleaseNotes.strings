@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.0_text" = "Versione 2.4\n\n• Aggiunge uno strumento di ricerca (richiede iOS 11 o successivo)\n• Aggiunge l'ordinamento delle immagini per punteggio\n• Download più rapido delle miniature degli album (richiede Piwigo 2.8 o successivo)\n• I titoli delle immagini caricate non hanno più impostazioni predefinite per i nomi dei file\n• Risolve l'impossibilità di rimuovere i tag\n• Risolve i dati dell'immagine imprecisi in alcune circostanze";
+"v2.4.1_text" = "Versione 2.4.1\n\n• Aggiunge gli album \"Tags\", \"Le più viste\", \"I più votati\" e \"Ultime foto\"\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+
+"v2.4.0_text" = "Versione 2.4\n15 luglio 2019\n\n• Aggiunge uno strumento di ricerca (richiede iOS 11 o successivo)\n• Aggiunge l'ordinamento delle immagini per punteggio\n• Download più rapido delle miniature degli album (richiede Piwigo 2.8 o successivo)\n• I titoli delle immagini caricate non hanno più impostazioni predefinite per i nomi dei file\n• Risolve l'impossibilità di rimuovere i tag\n• Risolve i dati dell'immagine imprecisi in alcune circostanze";
 
 "v2.3.5_text" = "Versione 2.3.5\n6 giugno 2019\n\n• Risolto un crash che a volte si verifica quando si modifica l'indirizzo del server dopo il logout";
 

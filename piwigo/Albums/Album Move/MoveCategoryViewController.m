@@ -15,6 +15,8 @@
 #import "CategoryTableViewCell.h"
 #import "MBProgressHUD.h"
 
+CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
+
 @interface MoveCategoryViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
@@ -22,7 +24,7 @@
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
 @property (nonatomic, strong) UIViewController *hudViewController;
-@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
@@ -53,7 +55,7 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
         // Button for returning to albums/images
-        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitMoveCategory)];
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitMoveCategory)];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -99,21 +101,21 @@
     // Set colors, fonts, etc.
     [self paletteChanged];
 
-    // Add Done button
-    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+    // Add Cancel button
+    [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    //Reload the tableview on orientation change, to match the new width of the table.
+    // Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         
-        // On iPad, the Settings section is presented in a centered popover view
+        // On iPad, the MoveCategory view is presented in a centered popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
-            [self.popoverPresentationController setSourceRect:CGRectMake(CGRectGetMidX(mainScreenBounds), CGRectGetMidY(mainScreenBounds), 0, 0)];
-            self.preferredContentSize = CGSizeMake(ceil(CGRectGetWidth(mainScreenBounds)*2/3), ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.preferredContentSize = CGSizeMake(kMoveCategoryViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.popoverPresentationController.sourceRect = CGRectMake(CGRectGetMidX(mainScreenBounds), ceil(CGRectGetHeight(mainScreenBounds)*1/3),0,0);
         }
         
         // Reload table view
@@ -230,6 +232,7 @@
     // Cell is parent category?
     if(categoryData.albumId == self.selectedCategory.parentAlbumId)
     {
+        cell.userInteractionEnabled = NO;
         cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
     }
 

@@ -205,8 +205,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 		
 		albumData.nearestUpperCategory = albumData.upperCategories.count > 2 ? [[albumData.upperCategories objectAtIndex:albumData.upperCategories.count - 2] integerValue] : [[albumData.upperCategories objectAtIndex:0] integerValue];
 		
-		albumData.name = [category objectForKey:@"name"];
-		albumData.comment = [category objectForKey:@"comment"];
+		albumData.name = [NetworkHandler UTF8EncodedStringFromString:[category objectForKey:@"name"]];
+		albumData.comment = [NetworkHandler UTF8EncodedStringFromString:[category objectForKey:@"comment"]];
 		albumData.globalRank = [[category objectForKey:@"global_rank"] floatValue];
 		albumData.numberOfImages = [[category objectForKey:@"nb_images"] integerValue];
 		albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];

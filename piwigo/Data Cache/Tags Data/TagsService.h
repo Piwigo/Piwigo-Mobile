@@ -10,7 +10,8 @@
 
 @interface TagsService : NetworkHandler
 
-+(NSURLSessionTask*)getTagsOnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
-                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
++(NSURLSessionTask*)getTagsForAdmin:(BOOL)isAdmin
+                       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end

@@ -6,7 +6,7 @@
   Copyright © 2018 Piwigo.org. All rights reserved.
 */
 
-"privacy_text" = "Piwigo-Android i Piwigo-Mobile są to aplikacje darmowe, libre i z otwartym kodem źródłowym do galerii Piwigo. Ta polityka prywatności ma zastosowanie do natywnych aplikacji dla Androida oraz iOS, łączących się ze stronami korzystającymi z Piwigo które są poza kontrolą ze strony autorów aplikacji. Sprawdź politykę prywatności poszczególnych stron zanim skonfigurujesz konto w Piwigo-Android czy Piwigo-Mobile aby połączyć się z daną galerią.\n\nOstatnia aktualizacja 25 października 2018 r.";
+"privacy_text" = "Piwigo-Android i Piwigo-Mobile to darmowe, wolne i z otwartym kodem źródłowym aplikacje dla galerii Piwigo. Ta polityka prywatności ma zastosowanie do natywnych aplikacji dla Androida oraz iOS, łączących się ze stronami korzystającymi z Piwigo, które są poza kontrolą autorów aplikacji. Sprawdź politykę prywatności poszczególnych stron zanim skonfigurujesz konto w Piwigo-Android czy Piwigo-Mobile aby połączyć się z daną galerią.\n\nOstatnia aktualizacja 25 października 2018 r.";
 
 "intro_title" = "Wprowadzenie";
 
@@ -18,7 +18,7 @@
 
 "intro_text4" = "Zachęcamy do okresowego przeglądania niniejszej polityki prywatności, aby być na bieżąco. Uznaje się że korzystając z aplikacji dokonujesz świadomego wyboru i akceptujesz wszelkie zmiany w polityce prywatności poprzez dalsze korzystanie z aplikacji także po dacie opublikowania zmienionej polityki prywatności.";
 
-"intro_text5" = "Niniejsza polityka prywatności nie dotyczy sklepów online/mobilnych, z których możesz zainstalować aplikacje lub dokonać płatności, w tym żadnych przedmiotów wirtualnych w aplikacji, które również mogą gromadzić i wykorzystywać danych o Tobie. Nie ponosimy odpowiedzialności za dane gromadzone przez takie strony trzecie.";
+"intro_text5" = "Niniejsza polityka prywatności nie dotyczy sklepów online/mobilnych, z których możesz zainstalować aplikacje lub dokonać płatności, w tym żadnych przedmiotów wirtualnych w aplikacji, które również mogą gromadzić i wykorzystywać dane o Tobie. Nie ponosimy odpowiedzialności za dane gromadzone przez takie strony trzecie.";
 
 "what_title" = "Jakie dane są przetwarzane i przechowywane?";
 
@@ -32,29 +32,29 @@
 
 "what_subTitle3" = "Dostęp do urządzenia mobilnego";
 
-"what_subText3a" = "Aplikacje mogą żądać dostępu lub uprawnień do niektórych funkcji z urządzenia przenośnego, w tym biblioteki zdjęć i przechowywanych plików, Android AccountManager, Apple Keychain, foldery przechowywania w chmurze, geolokalizacji i innych. Jeśli chcesz zmienić uprawnienia dostępu, możesz to zrobić w ustawieniach swojego urządzenia, ale należy pamiętać, że niektóre są konieczne, aby przesłać pliki multimedialne z telefonu komórkowego do galerii Piwigo lub do przechowywania plików multimedialnych Piwigo w swoim telefonie.";
+"what_subText3a" = "Aplikacje mogą żądać dostępu lub uprawnień do niektórych funkcji z urządzenia przenośnego, w tym biblioteki zdjęć i przechowywanych plików, AccountManager dla Androida, Keychain dla Apple, foldery przechowywania w chmurze, geolokalizacji i innych. Jeśli chcesz zmienić uprawnienia dostępu, możesz to zrobić w ustawieniach swojego urządzenia, ale należy pamiętać, że niektóre są konieczne, aby przesłać pliki multimedialne z telefonu komórkowego do galerii Piwigo lub do przechowywania plików multimedialnych Piwigo w swoim telefonie.";
 
 "what_subTitle4" = "Dane urządzenia mobilnego";
 
-"what_subText4a" = "Podczas kontaktowania się z zespołem pomocy technicznej, do działu rozwoju aplikacji mogą być przekazywane informacje o urządzeniu, takie jak identyfikator urządzenia, model i producent, wersja systemu operacyjnego, e-mail, kraj, lokalizacja i inne dane które zdecydujesz się podać. Obok danych jawnie udostępniane przez użytkownika deweloperzy nie będą przetwarzali, przechowywali czy przesyłali żadnych innych danych.";
+"what_subText4a" = "Podczas kontaktowania się z zespołem pomocy technicznej, do działu rozwoju aplikacji mogą być przekazywane informacje o urządzeniu, takie jak identyfikator urządzenia, model i producent, wersja systemu operacyjnego, e-mail, kraj, lokalizacja i inne dane które zdecydujesz się podać. Obok danych jawnie udostępnionych przez użytkownika deweloperzy nie będą przetwarzali, przechowywali czy przesyłali żadnych innych danych.";
 
 "why_title" = "Dlaczego aplikacja przechowuje dane?";
 
-"why_text1" = "Aplikacje przechowują dane jedynie w celu zapewnienia dostępu do galerii Piwigo utrzymywanej na zdalnym serwerze internetowym. Żadne inne dane które nie są potrzebne do podstawowej funkcjonalności nie są zbierane, transmitowane czy przechowywane.";
+"why_text1" = "Aplikacje przechowują dane jedynie w celu zapewnienia dostępu do galerii Piwigo utrzymywanej na zdalnym serwerze. Żadne inne dane, które nie są potrzebne do podstawowej funkcjonalności nie są zbierane, przesyłane czy przechowywane.";
 
-"why_text2" = "Gdy korzystasz z aplikacji informacje osobiste nie są zbierane z wykorzystaniem technologii śledzenia. Korzystamy jedynie z mechanizmu cache aby pomóc dostosować aplikację i poprawić jej użyteczność. Możesz wyłączyć lub wyczyścić cache ale pamiętaj, że takie działanie może wpłynąć na możliwości i funkcjonalność aplikacji.";
+"why_text2" = "Gdy korzystasz z aplikacji, informacje osobiste nie są zbierane z wykorzystaniem technologii śledzenia. Korzystamy jedynie z mechanizmu buforowania aby pomóc dostosować aplikację i poprawić jej użyteczność. Możesz wyłączyć lub wyczyścić bufor, ale pamiętaj że takie działanie może wpłynąć na możliwości i funkcjonalność aplikacji.";
 
 "how_title" = "Jak dane są chronione?";
 
-"how_text1" = "Aplikacja przechowuje dane lokalnie na urządzeniu na którym jest uruchomiona. Odpowiadasz za ochronę tych danych przed nieautoryzowanym dostępem. Zalecamy korzystanie z protokołu HTTPS aby zabezpieczyć dane podczas tansmisji. Aplikacja podejmuje próbę bezpiecznego połączenia przez HTTPS przy pierwszym nawiązywaniu połączenia z galerią Piwigo. Utrzymanie aktualnych bibliotek dostępu HTTPS oraz certyfikatów lezy po stronie operatora serwera Piwigo. Gdy aplikacja nie może wykorzystać HTTPS, wówczas przełącza się na HTTP i dane nie są szyfrowane podczas transmisji.";
+"how_text1" = "Aplikacja przechowuje dane lokalnie na urządzeniu na którym jest uruchomiona. Odpowiadasz za ochronę tych danych przed nieautoryzowanym dostępem. Zalecamy korzystanie z protokołu HTTPS aby zabezpieczyć dane podczas transmisji. Aplikacja podejmuje próbę bezpiecznego połączenia przez HTTPS przy pierwszym nawiązywaniu połączenia z galerią Piwigo. Utrzymanie aktualności bibliotek dostępu HTTPS oraz certyfikatów leży po stronie operatora serwera Piwigo. Gdy aplikacja nie może wykorzystać HTTPS, wówczas przełącza się na HTTP i dane podczas transmisji nie są szyfrowane.";
 
-"how_text2" = "Gdy wysyłasz zdjęcia do galerii Piwigo pamiętaj, że pliki mogą zawierać dane prywatne takie jak współrzędne GPS i komentarze. Aplikacja oferuje w zakładce Ustawienia opcję usuwania tych danych z pliku zdjęcia przed ich wysłanie. Decyzja czy te dane usuwać, czy zostawić pozostaje w gestii użytkownika.";
+"how_text2" = "Gdy wysyłasz zdjęcia do galerii Piwigo pamiętaj, że pliki mogą zawierać dane prywatne takie jak współrzędne GPS i komentarze. Aplikacja oferuje w zakładce Ustawienia opcję usuwania tych danych z pliku obrazu przed ich przekazaniem. Decyzja czy te dane usuwać, czy zostawić pozostaje w gestii użytkownika.";
 
-"security_title" = "Bezpieczeństwo twoich informacji";
+"security_title" = "Bezpieczeństwo Twoich informacji";
 
-"security_text" = "Używamy technicznych środków bezpieczeństwa w celu ochrony Twoich danych osobowych. Podejmujemy odpowiednie kroki, aby zabezpieczyć dane osobowe przekazane nam, należy pamiętać, że mimo naszych starań, żadne środki bezpieczeństwa nie są doskonałe lub nie do spenetrowania, i żadna metoda transmisji danych może zagwarantować zabezpieczenia przed dowolnym przechwyceniem lub innego rodzaju nadużyciem. Wszelkie informacje ujawnione online są podatne na przechwytywanie i niewłaściwe użycia przez osoby nieupoważnione. W związku z tym nie możemy zagwarantować pełnego bezpieczeństwa, jeśli podasz swoje dane osobowe.";
+"security_text" = "Używamy technicznych środków bezpieczeństwa w celu ochrony Twoich danych osobowych. Podejmujemy odpowiednie kroki, aby zabezpieczyć dane osobowe przekazane nam, należy jednak pamiętać, że mimo naszych starań, żadne środki bezpieczeństwa nie są doskonałe lub nie do spenetrowania i żadna metoda transmisji danych nie może zagwarantować zabezpieczenia przed dowolnym przechwyceniem lub innego rodzaju nadużyciem. Wszelkie informacje ujawnione online są podatne na przechwytywanie i niewłaściwe użycia przez osoby nieupoważnione. W związku z tym nie możemy zagwarantować pełnego bezpieczeństwa, jeśli podasz swoje dane osobowe.";
 
-"contact_title" = "Skontaktuj się z nami";
+"contact_title" = "Kontakt z nami";
 
 "contact_text" = "Jeśli masz pytania lub komentarze dotyczące tej polityki prywatności, skontaktuj się z nami:";
 

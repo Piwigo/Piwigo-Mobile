@@ -111,6 +111,13 @@
 "categoryImageList_deselectButton" = "Deselecteren";
 "categoryImageList_noDataError" = "Fout geen gegevens";
 
+// Albums "Discover"
+"categoryDiscover_title" = "Ontdek";
+"categoryDiscoverVisits_title" = "Meest bezocht";
+"categoryDiscoverVisits_legend" = "hits";
+"categoryDiscoverBest_title" = "Best gewaardeerd";
+"categoryDiscoverRecent_title" = "Recente foto's";
+
 // Albums sort
 "categorySort_nameAscending" = "Foto titel, A → Z";
 "categorySort_nameDescending" = "Foto titel, Z → A";
@@ -282,6 +289,8 @@
 // Image tags
 "none" = "niets";
 "tags" = "Labels";
+"tag" = "Label";
+"tagsTitle_selectOne" = "Selecteer een Label";
 "tagsHeader_selected" = "Geselecteerd";
 "tagsHeader_all" = "Alles";
 

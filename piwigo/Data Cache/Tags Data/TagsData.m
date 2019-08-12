@@ -29,6 +29,43 @@
 	self.tagList = [NSArray new];
 }
 
+-(void)replaceAllTags:(NSArray*)tags
+{
+    // Create new list of tags
+    NSMutableArray *newTags = [[NSMutableArray alloc] init];
+
+    // Loop on freshly retrieved categories
+    for(PiwigoTagData *tagData in tags)
+    {
+        // Is this a known tag?
+        NSInteger index = [self.tagList indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            PiwigoTagData *knownTag = (PiwigoTagData *)obj;
+            if(knownTag.tagId == tagData.tagId)
+                return YES;
+            else
+                return NO;
+        }];
+        
+        // Reuse some data if possible
+        if (index != NSNotFound)
+        {
+            // Retrieve exisiting data…
+            // Nothing to keep from old list…
+            // PiwigoTagData *existingTag = [self.tagList objectAtIndex:index];
+        }
+
+        // Append category to new list
+        [newTags addObject:tagData];
+    }
+    
+    // Update list of displayed categories
+    self.tagList = newTags;
+    
+    // Post to the app that the tag data has been updated (if necessary)
+//    if (self.tagList.count > 0)
+//        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationTagDataUpdated object:nil];
+}
+
 -(void)addTagList:(NSArray*)newTags
 {
 	NSMutableArray *tags = [[NSMutableArray alloc] initWithArray:self.tagList];
@@ -53,13 +90,14 @@
 	self.tagList = tags;
 }
 
--(void)getTagsOnCompletion:(void (^)(NSArray *tags))completion
+-(void)getTagsForAdmin:(BOOL)isAdmin onCompletion:(void (^)(NSArray *tags))completion
 {
-	[TagsService getTagsOnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+    [TagsService getTagsForAdmin:isAdmin
+                    OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 		if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
 		{
 			NSArray *tags = [self parseTagsJson:response];
-			[self addTagList:tags];
+			[self replaceAllTags:tags];
 			if(completion)
 			{
 				completion(self.tagList);
@@ -84,10 +122,9 @@
         // id, (lastmodified), name e.g. "Médicaments", (url_name) e.g. "divers_medicaments"
         PiwigoTagData *newTagData = [PiwigoTagData new];
         newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
-        newTagData.tagName = [tagData objectForKey:@"name"];
+        newTagData.tagName = [NetworkHandler UTF8EncodedStringFromString:[tagData objectForKey:@"name"]];
         
-        // => pwg.tags.getList returns in addition:
-        // counter, url
+        // => pwg.tags.getList returns in addition: counter, url
         if ([tagData objectForKey:@"counter"]) {
             newTagData.numberOfImagesUnderTag = [[tagData objectForKey:@"counter"] integerValue];
         } else {

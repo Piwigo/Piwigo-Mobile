@@ -10,6 +10,10 @@
 #import "PiwigoImageData.h"
 
 FOUNDATION_EXPORT NSInteger const kPiwigoSearchCategoryId;
+FOUNDATION_EXPORT NSInteger const kPiwigoVisitsCategoryId;
+FOUNDATION_EXPORT NSInteger const kPiwigoBestCategoryId;
+FOUNDATION_EXPORT NSInteger const kPiwigoRecentCategoryId;
+FOUNDATION_EXPORT NSInteger const kPiwigoTagsCategoryId;
 
 typedef enum {
 	ImageListOrderId,
@@ -43,6 +47,7 @@ typedef enum {
 @property (nonatomic, readonly) NSInteger onPage;
 
 -(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query;
+-(PiwigoAlbumData *)initDiscoverAlbumForCategory:(NSInteger)categoryId;
 
 -(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
                               OnCompletion:(void (^)(BOOL completed))completion;

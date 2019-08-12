@@ -38,6 +38,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoImageSearch;
 
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetList;
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetAdminList;
+FOUNDATION_EXPORT NSString * const kPiwigoTagsGetImages;
 
 // Parameter keys:
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamData;
@@ -68,6 +69,7 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
 
 +(NSString*)encodedImageURL:(NSString*)originalURL;
 +(NSString*)getURLWithPath:(NSString*)originalURL withURLParams:(NSDictionary*)params;
++(NSString*)UTF8EncodedStringFromString:(NSString *)string;
 
 +(NSURLSessionTask*)post:(NSString*)path
            URLParameters:(NSDictionary*)urlParams

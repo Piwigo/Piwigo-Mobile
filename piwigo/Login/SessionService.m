@@ -124,19 +124,72 @@
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
+                          NSDictionary *result = [responseObject objectForKey:@"result"];
+
                           if (isLogginIn) {
-                              [Model sharedInstance].pwgToken = [[responseObject objectForKey:@"result"] objectForKey:@"pwg_token"];
-                              [Model sharedInstance].language = [[responseObject objectForKey:@"result"] objectForKey:@"language"];
-                              [Model sharedInstance].version = [[responseObject objectForKey:@"result"] objectForKey:@"version"];
-                              NSString *uploadFileTypes = [[responseObject objectForKey:@"result"] objectForKey:@"upload_file_types"];
+                              [Model sharedInstance].pwgToken = [result objectForKey:@"pwg_token"];
+                              [Model sharedInstance].language = [result objectForKey:@"language"];
+                              [Model sharedInstance].version = [result objectForKey:@"version"];
+                              NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
+                              if ([charset isEqualToString:@"UTF-8"]) {
+                                  [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;
+                              } else if ([charset isEqualToString:@"UTF-16"]) {
+                                  [Model sharedInstance].stringEncoding = NSUTF16StringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-8859-1"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1252StringEncoding;
+                              } else if ([charset isEqualToString:@"US-ASCII"]) {
+                                  [Model sharedInstance].stringEncoding = NSASCIIStringEncoding;
+                              } else if ([charset isEqualToString:@"X-EUC"]) {
+                                  [Model sharedInstance].stringEncoding = NSJapaneseEUCStringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-8859-3"]) {
+                                  [Model sharedInstance].stringEncoding = NSISOLatin1StringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-8859-3"]) {
+                                  [Model sharedInstance].stringEncoding = NSISOLatin1StringEncoding;
+                              } else if ([charset isEqualToString:@"SHIFT-JIS"]) {
+                                  [Model sharedInstance].stringEncoding = NSShiftJISStringEncoding;
+                              } else if ([charset isEqualToString:@"CP870"]) {
+                                  [Model sharedInstance].stringEncoding = NSISOLatin2StringEncoding;
+                              } else if ([charset isEqualToString:@"UNICODE"]) {
+                                  [Model sharedInstance].stringEncoding = NSUnicodeStringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1251"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1251StringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1252"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1252StringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1253"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1253StringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1254"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1254StringEncoding;
+                              } else if ([charset isEqualToString:@"WINDOWS-1250"]) {
+                                  [Model sharedInstance].stringEncoding = NSWindowsCP1250StringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-2022-JP"]) {
+                                  [Model sharedInstance].stringEncoding = NSISO2022JPStringEncoding;
+                              } else if ([charset isEqualToString:@"ISO-2022-JP"]) {
+                                  [Model sharedInstance].stringEncoding = NSISO2022JPStringEncoding;
+                              } else if ([charset isEqualToString:@"MACINTOSH"]) {
+                                  [Model sharedInstance].stringEncoding = NSMacOSRomanStringEncoding;
+                              } else if ([charset isEqualToString:@"UNICODEFFFE"]) {
+                                  [Model sharedInstance].stringEncoding = NSUTF16BigEndianStringEncoding;
+                              } else if ([charset isEqualToString:@"UTF-32"]) {
+                                  [Model sharedInstance].stringEncoding = NSUTF32StringEncoding;
+                              } else {
+                                  // UTF-8 string encoding by default
+                                  [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;
+                              }
+                              
+                              // Upload chunk size is null if not provided by server
+                              NSInteger uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
+                              if (uploadChunkSize != 0) {
+                                  [Model sharedInstance].uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
+                              }
 
                               // Images and videos can be uploaded if their file types are found.
                               // The iPhone creates mov files that will be uploaded in mp4 format.
-                              [Model sharedInstance].uploadFileTypes = uploadFileTypes;
+                              // This string is nil if the server does not provide it.
+                              [Model sharedInstance].uploadFileTypes = [result objectForKey:@"upload_file_types"];
                               
                               // User rights are determined by Community extension (if installed)
                               if(![Model sharedInstance].usesCommunityPluginV29) {
-                                  NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"status"];
+                                  NSString *userStatus = [result objectForKey:@"status"];
                                   [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                               }
                               
@@ -153,7 +206,7 @@
                               [Model sharedInstance].hasXXLargeSizeImages = NO;
                               
                               // Update list of available sizes
-                              id availableSizesList = [[responseObject objectForKey:@"result"] objectForKey:@"available_sizes"];
+                              id availableSizesList = [result objectForKey:@"available_sizes"];
                               for (NSString *size in availableSizesList) {
                                   if ([size isEqualToString:@"square"]) {
                                       [Model sharedInstance].hasSquareSizeImages = YES;
@@ -291,7 +344,7 @@
                           }
                           [[Model sharedInstance] saveToDisk];
 
-                          completion([responseObject objectForKey:@"result"]);
+                          completion(result);
                       } else {
                           completion(nil);
                       }

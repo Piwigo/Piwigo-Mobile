@@ -111,6 +111,13 @@
 "categoryImageList_deselectButton" = "選択を解除";
 "categoryImageList_noDataError" = "エラー データがありません";
 
+// Albums "Discover"
+"categoryDiscover_title" = "探す";
+"categoryDiscoverVisits_title" = "最多アクセス";
+"categoryDiscoverVisits_legend" = "ヒット";
+"categoryDiscoverBest_title" = "最高評価";
+"categoryDiscoverRecent_title" = "最近の写真";
+
 // Albums sort
 "categorySort_nameAscending" = "写真題名、A → Z";
 "categorySort_nameDescending" = "写真題名、Z → A";
@@ -282,6 +289,8 @@
 // Image tags
 "none" = "なし";
 "tags" = "タグ";
+"tag" = "タグ";
+"tagsTitle_selectOne" = "タグを選択";
 "tagsHeader_selected" = "選択済み";
 "tagsHeader_all" = "すべて";
 

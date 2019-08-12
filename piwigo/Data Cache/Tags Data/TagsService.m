@@ -11,10 +11,11 @@
 
 @implementation TagsService
 
-+(NSURLSessionTask*)getTagsOnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
-                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
++(NSURLSessionTask*)getTagsForAdmin:(BOOL)isAdmin
+                       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    return [self post:[Model sharedInstance].hasAdminRights ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList
+    return [self post: isAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList
 		URLParameters:nil
            parameters:nil
              progress:nil

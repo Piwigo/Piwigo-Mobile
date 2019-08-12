@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.0_text" = "Versie 2.4\n\n• Voegt een zoekfunctie toe (vereist iOS 11 of hoger)\n• Voegt beeldsortering toe op scorewaarde\n• Sneller downloaden van albumminiaturen (vereist Piwigo 2.8 of hoger)\n• Titels van geüploade afbeeldingen veranderen niet meer standaard in bestandsnamen\n• Lost onmogelijkheid op om tags te verwijderen\n• Corrigeert in sommige omstandigheden onnauwkeurige afbeeldingsgegevens";
+"v2.4.1_text" = "Versie 2.4.1\n\n• Voegt albums \"Labels\", \"Meest bezocht\", \"Best gewaardeerd\" en \"Recente foto's\" toe\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.4.0_text" = "Versie 2.4\n15 Juli 2019\n\n• Voegt een zoekfunctie toe (vereist iOS 11 of hoger)\n• Voegt beeldsortering toe op scorewaarde\n• Sneller downloaden van albumminiaturen (vereist Piwigo 2.8 of hoger)\n• Titels van geüploade afbeeldingen veranderen niet meer standaard in bestandsnamen\n• Lost onmogelijkheid op om tags te verwijderen\n• Corrigeert in sommige omstandigheden onnauwkeurige afbeeldingsgegevens";
 
 "v2.3.5_text" = "Versie 2.3.5\n6 Juni 2019\n\n• Een crash verhelpen die soms optreedt bij het bewerken van het serveradres na het afmelden";
 

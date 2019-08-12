@@ -44,6 +44,7 @@ NSString * const kPiwigoImageSearch = @"format=json&method=pwg.images.search";
 
 NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
 NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdminList";
+NSString * const kPiwigoTagsGetImages = @"format=json&method=pwg.tags.getImages";
 
 // Parameter keys:
 NSString * const kPiwigoImagesUploadParamFileName = @"fileName";
@@ -210,7 +211,10 @@ NSInteger const loadingViewTag = 899;
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.allowsCellularAccess = YES;
     config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
-    config.HTTPMaximumConnectionsPerHost = 1;       // 4 is the advised default value
+    config.timeoutIntervalForResource = 60;         // Maximum amount of time that a resource request is allowed to take
+    config.HTTPMaximumConnectionsPerHost = 2;       // 4 is the advised default value
+    config.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
+    config.URLCache = nil;
     
     // Create session manager
     [Model sharedInstance].imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
@@ -464,6 +468,18 @@ NSInteger const loadingViewTag = 899;
 //        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
 //    }
     return url;
+}
+
++(NSString*)UTF8EncodedStringFromString:(NSString *)string
+{
+    // Return empty string is nothing provided
+    if(!string || [string isKindOfClass:[NSNull class]]) {
+        return @"";
+    }
+    
+    // Convert to UTF-8 string encoding
+    NSData *strData = [string dataUsingEncoding:[Model sharedInstance].stringEncoding allowLossyConversion:YES];
+    return [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 }
 
 // path: format={param1}

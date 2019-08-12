@@ -111,6 +111,13 @@
 "categoryImageList_deselectButton" = "Désélectionner";
 "categoryImageList_noDataError" = "Erreur Aucune Donnée";
 
+// Albums "Discover"
+"categoryDiscover_title" = "Découvrir";
+"categoryDiscoverVisits_title" = "Plus vues";
+"categoryDiscoverVisits_legend" = "vues";
+"categoryDiscoverBest_title" = "Mieux notées";
+"categoryDiscoverRecent_title" = "Photos récentes";
+
 // Albums sort
 "categorySort_nameAscending" = "Titre de la photo, A → Z";
 "categorySort_nameDescending" = "Titre de la Photo, Z → A";
@@ -282,6 +289,8 @@
 // Image tags
 "none" = "aucun";
 "tags" = "Tags";
+"tag" = "Tag";
+"tagsTitle_selectOne" = "Sélectionnez un Tag";
 "tagsHeader_selected" = "Sélectionné";
 "tagsHeader_all" = "Tous";
 

@@ -111,6 +111,13 @@
 "categoryImageList_deselectButton" = "Avmarkera";
 "categoryImageList_noDataError" = "Fel inga Data";
 
+// Albums "Discover"
+"categoryDiscover_title" = "Upptäck";
+"categoryDiscoverVisits_title" = "Mest besökta";
+"categoryDiscoverVisits_legend" = "träffar";
+"categoryDiscoverBest_title" = "Högst betygsatta";
+"categoryDiscoverRecent_title" = "Senaste bilder";
+
 // Albums sort
 "categorySort_nameAscending" = "Bildtitel, A → Ö";
 "categorySort_nameDescending" = "Bildtitel, Z → A";
@@ -282,6 +289,8 @@
 // Image tags
 "none" = "ingen";
 "tags" = "Etiketter";
+"tag" = "Etikett";
+"tagsTitle_selectOne" = "Välj en Etikett";
 "tagsHeader_selected" = "Valda";
 "tagsHeader_all" = "Alla";
 

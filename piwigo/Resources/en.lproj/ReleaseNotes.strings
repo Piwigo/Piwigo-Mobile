@@ -1,0 +1,71 @@
+/*
+ ReleaseNotes.strings
+ piwigo
+ 
+ Created by Eddy Lelièvre-Berna on 15/07/2017.
+ Copyright © 2017 Piwigo.org. All rights reserved.
+ */
+
+"v2.4.1_text" = "Version 2.4.1\n\n• Adds \"Tags\", \"Most visited\", \"Best rated\" and \"Recent photos\" albums\n• Minor bug fixes and improvements of the interface";
+
+"v2.4.0_text" = "Version 2.4\nJuly 15, 2019\n\n• Adds a search tool (requires iOS 11 or later)\n• Adds image sorting by rating score\n• Faster download of album thumbnails (requires Piwigo 2.8 or later)\n• Titles of uploaded images do not default to filenames anymore\n• Fixes impossibility to remove tags\n• Fixes inaccurate image data in some circumstances";
+
+"v2.3.5_text" = "Version 2.3.5\nJune 6, 2019\n\n• Fix a crash which sometimes happens when editing the server address after logout";
+
+"v2.3.4_text" = "Version 2.3.4\nMay 1, 2019\n\n• Improved albums presentation on iPad (and iPhone)\n• Minor bug fixes and improvements of the interface";
+
+"v2.3.3_text" = "Version 2.3.3\nApril 10, 2019\n\n• Minor bug fixes and improvements of the interface";
+
+"v2.3.2_text" = "Version 2.3.2\nMarch 27, 2019\n\n• Local images presented in a timeline view by day before upload\n• Minor bug fixes and improvements of the interface";
+
+"v2.3.1_text" = "Version 2.3.1\nFebruary 15, 2019\n\n• Minor bug fixes and improvements of the interface\n• Improved translations";
+
+"v2.3.0_text" = "Version 2.3\nFebruary 2, 2019\n\n• Share photos and videos\n• Increase cache size limits\n• Minor bug fixes and improvements of the interface\n• Improved translations";
+
+"v2.2.7_text" = "Version 2.2.7\nDecember 29, 2018\n\n• Minor bug fixes and improvements of the interface\n• Improved translations";
+
+"v2.2.6_text" = "Version 2.2.6\nDecember 20, 2018\n\n• Improves translations and iOS 12 compatibility\n• Minor bug fixes and improvements of the interface\n• Italian translation";
+
+"v2.2.5_text" = "Version 2.2.5\nOctober 28, 2018\n\n• Send us feedback by email\n• Privacy policy\n• Bug fixes";
+
+"v2.2.4_text" = "Version 2.2.4\nSeptember 23, 2018\n\n• Bug fixes";
+
+"v2.2.3_text" = "Version 2.2.3\nAugust 27, 2018\n\n• New album design\n• Minor bug fixes and improvements of the interface";
+
+"v2.2.2_text" = "Version 2.2.2\nAugust 14, 2018\n\n• Copy and move images between albums\n• Minor bug fixes and improvements of the interface";
+
+"v2.2.1_text" = "Version 2.2.1\nJuly 25, 2018\n\n• Minor bug fixes and improvements of the interface";
+
+"v2.2.0_text" = "Version 2.2\nJuly 12, 2018\n\n• Sub-album creations from any album\n• Improved management with Default Album\n• Improved albums presentation on iPad (and iPhone)\n• Detection of Photo Library changes\n• Minor bug fixes and improvements of the interface";
+
+"v2.1.9_text" = "Version 2.1.9\nMay 14, 2018\n\n• Bug fixes";
+
+"v2.1.8_text" = "Version 2.1.8\nApril 29, 2018\n\n• Adds ability to change the size of thumbnails\n• HTTPS becomes the default protocol\n• Japanese translation\n• Minor bug fixes and improvements of the interface";
+
+"v2.1.7_text" = "Version 2.1.7\nFebruary 3, 2018\n\n• Fix video upload issues on some servers";
+
+"v2.1.6_text" = "Version 2.1.6\nJanuary 7, 2018\n\n• Arabic translation\n• Improved HTTP basic access authentication management\n• Minor bug fixes and improvements of the interface";
+
+"v2.1.5_text" = "Version 2.1.5\nDecember 21, 2017\n\n• Add possibility to cancel uploads\n• Add option for deleting images after upload\n• Add compatibility with Optimize Storage (iCloud)\n• Preserve image format after resize whenever possible\n• Danish and Indonesian translations\n• Fix metadata partly lost upon download\n• Fix PNG format replaced with JPEG before upload\n• Fix issues encountered with iOS 11 and iPhone X\n• Fix minor bugs\n• Code modernisation";
+
+"v2.1.4_text" = "Version 2.1.4\nOctober 31, 2017\n\n• Swedish translation\n• Bug fixes";
+
+"v2.1.3_text" = "Version 2.1.3\nOctober 19, 2017\n\n• Add basic access authentication\n• Allow cancelling auto-connection\n• Improve interface and upload management\n• Improve translations and iOS 11 compatibility\n• Fix bug encountered with \"Not uploaded\" filter\n• Code modernization";
+
+"v2.1.2_text" = "Version 2.1.2\nSeptember 7, 2017\n\n• Fix refused login with Community plugin versions <2.9\n• Improve translations\n• Maintenance work";
+
+"v2.1.1_text" = "Version 2.1.1\nAugust 20, 2017\n\n• Fix bug encountered with non-valid SSL certificates\n• Improve Danish translation";
+
+"v2.1.0_text" = "Version 2.1\nAugust 14, 2017\n\n• Community extension compatibility\n• Danish, French, Polish translations\n• Bug fixes";
+
+"v2.0.4_text" = "Version 2.0.4\nJuly 28, 2017\n\n• iPad — Fix fuzzy thumbnails and the impossibility to edit photos on iPad\n• Videos — Fix upload and download issues (VideoJS extension required on server)\n• Settings — Add options to remove titles & change thumbnails resolution\n• Improve connection reliability and inform when upload completed\n• Minor bug fixes and improvements of the interface";
+
+"v2.0.3_text" = "Version 2.0.3\nMay 26, 2017\n\n• Add option to strip GPS metadata in Settings page\n• Add current cache usage in Settings page\n• Fix cache settings sometimes forgotten/reset\n• Fix upload image settings sometimes lost/reset";
+
+"v2.0.2_text" = "Version 2.0.2\nMay 8, 2017\n\n• Sort criteria now identical to those of the Web app\n• Fix sort issues\n• Fix a crash encountered when adding tags to a photo before upload\n• Fix situations where the deletion of a selection of images did not work\n• Fix situations where an album did not show up after move\n• Fix a compatibility issue with iOS 10 — deprecated code";
+
+"v2.0.1_text" = "Version 2.0.1\nJune 26, 2015\n\nNew settings:\n - Option to resize images upon upload\n   + Image quality is from a range of 50 - 98%\n - Ability to set a default image preview size\nBug fixes";
+
+"v2.0.0_text" = "Version 2.0\nApril 24, 2015\n\nNew native application featuring:\n - Ability to manage albums\n - View your images\n - Bulk image upload\n - Video upload and playback (VideoJS plugin must be installed)";
+
+"v1.0.0_text" = "Version 1.0\nOctober 17, 2011";

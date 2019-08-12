@@ -53,6 +53,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *serverName;         // returns the wrong protocol (http: or https:)
 @property (nonatomic, strong) NSString *pwgToken;
 @property (nonatomic, strong) NSString *language;
+@property (nonatomic, assign) NSUInteger stringEncoding;    // Character encoding used by the Piwigo server
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *HttpUsername;
@@ -118,6 +119,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL shareMetadataTypeOther;
 
 // Default image upload settings
+@property (nonatomic, assign) NSInteger uploadChunkSize;
 @property (nonatomic, strong) NSString *defaultAuthor;
 @property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
 @property (nonatomic, assign) BOOL stripGPSdataOnUpload;
