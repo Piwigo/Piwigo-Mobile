@@ -37,7 +37,6 @@ typedef enum {
 	SettingsSectionServer,
 	SettingsSectionLogout,
     SettingsSectionAlbums,
-    SettingsSectionThumbnails,
     SettingsSectionImages,
 	SettingsSectionImageUpload,
     SettingsSectionColor,
@@ -261,9 +260,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionAlbums:
             titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
             break;
-        case SettingsSectionThumbnails:
-            titleString = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
-            break;
         case SettingsSectionImages:
             titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
             break;
@@ -335,9 +331,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             return nil;
         case SettingsSectionAlbums:
             titleString = NSLocalizedString(@"tabBar_albums", @"Albums");
-            break;
-        case SettingsSectionThumbnails:
-            titleString = NSLocalizedString(@"settingsHeader_thumbnails", @"Thumbnails");
             break;
         case SettingsSectionImages:
             titleString = NSLocalizedString(@"settingsHeader_images", @"Images");
@@ -434,11 +427,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionAlbums:
             nberOfRows = 2;
             break;
-        case SettingsSectionThumbnails:
-            nberOfRows = 3;
-            break;
         case SettingsSectionImages:
-            nberOfRows = 2;
+            nberOfRows = 5;
             break;
         case SettingsSectionImageUpload:
             nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
@@ -587,8 +577,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 			break;
 		}
 
-#pragma mark Thumbnails
-        case SettingsSectionThumbnails:       // Albums thumbnails
+#pragma mark Images
+        case SettingsSectionImages:     // Images
         {
             switch(indexPath.row)
             {
@@ -676,16 +666,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-            }
-            break;
-        }
-            
-#pragma mark Images
-        case SettingsSectionImages:     // Images
-        {
-            switch(indexPath.row)
-            {
-                case 0:     // Default Size of Previewed Images
+                case 3:     // Default Size of Previewed Images
                 {
                     LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultPreviewFile"];
                     if(!cell) {
@@ -706,7 +687,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Share Image Metadata Options
+                case 4:     // Share Image Metadata Options
                 {
                     if (@available(iOS 10, *)) {
                         LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultShareOptions"];
@@ -747,7 +728,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         
                         tableViewCell = cell;
                     }
-                    
                     break;
                 }
             }
@@ -1494,8 +1474,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             break;
         }
 
-#pragma mark Thumbnails
-        case SettingsSectionThumbnails:     // Album thumbnails
+#pragma mark Images
+        case SettingsSectionImages:     // Images
         {
             switch(indexPath.row)
             {
@@ -1506,17 +1486,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 case 2:     // Display titles on thumbnails
                     result = NO;
                     break;
-            }
-            break;
-        }
-            
-#pragma mark Images
-        case SettingsSectionImages:     // Images
-        {
-            switch(indexPath.row)
-            {
-                case 0:     // Default Size of Previewed Images
-                case 1:     // Share Image Metadata Options
+                case 3:     // Default Size of Previewed Images
+                case 4:     // Share Image Metadata Options
                 {
                     result = YES;
                     break;
@@ -1753,7 +1724,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 			}
 			break;
 		}
-        case SettingsSectionThumbnails:     // Albums thumbnails
+        case SettingsSectionImages:         // Images
         {
             switch(indexPath.row)
             {
@@ -1763,24 +1734,17 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     [self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
                     break;
                 }
-            }
-            break;
-        }
-        case SettingsSectionImages:         // Images
-        {
-            switch(indexPath.row)
-            {
-                case 0:                     // Image file selection
+                case 3:                     // Image file selection
                 {
                     DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
                     [self.navigationController pushViewController:defaultImageSizeVC animated:YES];
                     break;
                 }
-                    break;
-                case 1:                     // Share image metadata options
+                case 4:                     // Share image metadata options
                 {
                     ShareMetadataViewController *shareMetadataOptionsVC = [ShareMetadataViewController new];
                     [self.navigationController pushViewController:shareMetadataOptionsVC animated:YES];
+                    break;
                 }
             }
             break;
@@ -2190,7 +2154,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (IBAction)updateThumbnailSize:(id)sender
 {
-    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionThumbnails]];
+    SliderTableViewCell *thumbnailsSizeCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionImages]];
     [Model sharedInstance].thumbnailsPerRowInPortrait = [thumbnailsSizeCell getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
 }
