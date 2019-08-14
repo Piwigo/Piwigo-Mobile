@@ -627,12 +627,64 @@
 			path = "Categories Data";
 			sourceTree = "<group>";
 		};
+		ADD714512301E0B000A1B7B2 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
+				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
+				AD5066B621F7AD09008E1B5F /* ShareMetadataViewController.h */,
+				AD5066B721F7AD20008E1B5F /* ShareMetadataViewController.m */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		ADD714522301E0C900A1B7B2 /* Thumbnails */ = {
+			isa = PBXGroup;
+			children = (
+				AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */,
+				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
+			);
+			path = Thumbnails;
+			sourceTree = "<group>";
+		};
+		ADD714532301E10300A1B7B2 /* Default Upload Settings */ = {
+			isa = PBXGroup;
+			children = (
+				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
+				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
+			);
+			path = "Default Upload Settings";
+			sourceTree = "<group>";
+		};
+		ADD714552301E1C600A1B7B2 /* Information */ = {
+			isa = PBXGroup;
+			children = (
+				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
+				AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */,
+				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
+				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
+				ADE936F92182D5650003F037 /* PrivacyPolicyViewController.h */,
+				ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */,
+			);
+			path = Information;
+			sourceTree = "<group>";
+		};
+		ADD714562301E25E00A1B7B2 /* Image Tags */ = {
+			isa = PBXGroup;
+			children = (
+				D89045BA1A9470A600A306FE /* TagsViewController.h */,
+				D89045BB1A9470A600A306FE /* TagsViewController.m */,
+			);
+			path = "Image Tags";
+			sourceTree = "<group>";
+		};
 		ADE535901F65C01000372CBD /* Image */ = {
 			isa = PBXGroup;
 			children = (
 				D8083A531A7D66CD00A95605 /* ImageService.h */,
 				D8083A541A7D66CD00A95605 /* ImageService.m */,
 				D818EA031A74D32100733991 /* Image Detail */,
+				ADD714562301E25E00A1B7B2 /* Image Tags */,
 				AD0CC81121EA8A050009FFF6 /* Image Share */,
 				AD42DDF4210B38820083FC7D /* Image Move */,
 			);
@@ -656,17 +708,6 @@
 				ADABACB4223591720095C4D0 /* LocalImagesHeaderReusableView.xib */,
 			);
 			path = Headers;
-			sourceTree = "<group>";
-		};
-		ADF65A1D20CD2C5C001C567F /* Image Sort */ = {
-			isa = PBXGroup;
-			children = (
-				D818B17E1AA4265D006FC32A /* CategorySortViewController.h */,
-				D818B17F1AA4265D006FC32A /* CategorySortViewController.m */,
-				D8D63B9D1AA69E0000F0ED39 /* CategoryImageSort.h */,
-				D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */,
-			);
-			path = "Image Sort";
 			sourceTree = "<group>";
 		};
 		D8083A641A7FF30B00A95605 /* Cells */ = {
@@ -766,27 +807,17 @@
 			path = "Image Detail";
 			sourceTree = "<group>";
 		};
-		D81C993E1B02DA190081C976 /* Views */ = {
+		D81C993E1B02DA190081C976 /* Albums */ = {
 			isa = PBXGroup;
 			children = (
 				AD5E8F0F20EEA06B00E93426 /* DefaultCategoryViewController.h */,
 				AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */,
-				AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */,
-				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
-				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
-				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
-				D8B04C5F1A92A1A900695281 /* SelectPrivacyViewController.h */,
-				D8B04C601A92A1A900695281 /* SelectPrivacyViewController.m */,
-				AD5066B621F7AD09008E1B5F /* ShareMetadataViewController.h */,
-				AD5066B721F7AD20008E1B5F /* ShareMetadataViewController.m */,
-				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
-				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
-				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
-				AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */,
-				ADE936F92182D5650003F037 /* PrivacyPolicyViewController.h */,
-				ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */,
+				D818B17E1AA4265D006FC32A /* CategorySortViewController.h */,
+				D818B17F1AA4265D006FC32A /* CategorySortViewController.m */,
+				D8D63B9D1AA69E0000F0ED39 /* CategoryImageSort.h */,
+				D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */,
 			);
-			path = Views;
+			path = Albums;
 			sourceTree = "<group>";
 		};
 		D82B8CB21A67820A000E47CA = {
@@ -950,8 +981,6 @@
 				D89045B11A94662300A306FE /* TagsData.m */,
 				D89045B71A946A5B00A306FE /* TagsService.h */,
 				D89045B81A946A5B00A306FE /* TagsService.m */,
-				D89045BA1A9470A600A306FE /* TagsViewController.h */,
-				D89045BB1A9470A600A306FE /* TagsViewController.m */,
 			);
 			path = "Tags Data";
 			sourceTree = "<group>";
@@ -1017,8 +1046,11 @@
 				D8BDCB621A6F6B8A00D106A8 /* SettingsViewController.h */,
 				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
 				D8083A641A7FF30B00A95605 /* Cells */,
-				D81C993E1B02DA190081C976 /* Views */,
-				ADF65A1D20CD2C5C001C567F /* Image Sort */,
+				D81C993E1B02DA190081C976 /* Albums */,
+				ADD714522301E0C900A1B7B2 /* Thumbnails */,
+				ADD714512301E0B000A1B7B2 /* Images */,
+				ADD714532301E10300A1B7B2 /* Default Upload Settings */,
+				ADD714552301E1C600A1B7B2 /* Information */,
 			);
 			path = Settings;
 			sourceTree = "<group>";

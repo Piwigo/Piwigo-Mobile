@@ -58,7 +58,7 @@
 
 -(void)setTagList:(NSArray*)tags
 {
-	self.tagsString = [TagsData getTagsStringFromList:tags];
+	self.tagsString = [[TagsData sharedInstance] getTagsStringFromList:tags];
 }
 
 @end
