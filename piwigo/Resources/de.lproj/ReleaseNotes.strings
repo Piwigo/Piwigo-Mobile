@@ -8,7 +8,7 @@
 
 "v2.4.2_text" = "Version 2.4.2\n\n• Adds ability to create tags (admin users only)\n• Adds ability to change size of album thumbnails\n• Adds Retina display management\n• Minor bug fixes and improvements of the interface";
 
-"v2.4.1_text" = "Version 2.4.1\n\n• Fügt die Alben \"Schlagwörter\", \"Am häufigsten angesehen\", \"Am besten bewertet\" und \"Neueste Fotos\" hinzu\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
+"v2.4.1_text" = "Version 2.4.1\n10. August 2019\n\n• Fügt die Alben \"Schlagwörter\", \"Am häufigsten angesehen\", \"Am besten bewertet\" und \"Neueste Fotos\" hinzu\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 
 "v2.4.0_text" = "Version 2.4\n15. Juli 2019\n\n• Fügt ein Suchwerkzeug hinzu (erfordert iOS 11 oder neuer)\n• Fügt eine Bildsortierung nach Bewertungspunktzahl hinzu\n• Schnellerer Download von Album-Thumbnails (erfordert Piwigo 2.8 oder neuer)\n• Titel von hochgeladenen Bildern sind nicht mehr standardmäßig Dateinamen\n• Behebt die Unmöglichkeit, Tags zu entfernen\n• Korrigiert unter bestimmten Umständen ungenaue Bilddaten";
 
