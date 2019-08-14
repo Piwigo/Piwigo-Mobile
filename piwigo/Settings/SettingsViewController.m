@@ -16,6 +16,7 @@
 #import "CategoriesData.h"
 #import "CategorySortViewController.h"
 #import "ClearCache.h"
+#import "DefaultAlbumThumbnailSizeViewController.h"
 #import "DefaultCategoryViewController.h"
 #import "DefaultImageSizeViewController.h"
 #import "DefaultImageThumbnailSizeViewController.h"
@@ -425,7 +426,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 1;
             break;
         case SettingsSectionAlbums:
-            nberOfRows = 2;
+            nberOfRows = 3;
             break;
         case SettingsSectionImages:
             nberOfRows = 5;
@@ -550,7 +551,29 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-				case 1:     // Default Sort
+                case 1:     // Thumbnail file
+                {
+                    LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultThumbnailFile"];
+                    if(!cell) {
+                        cell = [LabelTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                        cell.leftText = NSLocalizedString(@"defaultAlbumThumbnailFile>414px", @"Album Thumbnail File");
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailFile>320px", @"Thumbnail File");
+                    } else {
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailFile", @"File");
+                    }
+                    cell.rightText = [PiwigoImageData nameForAlbumThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultAlbumThumbnailSize withInfo:NO];
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    [cell setAccessibilityIdentifier:@"defaultThumbnailFile"];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+				case 2:     // Default Sort
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultSort"];
 					if(!cell)
@@ -591,13 +614,13 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
-                        cell.leftText = NSLocalizedString(@"defaultThumbnailFile>414px", @"Thumbnail Image File");
+                        cell.leftText = NSLocalizedString(@"defaultThumbnailFile>414px", @"Image Thumbnail File");
                     } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
                         cell.leftText = NSLocalizedString(@"defaultThumbnailFile>320px", @"Thumbnail File");
                     } else {
                         cell.leftText = NSLocalizedString(@"defaultThumbnailFile", @"File");
                     }
-                    cell.rightText = [PiwigoImageData nameForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize withInfo:NO];
+                    cell.rightText = [PiwigoImageData nameForImageThumbnailSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize withInfo:NO];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     [cell setAccessibilityIdentifier:@"defaultThumbnailFile"];
                     
@@ -620,7 +643,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
                     
                     // Min/max number of thumbnails per row depends on selected file
-                    NSInteger thumbnailWidth = [PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
+                    CGFloat thumbnailWidth = [PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
                     NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:thumbnailWidth];
                     cell.slider.minimumValue = minNberOfImages;
                     cell.slider.maximumValue = minNberOfImages * 2;
@@ -1713,7 +1736,13 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     break;
                    break;
                 }
-                case 1:                     // Sort method selection
+                case 1:                     // Thumbnail file selection
+                {
+                    DefaultAlbumThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultAlbumThumbnailSizeViewController new];
+                    [self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
+                    break;
+                }
+                case 2:                     // Sort method selection
 				{
 					CategorySortViewController *categoryVC = [CategorySortViewController new];
 					categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;

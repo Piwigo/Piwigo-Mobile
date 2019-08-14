@@ -152,7 +152,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 //        }
     }
     
-    
     // Display album image
     self.backgroundImage.layer.cornerRadius = 10;
     NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
@@ -165,6 +164,8 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     else if (albumData.albumThumbnailUrl.length <= 0)
     {
         // No album thumbnail
+        albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+        self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
         return;
     }
     else

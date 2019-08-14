@@ -18,11 +18,11 @@ extern NSInteger const kThumbnailFileSize;
 
 +(float)minNberOfImagesPerRow;
 +(NSInteger)imageCellHorizontalSpacing;
-+(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth;
++(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(CGFloat)maxWidth;
 +(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
 +(NSInteger)numberOfImagesPerPageForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
 
-+(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth;
++(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(CGFloat)maxWidth;
 +(float)albumSizeForView:(UIView *)view andNberOfAlbumsPerRowInPortrait:(NSInteger)albumsPerRowInPortrait;
 
 @end

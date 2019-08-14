@@ -100,12 +100,63 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
+    // Album thumbnail size
+    NSString *thumbnailSize = @"thumb";
+    switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
+        case kPiwigoImageSizeSquare:
+            if ([Model sharedInstance].hasSquareSizeImages) {
+                thumbnailSize = @"square";
+            }
+            break;
+        case kPiwigoImageSizeXXSmall:
+            if ([Model sharedInstance].hasXXSmallSizeImages) {
+                thumbnailSize = @"2small";
+            }
+            break;
+        case kPiwigoImageSizeXSmall:
+            if ([Model sharedInstance].hasXSmallSizeImages) {
+                thumbnailSize = @"xsmall";
+            }
+            break;
+        case kPiwigoImageSizeSmall:
+            if ([Model sharedInstance].hasSmallSizeImages) {
+                thumbnailSize = @"small";
+            }
+            break;
+        case kPiwigoImageSizeMedium:
+            if ([Model sharedInstance].hasMediumSizeImages) {
+                thumbnailSize = @"medium";
+            }
+            break;
+        case kPiwigoImageSizeLarge:
+            if ([Model sharedInstance].hasLargeSizeImages) {
+                thumbnailSize = @"large";
+            }
+            break;
+        case kPiwigoImageSizeXLarge:
+            if ([Model sharedInstance].hasXLargeSizeImages) {
+                thumbnailSize = @"xlarge";
+            }
+            break;
+        case kPiwigoImageSizeXXLarge:
+            if ([Model sharedInstance].hasXXLargeSizeImages) {
+                thumbnailSize = @"xxlarge";
+            }
+            break;
+
+        case kPiwigoImageSizeThumb:
+        case kPiwigoImageSizeFullRes:
+        default:
+            thumbnailSize = @"thumb";
+            break;
+    }
+    
     // Compile parameters
     NSDictionary *parameters = @{
                                  @"cat_id" : @(categoryId),
                                  @"recursive" : recursiveString,
                                  @"faked_by_community" : fakedString,
-                                 @"thumbnail_size" : @"medium"
+                                 @"thumbnail_size" : thumbnailSize
                                  };
     
     // Get albums list for category

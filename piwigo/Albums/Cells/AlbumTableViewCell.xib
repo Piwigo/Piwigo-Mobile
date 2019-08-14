@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -22,7 +18,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="156.5"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ClD-fz-kW7" id="AYo-NF-5du">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="156"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="156.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="V5H-h5-LzC">
@@ -35,7 +31,7 @@
                         </constraints>
                     </imageView>
                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q1L-X3-UGq" userLabel="topCut">
-                        <rect key="frame" x="153" y="-7" width="14" height="14"/>
+                        <rect key="frame" x="153.5" y="-7" width="14" height="14"/>
                         <color key="backgroundColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="14" id="Kbc-PG-Psg"/>
@@ -44,7 +40,7 @@
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     </button>
                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1O2-wR-Lbe" userLabel="bottomCut">
-                        <rect key="frame" x="153" y="149" width="14" height="14"/>
+                        <rect key="frame" x="153.5" y="149.5" width="14" height="14"/>
                         <color key="backgroundColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="14" id="h4H-vE-guV"/>
@@ -53,21 +49,21 @@
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="albumName" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VUH-5s-TNg">
-                        <rect key="frame" x="170" y="6" width="185" height="23.5"/>
+                        <rect key="frame" x="170.5" y="6" width="184.5" height="23.5"/>
                         <accessibility key="accessibilityConfiguration" label="albumName"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                         <color key="textColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="comment" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8FE-y2-D2g" userLabel="Comment">
-                        <rect key="frame" x="170" y="108" width="185" height="18"/>
+                        <rect key="frame" x="170.5" y="108.5" width="184.5" height="18"/>
                         <accessibility key="accessibilityConfiguration" label="comment"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="numberOfImages" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BOH-3d-ghk">
-                        <rect key="frame" x="170" y="134" width="185" height="14"/>
+                        <rect key="frame" x="170.5" y="134.5" width="184.5" height="14"/>
                         <accessibility key="accessibilityConfiguration" label="nberImages"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="10"/>
                         <nil key="textColor"/>
@@ -77,7 +73,7 @@
                         <rect key="frame" x="355" y="0.0" width="20" height="156.5"/>
                         <subviews>
                             <button hidden="YES" clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gsh-Kx-Qjp">
-                                <rect key="frame" x="13" y="48" width="14" height="60"/>
+                                <rect key="frame" x="13" y="48.5" width="14" height="60"/>
                                 <color key="backgroundColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="14" id="aUG-Fy-vut"/>

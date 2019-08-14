@@ -50,7 +50,7 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     return ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad;
 }
 
-+(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
++(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(CGFloat)maxWidth
 {
     // Thumbnails should always be available on server => default size of 144x144 pixels
     // We display at least 3 thumbnails per row and images never exceed the thumbnails size
@@ -89,7 +89,7 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
 
 #pragma mark - Categories
 
-+(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
++(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(CGFloat)maxWidth
 {
     // Size of view or screen
     CGSize pageSize = [self sizeOfPageForView:view];

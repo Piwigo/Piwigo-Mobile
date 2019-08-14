@@ -59,6 +59,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 
         // Album/category settings
         instance.defaultCategory = 0;                   // Root album by default
+        instance.defaultAlbumThumbnailSize = [PiwigoImageData optimumAlbumThumbnailSizeForDevice];
 
         // Sort images by date: old to new
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
@@ -219,7 +220,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 }
 
 
-#pragma mark - Getter -
+#pragma mark - Getter
 
 -(NSInteger)photoResize {
     if (_photoResize < 5) {
@@ -238,6 +239,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     }
     return _photoQuality;
 }
+
 
 #pragma mark - Saving to Disk
 + (NSString *)applicationDocumentsDirectory
@@ -302,6 +304,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
         self.uploadChunkSize = modelData.uploadChunkSize;
         self.stringEncoding = modelData.stringEncoding;
+        self.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
 	}
 }
 
@@ -372,7 +375,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     // Added in v2.4.1…
     [saveObject addObject:[NSNumber numberWithInteger:self.uploadChunkSize]];
     [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.stringEncoding]];
-                           
+    // Added in v2.4.2…
+    [saveObject addObject:[NSNumber numberWithInteger:self.defaultAlbumThumbnailSize]];
+    
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
 
@@ -424,7 +429,12 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		self.stripGPSdataOnUpload = NO;
 	}
     if(savedData.count > 13) {
-		self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
+        if(savedData.count > 47) {
+            self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
+        } else {
+            // Just updated to 2.4.2…
+            self.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
+        }
 	} else {
 		self.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
 	}
@@ -517,8 +527,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
     }
     if(savedData.count > 26) {  // ===> Unused and therefore available…
-        self.didOptimiseImagePreviewSize = [[savedData objectAtIndex:26] boolValue];
-    } else {
         self.didOptimiseImagePreviewSize = NO;
     }
     if(savedData.count > 27) {
@@ -620,6 +628,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.stringEncoding = [[savedData objectAtIndex:46] unsignedIntegerValue];
     } else {
         self.stringEncoding = NSUTF8StringEncoding;
+    }
+    if(savedData.count > 47) {
+        self.defaultAlbumThumbnailSize = [[savedData objectAtIndex:47] integerValue];
+    } else {
+        self.defaultAlbumThumbnailSize = [PiwigoImageData optimumAlbumThumbnailSizeForDevice];
     }
 	return self;
 }

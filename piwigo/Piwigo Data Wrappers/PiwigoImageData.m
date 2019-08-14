@@ -54,9 +54,13 @@
 	return url;
 }
 
-+(NSInteger)widthForImageSizeType:(kPiwigoImageSize)imageSize
++(CGFloat)widthForImageSizeType:(kPiwigoImageSize)imageSize
 {
-    NSInteger width = 120;
+    // Get device scale factor
+    CGFloat scale = [[UIScreen mainScreen] scale];
+    
+    // Default width
+    CGFloat width = 120;
     
     switch(imageSize) {
         case kPiwigoImageSizeSquare:
@@ -93,7 +97,7 @@
             break;
     }
     
-    return width;
+    return width/scale;
 }
 
 +(NSString*)sizeForImageSizeType:(kPiwigoImageSize)imageSize
@@ -102,34 +106,141 @@
     
     switch(imageSize) {
         case kPiwigoImageSizeSquare:
-            sizeName = @" (120x120)";
+            sizeName = @" (120x120@1x)";
             break;
         case kPiwigoImageSizeThumb:
-            sizeName = @" (144x144)";
+            sizeName = @" (144x144@1x)";
             break;
         case kPiwigoImageSizeXXSmall:
-            sizeName = @" (240x240)";
+            sizeName = @" (240x240@1x)";
             break;
         case kPiwigoImageSizeXSmall:
-            sizeName = @" (432x324)";
+            sizeName = @" (432x324@1x)";
             break;
         case kPiwigoImageSizeSmall:
-            sizeName = @" (576x432)";
+            sizeName = @" (576x432@1x)";
             break;
         case kPiwigoImageSizeMedium:
-            sizeName = @" (792x594)";
+            sizeName = @" (792x594@1x)";
             break;
         case kPiwigoImageSizeLarge:
-            sizeName = @" (1008x756)";
+            sizeName = @" (1008x756@1x)";
             break;
         case kPiwigoImageSizeXLarge:
-            sizeName = @" (1224x918)";
+            sizeName = @" (1224x918@1x)";
             break;
         case kPiwigoImageSizeXXLarge:
-            sizeName = @" (1656x1242)";
+            sizeName = @" (1656x1242@1x)";
             break;
         case kPiwigoImageSizeFullRes:
             sizeName = @"";
+            break;
+        default:
+            break;
+    }
+    
+    return sizeName;
+}
+
+
+#pragma mark - Album thumbnails
+
++(NSInteger)optimumAlbumThumbnailSizeForDevice
+{
+    // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
+    // => recommend 144@3x
+    return kPiwigoImageSizeSmall;
+}
+
++(NSString*)nameForAlbumThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo
+{
+    NSString *sizeName = @"";
+    
+    // Determine the optimum image size for the current device
+    NSInteger optimumSize = [self optimumAlbumThumbnailSizeForDevice];
+    
+    // Return name for given thumbnail size
+    switch(imageSize) {
+        case kPiwigoImageSizeSquare:
+            sizeName = NSLocalizedString(@"thumbnailSizeSquare", @"Square");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeSquare) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeThumb:
+            sizeName = NSLocalizedString(@"thumbnailSizeThumbnail", @"Thumbnail");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeThumb) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeXXSmall:
+            sizeName = NSLocalizedString(@"thumbnailSizeXXSmall", @"Tiny");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeXXSmall) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeXSmall:
+            sizeName = NSLocalizedString(@"thumbnailSizeXSmall", @"Extra Small");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeXSmall) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeSmall:
+            sizeName = NSLocalizedString(@"thumbnailSizeSmall", @"Small");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeSmall) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeMedium:
+            sizeName = NSLocalizedString(@"thumbnailSizeMedium", @"Medium");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeMedium) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeLarge:
+            sizeName = NSLocalizedString(@"thumbnailSizeLarge", @"Large");
+            if (addInfo) {
+                sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+            }
+            break;
+        case kPiwigoImageSizeXLarge:
+            sizeName = NSLocalizedString(@"thumbnailSizeXLarge", @"Extra Large");
+            if (addInfo) {
+                sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+            }
+            break;
+        case kPiwigoImageSizeXXLarge:
+            sizeName = NSLocalizedString(@"thumbnailSizeXXLarge", @"Huge");
+            if (addInfo) {
+                sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+            }
+            break;
+        case kPiwigoImageSizeFullRes:
+            sizeName = NSLocalizedString(@"thumbnailSizexFullRes", @"Full Resolution");
             break;
         default:
             break;
@@ -144,7 +255,7 @@
 +(NSInteger)optimumImageThumbnailSizeForDevice
 {
     // Get optimum number of images per row
-    NSInteger nberThumbnailsPerRow = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 5.0;
+    float nberThumbnailsPerRow = [ImagesCollection minNberOfImagesPerRow];
     
     // Square ?
     NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeSquare]];
