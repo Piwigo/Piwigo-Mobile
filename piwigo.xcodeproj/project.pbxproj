@@ -630,21 +630,14 @@
 		ADD714512301E0B000A1B7B2 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */,
+				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
 				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
 				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
 				AD5066B621F7AD09008E1B5F /* ShareMetadataViewController.h */,
 				AD5066B721F7AD20008E1B5F /* ShareMetadataViewController.m */,
 			);
 			path = Images;
-			sourceTree = "<group>";
-		};
-		ADD714522301E0C900A1B7B2 /* Thumbnails */ = {
-			isa = PBXGroup;
-			children = (
-				AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */,
-				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
-			);
-			path = Thumbnails;
 			sourceTree = "<group>";
 		};
 		ADD714532301E10300A1B7B2 /* Default Upload Settings */ = {
@@ -1047,7 +1040,6 @@
 				D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */,
 				D8083A641A7FF30B00A95605 /* Cells */,
 				D81C993E1B02DA190081C976 /* Albums */,
-				ADD714522301E0C900A1B7B2 /* Thumbnails */,
 				ADD714512301E0B000A1B7B2 /* Images */,
 				ADD714532301E10300A1B7B2 /* Default Upload Settings */,
 				ADD714552301E1C600A1B7B2 /* Information */,
