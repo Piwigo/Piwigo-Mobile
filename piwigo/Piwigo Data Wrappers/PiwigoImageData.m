@@ -102,35 +102,38 @@
 
 +(NSString*)sizeForImageSizeType:(kPiwigoImageSize)imageSize
 {
+    // Get device scale factor
+    CGFloat scale = [[UIScreen mainScreen] scale];
+    
     NSString *sizeName = @"";
     
     switch(imageSize) {
         case kPiwigoImageSizeSquare:
-            sizeName = @" (120x120@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(120.0/scale), lroundf(120.0/scale), scale];
             break;
         case kPiwigoImageSizeThumb:
-            sizeName = @" (144x144@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(144.0/scale), lroundf(144.0/scale), scale];
             break;
         case kPiwigoImageSizeXXSmall:
-            sizeName = @" (240x240@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(240.0/scale), lroundf(240.0/scale), scale];
             break;
         case kPiwigoImageSizeXSmall:
-            sizeName = @" (432x324@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(432.0/scale), lroundf(324.0/scale), scale];
             break;
         case kPiwigoImageSizeSmall:
-            sizeName = @" (576x432@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(576.0/scale), lroundf(432.0/scale), scale];
             break;
         case kPiwigoImageSizeMedium:
-            sizeName = @" (792x594@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(792.0/scale), lroundf(594.0/scale), scale];
             break;
         case kPiwigoImageSizeLarge:
-            sizeName = @" (1008x756@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(1008.0/scale), lroundf(756.0/scale), scale];
             break;
         case kPiwigoImageSizeXLarge:
-            sizeName = @" (1224x918@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(1224.0/scale), lroundf(918.0/scale), scale];
             break;
         case kPiwigoImageSizeXXLarge:
-            sizeName = @" (1656x1242@1x)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(1656.0/scale), lroundf(1242.0/scale), scale];
             break;
         case kPiwigoImageSizeFullRes:
             sizeName = @"";
@@ -148,8 +151,54 @@
 +(NSInteger)optimumAlbumThumbnailSizeForDevice
 {
     // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
-    // => recommend 144@3x
-    return kPiwigoImageSizeSmall;
+    NSInteger albumThumbnailSize = 144.0;
+    
+    // Square ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeSquare] >= albumThumbnailSize) {
+        return kPiwigoImageSizeSquare;
+    }
+    
+    // Thumbnail ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeThumb] >= albumThumbnailSize) {
+        return kPiwigoImageSizeThumb;
+    }
+    
+    // XXSmall ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXXSmall] >= albumThumbnailSize) {
+        return kPiwigoImageSizeXXSmall;
+    }
+    
+    // XSmall ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXSmall] >= albumThumbnailSize) {
+        return kPiwigoImageSizeXSmall;
+    }
+    
+    // Small ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeSmall] >= albumThumbnailSize) {
+        return kPiwigoImageSizeSmall;
+    }
+    
+    // Medium ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeMedium] >= albumThumbnailSize) {
+        return kPiwigoImageSizeMedium;
+    }
+    
+    // Large ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeLarge] >= albumThumbnailSize) {
+        return kPiwigoImageSizeLarge;
+    }
+    
+    // XLarge ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXLarge] >= albumThumbnailSize) {
+        return kPiwigoImageSizeXLarge;
+    }
+    
+    // XXLarge ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXXLarge] >= albumThumbnailSize) {
+        return kPiwigoImageSizeXXLarge;
+    }
+
+    return kPiwigoImageSizeMedium;
 }
 
 +(NSString*)nameForAlbumThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo
