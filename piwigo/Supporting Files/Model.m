@@ -503,18 +503,18 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     if(savedData.count > 23) {
         if(savedData.count > 47) {
             self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
-            // Chek that default number fits inside selected range
-            self.thumbnailsPerRowInPortrait = MAX(self.thumbnailsPerRowInPortrait, nberOfImages);
-            self.thumbnailsPerRowInPortrait = MIN(self.thumbnailsPerRowInPortrait, 2*nberOfImages);
         } else {
             NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
-            self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
+            self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, [[savedData objectAtIndex:23] integerValue]);
         }
     } else {
         // Default values (will be cross-checked at login)
         NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
         self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
     }
+    // Chek that default number fits inside selected range
+    self.thumbnailsPerRowInPortrait = MAX(self.thumbnailsPerRowInPortrait, nberOfImages);
+    self.thumbnailsPerRowInPortrait = MIN(self.thumbnailsPerRowInPortrait, 2*nberOfImages);
     if(savedData.count > 24) {
         self.defaultCategory = [[savedData objectAtIndex:24] integerValue];
     } else {
