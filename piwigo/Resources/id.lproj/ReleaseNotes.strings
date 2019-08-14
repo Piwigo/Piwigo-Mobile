@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.4.2_text" = "Version 2.4.2\n\n• Adds ability to create tags (admin users only)\n• Adds ability to change size of album thumbnails\n• Adds Retina display management\n• Minor bug fixes and improvements of the interface";
+
 "v2.4.1_text" = "Versi 2.4.1\n\n• Menambahkan album \"Tag\", \"Paling sering dikunjungi\", \"Nilai terbaik\" dan \"Foto terbaru\"\n• Perbaikan bug minor dan perbaikan antarmuka";
 
 "v2.4.0_text" = "Versi 2.4\n15 Juli 2019\n\n• Menambahkan alat pencarian (membutuhkan iOS 11 atau lebih baru)\n• Menambahkan penyortiran gambar berdasarkan skor penilaian\n• Unduhan thumbnail album lebih cepat (membutuhkan Piwigo 2.8 atau lebih baru)\n• Judul gambar yang diunggah sudah tidak lagi menjadi nama file\n• Memperbaiki ketidakmungkinan untuk menghapus tag\n• Memperbaiki data gambar yang tidak akurat dalam beberapa keadaan";

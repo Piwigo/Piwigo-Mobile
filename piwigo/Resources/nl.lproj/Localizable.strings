@@ -488,29 +488,16 @@
 "settings_logout" = "Afmelden";
 "settingsFooter_formats" = "De server accepteert de volgende bestanden";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "Algemene instellingen";
 "settingsHeader_thumbnails" = "Miniaturen";
-"settings_loadAllCategories" = "Download alle Albums bij opstarten";
-"settings_loadAllCategories>320px" = "Download alle Albums bij opstarten (vink uit bij problemen)";
 
+// Settings — Albums
 "defaultImageSort" = "Sorteren";
 "defaultImageSort>320px" = "Standaard sorteervolgorde";
 "defaultImageSort>414px" = "Standaardsorteervolgorde van foto's";
-
-"defaultThumbnailFile" = "Bestand";
-"defaultThumbnailFile>320px" = "Miniatuur bestand";
-"defaultThumbnailFile>414px" = "Miniatuurafbeelding bestand";
-"defaultThumbnailSize" = "Grootte";
-"defaultThumbnailSize>320px" = "Miniatuurgrootte";
-"defaultThumbnailSize>414px" = "Standaardgrootte van miniaturen";
-"defaultNberOfThumbnails" = "Aantal";
-"defaultNberOfThumbnails>320px" = "Aantal/rij";
-"defaultNberOfThumbnails>414px" = "Aantal per rij";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Kies een miniatuurformaat";
-"settings_displayTitles" = "Titels op miniaturen";
-"settings_displayTitles>320px" = "Titels op miniaturen weergeven";
+"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
+"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
 
 "thumbnailSizeSquare" = "Vierkant";
 "thumbnailSizeThumbnail" = "Miniatuurafbeelding";
@@ -525,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "Foto's";
+
+"defaultThumbnailFile" = "Bestand";
+"defaultThumbnailFile>320px" = "Miniatuur bestand";
+"defaultThumbnailFile>414px" = "Miniatuurafbeelding bestand";
+"defaultThumbnailSize" = "Grootte";
+"defaultThumbnailSize>320px" = "Miniatuurgrootte";
+"defaultThumbnailSize>414px" = "Standaardgrootte van miniaturen";
+"defaultNberOfThumbnails" = "Aantal";
+"defaultNberOfThumbnails>320px" = "Aantal/rij";
+"defaultNberOfThumbnails>414px" = "Aantal per rij";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Kies een miniatuurformaat";
+"settings_displayTitles" = "Titels op miniaturen";
+"settings_displayTitles>320px" = "Titels op miniaturen weergeven";
 
 "defaultPreviewFile" = "Voorbeeld";
 "defaultPreviewFile>320px" = "Voorbeeldafbeelding";
@@ -574,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-instellingen (gebruikt/totaal)";
+"settings_loadAllCategories" = "Download alle Albums bij opstarten";
+"settings_loadAllCategories>320px" = "Download alle Albums bij opstarten (vink uit bij problemen)";
 "settings_cacheDisk" = "Schijf";
 "settings_cacheMemory" = "Geheugen";
 "settings_cacheMegabytes" = "MB";

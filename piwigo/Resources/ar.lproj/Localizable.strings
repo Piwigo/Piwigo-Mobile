@@ -488,29 +488,16 @@
 "settings_logout" = "الخروج";
 "settingsFooter_formats" = "يقبل الخادم أنواع الملفات التالية";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "الاعدادات العامة";
 "settingsHeader_thumbnails" = "الصورة المصغرة";
-"settings_loadAllCategories" = "تحميل جميع الألبومات في البداية";
-"settings_loadAllCategories>320px" = "تحميل جميع الألبومات في البداية (إلغاء التحديد إذا تعذرت)";
 
+// Settings — Albums
 "defaultImageSort" = "التصنيف";
 "defaultImageSort>320px" = "النوع الافتراضي";
 "defaultImageSort>414px" = "الفرز الافتراضي للصور";
-
-"defaultThumbnailFile" = "الملف";
-"defaultThumbnailFile>320px" = "ملف الصورة المصغرة";
-"defaultThumbnailFile>414px" = "صورة مصغرة صورة الملف";
-"defaultThumbnailSize" = "‮الحجم";
-"defaultThumbnailSize>320px" = "حجم الصور المصغرة";
-"defaultThumbnailSize>414px" = "الحجم الافتراضي للصور المصغرة";
-"defaultNberOfThumbnails" = "Number";
-"defaultNberOfThumbnails>320px" = "Number/Row";
-"defaultNberOfThumbnails>414px" = "Number per Row";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
-"settings_displayTitles" = "العناوين على الصور المصغرة";
-"settings_displayTitles>320px" = "عرض العناوين على الصور المصغرة";
+"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
+"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
 
 "thumbnailSizeSquare" = "مربع";
 "thumbnailSizeThumbnail" = "الصورة المصغرة";
@@ -525,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "الصور";
+
+"defaultThumbnailFile" = "الملف";
+"defaultThumbnailFile>320px" = "ملف الصورة المصغرة";
+"defaultThumbnailFile>414px" = "صورة مصغرة صورة الملف";
+"defaultThumbnailSize" = "‮الحجم";
+"defaultThumbnailSize>320px" = "حجم الصور المصغرة";
+"defaultThumbnailSize>414px" = "الحجم الافتراضي للصور المصغرة";
+"defaultNberOfThumbnails" = "Number";
+"defaultNberOfThumbnails>320px" = "Number/Row";
+"defaultNberOfThumbnails>414px" = "Number per Row";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Please select an image thumbnail size";
+"settings_displayTitles" = "العناوين على الصور المصغرة";
+"settings_displayTitles>320px" = "عرض العناوين على الصور المصغرة";
 
 "defaultPreviewFile" = "عرض مسبق";
 "defaultPreviewFile>320px" = "معاينة الملف";
@@ -574,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "ذاكرة الإعدادات المؤقة (المستخدم / الإجمالي)";
+"settings_loadAllCategories" = "تحميل جميع الألبومات في البداية";
+"settings_loadAllCategories>320px" = "تحميل جميع الألبومات في البداية (إلغاء التحديد إذا تعذرت)";
 "settings_cacheDisk" = "القرص";
 "settings_cacheMemory" = "الذاكرة";
 "settings_cacheMegabytes" = "MB";

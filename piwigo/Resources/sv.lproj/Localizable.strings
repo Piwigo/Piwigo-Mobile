@@ -488,29 +488,16 @@
 "settings_logout" = "Logga ut";
 "settingsFooter_formats" = "Servern accepterar följande filtyper";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "Allmänna inställningar";
 "settingsHeader_thumbnails" = "Miniatyrbilder";
-"settings_loadAllCategories" = "Ladda ner alla album vid Start";
-"settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
 
+// Settings — Albums
 "defaultImageSort" = "Sortera";
 "defaultImageSort>320px" = "Sortera";
 "defaultImageSort>414px" = "Standardsortering av bilder";
-
-"defaultThumbnailFile" = "Fil";
-"defaultThumbnailFile>320px" = "Miniatyr-fil";
-"defaultThumbnailFile>414px" = "Miniatyrbildsfil";
-"defaultThumbnailSize" = "Storlek";
-"defaultThumbnailSize>320px" = "Miniatyrbilder";
-"defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
-"defaultNberOfThumbnails" = "Antal";
-"defaultNberOfThumbnails>320px" = "Antal/rad";
-"defaultNberOfThumbnails>414px" = "Antal per rad";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
-"settings_displayTitles" = "Titlar på miniatyrbilder";
-"settings_displayTitles>320px" = "Visa titlar på miniatyrbilder";
+"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
+"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
 
 "thumbnailSizeSquare" = "Kvadrat";
 "thumbnailSizeThumbnail" = "Miniatyrbild";
@@ -525,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "Bilder";
+
+"defaultThumbnailFile" = "Fil";
+"defaultThumbnailFile>320px" = "Miniatyr-fil";
+"defaultThumbnailFile>414px" = "Miniatyrbildsfil";
+"defaultThumbnailSize" = "Storlek";
+"defaultThumbnailSize>320px" = "Miniatyrbilder";
+"defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
+"defaultNberOfThumbnails" = "Antal";
+"defaultNberOfThumbnails>320px" = "Antal/rad";
+"defaultNberOfThumbnails>414px" = "Antal per rad";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
+"settings_displayTitles" = "Titlar på miniatyrbilder";
+"settings_displayTitles>320px" = "Visa titlar på miniatyrbilder";
 
 "defaultPreviewFile" = "Förhandsgranska";
 "defaultPreviewFile>320px" = "Förhandsgranska fil";
@@ -574,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-inställningar (använd/totalt)";
+"settings_loadAllCategories" = "Ladda ner alla album vid Start";
+"settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Minne";
 "settings_cacheMegabytes" = "MB";

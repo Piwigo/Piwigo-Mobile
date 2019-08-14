@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.4.2_text" = "Version 2.4.2\n\n• Adds ability to create tags (admin users only)\n• Adds ability to change size of album thumbnails\n• Adds Retina display management\n• Minor bug fixes and improvements of the interface";
+
 "v2.4.1_text" = "Version 2.4.1\n\n• Tilføjer albummer \"Etiketter\", \"Mest sete\", \"Bedst bedømte\" og \"Nye fotografier\"\n• Mindre fejlrettelser og forbedringer af brugerflade";
 
 "v2.4.0_text" = "Version 2.4\n15 juli 2019\n\n• Tilføjer et søgeværktøj (kræver iOS 11 eller nyere)\n• Tilføjer billed sortering efter bedømmelse score\n• Hurtigere download af album miniaturer (kræver Piwigo 2.8 eller nyere)\n• Titler af uploadede billeder er ikke standard til filnavne længere\n• Gør det umuligt at fjerne tags\n• Løser unøjagtige billeddata under visse omstændigheder";

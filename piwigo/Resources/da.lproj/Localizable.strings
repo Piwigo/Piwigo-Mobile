@@ -488,29 +488,16 @@
 "settings_logout" = "Log ud";
 "settingsFooter_formats" = "Serveren accepterer følgende filtyper";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "Generelle Indstillinger";
 "settingsHeader_thumbnails" = "Miniaturer";
-"settings_loadAllCategories" = "Hent alle album ved start";
-"settings_loadAllCategories>320px" = "Hent alle album ved Start (Fjern markeringen hvis problemer)";
 
+// Settings — Albums
 "defaultImageSort" = "Sorter";
 "defaultImageSort>320px" = "Sorter";
 "defaultImageSort>414px" = "Standard Sorteringsrækkefølge";
-
-"defaultThumbnailFile" = "Fil";
-"defaultThumbnailFile>320px" = "Miniature fil";
-"defaultThumbnailFile>414px" = "Miniature billedfil";
-"defaultThumbnailSize" = "Størrelse";
-"defaultThumbnailSize>320px" = "Miniaturer";
-"defaultThumbnailSize>414px" = "Standardstørrelse på Miniaturer";
-"defaultNberOfThumbnails" = "Antal";
-"defaultNberOfThumbnails>320px" = "Antal / Række";
-"defaultNberOfThumbnails>414px" = "Antal pr. Række";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Vælg miniature størrelse";
-"settings_displayTitles" = "Vis Titler på Miniaturer";
-"settings_displayTitles>320px" = "Vis Titler på Miniaturer";
+"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
+"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
 
 "thumbnailSizeSquare" = "Firkant";
 "thumbnailSizeThumbnail" = "Miniature";
@@ -525,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "Billeder";
+
+"defaultThumbnailFile" = "Fil";
+"defaultThumbnailFile>320px" = "Miniature fil";
+"defaultThumbnailFile>414px" = "Miniature billedfil";
+"defaultThumbnailSize" = "Størrelse";
+"defaultThumbnailSize>320px" = "Miniaturer";
+"defaultThumbnailSize>414px" = "Standardstørrelse på Miniaturer";
+"defaultNberOfThumbnails" = "Antal";
+"defaultNberOfThumbnails>320px" = "Antal / Række";
+"defaultNberOfThumbnails>414px" = "Antal pr. Række";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Vælg miniature størrelse";
+"settings_displayTitles" = "Vis Titler på Miniaturer";
+"settings_displayTitles>320px" = "Vis Titler på Miniaturer";
 
 "defaultPreviewFile" = "Forhåndsvisning";
 "defaultPreviewFile>320px" = "Forhåndsvisning fil";
@@ -574,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cacheindstillinger (Brugt/Total)";
+"settings_loadAllCategories" = "Hent alle album ved start";
+"settings_loadAllCategories>320px" = "Hent alle album ved Start (Fjern markeringen hvis problemer)";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Hukommelse";
 "settings_cacheMegabytes" = "MB";
