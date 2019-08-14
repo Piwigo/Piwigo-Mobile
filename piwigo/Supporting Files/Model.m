@@ -80,13 +80,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Optimised image thumbnail size, will be cross-checked at login
         instance.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
-        NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            instance.thumbnailsPerRowInPortrait = MAX(4, minNberOfImages);
-        } else {
-            instance.thumbnailsPerRowInPortrait = MAX(5, minNberOfImages);
-        }
-        
+        NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
+        NSInteger nberOfImages =[ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
+        instance.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
+
         // Default image settings
         instance.didOptimiseImagePreviewSize = NO;  // ===> Unused and therefore available…
 		instance.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
@@ -502,19 +499,21 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.isDarkPaletteModeActive = NO;
     }
-    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)self.defaultThumbnailSize]];
+    NSInteger nberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)self.defaultThumbnailSize]];
     if(savedData.count > 23) {
-        self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
-        // Chek that default number fits inside selected range
-        self.thumbnailsPerRowInPortrait = MAX(self.thumbnailsPerRowInPortrait, minNberOfImages);
-        self.thumbnailsPerRowInPortrait = MIN(self.thumbnailsPerRowInPortrait, 2*minNberOfImages);
+        if(savedData.count > 47) {
+            self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
+            // Chek that default number fits inside selected range
+            self.thumbnailsPerRowInPortrait = MAX(self.thumbnailsPerRowInPortrait, nberOfImages);
+            self.thumbnailsPerRowInPortrait = MIN(self.thumbnailsPerRowInPortrait, 2*nberOfImages);
+        } else {
+            NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
+            self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
+        }
     } else {
         // Default values (will be cross-checked at login)
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            self.thumbnailsPerRowInPortrait = MAX(4, minNberOfImages);
-        } else {
-            self.thumbnailsPerRowInPortrait = MAX(5, minNberOfImages);
-        }
+        NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
+        self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
     }
     if(savedData.count > 24) {
         self.defaultCategory = [[savedData objectAtIndex:24] integerValue];

@@ -52,7 +52,6 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
 
 +(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(CGFloat)maxWidth
 {
-    // Thumbnails should always be available on server => default size of 144x144 pixels
     // We display at least 3 thumbnails per row and images never exceed the thumbnails size
     CGSize pageSize = [self sizeOfPageForView:view];
     float viewWidth = fmin(pageSize.width, pageSize.height);
