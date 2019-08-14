@@ -54,13 +54,13 @@
 	return url;
 }
 
-+(CGFloat)widthForImageSizeType:(kPiwigoImageSize)imageSize
++(float)widthForImageSizeType:(kPiwigoImageSize)imageSize
 {
     // Get device scale factor
-    CGFloat scale = [[UIScreen mainScreen] scale];
+    float scale = [[UIScreen mainScreen] scale];
     
     // Default width
-    CGFloat width = 120;
+    float width = 120;
     
     switch(imageSize) {
         case kPiwigoImageSizeSquare:
@@ -151,7 +151,7 @@
 +(NSInteger)optimumAlbumThumbnailSizeForDevice
 {
     // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
-    NSInteger albumThumbnailSize = 144.0;
+    float albumThumbnailSize = 144.0;
     
     // Square ?
     if ([self widthForImageSizeType:kPiwigoImageSizeSquare] >= albumThumbnailSize) {
@@ -469,29 +469,54 @@
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     // See https://www.apple.com/iphone/compare/ and https://www.apple.com/ipad/compare/
     CGRect screen = [[UIScreen mainScreen] bounds];
-    NSInteger points = (int)fmax(screen.size.width, screen.size.height);
+    float screenWidth = fmin(screen.size.width, screen.size.height);
     
-    if (points <= 324) {                            // XS - extra small - 432 x 324 pixels
+    // Square ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeSquare] >= screenWidth) {
+        return kPiwigoImageSizeSquare;
+    }
+    
+    // Thumbnail ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeThumb] >= screenWidth) {
+        return kPiwigoImageSizeThumb;
+    }
+    
+    // XXSmall ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXXSmall] >= screenWidth) {
+        return kPiwigoImageSizeXXSmall;
+    }
+    
+    // XSmall ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXSmall] >= screenWidth) {
         return kPiwigoImageSizeXSmall;
     }
-    else if ((points > 324) && (points <= 432)) {   // S - small - 576 x 432 pixels
+    
+    // Small ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeSmall] >= screenWidth) {
         return kPiwigoImageSizeSmall;
     }
-    else if ((points > 432) && (points <= 594)) {   // M - medium - 792 x 594 pixels
-        return kPiwigoImageSizeMedium;              // iPhone 2G, 3G, 3GS, 4, 4s, 5, 5s, 5c, SE
+    
+    // Medium ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeMedium] >= screenWidth) {
+        return kPiwigoImageSizeMedium;
     }
-    else if ((points > 594) && (points <= 756)) {   // L - large - 1008 x 756 pixels
-        return kPiwigoImageSizeLarge;               // iPhone 6, 6s, 7, 8, 6+, 6s+, 7+, 8+
+    
+    // Large ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeLarge] >= screenWidth) {
+        return kPiwigoImageSizeLarge;
     }
-    else if ((points > 756) && (points <= 918)) {   // XL - extra large - 1224 x 918 pixels
-        return kPiwigoImageSizeXLarge;              // Iphone X, Xs, Xr, Xs Max
+    
+    // XLarge ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXLarge] >= screenWidth) {
+        return kPiwigoImageSizeXLarge;
     }
-    else if ((points > 918) && (points <= 1242)) {  // XXL - huge - 1656 x 1242 pixels
-    return kPiwigoImageSizeXXLarge;                 // Ipad 2, Air, Air 2, Pro 9.7-inch, Pro 10.5-inch
+    
+    // XXLarge ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXXLarge] >= screenWidth) {
+        return kPiwigoImageSizeXXLarge;
     }
-    else {
-        return kPiwigoImageSizeFullRes;             // iPad Pro 12.9-inch
-    }
+
+    return kPiwigoImageSizeFullRes;
 }
 
 +(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo

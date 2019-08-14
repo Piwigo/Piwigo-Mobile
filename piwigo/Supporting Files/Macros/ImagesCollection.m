@@ -50,7 +50,7 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     return ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad;
 }
 
-+(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(CGFloat)maxWidth
++(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(float)maxWidth
 {
     // We display at least 3 thumbnails per row and images never exceed the thumbnails size
     CGSize pageSize = [self sizeOfPageForView:view];
@@ -88,7 +88,7 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
 
 #pragma mark - Categories
 
-+(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(CGFloat)maxWidth
++(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(float)maxWidth
 {
     // Size of view or screen
     CGSize pageSize = [self sizeOfPageForView:view];

@@ -643,7 +643,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
                     
                     // Min/max number of thumbnails per row depends on selected file
-                    CGFloat thumbnailWidth = [PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
+                    float thumbnailWidth = [PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
                     NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:thumbnailWidth];
                     cell.slider.minimumValue = minNberOfImages;
                     cell.slider.maximumValue = minNberOfImages * 2;
@@ -1442,6 +1442,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     //                    }
                     
                     tableViewCell = cell;
+                    
                     break;
                 }
             }
@@ -1485,13 +1486,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             switch(indexPath.row)
             {
                 case 0:     // Default album
-                case 1:     // Default Sort
-                case 2:     // Default Thumbnail File
+                case 1:     // Default Thumbnail File
+                case 2:     // Default Sort
                     result = YES;
-                    break;
-                case 3:     // Default Thumbnail Size
-                case 4:     // Display titles on thumbnails
-                    result = NO;
                     break;
             }
             break;
