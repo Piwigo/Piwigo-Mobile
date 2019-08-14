@@ -77,8 +77,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.hasXLargeSizeImages = NO;
         instance.hasXXLargeSizeImages = NO;
         
-        // Optimised thumbnail size, will be cross-checked at login
-        instance.defaultThumbnailSize = [PiwigoImageData optimumThumbnailSizeForDevice];
+        // Optimised image thumbnail size, will be cross-checked at login
+        instance.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
         NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             instance.thumbnailsPerRowInPortrait = MAX(4, minNberOfImages);
@@ -426,7 +426,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     if(savedData.count > 13) {
 		self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
 	} else {
-		self.defaultThumbnailSize = [PiwigoImageData optimumThumbnailSizeForDevice];
+		self.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
 	}
 	if(savedData.count > 14) {
 		self.displayImageTitles = [[savedData objectAtIndex:14] boolValue];

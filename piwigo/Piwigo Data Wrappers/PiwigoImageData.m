@@ -138,7 +138,10 @@
     return sizeName;
 }
 
-+(NSInteger)optimumThumbnailSizeForDevice
+
+#pragma mark - Image thumbnails
+
++(NSInteger)optimumImageThumbnailSizeForDevice
 {
     // Get optimum number of images per row
     NSInteger nberThumbnailsPerRow = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 5.0;
@@ -200,12 +203,12 @@
     return kPiwigoImageSizeThumb;
 }
 
-+(NSString*)nameForThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo
++(NSString*)nameForImageThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo
 {
     NSString *sizeName = @"";
     
     // Determine the optimum image size for the current device
-    NSInteger optimumSize = [self optimumThumbnailSizeForDevice];
+    NSInteger optimumSize = [self optimumImageThumbnailSizeForDevice];
     
     // Return name for given thumbnail size
     switch(imageSize) {
@@ -296,6 +299,9 @@
     
     return sizeName;
 }
+
+
+#pragma mark - Images
 
 +(NSInteger)optimumImageSizeForDevice
 {

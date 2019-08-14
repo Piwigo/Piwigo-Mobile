@@ -18,7 +18,7 @@
 #import "ClearCache.h"
 #import "DefaultCategoryViewController.h"
 #import "DefaultImageSizeViewController.h"
-#import "DefaultThumbnailSizeViewController.h"
+#import "DefaultImageThumbnailSizeViewController.h"
 #import "ImagesCollection.h"
 #import "LabelTableViewCell.h"
 #import "Model.h"
@@ -1730,7 +1730,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             {
                 case 0:                     // Thumbnail file selection
                 {
-                    DefaultThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultThumbnailSizeViewController new];
+                    DefaultImageThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultImageThumbnailSizeViewController new];
                     [self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
                     break;
                 }

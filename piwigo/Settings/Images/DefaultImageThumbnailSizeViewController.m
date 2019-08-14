@@ -7,17 +7,17 @@
 //
 
 #import "AppDelegate.h"
-#import "DefaultThumbnailSizeViewController.h"
+#import "DefaultImageThumbnailSizeViewController.h"
 #import "PiwigoImageData.h"
 #import "Model.h"
 
-@interface DefaultThumbnailSizeViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface DefaultImageThumbnailSizeViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 
 @end
 
-@implementation DefaultThumbnailSizeViewController
+@implementation DefaultImageThumbnailSizeViewController
 
 -(instancetype)init
 {
@@ -186,66 +186,66 @@
         case kPiwigoImageSizeSquare:
             if ([Model sharedInstance].hasSquareSizeImages) {
                 cell.userInteractionEnabled = YES;
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
            } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeThumb:
             if ([Model sharedInstance].hasThumbSizeImages) {
                 cell.userInteractionEnabled = YES;
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXXSmall:
             if ([Model sharedInstance].hasXXSmallSizeImages) {
                 cell.userInteractionEnabled = YES;
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeXSmall:
             if ([Model sharedInstance].hasXSmallSizeImages) {
                 cell.userInteractionEnabled = YES;
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeSmall:
             if ([Model sharedInstance].hasSmallSizeImages) {
                 cell.userInteractionEnabled = YES;
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
         case kPiwigoImageSizeMedium:
             if ([Model sharedInstance].hasMediumSizeImages) {
                 cell.userInteractionEnabled = YES;
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
                 cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
             break;
@@ -253,36 +253,36 @@
             cell.userInteractionEnabled = NO;
             cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasLargeSizeImages) {
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             } else {
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             }
             break;
         case kPiwigoImageSizeXLarge:
             cell.userInteractionEnabled = NO;
             cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasXLargeSizeImages) {
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             } else {
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             }
             break;
         case kPiwigoImageSizeXXLarge:
             cell.userInteractionEnabled = NO;
             cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
             if (![Model sharedInstance].hasXXLargeSizeImages) {
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:NO];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             } else {
-                cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+                cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             }
             break;
         case kPiwigoImageSizeFullRes:
             cell.userInteractionEnabled = NO;
             cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
-            cell.textLabel.text = [PiwigoImageData nameForThumbnailSizeType:imageSize withInfo:YES];
+            cell.textLabel.text = [PiwigoImageData nameForImageThumbnailSizeType:imageSize withInfo:YES];
             break;
             
         default:

@@ -17,7 +17,7 @@
 		AD1F90B220724A82004BA1AA /* NberImagesFooterCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1F90B120724A82004BA1AA /* NberImagesFooterCollectionReusableView.m */; };
 		AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */; };
 		AD274E271FF411D4009CD3AC /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
-		AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */; };
+		AD2DA2261EE43EB60012A7B3 /* DefaultImageThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultImageThumbnailSizeViewController.m */; };
 		AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */; };
 		AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD3203662184738F00BAD372 /* PrivacyPolicy.strings */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
@@ -166,8 +166,8 @@
 		AD1F90B120724A82004BA1AA /* NberImagesFooterCollectionReusableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NberImagesFooterCollectionReusableView.m; sourceTree = "<group>"; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
 		AD294B2A1F2CE87400CD3769 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppStore.strings; sourceTree = "<group>"; };
-		AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultThumbnailSizeViewController.h; sourceTree = "<group>"; };
-		AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultThumbnailSizeViewController.m; sourceTree = "<group>"; };
+		AD2DA2241EE43EA30012A7B3 /* DefaultImageThumbnailSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultImageThumbnailSizeViewController.h; sourceTree = "<group>"; };
+		AD2DA2251EE43EB60012A7B3 /* DefaultImageThumbnailSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultImageThumbnailSizeViewController.m; sourceTree = "<group>"; };
 		AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppStore.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoAppStore.swift; sourceTree = "<group>"; };
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -630,8 +630,8 @@
 		ADD714512301E0B000A1B7B2 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				AD2DA2241EE43EA30012A7B3 /* DefaultThumbnailSizeViewController.h */,
-				AD2DA2251EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m */,
+				AD2DA2241EE43EA30012A7B3 /* DefaultImageThumbnailSizeViewController.h */,
+				AD2DA2251EE43EB60012A7B3 /* DefaultImageThumbnailSizeViewController.m */,
 				D81C99421B02DB250081C976 /* DefaultImageSizeViewController.h */,
 				D81C99431B02DB250081C976 /* DefaultImageSizeViewController.m */,
 				AD5066B621F7AD09008E1B5F /* ShareMetadataViewController.h */,
@@ -1417,7 +1417,7 @@
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
 				ADB22CAA2247AAA700C9B66C /* CameraRollUploadViewController.m in Sources */,
 				AD0CC81421EA8AA20009FFF6 /* AsyncImageActivityItemProvider.m in Sources */,
-				AD2DA2261EE43EB60012A7B3 /* DefaultThumbnailSizeViewController.m in Sources */,
+				AD2DA2261EE43EB60012A7B3 /* DefaultImageThumbnailSizeViewController.m in Sources */,
 				AD274E271FF411D4009CD3AC /* SettingsViewController.m in Sources */,
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				D89045B21A94662300A306FE /* TagsData.m in Sources */,

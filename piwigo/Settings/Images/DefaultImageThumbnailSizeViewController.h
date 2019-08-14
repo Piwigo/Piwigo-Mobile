@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DefaultThumbnailSizeViewController : UIViewController
+@interface DefaultImageThumbnailSizeViewController : UIViewController
 
 @end
