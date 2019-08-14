@@ -289,10 +289,18 @@
 // Image tags
 "none" = "brak";
 "tags" = "Tagi";
-"tag" = "Tag";
-"tagsTitle_selectOne" = "Wybierz tag";
+"tag" = "Znacznik";
+"tagsTitle_selectOne" = "Wybierz znacznik";
 "tagsHeader_selected" = "Wybrane";
 "tagsHeader_all" = "Wszystkie";
+"tagsAdd_title" = "Dodaj znacznik";
+"tagsAdd_message" = "Wprowadź nazwę dla nowego znacznika";
+"tagsAdd_placeholder" = "Nowy znacznik";
+"tagsAddHUD_label" = "Tworzenie znacznika…";
+
+// Image tags errors
+"tagsAddError_message" = "Utworzenie nowego znacznika nie powiodło się";
+"tagsAddError_title" = "Tworzenie nie powiodło się";
 
 // Image select
 "selectImages" = "Wybierz zdjęcia";

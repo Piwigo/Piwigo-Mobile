@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "تم تحديدها";
 "tagsHeader_all" = "الكل";
+"tagsAdd_title" = "Add Tag";
+"tagsAdd_message" = "Enter a name for this new tag";
+"tagsAdd_placeholder" = "New tag";
+"tagsAddHUD_label" = "Creating Tag…";
+
+// Image tags errors
+"tagsAddError_message" = "Failed to create new tag";
+"tagsAddError_title" = "Create Fail";
 
 // Image select
 "selectImages" = "تحديد صور";

@@ -290,9 +290,17 @@
 "none" = "aucun";
 "tags" = "Tags";
 "tag" = "Tag";
-"tagsTitle_selectOne" = "Sélectionnez un Tag";
+"tagsTitle_selectOne" = "Sélectionnez un tag";
 "tagsHeader_selected" = "Sélectionné";
 "tagsHeader_all" = "Tous";
+"tagsAdd_title" = "Ajouter un tag";
+"tagsAdd_message" = "Entrez un nom pour ce nouveau tag";
+"tagsAdd_placeholder" = "Nouveau tag";
+"tagsAddHUD_label" = "Création du tag…";
+
+// Image tags errors
+"tagsAddError_message" = "Impossible de créer un nouveau tag";
+"tagsAddError_title" = "Échec de la Création";
 
 // Image select
 "selectImages" = "Sélectionnez";

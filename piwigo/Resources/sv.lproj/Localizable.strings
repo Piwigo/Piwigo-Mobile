@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "Välj en Etikett";
 "tagsHeader_selected" = "Valda";
 "tagsHeader_all" = "Alla";
+"tagsAdd_title" = "Lägg till etikett";
+"tagsAdd_message" = "Ange ett namn för den nya etiketten";
+"tagsAdd_placeholder" = "Ny etikett";
+"tagsAddHUD_label" = "Skapar etikett…";
+
+// Image tags errors
+"tagsAddError_message" = "Det gick inte att skapa en ny etikett";
+"tagsAddError_title" = "Skapa misslyckas";
 
 // Image select
 "selectImages" = "Välj bilder";

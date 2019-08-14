@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "Selecteer een Label";
 "tagsHeader_selected" = "Geselecteerd";
 "tagsHeader_all" = "Alles";
+"tagsAdd_title" = "Voeg label toe";
+"tagsAdd_message" = "Voer een naam in voor dit label";
+"tagsAdd_placeholder" = "Nieuw label";
+"tagsAddHUD_label" = "Label maken…";
+
+// Image tags errors
+"tagsAddError_message" = "Niet gelukt om nieuw label aan te maken";
+"tagsAddError_title" = "Aanmaken mislukt";
 
 // Image select
 "selectImages" = "Selecteer foto's";

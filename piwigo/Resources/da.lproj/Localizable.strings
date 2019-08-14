@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "Vælg Etiket";
 "tagsHeader_selected" = "Valgte";
 "tagsHeader_all" = "Alle";
+"tagsAdd_title" = "Add Tag";
+"tagsAdd_message" = "Enter a name for this new tag";
+"tagsAdd_placeholder" = "New tag";
+"tagsAddHUD_label" = "Creating Tag…";
+
+// Image tags errors
+"tagsAddError_message" = "Failed to create new tag";
+"tagsAddError_title" = "Create Fail";
 
 // Image select
 "selectImages" = "Vælg billeder";

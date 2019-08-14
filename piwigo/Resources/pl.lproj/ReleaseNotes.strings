@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.1_text" = "Wersja 2.4.1\n\n• Dodaje albumy „Tagi”, „Najczęściej odwiedzane”, „Najlepiej oceniane” i „Najnowsze zdjęcia”\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.4.1_text" = "Wersja 2.4.1\n15 lipca 2019\n\n• Dodaje albumy „Znaczniki”, „Najczęściej odwiedzane”, „Najlepiej oceniane” i „Najnowsze zdjęcia”\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
 "v2.4.0_text" = "Wersja 2.4\n15 lipca 2019\n\n• Dodaje narzędzie wyszukiwania (wymaga systemu iOS 11 lub nowszego)\n• Dodaje sortowanie obrazów według wyniku oceny\n• Szybsze pobieranie miniatur albumów (wymaga Piwigo 2.8 lub nowszego)\n• Tytuły przesłanych obrazów nie są już domyślnie nazwami plików\n• Naprawiono niemożność usunięcia znaczników\n• Naprawia niedokładne dane obrazu w niektórych okolicznościach";
 
@@ -62,7 +62,7 @@
 
 "v2.0.3_text" = "Wersja 2.0.3\n26 maja 2017\n\n• Dodaj opcję usunięcie metadanych GPS w ustawieniach strony \n• Dodaj bieżące użycie pamięci podręcznej w ustawienia strona \n• Poprawka pamięci podręcznej ustawienia czasami zapomniane/reset \n• Poprawka wysyłania obrazu ustawienia czasami stracił/reset";
 
-"v2.0.2_text" = "Wersja 2.0.2\n8 maja 2017\n\n• Kryteriów sortowania teraz identyczne z Web app\n• Poprawka sortowania problemów \n• Fix awarii napotkanych podczas dodawania tagów do zdjęć przed upload \n• poprawka sytuacje gdzie usunięcie zaznaczenia zdjęć nie dzialala \n• naprawić sytuacje gdzie album nie pojawił się po ruchu \n• rozwiązać problem ze zgodnością z systemem iOS 10 — przestarzały kod";
+"v2.0.2_text" = "Wersja 2.0.2\n8 maja 2017\n\n• Kryteria sortowania teraz identyczne z aplikacją Web\n• Poprawka problemu z sortowaniem \n• Poprawka awarii napotkanych podczas dodawania znaczników do zdjęć przed wysłaniem \n• Poprawka sytuacji gdzie nie działało usunięcie zaznaczonych zdjęć \n• Poprawka sytuacji gdzie album nie pojawiał się po przeniesieniu \n• Rozwiązany problem ze zgodnością z systemem iOS 10 — przestarzały kod";
 
 "v2.0.1_text" = "Wersja 2.0.1\n26 czerwca 2015\n\nNowe ustawienia:\n - Możliwość zmiany rozmiaru obrazów na upload\n + Jakość obrazu jest z zakres 50 - 98%\n- Możliwość ustawiania domyślnego obrazu podglądu rozmiar\nPoprawki";
 

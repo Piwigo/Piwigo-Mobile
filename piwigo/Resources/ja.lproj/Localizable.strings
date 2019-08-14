@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "タグを選択";
 "tagsHeader_selected" = "選択済み";
 "tagsHeader_all" = "すべて";
+"tagsAdd_title" = "タグを追加";
+"tagsAdd_message" = "新規タグの名前を入力して下さい";
+"tagsAdd_placeholder" = "新規タグ";
+"tagsAddHUD_label" = "タグを作成する...";
+
+// Image tags errors
+"tagsAddError_message" = "新規タグの作成に失敗しました";
+"tagsAddError_title" = "作成に失敗";
 
 // Image select
 "selectImages" = "画像を選択します";
