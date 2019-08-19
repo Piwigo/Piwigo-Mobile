@@ -74,11 +74,10 @@
         // Images inside sections
         self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
 
-        // Initialise arrays used to manage selections
+        // Arrays managing selections
         self.removedUploadedImages = NO;
         self.touchedImages = [NSMutableArray new];
         self.selectedImages = [NSMutableArray new];
-        [self initSelectButtons];
         
         // Collection of images
         UICollectionViewFlowLayout *collectionFlowLayout = [UICollectionViewFlowLayout new];
@@ -140,6 +139,9 @@
 {
     [super viewWillAppear:animated];
     
+    // Initialise arrays managing selections
+    [self initSelectButtons];
+
     // Set colors, fonts, etc.
     [self paletteChanged];
     
@@ -648,6 +650,11 @@
 
 -(void)presentImageUploadView
 {
+    // Reset Select buttons
+    for (NSInteger section = 0; section < self.imagesInSections.count; section++) {
+        [self.selectedSections replaceObjectAtIndex:section withObject:[NSNumber numberWithBool:NO]];
+    }
+
     // Present Image Upload View
     ImageUploadViewController *imageUploadVC = [ImageUploadViewController new];
     imageUploadVC.selectedCategory = self.categoryId;
@@ -655,12 +662,7 @@
     [self.navigationController pushViewController:imageUploadVC animated:YES];
     
     // Clear list of selected images
-    self.selectedImages = [NSMutableArray new];
-    
-    // Reset Select buttons
-    for (NSInteger section = 0; section < self.imagesInSections.count; section++) {
-        [self.selectedSections replaceObjectAtIndex:section withObject:[NSNumber numberWithBool:NO]];
-    }
+    self.selectedImages = [NSMutableArray new];    
 }
 
 

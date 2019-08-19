@@ -711,6 +711,11 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 
 -(void)presentImageUploadView
 {
+    // Reset Select buttons
+    for (NSInteger section = 0; section < self.imagesInSections.count; section++) {
+        [self.selectedSections replaceObjectAtIndex:section withObject:[NSNumber numberWithBool:NO]];
+    }
+
     // Present Image Upload View
     ImageUploadViewController *imageUploadVC = [ImageUploadViewController new];
     imageUploadVC.selectedCategory = self.categoryId;
@@ -719,11 +724,6 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 
     // Clear list of selected images
     self.selectedImages = [NSMutableArray new];
-
-    // Reset Select buttons
-    for (NSInteger section = 0; section < self.imagesInSections.count; section++) {
-        [self.selectedSections replaceObjectAtIndex:section withObject:[NSNumber numberWithBool:NO]];
-    }
 }
 
 
