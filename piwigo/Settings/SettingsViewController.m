@@ -244,7 +244,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     }
 
     // Header strings
-    NSString *titleString, *textString = @"";
+    NSString *titleString = @"", *textString = @"";
     switch(section)
     {
         case SettingsSectionServer:
@@ -316,7 +316,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     }
 
     // Header strings
-    NSString *titleString, *textString = @"";
+    NSString *titleString = @"", *textString = @"";
     switch(section)
     {
         case SettingsSectionServer:
