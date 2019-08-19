@@ -416,7 +416,12 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.photoResize = 100;
 	}
     if(savedData.count > 11) {
-		self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
+        if(savedData.count > 47) {
+            self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
+        } else {
+            // Just updated to 2.4.2…
+            self.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
+        }
 	} else {
 		self.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
 	}
