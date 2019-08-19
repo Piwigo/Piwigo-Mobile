@@ -93,8 +93,8 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         self.localImagesCollection.delegate = self;
         [self.localImagesCollection setAccessibilityIdentifier:@"LocalAlbum"];
 
-        [self.localImagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NberImagesFooterCollection"];
         [self.localImagesCollection registerNib:[UINib nibWithNibName:@"LocalImagesHeaderReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView"];
+        [self.localImagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
         [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"LocalImageCollectionViewCell"];
 
         [self.view addSubview:self.localImagesCollection];
