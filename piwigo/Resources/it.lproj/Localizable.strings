@@ -496,8 +496,8 @@
 "defaultImageSort" = "Ordinamento";
 "defaultImageSort>320px" = "Ordinamento predefinito";
 "defaultImageSort>414px" = "Ordinamento predefinito delle immagini";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"defaultAlbumThumbnailFile>414px" = "File miniatura album";
+"defaultAlbumThumbnailSizeHeader" = "Seleziona una dimensione miniatura album";
 
 "thumbnailSizeSquare" = "Quadrato";
 "thumbnailSizeThumbnail" = "Anteprima";
@@ -515,7 +515,7 @@
 
 "defaultThumbnailFile" = "File";
 "defaultThumbnailFile>320px" = "Anteprima File";
-"defaultThumbnailFile>414px" = "Anteprima File";
+"defaultThumbnailFile>414px" = "File miniature immagini";
 "defaultThumbnailSize" = "Dimensione";
 "defaultThumbnailSize>320px" = "Dimensioni dell'anteprima";
 "defaultThumbnailSize>414px" = "Dimensione predefinita delle miniature";
@@ -523,7 +523,7 @@
 "defaultNberOfThumbnails>320px" = "Numero/linea";
 "defaultNberOfThumbnails>414px" = "Numero per linea";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Si prega di selezionare una dimensione per l'anteprima";
+"defaultThumbnailSizeHeader" = "Seleziona una dimensione miniatura immagine";
 "settings_displayTitles" = "Titoli sulle miniature";
 "settings_displayTitles>320px" = "Titoli sulle anteprime";
 

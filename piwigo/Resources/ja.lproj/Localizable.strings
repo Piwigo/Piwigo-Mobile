@@ -496,8 +496,8 @@
 "defaultImageSort" = "並び順";
 "defaultImageSort>320px" = "既定の並び順";
 "defaultImageSort>414px" = "画像の既定並び順";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"defaultAlbumThumbnailFile>414px" = "アルバムのサムネイルファイル";
+"defaultAlbumThumbnailSizeHeader" = "アルバムのサムネイルサイズを選択してください";
 
 "thumbnailSizeSquare" = "正方形";
 "thumbnailSizeThumbnail" = "サムネイル";

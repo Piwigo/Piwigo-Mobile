@@ -496,8 +496,8 @@
 "defaultImageSort" = "Tri";
 "defaultImageSort>320px" = "Tri";
 "defaultImageSort>414px" = "Tri par Défaut des Images";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"defaultAlbumThumbnailFile>414px" = "Fichier de Vignette d'Album";
+"defaultAlbumThumbnailSizeHeader" = "Veuillez sélectionner une taille de vignette d'album";
 
 "thumbnailSizeSquare" = "Carré";
 "thumbnailSizeThumbnail" = "Miniature";
@@ -515,7 +515,7 @@
 
 "defaultThumbnailFile" = "Fichier";
 "defaultThumbnailFile>320px" = "Fichier de Vignette";
-"defaultThumbnailFile>414px" = "Fichier de Vignette";
+"defaultThumbnailFile>414px" = "Fichier de Vignette d'Image";
 "defaultThumbnailSize" = "Taille";
 "defaultThumbnailSize>320px" = "Taille des Vignettes";
 "defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";

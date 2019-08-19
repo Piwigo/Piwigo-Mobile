@@ -496,8 +496,8 @@
 "defaultImageSort" = "Sorteren";
 "defaultImageSort>320px" = "Standaard sorteervolgorde";
 "defaultImageSort>414px" = "Standaardsorteervolgorde van foto's";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"defaultAlbumThumbnailFile>414px" = "Bestand Albumsminiaturen";
+"defaultAlbumThumbnailSizeHeader" = "Selecteer a. u. b. een album miniatuur-grootte";
 
 "thumbnailSizeSquare" = "Vierkant";
 "thumbnailSizeThumbnail" = "Miniatuurafbeelding";

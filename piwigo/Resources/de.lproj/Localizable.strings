@@ -496,8 +496,8 @@
 "defaultImageSort" = "Sortierung";
 "defaultImageSort>320px" = "Standardsortierung";
 "defaultImageSort>414px" = "Standardsortierung der Bilder";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"defaultAlbumThumbnailFile>414px" = "Album-Miniaturbild Datei";
+"defaultAlbumThumbnailSizeHeader" = "Bitte wähle eine Miniaturbildgröße";
 
 "thumbnailSizeSquare" = "Quadratisch";
 "thumbnailSizeThumbnail" = "Miniaturbild";
@@ -523,7 +523,7 @@
 "defaultNberOfThumbnails>320px" = "Anzahl/Zeile";
 "defaultNberOfThumbnails>414px" = "Anzahl pro Zeile";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Bitte wählen Sie eine Miniaturbildgröße";
+"defaultThumbnailSizeHeader" = "Bitte wähle eine Miniaturbildgröße";
 "settings_displayTitles" = "Titel bei Miniaturbildern";
 "settings_displayTitles>320px" = "Titel bei Miniaturbildern anzeigen";
 

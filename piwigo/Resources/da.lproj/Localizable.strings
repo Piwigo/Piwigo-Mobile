@@ -293,14 +293,14 @@
 "tagsTitle_selectOne" = "Vælg Etiket";
 "tagsHeader_selected" = "Valgte";
 "tagsHeader_all" = "Alle";
-"tagsAdd_title" = "Add Tag";
-"tagsAdd_message" = "Enter a name for this new tag";
-"tagsAdd_placeholder" = "New tag";
-"tagsAddHUD_label" = "Creating Tag…";
+"tagsAdd_title" = "Tilføj etiket";
+"tagsAdd_message" = "Indtast et navn for den nye etiket";
+"tagsAdd_placeholder" = "Ny etiket";
+"tagsAddHUD_label" = "Opretter etiket…";
 
 // Image tags errors
-"tagsAddError_message" = "Failed to create new tag";
-"tagsAddError_title" = "Create Fail";
+"tagsAddError_message" = "Kunne ikke oprette etiket";
+"tagsAddError_title" = "Oprettelse mislykkedes";
 
 // Image select
 "selectImages" = "Vælg billeder";
@@ -496,8 +496,8 @@
 "defaultImageSort" = "Sorter";
 "defaultImageSort>320px" = "Sorter";
 "defaultImageSort>414px" = "Standard Sorteringsrækkefølge";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"defaultAlbumThumbnailFile>414px" = "Album miniature";
+"defaultAlbumThumbnailSizeHeader" = "Vælg album miniature størrelse";
 
 "thumbnailSizeSquare" = "Firkant";
 "thumbnailSizeThumbnail" = "Miniature";
