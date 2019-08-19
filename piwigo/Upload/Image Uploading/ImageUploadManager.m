@@ -402,7 +402,7 @@
         [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
                      resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 #if defined(DEBUG_UPLOAD)
-                         NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.image, info);
+                         NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.fileName, info);
                          NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
 #endif
                          if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
