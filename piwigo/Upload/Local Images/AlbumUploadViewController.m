@@ -762,7 +762,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     else if (kind == UICollectionElementKindSectionFooter)
     {
         // Display "No Images" if needed
-        NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
+        NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
         footer.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
 
         if ([[self.imagesInSections objectAtIndex:indexPath.section] count] == 0) {
