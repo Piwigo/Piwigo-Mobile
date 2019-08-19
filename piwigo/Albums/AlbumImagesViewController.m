@@ -504,10 +504,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    //Reload the tableview on orientation change, to match the new width of the table.
+    // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [self updateNavBar];
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)]];
+        // Crash encountered in following line (App Store)
+//        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)]];
     } completion:nil];
 }
 
