@@ -782,7 +782,8 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplaySupplementaryView:(UICollectionReusableView *)view forElementKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath
 {
-    if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+    if (([elementKind isEqualToString:UICollectionElementKindSectionHeader]) ||
+        ([elementKind isEqualToString:UICollectionElementKindSectionFooter])) {
         view.layer.zPosition = 0;       // Below scroll indicator
         view.backgroundColor = [[UIColor piwigoBackgroundColor] colorWithAlphaComponent:0.75];
     }
