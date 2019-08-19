@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "LabelImageTableViewCell.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
 #import "PiwigoTagData.h"
@@ -36,11 +37,14 @@
 		self.title = NSLocalizedString(@"tags", @"Tags");
 				
 		self.tagsTableView = [UITableView new];
-        self.tagsTableView.backgroundColor = [UIColor clearColor];
 		self.tagsTableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.tagsTableView.backgroundColor = [UIColor clearColor];
         self.tagsTableView.sectionIndexColor = [UIColor piwigoOrange];
+        self.tagsTableView.alwaysBounceVertical = YES;
+        self.tagsTableView.showsVerticalScrollIndicator = YES;
 		self.tagsTableView.delegate = self;
 		self.tagsTableView.dataSource = self;
+        [self.tagsTableView registerNib:[UINib nibWithNibName:@"LabelImageTableViewCell" bundle:nil] forCellReuseIdentifier:@"LabelImageTableViewCell"];
 		[self.view addSubview:self.tagsTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.tagsTableView]];
 		
@@ -92,7 +96,7 @@
     
     // Table view
     self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
-    self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.tagsTableView reloadData];
 }
 
@@ -227,28 +231,38 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-	if(!cell)
-	{
-		cell = [UITableViewCell new];
-	}
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+//    if(!cell)
+//    {
+//        cell = [UITableViewCell new];
+//    }
+    LabelImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LabelImageTableViewCell" forIndexPath:indexPath];
+    if(!cell) {
+        cell = [LabelImageTableViewCell new];
+    }
     
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    cell.tintColor = [UIColor piwigoOrange];
-    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+//    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+//    cell.tintColor = [UIColor piwigoOrange];
+//    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
 
     PiwigoTagData *currentTag;
     if (indexPath.section == 0) {
         // Selected tags
         currentTag = self.alreadySelectedTags[indexPath.row];
-        cell.textLabel.text = currentTag.tagName;
+        [cell setupWithActivityName:currentTag.tagName andEditOption:kPiwigoActionCellEditRemove];
+//        cell.textLabel.text = currentTag.tagName;
     }
     else {
         // Not selected tags
         currentTag = self.notSelectedTags[indexPath.row];
         
         // Number of images not known if getAdminList called
-        cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag];
+        if (currentTag.numberOfImagesUnderTag == NSNotFound) {
+            [cell setupWithActivityName:currentTag.tagName andEditOption:kPiwigoActionCellEditAdd];
+        } else {
+            [cell setupWithActivityName:[NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag] andEditOption:kPiwigoActionCellEditAdd];
+        }
+//        cell.textLabel.text = [Model sharedInstance].hasAdminRights ? currentTag.tagName : [NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag];
     }
     
     return cell;
