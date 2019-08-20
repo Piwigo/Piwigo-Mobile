@@ -115,23 +115,27 @@
      ];
 	
     // Image properties
-	self.imageTitle.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_title", @"Title:")], imageInfo.title];
+	self.imageTitle.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_title", @"Title:"), imageInfo.title];
     self.imageTitle.textColor = [UIColor piwigoLeftLabelColor];
     self.imageTitleUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
     
-	self.author.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_author", @"Author:")], imageInfo.author];
+    if ([imageInfo.author isEqualToString:@"NSNotFound"]) {
+        self.author.text = NSLocalizedString(@"imageUploadDetails_author", @"Author:");
+    } else {
+        self.author.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_author", @"Author:"), imageInfo.author];
+    }
     self.author.textColor = [UIColor piwigoRightLabelColor];
     self.authorUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
 
-	self.privacyLevel.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_privacy", @"Privacy:")], [[Model sharedInstance] getNameForPrivacyLevel:imageInfo.privacyLevel]];
+	self.privacyLevel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_privacy", @"Privacy:"), [[Model sharedInstance] getNameForPrivacyLevel:imageInfo.privacyLevel]];
     self.privacyLevel.textColor = [UIColor piwigoRightLabelColor];
     self.privacyUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
 
-	self.tags.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_tags", @"Tags:")], [[TagsData sharedInstance] getTagsStringFromList:imageInfo.tags]];
+	self.tags.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_tags", @"Tags:"), [[TagsData sharedInstance] getTagsStringFromList:imageInfo.tags]];
     self.tags.textColor = [UIColor piwigoRightLabelColor];
     self.tagsUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
 
-	self.descriptionLabel.text = [NSString stringWithFormat:[NSString stringWithFormat:@"%@ %%@", NSLocalizedString(@"imageUploadDetails_description", @"Description:")], imageInfo.imageDescription];
+	self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_description", @"Description:"), imageInfo.imageDescription];
     self.descriptionLabel.textColor = [UIColor piwigoRightLabelColor];
 }
 
