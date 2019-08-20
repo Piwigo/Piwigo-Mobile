@@ -49,13 +49,13 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 {
 	// Look for the category to delete
     NSInteger index = 0;
-    NSInteger parentCategoryId = NSNotFound;
+    NSArray *upperCategories = [NSArray new];
 	for (PiwigoAlbumData *category in self.allCategories)
 	{
 		if(category.albumId == categoryId)
 		{
-            // Store parent category ID
-            parentCategoryId = category.parentAlbumId;
+            // Store list of parent categories
+            upperCategories = category.upperCategories;
             break;
 		}
 		index++;
@@ -70,24 +70,30 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         // Remove deleted category
         [newCategories removeObjectAtIndex:index];
 
-        // Look for the parent category
+        // Look for parent categories
         index = 0;
+        NSMutableIndexSet *indexes = [NSMutableIndexSet new];
+        NSMutableArray *parentCategories = [NSMutableArray new];
         for (PiwigoAlbumData *category in newCategories)
         {
-            if (category.albumId == parentCategoryId)
+            if ([upperCategories containsObject:[NSString stringWithFormat:@"%ld", category.albumId]])
             {
                 PiwigoAlbumData *parentCategory = category;
                 
-                // Decrement number of sub-categories
+                // Decrement number of sub-categories for that upper category
                 parentCategory.numberOfSubCategories--;
                 
-                // Update parent category in cache
-                [newCategories replaceObjectAtIndex:index withObject:parentCategory];
+                // Store updated upper category
+                [indexes addIndex:index];
+                [parentCategories addObject:parentCategory];
             }
             index++;
         }
+        
+        // Update upper categories in cache
+        [newCategories replaceObjectsAtIndexes:indexes withObjects:parentCategories];
     }
-
+    
 	self.allCategories = newCategories;
 }
 
