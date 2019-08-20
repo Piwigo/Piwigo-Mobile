@@ -534,9 +534,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                                 
                                 // Delete category from cache
                                 [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
-                                
-                                // Post to the app that category data have changed
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil userInfo:nil];
                             }];
                         }
                         else
