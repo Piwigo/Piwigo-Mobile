@@ -22,6 +22,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 @property (nonatomic, readonly) NSArray *communityCategoriesForUploadOnly;
 
 -(void)clearCache;
+-(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters;
 -(void)deleteCategory:(NSInteger)categoryId;
 -(void)replaceAllCategories:(NSArray*)categories;
 -(void)updateCategories:(NSArray*)categories;

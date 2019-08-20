@@ -719,14 +719,11 @@
                 OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
                     if(createdSuccessfully)
                     {
-                        // Post to the app that category data have changed
-                        if ([Model sharedInstance].loadAllCategoryInfo) {
-                            NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-                        }
+                        // Build category array from cache
+                        [self buildCategoryArray];
 
-                        // Refresh list of categories (and cache)
-                        [self refreshCategoryList];
+                        // Reload data
+                        [self.categoriesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
 
                         // Hide HUD
                         [self hideHUDwithSuccess:YES completion:nil];

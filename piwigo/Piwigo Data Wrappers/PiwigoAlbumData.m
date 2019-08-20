@@ -15,9 +15,9 @@
 
 NSInteger const kPiwigoSearchCategoryId = -1;           // Search
 NSInteger const kPiwigoVisitsCategoryId = -2;           // Most visited
-NSInteger const kPiwigoBestCategoryId = -3;             // Best rated
+NSInteger const kPiwigoBestCategoryId   = -3;           // Best rated
 NSInteger const kPiwigoRecentCategoryId = -4;           // Recent photos
-NSInteger const kPiwigoTagsCategoryId = -5;             // Tag images
+NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
 
 @interface PiwigoAlbumData()
 
@@ -44,6 +44,37 @@ NSInteger const kPiwigoTagsCategoryId = -5;             // Tag images
 		self.onPage = 0;
 	}
 	return self;
+}
+
+// Create album data in cache after album creation
+-(PiwigoAlbumData *)initWithId:(NSInteger)categoryId andParameters:(NSDictionary *)parameters
+{
+    PiwigoAlbumData *albumData = [PiwigoAlbumData new];
+    albumData.albumId = categoryId;
+
+    // Parent album
+    albumData.parentAlbumId = [[parameters objectForKey:@"parent"] integerValue];
+    albumData.nearestUpperCategory = albumData.parentAlbumId;
+    PiwigoAlbumData *parentAlbumData = [[CategoriesData sharedInstance] getCategoryById:albumData.parentAlbumId];
+    NSMutableArray *upperCategories = [NSMutableArray new];
+    if (parentAlbumData.upperCategories.count != 0) {
+        [upperCategories addObjectsFromArray:parentAlbumData.upperCategories];
+    }
+    [upperCategories addObject:[NSString stringWithFormat:@"%ld", categoryId]];
+    albumData.upperCategories = [NSArray arrayWithArray:upperCategories];
+
+    // Empty album at start
+    albumData.name = [parameters objectForKey:@"name"];
+    albumData.comment = [parameters objectForKey:@"comment"];
+    albumData.globalRank = 0.0;
+    albumData.numberOfImages = 0;
+    albumData.totalNumberOfImages = 0;
+    albumData.numberOfSubCategories = 0;
+        
+    // No upload rights
+    albumData.hasUploadRights = parentAlbumData.hasUploadRights;
+    
+    return albumData;
 }
 
 // Search data are stored in a virtual album with Id = kPiwigoSearchCategoryId

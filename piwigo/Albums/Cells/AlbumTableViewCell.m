@@ -531,7 +531,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                         if(deletedSuccessfully)
                         {
                             [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
-                                
                                 // Delete category from cache
                                 [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
                             }];

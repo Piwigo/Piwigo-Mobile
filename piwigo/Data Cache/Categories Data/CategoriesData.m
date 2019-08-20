@@ -45,6 +45,51 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     self.communityCategoriesForUploadOnly = [NSArray new];
 }
 
+-(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters
+{
+    // Create category in cache
+    PiwigoAlbumData *newCategory = [[PiwigoAlbumData alloc] initWithId:categoryId andParameters:parameters];
+    
+    // Add new category to cache
+    [[CategoriesData sharedInstance] updateCategories:@[newCategory]];
+    
+    // Get list of parent categories
+    NSMutableArray *upperCategories = [newCategory.upperCategories mutableCopy];
+    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", newCategory.albumId];
+    if ([upperCategories containsObject:categoryIdStr]) {
+        [upperCategories removeObject:categoryIdStr];
+    }
+
+    // Create new list of categories
+    NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+
+    // Look for parent categories and update them
+    for (NSString *upperCategoryId in upperCategories)
+    {
+        // Look for the index of upper category to update
+        NSInteger indexOfUpperCategory = [self indexOfCategoryWithId:[upperCategoryId integerValue] inArray:newCategories];
+        
+        // Update upper category
+        if (indexOfUpperCategory != NSNotFound)
+        {
+            // Parent category
+            PiwigoAlbumData *parentCategory = [newCategories objectAtIndex:indexOfUpperCategory];
+            
+            // Decrement number of sub-categories for that upper category
+            parentCategory.numberOfSubCategories++;
+
+            // Update parent category
+            [newCategories replaceObjectAtIndex:indexOfUpperCategory withObject:parentCategory];
+        }
+    }
+    
+    // Update cache
+    self.allCategories = newCategories;
+
+    // Post to the app that category data have changed
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+}
+
 -(void)deleteCategory:(NSInteger)categoryId
 {
 	// Look for index of category to delete
@@ -52,7 +97,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     
     if (index != NSNotFound)
     {
-        // Store list of parent categories
+        // Get list of parent categories
         PiwigoAlbumData *catagoryToDelete = [self.allCategories objectAtIndex:index];
         NSMutableArray *upperCategories = [catagoryToDelete.upperCategories mutableCopy];
         NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", catagoryToDelete.albumId];
@@ -66,7 +111,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         // Remove deleted category
         [newCategories removeObjectAtIndex:index];
 
-        // Look for parent categories
+        // Look for parent categories and update them
         for (NSString *upperCategoryId in upperCategories)
         {
             // Look for the index of upper category to update
@@ -78,9 +123,15 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
                 // Parent category
                 PiwigoAlbumData *parentCategory = [newCategories objectAtIndex:indexOfUpperCategory];
                 
-                // Decrement number of sub-categories for that upper category
+                // Subtract deleted images
+                parentCategory.totalNumberOfImages -= catagoryToDelete.totalNumberOfImages;
+                
+                // Subtract deleted sub-categories
+                parentCategory.numberOfSubCategories -= catagoryToDelete.numberOfSubCategories;
+                
+                // Subtract deleted category
                 parentCategory.numberOfSubCategories--;
-
+                
                 // Update parent category
                 [newCategories replaceObjectAtIndex:indexOfUpperCategory withObject:parentCategory];
             }
