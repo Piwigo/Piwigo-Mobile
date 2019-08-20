@@ -26,7 +26,6 @@
     [super awakeFromNib];
 
     self.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
 	
 	self.tagsString = @"";
 	self.leftLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
@@ -38,7 +37,7 @@
 -(void)paletteChanged
 {
     self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.rightLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
 }
 

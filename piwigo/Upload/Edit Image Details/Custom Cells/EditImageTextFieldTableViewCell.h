@@ -12,6 +12,8 @@
 
 -(void)paletteChanged;
 -(void)setLabel:(NSString*)label andTextField:(NSString*)text withPlaceholder:(NSString*)placeholder;
--(NSString*)getTextFieldText;
+-(NSString *)getTextFieldText;
+-(BOOL)isEditingTextField;
+-(CGFloat)getTextFieldHeight;
 
 @end

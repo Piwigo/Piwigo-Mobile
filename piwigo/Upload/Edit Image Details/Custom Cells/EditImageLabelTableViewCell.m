@@ -32,7 +32,7 @@
 -(void)paletteChanged
 {
     self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.rightLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
 }
 
