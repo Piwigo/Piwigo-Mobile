@@ -33,8 +33,6 @@ typedef enum {
 @interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource,  SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint *tableViewBottomConstraint;
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint *tableViewTopConstraint;
 @property (nonatomic, assign) BOOL shouldUpdateDetails;
 
 @end

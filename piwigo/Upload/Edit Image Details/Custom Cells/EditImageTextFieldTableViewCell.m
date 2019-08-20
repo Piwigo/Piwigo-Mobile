@@ -29,7 +29,7 @@
     self.cellTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     self.cellTextField.autocorrectionType = UITextAutocorrectionTypeYes;
     self.cellTextField.returnKeyType = UIReturnKeyDefault;
-    self.cellTextField.clearButtonMode = UITextFieldViewModeUnlessEditing;
+    self.cellTextField.clearButtonMode = UITextFieldViewModeAlways;
     self.cellTextField.delegate = self;
     [self paletteChanged];
 }

@@ -214,7 +214,6 @@
                     </view>
                     <connections>
                         <outlet property="editImageDetailsTableView" destination="T0l-Ou-dhs" id="waf-Hs-Bx5"/>
-                        <outlet property="tableViewTopConstraint" destination="9gA-xX-Wqi" id="X1R-ot-k9v"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jIA-hH-7tD" userLabel="First Responder" sceneMemberID="firstResponder"/>
