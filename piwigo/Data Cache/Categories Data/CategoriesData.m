@@ -47,18 +47,47 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 -(void)deleteCategory:(NSInteger)categoryId
 {
-	NSInteger index = 0;
-	for(PiwigoAlbumData *category in self.allCategories)
+	// Look for the category to delete
+    NSInteger index = 0;
+    NSInteger parentCategoryId = NSNotFound;
+	for (PiwigoAlbumData *category in self.allCategories)
 	{
 		if(category.albumId == categoryId)
 		{
-			break;
+            // Store parent category ID
+            parentCategoryId = category.parentAlbumId;
+            break;
 		}
 		index++;
 	}
-	NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+	
+    // New list of categories
+    NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+
+    // Delete the category if found
     if ((index >= 0) && (index < newCategories.count))
+    {
+        // Remove deleted category
         [newCategories removeObjectAtIndex:index];
+
+        // Look for the parent category
+        index = 0;
+        for (PiwigoAlbumData *category in newCategories)
+        {
+            if (category.albumId == parentCategoryId)
+            {
+                PiwigoAlbumData *parentCategory = category;
+                
+                // Decrement number of sub-categories
+                parentCategory.numberOfSubCategories--;
+                
+                // Update parent category in cache
+                [newCategories replaceObjectAtIndex:index withObject:parentCategory];
+            }
+            index++;
+        }
+    }
+
 	self.allCategories = newCategories;
 }
 

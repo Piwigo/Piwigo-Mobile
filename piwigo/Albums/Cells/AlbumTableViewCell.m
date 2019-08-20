@@ -532,11 +532,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                         {
                             [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
                                 
+                                // Delete category from cache
                                 [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
                                 
                                 // Post to the app that category data have changed
-                                NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil userInfo:nil];
                             }];
                         }
                         else
