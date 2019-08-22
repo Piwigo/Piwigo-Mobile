@@ -58,7 +58,7 @@
         // Image thumbnail from Photo Library
         if ((imageDetails.imageAsset.pixelWidth > 0) &&
             (imageDetails.imageAsset.pixelHeight > 0)) {
-            self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", imageDetails.imageAsset.pixelWidth, imageDetails.imageAsset.pixelHeight];
+            self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", (long)imageDetails.imageAsset.pixelWidth, (long)imageDetails.imageAsset.pixelHeight];
         }
         
         if (imageDetails.imageAsset.creationDate != nil) {
@@ -95,7 +95,7 @@
             self.imageFile.text = imageDetails.fileName;
         }
         if ((imageDetails.pixelWidth > 0) && (imageDetails.pixelHeight > 0)) {
-            self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", imageDetails.pixelWidth, imageDetails.pixelHeight];
+            self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", (long)imageDetails.pixelWidth, (long)imageDetails.pixelHeight];
         }
 
         if (imageDetails.creationDate != nil) {

@@ -60,7 +60,7 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
     if (parentAlbumData.upperCategories.count != 0) {
         [upperCategories addObjectsFromArray:parentAlbumData.upperCategories];
     }
-    [upperCategories addObject:[NSString stringWithFormat:@"%ld", categoryId]];
+    [upperCategories addObject:[NSString stringWithFormat:@"%ld", (long)categoryId]];
     albumData.upperCategories = [NSArray arrayWithArray:upperCategories];
 
     // Empty album at start

@@ -55,7 +55,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     
     // Get list of parent categories
     NSMutableArray *upperCategories = [newCategory.upperCategories mutableCopy];
-    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", newCategory.albumId];
+    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)newCategory.albumId];
     if ([upperCategories containsObject:categoryIdStr]) {
         [upperCategories removeObject:categoryIdStr];
     }
@@ -100,7 +100,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         // Get list of parent categories
         PiwigoAlbumData *catagoryToDelete = [self.allCategories objectAtIndex:index];
         NSMutableArray *upperCategories = [catagoryToDelete.upperCategories mutableCopy];
-        NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", catagoryToDelete.albumId];
+        NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)catagoryToDelete.albumId];
         if ([upperCategories containsObject:categoryIdStr]) {
             [upperCategories removeObject:categoryIdStr];
         }
