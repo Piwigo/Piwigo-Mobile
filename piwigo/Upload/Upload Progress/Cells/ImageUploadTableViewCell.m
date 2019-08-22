@@ -111,6 +111,7 @@
                                                   options:cropToSquare
                                             resultHandler:^(UIImage *result, NSDictionary *info) {
                                                 self.image.image = result;
+                                                self.image.layer.cornerRadius = 6;
                                             }
      ];
 	

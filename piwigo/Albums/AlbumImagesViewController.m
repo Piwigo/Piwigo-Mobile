@@ -507,8 +507,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [self updateNavBar];
-        // Crash encountered in following line (App Store)
-//        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)]];
+        [self.imagesCollection reloadData];
     } completion:nil];
 }
 

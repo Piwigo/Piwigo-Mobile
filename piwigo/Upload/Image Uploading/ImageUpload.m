@@ -9,6 +9,7 @@
 #import <Photos/Photos.h>
 
 #import "ImageUpload.h"
+#import "Model.h"
 #import "PiwigoImageData.h"
 
 @implementation ImageUpload
@@ -67,7 +68,7 @@
     self = [self initWithImageAsset:imageAsset forCategory:category forPrivacyLevel:privacy];
     if(self)
     {
-        if([description isKindOfClass:[NSNull class]])
+        if ([description isKindOfClass:[NSNull class]])
         {
             description = nil;
         }
@@ -86,11 +87,64 @@
 -(instancetype)initWithImageData:(PiwigoImageData*)imageData
 {
     self = [self initWithImageAsset:nil forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
-    self.fileName = imageData.fileName;
-    self.title = imageData.name;
-    if(self)
+    if (self)
     {
+        self.fileName = imageData.fileName;
+        self.title = imageData.name;
         self.imageId = imageData.imageId;
+        self.pixelWidth = imageData.fullResWidth;
+        self.pixelHeight = imageData.fullResHeight;
+        self.creationDate = imageData.dateCreated;
+        
+        // Image thumbnail size
+        switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
+            case kPiwigoImageSizeSquare:
+                if ([Model sharedInstance].hasSquareSizeImages) {
+                    self.thumbnailUrl = imageData.SquarePath;
+                }
+                break;
+            case kPiwigoImageSizeXXSmall:
+                if ([Model sharedInstance].hasXXSmallSizeImages) {
+                    self.thumbnailUrl = imageData.XXSmallPath;
+                }
+                break;
+            case kPiwigoImageSizeXSmall:
+                if ([Model sharedInstance].hasXSmallSizeImages) {
+                    self.thumbnailUrl = imageData.XSmallPath;
+                }
+                break;
+            case kPiwigoImageSizeSmall:
+                if ([Model sharedInstance].hasSmallSizeImages) {
+                    self.thumbnailUrl = imageData.SmallPath;
+                }
+                break;
+            case kPiwigoImageSizeMedium:
+                if ([Model sharedInstance].hasMediumSizeImages) {
+                    self.thumbnailUrl = imageData.MediumPath;
+                }
+                break;
+            case kPiwigoImageSizeLarge:
+                if ([Model sharedInstance].hasLargeSizeImages) {
+                    self.thumbnailUrl = imageData.LargePath;
+                }
+                break;
+            case kPiwigoImageSizeXLarge:
+                if ([Model sharedInstance].hasXLargeSizeImages) {
+                    self.thumbnailUrl = imageData.XLargePath;
+                }
+                break;
+            case kPiwigoImageSizeXXLarge:
+                if ([Model sharedInstance].hasXXLargeSizeImages) {
+                    self.thumbnailUrl = imageData.XXLargePath;
+                }
+                break;
+
+            case kPiwigoImageSizeThumb:
+            case kPiwigoImageSizeFullRes:
+            default:
+                self.thumbnailUrl = imageData.ThumbPath;
+                break;
+        }
     }
     return self;
 }

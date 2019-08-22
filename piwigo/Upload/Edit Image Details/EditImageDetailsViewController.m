@@ -8,9 +8,10 @@
 
 #import "AppDelegate.h"
 #import "EditImageDetailsViewController.h"
+#import "EditImageLabelTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
-#import "EditImageLabelTableViewCell.h"
+#import "EditImageThumbnailTableViewCell.h"
 #import "TagsTableViewCell.h"
 #import "ImageUpload.h"
 #import "ImageService.h"
@@ -22,6 +23,7 @@
 CGFloat const kEditImageDetailsWidth = 512.0;      // EditImageDetails view width
 
 typedef enum {
+    EditImageDetailsOrderThumbnail,
 	EditImageDetailsOrderImageName,
 	EditImageDetailsOrderAuthor,
 	EditImageDetailsOrderPrivacy,
@@ -74,6 +76,9 @@ typedef enum {
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
 
+    EditImageThumbnailTableViewCell *imageThumbnail = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
+    [imageThumbnail paletteChanged];
+    
     EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
     [textFieldCell paletteChanged];
     
@@ -96,15 +101,12 @@ typedef enum {
 {
 	[super viewWillAppear:animated];
 	
-    // Register for keyboard notifications
-    [self registerForKeyboardNotifications];
-    
     // Set colors, fonts, etc.
     [self paletteChanged];
 
     // Navigation buttons in edition mode
     self.shouldUpdateDetails = NO;
-    if(self.isEdit)
+    if (self.isEdit)
     {
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
 		UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
@@ -118,9 +120,6 @@ typedef enum {
 {
     [super viewWillDisappear:animated];
     
-    // Unregister for keyboard notifications while not visible.
-    [self unregisterKeyboardNotifications];
-
     if ((self.shouldUpdateDetails || (self.navigationItem.rightBarButtonItem == nil)) &&
         [self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
 	{
@@ -268,86 +267,6 @@ typedef enum {
 }
 
 
-#pragma mark - Keyboard Notifications
-
-- (void)registerForKeyboardNotifications {
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-}
-
-// Called when the UIKeyboardWillShowNotification is sent.
-- (void)keyboardWillShow:(NSNotification*)aNotification
-{
-    NSDictionary* info = [aNotification userInfo];
-    CGRect kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey]
-                     CGRectValue];
-    double duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey]
-                       doubleValue];
-    
-    UIEdgeInsets insets = self.editImageDetailsTableView.contentInset;
-    insets.bottom += (self.editImageDetailsTableView.frame.origin.y + self.editImageDetailsTableView.frame.size.height) - self.view.bounds.size.height + kbSize.size.height;
-    
-    [UIView animateWithDuration:duration animations:^{
-        self.editImageDetailsTableView.contentInset = insets;
-    }];
-
-    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-    if ([textFieldCell isEditingTextField]) {
-        // Scroll the table so that the cells of interest are visible
-        [self.editImageDetailsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-
-    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-    if ([textFieldCell isEditingTextField]) {
-        // Scroll the table so that the cells of interest are visible
-        [self.editImageDetailsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-
-    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-    if ([textViewCell isEditingTextView]) {
-        // Scroll the table so that the cells of interest are visible
-        [self.editImageDetailsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-    }
-}
-
-// Called when the UIKeyboardWillHideNotification is sent
-- (void)keyboardWillHide:(NSNotification*)aNotification
-{
-    NSDictionary* info = [aNotification userInfo];
-    double duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey]
-                       doubleValue];
-    
-    // Reset the text view's bottom content inset.
-    UIEdgeInsets insets = self.editImageDetailsTableView.contentInset;
-    insets.bottom = 0;
-    
-    [UIView animateWithDuration:duration animations:^{
-        self.editImageDetailsTableView.contentInset = insets;
-    }];
-
-    [self.editImageDetailsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-}
-
-- (void)unregisterKeyboardNotifications {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification
-                                                  object:nil];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillHideNotification
-                                                  object:nil];
-}
-
-
 #pragma mark - Keyboard Methods
 
 -(void)updateImageDetails
@@ -379,10 +298,27 @@ typedef enum {
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ((indexPath.row == EditImageDetailsOrderPrivacy) ||
-        (indexPath.row == EditImageDetailsOrderTags)) return 68.0;
-    if (indexPath.row == EditImageDetailsOrderDescription) return 100.0;
-	return 44.0;
+    CGFloat height = 44.0;
+    switch (indexPath.row)
+    {
+        case EditImageDetailsOrderThumbnail:
+            height = 160.0;
+            break;
+            
+        case EditImageDetailsOrderPrivacy:
+        case EditImageDetailsOrderTags:
+            height = 78.0;
+            break;
+            
+        case EditImageDetailsOrderDescription:
+            height = 116.0;
+            break;
+
+        default:
+            break;
+    }
+
+    return height;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -396,7 +332,14 @@ typedef enum {
 	
 	switch(indexPath.row)
 	{
-		case EditImageDetailsOrderImageName:
+		case EditImageDetailsOrderThumbnail:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"image"];
+            [((EditImageThumbnailTableViewCell*)cell) setupWithImage:self.imageDetails];
+            break;
+        }
+        
+        case EditImageDetailsOrderImageName:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"title"];
 			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_title", @"Title:") andTextField:self.imageDetails.title withPlaceholder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")];

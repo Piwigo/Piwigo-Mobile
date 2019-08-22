@@ -94,6 +94,16 @@
         [aboutAttributedString appendAttributedString:afnAttributedString];
         [aboutAttributedString appendAttributedString:spacerAttributedString];
 
+        // IQKeyboardManager Licence — Bundle string
+        NSString *iqkmString = NSLocalizedStringFromTableInBundle(@"licenceIQkeyboard_text", @"About", [NSBundle mainBundle], @"IQKeyboardManager licence text");
+        NSMutableAttributedString *iqkmAttributedString = [[NSMutableAttributedString alloc] initWithString:iqkmString];
+        NSRange iqkmTitleRange = NSMakeRange(0, [iqkmString length]);
+        [iqkmAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall] range:iqkmTitleRange];
+        iqkmTitleRange = NSMakeRange(0, [iqkmString rangeOfString:@"\n"].location);
+        [iqkmAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold] range:iqkmTitleRange];
+        [aboutAttributedString appendAttributedString:iqkmAttributedString];
+        [aboutAttributedString appendAttributedString:spacerAttributedString];
+
         // MBProgressHUD Licence — Bundle string
         NSString *mbpHudString = NSLocalizedStringFromTableInBundle(@"licenceMBProgHUD_text", @"About", [NSBundle mainBundle], @"MBProgressHUD licence text");
         NSMutableAttributedString *mbpHudAttributedString = [[NSMutableAttributedString alloc] initWithString:mbpHudString];

@@ -54,7 +54,7 @@ typedef enum {
 NSString * const kHelpUsTitle = @"Help Us!";
 NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated in your language. Could you please help us complete the translation?";
 
-@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate, MFMailComposeViewControllerDelegate>
+@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, SelectPrivacyDelegate, CategorySortDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
@@ -147,9 +147,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     
     // Set navigation buttons
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
-
-    // Register keyboard notifications
-    [self registerForKeyboardNotifications];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -200,9 +197,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 -(void)viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
-
-    // Unregister keyboard notifications
-    [self unregisterKeyboardNotifications];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -778,7 +772,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
 					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
-					cell.rightTextField.delegate = self;
 					cell.rightTextField.tag = kImageUploadSettingAuthor;
 					
 					tableViewCell = cell;
@@ -1936,9 +1929,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                        [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
                            if(sucessfulLogout)
                            {
-                               // Unregister keyboard notifications
-                               [self unregisterKeyboardNotifications];
-                               
                                // Session closed
                                [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
                                [[Model sharedInstance].imageCache removeAllImages];
@@ -2103,30 +2093,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     if ([deviceCode isEqualToString:@"x86_64"])       return @"Simulator";
     
     return deviceCode;
-}
-
-
-#pragma mark - Keyboard Notifications
-
-- (void)registerForKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-}
-
-- (void)keyboardWillShow:(NSNotification*)aNotification
-{
-    // Scroll the table so that the cell of interest is visible
-    [self.settingsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SettingsSectionImageUpload] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-}
-
-- (void)unregisterKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification
-                                                  object:nil];
 }
 
 
