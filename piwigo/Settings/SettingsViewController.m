@@ -54,7 +54,7 @@ typedef enum {
 NSString * const kHelpUsTitle = @"Help Us!";
 NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated in your language. Could you please help us complete the translation?";
 
-@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, SelectPrivacyDelegate, CategorySortDelegate, MFMailComposeViewControllerDelegate>
+@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
@@ -772,6 +772,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     }
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
 					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
+					cell.rightTextField.delegate = self;
 					cell.rightTextField.tag = kImageUploadSettingAuthor;
 					
 					tableViewCell = cell;

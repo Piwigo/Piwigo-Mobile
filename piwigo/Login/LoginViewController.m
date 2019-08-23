@@ -25,7 +25,7 @@
 
 NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
-@interface LoginViewController ()
+@interface LoginViewController () <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIAlertController *httpAlertController;
 @property (nonatomic, strong) UIAlertAction *httpLoginAction;
@@ -67,6 +67,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		self.serverTextField.returnKeyType = UIReturnKeyNext;
         self.serverTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         self.serverTextField.clearButtonMode = YES;
+		self.serverTextField.delegate = self;
 		[self.view addSubview:self.serverTextField];
 				
 		self.userTextField = [PiwigoTextField new];
@@ -80,6 +81,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		self.userTextField.returnKeyType = UIReturnKeyNext;
         self.userTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         self.userTextField.clearButtonMode = YES;
+		self.userTextField.delegate = self;
 		[self.view addSubview:self.userTextField];
 		
 		self.passwordTextField = [PiwigoTextField new];
@@ -135,6 +137,8 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
         self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
 
+        [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)]];
+		
 		[self performSelector:@selector(setupAutoLayout) withObject:nil]; // now located in child VC, thus import .h files
     }
 	return self;
@@ -984,6 +988,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)dismissKeyboard
+{
+    [self.view endEditing:YES];
 }
 
 -(void)openPiwigoURL
