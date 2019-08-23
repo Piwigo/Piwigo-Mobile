@@ -116,6 +116,20 @@ typedef enum {
 		self.navigationItem.leftBarButtonItem = cancel;
 		self.navigationItem.rightBarButtonItem = done;
     }
+
+    // Adjust content inset
+    // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
+    CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height;
+    CGFloat tableHeight = self.editImageDetailsTableView.bounds.size.height;
+    CGFloat viewHeight = self.view.bounds.size.height;
+
+    // On iPad, the form is presented in a popover view
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - viewHeight), 0.0)];
+    } else {
+        CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight), 0.0)];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -133,18 +147,27 @@ typedef enum {
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    //Reload the tableview on orientation change, to match the new width of the table.
+    // Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         
         // Store recent modification
         [self updateImageDescription];
         
-        // On iPad, the Settings section is presented in a centered popover view
+        // Adjust content inset
+        // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
+        CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height;
+        CGFloat tableHeight = self.editImageDetailsTableView.bounds.size.height;
+
+        // On iPad, the form is presented in a popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
             self.preferredContentSize = CGSizeMake(kEditImageDetailsWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - size.height), 0.0)];
+        } else {
+            CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+            [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - size.height), 0.0)];
         }
-        
+
         // Reload table view
         [self.editImageDetailsTableView reloadData];
     } completion:nil];
@@ -301,7 +324,7 @@ typedef enum {
             break;
             
         case EditImageDetailsOrderDescription:
-            height = 166.0;
+            height = 506.0;
             break;
 
         default:
