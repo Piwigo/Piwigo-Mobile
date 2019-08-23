@@ -1,5 +1,5 @@
 //
-//  TagsTableViewCell.h
+//  EditImageTagsTableViewCell.h
 //  piwigo
 //
 //  Created by Spencer Baker on 2/18/15.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TagsTableViewCell : UITableViewCell
+@interface EditImageTagsTableViewCell : UITableViewCell
 
 -(void)paletteChanged;
 -(void)setTagList:(NSArray*)tags;

@@ -32,6 +32,7 @@
     self.imageDate.font = [UIFont piwigoFontSmallLight];
     self.imageTime.font = [UIFont piwigoFontSmallLight];
     self.imageFile.font = [UIFont piwigoFontSmallLight];
+    self.userInteractionEnabled = NO;
 
     [self paletteChanged];
 }
@@ -46,12 +47,6 @@
 
 -(void)setupWithImage:(ImageUpload *)imageDetails
 {
-    // Initialisation
-    self.imageFile.text = @"";
-    self.imageSize.text = @"— x —";
-    self.imageDate.text = @"";
-    self.imageTime.text = @"";
-    
     // Image from Photo Library or Piwigo server…
     if (imageDetails.imageAsset)
     {
@@ -128,6 +123,16 @@
                                                     }];
             }
     }
+}
+
+-(void)prepareForReuse
+{
+    [super prepareForReuse];
+    
+    self.imageFile.text = @"";
+    self.imageSize.text = @"— x —";
+    self.imageDate.text = @"";
+    self.imageTime.text = @"";
 }
 
 @end
