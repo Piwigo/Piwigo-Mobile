@@ -14,14 +14,16 @@
 
 "about_text" = "Diese Software enthält Drittanbieter-Software, die unter den allgemeinen Geschäftsbedingungen ihrer ursprünglichen Lizenzen wiederverwendet werden.\n\n";
 
-"licenceAFN_text" = "AFNetworking\n\nMIT Lizenz (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
+"licenceAFN_text" = "AFNetworking\nMIT Lizenz (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
 
-"licenceMBProgHUD_text" = "MBProgressHUD\n\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
+"licenceIQkeyboard_text" = "IQKeyboardManager\nMIT Lizenz (MIT)\n\nCopyright © 2013-2017 Iftekhar Qurashi";
 
-"licenceMGSTC_text" = "MGSwipeTableCell\n\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro";
+"licenceMBProgHUD_text" = "MBProgressHUD\nMIT Lizenz (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
 
-"licenceSAM_text" = "SAMKeychain\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2010-2016 Sam Soffes\n‎(http‎:‎/‎/soff.es‎)";
+"licenceMGSTC_text" = "MGSwipeTableCell\nMIT Lizenz (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro";
 
-"licenceUICL_text" = "UICountingLabel\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2013 Tim Gostony";
+"licenceSAM_text" = "SAMKeychain\nMIT Lizenz (MIT)\n\nCopyright © 2010-2016 Sam Soffes\n‎(http‎:‎/‎/soff.es‎)";
+
+"licenceUICL_text" = "UICountingLabel\nMIT Lizenz (MIT)\n\nCopyright © 2013 Tim Gostony";
 
 "licenceMIT_text" = "MIT-Lizenz (MIT)\n\nHiermit wird unentgeltlich jeder Person, die eine Kopie der Software und der zugehörigen Dokumentationen (die \"Software\") erhält, die Erlaubnis erteilt, sie uneingeschränkt zu nutzen, inklusive und ohne Ausnahme mit dem Recht, sie zu verwenden, zu kopieren, zu verändern, zusammenzufügen, zu veröffentlichen, zu verbreiten, zu unterlizenzieren und/oder zu verkaufen, und Personen, denen diese Software überlassen wird, diese Rechte zu verschaffen, unter den folgenden Bedingungen:\n\nDer obige Urheberrechtsvermerk und dieser Erlaubnisvermerk sind in allen Kopien oder Teilkopien der Software beizulegen.\n\nDIE SOFTWARE WIRD OHNE JEDE AUSDRÜCKLICHE ODER IMPLIZIERTE GARANTIE BEREITGESTELLT, EINSCHLIEẞLICH DER GARANTIE ZUR BENUTZUNG FÜR DEN VORGESEHENEN ODER EINEM BESTIMMTEN ZWECK SOWIE JEGLICHER RECHTSVERLETZUNG, JEDOCH NICHT DARAUF BESCHRÄNKT. IN KEINEM FALL SIND DIE AUTOREN ODER COPYRIGHTINHABER FÜR JEGLICHEN SCHADEN ODER SONSTIGE ANSPRÜCHE HAFTBAR ZU MACHEN, OB INFOLGE DER ERFÜLLUNG EINES VERTRAGES, EINES DELIKTES ODER ANDERS IM ZUSAMMENHANG MIT DER SOFTWARE ODER SONSTIGER VERWENDUNG DER SOFTWARE ENTSTANDEN.";

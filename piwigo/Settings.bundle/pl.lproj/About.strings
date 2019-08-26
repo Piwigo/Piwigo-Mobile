@@ -14,14 +14,16 @@
 
 "about_text" = "To oprogramowanie zawiera niektóre oprogramowania innych firm, które są rozprowadzane na zasadach i warunkach ich oryginalnej licencji.\n\n";
 
-"licenceAFN_text" = "AFNetworking\n\nThe MIT License (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
+"licenceAFN_text" = "AFNetworking\nThe MIT License (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
 
-"licenceMBProgHUD_text" = "MBProgressHUD\n\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
+"licenceIQkeyboard_text" = "IQKeyboardManager\nThe MIT License (MIT)\n\nCopyright © 2013-2017 Iftekhar Qurashi";
 
-"licenceMGSTC_text" = "MGSwipeTableCell\n\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro";
+"licenceMBProgHUD_text" = "MBProgressHUD\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
 
-"licenceSAM_text" = "SAMKeychain\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2010-2016 Sam Soffes\n‎(http‎:‎/‎/soff.es‎)";
+"licenceMGSTC_text" = "MGSwipeTableCell\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro";
 
-"licenceUICL_text" = "UICountingLabel\n\nThe MIT License ‎(MIT‎)\n\nCopyright © 2013 Tim Gostony";
+"licenceSAM_text" = "SAMKeychain\nThe MIT License ‎(MIT‎)\n\nCopyright © 2010-2016 Sam Soffes\n‎(http‎:‎/‎/soff.es‎)";
+
+"licenceUICL_text" = "UICountingLabel\nThe MIT License ‎(MIT‎)\n\nCopyright © 2013 Tim Gostony";
 
 "licenceMIT_text" = "The MIT License (MIT)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.";
