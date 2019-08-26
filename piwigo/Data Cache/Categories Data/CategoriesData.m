@@ -10,7 +10,6 @@
 
 NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
 NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
-NSString * const kPiwigoNotificationCategoryImageUpdated = @"kPiwigoNotificationCategoryImageUpdated";
 NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
 
 @interface CategoriesData()

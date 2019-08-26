@@ -11,7 +11,6 @@
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationGetCategoryData;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryDataUpdated;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryImageUpdated;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 
 @interface CategoriesData : NSObject

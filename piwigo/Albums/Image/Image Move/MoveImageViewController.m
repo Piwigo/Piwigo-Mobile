@@ -396,20 +396,31 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     // Category contains selected image?
     if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
     {
-        cell.userInteractionEnabled = NO;
         cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
+        cell.userInteractionEnabled = NO;
     }
     
     // Switch between Open/Close cell disclosure
     cell.categoryDelegate = self;
     if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
         cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
+        cell.userInteractionEnabled = YES;
     } else {
         cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
+        cell.userInteractionEnabled = YES;
     }
     
     cell.isAccessibilityElement = YES;
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+    if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
+        return NO;
+    
+    return YES;
 }
 
 
@@ -419,8 +430,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    PiwigoAlbumData *categoryData;
-    categoryData = [self.categories objectAtIndex:indexPath.row];
+    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
     
     // User cannot move/copy image at current place
     if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)]) return;
@@ -539,6 +549,9 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
                         [[[CategoriesData sharedInstance] getCategoryById:self.categoryIdOfSelectedImages] removeImages:@[self.selectedImage]];
                         [[[CategoriesData sharedInstance] getCategoryById:self.categoryIdOfSelectedImages] deincrementImageSizeByOne];
                     }
+
+                    // Notify album/image view of modification
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 
                     // When called from image preview, return to image or album
                     if (self.selectedImages.count <= 0) {
