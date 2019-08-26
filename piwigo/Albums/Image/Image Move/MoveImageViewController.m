@@ -783,11 +783,11 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     // Look for categories which are not already displayed
     for(PiwigoAlbumData *category in allCategories)
     {
-        // Search album should not be proposed
-        if (category.albumId == kPiwigoSearchCategoryId) {
+        // Smart albums should not be proposed
+        if (category.albumId <= kPiwigoSearchCategoryId) {
             continue;
         }
-        
+
         // Non-admin Community users can only upload in specific albums
         if (![Model sharedInstance].hasAdminRights && !category.hasUploadRights) {
             continue;

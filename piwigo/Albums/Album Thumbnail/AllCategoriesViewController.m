@@ -560,8 +560,8 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
     // Look for categories which are not already displayed
     for(PiwigoAlbumData *category in allCategories)
     {
-        // Search album should not be proposed
-        if (category.albumId == kPiwigoSearchCategoryId) {
+        // Smart albums should not be proposed
+        if (category.albumId <= kPiwigoSearchCategoryId) {
             continue;
         }
         
