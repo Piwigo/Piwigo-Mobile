@@ -1,27 +1,28 @@
 ##################
 # piwigoAppStore #
 ##################
-# Launch fastlane: bundle exec fastlane snapshot
-# Update fastlane:
+# Installation:
+#	cd '/Users/lelievre/Privé - GitHub/Piwigo-Mobile'
+#	sudo gem install -n /usr/local/bin fastlane -NV
+#	fastlane init
 #	export LC_ALL=en_US.UTF-8
 #	export LANG=en_US.UTF-8
-# Every time you run fastlane, use bundle exec fastlane [lane]
-# On your CI, add [sudo] bundle install as your first build step
-# To update fastlane, just run [sudo] bundle update fastlane
-#	sudo gem install fastlane -NV
-#	fastlane snapshot update
-#	sudo bundle update fastlane
-# Clean to speed up: sudo gem cleanup
-# install bundle: bundle install
-# Launch fastlane: fastlane snapshot
-# ATTENTION: non-beta iOS + non-beta Cmd-line
-
+# 	Create a ./Gemfile in the root directory of your project
+#	sudo /usr/bin/bundle update
+#	sudo /usr/bin/bundle install
+#
+# To update fastlane:
+#	sudo /usr/bin/bundle update fastlane
+#
+# To launch fastlane:
+#	bundle exec fastlane snapshot
+#
 # A list of devices you want to take the screenshots from
 devices([
-  "iPhone SE",										# 4-inch
+#  "iPhone SE",										# 4-inch
 #  "iPhone 8",										# 4.7-inch
 #  "iPhone 8 Plus",									# 5.5-inch
-#  "iPhone X",										# 5.8-inch
+  "iPhone X",										# 5.8-inch
 #  "iPhone Xs Max",									# 6.5-inch
 #  "iPad Pro (9.7-inch)",							# 9.7-inch
 #  "iPad Pro (10.5-inch)",							# 10.5-inch

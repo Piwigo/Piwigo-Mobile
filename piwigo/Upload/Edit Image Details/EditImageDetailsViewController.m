@@ -111,8 +111,10 @@ typedef enum {
     if (self.isEdit)
     {
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
+        [cancel setAccessibilityIdentifier:@"Cancel"];
 		UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
-		
+        [done setAccessibilityIdentifier:@"Done"];
+
 		self.navigationItem.leftBarButtonItem = cancel;
 		self.navigationItem.rightBarButtonItem = done;
     }
