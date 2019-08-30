@@ -123,8 +123,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
-		instance.diskCache = kPiwigoMinDiskCache;
-		instance.memoryCache = kPiwigoMinMemoryCache;
+		instance.diskCache = kPiwigoMinDiskCache * 4;
+		instance.memoryCache = kPiwigoMinMemoryCache * 4;
 		
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
@@ -385,9 +385,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
 
-    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoMinDiskCache);
+    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoMinDiskCache * 4);
     self.diskCache = MIN(self.diskCache, kPiwigoMaxDiskCache);
-	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMinMemoryCache);
+	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMinMemoryCache * 4);
     self.memoryCache = MIN(self.memoryCache, kPiwigoMaxMemoryCache);
 
     self.photoQuality = [[savedData objectAtIndex:5] integerValue];
