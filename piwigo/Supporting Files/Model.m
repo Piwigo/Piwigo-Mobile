@@ -81,7 +81,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         // Optimised image thumbnail size, will be cross-checked at login
         instance.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
         NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
-        NSInteger nberOfImages =[ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
+        NSInteger nberOfImages =[ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
         instance.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
 
         // Default image settings
@@ -504,7 +504,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.isDarkPaletteModeActive = NO;
     }
-    NSInteger nberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)self.defaultThumbnailSize]];
+    NSInteger nberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)self.defaultThumbnailSize]];
     if(savedData.count > 23) {
         if(savedData.count > 47) {
             self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];

@@ -638,7 +638,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     
                     // Min/max number of thumbnails per row depends on selected file
                     float thumbnailWidth = [PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
-                    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:thumbnailWidth];
+                    NSInteger minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:thumbnailWidth];
                     cell.slider.minimumValue = minNberOfImages;
                     cell.slider.maximumValue = minNberOfImages * 2;
                     cell.incrementSliderBy = 1;

@@ -40,7 +40,7 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
 		self.imageIds = [NSMutableDictionary new];
 		
         self.isLoadingMoreImages = NO;
-		self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+		self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 		self.onPage = 0;
 	}
 	return self;
@@ -386,7 +386,7 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
 {
 	self.imageIds = [NSMutableDictionary new];
 	self.isLoadingMoreImages = NO;
-	self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+	self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 	self.onPage = 0;
 	self.imageList = [NSArray new];
 }

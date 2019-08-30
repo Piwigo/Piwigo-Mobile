@@ -40,7 +40,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {    
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 
     // Compile parameters
     NSDictionary *parameters = @{
@@ -121,7 +121,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //                            "xxlarge":{"url":"https:…-xx.jpg","width":1656,"height":1102}}
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
     
     // Compile parameters
     NSDictionary *parameters = @{
@@ -218,7 +218,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
     
     // Compile parameters
     NSDictionary *parameters = [NSDictionary new];
@@ -352,7 +352,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //            "file":…
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
     
     // Compile parameters
     NSDictionary *parameters = @{@"tag_id"         : @(tagId),

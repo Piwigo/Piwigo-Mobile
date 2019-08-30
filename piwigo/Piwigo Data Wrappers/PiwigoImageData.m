@@ -307,55 +307,55 @@
     float nberThumbnailsPerRow = [ImagesCollection minNberOfImagesPerRow];
     
     // Square ?
-    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeSquare]];
+    NSInteger minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeSquare]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeSquare;
     }
 
     // Thumbnail ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeThumb]];
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeThumb]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeThumb;
     }
 
     // XXSmall ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeXXSmall]];
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeXXSmall]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeXXSmall;
     }
     
     // XSmall ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeXSmall]];
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeXSmall]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeXSmall;
     }
     
     // Small ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeSmall]];
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeSmall]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeSmall;
     }
     
     // Medium ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeMedium]];
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeMedium]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeMedium;
     }
     
     // Large ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeLarge]];
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeLarge]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeLarge;
     }
     
     // XLarge ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeXLarge]];
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeXLarge]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeXLarge;
     }
     
     // XXLarge ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeXXLarge]];
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeXXLarge]];
     if (minNberOfImages <= nberThumbnailsPerRow) {
         return kPiwigoImageSizeXXLarge;
     }

@@ -1,15 +1,15 @@
 //
-//  CameraRollUploadViewController.m
+//  AlbumUploadViewController.m
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 25 March 2019.
-//  Copyright © 2019 Piwigo.org. All rights reserved.
+//  Created by Spencer Baker on 1/20/15.
+//  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
 #import <Photos/Photos.h>
 
+#import "AlbumUploadViewController.h"
 #import "AppDelegate.h"
-#import "CameraRollUploadViewController.h"
 #import "CategoriesData.h"
 #import "ImageDetailViewController.h"
 #import "ImageUpload.h"
@@ -24,14 +24,20 @@
 #import "NberImagesFooterCollectionReusableView.h"
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
+#import "PiwigoLocationData.h"
 
-@interface CameraRollUploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, LocalImagesHeaderDelegate>
+NSInteger const kMaxNberOfLocationsToDecode = 30;
+
+@interface AlbumUploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, LocalImagesHeaderDelegate>
 
 @property (nonatomic, strong) UICollectionView *localImagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
-@property (nonatomic, strong) PHFetchResult<PHAssetCollection *> *imageCollections;
+@property (nonatomic, strong) PHAssetCollection *imageCollection;
 @property (nonatomic, assign) NSInteger nberOfImagesPerRow;
 @property (nonatomic, strong) NSArray *imagesInSections;
+
+@property (nonatomic, strong) NSMutableArray *locationsOfImagesInSections;
+@property (nonatomic, assign) NSRange rangeOfCachedPlaces;
 
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
@@ -49,9 +55,9 @@
 
 @end
 
-@implementation CameraRollUploadViewController
+@implementation AlbumUploadViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId
+-(instancetype)initWithCategoryId:(NSInteger)categoryId andCollection:(PHAssetCollection*)imageCollection
 {
     self = [super init];
     if(self)
@@ -59,25 +65,18 @@
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
         self.categoryId = categoryId;
         self.sortType = kPiwigoSortByNewest;
-        self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:kPiwigoSortByNewest];
-//        NSLog(@"=> %lu sections", (unsigned long)self.imageCollections.count);
+        self.imageCollection = imageCollection;
+        self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
+                                                                            withSortType:self.sortType];
 
-        // Log first collection (i.e. section)
-//        if (self.imageCollections.count > 0) {
-//            PHAssetCollection *firstObject = [self.imageCollections objectAtIndex:0];
-//            NSLog(@"=> %@", [firstObject startDate]);
-//            NSLog(@"=> %@", [firstObject endDate]);
-//            NSLog(@"=> %@", [firstObject localizedTitle]);
-//            NSLog(@"=> %@", [firstObject localizedLocationNames]);
-//        }
+        // Initialise locations of sections
+        [self initLocationsOfSections];
         
-        // Images inside sections
-        self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
-
-        // Arrays managing selections
+        // Initialise arrays used to manage selections
         self.removedUploadedImages = NO;
         self.touchedImages = [NSMutableArray new];
         self.selectedImages = [NSMutableArray new];
+        [self initSelectButtons];
         
         // Collection of images
         UICollectionViewFlowLayout *collectionFlowLayout = [UICollectionViewFlowLayout new];
@@ -92,7 +91,7 @@
         self.localImagesCollection.showsVerticalScrollIndicator = YES;
         self.localImagesCollection.dataSource = self;
         self.localImagesCollection.delegate = self;
-        [self.localImagesCollection setAccessibilityIdentifier:@"CameraRoll"];
+        [self.localImagesCollection setAccessibilityIdentifier:@"LocalAlbum"];
 
         [self.localImagesCollection registerNib:[UINib nibWithNibName:@"LocalImagesHeaderReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView"];
         [self.localImagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
@@ -139,9 +138,6 @@
 {
     [super viewWillAppear:animated];
     
-    // Initialise arrays managing selections
-    [self initSelectButtons];
-
     // Set colors, fonts, etc.
     [self paletteChanged];
     
@@ -170,7 +166,10 @@
     }
     
     // Reload collection after feeding cache (and display images being uploaded)
-    [self.localImagesCollection reloadData];
+    self.rangeOfCachedPlaces = NSMakeRange(0, MIN(kMaxNberOfLocationsToDecode, [self.locationsOfImagesInSections count]) - 1);
+    [self cachePlaceNamesOfLocations:[self.locationsOfImagesInSections subarrayWithRange:self.rangeOfCachedPlaces] completion:^{
+        [self.localImagesCollection reloadData];
+    }];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -212,8 +211,8 @@
     [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"CameraRollNav"];
-    
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumNav"];
+
     // Collection view
     self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.localImagesCollection reloadData];
@@ -269,6 +268,64 @@
 
 #pragma mark - Manage Images
 
+-(void)initLocationsOfSections
+{
+    // Initalisation
+    self.locationsOfImagesInSections = [NSMutableArray new];
+
+    // Determine locations of images in sections
+    for (NSArray *imagesInSection in self.imagesInSections) {
+        
+        // Initialise location of section with invalid location
+        PiwigoLocationData *locationForSection = [PiwigoLocationData new];
+        locationForSection.coordinate = kCLLocationCoordinate2DInvalid;
+        locationForSection.radius = 0.0;
+        locationForSection.placeName = @"";
+        locationForSection.streetName = @"";
+        
+        // Loop over images of section
+        for (PHAsset *imageAsset in imagesInSection) {
+            
+            // Any location data ?
+            if ((imageAsset.location == nil) ||
+                !CLLocationCoordinate2DIsValid(imageAsset.location.coordinate)) {
+                // Image has no valid location data => Next image
+                continue;
+            }
+            
+            // Location found => Store it and move to next section
+            if (!CLLocationCoordinate2DIsValid(locationForSection.coordinate)) {
+                // First valid location => Store it
+                locationForSection.coordinate = imageAsset.location.coordinate;
+            } else {
+                // Another valid location => Compare to first one
+//                NSLog(@"=> %@", imageAsset.location);
+                CGFloat latitude = locationForSection.coordinate.latitude;
+                CGFloat longitude = locationForSection.coordinate.longitude;
+                CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+                CLLocation *newLocation = [[CLLocation alloc] initWithCoordinate:coordinate
+                                                                        altitude:0.0
+                                                              horizontalAccuracy:0.0
+                                                                verticalAccuracy:0.0                         timestamp:[NSDate date]];
+
+                CLLocationAccuracy distance = MAX(locationForSection.radius, [imageAsset.location distanceFromLocation:newLocation]);
+                locationForSection.radius = distance;
+            }
+        }
+        
+        // Store location for current section
+        [self.locationsOfImagesInSections addObject:locationForSection];
+    }
+}
+
+-(void)cachePlaceNamesOfLocations:(NSArray *)locationsOfImagesInSections
+                       completion:(void (^)(void))completion
+{
+    // Add place names to cache
+    [[LocationsData sharedInstance] addLocationsToCache:[locationsOfImagesInSections mutableCopy]
+                                             completion:completion];
+}
+
 -(NSIndexPath *)indexPathOfImageAsset:(PHAsset *)imageAsset
 {
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
@@ -299,50 +356,50 @@
             handler:^(UIAlertAction * action) {}];
     
     UIAlertAction *newestAction = [UIAlertAction
-           actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByNewest]
-           style:UIAlertActionStyleDefault
-           handler:^(UIAlertAction *action) {
-               // Change sort option
-               self.sortType = kPiwigoSortByNewest;
-               self.removedUploadedImages = NO;
+            actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByNewest]
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction *action) {
+                // Change sort option
+                self.sortType = kPiwigoSortByNewest;
+                self.removedUploadedImages = NO;
 
-               // Sort images
-               [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
-           }];
+                // Sort images
+                [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+            }];
     
     UIAlertAction* oldestAction = [UIAlertAction
-        actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByOldest]
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-            // Change sort option
-            self.sortType = kPiwigoSortByOldest;
-            self.removedUploadedImages = NO;
+            actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByOldest]
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction * action) {
+                // Change sort option
+                self.sortType = kPiwigoSortByOldest;
+                self.removedUploadedImages = NO;
 
-            // Sort images
-            [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
-        }];
+                // Sort images
+                [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+            }];
     
     UIAlertAction* uploadedAction = [UIAlertAction
-        actionWithTitle:self.removedUploadedImages ? [NSString stringWithFormat:@"✓ %@", NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")] : NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-         // Remove uploaded images?
-         if (self.removedUploadedImages)
-         {
-             // Store choice
-             self.removedUploadedImages = NO;
-             
-             // Sort images
-             [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
-         }
-         else {
-             // Store choice
-             self.removedUploadedImages = YES;
-             
-             // Remove uploaded images from collection
-             [self performSelectorInBackground:@selector(removeUploadedImagesFromCollection) withObject:nil];
-         }
-        }];
+            actionWithTitle:self.removedUploadedImages ? [NSString stringWithFormat:@"✓ %@", NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")] : NSLocalizedString(@"localImageSort_notUploaded", @"Not Uploaded")
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction * action) {
+                // Remove uploaded images?
+                if (self.removedUploadedImages)
+                {
+                    // Store choice
+                    self.removedUploadedImages = NO;
+                    
+                    // Sort images
+                    [self performSelectorInBackground:@selector(sortImagesInAscendingOrder) withObject:nil];
+                }
+                else {
+                    // Store choice
+                    self.removedUploadedImages = YES;
+                    
+                    // Remove uploaded images from collection
+                    [self performSelectorInBackground:@selector(removeUploadedImagesFromCollection) withObject:nil];
+                }
+            }];
     
     // Add actions
     [alert addAction:cancelAction];
@@ -372,17 +429,17 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showHUDwithTitle:NSLocalizedString(@"imageSortingHUD", @"Sorting Images")];
     });
-    
-    // Collect new list of images
-    self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:self.sortType];
-    
-    // Images in sections
-    self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
-    
+
+    // Retrieve images according to chosen sort order
+    self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
+                                                                        withSortType:self.sortType];
     // Hide HUD
     dispatch_async(dispatch_get_main_queue(), ^{
         [self hideHUDwithSuccess:YES completion:^{
             self.hudViewController = nil;
+            
+            // Initialise locations of sections
+            [self initLocationsOfSections];
             
             // Refresh collection view
             [self.localImagesCollection reloadData];
@@ -396,43 +453,47 @@
 -(void)removeUploadedImagesFromCollection
 {
     // Show HUD during download
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"imageUploadRemove", @"Removing Uploaded Images")];
-    });
-    
+    dispatch_async(dispatch_get_main_queue(),
+       ^(void){
+           [self showHUDwithTitle:NSLocalizedString(@"imageUploadRemove", @"Removing Uploaded Images")];
+       });
+
     // Remove uploaded images from the collection
     [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId
-         withImages:self.imagesInSections
-      andSelections:self.selectedSections
-        forProgress:nil
-       onCompletion:^(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete)
-           {
-               dispatch_async(dispatch_get_main_queue(),
-                              ^(void){
-                   // Check returned data
-                   if (imagesNotUploaded)
-                   {
-                       // Update image list
-                       self.imagesInSections = imagesNotUploaded;
-                       
-                       // Hide HUD
-                       [self hideHUDwithSuccess:YES completion:^{
-                           self.hudViewController = nil;
-                          
-                           // Refresh collection view
-                           [self.localImagesCollection deleteSections:sectionsToDelete];
-                           
-                           // Update selections
-                           [self updateSelectButtons];
-                        }];
-                   }
-                   else {
-                        [self hideHUDwithSuccess:NO completion:^{
-                              self.hudViewController = nil;
-                        }];
-                   }
-                });
-           }];
+                 withImages:self.imagesInSections
+              andSelections:self.selectedSections
+                forProgress:nil
+               onCompletion:^(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete)
+                {
+                    dispatch_async(dispatch_get_main_queue(),
+                                   ^(void){
+                        // Check returned data
+                        if (imagesNotUploaded)
+                        {
+                            // Update image list
+                            self.imagesInSections = imagesNotUploaded;
+
+                            // Hide HUD
+                            [self hideHUDwithSuccess:YES completion:^{
+                                self.hudViewController = nil;
+                                
+                                // Refresh collection view
+                                [self.localImagesCollection deleteSections:sectionsToDelete];
+                                
+                                // Initialise locations of sections
+                                [self initLocationsOfSections];
+                                
+                                // Update selections
+                                [self updateSelectButtons];
+                            }];
+                        }
+                        else {
+                            [self hideHUDwithSuccess:NO completion:^{
+                                self.hudViewController = nil;
+                            }];
+                        }
+                    });
+                }];
 }
 
 
@@ -575,7 +636,7 @@
         UICollectionViewCell *cell = [self.localImagesCollection cellForItemAtIndexPath:indexPath];
         PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
         if ((cell == nil) || (imageAsset == nil)) return;
-        
+    
         // Only consider image cells
         if ([cell isKindOfClass:[LocalImageCollectionViewCell class]])
         {
@@ -598,16 +659,16 @@
                 
                 // Update navigation bar
                 [self updateNavBar];
-                
+
                 // Refresh cell
                 [cell reloadInputViews];
-                
+
                 // Update state of Select button if needed
                 [self updateSelectButtonForSection:indexPath.section];
             }
         }
     }
-    
+
     // Is this the end of the gesture?
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) {
         self.touchedImages = [NSMutableArray new];
@@ -660,13 +721,13 @@
     imageUploadVC.selectedCategory = self.categoryId;
     imageUploadVC.imagesSelected = self.selectedImages;
     [self.navigationController pushViewController:imageUploadVC animated:YES];
-    
+
     // Clear list of selected images
-    self.selectedImages = [NSMutableArray new];    
+    self.selectedImages = [NSMutableArray new];
 }
 
 
-#pragma mark - UICollectionView - Headers
+#pragma mark - UICollectionView - Headers & Footers
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
@@ -679,28 +740,22 @@
             [collectionView registerNib:nib forCellWithReuseIdentifier:@"LocalImagesHeaderReusableView"];
             LocalImagesHeaderReusableView *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView" forIndexPath:indexPath];
             
-            // Retrieve place name (=> placeLabel)
-            NSMutableDictionary *placeNames = [NSMutableDictionary new];
-            NSString *placeLabelName = [[self.imageCollections objectAtIndex:indexPath.section] localizedTitle];
-            if (placeLabelName) [placeNames setValue:placeLabelName forKey:@"placeLabel"];
-            
-            // Retrieve second place name (=> dateLabel)
-            NSArray *names = [self.imageCollections objectAtIndex:indexPath.section].localizedLocationNames;
-            NSMutableString *dateLabelName = [NSMutableString new];
-            if (([names count] > 0) && ([[names firstObject] length] > 0)) {
-                [dateLabelName setString:[names firstObject]];
-                for (NSInteger i = 1; i < [names count]; i++) {
-                    if ([[names objectAtIndex:i] length] > 0) {
-                        [dateLabelName appendFormat:@", %@", [names objectAtIndex:i]];
-                    }
-                }
-                if (dateLabelName) [placeNames setValue:dateLabelName forKey:@"dateLabel"];
+            // Cache place names if needed
+            NSInteger lastCachedPlace = NSMaxRange(self.rangeOfCachedPlaces);
+            if ((indexPath.section > (lastCachedPlace - kMaxNberOfLocationsToDecode / 2.0)) &&
+                (lastCachedPlace < (self.imagesInSections.count - 1))) {
+                self.rangeOfCachedPlaces = NSMakeRange(lastCachedPlace, MIN(kMaxNberOfLocationsToDecode, [self.locationsOfImagesInSections count]) - lastCachedPlace);
+                [self cachePlaceNamesOfLocations:[self.locationsOfImagesInSections subarrayWithRange:self.rangeOfCachedPlaces] completion:nil];
             }
-
+            
+            // Retrieve place name (=> placeLabel)
+            PiwigoLocationData *location = [self.locationsOfImagesInSections objectAtIndex:indexPath.section];
+            NSDictionary *placeNames = [[LocationsData sharedInstance] getPlaceNameForLocation:location];
+            
             // Set up header
             [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] andPlaceNames:placeNames inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
             header.headerDelegate = self;
-
+            
             return header;
         }
     }
@@ -764,6 +819,7 @@
     return CGSizeZero;
 }
 
+
 #pragma mark - UICollectionView - Sections
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -778,20 +834,12 @@
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return (CGFloat)kImageCellSpacing4iPhone;
-    } else {
-        return (CGFloat)kImageCellVertSpacing4iPad;
-    }
+    return (CGFloat)[ImagesCollection imageCellVerticalSpacingForCollectionType:kImageCollectionPopup];
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return (CGFloat)kImageCellSpacing4iPhone;
-    } else {
-        return (CGFloat)kImageCellHorSpacing4iPad;
-    }
+    return (CGFloat)[ImagesCollection imageCellHorizontalSpacingForCollectionType:kImageCollectionPopup];
 }
 
 
@@ -805,8 +853,8 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:self.nberOfImagesPerRow];
-    
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:self.nberOfImagesPerRow collectionType:kImageCollectionPopup];
+
     return CGSizeMake(size, size);
 }
 
@@ -815,8 +863,8 @@
     // Create cell
     LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"LocalImageCollectionViewCell" forIndexPath:indexPath];
     PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:self.nberOfImagesPerRow]];
-    
+    [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:self.nberOfImagesPerRow collectionType:kImageCollectionPopup]];
+
     // For some unknown reason, the asset resource may be empty
     NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
     NSString *originalFilename;
@@ -838,7 +886,7 @@
             originalFilename = [originalFilename stringByAppendingPathExtension:@"m4a"];
         }
     }
-    
+
     // Add pan gesture recognition
     UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
     imageSeriesRocognizer.minimumNumberOfTouches = 1;
@@ -847,10 +895,18 @@
     imageSeriesRocognizer.delegate = self;
     [cell addGestureRecognizer:imageSeriesRocognizer];
     cell.userInteractionEnabled = YES;
-    
+
     // Cell state
     cell.cellSelected = [self.selectedImages containsObject:imageAsset];
     cell.cellUploading = [[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]];
+//    if([self.selectedImages containsObject:imageAsset])
+//    {
+//        cell.cellSelected = YES;
+//    }
+//    else if ([[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]])
+//    {
+//        cell.cellUploading = YES;
+//    }
     
     return cell;
 }
@@ -879,7 +935,7 @@
     
     // Update navigation bar
     [self updateNavBar];
-    
+
     // Refresh cell
     [selectedCell reloadInputViews];
     
@@ -892,7 +948,7 @@
 
 -(void)imageProgress:(ImageUpload *)image onCurrent:(NSInteger)current forTotal:(NSInteger)total onChunk:(NSInteger)currentChunk forChunks:(NSInteger)totalChunks iCloudProgress:(CGFloat)iCloudProgress
 {
-    //    NSLog(@"AlbumUploadViewController[imageProgress:]");
+//    NSLog(@"AlbumUploadViewController[imageProgress:]");
     NSIndexPath *indexPath = [self indexPathOfImageAsset:image.imageAsset];
     LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:indexPath];
     
@@ -908,19 +964,19 @@
     cell.cellUploading = YES;
     if (iCloudProgress < 0) {
         cell.progress = uploadProgress;
-        //        NSLog(@"AlbumUploadViewController[ImageProgress]: %.2f", uploadProgress);
+//        NSLog(@"AlbumUploadViewController[ImageProgress]: %.2f", uploadProgress);
     } else {
         cell.progress = (iCloudProgress + uploadProgress) / 2.0;
-        //        NSLog(@"AlbumUploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
+//        NSLog(@"AlbumUploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
     }
 }
 
 -(void)imageUploaded:(ImageUpload *)image placeInQueue:(NSInteger)rank outOf:(NSInteger)totalInQueue withResponse:(NSDictionary *)response
 {
-    //    NSLog(@"AlbumUploadViewController[imageUploaded:]");
+//    NSLog(@"AlbumUploadViewController[imageUploaded:]");
     NSIndexPath *indexPath = [self indexPathOfImageAsset:image.imageAsset];
     LocalImageCollectionViewCell *cell = (LocalImageCollectionViewCell*)[self.localImagesCollection cellForItemAtIndexPath:indexPath];
-    
+
     // Image upload ended, deselect cell
     cell.cellUploading = NO;
     cell.cellSelected = NO;
@@ -947,12 +1003,10 @@
     // Photos may call this method on a background queue;
     // switch to the main queue to update the UI.
     dispatch_async(dispatch_get_main_queue(), ^{
-        
+
         // Collect new list of images
-        self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:self.sortType];
-        
-        // Images in sections
-        self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
+        self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
+                                                                            withSortType:self.sortType];
         
         // Reload local image collection
         [self.localImagesCollection reloadData];
@@ -996,20 +1050,12 @@
             }
         }
     }
-    
+
     // Update navigation bar
     [self updateNavBar];
     
     // Update section
     [self updateSelectButtonForSection:section];
-}
-
-
-#pragma mark - NotUploadedYet Delegate Methods
-
-- (void)showProgressWithSubTitle:(NSString *)title
-{
-    [MBProgressHUD HUDForView:self.hudViewController.view].detailsLabel.text = title;
 }
 
 @end

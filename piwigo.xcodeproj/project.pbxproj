@@ -995,7 +995,7 @@
 			path = "Pick Piwigo Album";
 			sourceTree = "<group>";
 		};
-		D8A5014E1A7B432600C04C17 /* Local Images */ = {
+		D8A5014E1A7B432600C04C17 /* Pick Local Images */ = {
 			isa = PBXGroup;
 			children = (
 				D8BDCB651A6F6BEA00D106A8 /* AlbumUploadViewController.h */,
@@ -1006,7 +1006,7 @@
 				ADE99710221B2DB5007B33AB /* Headers */,
 				AD7B4C2720E3639B003E403A /* Services */,
 			);
-			path = "Local Images";
+			path = "Pick Local Images";
 			sourceTree = "<group>";
 		};
 		D8BDCB5F1A6F6B4200D106A8 /* Albums */ = {
@@ -1033,7 +1033,7 @@
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
 				D8A5014A1A7B3D4200C04C17 /* Pick Piwigo Album */,
 				AD7B4C2520E36328003E403A /* Pick Photos Album */,
-				D8A5014E1A7B432600C04C17 /* Local Images */,
+				D8A5014E1A7B432600C04C17 /* Pick Local Images */,
 				D8083AA71A82905F00A95605 /* Upload Progress */,
 				D8F325111A875939007CBDAC /* Edit Image Details */,
 				D8083AA31A81B34C00A95605 /* Image Uploading */,
