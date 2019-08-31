@@ -813,7 +813,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                                                  options:NSStringDrawingUsesLineFragmentOrigin
                                               attributes:attributes
                                                  context:context];
-        return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height));
+        return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height + 10.0));
     }
     
     return CGSizeZero;

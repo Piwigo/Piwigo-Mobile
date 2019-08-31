@@ -143,7 +143,7 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     NSInteger imageCellHorizontalSpacing = [self imageCellHorizontalSpacingForCollectionType:type];
     
     // Number of images par page
-    return (NSInteger)ceilf(pageSize.height / (size + imageCellHorizontalSpacing)) * imagesPerRowInPortrait;
+    return (NSInteger)ceil(pageSize.height / (size + imageCellHorizontalSpacing)) * imagesPerRowInPortrait;
 }
 
 
