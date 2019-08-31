@@ -130,7 +130,7 @@
     [super prepareForReuse];
     
     self.imageFile.text = @"";
-    self.imageSize.text = @"— x —";
+    self.imageSize.text = @"";
     self.imageDate.text = @"";
     self.imageTime.text = @"";
 }
