@@ -322,14 +322,17 @@ class piwigoAppStore: XCTestCase {
         }
         else if deviceType == "iPad Pro 9.7\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.15, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 10.5\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 11\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 2 12.9\"" {
@@ -343,6 +346,7 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
+            sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
         }
         sleep(2)                        // Leave time for animation
@@ -350,21 +354,21 @@ class piwigoAppStore: XCTestCase {
         
         // Screenshot #5: Edit parameters
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        sleep(1)                        // Leave time for animation
+        sleep(2)                        // Leave time for animation
         if deviceType == "iPhone SE" {
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
         }
         else if deviceType == "iPhone 8" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
         }
         else if deviceType == "iPhone 8 Plus" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
         }
         else if deviceType == "iPhone X" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
         }
         else if deviceType == "iPhone XS Max" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
         }
         else if deviceType == "iPad Pro 9.7\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).tap()
@@ -397,10 +401,12 @@ class piwigoAppStore: XCTestCase {
         // Screenshot #7: local images
         app.tables.children(matching: .cell).element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
-        let cell = app.tables.children(matching: .cell).element(boundBy: 0)
-        if cell.label.contains("18") {
-            cell.tap()
-        } else {
+        app.tables.children(matching: .cell).element(boundBy: 0).tap()  // Select first line
+        sleep(2)                        // Leave time for animation
+        // First row is not necessary the Camera roll (depends on language)
+        if app.collectionViews.element(boundBy: 0).identifier.contains("LocalAlbum") {
+            app.navigationBars["LocalAlbumNav"].buttons.element(boundBy: 0).tap()
+            sleep(1)
             app.tables.children(matching: .cell).element(boundBy: 1).tap()
         }
         let images = app.collectionViews.matching(identifier: "CameraRoll").children(matching: .cell)
