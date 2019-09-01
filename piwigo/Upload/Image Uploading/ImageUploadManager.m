@@ -321,7 +321,7 @@
     
     // Requests image…
     @autoreleasepool {
-        [[PHImageManager defaultManager] requestImageForAsset:image.imageAsset targetSize:size contentMode:PHImageContentModeAspectFill options:options resultHandler:
+        [[PHImageManager defaultManager] requestImageForAsset:image.imageAsset targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:
          ^(UIImage *imageObject, NSDictionary *info) {
 #if defined(DEBUG_UPLOAD)
              NSLog(@"retrieveImageFromiCloudForAsset \"%@\" returned info(%@)", imageObject.description, info);
