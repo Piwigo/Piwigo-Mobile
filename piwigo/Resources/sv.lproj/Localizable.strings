@@ -496,8 +496,8 @@
 "defaultImageSort" = "Sortera";
 "defaultImageSort>320px" = "Sortera";
 "defaultImageSort>414px" = "Standardsortering av bilder";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"defaultAlbumThumbnailFile>414px" = "Miniatyrfil för album";
+"defaultAlbumThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
 
 "thumbnailSizeSquare" = "Kvadrat";
 "thumbnailSizeThumbnail" = "Miniatyrbild";
@@ -515,7 +515,7 @@
 
 "defaultThumbnailFile" = "Fil";
 "defaultThumbnailFile>320px" = "Miniatyr-fil";
-"defaultThumbnailFile>414px" = "Miniatyrbildsfil";
+"defaultThumbnailFile>414px" = "Miniatyrfil med bilden";
 "defaultThumbnailSize" = "Storlek";
 "defaultThumbnailSize>320px" = "Miniatyrbilder";
 "defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";

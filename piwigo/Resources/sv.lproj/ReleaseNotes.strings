@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.2_text" = "Version 2.4.2\n\n• Adds ability to create tags (admin users only)\n• Adds ability to change size of album thumbnails\n• Adds Retina display management\n• Minor bug fixes and improvements of the interface";
+"v2.4.2_text" = "Version 2.4.2\n\n• Lägger till förmågan att skapa taggar (endast adminanvändare)\n• Lägger till möjligheten att ändra storlek på albumminiatyrerna\n• Lägger till retina-displayhantering\n• Mindre bugfixar och förbättringar av gränssnittet";
 
 "v2.4.1_text" = "Version 2.4.1\n10 augusti 2019\n\n• Lägger till album \"Etiketter\", \"Mest besökta\", \"Högst betygsatta\" och \"Senaste bilder\"\n• Mindre buggfixar och förbättring av gränssnittet";
 

@@ -496,8 +496,8 @@
 "defaultImageSort" = "Sortowanie";
 "defaultImageSort>320px" = "Sortowanie";
 "defaultImageSort>414px" = "Domyślne Sortowanie Zdjęć";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"defaultAlbumThumbnailFile>414px" = "Plik miniatury albumu";
+"defaultAlbumThumbnailSizeHeader" = "Wybierz rozmiar miniaturki";
 
 "thumbnailSizeSquare" = "Kwadrat";
 "thumbnailSizeThumbnail" = "Miniaturka";
