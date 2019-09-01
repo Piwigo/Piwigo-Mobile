@@ -15,15 +15,15 @@
 #	sudo /usr/bin/bundle update fastlane
 #
 # To launch fastlane:
-#	bundle exec fastlane snapshot
+#	bundle exec fastlane snapshot --number_of_retries 0 --skip_open_summary
 #
 # A list of devices you want to take the screenshots from
 devices([
-  "iPhone SE",										# 4-inch
-  "iPhone 8",										# 4.7-inch
-  "iPhone 8 Plus",									# 5.5-inch
-  "iPhone X",										# 5.8-inch
-  "iPhone Xs Max",									# 6.5-inch
+#  "iPhone SE",										# 4-inch
+#  "iPhone 8",										# 4.7-inch
+#  "iPhone 8 Plus",									# 5.5-inch
+#  "iPhone X",										# 5.8-inch
+#  "iPhone Xs Max",									# 6.5-inch
   "iPad Pro (9.7-inch)",							# 9.7-inch
   "iPad Pro (10.5-inch)",							# 10.5-inch
   "iPad Pro (11-inch)",								# 11-inch

@@ -298,6 +298,9 @@
             break;
     }
     NSString *name = [groupAsset localizedTitle];
+    NSLog(@"=> %ld, %ld", [groupAsset assetCollectionType], [groupAsset assetCollectionSubtype]);
+    
+    
     NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
     cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ? NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")];
     cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
@@ -309,6 +312,10 @@
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.minimumScaleFactor = 0.5;
     cell.textLabel.lineBreakMode = NSLineBreakByTruncatingHead;
+    if (([groupAsset assetCollectionType] == PHAssetCollectionTypeSmartAlbum) &&
+        ([groupAsset assetCollectionSubtype] == PHAssetCollectionSubtypeSmartAlbumUserLibrary)) {
+        [cell setAccessibilityIdentifier:@"CameraRoll"];
+    }
 
     cell.isAccessibilityElement = YES;
     return cell;

@@ -400,15 +400,7 @@ class piwigoAppStore: XCTestCase {
         
         // Screenshot #7: local images
         app.tables.children(matching: .cell).element(boundBy: 0).tap()
-        sleep(2)                        // Leave time for animation
-        app.tables.children(matching: .cell).element(boundBy: 0).tap()  // Select first line
-        sleep(2)                        // Leave time for animation
-        // First row is not necessary the Camera roll (depends on language)
-        if app.collectionViews.element(boundBy: 0).identifier.contains("LocalAlbum") {
-            app.navigationBars["LocalAlbumNav"].buttons.element(boundBy: 0).tap()
-            sleep(1)
-            app.tables.children(matching: .cell).element(boundBy: 1).tap()
-        }
+        app.tables.children(matching: .cell).matching(identifier: "CameraRoll").element.tap()
         let images = app.collectionViews.matching(identifier: "CameraRoll").children(matching: .cell)
         images.element(boundBy: 0).children(matching: .other).element.tap()
         images.element(boundBy: 1).children(matching: .other).element.tap()
