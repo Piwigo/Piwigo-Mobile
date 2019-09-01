@@ -298,9 +298,6 @@
             break;
     }
     NSString *name = [groupAsset localizedTitle];
-    NSLog(@"=> %ld, %ld", [groupAsset assetCollectionType], [groupAsset assetCollectionSubtype]);
-    
-    
     NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
     cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ? NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")];
     cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
