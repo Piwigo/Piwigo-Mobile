@@ -54,12 +54,11 @@
         self.versionLabel = [UILabel new];
         self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.versionLabel.font = [UIFont piwigoFontTiny];
-        [self.view addSubview:self.versionLabel];
-        
         NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
         NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-        self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
-        
+        self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedStringFromTableInBundle(@"version", @"About", [NSBundle mainBundle], @"Version:"), appVersionString, appBuildString];
+        [self.view addSubview:self.versionLabel];
+
         self.textView = [UITextView new];
         self.textView.restorationIdentifier = @"release+notes";
         self.textView.translatesAutoresizingMaskIntoConstraints = NO;
