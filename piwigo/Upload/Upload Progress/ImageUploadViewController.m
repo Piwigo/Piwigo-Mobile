@@ -391,7 +391,9 @@
 	NSInteger index = 0;
 	for(ImageUpload *image in self.imagesToEdit)
 	{
-		if([image.fileName isEqualToString:details.fileName]) break;
+		if (([image.fileName isEqualToString:details.fileName]) &&
+            (image.creationDate == details.creationDate))
+             break;
 		index++;
 	}
 	

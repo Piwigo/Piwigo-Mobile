@@ -20,22 +20,26 @@
     if(self)
     {
         self.imageAsset = imageAsset;
-        self.title = @"";
         if (imageAsset) {
             // For some unknown reason, the asset resource may be empty
             NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
             if ([resources count] > 0) {
-                self.fileName = ((PHAssetResource*)resources[0]).originalFilename;
+                for (PHAssetResource *resource in resources) {
+                    if (resource.type == PHAssetResourceTypeAdjustmentData) {
+                        continue;
+                    }
+                    self.fileName = [resource originalFilename];
+                    self.creationDate = [imageAsset creationDate];
+                    self.pixelWidth = [imageAsset pixelWidth];
+                    self.pixelHeight = [imageAsset pixelHeight];
+                    break;
+                }
             } else {
                 // No filename => Build filename from current date
                 NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
                 [dateFormatter setDateFormat:@"yyyyMMdd-HHmmssSSSS"];
                 [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
                 self.fileName = [dateFormatter stringFromDate:[NSDate date]];
-
-                // No filename => Build filename from 32 characters of local identifier
-//                NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
-//                self.fileName = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
 
                 // Filename extension required by Piwigo so that it knows how to deal with it
                 if (imageAsset.mediaType == PHAssetMediaTypeImage) {
@@ -54,8 +58,8 @@
             }
         } else {
             self.fileName = @"";
-            self.title = @"";
         }
+        self.title = @"";
         self.categoryToUploadTo = category;
         self.privacyLevel = privacy;
         self.stopUpload = NO;

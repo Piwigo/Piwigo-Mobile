@@ -47,6 +47,11 @@
 
 -(void)setupWithImage:(ImageUpload *)imageDetails
 {
+    // Image file name
+    if (imageDetails.fileName.length > 0) {
+        self.imageFile.text = imageDetails.fileName;
+    }
+
     // Image from Photo Library or Piwigo server…
     if (imageDetails.imageAsset)
     {
@@ -86,9 +91,6 @@
     }
     else {
         // Image from Piwigo server
-        if (imageDetails.fileName.length > 0) {
-            self.imageFile.text = imageDetails.fileName;
-        }
         if ((imageDetails.pixelWidth > 0) && (imageDetails.pixelHeight > 0)) {
             self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", (long)imageDetails.pixelWidth, (long)imageDetails.pixelHeight];
         }
