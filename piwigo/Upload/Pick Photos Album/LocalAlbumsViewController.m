@@ -160,7 +160,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     // Header strings
-    NSString *titleString, *textString;
+    NSString *titleString = @"", *textString = @"";
     switch (section) {
         case 0:
             titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"categoryUpload_LocalAlbums", @"Local Albums")];
@@ -195,7 +195,7 @@
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     // Header strings
-    NSString *titleString, *textString;
+    NSString *titleString = @"", *textString = @"";
     switch (section) {
         case 0:
             titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"categoryUpload_LocalAlbums", @"Local Albums")];
@@ -309,6 +309,10 @@
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.minimumScaleFactor = 0.5;
     cell.textLabel.lineBreakMode = NSLineBreakByTruncatingHead;
+    if (([groupAsset assetCollectionType] == PHAssetCollectionTypeSmartAlbum) &&
+        ([groupAsset assetCollectionSubtype] == PHAssetCollectionSubtypeSmartAlbumUserLibrary)) {
+        [cell setAccessibilityIdentifier:@"CameraRoll"];
+    }
 
     cell.isAccessibilityElement = YES;
     return cell;

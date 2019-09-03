@@ -437,7 +437,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
                 
                 // Calculate the number of thumbnails displayed per page
-                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 
                 // Load more images if seems to be a good idea
                 if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
@@ -504,10 +504,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    //Reload the tableview on orientation change, to match the new width of the table.
+    // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [self updateNavBar];
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)]];
+        [self.imagesCollection reloadData];
     } completion:nil];
 }
 
@@ -1713,7 +1713,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplaySupplementaryView:(UICollectionReusableView *)view forElementKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath
 {
-    if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+    if (([elementKind isEqualToString:UICollectionElementKindSectionHeader]) ||
+        ([elementKind isEqualToString:UICollectionElementKindSectionFooter])) {
         view.layer.zPosition = 0;       // Below scroll indicator
         view.backgroundColor = [[UIColor piwigoBackgroundColor] colorWithAlphaComponent:0.75];
     }
@@ -1786,7 +1787,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                                          options:NSStringDrawingUsesLineFragmentOrigin
                                                       attributes:attributes
                                                          context:context];
-                return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height));
+                return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height + 10.0));
             }
             break;
         }
@@ -1866,11 +1867,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             break;
             
         default:            // Images
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-                return (CGFloat)kImageCellSpacing4iPhone;
-            } else {
-                return (CGFloat)kImageCellVertSpacing4iPad;
-            }
+            return (CGFloat)[ImagesCollection imageCellVerticalSpacingForCollectionType:kImageCollectionFull];
     }
 }
 
@@ -1882,11 +1879,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             break;
             
         default:            // Images
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-                return (CGFloat)kImageCellSpacing4iPhone;
-            } else {
-                return (CGFloat)kImageCellHorSpacing4iPad;
-            }
+            return (CGFloat)[ImagesCollection imageCellHorizontalSpacingForCollectionType:kImageCollectionFull];
     }
 }
 
@@ -1895,7 +1888,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     switch (indexPath.section) {
         case 0:             // Albums (see XIB file)
         {
-            float nberAlbumsPerRow = [ImagesCollection numberOfAlbumsPerRowForViewInPortrait:collectionView withMaxWidth:384];
+            float nberAlbumsPerRow = [ImagesCollection numberOfAlbumsPerRowForViewInPortrait:collectionView withMaxWidth:384.0];
             CGFloat size = (CGFloat)[ImagesCollection albumSizeForView:collectionView andNberOfAlbumsPerRowInPortrait:nberAlbumsPerRow];
             return CGSizeMake(size, 156.5);
             break;
@@ -1904,7 +1897,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         default:            // Images
         {
             // Calculate the optimum image size
-            CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+            CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
             return CGSizeMake(size, size);
         }
     }
@@ -1956,7 +1949,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             }
             
             // Calculate the number of thumbnails displayed per page
-            NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+            NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
             
             // Load image data in advance if possible (page after page…)
             if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&

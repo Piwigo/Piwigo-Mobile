@@ -66,7 +66,7 @@
 //        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationTagDataUpdated object:nil];
 }
 
--(void)addTagList:(NSArray*)newTags
+-(void)addTagToList:(NSArray*)newTags
 {
 	NSMutableArray *tags = [[NSMutableArray alloc] initWithArray:self.tagList];
 	for(PiwigoTagData *tagData in newTags)
@@ -93,7 +93,7 @@
 -(void)getTagsForAdmin:(BOOL)isAdmin onCompletion:(void (^)(NSArray *tags))completion
 {
     [TagsService getTagsForAdmin:isAdmin
-                    OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+                    onCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 		if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
 		{
 			NSArray *tags = [self parseTagsJson:response];
@@ -137,7 +137,7 @@
 	return tags;
 }
 
-+(NSString*)getTagsStringFromList:(NSArray*)tagList
+-(NSString*)getTagsStringFromList:(NSArray*)tagList
 {
 	NSString *tagListString = @"";
     if (tagList != nil) {

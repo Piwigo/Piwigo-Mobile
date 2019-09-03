@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "Pilih tag";
 "tagsHeader_selected" = "Dipilih";
 "tagsHeader_all" = "Semua";
+"tagsAdd_title" = "Add Tag";
+"tagsAdd_message" = "Enter a name for this new tag";
+"tagsAdd_placeholder" = "New tag";
+"tagsAddHUD_label" = "Creating Tag…";
+
+// Image tags errors
+"tagsAddError_message" = "Failed to create new tag";
+"tagsAddError_title" = "Create Fail";
 
 // Image select
 "selectImages" = "Pilih Gambar";
@@ -480,29 +488,16 @@
 "settings_logout" = "Keluar";
 "settingsFooter_formats" = "Server menerima jenis file berikut";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "Pengaturan Umum";
 "settingsHeader_thumbnails" = "Gambar Mini";
-"settings_loadAllCategories" = "Unduh Semua Album saat Memulai";
-"settings_loadAllCategories>320px" = "Unduh Semua Album saat Memulai (jangan centang jika bermasalah)";
 
+// Settings — Albums
 "defaultImageSort" = "Sortir";
 "defaultImageSort>320px" = "Sortir Standar";
 "defaultImageSort>414px" = "Sortir Standar untuk Gambar";
-
-"defaultThumbnailFile" = "Berkas";
-"defaultThumbnailFile>320px" = "File Gambar Kecil";
-"defaultThumbnailFile>414px" = "File Gambar Thumbnail";
-"defaultThumbnailSize" = "Ukuran";
-"defaultThumbnailSize>320px" = "Ukuran Gambar Mini";
-"defaultThumbnailSize>414px" = "Ukuran Standar untuk Gambar Mini";
-"defaultNberOfThumbnails" = "Number";
-"defaultNberOfThumbnails>320px" = "Number/Row";
-"defaultNberOfThumbnails>414px" = "Number per Row";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
-"settings_displayTitles" = "Judul dalam Gambar Mini";
-"settings_displayTitles>320px" = "Tampilkan Judul dalam Gambar Mini";
+"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
+"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
 
 "thumbnailSizeSquare" = "Persegi";
 "thumbnailSizeThumbnail" = "Tampilan Besar";
@@ -517,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "Gambar";
+
+"defaultThumbnailFile" = "Berkas";
+"defaultThumbnailFile>320px" = "File Gambar Kecil";
+"defaultThumbnailFile>414px" = "File Gambar Thumbnail";
+"defaultThumbnailSize" = "Ukuran";
+"defaultThumbnailSize>320px" = "Ukuran Gambar Mini";
+"defaultThumbnailSize>414px" = "Ukuran Standar untuk Gambar Mini";
+"defaultNberOfThumbnails" = "Number";
+"defaultNberOfThumbnails>320px" = "Number/Row";
+"defaultNberOfThumbnails>414px" = "Number per Row";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Please select an image thumbnail size";
+"settings_displayTitles" = "Judul dalam Gambar Mini";
+"settings_displayTitles>320px" = "Tampilkan Judul dalam Gambar Mini";
 
 "defaultPreviewFile" = "Tinjauan";
 "defaultPreviewFile>320px" = "Berkas Pratilik";
@@ -566,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Pengaturan Tembolok (Terpakai/Total)";
+"settings_loadAllCategories" = "Unduh Semua Album saat Memulai";
+"settings_loadAllCategories>320px" = "Unduh Semua Album saat Memulai (jangan centang jika bermasalah)";
 "settings_cacheDisk" = "Diska";
 "settings_cacheMemory" = "Memori";
 "settings_cacheMegabytes" = "MB";

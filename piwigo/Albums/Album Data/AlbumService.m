@@ -100,12 +100,63 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
     
+    // Album thumbnail size
+    NSString *thumbnailSize = @"thumb";
+    switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
+        case kPiwigoImageSizeSquare:
+            if ([Model sharedInstance].hasSquareSizeImages) {
+                thumbnailSize = @"square";
+            }
+            break;
+        case kPiwigoImageSizeXXSmall:
+            if ([Model sharedInstance].hasXXSmallSizeImages) {
+                thumbnailSize = @"2small";
+            }
+            break;
+        case kPiwigoImageSizeXSmall:
+            if ([Model sharedInstance].hasXSmallSizeImages) {
+                thumbnailSize = @"xsmall";
+            }
+            break;
+        case kPiwigoImageSizeSmall:
+            if ([Model sharedInstance].hasSmallSizeImages) {
+                thumbnailSize = @"small";
+            }
+            break;
+        case kPiwigoImageSizeMedium:
+            if ([Model sharedInstance].hasMediumSizeImages) {
+                thumbnailSize = @"medium";
+            }
+            break;
+        case kPiwigoImageSizeLarge:
+            if ([Model sharedInstance].hasLargeSizeImages) {
+                thumbnailSize = @"large";
+            }
+            break;
+        case kPiwigoImageSizeXLarge:
+            if ([Model sharedInstance].hasXLargeSizeImages) {
+                thumbnailSize = @"xlarge";
+            }
+            break;
+        case kPiwigoImageSizeXXLarge:
+            if ([Model sharedInstance].hasXXLargeSizeImages) {
+                thumbnailSize = @"xxlarge";
+            }
+            break;
+
+        case kPiwigoImageSizeThumb:
+        case kPiwigoImageSizeFullRes:
+        default:
+            thumbnailSize = @"thumb";
+            break;
+    }
+    
     // Compile parameters
     NSDictionary *parameters = @{
                                  @"cat_id" : @(categoryId),
                                  @"recursive" : recursiveString,
                                  @"faked_by_community" : fakedString,
-                                 @"thumbnail_size" : @"medium"
+                                 @"thumbnail_size" : thumbnailSize
                                  };
     
     // Get albums list for category
@@ -323,19 +374,38 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                               OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    NSDictionary *parameters = @{@"name" : categoryName,
+                                 @"parent" : @(categoryId),
+                                 @"comment" : categoryComment,
+                                 @"status" : categoryStatus
+    };
+    
     return [self post:kPiwigoCategoriesAdd
         URLParameters:nil
-           parameters:@{
-                        @"name" : categoryName,
-                        @"parent" : @(categoryId),
-                        @"comment" : categoryComment,
-                        @"status" : categoryStatus
-                        }
+           parameters:parameters
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   if(completion)
                   {
-                      completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+                      BOOL result = [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"];
+                      if (result) {
+                          // Add new album to cache
+                          NSInteger newCatId = [[[responseObject objectForKey:@"result"] objectForKey:@"id"] integerValue];
+                          [[CategoriesData sharedInstance] addCategory:newCatId withParameters:parameters];
+                      }
+                      else {
+                          // Display Piwigo error
+                          NSInteger errorCode = NSNotFound;
+                          if ([responseObject objectForKey:@"err"]) {
+                              errorCode = [[responseObject objectForKey:@"err"] intValue];
+                          }
+                          NSString *errorMsg = @"";
+                          if ([responseObject objectForKey:@"message"]) {
+                              errorMsg = [responseObject objectForKey:@"message"];
+                          }
+                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesAdd andURLparams:nil];
+                      }
+                      completion(task, result);
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   if (fail)

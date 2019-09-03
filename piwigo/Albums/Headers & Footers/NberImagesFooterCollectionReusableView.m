@@ -32,7 +32,7 @@
 
         [self addSubview:self.noImagesLabel];
         [self addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.noImagesLabel]];
-        [self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.noImagesLabel]];
+        [self addConstraint:[NSLayoutConstraint constraintViewFromTop:self.noImagesLabel amount:0.0]];
     }
     return self;
 }

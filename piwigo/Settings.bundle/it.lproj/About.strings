@@ -16,6 +16,8 @@
 
 "licenceAFN_text" = "AFNetworking\nThe MIT License (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
 
+"licenceIQkeyboard_text" = "IQKeyboardManager\nThe MIT License (MIT)\n\nCopyright © 2013-2017 Iftekhar Qurashi";
+
 "licenceMBProgHUD_text" = "MBProgressHUD\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
 
 "licenceMGSTC_text" = "MGSwipeTableCell\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro";

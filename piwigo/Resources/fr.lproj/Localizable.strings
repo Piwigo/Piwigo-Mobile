@@ -290,9 +290,17 @@
 "none" = "aucun";
 "tags" = "Tags";
 "tag" = "Tag";
-"tagsTitle_selectOne" = "Sélectionnez un Tag";
+"tagsTitle_selectOne" = "Sélectionnez un tag";
 "tagsHeader_selected" = "Sélectionné";
 "tagsHeader_all" = "Tous";
+"tagsAdd_title" = "Ajouter un tag";
+"tagsAdd_message" = "Entrez un nom pour ce nouveau tag";
+"tagsAdd_placeholder" = "Nouveau tag";
+"tagsAddHUD_label" = "Création du tag…";
+
+// Image tags errors
+"tagsAddError_message" = "Impossible de créer un nouveau tag";
+"tagsAddError_title" = "Échec de la Création";
 
 // Image select
 "selectImages" = "Sélectionnez";
@@ -480,29 +488,16 @@
 "settings_logout" = "Déconnexion";
 "settingsFooter_formats" = "Le serveur accepte les types de fichiers suivants";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "Paramètres Généraux";
 "settingsHeader_thumbnails" = "Vignettes";
-"settings_loadAllCategories" = "Tout Télécharger au Démarrage";
-"settings_loadAllCategories>320px" = "Tout Télécharger au Démarrage (décochez en cas de problème)";
 
+// Settings — Albums
 "defaultImageSort" = "Tri";
 "defaultImageSort>320px" = "Tri";
 "defaultImageSort>414px" = "Tri par Défaut des Images";
-
-"defaultThumbnailFile" = "Fichier";
-"defaultThumbnailFile>320px" = "Fichier de Vignette";
-"defaultThumbnailFile>414px" = "Fichier de Vignette";
-"defaultThumbnailSize" = "Taille";
-"defaultThumbnailSize>320px" = "Taille des Vignettes";
-"defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";
-"defaultNberOfThumbnails" = "Nombre";
-"defaultNberOfThumbnails>320px" = "Nombre/ligne";
-"defaultNberOfThumbnails>414px" = "Nombre par ligne";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Veuillez sélectionner une taille de vignette d'image";
-"settings_displayTitles" = "Afficher Titres sur Vignettes";
-"settings_displayTitles>320px" = "Afficher les Titres sur les Vignettes";
+"defaultAlbumThumbnailFile>414px" = "Fichier de Vignette d'Album";
+"defaultAlbumThumbnailSizeHeader" = "Veuillez sélectionner une taille de vignette d'album";
 
 "thumbnailSizeSquare" = "Carré";
 "thumbnailSizeThumbnail" = "Miniature";
@@ -518,9 +513,23 @@
 // Settings — Images
 "settingsHeader_images" = "Images";
 
+"defaultThumbnailFile" = "Fichier";
+"defaultThumbnailFile>320px" = "Fichier de Vignette";
+"defaultThumbnailFile>414px" = "Fichier de Vignette d'Image";
+"defaultThumbnailSize" = "Taille";
+"defaultThumbnailSize>320px" = "Taille des Vignettes";
+"defaultThumbnailSize>414px" = "Taille par Défaut des Vignettes";
+"defaultNberOfThumbnails" = "Nombre";
+"defaultNberOfThumbnails>320px" = "Nombre/ligne";
+"defaultNberOfThumbnails>414px" = "Nombre par ligne";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Veuillez sélectionner une taille de vignette d'image";
+"settings_displayTitles" = "Afficher Titres sur Vignettes";
+"settings_displayTitles>320px" = "Afficher les Titres sur les Vignettes";
+
 "defaultPreviewFile" = "Aperçu";
-"defaultPreviewFile>320px" = "Fichier de prévisualisation";
-"defaultPreviewFile>414px" = "Fichier de prévisualisation";
+"defaultPreviewFile>320px" = "Fichier de Prévisualisation";
+"defaultPreviewFile>414px" = "Fichier de Prévisualisation de l'Image";
 "defaultImageSize" = "Images";
 "defaultImageSize>320px" = "Taille des Images";
 "defaultImageSize>414px" = "Taille par Défaut des Images";
@@ -566,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Paramètres de Cache (Utilisé/Total)";
+"settings_loadAllCategories" = "Tout Télécharger au Démarrage";
+"settings_loadAllCategories>320px" = "Tout Télécharger au Démarrage (décochez en cas de problème)";
 "settings_cacheDisk" = "Disque";
 "settings_cacheMemory" = "Mémoire";
 "settings_cacheMegabytes" = "Mo";

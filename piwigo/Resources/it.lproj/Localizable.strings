@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "Seleziona un Tag";
 "tagsHeader_selected" = "Selezionato";
 "tagsHeader_all" = "Tutto";
+"tagsAdd_title" = "Aggiungi tag";
+"tagsAdd_message" = "Inserisci un nome per questo nuovo tag";
+"tagsAdd_placeholder" = "Nuovo tag";
+"tagsAddHUD_label" = "Creazione tag…";
+
+// Image tags errors
+"tagsAddError_message" = "Impossibile creare un nuovo tag";
+"tagsAddError_title" = "Crea Errore";
 
 // Image select
 "selectImages" = "Seleziona immagini";
@@ -480,29 +488,16 @@
 "settings_logout" = "Esci";
 "settingsFooter_formats" = "Il server accetta i seguenti tipi di file";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "Impostazioni generali";
 "settingsHeader_thumbnails" = "Anteprime";
-"settings_loadAllCategories" = "Scaricare tutti gli album all'avvio";
-"settings_loadAllCategories>320px" = "Scaricare tutti gli album all'avvio (deselezionare se dà problemi)";
 
+// Settings — Albums
 "defaultImageSort" = "Ordinamento";
 "defaultImageSort>320px" = "Ordinamento predefinito";
 "defaultImageSort>414px" = "Ordinamento predefinito delle immagini";
-
-"defaultThumbnailFile" = "File";
-"defaultThumbnailFile>320px" = "Anteprima File";
-"defaultThumbnailFile>414px" = "Anteprima File";
-"defaultThumbnailSize" = "Dimensione";
-"defaultThumbnailSize>320px" = "Dimensioni dell'anteprima";
-"defaultThumbnailSize>414px" = "Dimensione predefinita delle miniature";
-"defaultNberOfThumbnails" = "Numero";
-"defaultNberOfThumbnails>320px" = "Numero/linea";
-"defaultNberOfThumbnails>414px" = "Numero per linea";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Si prega di selezionare una dimensione per l'anteprima";
-"settings_displayTitles" = "Titoli sulle miniature";
-"settings_displayTitles>320px" = "Titoli sulle anteprime";
+"defaultAlbumThumbnailFile>414px" = "File miniatura album";
+"defaultAlbumThumbnailSizeHeader" = "Seleziona una dimensione miniatura album";
 
 "thumbnailSizeSquare" = "Quadrato";
 "thumbnailSizeThumbnail" = "Anteprima";
@@ -517,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "Immagini";
+
+"defaultThumbnailFile" = "File";
+"defaultThumbnailFile>320px" = "Anteprima File";
+"defaultThumbnailFile>414px" = "File miniature immagini";
+"defaultThumbnailSize" = "Dimensione";
+"defaultThumbnailSize>320px" = "Dimensioni dell'anteprima";
+"defaultThumbnailSize>414px" = "Dimensione predefinita delle miniature";
+"defaultNberOfThumbnails" = "Numero";
+"defaultNberOfThumbnails>320px" = "Numero/linea";
+"defaultNberOfThumbnails>414px" = "Numero per linea";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Seleziona una dimensione miniatura immagine";
+"settings_displayTitles" = "Titoli sulle miniature";
+"settings_displayTitles>320px" = "Titoli sulle anteprime";
 
 "defaultPreviewFile" = "Anteprima";
 "defaultPreviewFile>320px" = "Anteprima del file";
@@ -566,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Impostazioni della cache (usata/totale)";
+"settings_loadAllCategories" = "Scaricare tutti gli album all'avvio";
+"settings_loadAllCategories>320px" = "Scaricare tutti gli album all'avvio (deselezionare se dà problemi)";
 "settings_cacheDisk" = "Disco";
 "settings_cacheMemory" = "Memoria";
 "settings_cacheMegabytes" = "MB";

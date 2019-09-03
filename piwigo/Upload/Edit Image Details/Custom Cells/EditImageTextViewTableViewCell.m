@@ -18,7 +18,7 @@
 
 @implementation EditImageTextViewTableViewCell
 
-- (void)awakeFromNib {
+-(void)awakeFromNib {
 
     // Initialization code
     [super awakeFromNib];
@@ -30,13 +30,13 @@
 
 -(void)paletteChanged
 {
-    self.textView.textColor = [UIColor piwigoRightLabelColor];
+    self.textView.textColor = [UIColor piwigoLeftLabelColor];
     self.textView.backgroundColor = [UIColor piwigoCellBackgroundColor];
     self.textView.placeholderColor = [UIColor piwigoRightLabelColor];
     self.textView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+-(void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
@@ -55,6 +55,11 @@
 -(void)setTextForTextView:(NSString*)text
 {
 	self.textView.text = text;
+}
+
+-(BOOL)isEditingTextView
+{
+    return self.textView.isFirstResponder;
 }
 
 @end

@@ -40,6 +40,11 @@
     return [UIFont fontWithName:@"OpenSans" size:13.0];
 }
 
++(UIFont*)piwigoFontSmallLight
+{
+    return [UIFont fontWithName:@"OpenSans-Light" size:13.0];
+}
+
 +(UIFont*)piwigoFontSmallSemiBold
 {
     return [UIFont fontWithName:@"OpenSans-Semibold" size:13.0];

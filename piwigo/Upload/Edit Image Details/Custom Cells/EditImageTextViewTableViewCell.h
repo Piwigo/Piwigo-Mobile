@@ -13,5 +13,6 @@
 -(void)paletteChanged;
 -(NSString*)getTextViewText;
 -(void)setTextForTextView:(NSString*)text;
+-(BOOL)isEditingTextView;
 
 @end

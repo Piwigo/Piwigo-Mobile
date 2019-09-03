@@ -59,6 +59,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 
         // Album/category settings
         instance.defaultCategory = 0;                   // Root album by default
+        instance.defaultAlbumThumbnailSize = [PiwigoImageData optimumAlbumThumbnailSizeForDevice];
 
         // Sort images by date: old to new
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
@@ -77,15 +78,12 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.hasXLargeSizeImages = NO;
         instance.hasXXLargeSizeImages = NO;
         
-        // Optimised thumbnail size, will be cross-checked at login
-        instance.defaultThumbnailSize = [PiwigoImageData optimumThumbnailSizeForDevice];
-        NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            instance.thumbnailsPerRowInPortrait = MAX(4, minNberOfImages);
-        } else {
-            instance.thumbnailsPerRowInPortrait = MAX(5, minNberOfImages);
-        }
-        
+        // Optimised image thumbnail size, will be cross-checked at login
+        instance.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
+        NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
+        NSInteger nberOfImages =[ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
+        instance.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
+
         // Default image settings
         instance.didOptimiseImagePreviewSize = NO;  // ===> Unused and therefore available…
 		instance.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
@@ -125,8 +123,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
-		instance.diskCache = kPiwigoMinDiskCache;
-		instance.memoryCache = kPiwigoMinMemoryCache;
+		instance.diskCache = kPiwigoMinDiskCache * 4;
+		instance.memoryCache = kPiwigoMinMemoryCache * 4;
 		
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
@@ -219,7 +217,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 }
 
 
-#pragma mark - Getter -
+#pragma mark - Getter
 
 -(NSInteger)photoResize {
     if (_photoResize < 5) {
@@ -238,6 +236,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     }
     return _photoQuality;
 }
+
 
 #pragma mark - Saving to Disk
 + (NSString *)applicationDocumentsDirectory
@@ -302,6 +301,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
         self.uploadChunkSize = modelData.uploadChunkSize;
         self.stringEncoding = modelData.stringEncoding;
+        self.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
 	}
 }
 
@@ -372,7 +372,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     // Added in v2.4.1…
     [saveObject addObject:[NSNumber numberWithInteger:self.uploadChunkSize]];
     [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.stringEncoding]];
-                           
+    // Added in v2.4.2…
+    [saveObject addObject:[NSNumber numberWithInteger:self.defaultAlbumThumbnailSize]];
+    
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
 
@@ -383,9 +385,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
 
-    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoMinDiskCache);
+    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoMinDiskCache * 4);
     self.diskCache = MIN(self.diskCache, kPiwigoMaxDiskCache);
-	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMinMemoryCache);
+	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMinMemoryCache * 4);
     self.memoryCache = MIN(self.memoryCache, kPiwigoMaxMemoryCache);
 
     self.photoQuality = [[savedData objectAtIndex:5] integerValue];
@@ -414,7 +416,12 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.photoResize = 100;
 	}
     if(savedData.count > 11) {
-		self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
+        if(savedData.count > 47) {
+            self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
+        } else {
+            // Just updated to 2.4.2…
+            self.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
+        }
 	} else {
 		self.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
 	}
@@ -424,9 +431,14 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		self.stripGPSdataOnUpload = NO;
 	}
     if(savedData.count > 13) {
-		self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
+        if(savedData.count > 47) {
+            self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
+        } else {
+            // Just updated to 2.4.2…
+            self.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
+        }
 	} else {
-		self.defaultThumbnailSize = [PiwigoImageData optimumThumbnailSizeForDevice];
+		self.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
 	}
 	if(savedData.count > 14) {
 		self.displayImageTitles = [[savedData objectAtIndex:14] boolValue];
@@ -492,20 +504,22 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.isDarkPaletteModeActive = NO;
     }
-    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)self.defaultThumbnailSize]];
+    NSInteger nberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)self.defaultThumbnailSize]];
     if(savedData.count > 23) {
-        self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
-        // Chek that default number fits inside selected range
-        self.thumbnailsPerRowInPortrait = MAX(self.thumbnailsPerRowInPortrait, minNberOfImages);
-        self.thumbnailsPerRowInPortrait = MIN(self.thumbnailsPerRowInPortrait, 2*minNberOfImages);
+        if(savedData.count > 47) {
+            self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
+        } else {
+            NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
+            self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, [[savedData objectAtIndex:23] integerValue]);
+        }
     } else {
         // Default values (will be cross-checked at login)
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            self.thumbnailsPerRowInPortrait = MAX(4, minNberOfImages);
-        } else {
-            self.thumbnailsPerRowInPortrait = MAX(5, minNberOfImages);
-        }
+        NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
+        self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
     }
+    // Chek that default number fits inside selected range
+    self.thumbnailsPerRowInPortrait = MAX(self.thumbnailsPerRowInPortrait, nberOfImages);
+    self.thumbnailsPerRowInPortrait = MIN(self.thumbnailsPerRowInPortrait, 2*nberOfImages);
     if(savedData.count > 24) {
         self.defaultCategory = [[savedData objectAtIndex:24] integerValue];
     } else {
@@ -517,8 +531,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
     }
     if(savedData.count > 26) {  // ===> Unused and therefore available…
-        self.didOptimiseImagePreviewSize = [[savedData objectAtIndex:26] boolValue];
-    } else {
         self.didOptimiseImagePreviewSize = NO;
     }
     if(savedData.count > 27) {
@@ -620,6 +632,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.stringEncoding = [[savedData objectAtIndex:46] unsignedIntegerValue];
     } else {
         self.stringEncoding = NSUTF8StringEncoding;
+    }
+    if(savedData.count > 47) {
+        self.defaultAlbumThumbnailSize = [[savedData objectAtIndex:47] integerValue];
+    } else {
+        self.defaultAlbumThumbnailSize = [PiwigoImageData optimumAlbumThumbnailSizeForDevice];
     }
 	return self;
 }

@@ -6,17 +6,17 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AlbumService.h"
 #import "AlbumTableViewCell.h"
-#import "PiwigoAlbumData.h"
+#import "CategoriesData.h"
 #import "ImageService.h"
 #import "LEColorPicker.h"
-#import "OutlinedText.h"
+#import "MBProgressHUD.h"
 #import "Model.h"
-#import "AlbumService.h"
-#import "CategoriesData.h"
 #import "MoveCategoryViewController.h"
 #import "NetworkHandler.h"
-#import "MBProgressHUD.h"
+#import "OutlinedText.h"
+#import "PiwigoAlbumData.h"
 #import "SAMKeychain.h"
 
 NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
@@ -152,7 +152,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 //        }
     }
     
-    
     // Display album image
     self.backgroundImage.layer.cornerRadius = 10;
     NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
@@ -165,6 +164,8 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     else if (albumData.albumThumbnailUrl.length <= 0)
     {
         // No album thumbnail
+        albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+        self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
         return;
     }
     else
@@ -530,12 +531,8 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                         if(deletedSuccessfully)
                         {
                             [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
-                                
+                                // Delete category from cache
                                 [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
-                                
-                                // Post to the app that category data have changed
-                                NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
                             }];
                         }
                         else

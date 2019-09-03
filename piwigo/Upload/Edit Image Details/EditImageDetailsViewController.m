@@ -8,10 +8,11 @@
 
 #import "AppDelegate.h"
 #import "EditImageDetailsViewController.h"
+#import "EditImageLabelTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
-#import "EditImageLabelTableViewCell.h"
-#import "TagsTableViewCell.h"
+#import "EditImageThumbnailTableViewCell.h"
+#import "EditImageTagsTableViewCell.h"
 #import "ImageUpload.h"
 #import "ImageService.h"
 #import "MBProgressHUD.h"
@@ -22,6 +23,7 @@
 CGFloat const kEditImageDetailsWidth = 512.0;      // EditImageDetails view width
 
 typedef enum {
+    EditImageDetailsOrderThumbnail,
 	EditImageDetailsOrderImageName,
 	EditImageDetailsOrderAuthor,
 	EditImageDetailsOrderPrivacy,
@@ -30,12 +32,10 @@ typedef enum {
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
-@property (weak, nonatomic) IBOutlet UITableView *editImageDetailsTableView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewBottomConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewTopConstraint;
-@property (assign, nonatomic) BOOL shouldUpdateDetails;
+@property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
+@property (nonatomic, assign) BOOL shouldUpdateDetails;
 
 @end
 
@@ -47,10 +47,6 @@ typedef enum {
 	
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
 	
-	// Register keyboard events
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDismiss:) name:UIKeyboardWillHideNotification object:nil];
-
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
 }
@@ -80,16 +76,21 @@ typedef enum {
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
 
+    EditImageThumbnailTableViewCell *imageThumbnail = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
+    [imageThumbnail paletteChanged];
+    
     EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+    textFieldCell.tag = EditImageDetailsOrderImageName;
     [textFieldCell paletteChanged];
     
     textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+    textFieldCell.tag = EditImageDetailsOrderAuthor;
     [textFieldCell paletteChanged];
     
     EditImageLabelTableViewCell *privacyCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
     [privacyCell paletteChanged];
     
-    TagsTableViewCell *tagCell = (TagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
+    EditImageTagsTableViewCell *tagCell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
     [tagCell paletteChanged];
 
     EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
@@ -107,13 +108,29 @@ typedef enum {
 
     // Navigation buttons in edition mode
     self.shouldUpdateDetails = NO;
-    if(self.isEdit)
+    if (self.isEdit)
     {
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
+        [cancel setAccessibilityIdentifier:@"Cancel"];
 		UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
-		
+        [done setAccessibilityIdentifier:@"Done"];
+
 		self.navigationItem.leftBarButtonItem = cancel;
 		self.navigationItem.rightBarButtonItem = done;
+    }
+
+    // Adjust content inset
+    // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
+    CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height;
+    CGFloat tableHeight = self.editImageDetailsTableView.bounds.size.height;
+    CGFloat viewHeight = self.view.bounds.size.height;
+
+    // On iPad, the form is presented in a popover view
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - viewHeight), 0.0)];
+    } else {
+        CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight), 0.0)];
     }
 }
 
@@ -124,7 +141,7 @@ typedef enum {
     if ((self.shouldUpdateDetails || (self.navigationItem.rightBarButtonItem == nil)) &&
         [self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
 	{
-		[self prepareImageForChanges];
+		[self updateImageDescription];
 		[self.delegate didFinishEditingDetails:self.imageDetails];
 	}
 }
@@ -132,24 +149,34 @@ typedef enum {
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    //Reload the tableview on orientation change, to match the new width of the table.
+    // Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         
-        // On iPad, the Settings section is presented in a centered popover view
+        // Store recent modification
+        [self updateImageDescription];
+        
+        // Adjust content inset
+        // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
+        CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height;
+        CGFloat tableHeight = self.editImageDetailsTableView.bounds.size.height;
+
+        // On iPad, the form is presented in a popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
             self.preferredContentSize = CGSizeMake(kEditImageDetailsWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - size.height), 0.0)];
+        } else {
+            CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+            [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - size.height), 0.0)];
         }
-        
+
         // Reload table view
         [self.editImageDetailsTableView reloadData];
     } completion:nil];
 }
 
--(void)prepareImageForChanges
-{
-	[self updateImageDetails];
-}
+
+#pragma mark - Edit methods
 
 // NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
 -(void)setIsEdit:(BOOL)isEditChoice
@@ -165,8 +192,8 @@ typedef enum {
 
 -(void)doneEdit
 {
-	// Update image details
-    [self prepareImageForChanges];
+    // Store recent modification
+    [self updateImageDescription];
 	
     // Display HUD during the update
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -270,40 +297,14 @@ typedef enum {
 
 #pragma mark - Keyboard Methods
 
--(void)updateImageDetails
+-(void)updateImageDescription
 {
-	// Title
-    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-	self.imageDetails.title = textFieldCell.getTextFieldText;
-	
-    // Author
-	textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-    if (textFieldCell.getTextFieldText.length > 0) {
-        self.imageDetails.author = textFieldCell.getTextFieldText;
-    } else {
-        self.imageDetails.author = @"NSNotFound";
-    }
-	
-    // Description
 	EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
 	self.imageDetails.imageDescription = textViewCell.getTextViewText;
 }
 
-// Called when the UIKeyboardWillShowNotification is sent.
--(void)keyboardWillChange:(NSNotification*)notification
-{
-    // Unused — interface to be improved !!
-//    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-//    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
-    self.tableViewBottomConstraint.constant = -100;
-}
 
--(void)keyboardWillDismiss:(NSNotification*)notification
-{
-	self.tableViewBottomConstraint.constant = 0;
-}
-
-#pragma mark - UITableView methods
+#pragma mark - UITableView - Rows
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -312,9 +313,27 @@ typedef enum {
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if((indexPath.row == EditImageDetailsOrderPrivacy) ||(indexPath.row == EditImageDetailsOrderTags)) return 68.0;
-    if(indexPath.row == EditImageDetailsOrderDescription) return 100.0;
-	return 44.0;
+    CGFloat height = 44.0;
+    switch (indexPath.row)
+    {
+        case EditImageDetailsOrderThumbnail:
+            height = 160.0;
+            break;
+            
+        case EditImageDetailsOrderPrivacy:
+        case EditImageDetailsOrderTags:
+            height = 78.0;
+            break;
+            
+        case EditImageDetailsOrderDescription:
+            height = 506.0;
+            break;
+
+        default:
+            break;
+    }
+
+    return height;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -324,60 +343,101 @@ typedef enum {
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *cell = [UITableViewCell new];
-	
+    UITableViewCell *tableViewCell = [UITableViewCell new];
+
 	switch(indexPath.row)
 	{
-		case EditImageDetailsOrderImageName:
+		case EditImageDetailsOrderThumbnail:
+        {
+            EditImageThumbnailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"image"];
+            [cell setupWithImage:self.imageDetails];
+            tableViewCell = cell;
+            break;
+        }
+        
+        case EditImageDetailsOrderImageName:
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:@"textField"];
-			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_title", @"Title:") andTextField:self.imageDetails.title withPlaceholder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")];
-			break;
-		}
-		case EditImageDetailsOrderAuthor:
-		{
-			cell = [tableView dequeueReusableCellWithIdentifier:@"textField"];
-            NSString *author = self.imageDetails.author;
-            if ([self.imageDetails.author isEqualToString:@"NSNotFound"]) {
-                author = @"";
+            EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"title"];
+            if(!cell)
+            {
+                cell = [EditImageTextFieldTableViewCell new];
             }
-			[((EditImageTextFieldTableViewCell*)cell) setLabel:NSLocalizedString(@"editImageDetails_author", @"Author:") andTextField:author withPlaceholder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")];
+
+            cell.cellLabel.text = NSLocalizedString(@"editImageDetails_title", @"Title:");
+            cell.cellTextField.text = self.imageDetails.title;
+            cell.cellTextField.placeholder = NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title");
+            cell.cellTextField.tag = EditImageDetailsOrderImageName;
+            cell.cellTextField.delegate = self;
+            tableViewCell = cell;
+            break;
+		}
+		
+        case EditImageDetailsOrderAuthor:
+		{
+            EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"author"];
+            if(!cell)
+            {
+                cell = [EditImageTextFieldTableViewCell new];
+            }
+            
+            cell.cellLabel.text = NSLocalizedString(@"editImageDetails_author", @"Author:");
+            if ([self.imageDetails.author isEqualToString:@"NSNotFound"]) {
+                cell.cellTextField.text = @"";
+            } else {
+                cell.cellTextField.text = self.imageDetails.author;
+            }
+            cell.cellTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
+            cell.cellTextField.tag = EditImageDetailsOrderAuthor;
+            cell.cellTextField.delegate = self;
+            tableViewCell = cell;
 			break;
 		}
-		case EditImageDetailsOrderPrivacy:
+		
+        case EditImageDetailsOrderPrivacy:
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:@"label"];
-			[((EditImageLabelTableViewCell*)cell) setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
-			[((EditImageLabelTableViewCell*)cell) setPrivacyLevel:self.imageDetails.privacyLevel];
+			EditImageLabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
+			[cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
+			[cell setPrivacyLevel:self.imageDetails.privacyLevel];
+            tableViewCell = cell;
 			break;
 		}
-		case EditImageDetailsOrderTags:
+		
+        case EditImageDetailsOrderTags:
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:@"tags"];
-			[((TagsTableViewCell*)cell) setTagList:self.imageDetails.tags];
+			EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags"];
+			[cell setTagList:self.imageDetails.tags];
+            tableViewCell = cell;
 			break;
 		}
-		case EditImageDetailsOrderDescription:
+		
+        case EditImageDetailsOrderDescription:
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:@"textArea"];
-			[((EditImageTextViewTableViewCell*)cell) setTextForTextView:self.imageDetails.imageDescription];
+			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description"];
+			[cell setTextForTextView:self.imageDetails.imageDescription];
+            tableViewCell = cell;
 			break;
 		}
 	}
 	
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    cell.tintColor = [UIColor piwigoOrange];
-	return cell;
+    tableViewCell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    tableViewCell.tintColor = [UIColor piwigoOrange];
+	return tableViewCell;
 }
+
+
+#pragma mark - UITableViewDelegate Methods
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	if(indexPath.row == EditImageDetailsOrderPrivacy)
+	if (indexPath.row == EditImageDetailsOrderPrivacy)
 	{
-        // Store recent modifications
-        [self updateImageDetails];
+        // Dismiss the keyboard
+        [self.view endEditing:YES];
+        
+        // Store recent modification
+        [self updateImageDescription];
         
         // Create view controller
         SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
@@ -385,10 +445,13 @@ typedef enum {
 		[privacySelectVC setPrivacy:self.imageDetails.privacyLevel];
 		[self.navigationController pushViewController:privacySelectVC animated:YES];
 	}
-	else if(indexPath.row == EditImageDetailsOrderTags)
+	else if (indexPath.row == EditImageDetailsOrderTags)
 	{
-        // Store recent modifications
-        [self updateImageDetails];
+        // Dismiss the keyboard
+        [self.view endEditing:YES];
+        
+        // Store recent modification
+        [self updateImageDescription];
         
         // Create view controller
 		TagsViewController *tagsVC = [TagsViewController new];
@@ -405,6 +468,65 @@ typedef enum {
         }
     }
 	
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    BOOL result;
+    switch (indexPath.row)
+    {
+        case EditImageDetailsOrderThumbnail:
+        case EditImageDetailsOrderImageName:
+        case EditImageDetailsOrderAuthor:
+        case EditImageDetailsOrderDescription:
+            result = NO;
+            break;
+            
+        default:
+            result = YES;
+    }
+    
+    return result;
+}
+
+
+#pragma mark - UITextFieldDelegate Methods
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [self.editImageDetailsTableView endEditing:YES];
+    return YES;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    switch (textField.tag)
+    {
+        case EditImageDetailsOrderImageName:
+        {
+            // Title
+            EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+            self.imageDetails.title = textFieldCell.cellTextField.text;
+            break;
+        }
+            
+        case EditImageDetailsOrderAuthor:
+        {
+            // Author
+            EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+            if (textFieldCell.cellTextField.text.length > 0) {
+                self.imageDetails.author = textFieldCell.cellTextField.text;
+            } else {
+                self.imageDetails.author = @"NSNotFound";
+            }
+            break;
+        }
+    }
 }
 
 

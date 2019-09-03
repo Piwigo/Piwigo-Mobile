@@ -11,6 +11,7 @@ target 'piwigo' do
   pod 'MBProgressHUD', '~> 1.1.0'
   pod 'MGSwipeTableCell'
   pod 'SAMKeychain'
+  pod 'IQKeyboardManager' #iOS8 and later
 
   target 'piwigoAppStore' do
     inherit! :search_paths

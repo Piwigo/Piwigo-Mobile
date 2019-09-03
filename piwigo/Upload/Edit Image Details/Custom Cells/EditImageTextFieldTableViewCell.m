@@ -11,9 +11,6 @@
 
 @interface EditImageTextFieldTableViewCell()
 
-@property (weak, nonatomic) IBOutlet UILabel *cellLabel;
-@property (weak, nonatomic) IBOutlet UITextField *cellTextField;
-
 @end
 
 @implementation EditImageTextFieldTableViewCell
@@ -28,14 +25,14 @@
     self.cellTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     self.cellTextField.autocorrectionType = UITextAutocorrectionTypeYes;
     self.cellTextField.returnKeyType = UIReturnKeyDefault;
-    self.cellTextField.clearButtonMode = UITextFieldViewModeUnlessEditing;
+    self.cellTextField.clearButtonMode = UITextFieldViewModeAlways;
     [self paletteChanged];
 }
 
 -(void)paletteChanged
 {
     self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.cellTextField.textColor = [UIColor piwigoRightLabelColor];
+    self.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
     self.cellTextField.backgroundColor = [UIColor piwigoCellBackgroundColor];
     if ([[self.cellTextField.attributedPlaceholder string] length] > 0) {
         NSString *placeHolder = [self.cellTextField.attributedPlaceholder string];
@@ -44,16 +41,13 @@
     self.cellTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
--(void)setLabel:(NSString*)label andTextField:(NSString*)text withPlaceholder:(NSString*)placeholder
+-(void)prepareForReuse
 {
-	self.cellLabel.text = label;
-	self.cellTextField.text = text;
-    self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoRightLabelColor]}];
+    [super prepareForReuse];
+
+    self.cellTextField.delegate = nil;
+    self.cellTextField.text = @"";
 }
 
--(NSString*)getTextFieldText
-{
-	return self.cellTextField.text;
-}
 
 @end

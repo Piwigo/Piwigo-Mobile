@@ -321,7 +321,7 @@
     
     // Requests image…
     @autoreleasepool {
-        [[PHImageManager defaultManager] requestImageForAsset:image.imageAsset targetSize:size contentMode:PHImageContentModeAspectFill options:options resultHandler:
+        [[PHImageManager defaultManager] requestImageForAsset:image.imageAsset targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:
          ^(UIImage *imageObject, NSDictionary *info) {
 #if defined(DEBUG_UPLOAD)
              NSLog(@"retrieveImageFromiCloudForAsset \"%@\" returned info(%@)", imageObject.description, info);
@@ -402,7 +402,7 @@
         [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
                      resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 #if defined(DEBUG_UPLOAD)
-                         NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.image, info);
+                         NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.fileName, info);
                          NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
 #endif
                          if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {

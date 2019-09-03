@@ -83,6 +83,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		
         // Bar buttons
         self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
+        [self.editBarButton setAccessibilityIdentifier:@"edit"];
         self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
         self.deleteBarButton.tintColor = [UIColor redColor];
         self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareImage)];
@@ -401,7 +402,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 //            [self.imgDetailDelegate needToLoadMoreImages];
 //        }
 //    }
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view andNberOfImagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
     if ((currentIndex > (self.images.count - roundf(imagesPerPage / 3.0))) &&
         (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
     {
@@ -485,12 +486,19 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 //    }
     
     // Retrieve complete image data if needed
-    for (ImagePreviewViewController *pendingVC in pendingViewControllers)
+    for (UIViewController *pendingVC in pendingViewControllers)
     {
-        // Retrieve image data in case user will want to copy, edit, move, etc. the image
-        PiwigoImageData *imageData = [self.images objectAtIndex:pendingVC.imageIndex];
-        if (imageData.fileSize == NSNotFound) {
-            [self retrieveCompleteImageDataOfImageId:imageData.imageId];
+        if ([pendingVC isKindOfClass:[ImagePreviewViewController class]]) {
+            // Right class ;-)
+            ImagePreviewViewController *previewVC = (ImagePreviewViewController *)pendingVC;
+            
+            // Retrieve image data in case user will want to copy, edit, move, etc. the image
+            if (previewVC.imageIndex < self.images.count) {
+                PiwigoImageData *imageData = [self.images objectAtIndex:previewVC.imageIndex];
+                if (imageData.fileSize == NSNotFound) {
+                    [self retrieveCompleteImageDataOfImageId:imageData.imageId];
+                }
+            }
         }
     }
 }

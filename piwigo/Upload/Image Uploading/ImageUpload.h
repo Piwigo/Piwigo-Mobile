@@ -14,7 +14,8 @@
 
 @interface ImageUpload : NSObject
 
-@property (nonatomic, strong) PHAsset *imageAsset;
+@property (nonatomic, strong) PHAsset *imageAsset;              // Local image
+@property (nonatomic, strong) NSString *thumbnailUrl;           // Piwigo image
 @property (nonatomic, strong) NSString *fileName;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) NSInteger categoryToUploadTo;
@@ -23,6 +24,9 @@
 @property (nonatomic, strong) NSString *imageDescription;
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, assign) NSInteger imageId;
+@property (nonatomic, assign) NSInteger pixelWidth;
+@property (nonatomic, assign) NSInteger pixelHeight;
+@property (nonatomic, strong) NSDate *creationDate;
 @property (nonatomic, assign) BOOL stopUpload;
 
 -(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy;

@@ -719,14 +719,11 @@
                 OnCompletion:^(NSURLSessionTask *task, BOOL createdSuccessfully) {
                     if(createdSuccessfully)
                     {
-                        // Post to the app that category data have changed
-                        if ([Model sharedInstance].loadAllCategoryInfo) {
-                            NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-                        }
+                        // Build category array from cache
+                        [self buildCategoryArray];
 
-                        // Refresh list of categories (and cache)
-                        [self refreshCategoryList];
+                        // Reload data
+                        [self.categoriesTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
 
                         // Hide HUD
                         [self hideHUDwithSuccess:YES completion:nil];
@@ -958,11 +955,11 @@
     // Look for categories which are not already displayed
     for(PiwigoAlbumData *category in allCategories)
     {
-        // Search album should not be proposed
-        if (category.albumId == kPiwigoSearchCategoryId) {
+        // Smart albums should not be proposed
+        if (category.albumId <= kPiwigoSearchCategoryId) {
             continue;
         }
-        
+
         // Non-admin Community users can only upload in specific albums
         if (![Model sharedInstance].hasAdminRights && !category.hasUploadRights) {
             continue;

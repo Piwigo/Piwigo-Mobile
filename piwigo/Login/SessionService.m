@@ -180,6 +180,9 @@
                               NSInteger uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                               if (uploadChunkSize != 0) {
                                   [Model sharedInstance].uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
+                              } else {
+                                  // Just in case…
+                                  [Model sharedInstance].uploadChunkSize = 500;
                               }
 
                               // Images and videos can be uploaded if their file types are found.
@@ -229,51 +232,130 @@
                                   }
                               }
                               
-                              // Check that the actual default thumbnail size is still available
-                              // and select Thumb size in case of unavailability
-                              switch ([Model sharedInstance].defaultThumbnailSize) {
+                              // Check that the actual default album thumbnail size is available
+                              // and select the next available size in case of unavailability
+                              switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
                                   case kPiwigoImageSizeSquare:
-                                      // Always available
+                                      // Should always be available
+                                      break;
+                                  case kPiwigoImageSizeThumb:
+                                      // Should always be available
                                       break;
                                   case kPiwigoImageSizeXXSmall:
                                       if (![Model sharedInstance].hasXXSmallSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeThumb;
+                                          // Look for next available larger size
+                                          if ([Model sharedInstance].hasXSmallSizeImages) {
+                                              [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeXSmall;
+                                          } else if ([Model sharedInstance].hasSmallSizeImages) {
+                                              [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeSmall;
+                                          } else {
+                                              [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                          }
                                       }
                                       break;
                                   case kPiwigoImageSizeXSmall:
                                       if (![Model sharedInstance].hasXSmallSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeThumb;
+                                          // Look for next available larger size
+                                          if ([Model sharedInstance].hasSmallSizeImages) {
+                                              [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeSmall;
+                                          } else {
+                                              [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                          }
                                       }
                                       break;
                                   case kPiwigoImageSizeSmall:
                                       if (![Model sharedInstance].hasSmallSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeThumb;
+                                          // Select next available larger size
+                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                       }
+                                      break;
+                                  case kPiwigoImageSizeMedium:
+                                      // Should always be available
                                       break;
                                   case kPiwigoImageSizeLarge:
                                       if (![Model sharedInstance].hasLargeSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeThumb;
+                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                       }
                                       break;
                                   case kPiwigoImageSizeXLarge:
                                       if (![Model sharedInstance].hasXLargeSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeThumb;
+                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                       }
                                       break;
                                   case kPiwigoImageSizeXXLarge:
                                       if (![Model sharedInstance].hasXXLargeSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeThumb;
+                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                       }
                                       break;
-                                  case kPiwigoImageSizeThumb:
                                   case kPiwigoImageSizeFullRes:
                                   default:
-                                      [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeThumb;
+                                      [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                      break;
+                              }
+                              
+                              // Check that the actual default image thumbnail size is available
+                              // and select the next available size in case of unavailability
+                              switch ([Model sharedInstance].defaultThumbnailSize) {
+                                  case kPiwigoImageSizeSquare:
+                                      // Should always be available
+                                      break;
+                                  case kPiwigoImageSizeThumb:
+                                      // Should always be available
+                                      break;
+                                  case kPiwigoImageSizeXXSmall:
+                                      if (![Model sharedInstance].hasXXSmallSizeImages) {
+                                          // Look for next available larger size
+                                          if ([Model sharedInstance].hasXSmallSizeImages) {
+                                              [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeXSmall;
+                                          } else if ([Model sharedInstance].hasSmallSizeImages) {
+                                              [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeSmall;
+                                          } else {
+                                              [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                          }
+                                      }
+                                      break;
+                                  case kPiwigoImageSizeXSmall:
+                                      if (![Model sharedInstance].hasXSmallSizeImages) {
+                                          // Look for next available larger size
+                                          if ([Model sharedInstance].hasSmallSizeImages) {
+                                              [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeSmall;
+                                          } else {
+                                              [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                          }
+                                      }
+                                      break;
+                                  case kPiwigoImageSizeSmall:
+                                      if (![Model sharedInstance].hasSmallSizeImages) {
+                                          // Select next available larger size
+                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                      }
+                                      break;
+                                  case kPiwigoImageSizeMedium:
+                                      // Should always be available
+                                      break;
+                                  case kPiwigoImageSizeLarge:
+                                      if (![Model sharedInstance].hasLargeSizeImages) {
+                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                      }
+                                      break;
+                                  case kPiwigoImageSizeXLarge:
+                                      if (![Model sharedInstance].hasXLargeSizeImages) {
+                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                      }
+                                      break;
+                                  case kPiwigoImageSizeXXLarge:
+                                      if (![Model sharedInstance].hasXXLargeSizeImages) {
+                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                      }
+                                      break;
+                                  case kPiwigoImageSizeFullRes:
+                                  default:
+                                      [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
                                       break;
                               }
 
                               // Calculate number of thumbnails per row for that selection
-                              NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize]];
+                              NSInteger minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize]];
 
                               // Make sure that default number fits inside selected range
                               [Model sharedInstance].thumbnailsPerRowInPortrait = MAX([Model sharedInstance].thumbnailsPerRowInPortrait, minNberOfImages);
@@ -282,6 +364,12 @@
                               // Check that the actual default image preview size is still available
                               // and select the next available size in case of unavailability
                               switch ([Model sharedInstance].defaultImagePreviewSize) {
+                                  case kPiwigoImageSizeSquare:
+                                      // Should always be available
+                                      break;
+                                  case kPiwigoImageSizeThumb:
+                                      // Should always be available
+                                      break;
                                   case kPiwigoImageSizeXXSmall:
                                       if (![Model sharedInstance].hasXXSmallSizeImages) {
                                           // Look for next available larger size
@@ -306,8 +394,12 @@
                                       break;
                                   case kPiwigoImageSizeSmall:
                                       if (![Model sharedInstance].hasSmallSizeImages) {
+                                          // Select next available larger size
                                           [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeMedium;
                                       }
+                                      break;
+                                  case kPiwigoImageSizeMedium:
+                                      // Should always be available
                                       break;
                                   case kPiwigoImageSizeLarge:
                                       if (![Model sharedInstance].hasLargeSizeImages) {

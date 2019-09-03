@@ -13,7 +13,9 @@ NSInteger const kAlbumCellSpacing = 8;          // Spacing between albums (horiz
 NSInteger const kAlbumMarginsSpacing = 4;       // Left and right margins for albums
 NSInteger const kImageCellSpacing4iPhone = 1;   // Spacing between images (horizontally and vertically)
 NSInteger const kImageCellHorSpacing4iPad = 8;
+NSInteger const kImageCellHorSpacing4iPadPopup = 1;
 NSInteger const kImageCellVertSpacing4iPad = 8;
+NSInteger const kImageCellVertSpacing4iPadPopup = 1;
 NSInteger const kImageMarginsSpacing = 4;       // Left and right margins for images
 NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file size
 
@@ -45,51 +47,109 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
 
 #pragma mark - Images
 
-+(NSInteger)imageCellHorizontalSpacing
++(NSInteger)imageCellHorizontalSpacingForCollectionType:(kImageCollectionType)type
 {
-    return ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad;
+    NSInteger imageCellHorizontalSpacing;
+
+    switch (type) {
+        case kImageCollectionPopup:
+            imageCellHorizontalSpacing = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPadPopup;
+            break;
+            
+        case kImageCollectionFull:
+            imageCellHorizontalSpacing = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad;
+            break;
+            
+        default:
+            imageCellHorizontalSpacing = 0;
+            break;
+    }
+
+    return imageCellHorizontalSpacing;
 }
 
-+(float)numberOfImagesPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
++(NSInteger)imageCellVerticalSpacingForCollectionType:(kImageCollectionType)type
 {
-    // Thumbnails should always be available on server => default size of 144x144 pixels
+    NSInteger imageCellVerticalSpacing;
+    
+    switch (type) {
+        case kImageCollectionPopup:
+            imageCellVerticalSpacing = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPadPopup;
+            break;
+            
+        case kImageCollectionFull:
+            imageCellVerticalSpacing = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPad;
+            break;
+            
+        default:
+            imageCellVerticalSpacing = 0;
+            break;
+    }
+    
+    return imageCellVerticalSpacing;
+}
+
++(float)imagesPerRowInPortraitForView:(UIView *)view maxWidth:(float)maxWidth
+{
+    // We display at least 3 thumbnails per row and images never exceed the thumbnails size
+    return [self imagesPerRowInPortraitForView:view maxWidth:maxWidth collectionType:kImageCollectionFull];
+}
+
++(float)imagesPerRowInPortraitForView:(UIView *)view maxWidth:(float)maxWidth collectionType:(kImageCollectionType)type
+{
     // We display at least 3 thumbnails per row and images never exceed the thumbnails size
     CGSize pageSize = [self sizeOfPageForView:view];
     float viewWidth = fmin(pageSize.width, pageSize.height);
-    return fmax([self minNberOfImagesPerRow], roundf((viewWidth - 2.0 * kImageMarginsSpacing + [self imageCellHorizontalSpacing]) / ([self imageCellHorizontalSpacing] + maxWidth)));
+    return fmax([self minNberOfImagesPerRow], roundf((viewWidth - 2.0 * kImageMarginsSpacing + [self imageCellHorizontalSpacingForCollectionType:type]) / ([self imageCellHorizontalSpacingForCollectionType:type] + maxWidth)));
 }
 
-+(float)imageSizeForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
++(float)imageSizeForView:(UIView *)view imagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait 
+{
+    return [self imageSizeForView:view imagesPerRowInPortrait:imagesPerRowInPortrait collectionType:kImageCollectionFull];
+}
+
++(float)imageSizeForView:(UIView *)view imagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait collectionType:(kImageCollectionType)type
 {
     // Size of view or screen
     CGSize pageSize = [self sizeOfPageForView:view];
+    
+    // Image horizontal cell spacing
+    NSInteger imageCellHorizontalSpacing = [self imageCellHorizontalSpacingForCollectionType:type];
 
     // Size of images determined for the portrait mode
-    float imagesSizeInPortrait = floorf((fmin(pageSize.width,pageSize.height) - 2.0 * kImageMarginsSpacing - (imagesPerRowInPortrait - 1.0) * [self imageCellHorizontalSpacing]) / imagesPerRowInPortrait);
+    float imagesSizeInPortrait = floorf((fmin(pageSize.width,pageSize.height) - 2.0 * kImageMarginsSpacing - (imagesPerRowInPortrait - 1.0) * imageCellHorizontalSpacing) / imagesPerRowInPortrait);
     
     // Images per row in whichever mode we are displaying them
-    float imagesPerRow = fmax([self minNberOfImagesPerRow], roundf((pageSize.width - 2.0 * kImageMarginsSpacing + [self imageCellHorizontalSpacing]) / ([self imageCellHorizontalSpacing] + imagesSizeInPortrait)));
+    float imagesPerRow = fmax([self minNberOfImagesPerRow], roundf((pageSize.width - 2.0 * kImageMarginsSpacing + imageCellHorizontalSpacing) / (imageCellHorizontalSpacing + imagesSizeInPortrait)));
     
     // Size of squared images for that number
-    return floorf((pageSize.width - 2.0 * kImageMarginsSpacing - (imagesPerRow - 1.0) * [self imageCellHorizontalSpacing]) / imagesPerRow);
+    return floorf((pageSize.width - 2.0 * kImageMarginsSpacing - (imagesPerRow - 1.0) * imageCellHorizontalSpacing) / imagesPerRow);
 }
 
-+(NSInteger)numberOfImagesPerPageForView:(UIView *)view andNberOfImagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
++(NSInteger)numberOfImagesPerPageForView:(UIView *)view imagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait
+{
+    return [self numberOfImagesPerPageForView:view imagesPerRowInPortrait:imagesPerRowInPortrait collectionType:kImageCollectionFull];
+}
+
++(NSInteger)numberOfImagesPerPageForView:(UIView *)view imagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait collectionType:(kImageCollectionType)type
 {
     // Size of view or screen
     CGSize pageSize = [self sizeOfPageForView:view];
 
     // Size of squared images for that number
-    float size = [self imageSizeForView:view andNberOfImagesPerRowInPortrait:imagesPerRowInPortrait];
+    float size = [self imageSizeForView:view imagesPerRowInPortrait:imagesPerRowInPortrait];
 
+    // Image horizontal cell spacing
+    NSInteger imageCellHorizontalSpacing = [self imageCellHorizontalSpacingForCollectionType:type];
+    
     // Number of images par page
-    return (NSInteger)ceilf(pageSize.height / (size + [self imageCellHorizontalSpacing])) * imagesPerRowInPortrait;
+    return (NSInteger)ceil(pageSize.height / (size + imageCellHorizontalSpacing)) * imagesPerRowInPortrait;
 }
 
 
 #pragma mark - Categories
 
-+(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(NSInteger)maxWidth
++(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(float)maxWidth
 {
     // Size of view or screen
     CGSize pageSize = [self sizeOfPageForView:view];

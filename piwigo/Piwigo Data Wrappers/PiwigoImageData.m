@@ -54,9 +54,13 @@
 	return url;
 }
 
-+(NSInteger)widthForImageSizeType:(kPiwigoImageSize)imageSize
++(float)widthForImageSizeType:(kPiwigoImageSize)imageSize
 {
-    NSInteger width = 120;
+    // Get device scale factor
+    float scale = [[UIScreen mainScreen] scale];
+    
+    // Default width
+    float width = 120;
     
     switch(imageSize) {
         case kPiwigoImageSizeSquare:
@@ -93,40 +97,43 @@
             break;
     }
     
-    return width;
+    return width/scale;
 }
 
 +(NSString*)sizeForImageSizeType:(kPiwigoImageSize)imageSize
 {
+    // Get device scale factor
+    CGFloat scale = [[UIScreen mainScreen] scale];
+    
     NSString *sizeName = @"";
     
     switch(imageSize) {
         case kPiwigoImageSizeSquare:
-            sizeName = @" (120x120)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(120.0/scale), lroundf(120.0/scale), scale];
             break;
         case kPiwigoImageSizeThumb:
-            sizeName = @" (144x144)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(144.0/scale), lroundf(144.0/scale), scale];
             break;
         case kPiwigoImageSizeXXSmall:
-            sizeName = @" (240x240)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(240.0/scale), lroundf(240.0/scale), scale];
             break;
         case kPiwigoImageSizeXSmall:
-            sizeName = @" (432x324)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(432.0/scale), lroundf(324.0/scale), scale];
             break;
         case kPiwigoImageSizeSmall:
-            sizeName = @" (576x432)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(576.0/scale), lroundf(432.0/scale), scale];
             break;
         case kPiwigoImageSizeMedium:
-            sizeName = @" (792x594)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(792.0/scale), lroundf(594.0/scale), scale];
             break;
         case kPiwigoImageSizeLarge:
-            sizeName = @" (1008x756)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(1008.0/scale), lroundf(756.0/scale), scale];
             break;
         case kPiwigoImageSizeXLarge:
-            sizeName = @" (1224x918)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(1224.0/scale), lroundf(918.0/scale), scale];
             break;
         case kPiwigoImageSizeXXLarge:
-            sizeName = @" (1656x1242)";
+            sizeName = [NSString stringWithFormat:@" (%ldx%ld@%.0fx)", lroundf(1656.0/scale), lroundf(1242.0/scale), scale];
             break;
         case kPiwigoImageSizeFullRes:
             sizeName = @"";
@@ -138,74 +145,68 @@
     return sizeName;
 }
 
-+(NSInteger)optimumThumbnailSizeForDevice
+
+#pragma mark - Album thumbnails
+
++(NSInteger)optimumAlbumThumbnailSizeForDevice
 {
-    // Get optimum number of images per row
-    NSInteger nberThumbnailsPerRow = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 5.0;
+    // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
+    float albumThumbnailSize = 144.0;
     
     // Square ?
-    NSInteger minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeSquare]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeSquare] >= albumThumbnailSize) {
         return kPiwigoImageSizeSquare;
     }
-
+    
     // Thumbnail ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeThumb]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeThumb] >= albumThumbnailSize) {
         return kPiwigoImageSizeThumb;
     }
-
+    
     // XXSmall ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeXXSmall]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeXXSmall] >= albumThumbnailSize) {
         return kPiwigoImageSizeXXSmall;
     }
     
     // XSmall ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeXSmall]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeXSmall] >= albumThumbnailSize) {
         return kPiwigoImageSizeXSmall;
     }
     
     // Small ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeSmall]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeSmall] >= albumThumbnailSize) {
         return kPiwigoImageSizeSmall;
     }
     
     // Medium ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeMedium]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeMedium] >= albumThumbnailSize) {
         return kPiwigoImageSizeMedium;
     }
     
     // Large ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeLarge]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeLarge] >= albumThumbnailSize) {
         return kPiwigoImageSizeLarge;
     }
     
     // XLarge ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeXLarge]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeXLarge] >= albumThumbnailSize) {
         return kPiwigoImageSizeXLarge;
     }
     
     // XXLarge ?
-    minNberOfImages = [ImagesCollection numberOfImagesPerRowForViewInPortrait:nil withMaxWidth:[self widthForImageSizeType:kPiwigoImageSizeXXLarge]];
-    if (minNberOfImages <= nberThumbnailsPerRow) {
+    if ([self widthForImageSizeType:kPiwigoImageSizeXXLarge] >= albumThumbnailSize) {
         return kPiwigoImageSizeXXLarge;
     }
-    
-    return kPiwigoImageSizeThumb;
+
+    return kPiwigoImageSizeMedium;
 }
 
-+(NSString*)nameForThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo
++(NSString*)nameForAlbumThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo
 {
     NSString *sizeName = @"";
     
     // Determine the optimum image size for the current device
-    NSInteger optimumSize = [self optimumThumbnailSizeForDevice];
+    NSInteger optimumSize = [self optimumAlbumThumbnailSizeForDevice];
     
     // Return name for given thumbnail size
     switch(imageSize) {
@@ -297,35 +298,225 @@
     return sizeName;
 }
 
+
+#pragma mark - Image thumbnails
+
++(NSInteger)optimumImageThumbnailSizeForDevice
+{
+    // Get optimum number of images per row
+    float nberThumbnailsPerRow = [ImagesCollection minNberOfImagesPerRow];
+    
+    // Square ?
+    NSInteger minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeSquare]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeSquare;
+    }
+
+    // Thumbnail ?
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeThumb]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeThumb;
+    }
+
+    // XXSmall ?
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeXXSmall]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeXXSmall;
+    }
+    
+    // XSmall ?
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeXSmall]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeXSmall;
+    }
+    
+    // Small ?
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeSmall]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeSmall;
+    }
+    
+    // Medium ?
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeMedium]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeMedium;
+    }
+    
+    // Large ?
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeLarge]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeLarge;
+    }
+    
+    // XLarge ?
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeXLarge]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeXLarge;
+    }
+    
+    // XXLarge ?
+    minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[self widthForImageSizeType:kPiwigoImageSizeXXLarge]];
+    if (minNberOfImages <= nberThumbnailsPerRow) {
+        return kPiwigoImageSizeXXLarge;
+    }
+    
+    return kPiwigoImageSizeThumb;
+}
+
++(NSString*)nameForImageThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo
+{
+    NSString *sizeName = @"";
+    
+    // Determine the optimum image size for the current device
+    NSInteger optimumSize = [self optimumImageThumbnailSizeForDevice];
+    
+    // Return name for given thumbnail size
+    switch(imageSize) {
+        case kPiwigoImageSizeSquare:
+            sizeName = NSLocalizedString(@"thumbnailSizeSquare", @"Square");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeSquare) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeThumb:
+            sizeName = NSLocalizedString(@"thumbnailSizeThumbnail", @"Thumbnail");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeThumb) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeXXSmall:
+            sizeName = NSLocalizedString(@"thumbnailSizeXXSmall", @"Tiny");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeXXSmall) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeXSmall:
+            sizeName = NSLocalizedString(@"thumbnailSizeXSmall", @"Extra Small");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeXSmall) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeSmall:
+            sizeName = NSLocalizedString(@"thumbnailSizeSmall", @"Small");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeSmall) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeMedium:
+            sizeName = NSLocalizedString(@"thumbnailSizeMedium", @"Medium");
+            if (addInfo) {
+                if (optimumSize == kPiwigoImageSizeMedium) {
+                    sizeName = [sizeName stringByAppendingString:NSLocalizedString(@"defaultImageSize_recommended", @" (recommended)")];
+                } else {
+                    sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+                }
+            }
+            break;
+        case kPiwigoImageSizeLarge:
+            sizeName = NSLocalizedString(@"thumbnailSizeLarge", @"Large");
+            if (addInfo) {
+                sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+            }
+            break;
+        case kPiwigoImageSizeXLarge:
+            sizeName = NSLocalizedString(@"thumbnailSizeXLarge", @"Extra Large");
+            if (addInfo) {
+                sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+            }
+            break;
+        case kPiwigoImageSizeXXLarge:
+            sizeName = NSLocalizedString(@"thumbnailSizeXXLarge", @"Huge");
+            if (addInfo) {
+                sizeName = [sizeName stringByAppendingString:[PiwigoImageData sizeForImageSizeType:imageSize]];
+            }
+            break;
+        case kPiwigoImageSizeFullRes:
+            sizeName = NSLocalizedString(@"thumbnailSizexFullRes", @"Full Resolution");
+            break;
+        default:
+            break;
+    }
+    
+    return sizeName;
+}
+
+
+#pragma mark - Images
+
 +(NSInteger)optimumImageSizeForDevice
 {
     // Determine the resolution of the screen
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     // See https://www.apple.com/iphone/compare/ and https://www.apple.com/ipad/compare/
     CGRect screen = [[UIScreen mainScreen] bounds];
-    NSInteger points = (int)fmax(screen.size.width, screen.size.height);
+    float screenWidth = fmin(screen.size.width, screen.size.height);
     
-    if (points <= 324) {                            // XS - extra small - 432 x 324 pixels
+    // Square ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeSquare] >= screenWidth) {
+        return kPiwigoImageSizeSquare;
+    }
+    
+    // Thumbnail ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeThumb] >= screenWidth) {
+        return kPiwigoImageSizeThumb;
+    }
+    
+    // XXSmall ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXXSmall] >= screenWidth) {
+        return kPiwigoImageSizeXXSmall;
+    }
+    
+    // XSmall ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXSmall] >= screenWidth) {
         return kPiwigoImageSizeXSmall;
     }
-    else if ((points > 324) && (points <= 432)) {   // S - small - 576 x 432 pixels
+    
+    // Small ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeSmall] >= screenWidth) {
         return kPiwigoImageSizeSmall;
     }
-    else if ((points > 432) && (points <= 594)) {   // M - medium - 792 x 594 pixels
-        return kPiwigoImageSizeMedium;              // iPhone 2G, 3G, 3GS, 4, 4s, 5, 5s, 5c, SE
+    
+    // Medium ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeMedium] >= screenWidth) {
+        return kPiwigoImageSizeMedium;
     }
-    else if ((points > 594) && (points <= 756)) {   // L - large - 1008 x 756 pixels
-        return kPiwigoImageSizeLarge;               // iPhone 6, 6s, 7, 8, 6+, 6s+, 7+, 8+
+    
+    // Large ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeLarge] >= screenWidth) {
+        return kPiwigoImageSizeLarge;
     }
-    else if ((points > 756) && (points <= 918)) {   // XL - extra large - 1224 x 918 pixels
-        return kPiwigoImageSizeXLarge;              // Iphone X, Xs, Xr, Xs Max
+    
+    // XLarge ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXLarge] >= screenWidth) {
+        return kPiwigoImageSizeXLarge;
     }
-    else if ((points > 918) && (points <= 1242)) {  // XXL - huge - 1656 x 1242 pixels
-    return kPiwigoImageSizeXXLarge;                 // Ipad 2, Air, Air 2, Pro 9.7-inch, Pro 10.5-inch
+    
+    // XXLarge ?
+    if ([self widthForImageSizeType:kPiwigoImageSizeXXLarge] >= screenWidth) {
+        return kPiwigoImageSizeXXLarge;
     }
-    else {
-        return kPiwigoImageSizeFullRes;             // iPad Pro 12.9-inch
-    }
+
+    return kPiwigoImageSizeFullRes;
 }
 
 +(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo

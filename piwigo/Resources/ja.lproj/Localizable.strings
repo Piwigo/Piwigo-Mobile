@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "タグを選択";
 "tagsHeader_selected" = "選択済み";
 "tagsHeader_all" = "すべて";
+"tagsAdd_title" = "タグを追加";
+"tagsAdd_message" = "新規タグの名前を入力して下さい";
+"tagsAdd_placeholder" = "新規タグ";
+"tagsAddHUD_label" = "タグを作成する...";
+
+// Image tags errors
+"tagsAddError_message" = "新規タグの作成に失敗しました";
+"tagsAddError_title" = "作成に失敗";
 
 // Image select
 "selectImages" = "画像を選択します";
@@ -480,29 +488,16 @@
 "settings_logout" = "ログアウト";
 "settingsFooter_formats" = "サーバは次のファイル種類を受け付けます";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "一般設定";
 "settingsHeader_thumbnails" = "サムネイル";
-"settings_loadAllCategories" = "起動時にすべてのアルバムをダウンロードします";
-"settings_loadAllCategories>320px" = "起動時にすべてのアルバムをダウンロード (トラブルの場合はチェックを外す)";
 
+// Settings — Albums
 "defaultImageSort" = "並び順";
 "defaultImageSort>320px" = "既定の並び順";
 "defaultImageSort>414px" = "画像の既定並び順";
-
-"defaultThumbnailFile" = "ファイル";
-"defaultThumbnailFile>320px" = "サムネイルファイル";
-"defaultThumbnailFile>414px" = "サムネイル画像ファイル";
-"defaultThumbnailSize" = "サイズ";
-"defaultThumbnailSize>320px" = "サムネイルのサイズ";
-"defaultThumbnailSize>414px" = "サムネイルの既定サイズ";
-"defaultNberOfThumbnails" = "個数";
-"defaultNberOfThumbnails>320px" = "1行あたりの個数";
-"defaultNberOfThumbnails>414px" = "1行あたりの個数";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "サムネイルの画像サイズを選択してください";
-"settings_displayTitles" = "サムネイルの題名";
-"settings_displayTitles>320px" = "サムネイルに題名を表示します";
+"defaultAlbumThumbnailFile>414px" = "アルバムのサムネイルファイル";
+"defaultAlbumThumbnailSizeHeader" = "アルバムのサムネイルサイズを選択してください";
 
 "thumbnailSizeSquare" = "正方形";
 "thumbnailSizeThumbnail" = "サムネイル";
@@ -517,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "画像";
+
+"defaultThumbnailFile" = "ファイル";
+"defaultThumbnailFile>320px" = "サムネイルファイル";
+"defaultThumbnailFile>414px" = "サムネイル画像ファイル";
+"defaultThumbnailSize" = "サイズ";
+"defaultThumbnailSize>320px" = "サムネイルのサイズ";
+"defaultThumbnailSize>414px" = "サムネイルの既定サイズ";
+"defaultNberOfThumbnails" = "個数";
+"defaultNberOfThumbnails>320px" = "1行あたりの個数";
+"defaultNberOfThumbnails>414px" = "1行あたりの個数";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "サムネイルの画像サイズを選択してください";
+"settings_displayTitles" = "サムネイルの題名";
+"settings_displayTitles>320px" = "サムネイルに題名を表示します";
 
 "defaultPreviewFile" = "プレビュー";
 "defaultPreviewFile>320px" = "ファイルのプレビュー";
@@ -566,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";
+"settings_loadAllCategories" = "起動時にすべてのアルバムをダウンロードします";
+"settings_loadAllCategories>320px" = "起動時にすべてのアルバムをダウンロード (トラブルの場合はチェックを外す)";
 "settings_cacheDisk" = "ディスク";
 "settings_cacheMemory" = "メモリ";
 "settings_cacheMegabytes" = "MB";

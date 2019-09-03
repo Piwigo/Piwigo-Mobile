@@ -11,7 +11,11 @@
 @interface TagsService : NetworkHandler
 
 +(NSURLSessionTask*)getTagsForAdmin:(BOOL)isAdmin
-                       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                       onCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)addTagWithName:(NSString *)tagName
+                      onCompletion:(void (^)(NSURLSessionTask *task, NSInteger tagId))completion
+                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end

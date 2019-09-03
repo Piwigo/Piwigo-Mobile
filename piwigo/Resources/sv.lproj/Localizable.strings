@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "Välj en Etikett";
 "tagsHeader_selected" = "Valda";
 "tagsHeader_all" = "Alla";
+"tagsAdd_title" = "Lägg till etikett";
+"tagsAdd_message" = "Ange ett namn för den nya etiketten";
+"tagsAdd_placeholder" = "Ny etikett";
+"tagsAddHUD_label" = "Skapar etikett…";
+
+// Image tags errors
+"tagsAddError_message" = "Det gick inte att skapa en ny etikett";
+"tagsAddError_title" = "Skapa misslyckas";
 
 // Image select
 "selectImages" = "Välj bilder";
@@ -480,29 +488,16 @@
 "settings_logout" = "Logga ut";
 "settingsFooter_formats" = "Servern accepterar följande filtyper";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "Allmänna inställningar";
 "settingsHeader_thumbnails" = "Miniatyrbilder";
-"settings_loadAllCategories" = "Ladda ner alla album vid Start";
-"settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
 
+// Settings — Albums
 "defaultImageSort" = "Sortera";
 "defaultImageSort>320px" = "Sortera";
 "defaultImageSort>414px" = "Standardsortering av bilder";
-
-"defaultThumbnailFile" = "Fil";
-"defaultThumbnailFile>320px" = "Miniatyr-fil";
-"defaultThumbnailFile>414px" = "Miniatyrbildsfil";
-"defaultThumbnailSize" = "Storlek";
-"defaultThumbnailSize>320px" = "Miniatyrbilder";
-"defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
-"defaultNberOfThumbnails" = "Antal";
-"defaultNberOfThumbnails>320px" = "Antal/rad";
-"defaultNberOfThumbnails>414px" = "Antal per rad";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
-"settings_displayTitles" = "Titlar på miniatyrbilder";
-"settings_displayTitles>320px" = "Visa titlar på miniatyrbilder";
+"defaultAlbumThumbnailFile>414px" = "Miniatyrfil för album";
+"defaultAlbumThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
 
 "thumbnailSizeSquare" = "Kvadrat";
 "thumbnailSizeThumbnail" = "Miniatyrbild";
@@ -517,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "Bilder";
+
+"defaultThumbnailFile" = "Fil";
+"defaultThumbnailFile>320px" = "Miniatyr-fil";
+"defaultThumbnailFile>414px" = "Miniatyrfil med bilden";
+"defaultThumbnailSize" = "Storlek";
+"defaultThumbnailSize>320px" = "Miniatyrbilder";
+"defaultThumbnailSize>414px" = "Standardstorlek för miniatyrbilder";
+"defaultNberOfThumbnails" = "Antal";
+"defaultNberOfThumbnails>320px" = "Antal/rad";
+"defaultNberOfThumbnails>414px" = "Antal per rad";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
+"settings_displayTitles" = "Titlar på miniatyrbilder";
+"settings_displayTitles>320px" = "Visa titlar på miniatyrbilder";
 
 "defaultPreviewFile" = "Förhandsgranska";
 "defaultPreviewFile>320px" = "Förhandsgranska fil";
@@ -566,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-inställningar (använd/totalt)";
+"settings_loadAllCategories" = "Ladda ner alla album vid Start";
+"settings_loadAllCategories>320px" = "Ladda ner alla album vid start (avmarkera vid problem)";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Minne";
 "settings_cacheMegabytes" = "MB";

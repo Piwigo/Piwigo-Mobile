@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.1_text" = "Version 2.4.1\n\n• Adds \"Tags\", \"Most visited\", \"Best rated\" and \"Recent photos\" albums\n• Minor bug fixes and improvements of the interface";
+"v2.4.2_text" = "Version 2.4.2\n\n• Adds ability to create tags (admin users only)\n• Adds ability to change size of album thumbnails\n• Adds Retina display management\n• Minor bug fixes and improvements of the interface";
+
+"v2.4.1_text" = "Version 2.4.1\nAugust 10, 2019\n\n• Adds \"Tags\", \"Most visited\", \"Best rated\" and \"Recent photos\" albums\n• Minor bug fixes and improvements of the interface";
 
 "v2.4.0_text" = "Version 2.4\nJuly 15, 2019\n\n• Adds a search tool (requires iOS 11 or later)\n• Adds image sorting by rating score\n• Faster download of album thumbnails (requires Piwigo 2.8 or later)\n• Titles of uploaded images do not default to filenames anymore\n• Fixes impossibility to remove tags\n• Fixes inaccurate image data in some circumstances";
 

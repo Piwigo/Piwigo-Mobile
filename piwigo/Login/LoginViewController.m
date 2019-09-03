@@ -60,6 +60,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"example.com");
 		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverName];
+        self.serverTextField.textColor = [UIColor darkTextColor];
 		self.serverTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
@@ -73,6 +74,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username (optional)");
 		self.userTextField.text = [Model sharedInstance].username;
+        self.userTextField.textColor = [UIColor darkTextColor];
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.userTextField.keyboardType = UIKeyboardTypeDefault;
@@ -87,11 +89,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
 		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
+        self.passwordTextField.textColor = [UIColor darkTextColor];
         self.passwordTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         self.passwordTextField.keyboardType = UIKeyboardTypeDefault;
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
         self.passwordTextField.clearButtonMode = YES;
-		self.passwordTextField.delegate = self;
 		[self.view addSubview:self.passwordTextField];
 		
 		self.loginButton = [PiwigoButton new];
@@ -133,7 +135,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         
         NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
         NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-        self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedString(@"Version:", nil), appVersionString, appBuildString];
+        self.versionLabel.text = [NSString stringWithFormat:@"— %@ %@ (%@) —", NSLocalizedStringFromTableInBundle(@"version", @"About", [NSBundle mainBundle], @"Version:"), appVersionString, appBuildString];
 
         [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)]];
 		
@@ -149,9 +151,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
     [super viewWillAppear:animated];
 
-    // Register for keyboard notifications
-    [self registerForKeyboardNotifications];
-    
     // Not yet trying to login
     self.isAlreadyTryingToLogin = NO;
 }
@@ -159,9 +158,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
-    // Unregister for keyboard notifications while not visible.
-    [self unregisterKeyboardNotifications];
 }
 
 
@@ -817,65 +813,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 }
 
 
-#pragma mark - Keyboard Notifications
-
-- (void)registerForKeyboardNotifications {
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-}
-
-// Called when the UIKeyboardWillShowNotification is sent.
-- (void)keyboardWillShow:(NSNotification*)aNotification {
-    
-    NSDictionary* info = [aNotification userInfo];
-    CGRect kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey]
-                     CGRectValue];
-    NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey]
-                       doubleValue];
-    
-    // If needed, animate the current view out of the way
-    // so that the login button appears above the keyboard
-    CGFloat amount = [UIScreen mainScreen].bounds.size.height / 2.0 + 2 * self.textFieldHeight + 3*10.0 - kbSize.origin.y;
-    if ((amount > 0) && (self.view.frame.origin.y >= 0))
-        [self moveTextFieldsBy:amount inDuration:duration];
-}
-
-// Called when the UIKeyboardWillHideNotification is sent
-- (void)keyboardWillHide:(NSNotification*)aNotification {
-    
-    NSDictionary* info = [aNotification userInfo];
-    CGRect kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey]
-                     CGRectValue];
-    NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey]
-                       doubleValue];
-    
-    // If needed, animate the current view out of the way
-    // so that the login button appears above the keyboard
-    CGFloat amount = [UIScreen mainScreen].bounds.size.height / 2.0 + 2 * self.textFieldHeight + 3*10.0 - kbSize.origin.y;
-    if ((amount > 0) && (self.view.frame.origin.y < 0))
-        [self moveTextFieldsBy:(-amount) inDuration:duration];
-}
-
-- (void)unregisterKeyboardNotifications {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification
-                                                  object:nil];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillHideNotification
-                                                  object:nil];
-}
-
-
 #pragma mark - UITextField Delegate Methods
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
@@ -1051,20 +988,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
-}
-
--(void)moveTextFieldsBy:(CGFloat)amount inDuration:(NSTimeInterval)duration
-{
-    // 1. move the view's origin up so that the text field that will be hidden come above the keyboard
-    // 2. increase the size of the view so that the area behind the keyboard is covered up.
-    CGRect rect = self.view.frame;
-    rect.origin.y -= amount;
-    rect.size.height += amount;
-    self.view.frame = rect;
-
-    [UIView animateWithDuration:duration animations:^{
-        [self.view layoutIfNeeded];
-    }];
 }
 
 -(void)dismissKeyboard

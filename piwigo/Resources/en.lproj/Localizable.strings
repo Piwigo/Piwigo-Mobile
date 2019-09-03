@@ -293,6 +293,14 @@
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "Selected";
 "tagsHeader_all" = "All";
+"tagsAdd_title" = "Add Tag";
+"tagsAdd_message" = "Enter a name for this new tag";
+"tagsAdd_placeholder" = "New tag";
+"tagsAddHUD_label" = "Creating Tag…";
+
+// Image tags errors
+"tagsAddError_message" = "Failed to create new tag";
+"tagsAddError_title" = "Create Fail";
 
 // Image select
 "selectImages" = "Select Images";
@@ -480,29 +488,16 @@
 "settings_logout" = "Logout";
 "settingsFooter_formats" = "The server accepts the following file types";
 
-// Settings — Thumbnails
+// Settings — Unused
 "settingsHeader_general" = "General Settings";
 "settingsHeader_thumbnails" = "Thumbnails";
-"settings_loadAllCategories" = "Download all Albums at Start";
-"settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
 
+// Settings — Albums
 "defaultImageSort" = "Sort";
 "defaultImageSort>320px" = "Default Sort";
 "defaultImageSort>414px" = "Default Sort of Images";
-
-"defaultThumbnailFile" = "File";
-"defaultThumbnailFile>320px" = "Thumbnail File";
-"defaultThumbnailFile>414px" = "Thumbnail Image File";
-"defaultThumbnailSize" = "Size";
-"defaultThumbnailSize>320px" = "Thumbnails Size";
-"defaultThumbnailSize>414px" = "Default Size of Thumbnails";
-"defaultNberOfThumbnails" = "Number";
-"defaultNberOfThumbnails>320px" = "Number/Row";
-"defaultNberOfThumbnails>414px" = "Number per Row";
-//"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Please select a thumbnail image size";
-"settings_displayTitles" = "Titles on Thumbnails";
-"settings_displayTitles>320px" = "Display Titles on Thumbnails";
+"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
+"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
 
 "thumbnailSizeSquare" = "Square";
 "thumbnailSizeThumbnail" = "Thumbnail";
@@ -517,6 +512,20 @@
 
 // Settings — Images
 "settingsHeader_images" = "Images";
+
+"defaultThumbnailFile" = "File";
+"defaultThumbnailFile>320px" = "Thumbnail File";
+"defaultThumbnailFile>414px" = "Images Thumbnail File";
+"defaultThumbnailSize" = "Size";
+"defaultThumbnailSize>320px" = "Thumbnails Size";
+"defaultThumbnailSize>414px" = "Default Size of Thumbnails";
+"defaultNberOfThumbnails" = "Number";
+"defaultNberOfThumbnails>320px" = "Number/Row";
+"defaultNberOfThumbnails>414px" = "Number per Row";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Please select an image thumbnail size";
+"settings_displayTitles" = "Titles on Thumbnails";
+"settings_displayTitles>320px" = "Display Titles on Thumbnails";
 
 "defaultPreviewFile" = "Preview";
 "defaultPreviewFile>320px" = "Preview File";
@@ -566,6 +575,8 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";
+"settings_loadAllCategories" = "Download all Albums at Start";
+"settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Memory";
 "settings_cacheMegabytes" = "MB";
