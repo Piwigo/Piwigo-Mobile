@@ -848,6 +848,7 @@
 			children = (
 				D863EEBE1A6A440D00C0A6E9 /* Login */,
 				D8BDCB5F1A6F6B4200D106A8 /* Albums */,
+				ADE535901F65C01000372CBD /* Image */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
@@ -1020,7 +1021,6 @@
 				ADE535911F65C17E00372CBD /* Album Thumbnail */,
 				D8172E171AB7C06200271DB0 /* Album Move */,
 				AD77109E22F49A7200E64797 /* Album Discover */,
-				ADE535901F65C01000372CBD /* Image */,
 			);
 			path = Albums;
 			sourceTree = "<group>";
