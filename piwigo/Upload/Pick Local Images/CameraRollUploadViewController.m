@@ -809,28 +809,6 @@
     PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:self.nberOfImagesPerRow collectionType:kImageCollectionPopup]];
     
-    // For some unknown reason, the asset resource may be empty
-    NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-    NSString *originalFilename;
-    if ([resources count] > 0) {
-        originalFilename = ((PHAssetResource*)resources[0]).originalFilename;
-    } else {
-        // No filename => Build filename from 32 characters of local identifier
-        NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
-        originalFilename = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        // Filename extension required by Piwigo so that it knows how to deal with it
-        if (imageAsset.mediaType == PHAssetMediaTypeImage) {
-            // Adopt JPEG photo format by default, will be rechecked
-            originalFilename = [originalFilename stringByAppendingPathExtension:@"jpg"];
-        } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
-            // Videos are exported in MP4 format
-            originalFilename = [originalFilename stringByAppendingPathExtension:@"mp4"];
-        } else if (imageAsset.mediaType == PHAssetMediaTypeAudio) {
-            // Arbitrary extension, not managed yet
-            originalFilename = [originalFilename stringByAppendingPathExtension:@"m4a"];
-        }
-    }
-    
     // Add pan gesture recognition
     UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
     imageSeriesRocognizer.minimumNumberOfTouches = 1;
@@ -842,6 +820,7 @@
     
     // Cell state
     cell.cellSelected = [self.selectedImages containsObject:imageAsset];
+    NSString *originalFilename = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
     cell.cellUploading = [[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]];
     
     return cell;

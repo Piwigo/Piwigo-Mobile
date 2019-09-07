@@ -156,9 +156,9 @@
 
 -(void)removeImageFromTableView:(ImageUpload*)imageToRemove
 {
-	for(NSInteger i = 0; i < self.imagesToEdit.count; i++)
+	for (NSInteger i = 0; i < self.imagesToEdit.count; i++)
 	{
-		if([((ImageUpload*)[self.imagesToEdit objectAtIndex:i]).fileName isEqualToString:imageToRemove.fileName])
+        if ([[((ImageUpload *)[self.imagesToEdit objectAtIndex:i]).fileName stringByDeletingPathExtension] isEqualToString:[imageToRemove.fileName stringByDeletingPathExtension]])
 		{
 			[self.imagesToEdit removeObjectAtIndex:i];
 			[self.uploadImagesTableView reloadData];

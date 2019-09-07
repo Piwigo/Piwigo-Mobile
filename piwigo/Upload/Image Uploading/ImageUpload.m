@@ -8,6 +8,7 @@
 
 #import <Photos/Photos.h>
 
+#import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
@@ -19,46 +20,13 @@
     self = [super init];
     if(self)
     {
+        // Initialisation
         self.imageAsset = imageAsset;
-        if (imageAsset) {
-            // For some unknown reason, the asset resource may be empty
-            NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-            if ([resources count] > 0) {
-                for (PHAssetResource *resource in resources) {
-                    if (resource.type == PHAssetResourceTypeAdjustmentData) {
-                        continue;
-                    }
-                    self.fileName = [resource originalFilename];
-                    self.creationDate = [imageAsset creationDate];
-                    self.pixelWidth = [imageAsset pixelWidth];
-                    self.pixelHeight = [imageAsset pixelHeight];
-                    break;
-                }
-            } else {
-                // No filename => Build filename from current date
-                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                [dateFormatter setDateFormat:@"yyyyMMdd-HHmmssSSSS"];
-                [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
-                self.fileName = [dateFormatter stringFromDate:[NSDate date]];
+        self.fileName = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
+        self.creationDate = [imageAsset creationDate];
+        self.pixelWidth = [imageAsset pixelWidth];
+        self.pixelHeight = [imageAsset pixelHeight];
 
-                // Filename extension required by Piwigo so that it knows how to deal with it
-                if (imageAsset.mediaType == PHAssetMediaTypeImage) {
-                    // Adopt JPEG photo format by default, will be rechecked
-                    self.fileName = [self.fileName stringByAppendingPathExtension:@"jpg"];
-//                    self.title = NSLocalizedString(@"singleImage", @"Image");
-                } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
-                    // Videos are exported in MP4 format
-                    self.fileName = [self.fileName stringByAppendingPathExtension:@"mp4"];
-//                    self.title = NSLocalizedString(@"singleVideo", @"Video");
-                } else if (imageAsset.mediaType == PHAssetMediaTypeAudio) {
-                    // Arbitrary extension, not managed yet
-                    self.fileName = [self.fileName stringByAppendingPathExtension:@"m4a"];
-//                    self.title = NSLocalizedString(@"singleAudio", @"Audio");
-                }
-            }
-        } else {
-            self.fileName = @"";
-        }
         self.title = @"";
         self.categoryToUploadTo = category;
         self.privacyLevel = privacy;
@@ -153,21 +121,24 @@
     return self;
 }
 
--(NSString *)author {
+-(NSString *)author
+{
     if (nil == _author) {
         _author = @"";
     }
     return _author;
 }
 
--(NSString *)imageDescription {
+-(NSString *)imageDescription
+{
     if (nil == _imageDescription) {
         _imageDescription = @"";
     }
     return _imageDescription;
 }
 
--(NSString *)title {
+-(NSString *)title
+{
     if (nil == _title) {
         _title = @"";
     }
