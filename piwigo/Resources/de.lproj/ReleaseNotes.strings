@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.2_text" = "Version 2.4.2\n\n• Fügt die Fähigkeit hinzu, Stichwörter (nur Administratoren) zu erstellen\n• Fügt die Fähigkeit ein, die Größe der Miniaturbilder zu ändern\n• Retina Display Verwaltung\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
+"v2.4.3_text" = "Version 2.4.3\n\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
+
+"v2.4.2_text" = "Version 2.4.2\n3. September 2019\n\n• Fügt die Fähigkeit hinzu, Stichwörter (nur Administratoren) zu erstellen\n• Fügt die Fähigkeit ein, die Größe der Miniaturbilder zu ändern\n• Retina Display Verwaltung\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
 
 "v2.4.1_text" = "Version 2.4.1\n10. August 2019\n\n• Fügt die Alben \"Schlagwörter\", \"Am häufigsten angesehen\", \"Am besten bewertet\" und \"Neueste Fotos\" hinzu\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 

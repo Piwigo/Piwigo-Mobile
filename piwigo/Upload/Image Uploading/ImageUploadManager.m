@@ -296,7 +296,7 @@
             if (error) {
                 // Inform user and propose to cancel or continue
                 [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
-                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image from iCloud. Error: %@"), [error localizedDescription]]
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
                              forRetrying:YES
                                withImage:image];
                 return;
@@ -331,7 +331,7 @@
                  NSError *error = [info valueForKey:PHImageErrorKey];
                  // Inform user and propose to cancel or continue
                  [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
-                               andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image from iCloud. Error: %@"), [error localizedDescription]]
+                               andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
                               forRetrying:YES
                                 withImage:image];
                  return;
@@ -375,7 +375,7 @@
             if (error) {
                 // Inform user and propose to cancel or continue
                 [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
-                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image from iCloud. Error: %@"), [error localizedDescription]]
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
                              forRetrying:YES
                                withImage:image];
                 return;
@@ -409,7 +409,7 @@
                              NSError *error = [info valueForKey:PHImageErrorKey];
                              // Inform user and propose to cancel or continue
                              [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
-                                           andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image from iCloud. Error: %@"), [error localizedDescription]]
+                                           andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
                                           forRetrying:YES
                                             withImage:image];
                              return;
@@ -730,7 +730,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
             if (error) {
                 // Inform user and propose to cancel or continue
                 [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
+                              andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video. Error: %@"), [error localizedDescription]]
                              forRetrying:YES
                                withImage:image];
                 return;
@@ -810,7 +810,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                           // Inform user and propose to cancel or continue
                                           NSError *error = [info valueForKey:PHImageErrorKey];
                                           [self showErrorWithTitle:NSLocalizedString(@"videoUploadError_title", @"Video Upload Error")
-                                                        andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video from iCloud. Error: %@"), [error localizedDescription]]
+                                                        andMessage:[NSString stringWithFormat:NSLocalizedString(@"videoUploadError_iCloud", @"Could not retrieve video. Error: %@"), [error localizedDescription]]
                                                        forRetrying:YES
                                                          withImage:image];
                                           return;
