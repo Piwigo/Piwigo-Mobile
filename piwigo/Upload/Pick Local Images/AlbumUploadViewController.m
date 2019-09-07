@@ -1007,9 +1007,33 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         // Collect new list of images
         self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfAlbumCollection:self.imageCollection
                                                                             withSortType:self.sortType];
+        // Loop over selection
+        for (PHAsset *selectedImage in [self.selectedImages copy])
+        {
+            // Loop over all sections
+            BOOL selectedImageExists = NO;
+            for (NSInteger section = 0; section < [self.imagesInSections count]; section++)
+            {
+                // Loop over images in section
+                for (NSInteger row = 0; row < [[self.imagesInSections objectAtIndex:section] count]; row++)
+                {
+                    // Check that image exists
+                    PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:section] objectAtIndex:row];
+                    if ([self.selectedImages containsObject:imageAsset]) {
+                        selectedImageExists = YES;
+                    }
+                }
+            }
+            
+            // Remove selected image if it has been deleted
+            if (!selectedImageExists) [self.selectedImages removeObject:selectedImage];
+        }
         
         // Reload local image collection
         [self.localImagesCollection reloadData];
+        
+        // Update Select buttons
+        [self updateSelectButtons];
     });
 }
 
