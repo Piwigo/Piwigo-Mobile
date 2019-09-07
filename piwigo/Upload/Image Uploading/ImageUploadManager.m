@@ -1246,36 +1246,29 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                             [self.delegate imageProgress:image onCurrent:self.current forTotal:self.total onChunk:currentChunk forChunks:totalChunks iCloudProgress:self.iCloudProgress];
                         }
                     } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+
+                        if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+                        {
                         // Consider image job done
                         self.onCurrentImageUpload++;
                         
-                        // Set properties of uploaded image/video on Piwigo server
-                        [self setImageResponse:response withInfo:imageProperties];
+                            // Get imageId
+                            NSDictionary *imageResponse = [response objectForKey:@"result"];
+                            NSString *imageId = [imageResponse objectForKey:@"image_id"];
                         
-                        // Release memory
-                        imageProperties = nil;
-                        self.imageData = nil;
+                            // Set properties of uploaded image/video on Piwigo server and add it to cahe
+                            [self setImage:image withInfo:imageProperties andId:imageId];
 
                         // The image must be moderated if the Community plugin is installed
-                        if ([Model sharedInstance].usesCommunityPluginV29) {
-
-                            // Append image to cache and prepare list for moderators
-                            if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+                            if ([Model sharedInstance].usesCommunityPluginV29)
                             {
-                                // Get imageId
-                                NSDictionary *imageResponse = [response objectForKey:@"result"];
-                                NSString *imageId = [imageResponse objectForKey:@"image_id"];
-                                
                                 // Append image to list of images to moderate
                                 self.uploadedImagesToBeModerated = [self.uploadedImagesToBeModerated stringByAppendingFormat:@"%@,", imageId];
                             }
-                        }
 
-                        // Increment number of images in category
-                        [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
-                        
-                        // Read image/video information and update cache
-                        [self addImageDataToCategoryCache:response];
+                            // Release memory
+                            imageProperties = nil;
+                            self.imageData = nil;
                         
                         // Delete image from Photos library if requested
                         if ([Model sharedInstance].deleteImageAfterUpload &&
@@ -1287,8 +1280,28 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                             // Remove image from queue and upload next one
                             [self uploadNextImageAndRemoveImageFromQueue:image withResponse:response];
                         });
+                        }
+                        else {
+                            // Release memory
+                            imageProperties = nil;
+                            self.imageData = nil;
+
+                            // Display Piwigo error
+                            NSString *errorMsg = @"";
+                            if ([response objectForKey:@"message"]) {
+                                errorMsg = [response objectForKey:@"message"];
+                            }
+                            [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                                          andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), errorMsg]
+                                         forRetrying:YES
+                                           withImage:image];
+                        }
                         
                     } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                        // Release memory
+                        imageProperties = nil;
+                        self.imageData = nil;
+
                         // What should we do?
                         ImageUpload *imageBeingUploaded = [self.imageUploadQueue firstObject];
                         if (imageBeingUploaded.stopUpload) {
@@ -1399,37 +1412,33 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 
 #pragma mark - Finish image upload
 
--(void)setImageResponse:(NSDictionary*)jsonResponse withInfo:(NSDictionary*)imageProperties
+-(void)setImage:(ImageUpload *)image withInfo:(NSDictionary*)imageInfo andId:(NSString*)imageId
 {
-    if([[jsonResponse objectForKey:@"stat"] isEqualToString:@"ok"])
-    {
-        NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
-        NSString *imageId = [imageResponse objectForKey:@"image_id"];
-        
         // Set properties of image on Piwigo server
         [UploadService setImageInfoForImageWithId:imageId
-                                  withInformation:imageProperties
+                              withInformation:imageInfo
                                        onProgress:^(NSProgress *progress) {
                                            // progress
                                        } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-                                           // completion
+
+                                           // Increment number of images in category
+                                           [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
+                                       
+                                           // Read image/video information and update cache
+                                           [self addImageDataToCategoryCache:[imageId integerValue]];
+                                       
                                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
                                            // fail
                                        }];
-        
-    }
 }
 
--(void)addImageDataToCategoryCache:(NSDictionary*)jsonResponse
+-(void)addImageDataToCategoryCache:(NSInteger)imageId
 {
-    if([[jsonResponse objectForKey:@"stat"] isEqualToString:@"ok"])
+    // Read image information and update cache
+    [ImageService getImageInfoById:imageId
+                andAddImageToCache:YES
+                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData)
     {
-        NSDictionary *imageResponse = [jsonResponse objectForKey:@"result"];
-        NSString *imageId = [imageResponse objectForKey:@"image_id"];
-    
-        // Read image information and update cache
-        [ImageService getImageInfoById:[imageId integerValue]
-                      ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                           // Post to the app that the category data have been updated
 //                          NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
 //                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
@@ -1437,7 +1446,6 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
                           //
                       }];
-    }
 }
 
 

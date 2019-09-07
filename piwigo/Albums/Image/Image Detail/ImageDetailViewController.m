@@ -278,6 +278,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:imageId
+                andAddImageToCache:NO
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
               if (imageDataComplete != nil) {
 

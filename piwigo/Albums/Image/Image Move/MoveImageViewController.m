@@ -208,6 +208,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     // Image data are not complete when retrieved using pwg.categories.getImages
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:[[self.selectedImageIds lastObject] integerValue]
+                andAddImageToCache:NO
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
               
               if (imageDataComplete != nil) {
@@ -548,10 +549,10 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
                     if (!self.copyImage) {
                         [[[CategoriesData sharedInstance] getCategoryById:self.categoryIdOfSelectedImages] removeImages:@[self.selectedImage]];
                         [[[CategoriesData sharedInstance] getCategoryById:self.categoryIdOfSelectedImages] deincrementImageSizeByOne];
-                    }
 
-                    // Notify album/image view of modification
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                        // Notify album/image view of modification
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                    }
 
                     // When called from image preview, return to image or album
                     if (self.selectedImages.count <= 0) {

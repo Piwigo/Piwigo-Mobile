@@ -562,7 +562,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                             [appDelegate loadNavigation];
                         } else {
                             // Refresh category data
-                            NSDictionary *userInfo = @{@"fromCache" : @"NO"};
+                            NSDictionary *userInfo = @{@"NoHUD" : @"NO", @"fromCache" : @"NO", @"albumId" : @(0)};
                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
                         }
                     }];

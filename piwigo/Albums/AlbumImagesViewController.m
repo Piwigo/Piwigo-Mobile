@@ -38,6 +38,10 @@
 #import "SettingsViewController.h"
 #import "TagSelectViewController.h"
 
+#ifndef DEBUG_LIFECYCLE
+#define DEBUG_LIFECYCLE
+#endif
+
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
@@ -201,6 +205,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     [super viewDidLoad];
     
+    // Reload category data
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"viewDidLoad => ID:%ld", (long)self.categoryId);
+#endif
+    [self getCategoryData:nil];
+
     // For iOS 11 and later: place search bar in navigation bar or root album
     if (@available(iOS 11.0, *)) {
         // Initialise search controller when displaying root album
@@ -296,6 +306,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
 	[super viewWillAppear:animated];
 	
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"viewWillAppear  => ID:%ld", (long)self.categoryId);
+#endif
+    
     // Called before displaying SearchImagesViewController?
     UIViewController *presentedViewController = [self presentedViewController];
     if ([presentedViewController isKindOfClass:[UISearchController class]]) {
@@ -307,16 +321,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Set colors, fonts, etc.
     [self paletteChanged];
     
-    // Reload category data and refresh showing cells
-    [self getCategoryData:nil];
-    [self refreshShowingCells];
-
     // Inform Upload view controllers that user selected this category
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
     
     // Load, sort images and reload collection
     if (self.categoryId != 0) {
+#if defined(DEBUG_LIFECYCLE)
+        NSLog(@"viewWillAppear  => load images");
+#endif
         self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
@@ -328,12 +341,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         }];
     }
     else {
+#if defined(DEBUG_LIFECYCLE)
+        NSLog(@"viewWillAppear  => reload albums table");
+#endif
         if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
             [self.imagesCollection reloadData];
         }
     }
     
-    // Refresh image collection if displayImageTitles option changed
+    // Refresh image collection if displayImageTitles option changed in Settings
     if (self.displayImageTitles != [Model sharedInstance].displayImageTitles) {
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         if (self.categoryId != 0) {
@@ -713,26 +729,33 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)getCategoryData:(NSNotification *)notification
 {
-    // Reload category data
-//    NSLog(@"getCategoryData => getAlbumListForCategory(%ld,%d,%d)", (long)self.categoryId,([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit),[Model sharedInstance].loadAllCategoryInfo);
-
-    // Display HUD if requested
+    // Extract notification user info
     BOOL noHUD = NO;
     if (notification != nil) {
         NSDictionary *userInfo = notification.userInfo;
+
+        // Right category Id?
+        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+        if (catId != self.categoryId) return;
+        
+        // Display HUD?
         noHUD = [[userInfo objectForKey:@"NoHUD"] boolValue];
+
+        // Disable cache?
+        self.isCachedAtInit = [[userInfo objectForKey:@"fromCache"] boolValue];
     }
+
+    // Display HUD if requested
     if (!([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) && !noHUD) {
         // Show loading HD
         [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
     }
     
-    // Disable cache if requested
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
-        self.isCachedAtInit = [[userInfo objectForKey:@"fromCache"] boolValue];
-    }
-
+    // Reload category data
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"getCategoryData => getAlbumListForCategory(ID:%ld, cache:%@, recursive:%@)", (long)self.categoryId,([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) ? @"Yes" : @"No",[Model sharedInstance].loadAllCategoryInfo ? @"Yes" : @"No");
+#endif
+    
     // Load category data
     [AlbumService getAlbumListForCategory:self.categoryId
                                usingCache:([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit)
@@ -756,8 +779,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-//    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", [Model sharedInstance].loadAllCategoryInfo ? (long)0 : (long)self.categoryId);
-
     // Show loading HD
     [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
 
@@ -783,7 +804,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)refreshShowingCells
 {
-//    NSLog(@"refreshShowingCells…");
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"refreshShowingCells…");
+#endif
     NSArray *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
 
     for(UICollectionViewCell *cell in self.imagesCollection.visibleCells)
@@ -823,8 +846,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)categoriesUpdated
 {
-//    NSLog(@"=> categoriesUpdated… %ld", self.categoryId);
-
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"                => categoriesUpdated… %ld", self.categoryId);
+#endif
+    
     // Images ?
     if (self.categoryId != 0) {
         self.loadingImages = YES;
@@ -832,7 +857,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
              // Sort images
              [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-//                 NSLog(@"categoriesUpdated:Sorting images…");
 
                  // The album title is not shown in backButtonItem to provide enough space
                  // for image title on devices of screen width <= 414 ==> Restore album title
@@ -1113,6 +1137,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Image data are not complete when retrieved with pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToDelete lastObject] integerValue]
+                andAddImageToCache:NO
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
               if (imageData != nil) {
@@ -1242,8 +1267,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Add actions
     [alert addAction:cancelAction];
-    if (self.selectedImagesToRemove.count > 0) { [alert addAction:removeImagesAction]; }
     [alert addAction:deleteImagesAction];
+    if (self.selectedImagesToRemove.count > 0) { [alert addAction:removeImagesAction]; }
 
     // Present list of actions
     alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
@@ -1454,6 +1479,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToShare lastObject] integerValue]
+                andAddImageToCache:NO
                   ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       
                       if (imageData != nil) {

@@ -584,6 +584,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 }
 
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
+                  andAddImageToCache:(BOOL)addImage
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
@@ -605,7 +606,11 @@ NSString * const kGetImageOrderDescending = @"desc";
 						  PiwigoImageData *imageData = [ImageService parseBasicImageInfoJSON:[responseObject objectForKey:@"result"]];
 						  for(NSNumber *categoryId in imageData.categoryIds)
 						  {
-							  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] updateImages:@[imageData]];
+                              if (addImage) {
+                                  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] addImages:@[imageData]];
+                              } else {
+							  	  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] updateImages:@[imageData]];
+						  }
 						  }
 						  completion(task, imageData);
 					  }

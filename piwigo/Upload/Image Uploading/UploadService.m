@@ -159,8 +159,31 @@
                                              @"multiple_value_mode" : @"replace"
                                              }
                                   progress:progress
-                                   success:completion
-                                   failure:fail];
+               success:^(NSURLSessionTask *task, id responseObject) {
+                        if(completion) {
+                            if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                            {
+                                completion(task, responseObject);
+                            }
+                            else
+                            {
+                                // Display Piwigo error
+                                NSInteger errorCode = NSNotFound;
+                                if ([responseObject objectForKey:@"err"]) {
+                                    errorCode = [[responseObject objectForKey:@"err"] intValue];
+                                }
+                                NSString *errorMsg = @"";
+                                if ([responseObject objectForKey:@"message"]) {
+                                    errorMsg = [responseObject objectForKey:@"message"];
+                                }
+                                [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImagesGetInfo andURLparams:nil];
+
+                                completion(task, nil);
+                            }
+                        }
+                    }
+                   failure:fail
+    ];
 	
 	return request;
 }
@@ -211,7 +234,7 @@
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                                    
                                    // Update cache
-                                   [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImageAfterUpload:imageInfo];
+                                   [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImageAfterEdit:imageInfo];
                                    
                                    if(completion)
                                    {

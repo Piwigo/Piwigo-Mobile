@@ -55,6 +55,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
+                  andAddImageToCache:(BOOL)addImage
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
