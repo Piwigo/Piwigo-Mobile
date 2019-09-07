@@ -556,13 +556,13 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
                     // When called from image preview, return to image or album
                     if (self.selectedImages.count <= 0) {
                         // Hide HUD
-                        [self hideHUDwithSuccess:YES completion:nil];
-                        
-                        // Return to album view if image moved
-                        if (self.copyImage)
-                            [self quitAfterCopyingImageWithCategoryIds:categoryIds];
-                        else
-                            [self quitMoveImageAndReturnToAlbumView];
+                        [self hideHUDwithSuccess:YES completion:^{
+                            // Return to album view if image moved
+                            if (self.copyImage)
+                                [self quitAfterCopyingImageWithCategoryIds:categoryIds];
+                            else
+                                [self quitMoveImageAndReturnToAlbumView];
+                        }];
                     }
                     else if (self.selectedImages.count > 1) {
                         // Update album view if image moved
@@ -594,14 +594,14 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
                         }
                         
                         // Hide HUD
-                        [self hideHUDwithSuccess:YES completion:nil];
-                        
-                        // Deselect images
-                        if([self.moveImagesDelegate respondsToSelector:@selector(deselectImages)])
-                        {
-                            [self.moveImagesDelegate deselectImages];
-                        }
-                        [self quitMoveImage];
+                        [self hideHUDwithSuccess:YES completion:^{
+                            // Deselect images
+                            if([self.moveImagesDelegate respondsToSelector:@selector(deselectImages)])
+                            {
+                                [self.moveImagesDelegate deselectImages];
+                            }
+                            [self quitMoveImage];
+                        }];
                     }
                 }
                 else {
@@ -693,7 +693,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
                 hud.customView = imageView;
                 hud.mode = MBProgressHUDModeCustomView;
                 hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
-                [hud hideAnimated:YES afterDelay:2.f];
+                [hud hideAnimated:YES afterDelay:1.f];
             } else {
                 [hud hideAnimated:YES];
             }
