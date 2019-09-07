@@ -847,7 +847,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)categoriesUpdated
 {
 #if defined(DEBUG_LIFECYCLE)
-    NSLog(@"                => categoriesUpdated… %ld", self.categoryId);
+    NSLog(@"                => categoriesUpdated… %ld", (long)self.categoryId);
 #endif
     
     // Images ?
