@@ -1074,6 +1074,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         // Number of rows will change accordingly
                         [Model sharedInstance].switchPaletteAutomatically = switchState;
 
+                        // Switch off Dark Palette mode if dynamic palette mode enabled
+                        if (switchState) [Model sharedInstance].isDarkPaletteModeActive = NO;
+
                         // Store modified setting
                         [[Model sharedInstance] saveToDisk];
 
@@ -1130,9 +1133,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
                             // Number of rows will change accordingly
                             [Model sharedInstance].isDarkPaletteModeActive = switchState;
-
-                            // Switch off auto mode if dark palette mode disabled
-                            if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
 
                             // Store modified setting
                             [[Model sharedInstance] saveToDisk];

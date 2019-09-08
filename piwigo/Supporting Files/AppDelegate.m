@@ -290,7 +290,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 // Called when the screen brightness has changed or when user changes settings
 -(void)setColorSettingsWithiOSInDarkMode:(BOOL)isDarkMode
 {
-    NSLog(@"Screen Brightness: %f/%f and Dark Mode:%@",[[UIScreen mainScreen] brightness], [Model sharedInstance].switchPaletteThreshold, isDarkMode ? @"Yes" : @"No");
+    NSLog(@"Screen Brightness: %f/%ld and Dark Mode:%@",[[UIScreen mainScreen] brightness] * 100.0, (long)[Model sharedInstance].switchPaletteThreshold, isDarkMode ? @"Yes" : @"No");
     if ([Model sharedInstance].isDarkPaletteModeActive || isDarkMode) {
         // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
         if ([Model sharedInstance].isDarkPaletteActive) {
