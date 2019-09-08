@@ -102,6 +102,8 @@
 
 -(void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     // Navigation bar
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
 }
