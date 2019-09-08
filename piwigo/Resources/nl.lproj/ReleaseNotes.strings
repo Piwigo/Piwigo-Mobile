@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.3_text" = "Versie 2.4.3\n\n• Kleine foutjes hersteld en verbetering van de interface";
+"v2.4.3_text" = "Versie 2.4.3\n\n• iOS 13-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface";
 
 "v2.4.2_text" = "Versie 2.4.2\n3 September 2019\n\n• Voegt de mogelijkheid om labels te maken toe (alleen voor admin gebruikers)\n• Voegt de mogelijkheid om de grootte van de album-miniaturen te veranderen\n• Voegt Retina beeldscherm-management toe\n• Kleine foutjes hersteld en verbetering van de interface";
 

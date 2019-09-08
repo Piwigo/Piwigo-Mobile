@@ -586,7 +586,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Kleuren";
-"settings_darkPalette" = "Donker palet";
+"settings_darkPalette" = "Altijd donker palet";
 "settings_switchPalette" = "Schakel automatisch";
 "settings_brightness" = "Helderheid";
 

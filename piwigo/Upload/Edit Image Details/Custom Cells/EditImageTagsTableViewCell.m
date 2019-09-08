@@ -31,10 +31,10 @@
 	self.leftLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
     self.leftLabel.font = [UIFont piwigoFontNormal];
     self.rightLabel.font = [UIFont piwigoFontNormal];
-    [self paletteChanged];
+    [self applyPaletteSettings];
 }
 
--(void)paletteChanged
+-(void)applyPaletteSettings
 {
     self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];

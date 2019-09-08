@@ -35,14 +35,14 @@
         self.videoView = [VideoView new];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)applyPaletteSettings
 {
     // Background color depends on the navigation bar visibility
     if (self.navigationController.navigationBarHidden)
@@ -50,7 +50,7 @@
     else
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 
-    // Navigation bar appearence
+    // Navigation bar
     self.navigationBarHidden = YES;
 }
 
@@ -59,7 +59,21 @@
 	[super viewWillAppear:animated];
 
     // Set colors, fonts, etc.
-    [self paletteChanged];    
+    [self applyPaletteSettings];    
+}
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated

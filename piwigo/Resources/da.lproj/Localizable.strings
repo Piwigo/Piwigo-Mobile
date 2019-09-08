@@ -586,7 +586,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Farver";
-"settings_darkPalette" = "Mørk palet";
+"settings_darkPalette" = "Altid mørk palet";
 "settings_switchPalette" = "Skift automatisk";
 "settings_brightness" = "Lysstyrke";
 

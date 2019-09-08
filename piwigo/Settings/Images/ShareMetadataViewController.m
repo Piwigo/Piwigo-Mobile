@@ -46,7 +46,7 @@
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(stopEditingOptions)];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -54,26 +54,19 @@
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)applyPaletteSettings
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
     // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Table view
-    self.privacyTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.privacyTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.privacyTableView reloadData];
 }
@@ -189,7 +182,7 @@
     activitiesNotSharingMetadata = nil;
     
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyPaletteSettings];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -202,6 +195,23 @@
         [self.privacyTableView reloadData];
     } completion:nil];
 }
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
+
+#pragma mark - Editing mode
 
 -(void)startEditingOptions
 {

@@ -58,7 +58,7 @@
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -100,24 +100,25 @@
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)viewDidLoad
+{
+    // Navigation bar
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
+}
+
+-(void)applyPaletteSettings
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
+    // Navigation bar
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
 
     // Table view
-    self.localAlbumsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.localAlbumsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.localAlbumsTableView reloadData];
 }
@@ -130,12 +131,26 @@
     self.title = NSLocalizedString(@"localAlbums", @"Photos library");
 
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyPaletteSettings];
     
     // Navigation bar button
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 }
 
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
+}
 
 -(void)viewWillDisappear:(BOOL)animated
 {

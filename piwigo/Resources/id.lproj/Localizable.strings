@@ -586,7 +586,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Warna";
-"settings_darkPalette" = "Palet gelap";
+"settings_darkPalette" = "Palet Selalu Gelap";
 "settings_switchPalette" = "Beralih secara otomatis";
 "settings_brightness" = "Kecerahan";
 

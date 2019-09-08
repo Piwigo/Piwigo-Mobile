@@ -68,7 +68,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 		self.progressBar = [UIProgressView new];
 		self.progressBar.translatesAutoresizingMaskIntoConstraints = NO;
 		self.progressBar.hidden = NO;
-		self.progressBar.tintColor = [UIColor piwigoOrange];
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
 		[self.progressBar addConstraint:[NSLayoutConstraint constraintView:self.progressBar toHeight:3]];
@@ -94,7 +93,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
         [self.moveBarButton setAccessibilityIdentifier:@"Move"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+//        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
 
         // Current image
         self.imageData = [self.images objectAtIndex:imageIndex];
@@ -122,7 +121,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPinchView) name:kPiwigoNotificationPinchedImage object:nil];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
 	}
 	return self;
 }
@@ -130,25 +129,15 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)applyPaletteSettings
 {
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    // Navigation bar
     [self setTitleViewFromImageData];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-
-    // Toolbar
-    [self.navigationController.toolbar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;    
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -160,7 +149,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyPaletteSettings];
 
     // Image options buttons
     [self updateNavBar];
@@ -173,6 +162,31 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 	}
 }
 
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    // Reload the tableview on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self updateNavBar];
+        [self setTitleViewFromImageData];
+    } completion:nil];
+}
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -182,16 +196,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     {
         [self.imgDetailDelegate didFinishPreviewOfImageWithId:self.imageData.imageId];
     }
-}
-
--(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
-    // Reload the tableview on orientation change, to match the new width of the table.
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self updateNavBar];
-        [self setTitleViewFromImageData];
-    } completion:nil];
 }
 
 -(void)updateNavBar

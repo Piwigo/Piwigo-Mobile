@@ -586,7 +586,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Farben";
-"settings_darkPalette" = "Dunkle Palette";
+"settings_darkPalette" = "Immer dunkle Palette";
 "settings_switchPalette" = "Automatisch umschalten";
 "settings_brightness" = "Helligkeit";
 

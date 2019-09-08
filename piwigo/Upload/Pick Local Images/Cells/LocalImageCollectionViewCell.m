@@ -86,8 +86,6 @@
         // Uploading stuff: progress bar
 		self.uploadingProgress = [UIProgressView new];
 		self.uploadingProgress.translatesAutoresizingMaskIntoConstraints = NO;
-        self.uploadingProgress.progressTintColor = [UIColor piwigoOrange];
-        self.uploadingProgress.trackTintColor = [UIColor piwigoLeftLabelColor];
 		[self.uploadingView addSubview:self.uploadingProgress];
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgress]];
         [self.uploadingView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.uploadingProgress amount:10]];

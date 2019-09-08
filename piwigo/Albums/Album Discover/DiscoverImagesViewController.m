@@ -65,36 +65,13 @@
         }
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
 
 
 #pragma mark - View Lifecycle
-
--(void)paletteChanged
-{
-    // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    if (@available(iOS 11.0, *)) {
-        self.navigationController.navigationBar.prefersLargeTitles = NO;
-    }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-
-    // Collection view
-    self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
-}
 
 -(void)viewDidLoad
 {
@@ -111,18 +88,49 @@
     }];
 }
 
+-(void)applyPaletteSettings
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+
+    // Navigation bar
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
+
+    // Collection view
+    self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyPaletteSettings];
 
     // Title is name of the category
     self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 
     // Hide toolbar
     [self.navigationController setToolbarHidden:YES animated:YES];
+}
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated

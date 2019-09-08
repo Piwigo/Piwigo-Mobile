@@ -17,6 +17,6 @@ FOUNDATION_EXPORT NSString * const kPiwigoNetworkErrorEncounteredNotification;
 
 -(void)loadLoginView;
 -(void)loadNavigation;
--(void)screenBrightnessChanged;
+-(void)setColorSettingsWithiOSInDarkMode:(BOOL)isDarkMode;
 
 @end

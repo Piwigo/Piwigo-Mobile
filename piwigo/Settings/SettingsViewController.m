@@ -93,41 +93,12 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }
 
 #pragma mark - View Lifecycle
-
--(void)paletteChanged
-{
-    // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    if (@available(iOS 11.0, *)) {
-        NSDictionary *attributesLarge = @{
-                                          NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                          NSFontAttributeName: [UIFont piwigoFontLargeTitle],
-                                          };
-        self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
-        self.navigationController.navigationBar.prefersLargeTitles = YES;
-    }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
-    // Table view
-    self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
-    self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self.settingsTableView reloadData];
-}
 
 -(void)viewDidLoad
 {
@@ -138,12 +109,34 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         [self getInfos];
 }
 
+-(void)applyPaletteSettings
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 11.0, *)) {
+        NSDictionary *attributesLarge = @{
+                                          NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                          NSFontAttributeName: [UIFont piwigoFontLargeTitle],
+                                          };
+        self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
+        self.navigationController.navigationBar.prefersLargeTitles = YES;
+    }
+    
+    // Table view
+    self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    [self.settingsTableView reloadData];
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyPaletteSettings];
     
     // Set navigation buttons
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
@@ -194,11 +187,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
@@ -215,6 +203,25 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         // Reload table view
         [self.settingsTableView reloadData];
     } completion:nil];
+}
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
 }
 
 -(void)quitSettings
@@ -430,7 +437,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                                 ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
             break;
         case SettingsSectionColor:
-            nberOfRows = 1 + ([Model sharedInstance].isDarkPaletteModeActive ? 1 + ([Model sharedInstance].switchPaletteAutomatically ? 1 : 0) : 0);
+            nberOfRows = 2;
             break;
         case SettingsSectionCache:
             nberOfRows = 3;
@@ -939,7 +946,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         };
                         
                         tableViewCell = cell;
-                    } else if ([Model sharedInstance].compressImageOnUpload) {
+                    }
+                    else if ([Model sharedInstance].compressImageOnUpload) {
                         SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
                         if(!cell)
                         {
@@ -955,7 +963,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
                         
                         tableViewCell = cell;
-                    } else {
+                    }
+                    else {
                         SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"delete"];
                         if(!cell) {
                             cell = [SwitchTableViewCell new];
@@ -1051,53 +1060,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                                       ![Model sharedInstance].hadOpenedSession;
             switch (indexPath.row)
             {
-                case 0:     // Dark Palette Mode
-                {
-                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"darkPalette"];
-                    if(!cell) {
-                        cell = [SwitchTableViewCell new];
-                    }
-                    
-                    cell.leftLabel.text = NSLocalizedString(@"settings_darkPalette", @"Dark Palette");
-                    [cell.cellSwitch setOn:[Model sharedInstance].isDarkPaletteModeActive];
-                    cell.cellSwitchBlock = ^(BOOL switchState) {
-
-                        // Number of rows will change accordingly
-                        [Model sharedInstance].isDarkPaletteModeActive = switchState;
-
-                        // Position of the row(s) that should be added/removed
-                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
-                                                            inSection:SettingsSectionColor - sectionOffset];
-                        NSIndexPath *row2AtIndexPath = [NSIndexPath indexPathForRow:2
-                                                            inSection:SettingsSectionColor - sectionOffset];
-                        if(switchState) {
-                            // Insert row in existing table
-                            if ([Model sharedInstance].switchPaletteAutomatically)
-                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            else
-                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        } else {
-                            // Remove row in existing table
-                            if ([Model sharedInstance].switchPaletteAutomatically)
-                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath,row2AtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            else
-                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        }
-                        // Switch off auto mode if dark palette mode disabled
-                        if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
-
-                        // Store modified setting
-                        [[Model sharedInstance] saveToDisk];
- 
-                        // Notify palette change
-                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate screenBrightnessChanged];
-                    };
-                    
-                    tableViewCell = cell;
-                    break;
-                }
-                case 1:     // Switch automatically ?
+                case 0:     // Switch automatically ?
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchPalette"];
                     if(!cell) {
@@ -1115,42 +1078,77 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         [[Model sharedInstance] saveToDisk];
 
                         // Position of the row that should be added/removed
-                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:2
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:1
                                                             inSection:SettingsSectionColor - sectionOffset];
-                        if(switchState) {
-                            // Insert row in existing table
-                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        } else {
-                            // Remove row in existing table
-                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                        }
+                        [self.settingsTableView reloadRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                         
                         // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate screenBrightnessChanged];
+                        if (@available(iOS 13.0, *)) {
+                            BOOL isDarkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+                            [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+                        } else {
+                            [appDelegate setColorSettingsWithiOSInDarkMode:NO];
+                        }
                     };
                     
                     tableViewCell = cell;
                     break;
                 }
-                case 2:     // Switch at Brightness ?
+                case 1:     // Switch at Brightness ? or Always use Dark Palette ?
                 {
-                    CGFloat currentBrightness = [[UIScreen mainScreen] brightness] * 100;
-                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderPalette"];
-                    if(!cell)
+                    if ([Model sharedInstance].switchPaletteAutomatically)
                     {
-                        cell = [SliderTableViewCell new];
+                        // Switch at Brightness ?
+                        CGFloat currentBrightness = [[UIScreen mainScreen] brightness] * 100;
+                        SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderPalette"];
+                        if(!cell)
+                        {
+                            cell = [SliderTableViewCell new];
+                        }
+                        cell.sliderName.text = NSLocalizedString(@"settings_brightness", @"Brightness");
+                        cell.slider.minimumValue = 0;
+                        cell.slider.maximumValue = 100;
+                        cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentBrightness)];
+                        cell.sliderCountSuffix = @"";
+                        cell.incrementSliderBy = 1;
+                        cell.sliderValue = [Model sharedInstance].switchPaletteThreshold;
+                        [cell.slider addTarget:self action:@selector(updatePaletteBrightnessThreshold:) forControlEvents:UIControlEventValueChanged];
+                        
+                        tableViewCell = cell;
                     }
-                    cell.sliderName.text = NSLocalizedString(@"settings_brightness", @"Brightness");
-                    cell.slider.minimumValue = 0;
-                    cell.slider.maximumValue = 100;
-                    cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentBrightness)];
-                    cell.sliderCountSuffix = @"";
-                    cell.incrementSliderBy = 1;
-                    cell.sliderValue = [Model sharedInstance].switchPaletteThreshold;
-                    [cell.slider addTarget:self action:@selector(updatePaletteBrightnessThreshold:) forControlEvents:UIControlEventValueChanged];
-                    
-                    tableViewCell = cell;
+                    else {
+                        // Always use Dark Palette ?
+                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"darkPalette"];
+                        if(!cell) {
+                            cell = [SwitchTableViewCell new];
+                        }
+                        
+                        cell.leftLabel.text = NSLocalizedString(@"settings_darkPalette", @"Always Dark Palette");
+                        [cell.cellSwitch setOn:[Model sharedInstance].isDarkPaletteModeActive];
+                        cell.cellSwitchBlock = ^(BOOL switchState) {
+
+                            // Number of rows will change accordingly
+                            [Model sharedInstance].isDarkPaletteModeActive = switchState;
+
+                            // Switch off auto mode if dark palette mode disabled
+                            if (!switchState) [Model sharedInstance].switchPaletteAutomatically = NO;
+
+                            // Store modified setting
+                            [[Model sharedInstance] saveToDisk];
+
+                            // Notify palette change
+                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                            if (@available(iOS 13.0, *)) {
+                                BOOL isDarkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+                                [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+                            } else {
+                                [appDelegate setColorSettingsWithiOSInDarkMode:NO];
+                            }
+                        };
+                        
+                        tableViewCell = cell;
+                    }
                     break;
                 }
             }
@@ -2169,13 +2167,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (IBAction)updatePaletteBrightnessThreshold:(id)sender
 {
-    SliderTableViewCell *sliderSettingPalette = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:SettingsSectionColor]];
+    SliderTableViewCell *sliderSettingPalette = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionColor]];
     [Model sharedInstance].switchPaletteThreshold = [sliderSettingPalette getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
 
     // Update palette if needed
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate screenBrightnessChanged];
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        [appDelegate setColorSettingsWithiOSInDarkMode:NO];
+    }
 }
 
 - (IBAction)updateDiskCacheSize:(id)sender

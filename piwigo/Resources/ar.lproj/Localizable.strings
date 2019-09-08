@@ -586,7 +586,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "الألوان";
-"settings_darkPalette" = "اللوحة المظلمة";
+"settings_darkPalette" = "دائما لوحة مظلمة";
 "settings_switchPalette" = "التبديل تلقائيا";
 "settings_brightness" = "السطوع";
 

@@ -48,53 +48,45 @@ typedef enum {
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
 	
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
 }
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)applyPaletteSettings
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    // Navigation bar
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBarHidden = NO;
     
     // Table view
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
 
     EditImageThumbnailTableViewCell *imageThumbnail = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
-    [imageThumbnail paletteChanged];
+    [imageThumbnail applyPaletteSettings];
     
     EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
     textFieldCell.tag = EditImageDetailsOrderImageName;
-    [textFieldCell paletteChanged];
+    [textFieldCell applyPaletteSettings];
     
     textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
     textFieldCell.tag = EditImageDetailsOrderAuthor;
-    [textFieldCell paletteChanged];
+    [textFieldCell applyPaletteSettings];
     
     EditImageLabelTableViewCell *privacyCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
-    [privacyCell paletteChanged];
+    [privacyCell applyPaletteSettings];
     
     EditImageTagsTableViewCell *tagCell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
-    [tagCell paletteChanged];
+    [tagCell applyPaletteSettings];
 
     EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-    [textViewCell paletteChanged];
+    [textViewCell applyPaletteSettings];
 
     [self.editImageDetailsTableView reloadData];
 }
@@ -104,9 +96,10 @@ typedef enum {
 	[super viewWillAppear:animated];
 	
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyPaletteSettings];
 
     // Navigation buttons in edition mode
+    self.navigationController.navigationBarHidden = NO;
     self.shouldUpdateDetails = NO;
     if (self.isEdit)
     {
@@ -132,18 +125,6 @@ typedef enum {
         CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight), 0.0)];
     }
-}
-
--(void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    
-    if ((self.shouldUpdateDetails || (self.navigationItem.rightBarButtonItem == nil)) &&
-        [self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
-	{
-		[self updateImageDescription];
-		[self.delegate didFinishEditingDetails:self.imageDetails];
-	}
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -173,6 +154,32 @@ typedef enum {
         // Reload table view
         [self.editImageDetailsTableView reloadData];
     } completion:nil];
+}
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    if ((self.shouldUpdateDetails || (self.navigationItem.rightBarButtonItem == nil)) &&
+        [self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
+    {
+        [self updateImageDescription];
+        [self.delegate didFinishEditingDetails:self.imageDetails];
+    }
 }
 
 

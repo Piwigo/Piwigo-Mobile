@@ -62,7 +62,6 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     self = [super init];
     if(self)
     {
-        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
         self.categoryId = categoryId;
         self.sortType = kPiwigoSortByNewest;
         self.imageCollection = imageCollection;
@@ -116,7 +115,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -132,6 +131,26 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     {
         [self setEdgesForExtendedLayout:UIRectEdgeNone];
     }
+    
+    // Navigation bar
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumNav"];
+}
+
+-(void)applyPaletteSettings
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Navigation bar
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
+
+    // Collection view
+    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    [self.localImagesCollection reloadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -139,7 +158,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     [super viewWillAppear:animated];
     
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyPaletteSettings];
     
     // Update navigation bar and title
     [self updateNavBar];
@@ -192,30 +211,23 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     } completion:nil];
 }
 
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-}
-
--(void)paletteChanged
-{
-    // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumNav"];
-
-    // Collection view
-    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self.localImagesCollection reloadData];
 }
 
 -(void)updateNavBar

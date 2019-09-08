@@ -30,7 +30,6 @@
 		self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.tableView.backgroundColor = [UIColor clearColor];
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//        [self.tableView registerClass:[AlbumTableViewCell class] forCellReuseIdentifier:kAlbumTableCell_ID];
         [self.tableView registerNib:[UINib nibWithNibName:@"AlbumTableViewCell" bundle:nil] forCellReuseIdentifier:kAlbumTableCell_ID];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;

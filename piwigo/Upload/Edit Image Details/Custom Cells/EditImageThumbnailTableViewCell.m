@@ -34,10 +34,10 @@
     self.imageFile.font = [UIFont piwigoFontSmallLight];
     self.userInteractionEnabled = NO;
 
-    [self paletteChanged];
+    [self applyPaletteSettings];
 }
 
--(void)paletteChanged
+-(void)applyPaletteSettings
 {
     self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
     self.imageDate.textColor = [UIColor piwigoLeftLabelColor];

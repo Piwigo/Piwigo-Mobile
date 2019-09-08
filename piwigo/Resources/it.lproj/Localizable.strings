@@ -586,7 +586,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Colori";
-"settings_darkPalette" = "Tavolozza scura";
+"settings_darkPalette" = "Tavolozza sempre scura";
 "settings_switchPalette" = "Scambia automaticamente";
 "settings_brightness" = "Luminosità";
 

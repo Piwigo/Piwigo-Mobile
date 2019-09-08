@@ -30,8 +30,6 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     self = [super init];
     if(self)
     {
-        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-                
         self.tagsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.tagsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.tagsTableView.backgroundColor = [UIColor clearColor];
@@ -47,7 +45,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitTagSelect)];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -55,26 +53,19 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)applyPaletteSettings
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
     
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    // Navigation bar
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Table view
-    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.tagsTableView reloadData];
 }
@@ -84,7 +75,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     [super viewWillAppear:animated];
 
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyPaletteSettings];
 
     // Title
     self.title = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
@@ -120,6 +111,20 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         // Reload table view
         [self.tagsTableView reloadData];
     } completion:nil];
+}
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated

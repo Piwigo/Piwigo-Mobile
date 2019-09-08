@@ -38,17 +38,122 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     
 }
 
+-(void)loadNavigation
+{
+    AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albums];
+    [self.loginVC removeFromParentViewController];
+	self.loginVC = nil;
+    
+    // Observe the UIScreenBrightnessDidChangeNotification.
+    // When that notification is posted, the method setColorSettingsWithiOSInDarkMode: will be called.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setColorSettingsWithiOSInDarkMode:) name:UIScreenBrightnessDidChangeNotification object:nil];
+
+    // Observe the PiwigoNetworkErrorEncounteredNotification.
+    // When that notification is posted, the app checks the login.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoNetworkErrorEncounteredNotification object:nil];
+    
+    // Set network reachability status change block
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+//#if defined(DEBUG)
+//        NSLog(@"!!!!!! Network Reachability Changed!");
+//        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
+//              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
+//              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
+//              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+//#endif
+
+        if ([AFNetworkReachabilityManager sharedManager].reachable) {
+            // Connection changed but again reachable — Login again?
+            [self checkSessionStatusAndTryRelogin];
+        }
+    }];
+}
+
+
+#pragma mark - Login view
+
+-(void)loadLoginView
+{
+    // Did user select Dark Mode?
+    if (@available(iOS 13.0, *)) {
+        // Managed with traitColelction in UIViews
+        BOOL isDarkMode = (self.loginVC.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        [self setColorSettingsWithiOSInDarkMode:isDarkMode];
+    }
+    else {
+        [self setColorSettingsWithiOSInDarkMode:NO];
+    }
+
+    LoginNavigationController *nav = [[LoginNavigationController alloc] initWithRootViewController:self.loginVC];
+	[nav setNavigationBarHidden:YES];
+	self.window.rootViewController = nav;
+    
+    // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
+    [self.window.rootViewController.view setNeedsUpdateConstraints];
+}
+
+-(LoginViewController*)loginVC
+{
+	if(_loginVC) return _loginVC;
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        _loginVC = [LoginViewController_iPhone new];
+    } else {
+        _loginVC = [LoginViewController_iPad new];
+    }
+	return _loginVC;
+}
+
+-(void)checkSessionStatusAndTryRelogin
+{
+    BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
+    NSString *server = [Model sharedInstance].serverName;
+    NSString *user = [KeychainAccess getLoginUser];
+    
+    if(hadOpenedSession && (server.length > 0) && (user.length > 0))
+    {
+#if defined(DEBUG)
+        NSLog(@"       Connection changed but again reachable: Login in again");
+#endif
+        [self.loginVC checkSessionStatusAndTryRelogin];
+    }
+}
+
+
+#pragma mark - Settings bundle
+
+// Updates the version and build numbers in the app's settings bundle.
+- (void)setSettingsBundleData
+{
+    // Get the Settings.bundle object
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Get bunch of values from the .plist file and take note that the values that
+    // we pull are generated in a Build Phase script that is definied in the Target.
+    NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    
+    // Create the version number
+    NSString *versionNumberInSettings = [NSString stringWithFormat:@"%@ (%@)", appVersionString, appBuildString];
+    
+    // Set the build date and version number in the settings bundle reflected in app settings.
+    [defaults setObject:versionNumberInSettings forKey:@"version_prefs"];
+}
+
+
+#pragma mark - Application delegate methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	
+    
     // Override point for customization after application launch.
-
+    
     // Cache settings
 #if defined(DEBUG_NOCACHE)
     // set it to 0 to clear cache
     NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-                                                       diskCapacity:0
-                                                           diskPath:nil];
+                                                         diskCapacity:0
+                                                             diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
 #else
     if ([NSURLCache sharedURLCache] == nil)
@@ -60,7 +165,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
         [NSURLCache setSharedURLCache:URLCache];
     }
 #endif
-
+    
     // Login ?
     NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;
@@ -92,169 +197,27 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
         }
     }
     
+    // Login?
     if(server.length > 0 || (user.length > 0 && password.length > 0))
-	{
+    {
         [self.loginVC launchLogin];
-	}
-	
+    }
+    
     // No login
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	[self.window makeKeyAndVisible];
-	[self loadLoginView];
-	
+    [self.window makeKeyAndVisible];
+    [self loadLoginView];
+    
     // Enable network activity indicator
-	[AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
     // Enable network reachability monitoring
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     
     // Set Settings Bundle data
     [self setSettingsBundleData];
-
+    
     return YES;
-}
-
--(void)loadNavigation
-{
-    AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albums];
-    [self.loginVC removeFromParentViewController];
-	self.loginVC = nil;
-    
-    // Observe the UIScreenBrightnessDidChangeNotification.
-    // When that notification is posted, the method screenBrightnessChanged will be called.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged) name:UIScreenBrightnessDidChangeNotification object:nil];
-
-    // Observe the PiwigoNetworkErrorEncounteredNotification.
-    // When that notification is posted, the app checks the login.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoNetworkErrorEncounteredNotification object:nil];
-    
-    // Set network reachability status change block
-    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-//#if defined(DEBUG)
-//        NSLog(@"!!!!!! Network Reachability Changed!");
-//        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
-//              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
-//              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-//              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
-//#endif
-
-        if ([AFNetworkReachabilityManager sharedManager].reachable) {
-            // Connection changed but again reachable — Login again?
-            [self checkSessionStatusAndTryRelogin];
-        }
-    }];
-}
-
--(void)checkSessionStatusAndTryRelogin
-{
-    BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-    NSString *server = [Model sharedInstance].serverName;
-    NSString *user = [KeychainAccess getLoginUser];
-    
-    if(hadOpenedSession && (server.length > 0) && (user.length > 0))
-    {
-#if defined(DEBUG)
-        NSLog(@"       Connection changed but again reachable: Login in again");
-#endif
-        [self.loginVC checkSessionStatusAndTryRelogin];
-    }
-}
-
-// Called when the screen brightness has changed or when user changed settings
--(void)screenBrightnessChanged
-{
-//    NSLog(@"Screen Brightness: %f",[[UIScreen mainScreen] brightness]);
-    if (![Model sharedInstance].isDarkPaletteModeActive) {
-        // Static light palette mode chosen
-        if (![Model sharedInstance].isDarkPaletteActive) {
-            // Already showing light palette
-            return;
-        } else {
-            // Switch to light palette
-            [Model sharedInstance].isDarkPaletteActive = NO;
-        }
-    } else {
-        // Dark palette mode chosen
-        if (![Model sharedInstance].switchPaletteAutomatically) {
-            // Static dark palette chosen
-            if ([Model sharedInstance].isDarkPaletteActive) {
-                // Already showing dark palette
-                return;
-            } else {
-                // Switch to dark palette
-                [Model sharedInstance].isDarkPaletteActive = YES;
-            }
-        } else {
-            // Dynamic dark palette chosen
-            NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
-            if ([Model sharedInstance].isDarkPaletteActive) {
-                // Dark palette displayed
-                if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
-                    // Screen brightness > thereshold, switch to light palette
-                    [Model sharedInstance].isDarkPaletteActive = NO;
-                } else {
-                    // Keep dark palette
-                    return;
-                }
-            } else {
-                // Light palette displayed
-                if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
-                    // Screen brightness < threshold, switch to dark palette
-                    [Model sharedInstance].isDarkPaletteActive = YES;
-                } else {
-                    // Keep light palette
-                    return;
-                }
-            }
-        }
-    }
-    
-    // Store modified settings
-    [[Model sharedInstance] saveToDisk];
-
-    // Notify palette change
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
-}
-
--(void)loadLoginView
-{
-	LoginNavigationController *nav = [[LoginNavigationController alloc] initWithRootViewController:self.loginVC];
-	[nav setNavigationBarHidden:YES];
-	self.window.rootViewController = nav;
-    
-    // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-    [self.window.rootViewController.view setNeedsUpdateConstraints];
-}
-
--(LoginViewController*)loginVC
-{
-	if(_loginVC) return _loginVC;
-    
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        _loginVC = [LoginViewController_iPhone new];
-    } else {
-        _loginVC = [LoginViewController_iPad new];
-    }
-	return _loginVC;
-}
-
-// Updates the version and build numbers in the app's settings bundle.
-- (void)setSettingsBundleData
-{
-    // Get the Settings.bundle object
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    // Get bunch of values from the .plist file and take note that the values that
-    // we pull are generated in a Build Phase script that is definied in the Target.
-    NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-    NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-    
-    // Create the version number
-    NSString *versionNumberInSettings = [NSString stringWithFormat:@"%@ (%@)", appVersionString, appBuildString];
-    
-    // Set the build date and version number in the settings bundle reflected in app settings.
-    [defaults setObject:versionNumberInSettings forKey:@"version_prefs"];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -286,7 +249,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
     NSString *server = [Model sharedInstance].serverName;
     NSString *user = [Model sharedInstance].username;
-    if(hadOpenedSession && (server.length > 0) && (user.length > 0))
+    if (hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
         // Let's see…
         [self.loginVC checkSessionStatusAndTryRelogin];
@@ -305,9 +268,6 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
             [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
         }
     }
-
-    // Should we change the theme ?
-    [self screenBrightnessChanged];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -322,6 +282,121 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     
     // Disable network reachability monitoring
     [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
+}
+
+
+#pragma mark - Light and dark modes
+
+// Called when the screen brightness has changed or when user changes settings
+-(void)setColorSettingsWithiOSInDarkMode:(BOOL)isDarkMode
+{
+    NSLog(@"Screen Brightness: %f/%f and Dark Mode:%@",[[UIScreen mainScreen] brightness], [Model sharedInstance].switchPaletteThreshold, isDarkMode ? @"Yes" : @"No");
+    if ([Model sharedInstance].isDarkPaletteModeActive || isDarkMode) {
+        // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
+        if ([Model sharedInstance].isDarkPaletteActive) {
+            // Dark palette already active
+            return;
+        } else {
+            // Switch to dark palette
+            [Model sharedInstance].isDarkPaletteActive = YES;
+        }
+    } else if ([Model sharedInstance].switchPaletteAutomatically) {
+        // Dynamic palette mode chosen and iOS Light Mode active
+        NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
+        if ([Model sharedInstance].isDarkPaletteActive) {
+            // Dark palette displayed
+            if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
+                // Screen brightness > thereshold, switch to light palette
+                [Model sharedInstance].isDarkPaletteActive = NO;
+            } else {
+                // Keep dark palette
+                return;
+            }
+        } else {
+            // Light palette displayed
+            if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
+                // Screen brightness < threshold, switch to dark palette
+                [Model sharedInstance].isDarkPaletteActive = YES;
+            } else {
+                // Keep light palette
+                return;
+            }
+        }
+    } else {
+        // Static light palette mode
+        if (![Model sharedInstance].isDarkPaletteActive) {
+            // Light palette already active
+            return;
+        } else {
+            // Switch to light palette
+            [Model sharedInstance].isDarkPaletteActive = NO;
+        }
+    }
+    
+    // Store modified settings
+    [[Model sharedInstance] saveToDisk];
+    
+    // Notify palette change to views
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
+
+    // Apply global color change
+    [self applyColorSettings];
+}
+
+// Called at start and when changing color palette
+-(void)applyColorSettings
+{
+    // Activity indicator
+    [UIActivityIndicatorView appearance].color = [UIColor piwigoOrange];
+    
+    // Navigation bars
+    [UINavigationBar appearance].barTintColor = [UIColor piwigoBackgroundColor];
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    [UINavigationBar appearance].titleTextAttributes = attributes;
+
+    // Progress bars
+    [UIProgressView appearance].progressTintColor = [UIColor piwigoOrange];
+    [UIProgressView appearance].trackTintColor = [UIColor piwigoRightLabelColor];
+
+    // Sliders
+    [UISlider appearance].thumbTintColor = [UIColor piwigoThumbColor];
+    
+    // Switches
+    [UISwitch appearance].thumbTintColor = [UIColor piwigoThumbColor];
+    [UISwitch appearance].onTintColor = [UIColor piwigoOrange];
+    
+    // Tab bars
+    [UITabBar appearance].barTintColor = [UIColor piwigoBackgroundColor];
+    
+    // Toolbars
+    [UIToolbar appearance].barTintColor = [UIColor piwigoBackgroundColor];
+    
+    // Tables
+    [UITableView appearance].separatorColor = [UIColor piwigoSeparatorColor];
+
+    // Styles
+    if ([Model sharedInstance].isDarkPaletteActive)
+    {
+        [UINavigationBar appearance].barStyle = UIBarStyleBlack;
+        [UITabBar appearance].barStyle = UIBarStyleBlack;
+        [UIToolbar appearance].barStyle = UIBarStyleBlack;
+    }
+    else {
+        [UINavigationBar appearance].barStyle = UIBarStyleDefault;
+        [UITabBar appearance].barStyle = UIBarStyleDefault;
+        [UIToolbar appearance].barStyle = UIBarStyleDefault;
+    }
+
+    // Tell iOS to apply appearance changes
+    NSArray *subViews = self.window.subviews;
+    for (UIView *view in subViews) {
+        UIView *superView = view.superview;
+        [view removeFromSuperview];
+        [superView addSubview:view];
+    }
 }
 
 @end

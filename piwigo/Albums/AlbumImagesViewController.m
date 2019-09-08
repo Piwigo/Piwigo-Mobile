@@ -79,7 +79,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
-@property (nonatomic, strong) UISearchController *searchController;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
@@ -128,6 +128,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             // Fallback on earlier versions
         }
 
+        // Refresh view
+        self.refreshControl = [[UIRefreshControl alloc] init];
+
         // Bar buttons
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] landscapeImagePhone:[UIImage imageNamed:@"preferencesCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
         [self.settingsBarButton setAccessibilityIdentifier:@"preferences"];
@@ -145,7 +148,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.shareBarButton.tintColor = [UIColor piwigoOrange];
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
-        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
         self.navigationController.toolbarHidden = YES;
 
         // Upload button above collection view
@@ -191,7 +193,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
 
         // Register root album changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
@@ -211,94 +213,79 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 #endif
     [self getCategoryData:nil];
 
+    // Navigation bar
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
+
     // For iOS 11 and later: place search bar in navigation bar or root album
     if (@available(iOS 11.0, *)) {
         // Initialise search controller when displaying root album
         if (self.categoryId == 0) {
             SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-            self.searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-            self.searchController.delegate = self;
-            self.searchController.hidesNavigationBarDuringPresentation = YES;
-            self.searchController.searchResultsUpdater = self;
+            UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+            searchController.delegate = self;
+            searchController.hidesNavigationBarDuringPresentation = YES;
+            searchController.searchResultsUpdater = self;
             
-            self.searchController.searchBar.tintColor = [UIColor piwigoOrange];
-            self.searchController.searchBar.showsCancelButton = NO;
-            self.searchController.searchBar.showsSearchResultsButton = NO;
-            self.searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
+            searchController.searchBar.tintColor = [UIColor piwigoOrange];
+            searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+            searchController.searchBar.translucent = NO;
+            searchController.searchBar.showsCancelButton = NO;
+            searchController.searchBar.showsSearchResultsButton = NO;
+            searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
             self.definesPresentationContext = YES;
             
             // Place the search bar in the navigation bar.
-            self.navigationItem.searchController = self.searchController;
-
-//        for (UIView *subView in self.searchController.searchBar.subviews)
-//        {
-//            if ([subView isKindOfClass: [UITextField class]])
-//            {
-//                [(UITextField *)subView setKeyboardAppearance:[Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault];
-//            }
-//        }
+            self.navigationItem.searchController = searchController;
         }
     }
 }
 
-//-(void)setKeyboardAppearence: (UIKeyboardAppearance) appearence {
-//    [(id<UITextInputTraits>) [self firstSubviewConformingToProtocol: @protocol(UITextInputTraits)] setKeyboardAppearance: appearence];
-//}
-//
-//- (UIView *)firstSubviewConformingToProtocol: (Protocol *) pro {
-//    for (UIView *sub in self.searchController.searchBar.subviews)
-//        if ([sub conformsToProtocol: pro])
-//            return sub;
-//
-//    for (UIView *sub in self.searchController.searchBar.subviews) {
-//        UIView *ret = [sub firstSubviewConformingToProtocol: pro];
-//        if (ret)
-//            return ret;
-//    }
-//
-//    return nil;
-//}
-
--(void)paletteChanged
+-(void)applyPaletteSettings
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    
+    // Refresh controller
+    self.refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.refreshControl.tintColor = [UIColor piwigoOrange];
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoOrange],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributes];
     
     // Buttons
     self.homeAlbumButton.backgroundColor = [UIColor piwigoRightLabelColor];
     self.homeAlbumButton.tintColor = [UIColor piwigoBackgroundColor];
 
     // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
     if (@available(iOS 11.0, *)) {
         if (self.categoryId == [Model sharedInstance].defaultCategory) {
+            // Title
             NSDictionary *attributesLarge = @{
                                               NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                               NSFontAttributeName: [UIFont piwigoFontLargeTitle],
                                               };
             self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
             self.navigationController.navigationBar.prefersLargeTitles = YES;
+
+            // Search bar
+            self.navigationItem.searchController.searchBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+            if (@available(iOS 13.0, *)) {
+                self.navigationItem.searchController.searchBar.searchTextField.textColor = [UIColor piwigoLeftLabelColor];
+                self.navigationItem.searchController.searchBar.searchTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceLight;
+            }
         }
         else {
             self.navigationController.navigationBar.prefersLargeTitles = NO;
         }
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
-    
-    // Toolbar
-    [self.navigationController.toolbar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self refreshShowingCells];
 }
 
@@ -310,6 +297,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     NSLog(@"viewWillAppear  => ID:%ld", (long)self.categoryId);
 #endif
     
+    // Set colors, fonts, etc.
+    [self applyPaletteSettings];
+
     // Called before displaying SearchImagesViewController?
     UIViewController *presentedViewController = [self presentedViewController];
     if ([presentedViewController isKindOfClass:[UISearchController class]]) {
@@ -317,9 +307,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         [self.navigationController setToolbarHidden:YES animated:YES];
         return;
     }
-    
-    // Set colors, fonts, etc.
-    [self paletteChanged];
     
     // Inform Upload view controllers that user selected this category
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
@@ -376,27 +363,21 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	[super viewDidAppear:animated];
 	
     // Called after displaying SearchImagesViewController?
-    UIViewController *presentedViewController = [self presentedViewController];
-    if ([presentedViewController isKindOfClass:[UISearchController class]]) {
-        // Scroll to image of interest if needed
-        if ([self.searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
-            SearchImagesViewController *resultsController = (SearchImagesViewController *)self.searchController.searchResultsController;
-            [resultsController scrollToHighlightedCell];
+    if (@available(iOS 11.0, *)) {
+        UIViewController *presentedViewController = [self presentedViewController];
+        if ([presentedViewController isKindOfClass:[UISearchController class]]) {
+            // Scroll to image of interest if needed
+            if ([self.navigationItem.searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
+                SearchImagesViewController *resultsController = (SearchImagesViewController *)self.navigationItem.searchController.searchResultsController;
+                [resultsController scrollToHighlightedCell];
+            }
+            return;
         }
-        return;
     }
     
     // Refresh controller
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-	refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
-	refreshControl.tintColor = [UIColor piwigoOrange];
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoOrange],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributes];
-	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.imagesCollection addSubview:refreshControl];
+	[self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self.imagesCollection addSubview:self.refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
     
     // Allows hiding search bar when scrolling
@@ -503,6 +484,30 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
 }
 
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    // Update the navigation bar on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self updateNavBar];
+        [self.imagesCollection reloadData];
+    } completion:nil];
+}
+
+-(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    
+    // User may have switched to Light or Dark Mode
+    if (@available(iOS 13.0, *)) {
+        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -515,16 +520,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
     // Hide upload button during transition
     [self.uploadButton setHidden:YES];
-}
-
--(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
-    // Update the navigation bar on orientation change, to match the new width of the table.
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self updateNavBar];
-        [self.imagesCollection reloadData];
-    } completion:nil];
 }
 
 -(void)updateNavBar
@@ -2324,7 +2319,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     
     // Query string
-    NSString *searchString = [self.searchController.searchBar text];
+    NSString *searchString = [searchController.searchBar text];
     
     // Resfresh image collection for new query only
     if ([searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
@@ -2341,15 +2336,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [resultsController searchAndLoadImages];
         }
     }
-}
-
-
-#pragma mark - UISearchBarDelegate
-
-// Workaround for bug: -updateSearchResultsForSearchController: is not called when scope buttons change
-- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
-{
-    [self updateSearchResultsForSearchController:self.searchController];
 }
 
 
