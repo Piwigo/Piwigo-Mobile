@@ -302,15 +302,6 @@ typedef enum {
 }
 
 
-#pragma mark - Keyboard Methods
-
--(void)updateImageDescription
-{
-	EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-	self.imageDetails.imageDescription = textViewCell.getTextViewText;
-}
-
-
 #pragma mark - UITableView - Rows
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -501,6 +492,7 @@ typedef enum {
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
+    [self updateImageDescription];
     return YES;
 }
 
@@ -510,30 +502,23 @@ typedef enum {
     return YES;
 }
 
--(void)textFieldDidEndEditing:(UITextField *)textField
+-(void)updateImageDescription
 {
-    switch (textField.tag)
-    {
-        case EditImageDetailsOrderImageName:
-        {
-            // Title
-            EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-            self.imageDetails.title = textFieldCell.cellTextField.text;
-            break;
-        }
-            
-        case EditImageDetailsOrderAuthor:
-        {
-            // Author
-            EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-            if (textFieldCell.cellTextField.text.length > 0) {
-                self.imageDetails.author = textFieldCell.cellTextField.text;
-            } else {
-                self.imageDetails.author = @"NSNotFound";
-            }
-            break;
-        }
+    // Title
+    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+    self.imageDetails.title = textFieldCell.cellTextField.text;
+
+    // Author
+    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+    if (textFieldCell.cellTextField.text.length > 0) {
+        self.imageDetails.author = textFieldCell.cellTextField.text;
+    } else {
+        self.imageDetails.author = @"NSNotFound";
     }
+
+    // Description
+    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
+    self.imageDetails.imageDescription = textViewCell.getTextViewText;
 }
 
 
