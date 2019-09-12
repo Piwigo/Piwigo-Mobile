@@ -1948,31 +1948,31 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                            }
                            else
                            {
-                               // Failed, retry ?
-                               UIAlertController* alert = [UIAlertController
-                                       alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
-                                       message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
-                                       preferredStyle:UIAlertControllerStyleAlert];
-                               
-                               UIAlertAction* dismissAction = [UIAlertAction
-                                           actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                           style:UIAlertActionStyleCancel
-                                           handler:^(UIAlertAction * action) {}];
-                           
-                               UIAlertAction* retryAction = [UIAlertAction
-                                           actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                           style:UIAlertActionStyleDestructive
-                                           handler:^(UIAlertAction * action) {
-                                               [self logout];
-                                           }];
-                               
-                               // Add actions
-                               [alert addAction:dismissAction];
-                               [alert addAction:retryAction];
-                               [self presentViewController:alert animated:YES completion:nil];
+                               // Piwigo error has been displayed by called method
                            }
                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                           // Error message already presented
+                           // Failed, retry ?
+                           UIAlertController* alert = [UIAlertController
+                                   alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
+                                   message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
+                                   preferredStyle:UIAlertControllerStyleAlert];
+                           
+                           UIAlertAction* dismissAction = [UIAlertAction
+                                       actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                       style:UIAlertActionStyleCancel
+                                       handler:^(UIAlertAction * action) {}];
+                       
+                           UIAlertAction* retryAction = [UIAlertAction
+                                       actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                       style:UIAlertActionStyleDestructive
+                                       handler:^(UIAlertAction * action) {
+                                           [self logout];
+                                       }];
+                           
+                           // Add actions
+                           [alert addAction:dismissAction];
+                           [alert addAction:retryAction];
+                           [self presentViewController:alert animated:YES completion:nil];
                        }];
                     }];
         

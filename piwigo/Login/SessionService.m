@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "ImagesCollection.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
@@ -499,15 +500,42 @@
 					  }
 					  else
 					  {
-						  completion(task, NO);
+                          // Display Piwigo error
+                          NSInteger errorCode = NSNotFound;
+                          if ([responseObject objectForKey:@"err"]) {
+                              errorCode = [[responseObject objectForKey:@"err"] intValue];
+                          }
+                          NSString *errorMsg = @"";
+                          if ([responseObject objectForKey:@"message"]) {
+                              errorMsg = [responseObject objectForKey:@"message"];
+                          }
+                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesGetImages andURLparams:nil];
+
+                          completion(task, NO);
 					  }
 				  }
 			  } failure:^(NSURLSessionTask *task, NSError *error) {
 				  
-				  if(fail) {
-                      [SessionService showConnectionError:error];
-					  fail(task, error);
-				  }
+                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                  if ((statusCode == 401) ||        // Unauthorized
+                      (statusCode == 403) ||        // Forbidden
+                      (statusCode == 404))          // Not Found
+                  {
+                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                      });
+
+                      if (fail) {
+                          fail(task, error);
+                      }
+                  }
+                  else {
+                      if (fail) {
+                          [SessionService showConnectionError:error];
+                          fail(task, error);
+                      }
+                  }
 			  }];
 }
 
