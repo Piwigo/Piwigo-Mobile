@@ -703,7 +703,6 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
 //         ];
 //    }
 //}
-
 #pragma mark - Video, retrieve and modify before upload
 
 -(void)retrieveFullSizeAssetDataFromVideo:(ImageUpload *)image  // Asynchronous
@@ -759,21 +758,48 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                                                     options:options
                                               resultHandler:^(AVAsset *avasset, AVAudioMix *audioMix, NSDictionary *info) {
                                                   
+#if defined(DEBUG_UPLOAD)
+        NSLog(@"=> Metadata: %@", avasset.metadata);
+        NSLog(@"=> Creation date: %@", avasset.creationDate);
+        NSLog(@"=> Exportable: %@", avasset.exportable ? @"Yes" : @"No");
+        NSLog(@"=> Compatibility: %@", [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset]);
+        NSLog(@"=> Tracks: %@", avasset.tracks);
+        for (AVAssetTrack *track in avasset.tracks) {
+            if (track.mediaType == AVMediaTypeVideo)
+                NSLog(@"=>       : %.f x %.f", track.naturalSize.width, track.naturalSize.height);
+                NSMutableString *format = [[NSMutableString alloc] init];
+                for (int i = 0; i < track.formatDescriptions.count; i++) {
+                    CMFormatDescriptionRef desc =
+                        (__bridge CMFormatDescriptionRef)track.formatDescriptions[i];
+                    // Get String representation of media type (vide, soun, sbtl, etc.)
+                    NSString *type = FourCCString(CMFormatDescriptionGetMediaType(desc));
+                    // Get String representation media subtype (avc1, aac, tx3g, etc.)
+                    NSString *subType = FourCCString(CMFormatDescriptionGetMediaSubType(desc));
+                    // Format string as type/subType
+                    [format appendFormat:@"%@/%@", type, subType];
+                    // Comma separate if more than one format description
+                    if (i < track.formatDescriptions.count - 1) {
+                        [format appendString:@","];
+                    }
+                }
+                NSLog(@"=>       : %@", format);
+        }
+#endif
+        
                   // QuickTime video exportable with passthrough option (e.g. recorded with device)?
-                  [AVAssetExportSession determineCompatibilityOfExportPreset:AVAssetExportPresetPassthrough withAsset:avasset outputFileType:AVFileTypeMPEG4 completionHandler:^(BOOL compatible) {
-                      
+//                  [AVAssetExportSession determineCompatibilityOfExportPreset:AVAssetExportPresetPassthrough withAsset:avasset outputFileType:AVFileTypeMPEG4 completionHandler:^(BOOL compatible) {
+//
                       NSString *exportPreset = nil;
-                      if (compatible) {
-                          // No reencoding required — will keep metadata (or not depending on user's settings)
-                          exportPreset = AVAssetExportPresetPassthrough;
-                      }
-                      else
-                      {
+//                      if (compatible) {
+//                          // No reencoding required — will keep metadata (or not depending on user's settings)
+//                          exportPreset = AVAssetExportPresetPassthrough;
+//                      }
+//                      else
+//                      {
                           NSInteger maxPixels = lround(fmax(image.imageAsset.pixelWidth, image.imageAsset.pixelHeight));
                           NSArray *presets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avasset];
                           // This array never contains AVAssetExportPresetPassthrough,
                           // that is why we use determineCompatibilityOfExportPreset: before.
-//                          NSLog(@"exportPresetsCompatibleWithAsset: %@", presets);
                           if ((maxPixels <= 640) && ([presets containsObject:AVAssetExportPreset640x480])) {
                               // Encode in 640x480 pixels — metadata will be lost
                               exportPreset = AVAssetExportPreset640x480;
@@ -790,11 +816,15 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                               // Encode in 1920x1080 pixels — metadata will be lost
                               exportPreset = AVAssetExportPreset1920x1080;
                           }
+                          else if ((maxPixels <= 3840) && ([presets containsObject:AVAssetExportPreset1920x1080])) {
+                              // Encode in 1920x1080 pixels — metadata will be lost
+                              exportPreset = AVAssetExportPreset3840x2160;
+                          }
                           else {
                               // Use highest quality for device
                               exportPreset = AVAssetExportPresetHighestQuality;
                           }
-                      }
+//                      }
                       
                       // Requests video with selected export preset…
                       @autoreleasepool {
@@ -824,7 +854,7 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
                            ];
                       }
                   }];
-              }];
+//              }];
 }
 
 -(void)modifyVideo:(ImageUpload *)image withAVAsset:(AVAsset *)originalVideo beforeExporting:(AVAssetExportSession *)exportSession
@@ -948,6 +978,18 @@ const char win_cur[4] = {0x00, 0x00, 0x02, 0x00};
         });
     }];
 }
+
+#if defined(DEBUG_UPLOAD)
+static NSString * FourCCString(FourCharCode code) {
+    NSString *result = [NSString stringWithFormat:@"%c%c%c%c",
+                        (code >> 24) & 0xff,
+                        (code >> 16) & 0xff,
+                        (code >> 8) & 0xff,
+                        code & 0xff];
+    NSCharacterSet *characterSet = [NSCharacterSet whitespaceCharacterSet];
+    return [result stringByTrimmingCharactersInSet:characterSet];
+}
+#endif
 
 // The creation date is kept when copying the MOV video file and uploading it with MP4 extension in Piwigo
 // However, it is replaced when exporting the file in Piwigo while the metadata is correct.
