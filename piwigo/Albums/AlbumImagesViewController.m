@@ -38,9 +38,9 @@
 #import "SettingsViewController.h"
 #import "TagSelectViewController.h"
 
-#ifndef DEBUG_LIFECYCLE
-#define DEBUG_LIFECYCLE
-#endif
+//#ifndef DEBUG_LIFECYCLE
+//#define DEBUG_LIFECYCLE
+//#endif
 
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";

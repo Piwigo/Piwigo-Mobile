@@ -15,9 +15,9 @@ NSString * const kCategoryDeletionModeNone = @"no_delete";
 NSString * const kCategoryDeletionModeOrphaned = @"delete_orphans";
 NSString * const kCategoryDeletionModeAll = @"force_delete";
 
-#ifndef DEBUG_ALBUM
-#define DEBUG_ALBUM
-#endif
+//#ifndef DEBUG_ALBUM
+//#define DEBUG_ALBUM
+//#endif
 
 @implementation AlbumService
 
