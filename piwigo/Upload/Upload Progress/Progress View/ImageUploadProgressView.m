@@ -57,7 +57,7 @@
 		[self addSubview:self.imageCountLabel];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.imageCountLabel]];
 		
-		self.uploadProgress = [[UIProgressView alloc] init];
+		self.uploadProgress = [UIProgressView new];
 		self.uploadProgress.translatesAutoresizingMaskIntoConstraints = NO;
 		[self addSubview:self.uploadProgress];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadProgress]];

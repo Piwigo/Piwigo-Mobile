@@ -244,6 +244,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    if (@available(iOS 13.0, *)) {
+        self.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     
     // Refresh controller
     self.refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -492,6 +497,19 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         [self updateNavBar];
         [self.imagesCollection reloadData];
     } completion:nil];
+}
+
+-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    if (@available(iOS 13.0, *)) {
+        BOOL hasUserInterfaceStyleChanged = [previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.imagesCollection.traitCollection];
+        if (hasUserInterfaceStyleChanged)
+            NSLog(@"=> did change: %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 -(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator

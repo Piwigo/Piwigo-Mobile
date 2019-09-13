@@ -78,7 +78,11 @@
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    if (@available(iOS 13.0, *)) {
+        self.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
 
     // Navigation bar
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -89,6 +93,7 @@
     
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
 }
 
 -(void)viewWillAppear:(BOOL)animated

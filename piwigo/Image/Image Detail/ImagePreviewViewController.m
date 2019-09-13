@@ -44,6 +44,13 @@
 
 -(void)applyPaletteSettings
 {
+    // Environment
+    if (@available(iOS 13.0, *)) {
+        self.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+
     // Background color depends on the navigation bar visibility
     if (self.navigationController.navigationBarHidden)
         self.view.backgroundColor = [UIColor blackColor];

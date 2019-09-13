@@ -131,6 +131,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)applyPaletteSettings
 {
+    // Environment
+    if (@available(iOS 13.0, *)) {
+        self.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+
     // Navigation bar
     [self setTitleViewFromImageData];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -138,6 +145,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
+
+    // Progress bar
+    self.progressBar.trackTintColor = [UIColor piwigoLeftLabelColor];
 }
 
 -(void)viewWillAppear:(BOOL)animated
