@@ -256,7 +256,8 @@
     if (([Model sharedInstance].displayImageTitles) ||
         (categoryId == kPiwigoVisitsCategoryId)     ||
         (categoryId == kPiwigoBestCategoryId)       ||
-        (categoryId == kPiwigoRecentCategoryId)) {
+        (categoryId == kPiwigoRecentCategoryId)     ||
+        (categoryId == kPiwigoTagsCategoryId)) {
         self.bottomLayer.hidden = NO;
         self.nameLabel.hidden = NO;
         if (categoryId == kPiwigoVisitsCategoryId) {

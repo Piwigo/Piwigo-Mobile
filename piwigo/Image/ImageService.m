@@ -58,8 +58,9 @@ NSString * const kGetImageOrderDescending = @"desc";
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
 				  if(completion) {
-					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-						  NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
+					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                      {
+						  NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:albumId];
 						  completion(task, albumImages);
 					  }
                       else
@@ -153,12 +154,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
                           // Store number of images in cache
-                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
+                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
                           [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages = nberImages;
                           [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages = nberImages;
                           
                           // Parse images
-                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
+                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoSearchCategoryId];
                           completion(task, searchedImages);
                       }
                       else
@@ -281,7 +282,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                           [[CategoriesData sharedInstance] getCategoryById:categoryId].totalNumberOfImages = nberImages;
                           
                           // Parse images
-                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
+                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:categoryId];
                           completion(task, searchedImages);
                       }
                       else
@@ -383,12 +384,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
                           // Store number of images in cache
-                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
                           [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages = nberImages;
                           [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].totalNumberOfImages = nberImages;
                           
                           // Parse images
-                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"]];
+                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoTagsCategoryId];
                           completion(task, searchedImages);
                       }
                       else
@@ -563,10 +564,15 @@ NSString * const kGetImageOrderDescending = @"desc";
     return task;
 }
 
-+(NSArray*)parseAlbumImagesJSON:(NSDictionary*)json
++(NSArray*)parseAlbumImagesJSON:(NSDictionary*)json forCategoryId:(NSInteger)categoryId
 {
 	NSDictionary *paging = [json objectForKey:@"paging"];
-	[Model sharedInstance].lastPageImageCount = [[paging objectForKey:@"count"] integerValue];
+    if (categoryId == kPiwigoTagsCategoryId) {
+        [Model sharedInstance].lastPageImageCount = [[paging objectForKey:@"total_count"] integerValue];
+    }
+    else {
+        [Model sharedInstance].lastPageImageCount = [[paging objectForKey:@"count"] integerValue];
+    }
 	
 	NSArray *imagesInfo = [json objectForKey:@"images"];
 	if(![imagesInfo isKindOfClass:[NSArray class]])
