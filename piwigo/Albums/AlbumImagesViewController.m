@@ -193,7 +193,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 
         // Register root album changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
@@ -240,7 +240,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
 }
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -298,7 +298,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 #endif
     
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];
+    [self applyColorPalette];
 
     // Called before displaying SearchImagesViewController?
     UIViewController *presentedViewController = [self presentedViewController];
@@ -1191,6 +1191,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     [alert addAction:dismissAction];
     [alert addAction:retryAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -1269,6 +1274,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (self.selectedImagesToRemove.count > 0) { [alert addAction:removeImagesAction]; }
 
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
@@ -1347,6 +1357,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     [alert addAction:retryAction];
                     
                     // Present list of actions
+                    if (@available(iOS 13.0, *)) {
+                        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                    } else {
+                        // Fallback on earlier versions
+                    }
                     [self presentViewController:alert animated:YES completion:nil];
                 }
            }
@@ -1378,6 +1393,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                   [alert addAction:retryAction];
                   
                   // Present list of actions
+                  if (@available(iOS 13.0, *)) {
+                      alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                  } else {
+                      // Fallback on earlier versions
+                  }
                   [self presentViewController:alert animated:YES completion:nil];
               }];
 }
@@ -1442,6 +1462,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                         [alert addAction:retryAction];
                         
                         // Present list of actions
+                        if (@available(iOS 13.0, *)) {
+                            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                        } else {
+                            // Fallback on earlier versions
+                        }
                         [self presentViewController:alert animated:YES completion:nil];
                     }];
 }
@@ -1665,6 +1690,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [alert addAction:moveAction];
     
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.barButtonItem = self.moveBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
@@ -2297,6 +2327,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                                        handler:^(UIAlertAction * action) { }];
                        
                        [alert addAction:dismissAction];
+                       if (@available(iOS 13.0, *)) {
+                           alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                       } else {
+                           // Fallback on earlier versions
+                       }
                        [topViewController presentViewController:alert animated:YES completion:nil];
                    });
 }
@@ -2398,6 +2433,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [alert addAction:recentAction];
     
     // Present list of Discover views
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.barButtonItem = self.discoverBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }

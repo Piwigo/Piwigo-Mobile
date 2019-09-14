@@ -245,6 +245,11 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
                                              handler:^(UIAlertAction * action) {}];
                                          
                                          [alert addAction:defaultAction];
+                                         if (@available(iOS 13.0, *)) {
+                                             alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                                         } else {
+                                             // Fallback on earlier versions
+                                         }
                                          [topViewController presentViewController:alert animated:YES completion:nil];
 									 }
 									 self.isLoadingMoreImages = NO;

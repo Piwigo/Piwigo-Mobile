@@ -1448,6 +1448,11 @@ static NSString * FourCCString(FourCharCode code) {
     }
     
     [alert addAction:dismissAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 

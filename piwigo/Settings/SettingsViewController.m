@@ -93,7 +93,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }
@@ -109,7 +109,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         [self getInfos];
 }
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -141,7 +141,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 	[super viewWillAppear:animated];
 
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];
+    [self applyColorPalette];
     
     // Set navigation buttons
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
@@ -187,6 +187,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             
             [alert addAction:cancelAction];
             [alert addAction:defaultAction];
+            if (@available(iOS 13.0, *)) {
+                alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+            } else {
+                // Fallback on earlier versions
+            }
             [self presentViewController:alert animated:YES completion:nil];
         }
     }
@@ -1809,6 +1814,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     [alert addAction:clearAction];
                     
                     // Present list of actions
+                    if (@available(iOS 13.0, *)) {
+                        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                    } else {
+                        // Fallback on earlier versions
+                    }
                     [self presentViewController:alert animated:YES completion:nil];
                     break;
                 }
@@ -1983,6 +1993,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         CGRect rectOfCellInTableView = [self.settingsTableView rectForRowAtIndexPath:rowAtIndexPath];
         
         // Present list of actions
+        if (@available(iOS 13.0, *)) {
+            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
         alert.popoverPresentationController.sourceView = self.settingsTableView;
         alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
         alert.popoverPresentationController.sourceRect = rectOfCellInTableView;

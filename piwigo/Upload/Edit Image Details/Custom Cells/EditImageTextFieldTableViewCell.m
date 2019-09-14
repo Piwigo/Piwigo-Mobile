@@ -26,10 +26,10 @@
     self.cellTextField.autocorrectionType = UITextAutocorrectionTypeYes;
     self.cellTextField.returnKeyType = UIReturnKeyDefault;
     self.cellTextField.clearButtonMode = UITextFieldViewModeAlways;
-    [self applyPaletteSettings];
+    [self applyColorPalette];
 }
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.cellTextField.textColor = [UIColor piwigoLeftLabelColor];

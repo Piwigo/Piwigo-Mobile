@@ -25,10 +25,10 @@
 
     self.textView.font = [UIFont piwigoFontNormal];
     self.textView.placeholder = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
-    [self applyPaletteSettings];
+    [self applyColorPalette];
 }
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     self.textView.textColor = [UIColor piwigoLeftLabelColor];
     self.textView.backgroundColor = [UIColor piwigoCellBackgroundColor];

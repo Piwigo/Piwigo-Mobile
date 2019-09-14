@@ -115,7 +115,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -136,7 +136,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumNav"];
 }
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -158,7 +158,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     [super viewWillAppear:animated];
     
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];
+    [self applyColorPalette];
     
     // Update navigation bar and title
     [self updateNavBar];
@@ -434,6 +434,11 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     }
     
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.barButtonItem = self.sortBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }

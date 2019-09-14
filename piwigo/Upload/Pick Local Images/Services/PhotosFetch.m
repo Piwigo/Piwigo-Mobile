@@ -8,6 +8,7 @@
 #import <Photos/Photos.h>
 #import <UIKit/UIKit.h>
 
+#import "Model.h"
 #import "PhotosFetch.h"
 #import "SplitLocalImages.h"
 
@@ -180,6 +181,11 @@
     [alert addAction:prefsAction];
     
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [viewController presentViewController:alert animated:YES completion:nil];
 }
 
@@ -197,6 +203,11 @@
     
     // Present alert
     [alert addAction:dismissAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [viewController presentViewController:alert animated:YES completion:nil];
 }
 

@@ -25,10 +25,10 @@
 	
     self.leftLabel.font = [UIFont piwigoFontNormal];
     self.rightLabel.font = [UIFont piwigoFontNormal];
-    [self applyPaletteSettings];
+    [self applyColorPalette];
 }
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];

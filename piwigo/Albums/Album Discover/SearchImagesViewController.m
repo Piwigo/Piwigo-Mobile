@@ -66,7 +66,7 @@
         }
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -74,7 +74,7 @@
 
 #pragma mark - View Lifecycle
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -96,7 +96,7 @@
     [super viewWillAppear:animated];
     
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];
+    [self applyColorPalette];
 
     // Hide toolbar
     [self.navigationController setToolbarHidden:YES animated:YES];

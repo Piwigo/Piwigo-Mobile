@@ -35,14 +35,14 @@
         self.videoView = [VideoView new];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }
 
 #pragma mark - View Lifecycle
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color depends on the navigation bar visibility
     if (self.navigationController.navigationBarHidden)
@@ -59,7 +59,7 @@
 	[super viewWillAppear:animated];
 
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];    
+    [self applyColorPalette];    
 }
 
 -(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection

@@ -48,12 +48,12 @@ typedef enum {
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
 	
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 }
 
 #pragma mark - View Lifecycle
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -69,24 +69,24 @@ typedef enum {
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
 
     EditImageThumbnailTableViewCell *imageThumbnail = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
-    [imageThumbnail applyPaletteSettings];
+    [imageThumbnail applyColorPalette];
     
     EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
     textFieldCell.tag = EditImageDetailsOrderImageName;
-    [textFieldCell applyPaletteSettings];
+    [textFieldCell applyColorPalette];
     
     textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
     textFieldCell.tag = EditImageDetailsOrderAuthor;
-    [textFieldCell applyPaletteSettings];
+    [textFieldCell applyColorPalette];
     
     EditImageLabelTableViewCell *privacyCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
-    [privacyCell applyPaletteSettings];
+    [privacyCell applyColorPalette];
     
     EditImageTagsTableViewCell *tagCell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
-    [tagCell applyPaletteSettings];
+    [tagCell applyColorPalette];
 
     EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-    [textViewCell applyPaletteSettings];
+    [textViewCell applyColorPalette];
 
     [self.editImageDetailsTableView reloadData];
 }
@@ -96,7 +96,7 @@ typedef enum {
 	[super viewWillAppear:animated];
 	
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];
+    [self applyColorPalette];
 
     // Navigation buttons in edition mode
     self.navigationController.navigationBarHidden = NO;
@@ -252,6 +252,11 @@ typedef enum {
 
                                 [alert addAction:dismissAction];
                                 [alert addAction:retryAction];
+                                if (@available(iOS 13.0, *)) {
+                                    alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                                } else {
+                                    // Fallback on earlier versions
+                                }
                                 [self presentViewController:alert animated:YES completion:nil];
                              }];
 						}];

@@ -13,7 +13,7 @@
 
 @interface EditImageThumbnailTableViewCell : UITableViewCell
 
--(void)applyPaletteSettings;
+-(void)applyColorPalette;
 -(void)setupWithImage:(ImageUpload *)imageDetails;
 
 @end

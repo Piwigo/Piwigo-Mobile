@@ -10,7 +10,7 @@
 
 @interface EditImageTextViewTableViewCell : UITableViewCell
 
--(void)applyPaletteSettings;
+-(void)applyColorPalette;
 -(NSString*)getTextViewText;
 -(void)setTextForTextView:(NSString*)text;
 -(BOOL)isEditingTextView;

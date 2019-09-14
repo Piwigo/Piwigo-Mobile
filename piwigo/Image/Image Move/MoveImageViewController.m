@@ -83,7 +83,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitMoveImage)];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -91,7 +91,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 
 #pragma mark - View Lifecycle
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -118,7 +118,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     [super viewWillAppear:animated];
     
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];
+    [self applyColorPalette];
 
     // Add Cancel button
     [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
@@ -275,6 +275,11 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     
     [alert addAction:dismissAction];
     [alert addAction:retryAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -501,6 +506,11 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     rectOfCellInTableView.origin.x -= tableView.frame.size.width - textRect.size.width - tableView.layoutMargins.left - 12;
     
     // Present popover view
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.sourceView = tableView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
     alert.popoverPresentationController.sourceRect = rectOfCellInTableView;
@@ -652,8 +662,12 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
                                     handler:^(UIAlertAction * action) {}];
     
     [alert addAction:dismissAction];
-    [self presentViewController:alert animated:YES completion:nil];
-    
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    [self presentViewController:alert animated:YES completion:nil];    
     [self.navigationController popViewControllerAnimated:YES];
 }
 

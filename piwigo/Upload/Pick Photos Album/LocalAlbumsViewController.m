@@ -58,7 +58,7 @@
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -86,6 +86,11 @@
                 }];
             
             [alert addAction:dismissAction];
+            if (@available(iOS 13.0, *)) {
+                alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+            } else {
+                // Fallback on earlier versions
+            }
             [self presentViewController:alert animated:YES completion:nil];
         }
         else
@@ -108,7 +113,7 @@
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
 }
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -133,7 +138,7 @@
     self.title = NSLocalizedString(@"localAlbums", @"Photos library");
 
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];
+    [self applyColorPalette];
     
     // Navigation bar button
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];

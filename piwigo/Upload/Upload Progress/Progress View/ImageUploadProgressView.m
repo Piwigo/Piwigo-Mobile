@@ -200,6 +200,11 @@
                     }];
         
         [alert addAction:defaultAction];
+        if (@available(iOS 13.0, *)) {
+            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
         [topViewController presentViewController:alert animated:YES completion:nil];
     } else {
         // Update the local album table view

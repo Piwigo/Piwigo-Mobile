@@ -45,7 +45,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitTagSelect)];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyPaletteSettings) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -53,7 +53,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
 
 #pragma mark - View Lifecycle
 
--(void)applyPaletteSettings
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -75,7 +75,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     [super viewWillAppear:animated];
 
     // Set colors, fonts, etc.
-    [self applyPaletteSettings];
+    [self applyColorPalette];
 
     // Title
     self.title = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");

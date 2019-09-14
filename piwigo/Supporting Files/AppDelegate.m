@@ -283,8 +283,8 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 // Called when the screen brightness has changed or when user changes settings
 -(void)setColorPalette
 {
-    NSLog(@"==========>");
     if (@available(iOS 13.0, *)) {
+        NSLog(@"==========>");
         NSLog(@"setColor => iOS mode: %@, Dark requested: %@, Brightness: %.1f/%ld, app: %@", ([UITraitCollection currentTraitCollection].userInterfaceStyle == UIUserInterfaceStyleLight) ? @"Light" : @"Dark", [Model sharedInstance].isDarkPaletteModeActive ? @"Yes" : @"No", [[UIScreen mainScreen] brightness] * 100.0, (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
     } else {
         // Fallback on earlier versions
@@ -302,7 +302,13 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
         // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
         if ([Model sharedInstance].isDarkPaletteActive) {
             // Dark palette already active
-            return;
+            if (@available(iOS 13.0, *)) {
+                // Nothing to do
+                return;
+            } else {
+                // Fallback on earlier versions
+                // Apply color palette
+            }
         } else {
             // Switch to dark palette
             [Model sharedInstance].isDarkPaletteActive = YES;

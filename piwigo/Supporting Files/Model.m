@@ -80,9 +80,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Optimised image thumbnail size, will be cross-checked at login
         instance.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
-        NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
-        NSInteger nberOfImages =[ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
-        instance.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
+        instance.thumbnailsPerRowInPortrait = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
 
         // Default image settings
         instance.didOptimiseImagePreviewSize = NO;  // ===> Unused and therefore available…
