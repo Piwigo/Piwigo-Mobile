@@ -612,8 +612,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Add actions
     [alert addAction:cancelAction];
     [alert addAction:deleteAction];
-    if (([self.imageData.categoryIds count] > 1) &&
-        (self.categoryId != kPiwigoSearchCategoryId)) {
+    if (([self.imageData.categoryIds count] > 1) && (self.categoryId > 0)) {
         // This image is used in another album
         // Proposes to remove it from the current album, unless it was selected from a Search
         [alert addAction:removeAction];
