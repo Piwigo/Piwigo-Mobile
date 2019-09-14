@@ -51,7 +51,7 @@
 	self.uploadingProgressBar = [UIProgressView new];
 	self.uploadingProgressBar.translatesAutoresizingMaskIntoConstraints = NO;
 	[self.uploadingOverlay addSubview:self.uploadingProgressBar];
-	[self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadingProgressBar]];
+    [self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintViewFromTop:self.uploadingProgressBar amount:97.0]];
 	[self.uploadingOverlay addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[bar]-20-|"
 																				  options:kNilOptions
 																				  metrics:nil
