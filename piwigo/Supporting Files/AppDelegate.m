@@ -75,15 +75,15 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 
 -(void)loadLoginView
 {
-    // Did user select Dark Mode?
-    [self setColorPalette];
-
     LoginNavigationController *nav = [[LoginNavigationController alloc] initWithRootViewController:self.loginVC];
 	[nav setNavigationBarHidden:YES];
 	self.window.rootViewController = nav;
     
     // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
     [self.window.rootViewController.view setNeedsUpdateConstraints];
+
+    // Set and apply color palette
+    [self setColorPalette];
 }
 
 -(LoginViewController*)loginVC
@@ -298,27 +298,20 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
         isDarkMode = NO;
     }
     
-    if ([Model sharedInstance].isDarkPaletteModeActive || isDarkMode) {
+    if ([Model sharedInstance].isDarkPaletteModeActive || isDarkMode)
+    {
         // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
-        if ([Model sharedInstance].isDarkPaletteActive) {
-            // Dark palette already active
-            if (@available(iOS 13.0, *)) {
-                // Nothing to do
-                return;
-            } else {
-                // Fallback on earlier versions
-                // Apply color palette
-            }
-        } else {
-            // Switch to dark palette
-            [Model sharedInstance].isDarkPaletteActive = YES;
-        }
-    } else if ([Model sharedInstance].switchPaletteAutomatically) {
+        [Model sharedInstance].isDarkPaletteActive = YES;
+    }
+    else if ([Model sharedInstance].switchPaletteAutomatically)
+    {
         // Dynamic palette mode chosen and iOS Light Mode active
         NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
-        if ([Model sharedInstance].isDarkPaletteActive) {
+        if ([Model sharedInstance].isDarkPaletteActive)
+        {
             // Dark palette displayed
-            if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
+            if (currentBrightness > [Model sharedInstance].switchPaletteThreshold)
+            {
                 // Screen brightness > thereshold, switch to light palette
                 [Model sharedInstance].isDarkPaletteActive = NO;
             } else {
@@ -327,7 +320,8 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
             }
         } else {
             // Light palette displayed
-            if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
+            if (currentBrightness < [Model sharedInstance].switchPaletteThreshold)
+            {
                 // Screen brightness < threshold, switch to dark palette
                 [Model sharedInstance].isDarkPaletteActive = YES;
             } else {
@@ -337,7 +331,8 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
         }
     } else {
         // Static light palette mode
-        if (![Model sharedInstance].isDarkPaletteActive) {
+        if (![Model sharedInstance].isDarkPaletteActive)
+        {
             // Light palette already active
             return;
         } else {
