@@ -2172,18 +2172,25 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (IBAction)updatePaletteBrightnessThreshold:(id)sender
 {
-    SliderTableViewCell *sliderSettingPalette = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:SettingsSectionColor]];
-    [Model sharedInstance].switchPaletteThreshold = [sliderSettingPalette getCurrentSliderValue];
+    // User can upload images/videos if he/she is logged in and has:
+    // — admin rights
+    // — upload access to some categories with Community
+    NSInteger section = SettingsSectionColor;
+    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
+        ![Model sharedInstance].hadOpenedSession)
+    {
+        // Bypass the Upload section
+        if (section > SettingsSectionImages) section++;
+    }
+
+    SliderTableViewCell *sliderSettingPalette = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:section]];
+    NSInteger newThreshold = [sliderSettingPalette getCurrentSliderValue];
+    [Model sharedInstance].switchPaletteThreshold = newThreshold;
     [[Model sharedInstance] saveToDisk];
 
     // Update palette if needed
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (@available(iOS 13.0, *)) {
-        BOOL isDarkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
-    } else {
-        [appDelegate setColorSettingsWithiOSInDarkMode:NO];
-    }
+    [appDelegate setColorPalette];
 }
 
 - (IBAction)updateDiskCacheSize:(id)sender
