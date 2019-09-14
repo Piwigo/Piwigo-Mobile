@@ -46,8 +46,8 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 	self.loginVC = nil;
     
     // Observe the UIScreenBrightnessDidChangeNotification.
-    // When that notification is posted, the method setColorSettingsWithiOSInDarkMode: will be called.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setColorSettingsWithiOSInDarkMode:) name:UIScreenBrightnessDidChangeNotification object:nil];
+    // When that notification is posted, the method setColorPaletteWithiOSInDarkMode: will be called.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setColorPalette) name:UIScreenBrightnessDidChangeNotification object:nil];
 
     // Observe the PiwigoNetworkErrorEncounteredNotification.
     // When that notification is posted, the app checks the login.
@@ -76,14 +76,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 -(void)loadLoginView
 {
     // Did user select Dark Mode?
-    if (@available(iOS 13.0, *)) {
-        // Managed with traitColelction in UIViews
-        BOOL isDarkMode = (self.loginVC.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-        [self setColorSettingsWithiOSInDarkMode:isDarkMode];
-    }
-    else {
-        [self setColorSettingsWithiOSInDarkMode:NO];
-    }
+    [self setColorPalette];
 
     LoginNavigationController *nav = [[LoginNavigationController alloc] initWithRootViewController:self.loginVC];
 	[nav setNavigationBarHidden:YES];
@@ -288,9 +281,23 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 #pragma mark - Light and dark modes
 
 // Called when the screen brightness has changed or when user changes settings
--(void)setColorSettingsWithiOSInDarkMode:(BOOL)isDarkMode
+-(void)setColorPalette
 {
-    NSLog(@"Screen Brightness: %f/%ld and Dark Mode:%@",[[UIScreen mainScreen] brightness] * 100.0, (long)[Model sharedInstance].switchPaletteThreshold, isDarkMode ? @"Yes" : @"No");
+    NSLog(@"==========>");
+    if (@available(iOS 13.0, *)) {
+        NSLog(@"setColor => iOS mode: %@, Dark requested: %@, Brightness: %.1f/%ld, app: %@", ([UITraitCollection currentTraitCollection].userInterfaceStyle == UIUserInterfaceStyleLight) ? @"Light" : @"Dark", [Model sharedInstance].isDarkPaletteModeActive ? @"Yes" : @"No", [[UIScreen mainScreen] brightness] * 100.0, (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+    } else {
+        // Fallback on earlier versions
+    }
+
+    BOOL isDarkMode;
+    if (@available(iOS 13.0, *)) {
+        isDarkMode = ([UITraitCollection currentTraitCollection].userInterfaceStyle == UIUserInterfaceStyleDark);
+    } else {
+        // Fallback on earlier versions
+        isDarkMode = NO;
+    }
+    
     if ([Model sharedInstance].isDarkPaletteModeActive || isDarkMode) {
         // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
         if ([Model sharedInstance].isDarkPaletteActive) {
@@ -340,11 +347,14 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
 
     // Apply global color change
-    [self applyColorSettings];
+    [self applyColorPalette];
+
+    NSLog(@"setColor => app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+    NSLog(@"==========>");
 }
 
 // Called at start and when changing color palette
--(void)applyColorSettings
+-(void)applyColorPalette
 {
     // Activity indicator
     [UIActivityIndicatorView appearance].color = [UIColor piwigoOrange];

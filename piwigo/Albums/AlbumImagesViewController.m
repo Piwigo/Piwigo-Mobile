@@ -244,11 +244,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    if (@available(iOS 13.0, *)) {
-        self.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
     
     // Refresh controller
     self.refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -503,24 +498,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     [super traitCollectionDidChange:previousTraitCollection];
     
+    // Should we update user interface based on the appearance?
     if (@available(iOS 13.0, *)) {
-        BOOL hasUserInterfaceStyleChanged = [previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.imagesCollection.traitCollection];
-        if (hasUserInterfaceStyleChanged)
-            NSLog(@"=> did change: %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
-    } else {
-        // Fallback on earlier versions
-    }
-}
-
--(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
-{
-    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
-    
-    // User may have switched to Light or Dark Mode
-    if (@available(iOS 13.0, *)) {
-        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+        BOOL hasUserInterfaceStyleChanged = [previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.traitCollection];
+        if (hasUserInterfaceStyleChanged) {
+            NSLog(@"AlbumImages => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate setColorPalette];
+        }
     } else {
         // Fallback on earlier versions
     }

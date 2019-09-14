@@ -113,11 +113,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    if (@available(iOS 13.0, *)) {
-        self.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
+//    if (@available(iOS 13.0, *)) {
+//        self.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+//    } else {
+//        // Fallback on earlier versions
+//    }
 
     // Navigation bar
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -210,15 +210,18 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     } completion:nil];
 }
 
--(void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
 {
-    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    [super traitCollectionDidChange:previousTraitCollection];
     
-    // User may have switched to Light or Dark Mode
+    // Should we update user interface based on the appearance?
     if (@available(iOS 13.0, *)) {
-        BOOL isDarkMode = (newCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
+        BOOL hasUserInterfaceStyleChanged = [previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.traitCollection];
+        if (hasUserInterfaceStyleChanged) {
+            NSLog(@"AlbumImages => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate setColorPalette];
+        }
     } else {
         // Fallback on earlier versions
     }
@@ -1092,12 +1095,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         
                         // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        if (@available(iOS 13.0, *)) {
-                            BOOL isDarkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-                            [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
-                        } else {
-                            [appDelegate setColorSettingsWithiOSInDarkMode:NO];
-                        }
+                        [appDelegate setColorPalette];
                     };
                     
                     tableViewCell = cell;
@@ -1144,12 +1142,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
                             // Notify palette change
                             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            if (@available(iOS 13.0, *)) {
-                                BOOL isDarkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-                                [appDelegate setColorSettingsWithiOSInDarkMode:isDarkMode];
-                            } else {
-                                [appDelegate setColorSettingsWithiOSInDarkMode:NO];
-                            }
+                            [appDelegate setColorPalette];
                         };
                         
                         tableViewCell = cell;
