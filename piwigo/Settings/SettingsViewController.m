@@ -153,15 +153,16 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
     if (@available(iOS 10, *)) {
         NSString *langCode = [[NSLocale currentLocale] languageCode];
-//    NSLog(@"=> langCode: %@", langCode);
-//    NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, kTwentyDays);
+//        NSLog(@"=> langCode: %@", langCode);
+//        NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, k2WeeksInDays);
         if (([[NSDate date] timeIntervalSinceReferenceDate] > [Model sharedInstance].dateOfLastTranslationRequest + k2WeeksInDays) &&
             ([langCode isEqualToString:@"ar"] ||
              [langCode isEqualToString:@"fa"] ||
              [langCode isEqualToString:@"pl"] ||
              [langCode isEqualToString:@"pt-BR"] ||
              [langCode isEqualToString:@"ru"] ||
-             [langCode isEqualToString:@"sk"] ))
+             [langCode isEqualToString:@"sk"] ||
+             [langCode isEqualToString:@"zh"] ))
         {
             // Store date of last translation request
             [Model sharedInstance].dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate];
