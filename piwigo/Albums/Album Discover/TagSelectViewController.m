@@ -77,9 +77,6 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     // Set colors, fonts, etc.
     [self applyColorPalette];
 
-    // Title
-    self.title = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
-
     // Add Cancel button
     [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
 
@@ -172,6 +169,79 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         count++;
     }
     return 0;
+}
+
+
+#pragma mark - UITableView - Header
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tags", @"Tags")];
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:titleAttributes
+                                                 context:context];
+    
+    // Text
+    NSString *textString = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
+    NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:textAttributes
+                                               context:context];
+    return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tags", @"Tags")];
+    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                  range:NSMakeRange(0, [titleString length])];
+    [headerAttributedString appendAttributedString:titleAttributedString];
+    
+    // Text
+    NSString *textString = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
+    NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+    [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                 range:NSMakeRange(0, [textString length])];
+    [headerAttributedString appendAttributedString:textAttributedString];
+    
+    // Header label
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    headerLabel.attributedText = headerAttributedString;
+
+    // Header view
+    UIView *header = [[UIView alloc] init];
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint
+                   constraintsWithVisualFormat:@"|-[header]-|"
+                                       options:kNilOptions
+                                       metrics:nil
+                                         views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint
+                   constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                       options:kNilOptions
+                                       metrics:nil
+                                         views:@{@"header" : headerLabel}]];
+    }
+    
+    return header;
 }
 
 
