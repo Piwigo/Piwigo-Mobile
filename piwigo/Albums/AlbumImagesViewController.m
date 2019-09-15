@@ -286,7 +286,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
     self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self refreshShowingCells];
+    [self.imagesCollection reloadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -798,48 +798,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                  [self hideHUD];
                              }
      ];
-}
-
--(void)refreshShowingCells
-{
-#if defined(DEBUG_LIFECYCLE)
-    NSLog(@"refreshShowingCells…");
-#endif
-    NSArray *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
-
-    for(UICollectionViewCell *cell in self.imagesCollection.visibleCells)
-    {
-        // Get indexPath for visible cell in collection
-        NSIndexPath *indexPath = [self.imagesCollection indexPathForCell:cell];
-        
-        // Case of a category
-        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
-            if ([categories count] > indexPath.row) {
-                PiwigoAlbumData *albumData = [categories objectAtIndex:indexPath.row];
-                CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
-                [categoryCell setupWithAlbumData:albumData];
-            }
-        }
-
-        // Case of an image
-        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
-            if ([self.albumData.images count] > indexPath.row) {
-                PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-                ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
-                [imageCell setupWithImageData:imageData forCategoryId:self.categoryId];
-
-                if([self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]])
-                {
-                    imageCell.isSelected = YES;
-                }
-            }
-        }
-    }
-    
-    // Refresh headers on palette color change
-    if (self.imagesCollection.visibleCells.count > 0) {
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0,2)]];
-    }
 }
 
 -(void)categoriesUpdated
