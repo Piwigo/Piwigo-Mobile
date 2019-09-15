@@ -1101,19 +1101,20 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     for(PiwigoImageData *image in self.images)
     {
         if(image.imageId == details.imageId) {
+            // Update image data
             image.name = details.title;
             image.author = details.author;
             image.privacyLevel = details.privacyLevel;
             image.imageDescription = [NSString stringWithString:details.imageDescription];
             image.tags = [details.tags copy];
+            
+            // Update list and currently viewed image
             [self.images replaceObjectAtIndex:index withObject:image];
+            self.imageData = image;
             break;
         }
         index++;
     }
-
-    // Update previewed image
-    self.imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:details.imageId];
     
     // Update current view
     [self setTitleViewFromImageData];
