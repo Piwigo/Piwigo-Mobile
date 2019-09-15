@@ -25,15 +25,6 @@
 
     self.textView.font = [UIFont piwigoFontNormal];
     self.textView.placeholder = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
-    [self applyColorPalette];
-}
-
--(void)applyColorPalette
-{
-    self.textView.textColor = [UIColor piwigoLeftLabelColor];
-    self.textView.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    self.textView.placeholderColor = [UIColor piwigoRightLabelColor];
-    self.textView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
 -(void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -55,6 +46,10 @@
 -(void)setTextForTextView:(NSString*)text
 {
 	self.textView.text = text;
+    self.textView.textColor = [UIColor piwigoLeftLabelColor];
+    self.textView.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.textView.placeholderColor = [UIColor piwigoRightLabelColor];
+    self.textView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
 -(BOOL)isEditingTextView

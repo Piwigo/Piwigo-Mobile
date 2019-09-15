@@ -151,12 +151,12 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // and never present video poster in full screen
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 
-    // Set colors, fonts, etc.
-    [self applyColorPalette];
-
     // Image options buttons
     [self updateNavBar];
     
+    // Set colors, fonts, etc.
+    [self applyColorPalette];
+
     // Scrolling
 	if([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
 	{
@@ -182,12 +182,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     
     // Should we update user interface based on the appearance?
     if (@available(iOS 13.0, *)) {
-        BOOL hasUserInterfaceStyleChanged = [previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.traitCollection];
+        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            NSLog(@"AlbumImages => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
+            NSLog(@"ImageDetail => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate setColorPalette];
         }
+
     } else {
         // Fallback on earlier versions
     }
@@ -912,18 +913,25 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 -(void)pushView:(UIViewController *)viewController
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        viewController.modalPresentationStyle = UIModalPresentationPopover;
-        viewController.popoverPresentationController.sourceView = self.view;
         
-        if ([viewController isKindOfClass:[AllCategoriesViewController class]]) {
+        if ([viewController isKindOfClass:[AllCategoriesViewController class]])
+        {
+            viewController.modalPresentationStyle = UIModalPresentationPopover;
+            viewController.popoverPresentationController.sourceView = self.view;
             viewController.popoverPresentationController.barButtonItem = self.setThumbnailBarButton;
             viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
-       } else if ([viewController isKindOfClass:[MoveImageViewController class]]) {
+       }
+        else if ([viewController isKindOfClass:[MoveImageViewController class]])
+        {
+            viewController.modalPresentationStyle = UIModalPresentationPopover;
+            viewController.popoverPresentationController.sourceView = self.view;
             viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
             viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
-        } else if ([viewController isKindOfClass:[EditImageDetailsViewController class]]) {
+        }
+        else if ([viewController isKindOfClass:[EditImageDetailsViewController class]])
+        {
             // Push Edit view embedded in navigation controller
             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
             navController.modalPresentationStyle = UIModalPresentationPopover;
@@ -932,8 +940,11 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
             navController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:navController animated:YES completion:nil];
         }
-    } else {
+    }
+    else {
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+        navController.modalPresentationStyle = UIModalPresentationPopover;
+        navController.popoverPresentationController.sourceView = self.view;
         navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         navController.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:navController animated:YES completion:nil];

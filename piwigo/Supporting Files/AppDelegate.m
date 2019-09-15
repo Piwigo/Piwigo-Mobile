@@ -314,9 +314,6 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
             {
                 // Screen brightness > thereshold, switch to light palette
                 [Model sharedInstance].isDarkPaletteActive = NO;
-            } else {
-                // Keep dark palette
-                return;
             }
         } else {
             // Light palette displayed
@@ -324,18 +321,12 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
             {
                 // Screen brightness < threshold, switch to dark palette
                 [Model sharedInstance].isDarkPaletteActive = YES;
-            } else {
-                // Keep light palette
-                return;
             }
         }
     } else {
         // Static light palette mode
-        if (![Model sharedInstance].isDarkPaletteActive)
+        if ([Model sharedInstance].isDarkPaletteActive)
         {
-            // Light palette already active
-            return;
-        } else {
             // Switch to light palette
             [Model sharedInstance].isDarkPaletteActive = NO;
         }
@@ -403,7 +394,9 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 
     // Tell iOS to apply appearance changes
     NSArray *subViews = self.window.subviews;
+    NSLog(@"applyColorPalette => %ld subViews", subViews.count);
     for (UIView *view in subViews) {
+        
         UIView *superView = view.superview;
         [view removeFromSuperview];
         [superView addSubview:view];

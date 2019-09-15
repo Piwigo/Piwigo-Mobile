@@ -24,9 +24,7 @@
     
     // Initialization code
     [super awakeFromNib];
-    
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
-    
+        
     self.imageThumbnail.layer.cornerRadius = 10;
     self.imageSize.font = [UIFont piwigoFontSmallLight];
     self.imageDate.font = [UIFont piwigoFontSmallLight];
@@ -34,20 +32,29 @@
     self.imageFile.font = [UIFont piwigoFontSmallLight];
     self.userInteractionEnabled = NO;
 
-    [self applyColorPalette];
+//    [self applyColorPalette];
 }
 
--(void)applyColorPalette
-{
-    self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
-}
+//-(void)applyColorPalette
+//{
+//    self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
+//    self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
+//    self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
+//    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
+//}
 
 -(void)setupWithImage:(ImageUpload *)imageDetails
 {
+    // Cell background
+    self.backgroundColor = [UIColor piwigoBackgroundColor];
+
+    // Image size, date and time
+    self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
+    self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
+    self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
+
     // Image file name
+    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
     if (imageDetails.fileName.length > 0) {
         self.imageFile.text = imageDetails.fileName;
     }

@@ -10,7 +10,6 @@
 
 @interface EditImageTagsTableViewCell : UITableViewCell
 
--(void)applyColorPalette;
 -(void)setTagList:(NSArray*)tags;
 
 @end

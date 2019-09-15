@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "EditImageDetailsViewController.h"
-#import "EditImageLabelTableViewCell.h"
+#import "EditImagePrivacyTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
 #import "EditImageThumbnailTableViewCell.h"
@@ -67,36 +67,12 @@ typedef enum {
     
     // Table view
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
-
-    EditImageThumbnailTableViewCell *imageThumbnail = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
-    [imageThumbnail applyColorPalette];
-    
-    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-    textFieldCell.tag = EditImageDetailsOrderImageName;
-    [textFieldCell applyColorPalette];
-    
-    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-    textFieldCell.tag = EditImageDetailsOrderAuthor;
-    [textFieldCell applyColorPalette];
-    
-    EditImageLabelTableViewCell *privacyCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
-    [privacyCell applyColorPalette];
-    
-    EditImageTagsTableViewCell *tagCell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
-    [tagCell applyColorPalette];
-
-    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-    [textViewCell applyColorPalette];
-
     [self.editImageDetailsTableView reloadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-	
-    // Set colors, fonts, etc.
-    [self applyColorPalette];
 
     // Navigation buttons in edition mode
     self.navigationController.navigationBarHidden = NO;
@@ -125,6 +101,9 @@ typedef enum {
         CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight), 0.0)];
     }
+    
+    // Set colors, fonts, etc.
+    [self applyColorPalette];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -154,23 +133,6 @@ typedef enum {
         // Reload table view
         [self.editImageDetailsTableView reloadData];
     } completion:nil];
-}
-
--(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
-{
-    [super traitCollectionDidChange:previousTraitCollection];
-    
-    // Should we update user interface based on the appearance?
-    if (@available(iOS 13.0, *)) {
-        BOOL hasUserInterfaceStyleChanged = [previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.traitCollection];
-        if (hasUserInterfaceStyleChanged) {
-            NSLog(@"AlbumImages => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate setColorPalette];
-        }
-    } else {
-        // Fallback on earlier versions
-    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -370,10 +332,14 @@ typedef enum {
             }
 
             cell.cellLabel.text = NSLocalizedString(@"editImageDetails_title", @"Title:");
+            cell.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
             cell.cellTextField.text = self.imageDetails.title;
+            cell.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
+            cell.cellTextField.backgroundColor = [UIColor piwigoBackgroundColor];
             cell.cellTextField.placeholder = NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title");
             cell.cellTextField.tag = EditImageDetailsOrderImageName;
             cell.cellTextField.delegate = self;
+
             tableViewCell = cell;
             break;
 		}
@@ -387,11 +353,14 @@ typedef enum {
             }
             
             cell.cellLabel.text = NSLocalizedString(@"editImageDetails_author", @"Author:");
+            cell.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
             if ([self.imageDetails.author isEqualToString:@"NSNotFound"]) {
                 cell.cellTextField.text = @"";
             } else {
                 cell.cellTextField.text = self.imageDetails.author;
             }
+            cell.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
+            cell.cellTextField.backgroundColor = [UIColor piwigoBackgroundColor];
             cell.cellTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
             cell.cellTextField.tag = EditImageDetailsOrderAuthor;
             cell.cellTextField.delegate = self;
@@ -401,7 +370,7 @@ typedef enum {
 		
         case EditImageDetailsOrderPrivacy:
 		{
-			EditImageLabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
+			EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
 			[cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
 			[cell setPrivacyLevel:self.imageDetails.privacyLevel];
             tableViewCell = cell;
@@ -536,7 +505,7 @@ typedef enum {
 {
 	self.imageDetails.privacyLevel = privacy;
 	
-	EditImageLabelTableViewCell *labelCell = (EditImageLabelTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
+	EditImagePrivacyTableViewCell *labelCell = (EditImagePrivacyTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
 	[labelCell setPrivacyLevel:privacy];
 }
 

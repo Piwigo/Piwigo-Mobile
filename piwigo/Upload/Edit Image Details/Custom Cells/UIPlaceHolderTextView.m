@@ -91,7 +91,6 @@ CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
 			_placeHolderLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,8,self.bounds.size.width - 16,0)];
 			_placeHolderLabel.lineBreakMode = NSLineBreakByWordWrapping;
 			_placeHolderLabel.numberOfLines = 0;
-//			_placeHolderLabel.font = self.font;
             _placeHolderLabel.font = [UIFont piwigoFontNormal];
 			_placeHolderLabel.textColor = self.placeholderColor;
 			_placeHolderLabel.alpha = 0;

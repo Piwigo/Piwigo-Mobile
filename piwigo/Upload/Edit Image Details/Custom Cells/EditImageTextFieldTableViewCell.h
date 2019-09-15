@@ -13,6 +13,4 @@
 @property (weak, nonatomic)     IBOutlet UILabel *cellLabel;
 @property (weak, nonatomic)     IBOutlet UITextField *cellTextField;
 
--(void)applyColorPalette;
-
 @end

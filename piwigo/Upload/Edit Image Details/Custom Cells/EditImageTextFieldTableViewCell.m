@@ -11,6 +11,8 @@
 
 @interface EditImageTextFieldTableViewCell()
 
+@property (nonatomic, strong) NSString *textString;
+
 @end
 
 @implementation EditImageTextFieldTableViewCell
@@ -26,14 +28,24 @@
     self.cellTextField.autocorrectionType = UITextAutocorrectionTypeYes;
     self.cellTextField.returnKeyType = UIReturnKeyDefault;
     self.cellTextField.clearButtonMode = UITextFieldViewModeAlways;
-    [self applyColorPalette];
 }
 
--(void)applyColorPalette
+-(void)setTextString:(NSString *)textString
 {
+    _textString = textString;
+
+    if (textString.length <= 0)
+    {
+        self.cellTextField.text = @"";
+    }
+    else
+    {
+        self.cellTextField.text = textString;
+    }
+
     self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
     self.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
-    self.cellTextField.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.cellTextField.backgroundColor = [UIColor piwigoBackgroundColor];
     if ([[self.cellTextField.attributedPlaceholder string] length] > 0) {
         NSString *placeHolder = [self.cellTextField.attributedPlaceholder string];
         self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeHolder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoRightLabelColor]}];

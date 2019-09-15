@@ -1,22 +1,22 @@
 //
-//  EditImageLabelTableViewCell.m
+//  EditImagePrivacyTableViewCell.m
 //  piwigo
 //
 //  Created by Spencer Baker on 2/16/15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "EditImageLabelTableViewCell.h"
+#import "EditImagePrivacyTableViewCell.h"
 #import "Model.h"
 
-@interface EditImageLabelTableViewCell()
+@interface EditImagePrivacyTableViewCell()
 
 @property (weak, nonatomic) IBOutlet UILabel *leftLabel;
 @property (weak, nonatomic) IBOutlet UILabel *rightLabel;
 
 @end
 
-@implementation EditImageLabelTableViewCell
+@implementation EditImagePrivacyTableViewCell
 
 - (void)awakeFromNib {
 
@@ -25,17 +25,10 @@
 	
     self.leftLabel.font = [UIFont piwigoFontNormal];
     self.rightLabel.font = [UIFont piwigoFontNormal];
-    [self applyColorPalette];
 }
 
--(void)applyColorPalette
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
-    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     // Configure the view for the selected state
 	
@@ -44,11 +37,14 @@
 -(void)setPrivacyLevel:(kPiwigoPrivacy)privacy
 {
 	self.rightLabel.text = [[Model sharedInstance] getNameForPrivacyLevel:privacy];
+    self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
 }
 
 -(void)setLeftLabelText:(NSString*)text
 {
 	self.leftLabel.text = text;
+    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
 }
 
 @end

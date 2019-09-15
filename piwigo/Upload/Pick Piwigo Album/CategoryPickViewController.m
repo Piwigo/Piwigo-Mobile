@@ -167,23 +167,6 @@
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 }
 
--(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
-{
-    [super traitCollectionDidChange:previousTraitCollection];
-    
-    // Should we update user interface based on the appearance?
-    if (@available(iOS 13.0, *)) {
-        BOOL hasUserInterfaceStyleChanged = [previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.traitCollection];
-        if (hasUserInterfaceStyleChanged) {
-            NSLog(@"AlbumImages => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate setColorPalette];
-        }
-    } else {
-        // Fallback on earlier versions
-    }
-}
-
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
