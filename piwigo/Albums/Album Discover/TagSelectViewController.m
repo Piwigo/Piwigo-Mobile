@@ -204,7 +204,15 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         
     // => pwg.tags.getList returns in addition: counter, url
     NSInteger nber = currentTag.numberOfImagesUnderTag;
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld %@)", currentTag.tagName, (long)nber, nber > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+    if (nber == NSNotFound)
+    {
+        // Unknown number of images
+        cell.textLabel.text = currentTag.tagName;
+    }
+    else {
+        // Number of images collected
+        cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld %@)", currentTag.tagName, (long)nber, nber > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+    }
     
     return cell;
 }
