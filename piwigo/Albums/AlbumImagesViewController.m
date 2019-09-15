@@ -321,7 +321,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
             // Set navigation bar buttons
-            [self updateNavBar];
+            [self updateBarButtons];
 
             self.loadingImages = NO;
             [self.imagesCollection reloadData];
@@ -355,7 +355,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
 
     // Set navigation bar buttons
-    [self updateNavBar];
+    [self updateBarButtons];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -489,7 +489,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self updateNavBar];
+        [self updateBarButtons];
         [self.imagesCollection reloadData];
     } completion:nil];
 }
@@ -525,7 +525,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.uploadButton setHidden:YES];
 }
 
--(void)updateNavBar
+-(void)updateBarButtons
 {
     // For positioning the buttons
     CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
@@ -719,9 +719,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         
         // Right side of navigation bar
         [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
+        [self.cancelBarButton setEnabled:YES];
     }
 }
 
+-(void)disableBarButtons
+{
+    [self.cancelBarButton setEnabled:NO];
+    [self.deleteBarButton setEnabled:NO];
+    [self.moveBarButton setEnabled:NO];
+    [self.shareBarButton setEnabled:NO];
+}
 
 #pragma mark - Category Data
 
@@ -819,7 +827,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                  self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
                 
                  // Set navigation bar buttons
-                 [self updateNavBar];
+                 [self updateBarButtons];
 
                  // Reload collection view
                  self.loadingImages = NO;
@@ -834,7 +842,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
          self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 
          // Set navigation bar buttons
-         [self updateNavBar];
+         [self updateBarButtons];
 
          // Reload collection view
          [self.imagesCollection reloadData];
@@ -942,7 +950,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
     
     // Update navigation bar
-    [self updateNavBar];
+    [self updateBarButtons];
 }
 
 -(void)cancelSelect
@@ -951,7 +959,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     self.isSelect = NO;
     
     // Update navigation bar
-	[self updateNavBar];
+	[self updateBarButtons];
     
     // Enable interaction with category cells and deselect image cells
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
@@ -1041,7 +1049,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 
                 // Reload the cell and update the navigation bar
                 [self.imagesCollection reloadData];
-                [self updateNavBar];
+                [self updateBarButtons];
             }
         }
     }
@@ -1067,6 +1075,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)deleteSelected
 {
     if(self.selectedImageIds.count <= 0) return;
+    
+    // Disable buttons
+    [self disableBarButtons];
     
     // Display HUD
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1136,6 +1147,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         style:UIAlertActionStyleCancel
         handler:^(UIAlertAction * action) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                [self updateBarButtons];
                 [self hideHUD];
             });
         }];
@@ -1177,7 +1189,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     UIAlertAction* cancelAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
         style:UIAlertActionStyleCancel
-        handler:^(UIAlertAction * action) {}];
+        handler:^(UIAlertAction * action) {
+            [self updateBarButtons];
+        }];
     
     UIAlertAction* removeImagesAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"deleteCategory_orphanedImages", @"Delete Orphans")
@@ -1299,7 +1313,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                         style:UIAlertActionStyleCancel
                         handler:^(UIAlertAction * action) {
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                [self hideHUDwithSuccess:NO completion:nil];
+                                [self hideHUDwithSuccess:NO completion:^{
+                                    [self updateBarButtons];
+                                }];
                             });
                         }];
                     
@@ -1335,7 +1351,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                       style:UIAlertActionStyleCancel
                       handler:^(UIAlertAction * action) {
                           dispatch_async(dispatch_get_main_queue(), ^{
-                              [self hideHUDwithSuccess:NO completion:nil];
+                              [self hideHUDwithSuccess:NO completion:^{
+                                  [self updateBarButtons];
+                              }];
                           });
                       }];
                   
@@ -1404,7 +1422,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                             style:UIAlertActionStyleCancel
                             handler:^(UIAlertAction * action) {
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    [self hideHUDwithSuccess:NO completion:nil];
+                                    [self hideHUDwithSuccess:NO completion:^{
+                                        [self updateBarButtons];
+                                    }];
                                 });
                             }];
                         
@@ -1436,6 +1456,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     if (self.selectedImageIds.count <= 0) return;
 
+    // Disable buttons
+    [self disableBarButtons];
+    
     // Display HUD
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
@@ -1567,7 +1590,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         } else {
             if (activityType == NULL) {
 //                NSLog(@"User dismissed the view controller without making a selection.");
-            } else {
+                [self updateBarButtons];
+            }
+            else {
 //                NSLog(@"Activity was not performed.");
                 [self cancelSelect];
                 for (PiwigoImageData *imageData in self.selectedImagesToShare) {
@@ -1601,6 +1626,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)addImagesToCategory
 {
+    // Disable buttons
+    [self disableBarButtons];
+    
     // Determine index of first selected cell
     NSInteger indexOfFirstSelectedImage = INFINITY;
     for (NSNumber *imageId in self.selectedImageIds) {
@@ -1622,7 +1650,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     UIAlertAction* cancelAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                                    style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {}];
+                                   handler:^(UIAlertAction * action) {
+                                       [self updateBarButtons];
+                                   }];
     
     UIAlertAction* copyAction = [UIAlertAction
                                  actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
@@ -2019,7 +2049,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 [collectionView reloadData];
                 
                 // and display nav buttons
-                [self updateNavBar];
+                [self updateBarButtons];
             }
         }
     }
@@ -2151,6 +2181,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - MoveImagesDelegate methods
 
+-(void)cancelMoveImages
+{
+    // Re-enable buttons
+    [self updateBarButtons];
+}
+
 -(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     [self.albumData removeImage:image];
@@ -2162,6 +2198,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)deselectImages
 {
+    // Deselect images and leave select mode
     [self cancelSelect];
 }
 
@@ -2208,10 +2245,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
         }
         else {
-            viewController.modalPresentationStyle = UIModalPresentationPopover;
-            viewController.popoverPresentationController.sourceView = self.view;
-            viewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            [self.navigationController presentViewController:viewController animated:YES completion:nil];
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            navController.modalPresentationStyle = UIModalPresentationPopover;
+            navController.popoverPresentationController.sourceView = self.view;
+            navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            [self.navigationController presentViewController:navController animated:YES completion:nil];
         }
     }
 }
