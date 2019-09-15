@@ -14,6 +14,7 @@ FOUNDATION_EXPORT CGFloat const kMoveImageViewWidth;
 
 @protocol MoveImageDelegate <NSObject>
 
+-(void)cancelMoveImage;
 -(void)didCopyImageInOneOfCategoryIds:(NSMutableArray*)categoryIds;
 -(void)didRemoveImage:(PiwigoImageData*)image atIndex:(NSInteger)index;
 

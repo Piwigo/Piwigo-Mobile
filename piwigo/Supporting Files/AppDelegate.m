@@ -283,12 +283,12 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 // Called when the screen brightness has changed or when user changes settings
 -(void)setColorPalette
 {
-//    if (@available(iOS 13.0, *)) {
-//        NSLog(@"==========>");
-//        NSLog(@"setColor => iOS mode: %@, Dark requested: %@, Brightness: %.1f/%ld, app: %@", ([UITraitCollection currentTraitCollection].userInterfaceStyle == UIUserInterfaceStyleLight) ? @"Light" : @"Dark", [Model sharedInstance].isDarkPaletteModeActive ? @"Yes" : @"No", [[UIScreen mainScreen] brightness] * 100.0, (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
-//    } else {
-//        // Fallback on earlier versions
-//    }
+    if (@available(iOS 13.0, *)) {
+        NSLog(@"==========>");
+        NSLog(@"setColor => iOS mode: %@, Dark requested: %@, Brightness: %.1f/%ld, app: %@", ([UITraitCollection currentTraitCollection].userInterfaceStyle == UIUserInterfaceStyleLight) ? @"Light" : @"Dark", [Model sharedInstance].isDarkPaletteModeActive ? @"Yes" : @"No", [[UIScreen mainScreen] brightness] * 100.0, (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+    } else {
+        // Fallback on earlier versions
+    }
 
     BOOL isDarkMode;
     if (@available(iOS 13.0, *)) {
@@ -341,8 +341,8 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     // Apply global color change
     [self applyColorPalette];
 
-//    NSLog(@"setColor => app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
-//    NSLog(@"==========>");
+    NSLog(@"setColor => app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+    NSLog(@"==========>");
 }
 
 // Called at start and when changing color palette
@@ -396,7 +396,6 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     NSArray *subViews = self.window.subviews;
     NSLog(@"applyColorPalette => %ld subViews", subViews.count);
     for (UIView *view in subViews) {
-        
         UIView *superView = view.superview;
         [view removeFromSuperview];
         [superView addSubview:view];

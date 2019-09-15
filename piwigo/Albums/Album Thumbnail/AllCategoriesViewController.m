@@ -123,6 +123,15 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void)viewDidDisappear:(BOOL)animated
+{
+    // If returning to image preview, re-enable buttons
+    if ([self.setAlbumImageDelegate respondsToSelector:@selector(didSetImageAsAlbumThumbnail)])
+    {
+        [self.setAlbumImageDelegate didSetImageAsAlbumThumbnail];
+    }
+}
+
 
 #pragma mark - UITableView - Header
 

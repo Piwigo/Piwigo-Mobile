@@ -28,7 +28,7 @@
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, MoveImageDelegate, AsyncImageActivityItemProviderDelegate, UIToolbarDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, SetAlbumImageDelegate, MoveImageDelegate, AsyncImageActivityItemProviderDelegate, UIToolbarDelegate>
 
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoImageData *imageData;
@@ -268,6 +268,7 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 }
 
 // Buttons are disabled (greyed) when retrieving image data
+// They are also disabled during an action
 -(void)setEnableStateOfButtons:(BOOL)state
 {
     self.editBarButton.enabled = state;
@@ -573,6 +574,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)editImage
 {
+    // Disable buttons during action
+    [self setEnableStateOfButtons:NO];
+
     // Present EditImageDetails view
     UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
     EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
@@ -587,6 +591,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)deleteImage
 {
+    // Disable buttons during action
+    [self setEnableStateOfButtons:NO];
+
     UIAlertController* alert = [UIAlertController
             alertControllerWithTitle:@""
             message:NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image? This cannot be undone!")
@@ -595,7 +602,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     UIAlertAction* cancelAction = [UIAlertAction
            actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
            style:UIAlertActionStyleCancel
-           handler:^(UIAlertAction * action) {}];
+           handler:^(UIAlertAction * action) {
+                // Re-enable buttons
+                [self setEnableStateOfButtons:YES];
+    }];
     
     UIAlertAction *removeAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"removeSingleImage_title", @"Remove from Album")
@@ -728,7 +738,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     UIAlertAction* dismissAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
             style:UIAlertActionStyleCancel
-            handler:^(UIAlertAction * action) {}];
+            handler:^(UIAlertAction * action) {
+                // Re-enable buttons
+                [self setEnableStateOfButtons:YES];
+    }];
     
     [alert addAction:dismissAction];
     if (@available(iOS 13.0, *)) {
@@ -744,6 +757,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)shareImage
 {
+    // Disable buttons during action
+    [self setEnableStateOfButtons:NO];
+
     // Check autorisation to access Photo Library (camera roll)
     [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
             onAuthorizedAccess:^{
@@ -803,6 +819,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Delete image/video file and remove observers after dismissing activity view controller
     [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
 //        NSLog(@"Activity Type selected: %@", activityType);
+
+        // Enable buttons after action
+        [self setEnableStateOfButtons:YES];
+
         if (completed) {
 //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
             if (self.imageData.isVideo) {
@@ -847,8 +867,12 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)setAsAlbumImage
 {
+    // Disable buttons during action
+    [self setEnableStateOfButtons:NO];
+
     // Present AllCategories view
     AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImage:self.imageData andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+    allCategoriesPickVC.setAlbumImageDelegate = self;
     [self pushView:allCategoriesPickVC];
 }
 
@@ -857,6 +881,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)addImageToCategory
 {
+    // Disable buttons during action
+    [self setEnableStateOfButtons:NO];
+
     // If image selected from Search, immediatley propose to copy it
     if (self.categoryId == kPiwigoSearchCategoryId) {
         MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId atIndex:[self indexOfSelectedImage] andCopyOption:YES];
@@ -1107,32 +1134,52 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {
-    // Update list of images
-    NSInteger index = 0;
-    for(PiwigoImageData *image in self.images)
-    {
-        if(image.imageId == details.imageId) {
-            // Update image data
-            image.name = details.title;
-            image.author = details.author;
-            image.privacyLevel = details.privacyLevel;
-            image.imageDescription = [NSString stringWithString:details.imageDescription];
-            image.tags = [details.tags copy];
-            
-            // Update list and currently viewed image
-            [self.images replaceObjectAtIndex:index withObject:image];
-            self.imageData = image;
-            break;
+    // Update image data
+    if (details != nil) {
+        // Update list of images
+        NSInteger index = 0;
+        for(PiwigoImageData *image in self.images)
+        {
+            if(image.imageId == details.imageId) {
+                // Update image data
+                image.name = details.title;
+                image.author = details.author;
+                image.privacyLevel = details.privacyLevel;
+                image.imageDescription = [NSString stringWithString:details.imageDescription];
+                image.tags = [details.tags copy];
+                
+                // Update list and currently viewed image
+                [self.images replaceObjectAtIndex:index withObject:image];
+                self.imageData = image;
+                break;
+            }
+            index++;
         }
-        index++;
+        
+        // Update current view
+        [self setTitleViewFromImageData];
     }
-    
-    // Update current view
-    [self setTitleViewFromImageData];
+
+    // Enable buttons after action
+    [self setEnableStateOfButtons:YES];
+}
+
+
+#pragma mark - SetAlbumImageDelegate methods
+
+-(void)didSetImageAsAlbumThumbnail
+{
+    [self setEnableStateOfButtons:YES];
 }
 
 
 #pragma mark - MoveImageDelegate Methods
+
+-(void)cancelMoveImage
+{
+    // Re-enable buttons
+    [self setEnableStateOfButtons:YES];
+}
 
 -(void)didCopyImageInOneOfCategoryIds:(NSMutableArray *)categoryIds
 {

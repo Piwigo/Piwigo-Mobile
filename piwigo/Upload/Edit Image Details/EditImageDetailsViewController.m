@@ -35,7 +35,6 @@ typedef enum {
 @interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
-@property (nonatomic, assign) BOOL shouldUpdateDetails;
 
 @end
 
@@ -76,7 +75,6 @@ typedef enum {
 
     // Navigation buttons in edition mode
     self.navigationController.navigationBarHidden = NO;
-    self.shouldUpdateDetails = NO;
     if (self.isEdit)
     {
 		UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
@@ -113,7 +111,7 @@ typedef enum {
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         
         // Store recent modification
-        [self updateImageDescription];
+        [self updateImageParameters];
         
         // Adjust content inset
         // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
@@ -135,18 +133,6 @@ typedef enum {
     } completion:nil];
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    
-    if ((self.shouldUpdateDetails || (self.navigationItem.rightBarButtonItem == nil)) &&
-        [self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
-    {
-        [self updateImageDescription];
-        [self.delegate didFinishEditingDetails:self.imageDetails];
-    }
-}
-
 
 #pragma mark - Edit methods
 
@@ -158,14 +144,19 @@ typedef enum {
 
 -(void)cancelEdit
 {
-    self.shouldUpdateDetails = NO;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    // return to image preview
+    [self dismissViewControllerAnimated:YES completion:^{
+        if ([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
+        {
+            [self.delegate didFinishEditingDetails:nil];
+        }
+    }];
 }
 
 -(void)doneEdit
 {
     // Store recent modification
-    [self updateImageDescription];
+    [self updateImageParameters];
 	
     // Display HUD during the update
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -179,14 +170,18 @@ typedef enum {
 						}
                       OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 							
-                            // Complete, update image data
-                            self.shouldUpdateDetails = YES;
-                          
                             // Hide HUD
                             [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
                                     // Return to image preview
-                                    [self dismissViewControllerAnimated:YES completion:nil];
+                                    [self dismissViewControllerAnimated:YES completion:^{
+                                        // Return to image preview with updated parameters
+                                        if ([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
+                                        {
+                                            [self updateImageParameters];
+                                            [self.delegate didFinishEditingDetails:self.imageDetails];
+                                        }
+                                    }];
                                 });
                             }];
 						}
@@ -202,7 +197,6 @@ typedef enum {
                                                 actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                                                 style:UIAlertActionStyleCancel
                                                 handler:^(UIAlertAction * action) {
-                                                    self.shouldUpdateDetails = NO;
                                                 }];
 
                                 UIAlertAction* retryAction = [UIAlertAction
@@ -412,7 +406,7 @@ typedef enum {
         [self.view endEditing:YES];
         
         // Store recent modification
-        [self updateImageDescription];
+        [self updateImageParameters];
         
         // Create view controller
         SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
@@ -426,7 +420,7 @@ typedef enum {
         [self.view endEditing:YES];
         
         // Store recent modification
-        [self updateImageDescription];
+        [self updateImageParameters];
         
         // Create view controller
 		TagsViewController *tagsVC = [TagsViewController new];
@@ -469,7 +463,7 @@ typedef enum {
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
-    [self updateImageDescription];
+    [self updateImageParameters];
     return YES;
 }
 
@@ -479,7 +473,7 @@ typedef enum {
     return YES;
 }
 
--(void)updateImageDescription
+-(void)updateImageParameters
 {
     // Title
     EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];

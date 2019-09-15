@@ -191,6 +191,12 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     {
         [self.moveImagesDelegate cancelMoveImages];
     }
+
+    // Return to image preview and re-enable buttons
+    if ([self.moveImageDelegate respondsToSelector:@selector(cancelMoveImage)])
+    {
+        [self.moveImageDelegate cancelMoveImage];
+    }
 }
 
 
