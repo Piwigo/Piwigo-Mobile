@@ -314,6 +314,9 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
             {
                 // Screen brightness > thereshold, switch to light palette
                 [Model sharedInstance].isDarkPaletteActive = NO;
+            } else {
+                // Keep dark palette
+                return;
             }
         } else {
             // Light palette displayed
@@ -321,6 +324,9 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
             {
                 // Screen brightness < threshold, switch to dark palette
                 [Model sharedInstance].isDarkPaletteActive = YES;
+            } else {
+                // Keep light palette
+                return;
             }
         }
     } else {
