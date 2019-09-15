@@ -2250,10 +2250,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
         }
         else {
-            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-            navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            navController.modalPresentationStyle = UIModalPresentationFullScreen;
-            [self.navigationController presentViewController:navController animated:YES completion:nil];
+            viewController.modalPresentationStyle = UIModalPresentationPopover;
+            viewController.popoverPresentationController.sourceView = self.view;
+            viewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            [self.navigationController presentViewController:viewController animated:YES completion:nil];
         }
     }
 }
