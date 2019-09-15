@@ -186,6 +186,8 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 
 -(void)viewDidDisappear:(BOOL)animated
 {
+    [super viewDidDisappear:animated];
+    
     // Return to album view and re-enable buttons
     if ([self.moveImagesDelegate respondsToSelector:@selector(cancelMoveImages)])
     {
