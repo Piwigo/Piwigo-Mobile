@@ -140,7 +140,7 @@
     // File name
     NSString *fileName = imageInfo.fileName;
     if ([fileName isEqualToString:@"NSNotFound"] || (fileName == nil)) {
-        fileName = @"";
+        fileName = @"Unknown.jpg";
     }
     [imageInformation setObject:fileName
                          forKey:kPiwigoImagesUploadParamFileName];

@@ -113,9 +113,18 @@ typedef enum {
     // Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         
-        // Store recent modification
-        [self updateImageParameters];
-        
+        // Store title if user rotates the device while typing text
+        EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+        if (textFieldCell != nil) self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
+
+        // Store author if user rotates the device while typing text
+        textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+        if (textFieldCell != nil) self.imageDetails.author = textFieldCell.cellTextField.text;
+
+        // Store description if user rotates the device while typing text
+        EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
+        if (textViewCell != nil) self.imageDetails.comment = textViewCell.getTextViewText;
+
         // Adjust content inset
         // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
         CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height;
@@ -317,6 +326,10 @@ typedef enum {
 		case EditImageDetailsOrderThumbnail:
         {
             EditImageThumbnailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"image"];
+            if (!cell)
+            {
+                cell = [EditImageThumbnailTableViewCell new];
+            }
             [cell setupWithImage:self.imageDetails];
             tableViewCell = cell;
             break;
@@ -325,19 +338,13 @@ typedef enum {
         case EditImageDetailsOrderImageName:
 		{
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"title"];
-            if(!cell)
+            if (!cell)
             {
                 cell = [EditImageTextFieldTableViewCell new];
             }
-
-            cell.cellLabel.text = NSLocalizedString(@"editImageDetails_title", @"Title:");
-            cell.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
-            cell.cellTextField.text = self.imageDetails.imageTitle;
-            cell.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
-            cell.cellTextField.backgroundColor = [UIColor piwigoBackgroundColor];
-            cell.cellTextField.placeholder = NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title");
-            cell.cellTextField.tag = EditImageDetailsOrderImageName;
-
+            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title:")
+                     placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
+                  andImageDetail:self.imageDetails.imageTitle];
             tableViewCell = cell;
             break;
 		}
@@ -349,18 +356,9 @@ typedef enum {
             {
                 cell = [EditImageTextFieldTableViewCell new];
             }
-            
-            cell.cellLabel.text = NSLocalizedString(@"editImageDetails_author", @"Author:");
-            cell.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
-            if ([self.imageDetails.author isEqualToString:@"NSNotFound"]) {
-                cell.cellTextField.text = @"";
-            } else {
-                cell.cellTextField.text = self.imageDetails.author;
-            }
-            cell.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
-            cell.cellTextField.backgroundColor = [UIColor piwigoBackgroundColor];
-            cell.cellTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
-            cell.cellTextField.tag = EditImageDetailsOrderAuthor;
+            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author:")
+                     placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
+                  andImageDetail:[self.imageDetails.author isEqualToString:@"NSNotFound"] ? @"" : self.imageDetails.author];
             tableViewCell = cell;
 			break;
 		}
@@ -466,13 +464,11 @@ typedef enum {
 
 - (void)registerForKeyboardNotifications
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
 }
 
-- (void)keyboardWillHide:(NSNotification*)aNotification
+-(void)keyboardWillHide:(NSNotification*)aNotification
 {
     [self updateImageParameters];
 }
@@ -502,9 +498,7 @@ typedef enum {
 
 - (void)unregisterKeyboardNotifications
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 

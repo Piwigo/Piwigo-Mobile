@@ -30,24 +30,25 @@
     self.cellTextField.clearButtonMode = UITextFieldViewModeAlways;
 }
 
--(void)setTextString:(NSString *)textString
+-(void)setupWithLabel:(NSString *)label placeHolder:(NSString *)placeHolder andImageDetail:(NSString *)imageDetail
 {
-    self.textString = textString;
+    // Cell background
+    self.backgroundColor = [UIColor piwigoBackgroundColor];
 
-    if (textString.length <= 0)
-    {
-        self.cellTextField.text = @"";
-    }
-    else
-    {
-        self.cellTextField.text = textString;
-    }
-
+    // Cell label
+    self.cellLabel.text = label;
     self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
+    
+    // Cell text field
+    self.textString = imageDetail;
+    if (imageDetail == nil) {
+        self.cellTextField.text = @"";
+    } else {
+        self.cellTextField.text = imageDetail;
+    }
     self.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
     self.cellTextField.backgroundColor = [UIColor piwigoBackgroundColor];
-    if ([[self.cellTextField.attributedPlaceholder string] length] > 0) {
-        NSString *placeHolder = [self.cellTextField.attributedPlaceholder string];
+    if ([placeHolder length] > 0) {
         self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeHolder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoRightLabelColor]}];
     }
     self.cellTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
