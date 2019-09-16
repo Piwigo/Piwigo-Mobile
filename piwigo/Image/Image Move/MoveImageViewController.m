@@ -184,9 +184,9 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     }];
 }
 
--(void)viewDidDisappear:(BOOL)animated
+-(void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     
     // Return to album view and re-enable buttons
     if ([self.moveImagesDelegate respondsToSelector:@selector(cancelMoveImages)])
@@ -308,9 +308,9 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     }
     else {
         if (self.copyImage)
-            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.name];
+            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle];
         else
-            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.name];
+            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle];
     }
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -341,9 +341,9 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     }
     else {
         if (self.copyImage)
-            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.name];
+            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle];
         else
-            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.name];
+            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle];
     }
     NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
     [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
@@ -460,9 +460,9 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     }
     else {
         if (self.copyImage)
-            message = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_message", @"Are you sure you want to copy the image \"%@\" to the album \"%@\"?"), self.selectedImage.name, categoryData.name];
+            message = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_message", @"Are you sure you want to copy the image \"%@\" to the album \"%@\"?"), self.selectedImage.imageTitle, categoryData.name];
         else
-            message = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_message", @"Are you sure you want to move the image \"%@\" to the album \"%@\"?"), self.selectedImage.name, categoryData.name];
+            message = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_message", @"Are you sure you want to move the image \"%@\" to the album \"%@\"?"), self.selectedImage.imageTitle, categoryData.name];
     }
 
     UIAlertController* alert = [UIAlertController

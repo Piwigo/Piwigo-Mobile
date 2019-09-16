@@ -142,10 +142,15 @@
 	for(PHAsset *imageAsset in self.imagesSelected)
 	{
 		ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset
+                                                         orImageData:nil
                                                          forCategory:self.selectedCategory
-                                                     forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel
-                                                              author:[Model sharedInstance].defaultAuthor
-                                                         description:@"" andTags:nil];
+                                                        privacyLevel:[Model sharedInstance].defaultPrivacyLevel
+                                                              author:[Model sharedInstance].defaultAuthor];
+//        ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset
+//                                                         forCategory:self.selectedCategory
+//                                                     forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel
+//                                                              author:[Model sharedInstance].defaultAuthor
+//                                                         description:@"" andTags:nil];
 		[self.imagesToEdit addObject:image];
 	}
 }
@@ -296,6 +301,7 @@
 		EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
 		editImageVC.imageDetails = [self.imagesToEdit objectAtIndex:indexPath.row];
 		editImageVC.delegate = self;
+        editImageVC.isEdit = NO;       // Not in edition mode
 		[self.navigationController pushViewController:editImageVC animated:YES];
 	}
 }
@@ -384,17 +390,19 @@
 
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {
-	NSInteger index = 0;
-	for(ImageUpload *image in self.imagesToEdit)
-	{
-		if (([image.fileName isEqualToString:details.fileName]) &&
-            (image.creationDate == details.creationDate))
-             break;
-		index++;
-	}
-	
-	[self.imagesToEdit replaceObjectAtIndex:index withObject:details];
-	[self.uploadImagesTableView reloadData];
+    if (details != nil) {
+        NSInteger index = 0;
+        for(ImageUpload *image in self.imagesToEdit)
+        {
+            if (([image.fileName isEqualToString:details.fileName]) &&
+                (image.creationDate == details.creationDate))
+                 break;
+            index++;
+        }
+
+        [self.imagesToEdit replaceObjectAtIndex:index withObject:details];
+        [self.uploadImagesTableView reloadData];
+    }
 }
 
 @end

@@ -682,10 +682,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     categoryIds = nil;
 
     // Object "name"
-    imageData.name = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"name"]];
+    imageData.imageTitle = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"name"]];
+    if (imageData.imageTitle == nil) imageData.imageTitle = @"";
     
     // Object "comment"
-    imageData.imageDescription = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"comment"]];
+    imageData.comment = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"comment"]];
+    if (imageData.comment == nil) imageData.comment = @"";
     
     // Object "hit"
     if (![[imageJson objectForKey:@"hit"] isKindOfClass:[NSNull class]]) {

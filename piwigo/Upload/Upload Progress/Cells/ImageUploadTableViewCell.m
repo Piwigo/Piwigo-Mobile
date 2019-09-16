@@ -116,7 +116,7 @@
      ];
 	
     // Image properties
-	self.imageTitle.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_title", @"Title:"), imageInfo.title];
+	self.imageTitle.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_title", @"Title:"), imageInfo.imageTitle];
     self.imageTitle.textColor = [UIColor piwigoLeftLabelColor];
     self.imageTitleUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
     
@@ -136,7 +136,7 @@
     self.tags.textColor = [UIColor piwigoLeftLabelColor];
     self.tagsUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
 
-	self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_description", @"Description:"), imageInfo.imageDescription];
+	self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_description", @"Description:"), imageInfo.comment];
     self.descriptionLabel.textColor = [UIColor piwigoLeftLabelColor];
 }
 

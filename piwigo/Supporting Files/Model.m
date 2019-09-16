@@ -142,7 +142,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     return library;
 }
 
--(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
+-(NSString *)getNameForPrivacyLevel:(NSInteger)privacyLevel
 {
 	NSString *name = @"";
 	switch(privacyLevel)
@@ -162,6 +162,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		case kPiwigoPrivacyEverybody:
 			name = NSLocalizedString(@"privacyLevel_everybody", @"Everybody");
 			break;
+        case NSNotFound:
+            name = @"";
+            break;
 			
 		case kPiwigoPrivacyCount:
 			break;

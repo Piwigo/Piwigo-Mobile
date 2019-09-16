@@ -31,17 +31,7 @@
     self.imageTime.font = [UIFont piwigoFontSmallLight];
     self.imageFile.font = [UIFont piwigoFontSmallLight];
     self.userInteractionEnabled = NO;
-
-//    [self applyColorPalette];
 }
-
-//-(void)applyColorPalette
-//{
-//    self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
-//    self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
-//    self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
-//    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
-//}
 
 -(void)setupWithImage:(ImageUpload *)imageDetails
 {

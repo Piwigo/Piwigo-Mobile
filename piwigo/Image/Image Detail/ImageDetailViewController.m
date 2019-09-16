@@ -93,7 +93,6 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
         [self.moveBarButton setAccessibilityIdentifier:@"Move"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-//        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
 
         // Current image
         self.imageData = [self.images objectAtIndex:imageIndex];
@@ -577,12 +576,19 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     // Disable buttons during action
     [self setEnableStateOfButtons:NO];
 
+    // Prepare image to edit
+    ImageUpload *imageToEdit = [[ImageUpload alloc] initWithImageAsset:nil
+                                     orImageData:self.imageData
+                                     forCategory:[[[self.imageData categoryIds] firstObject] integerValue]
+                                    privacyLevel:self.imageData.privacyLevel
+                                          author:self.imageData.author];
+
     // Present EditImageDetails view
     UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
     EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-    editImageVC.imageDetails = [[ImageUpload alloc] initWithImageData:self.imageData];
+    editImageVC.imageDetails = imageToEdit;
     editImageVC.delegate = self;
-    editImageVC.isEdit = YES;       // Edition mode
+    editImageVC.isEdit = YES;       // In edition mode
     [self pushView:editImageVC];
 }
 
@@ -900,7 +906,10 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     UIAlertAction* cancelAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
             style:UIAlertActionStyleCancel
-            handler:^(UIAlertAction * action) {}];
+            handler:^(UIAlertAction * action) {
+                // Re-enable buttons
+                [self setEnableStateOfButtons:YES];
+    }];
     
     UIAlertAction* copyAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
@@ -1059,11 +1068,11 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     if (@available(iOS 9, *)) {
         titleLabel.allowsDefaultTighteningForTruncation = YES;
     }
-    if ([self.imageData.name length] == 0) {
+    if ([self.imageData.imageTitle length] == 0) {
         // No title => Use file name
         titleLabel.text = self.imageData.fileName;
     } else {
-        titleLabel.text = self.imageData.name;
+        titleLabel.text = self.imageData.imageTitle;
     }
     [titleLabel sizeToFit];
 
@@ -1142,10 +1151,13 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
         {
             if(image.imageId == details.imageId) {
                 // Update image data
-                image.name = details.title;
+                image.imageTitle = details.imageTitle;
                 image.author = details.author;
                 image.privacyLevel = details.privacyLevel;
-                image.imageDescription = [NSString stringWithString:details.imageDescription];
+                if (details.comment)
+                    image.comment = [NSString stringWithString:details.comment];
+                else
+                    image.comment = @"";
                 image.tags = [details.tags copy];
                 
                 // Update list and currently viewed image

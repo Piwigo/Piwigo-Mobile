@@ -32,7 +32,7 @@
 
 -(void)setTextString:(NSString *)textString
 {
-    _textString = textString;
+    self.textString = textString;
 
     if (textString.length <= 0)
     {

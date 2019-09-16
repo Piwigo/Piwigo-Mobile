@@ -336,10 +336,10 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
         {
             // New data replaces old once
             PiwigoImageData *updatedImage = existingImage;
-            updatedImage.name = uploadedImage.title;
+            updatedImage.imageTitle = uploadedImage.imageTitle;
             updatedImage.author = uploadedImage.author;
             updatedImage.privacyLevel = uploadedImage.privacyLevel;
-            updatedImage.imageDescription = [NSString stringWithString:uploadedImage.imageDescription];
+            updatedImage.comment = [NSString stringWithString:uploadedImage.comment];
             updatedImage.tags = [uploadedImage.tags copy];
             [newImageList replaceObjectAtIndex:index withObject:updatedImage];
             break;
@@ -368,10 +368,10 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
     PiwigoImageData *newImageData = [[CategoriesData sharedInstance] getImageForCategory:imageUpload.categoryToUploadTo andId:imageUpload.imageId];
     
     newImageData.fileName = imageUpload.fileName;
-    newImageData.name = imageUpload.title;
+    newImageData.imageTitle = imageUpload.imageTitle;
     newImageData.privacyLevel = imageUpload.privacyLevel;
     newImageData.author = imageUpload.author;
-    newImageData.imageDescription = imageUpload.imageDescription;
+    newImageData.comment = imageUpload.comment;
     newImageData.tags = imageUpload.tags;
     
     [self addImages:@[newImageData]];

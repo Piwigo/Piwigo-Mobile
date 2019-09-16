@@ -123,7 +123,7 @@
                                         <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
                                             <outlet property="cellLabel" destination="DRW-X6-zj8" id="90t-JI-lkA"/>
-                                            <outlet property="cellTextField" destination="Afl-1t-r1a" id="eps-QD-MyV"/>
+                                            <outlet property="cellTextField" destination="Afl-1t-r1a" id="HhU-Hn-lhm"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="author" id="BvW-dD-5Xr" customClass="EditImageTextFieldTableViewCell">

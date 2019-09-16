@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Model.h"
 
 @interface EditImagePrivacyTableViewCell : UITableViewCell
 
--(void)setPrivacyLevel:(kPiwigoPrivacy)privacy;
 -(void)setLeftLabelText:(NSString*)text;
+-(void)setPrivacyLevel:(NSInteger)privacy;
 
 @end

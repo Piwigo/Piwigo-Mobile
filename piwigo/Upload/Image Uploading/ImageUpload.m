@@ -15,135 +15,96 @@
 
 @implementation ImageUpload
 
--(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy
+-(instancetype)initWithImageAsset:(PHAsset*)imageAsset orImageData:(PiwigoImageData*)imageData forCategory:(NSInteger)category privacyLevel:(NSInteger)privacy author:(NSString*)author
 {
     self = [super init];
     if(self)
     {
-        // Initialisation
-        self.imageAsset = imageAsset;
-        self.fileName = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
-        self.creationDate = [imageAsset creationDate];
-        self.pixelWidth = [imageAsset pixelWidth];
-        self.pixelHeight = [imageAsset pixelHeight];
+        if (imageAsset) {
+            // Initialisation from image asset
+            self.imageAsset = imageAsset;
+            self.fileName = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
+            self.creationDate = [imageAsset creationDate];
+            self.pixelWidth = [imageAsset pixelWidth];
+            self.pixelHeight = [imageAsset pixelHeight];
+            self.categoryToUploadTo = category;
+            self.privacyLevel = privacy;            // default privacy level
+            self.author = author;                   // Default author
+            self.imageTitle = @"";                  // New images have no title
+            self.comment = @"";                     // New images have no description
+            self.tags = [[NSArray alloc] init];     // New images have no tags
+        }
+        else {
+            // Initialisation from Piwigo image
+            self.imageAsset = nil;
+            self.fileName = imageData.fileName;
+            self.creationDate = imageData.dateCreated;
+            self.pixelWidth = imageData.fullResWidth;
+            self.pixelHeight = imageData.fullResHeight;
+            self.categoryToUploadTo = category;
+            self.privacyLevel = privacy;
+            self.author = author;
+            self.imageTitle = imageData.imageTitle;
+            self.comment = imageData.comment;
+            self.tags = imageData.tags;
 
-        self.title = @"";
-        self.categoryToUploadTo = category;
-        self.privacyLevel = privacy;
+            self.imageId = imageData.imageId;
+            // Image thumbnail size
+            switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
+                case kPiwigoImageSizeSquare:
+                    if ([Model sharedInstance].hasSquareSizeImages) {
+                        self.thumbnailUrl = imageData.SquarePath;
+                    }
+                    break;
+                case kPiwigoImageSizeXXSmall:
+                    if ([Model sharedInstance].hasXXSmallSizeImages) {
+                        self.thumbnailUrl = imageData.XXSmallPath;
+                    }
+                    break;
+                case kPiwigoImageSizeXSmall:
+                    if ([Model sharedInstance].hasXSmallSizeImages) {
+                        self.thumbnailUrl = imageData.XSmallPath;
+                    }
+                    break;
+                case kPiwigoImageSizeSmall:
+                    if ([Model sharedInstance].hasSmallSizeImages) {
+                        self.thumbnailUrl = imageData.SmallPath;
+                    }
+                    break;
+                case kPiwigoImageSizeMedium:
+                    if ([Model sharedInstance].hasMediumSizeImages) {
+                        self.thumbnailUrl = imageData.MediumPath;
+                    }
+                    break;
+                case kPiwigoImageSizeLarge:
+                    if ([Model sharedInstance].hasLargeSizeImages) {
+                        self.thumbnailUrl = imageData.LargePath;
+                    }
+                    break;
+                case kPiwigoImageSizeXLarge:
+                    if ([Model sharedInstance].hasXLargeSizeImages) {
+                        self.thumbnailUrl = imageData.XLargePath;
+                    }
+                    break;
+                case kPiwigoImageSizeXXLarge:
+                    if ([Model sharedInstance].hasXXLargeSizeImages) {
+                        self.thumbnailUrl = imageData.XXLargePath;
+                    }
+                    break;
+
+                case kPiwigoImageSizeThumb:
+                case kPiwigoImageSizeFullRes:
+                default:
+                    self.thumbnailUrl = imageData.ThumbPath;
+                    break;
+            }
+        }
+
         self.stopUpload = NO;
     }
     return self;
 }
 
--(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category forPrivacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author description:(NSString*)description andTags:(NSArray*)tags
-{
-    self = [self initWithImageAsset:imageAsset forCategory:category forPrivacyLevel:privacy];
-    if(self)
-    {
-        if ([description isKindOfClass:[NSNull class]])
-        {
-            description = nil;
-        }
-        
-        self.author = author;
-        self.imageDescription = description;
-        if (tags == nil) {
-            self.tags = [[NSArray alloc] init];     // New images have no tags
-        } else {
-            self.tags = tags;
-        }
-    }
-    return self;
-}
-
--(instancetype)initWithImageData:(PiwigoImageData*)imageData
-{
-    self = [self initWithImageAsset:nil forCategory:[[[imageData categoryIds] firstObject] integerValue] forPrivacyLevel:(kPiwigoPrivacy)imageData.privacyLevel author:imageData.author description:imageData.imageDescription andTags:imageData.tags];
-    if (self)
-    {
-        self.fileName = imageData.fileName;
-        self.title = imageData.name;
-        self.imageId = imageData.imageId;
-        self.pixelWidth = imageData.fullResWidth;
-        self.pixelHeight = imageData.fullResHeight;
-        self.creationDate = imageData.dateCreated;
-        
-        // Image thumbnail size
-        switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
-            case kPiwigoImageSizeSquare:
-                if ([Model sharedInstance].hasSquareSizeImages) {
-                    self.thumbnailUrl = imageData.SquarePath;
-                }
-                break;
-            case kPiwigoImageSizeXXSmall:
-                if ([Model sharedInstance].hasXXSmallSizeImages) {
-                    self.thumbnailUrl = imageData.XXSmallPath;
-                }
-                break;
-            case kPiwigoImageSizeXSmall:
-                if ([Model sharedInstance].hasXSmallSizeImages) {
-                    self.thumbnailUrl = imageData.XSmallPath;
-                }
-                break;
-            case kPiwigoImageSizeSmall:
-                if ([Model sharedInstance].hasSmallSizeImages) {
-                    self.thumbnailUrl = imageData.SmallPath;
-                }
-                break;
-            case kPiwigoImageSizeMedium:
-                if ([Model sharedInstance].hasMediumSizeImages) {
-                    self.thumbnailUrl = imageData.MediumPath;
-                }
-                break;
-            case kPiwigoImageSizeLarge:
-                if ([Model sharedInstance].hasLargeSizeImages) {
-                    self.thumbnailUrl = imageData.LargePath;
-                }
-                break;
-            case kPiwigoImageSizeXLarge:
-                if ([Model sharedInstance].hasXLargeSizeImages) {
-                    self.thumbnailUrl = imageData.XLargePath;
-                }
-                break;
-            case kPiwigoImageSizeXXLarge:
-                if ([Model sharedInstance].hasXXLargeSizeImages) {
-                    self.thumbnailUrl = imageData.XXLargePath;
-                }
-                break;
-
-            case kPiwigoImageSizeThumb:
-            case kPiwigoImageSizeFullRes:
-            default:
-                self.thumbnailUrl = imageData.ThumbPath;
-                break;
-        }
-    }
-    return self;
-}
-
--(NSString *)author
-{
-    if (nil == _author) {
-        _author = @"";
-    }
-    return _author;
-}
-
--(NSString *)imageDescription
-{
-    if (nil == _imageDescription) {
-        _imageDescription = @"";
-    }
-    return _imageDescription;
-}
-
--(NSString *)title
-{
-    if (nil == _title) {
-        _title = @"";
-    }
-    return _title;
-}
 
 #pragma mark - debugging support -
 
@@ -167,11 +128,11 @@
     ];
 
     [descriptionArray addObject:[NSString stringWithFormat:@"image              = %@", (nil == self.fileName ? objectIsNil :(0 == self.fileName.length ? @"''" : self.fileName))]];
-    [descriptionArray addObject:[NSString stringWithFormat:@"title    = %@", (nil == self.title ? objectIsNil : (0 == self.title.length ? @"''" : self.title))]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"title    = %@", (nil == self.imageTitle ? objectIsNil : (0 == self.imageTitle.length ? @"''" : self.imageTitle))]];
     
     [descriptionArray addObject:[NSString stringWithFormat:@"categoryToUploadTo = %ld", (long)self.categoryToUploadTo]];
     [descriptionArray addObject:[NSString stringWithFormat:@"privacyLevel       = %@", kPiwigoPrivacyString(self.privacyLevel)]];
-    [descriptionArray addObject:[NSString stringWithFormat:@"imageDescription   = %@", (nil == self.imageDescription ? objectIsNil :(0 == [self.imageDescription length] ? @"''" : self.imageDescription))]];
+    [descriptionArray addObject:[NSString stringWithFormat:@"imageDescription   = %@", (nil == self.comment ? objectIsNil :(0 == [self.comment length] ? @"''" : self.comment))]];
 
     [descriptionArray addObject:[NSString stringWithFormat:@"tags [%ld] %@", (long)self.tags.count, self.tags]];
     [descriptionArray addObject:[NSString stringWithFormat:@"imageId            = %ld", (long)self.imageId]];

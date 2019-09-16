@@ -34,7 +34,7 @@
 	
 }
 
--(void)setPrivacyLevel:(kPiwigoPrivacy)privacy
+-(void)setPrivacyLevel:(NSInteger)privacy
 {
 	self.rightLabel.text = [[Model sharedInstance] getNameForPrivacyLevel:privacy];
     self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];

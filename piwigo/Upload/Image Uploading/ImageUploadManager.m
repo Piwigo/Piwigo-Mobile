@@ -324,7 +324,7 @@
         [[PHImageManager defaultManager] requestImageForAsset:image.imageAsset targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:
          ^(UIImage *imageObject, NSDictionary *info) {
 #if defined(DEBUG_UPLOAD)
-             NSLog(@"retrieveImageFromiCloudForAsset \"%@\" returned info(%@)", imageObject.description, info);
+             NSLog(@"retrieveImageFromiCloudForAsset \"%@\" returned info(%@)", imageObject.comment, info);
              NSLog(@"got image %.0fw x %.0fh with orientation %ld", imageObject.size.width, imageObject.size.height, (long)imageObject.imageOrientation);
 #endif
              if ([info objectForKey:PHImageErrorKey] || (imageObject.size.width == 0) || (imageObject.size.height == 0)) {
@@ -1261,11 +1261,11 @@ static NSString * FourCCString(FourCharCode code) {
     // pwg.images.setInfo: file name key is kPiwigoImagesUploadParamFileName
     __block NSDictionary *imageProperties = @{
                                       kPiwigoImagesUploadParamFileName : image.fileName,
-                                      kPiwigoImagesUploadParamTitle : image.title,
+                                      kPiwigoImagesUploadParamTitle : image.imageTitle,
                                       kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
                                       kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(image.privacyLevel)],
                                       kPiwigoImagesUploadParamAuthor : image.author,
-                                      kPiwigoImagesUploadParamDescription : image.imageDescription,
+                                      kPiwigoImagesUploadParamDescription : image.comment,
                                       kPiwigoImagesUploadParamTags : [tagIds copy],
                                       kPiwigoImagesUploadParamMimeType : mimeType
                                       };

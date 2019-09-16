@@ -32,7 +32,7 @@ typedef enum {
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
 
@@ -102,6 +102,9 @@ typedef enum {
     
     // Set colors, fonts, etc.
     [self applyColorPalette];
+
+    // Register for the keyboard notifications
+    [self registerForKeyboardNotifications];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -133,6 +136,17 @@ typedef enum {
     } completion:nil];
 }
 
+-(void)viewWillDisappear:(BOOL)animated
+{
+    // Unregister for the keyboard notifications.
+    [self unregisterKeyboardNotifications];
+
+    // Return updated parameters or nil
+    if ([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
+    {
+        [self.delegate didFinishEditingDetails:self.imageDetails];
+    }
+}
 
 #pragma mark - Edit methods
 
@@ -144,13 +158,11 @@ typedef enum {
 
 -(void)cancelEdit
 {
-    // return to image preview
-    [self dismissViewControllerAnimated:YES completion:^{
-        if ([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
-        {
-            [self.delegate didFinishEditingDetails:nil];
-        }
-    }];
+    // No change
+    self.imageDetails = nil;
+    
+    // Return to image preview
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)doneEdit
@@ -174,14 +186,7 @@ typedef enum {
                             [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
                                     // Return to image preview
-                                    [self dismissViewControllerAnimated:YES completion:^{
-                                        // Return to image preview with updated parameters
-                                        if ([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
-                                        {
-                                            [self updateImageParameters];
-                                            [self.delegate didFinishEditingDetails:self.imageDetails];
-                                        }
-                                    }];
+                                    [self dismissViewControllerAnimated:YES completion:nil];
                                 });
                             }];
 						}
@@ -327,12 +332,11 @@ typedef enum {
 
             cell.cellLabel.text = NSLocalizedString(@"editImageDetails_title", @"Title:");
             cell.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
-            cell.cellTextField.text = self.imageDetails.title;
+            cell.cellTextField.text = self.imageDetails.imageTitle;
             cell.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
             cell.cellTextField.backgroundColor = [UIColor piwigoBackgroundColor];
             cell.cellTextField.placeholder = NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title");
             cell.cellTextField.tag = EditImageDetailsOrderImageName;
-            cell.cellTextField.delegate = self;
 
             tableViewCell = cell;
             break;
@@ -357,7 +361,6 @@ typedef enum {
             cell.cellTextField.backgroundColor = [UIColor piwigoBackgroundColor];
             cell.cellTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
             cell.cellTextField.tag = EditImageDetailsOrderAuthor;
-            cell.cellTextField.delegate = self;
             tableViewCell = cell;
 			break;
 		}
@@ -382,7 +385,7 @@ typedef enum {
         case EditImageDetailsOrderDescription:
 		{
 			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description"];
-			[cell setTextForTextView:self.imageDetails.imageDescription];
+			[cell setTextForTextView:self.imageDetails.comment];
             tableViewCell = cell;
 			break;
 		}
@@ -411,7 +414,7 @@ typedef enum {
         // Create view controller
         SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
 		privacySelectVC.delegate = self;
-		[privacySelectVC setPrivacy:self.imageDetails.privacyLevel];
+		[privacySelectVC setPrivacy:(kPiwigoPrivacy)self.imageDetails.privacyLevel];
 		[self.navigationController pushViewController:privacySelectVC animated:YES];
 	}
 	else if (indexPath.row == EditImageDetailsOrderTags)
@@ -459,29 +462,34 @@ typedef enum {
 }
 
 
-#pragma mark - UITextFieldDelegate Methods
+#pragma mark - Keyboard Notifications
 
--(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+- (void)registerForKeyboardNotifications
 {
-    [self updateImageParameters];
-    return YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+- (void)keyboardWillHide:(NSNotification*)aNotification
 {
-    [self.editImageDetailsTableView endEditing:YES];
-    return YES;
+    [self updateImageParameters];
 }
 
 -(void)updateImageParameters
 {
     // Title
     EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-    self.imageDetails.title = textFieldCell.cellTextField.text;
+    if (textFieldCell.cellTextField.text != nil) {
+        self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
+    } else {
+        self.imageDetails.imageTitle = @"";
+    }
 
     // Author
     textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-    if (textFieldCell.cellTextField.text.length > 0) {
+    if ((textFieldCell.cellTextField.text != nil) && (textFieldCell.cellTextField.text.length > 0)) {
         self.imageDetails.author = textFieldCell.cellTextField.text;
     } else {
         self.imageDetails.author = @"NSNotFound";
@@ -489,7 +497,14 @@ typedef enum {
 
     // Description
     EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-    self.imageDetails.imageDescription = textViewCell.getTextViewText;
+    self.imageDetails.comment = textViewCell.getTextViewText;
+}
+
+- (void)unregisterKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
 }
 
 
@@ -497,9 +512,11 @@ typedef enum {
 
 -(void)selectedPrivacy:(kPiwigoPrivacy)privacy
 {
-	self.imageDetails.privacyLevel = privacy;
+	// Update image parameter
+    self.imageDetails.privacyLevel = privacy;
 	
-	EditImagePrivacyTableViewCell *labelCell = (EditImagePrivacyTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
+    // Update table view cell
+    EditImagePrivacyTableViewCell *labelCell = (EditImagePrivacyTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
 	[labelCell setPrivacyLevel:privacy];
 }
 
@@ -508,8 +525,12 @@ typedef enum {
 
 -(void)didExitWithSelectedTags:(NSArray *)selectedTags
 {
+    // Update image parameter
 	self.imageDetails.tags = selectedTags;
-	[self.editImageDetailsTableView reloadData];
+
+    // Update table view cell
+    EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
+    [cell setTagList:self.imageDetails.tags];
 }
 
 @end

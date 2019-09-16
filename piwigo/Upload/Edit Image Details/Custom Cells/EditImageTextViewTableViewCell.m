@@ -40,7 +40,7 @@
 
 -(NSString*)getTextViewText
 {
-	return self.textView.text;
+    return self.textView.text == nil ? @"" : self.textView.text;
 }
 
 -(void)setTextForTextView:(NSString*)text

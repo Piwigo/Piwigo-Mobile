@@ -123,9 +123,9 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)viewDidDisappear:(BOOL)animated
+-(void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     
     // If returning to image preview, re-enable buttons
     if ([self.setAlbumImageDelegate respondsToSelector:@selector(didSetImageAsAlbumThumbnail)])
