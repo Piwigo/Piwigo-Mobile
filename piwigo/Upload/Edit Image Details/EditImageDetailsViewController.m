@@ -159,6 +159,7 @@ typedef enum {
     }
 }
 
+
 #pragma mark - Edit methods
 
 // NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
