@@ -27,6 +27,7 @@
 #import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
+NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdateImageData";
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, SetAlbumImageDelegate, MoveImageDelegate, AsyncImageActivityItemProviderDelegate, UIToolbarDelegate>
 
@@ -118,6 +119,9 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
 
         // Register image pinches
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPinchView) name:kPiwigoNotificationPinchedImage object:nil];
+
+        // Register image data updates
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -275,6 +279,28 @@ NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedI
     self.moveBarButton.enabled = state;
     self.setThumbnailBarButton.enabled = state;
     self.deleteBarButton.enabled = state;
+}
+
+
+#pragma mark - Image Data Updated
+
+-(void)getImageData:(NSNotification *)notification
+{
+    // Extract notification user info
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.object;
+
+        // Right image Id?
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        if (imageId != self.imageData.imageId) return;
+        
+        // Update image data
+        NSString *fileName = [userInfo objectForKey:@"fileName"];
+        if (fileName) self.imageData.fileName = fileName;
+        
+        // Update title view
+        [self setTitleViewFromImageData];
+    }
 }
 
 

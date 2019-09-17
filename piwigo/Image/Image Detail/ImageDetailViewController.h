@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPinchedImage;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationUpdateImageData;
 
 @class PiwigoImageData;
 

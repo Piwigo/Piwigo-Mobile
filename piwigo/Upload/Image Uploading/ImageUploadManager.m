@@ -1296,7 +1296,7 @@ static NSString * FourCCString(FourCharCode code) {
                         
                             // Get imageId
                             NSDictionary *imageResponse = [response objectForKey:@"result"];
-                            NSString *imageId = [imageResponse objectForKey:@"image_id"];
+                            NSInteger imageId = [[imageResponse objectForKey:@"image_id"] integerValue];
                         
                             // Set properties of uploaded image/video on Piwigo server and add it to cahe
                             [self setImage:image withInfo:imageProperties andId:imageId];
@@ -1305,7 +1305,7 @@ static NSString * FourCCString(FourCharCode code) {
                             if ([Model sharedInstance].usesCommunityPluginV29)
                             {
                                 // Append image to list of images to moderate
-                                self.uploadedImagesToBeModerated = [self.uploadedImagesToBeModerated stringByAppendingFormat:@"%@,", imageId];
+                                self.uploadedImagesToBeModerated = [self.uploadedImagesToBeModerated stringByAppendingFormat:@"%ld,", (long)imageId];
                             }
 
                             // Release memory
@@ -1459,7 +1459,7 @@ static NSString * FourCCString(FourCharCode code) {
 
 #pragma mark - Finish image upload
 
--(void)setImage:(ImageUpload *)image withInfo:(NSDictionary*)imageInfo andId:(NSString*)imageId
+-(void)setImage:(ImageUpload *)image withInfo:(NSDictionary*)imageInfo andId:(NSInteger)imageId
 {
         // Set properties of image on Piwigo server
         [UploadService setImageInfoForImageWithId:imageId
@@ -1472,7 +1472,7 @@ static NSString * FourCCString(FourCharCode code) {
                                            [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
                                        
                                            // Read image/video information and update cache
-                                           [self addImageDataToCategoryCache:[imageId integerValue]];
+                                           [self addImageDataToCategoryCache:imageId];
                                        
                                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
                                            // fail

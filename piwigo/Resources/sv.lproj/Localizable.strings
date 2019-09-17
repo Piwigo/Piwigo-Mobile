@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ bilder valda";
 "selectAll" = "Alla";
 
+// Image rename (filename)
+"renameImage_title" = "Originalfil";
+"renameImage_message" = "Ange ett nytt filnamn för den här bilden";
+"renameImageHUD_label" = "Byt namn på fil…";
+
+// Image rename — Errors
+"renameImageError_message" = "Det gick inte att byta namn på bildfil";
+
 // Image delete
 "deleteImage_delete" = "Radera";
 "deleteImageProgress_title" = "Radering av %@%% utförd";

@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ gambar yang dipilih";
 "selectAll" = "Semua";
 
+// Image rename (filename)
+"renameImage_title" = "Original File";
+"renameImage_message" = "Enter a new file name for this image";
+"renameImageHUD_label" = "Renaming File…";
+
+// Image rename — Errors
+"renameImageError_message" = "Failed to rename image file";
+
 // Image delete
 "deleteImage_delete" = "Hapus";
 "deleteImageProgress_title" = "Menghapus %@%% Selesai";

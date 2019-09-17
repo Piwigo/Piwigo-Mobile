@@ -64,6 +64,12 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Sd-M7-eA6">
+                                                    <rect key="frame" x="369.33333333333331" y="38.666666666666664" width="24.666666666666686" height="24"/>
+                                                    <connections>
+                                                        <action selector="editImage" destination="29r-K5-ds4" eventType="touchUpInside" id="IxW-DZ-FY7"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="kTd-SC-PCx" firstAttribute="top" secondItem="PNv-EI-rzI" secondAttribute="bottom" constant="8" id="0zK-IQ-eIp"/>
@@ -72,9 +78,11 @@
                                                 <constraint firstItem="E0X-OJ-g2X" firstAttribute="top" secondItem="qUX-Bg-Frc" secondAttribute="bottom" constant="8" id="8ni-c5-aRw"/>
                                                 <constraint firstItem="qUX-Bg-Frc" firstAttribute="top" secondItem="Dzb-fY-kD4" secondAttribute="top" constant="11" id="BfG-4d-C2E"/>
                                                 <constraint firstAttribute="trailing" secondItem="E0X-OJ-g2X" secondAttribute="trailing" constant="16" id="Iyn-FZ-Y9W"/>
+                                                <constraint firstItem="7Sd-M7-eA6" firstAttribute="centerY" secondItem="E0X-OJ-g2X" secondAttribute="centerY" id="N7y-Ys-kcH"/>
                                                 <constraint firstItem="E0X-OJ-g2X" firstAttribute="leading" secondItem="DBa-VV-yDp" secondAttribute="trailing" constant="8" id="QZL-vd-k5s"/>
                                                 <constraint firstItem="DBa-VV-yDp" firstAttribute="leading" secondItem="Dzb-fY-kD4" secondAttribute="leadingMargin" id="QtN-rp-EiQ"/>
                                                 <constraint firstItem="kTd-SC-PCx" firstAttribute="leading" secondItem="DBa-VV-yDp" secondAttribute="trailing" constant="8" id="VT6-Km-OeH"/>
+                                                <constraint firstAttribute="trailing" secondItem="7Sd-M7-eA6" secondAttribute="trailing" constant="20" symbolic="YES" id="XEv-ej-GUF"/>
                                                 <constraint firstAttribute="bottom" secondItem="kTd-SC-PCx" secondAttribute="bottom" constant="11" id="da7-0n-Ke3"/>
                                                 <constraint firstAttribute="trailing" secondItem="PNv-EI-rzI" secondAttribute="trailing" constant="16" id="rlM-U4-ekn"/>
                                                 <constraint firstItem="qUX-Bg-Frc" firstAttribute="leading" secondItem="DBa-VV-yDp" secondAttribute="trailing" constant="8" id="tbv-ux-aVI"/>
@@ -83,6 +91,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="editImageButton" destination="7Sd-M7-eA6" id="YZA-on-u2r"/>
                                             <outlet property="imageDate" destination="kTd-SC-PCx" id="E27-Pw-QFI"/>
                                             <outlet property="imageFile" destination="E0X-OJ-g2X" id="klc-9m-1t6"/>
                                             <outlet property="imageSize" destination="qUX-Bg-Frc" id="nU3-76-dk4"/>

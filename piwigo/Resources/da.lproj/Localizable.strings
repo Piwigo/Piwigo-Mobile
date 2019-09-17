@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ billeder valgt";
 "selectAll" = "Alle";
 
+// Image rename (filename)
+"renameImage_title" = "Oprindelig fil";
+"renameImage_message" = "Indtast et nyt filnavn for dette billede";
+"renameImageHUD_label" = "Omdøb fil…";
+
+// Image rename — Errors
+"renameImageError_message" = "Kunne ikke omdøbe billedfil";
+
 // Image delete
 "deleteImage_delete" = "Slet";
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";

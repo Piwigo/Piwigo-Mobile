@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ foto's geselecteerd";
 "selectAll" = "Allemaal";
 
+// Image rename (filename)
+"renameImage_title" = "Origineel bestand";
+"renameImage_message" = "Voer een nieuwe bestandsnaam in voor deze afbeelding";
+"renameImageHUD_label" = "Bestand hernoemen…";
+
+// Image rename — Errors
+"renameImageError_message" = "Kan afbeeldingbestand niet hernoemen";
+
 // Image delete
 "deleteImage_delete" = "Verwijderen";
 "deleteImageProgress_title" = "Verwijderen van %@%% voltooid";

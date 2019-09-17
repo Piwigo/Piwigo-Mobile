@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ immagini selezionate";
 "selectAll" = "Tutto";
 
+// Image rename (filename)
+"renameImage_title" = "File Originale";
+"renameImage_message" = "Inserisci un nuovo nome di file per questa immagine";
+"renameImageHUD_label" = "Rinomina file…";
+
+// Image rename — Errors
+"renameImageError_message" = "Impossibile rinominare file";
+
 // Image delete
 "deleteImage_delete" = "Elimina";
 "deleteImageProgress_title" = "Eliminazione di %@%% completata";

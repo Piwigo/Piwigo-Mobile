@@ -184,11 +184,8 @@
     [imageInformation setObject:privacyLevel
                          forKey:kPiwigoImagesUploadParamPrivacy];
     
-    // Image ID
-    NSString *imageId = [NSString stringWithFormat:@"%@", @(imageInfo.imageId)];
-    
     // Call pwg.images.setInfo to set image parameters
-    return [self setImageInfoForImageWithId:imageId
+    return [self setImageInfoForImageWithId:imageInfo.imageId
                             withInformation:imageInformation
                                  onProgress:progress
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
@@ -196,8 +193,8 @@
                 // Call method again to set filename
                 // because the server set the original filename to the image title
                 // See https://github.com/Piwigo/Piwigo/issues/1078
-                [self setImageFileForImageWithId:imageId
-                                 withInformation:imageInformation
+                [self setImageFileForImageWithId:imageInfo.imageId
+                                    withFileName:[imageInformation objectForKey:kPiwigoImagesUploadParamFileName]
                                       onProgress:progress
                                     OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 
@@ -214,7 +211,7 @@
                                 onFailure:fail];
 }
 
-+(NSURLSessionTask*)setImageInfoForImageWithId:(NSString*)imageId
++(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
                                withInformation:(NSDictionary*)imageInfo
                                     onProgress:(void (^)(NSProgress *))progress
                                   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
@@ -233,7 +230,7 @@
     return [self post:kPiwigoImageSetInfo
          URLParameters:nil
             parameters:@{
-                         @"image_id" : imageId,
+                         @"image_id" : @(imageId),
                          @"file" : [imageInfo objectForKey:kPiwigoImagesUploadParamFileName],
                          @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
                          @"author" : [imageInfo objectForKey:kPiwigoImagesUploadParamAuthor],
@@ -271,8 +268,8 @@
     ];
 }
 
-+(NSURLSessionTask*)setImageFileForImageWithId:(NSString*)imageId
-                               withInformation:(NSDictionary*)imageInfo
++(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
+                                  withFileName:(NSString*)fileName
                                     onProgress:(void (^)(NSProgress *))progress
                                   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
@@ -280,8 +277,8 @@
     NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
          URLParameters:nil
             parameters:@{
-                         @"image_id" : imageId,
-                         @"file" : [imageInfo objectForKey:kPiwigoImagesUploadParamFileName],
+                         @"image_id" : @(imageId),
+                         @"file" : fileName,
                          @"single_value_mode" : @"replace"
                          }
               progress:progress

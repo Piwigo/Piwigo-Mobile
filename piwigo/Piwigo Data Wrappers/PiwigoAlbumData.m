@@ -336,6 +336,7 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
         {
             // New data replaces old once
             PiwigoImageData *updatedImage = existingImage;
+            updatedImage.fileName = uploadedImage.fileName;
             updatedImage.imageTitle = uploadedImage.imageTitle;
             updatedImage.author = uploadedImage.author;
             updatedImage.privacyLevel = uploadedImage.privacyLevel;

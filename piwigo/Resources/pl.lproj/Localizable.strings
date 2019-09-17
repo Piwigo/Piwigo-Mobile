@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ wybranych zdjęć";
 "selectAll" = "Wszystkie";
 
+// Image rename (filename)
+"renameImage_title" = "Oryginalny plik";
+"renameImage_message" = "Wprowadź nową nazwę pliku dla tego obrazu";
+"renameImageHUD_label" = "Zmienianie nazwy pliku…";
+
+// Image rename — Errors
+"renameImageError_message" = "Nie można zmienić nazwy pliku obrazu";
+
 // Image delete
 "deleteImage_delete" = "Usuń";
 "deleteImageProgress_title" = "Usuwanie %@%% zakończone";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Kolory";
-"settings_darkPalette" = "Zawsze ciemna paleta";
+"settings_darkPalette" = "Ciemny motyw";
 "settings_switchPalette" = "Przełącz automatycznie";
 "settings_brightness" = "Jasność";
 

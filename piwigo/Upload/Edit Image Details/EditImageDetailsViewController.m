@@ -325,9 +325,8 @@ typedef enum {
 	{
 		case EditImageDetailsOrderThumbnail:
         {
-            EditImageThumbnailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"image"];
-            if (!cell)
-            {
+            EditImageThumbnailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"image" forIndexPath:indexPath];
+            if (!cell) {
                 cell = [EditImageThumbnailTableViewCell new];
             }
             [cell setupWithImage:self.imageDetails];
@@ -337,9 +336,8 @@ typedef enum {
         
         case EditImageDetailsOrderImageName:
 		{
-            EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"title"];
-            if (!cell)
-            {
+            EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"title" forIndexPath:indexPath];
+            if (!cell) {
                 cell = [EditImageTextFieldTableViewCell new];
             }
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title:")
@@ -351,9 +349,8 @@ typedef enum {
 		
         case EditImageDetailsOrderAuthor:
 		{
-            EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"author"];
-            if(!cell)
-            {
+            EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"author" forIndexPath:indexPath];
+            if(!cell) {
                 cell = [EditImageTextFieldTableViewCell new];
             }
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author:")
@@ -365,7 +362,10 @@ typedef enum {
 		
         case EditImageDetailsOrderPrivacy:
 		{
-			EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
+			EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
+            if (!cell) {
+                cell = [EditImagePrivacyTableViewCell new];
+            }
 			[cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
 			[cell setPrivacyLevel:self.imageDetails.privacyLevel];
             tableViewCell = cell;
@@ -374,7 +374,10 @@ typedef enum {
 		
         case EditImageDetailsOrderTags:
 		{
-			EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags"];
+			EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags" forIndexPath:indexPath];
+            if (!cell) {
+                cell = [EditImageTagsTableViewCell new];
+            }
 			[cell setTagList:self.imageDetails.tags];
             tableViewCell = cell;
 			break;
@@ -382,7 +385,10 @@ typedef enum {
 		
         case EditImageDetailsOrderDescription:
 		{
-			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description"];
+			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description" forIndexPath:indexPath];
+            if (!cell) {
+                cell = [EditImageTextViewTableViewCell new];
+            }
 			[cell setTextForTextView:self.imageDetails.comment];
             tableViewCell = cell;
 			break;

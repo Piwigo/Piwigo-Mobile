@@ -21,14 +21,14 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)setImageInfoForImageWithId:(NSString*)imageId
++(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
                                withInformation:(NSDictionary*)imageInformation
                                     onProgress:(void (^)(NSProgress *))progress
                                   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)getUploadedImageStatusById:(NSString*)imageId
-                                    inCategory:(NSInteger)categoryId
++(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
+                                  withFileName:(NSString*)fileName
                                     onProgress:(void (^)(NSProgress *))progress
                                   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
@@ -37,5 +37,11 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
                          onProgress:(void (^)(NSProgress *))progress
                        OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionTask*)getUploadedImageStatusById:(NSString*)imageId
+                                    inCategory:(NSInteger)categoryId
+                                    onProgress:(void (^)(NSProgress *))progress
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 @end
