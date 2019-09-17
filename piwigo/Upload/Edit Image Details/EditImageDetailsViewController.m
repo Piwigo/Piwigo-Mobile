@@ -147,6 +147,8 @@ typedef enum {
 
 -(void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+    
     // Unregister for the keyboard notifications.
     [self unregisterKeyboardNotifications];
 
