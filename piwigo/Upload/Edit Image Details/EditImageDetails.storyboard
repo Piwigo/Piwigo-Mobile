@@ -47,7 +47,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="file" textAlignment="natural" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E0X-OJ-g2X">
-                                                    <rect key="frame" x="172" y="40" width="226" height="21"/>
+                                                    <rect key="frame" x="172" y="40" width="23" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -58,7 +58,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kTd-SC-PCx">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="date" textAlignment="natural" lineBreakMode="headTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kTd-SC-PCx">
                                                     <rect key="frame" x="172" y="128" width="226" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -66,6 +66,9 @@
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Sd-M7-eA6">
                                                     <rect key="frame" x="369.33333333333331" y="38.666666666666664" width="24.666666666666686" height="24"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="24.670000000000002" id="LLn-z7-r0H"/>
+                                                    </constraints>
                                                     <connections>
                                                         <action selector="editImage" destination="29r-K5-ds4" eventType="touchUpInside" id="IxW-DZ-FY7"/>
                                                     </connections>
@@ -77,7 +80,6 @@
                                                 <constraint firstItem="PNv-EI-rzI" firstAttribute="leading" secondItem="DBa-VV-yDp" secondAttribute="trailing" constant="8" id="7eE-tH-TeG"/>
                                                 <constraint firstItem="E0X-OJ-g2X" firstAttribute="top" secondItem="qUX-Bg-Frc" secondAttribute="bottom" constant="8" id="8ni-c5-aRw"/>
                                                 <constraint firstItem="qUX-Bg-Frc" firstAttribute="top" secondItem="Dzb-fY-kD4" secondAttribute="top" constant="11" id="BfG-4d-C2E"/>
-                                                <constraint firstAttribute="trailing" secondItem="E0X-OJ-g2X" secondAttribute="trailing" constant="16" id="Iyn-FZ-Y9W"/>
                                                 <constraint firstItem="7Sd-M7-eA6" firstAttribute="centerY" secondItem="E0X-OJ-g2X" secondAttribute="centerY" id="N7y-Ys-kcH"/>
                                                 <constraint firstItem="E0X-OJ-g2X" firstAttribute="leading" secondItem="DBa-VV-yDp" secondAttribute="trailing" constant="8" id="QZL-vd-k5s"/>
                                                 <constraint firstItem="DBa-VV-yDp" firstAttribute="leading" secondItem="Dzb-fY-kD4" secondAttribute="leadingMargin" id="QtN-rp-EiQ"/>
@@ -86,6 +88,7 @@
                                                 <constraint firstAttribute="bottom" secondItem="kTd-SC-PCx" secondAttribute="bottom" constant="11" id="da7-0n-Ke3"/>
                                                 <constraint firstAttribute="trailing" secondItem="PNv-EI-rzI" secondAttribute="trailing" constant="16" id="rlM-U4-ekn"/>
                                                 <constraint firstItem="qUX-Bg-Frc" firstAttribute="leading" secondItem="DBa-VV-yDp" secondAttribute="trailing" constant="8" id="tbv-ux-aVI"/>
+                                                <constraint firstItem="E0X-OJ-g2X" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="7Sd-M7-eA6" secondAttribute="leading" id="vSd-8j-Jvn"/>
                                                 <constraint firstAttribute="trailing" secondItem="qUX-Bg-Frc" secondAttribute="trailing" constant="16" id="wT5-08-gov"/>
                                                 <constraint firstAttribute="trailing" secondItem="kTd-SC-PCx" secondAttribute="trailing" constant="16" id="xKV-7c-nQ9"/>
                                             </constraints>

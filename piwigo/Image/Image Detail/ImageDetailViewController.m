@@ -121,7 +121,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPinchView) name:kPiwigoNotificationPinchedImage object:nil];
 
         // Register image data updates
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -284,7 +284,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
 
 #pragma mark - Image Data Updated
 
--(void)getImageData:(NSNotification *)notification
+-(void)updateImageData:(NSNotification *)notification
 {
     // Extract notification user info
     if (notification != nil) {

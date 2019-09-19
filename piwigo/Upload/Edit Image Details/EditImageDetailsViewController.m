@@ -13,6 +13,7 @@
 #import "EditImageTextViewTableViewCell.h"
 #import "EditImageThumbnailTableViewCell.h"
 #import "EditImageTagsTableViewCell.h"
+#import "ImageDetailViewController.h"
 #import "ImageUpload.h"
 #import "ImageService.h"
 #import "MBProgressHUD.h"
@@ -46,6 +47,9 @@ typedef enum {
 	
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
 	
+    // Register image data updates
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
+
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 }
@@ -511,6 +515,29 @@ typedef enum {
 }
 
 
+#pragma mark - Image Data Updated
+
+-(void)updateImageData:(NSNotification *)notification
+{
+    // Extract notification user info
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.object;
+
+        // Right image Id?
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        if (imageId != self.imageDetails.imageId) return;
+        
+        // Update image data
+        NSString *fileName = [userInfo objectForKey:@"fileName"];
+        if (fileName) self.imageDetails.fileName = fileName;
+
+        // Update table view cell
+        EditImageThumbnailTableViewCell *cell = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
+        if (cell) [cell setupWithImage:self.imageDetails];
+    }
+}
+
+
 #pragma mark - SelectPrivacyDelegate Methods
 
 -(void)selectedPrivacy:(kPiwigoPrivacy)privacy
@@ -519,8 +546,8 @@ typedef enum {
     self.imageDetails.privacyLevel = privacy;
 	
     // Update table view cell
-    EditImagePrivacyTableViewCell *labelCell = (EditImagePrivacyTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
-	[labelCell setPrivacyLevel:privacy];
+    EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
+	if (cell) [cell setPrivacyLevel:privacy];
 }
 
 
@@ -533,7 +560,7 @@ typedef enum {
 
     // Update table view cell
     EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
-    [cell setTagList:self.imageDetails.tags];
+    if (cell) [cell setTagList:self.imageDetails.tags];
 }
 
 @end
