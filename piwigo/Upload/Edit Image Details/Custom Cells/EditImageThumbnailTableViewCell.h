@@ -20,7 +20,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *imageTime;
 @property (weak, nonatomic) IBOutlet UIButton *editImageButton;
 
--(void)setupWithImage:(ImageUpload *)imageDetails;
+-(void)setupWithImage:(ImageUpload *)imageDetails forEdit:(BOOL)isEdit;
 -(IBAction)editImage;
 
 @end

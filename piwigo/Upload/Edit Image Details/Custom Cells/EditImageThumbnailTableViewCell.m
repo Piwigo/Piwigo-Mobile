@@ -40,11 +40,11 @@
     
     self.imageFile.font = [UIFont piwigoFontSmallLight];
     self.imageTime.userInteractionEnabled = NO;
-    
+
     self.editImageButton.tintColor = [UIColor piwigoOrange];
 }
 
--(void)setupWithImage:(ImageUpload *)imageDetails
+-(void)setupWithImage:(ImageUpload *)imageDetails forEdit:(BOOL)isEdit
 {
     // Cell background
     self.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -59,6 +59,14 @@
     self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
     if (imageDetails.fileName.length > 0) {
         self.imageFile.text = imageDetails.fileName;
+    }
+    if (isEdit) {
+        [self.editImageButton setHidden:NO];
+        self.editImageButton.userInteractionEnabled = YES;
+    }
+    else {
+        [self.editImageButton setHidden:YES];
+        self.editImageButton.userInteractionEnabled = NO;
     }
 
     // Image from Photo Library or Piwigo server…

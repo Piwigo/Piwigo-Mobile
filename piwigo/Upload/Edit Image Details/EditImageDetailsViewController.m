@@ -336,7 +336,7 @@ typedef enum {
             if (!cell) {
                 cell = [EditImageThumbnailTableViewCell new];
             }
-            [cell setupWithImage:self.imageDetails];
+            [cell setupWithImage:self.imageDetails forEdit:self.isEdit];
             tableViewCell = cell;
             break;
         }
@@ -533,7 +533,7 @@ typedef enum {
 
         // Update table view cell
         EditImageThumbnailTableViewCell *cell = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
-        if (cell) [cell setupWithImage:self.imageDetails];
+        if (cell) [cell setupWithImage:self.imageDetails forEdit:self.isEdit];
     }
 }
 

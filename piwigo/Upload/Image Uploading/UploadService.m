@@ -129,6 +129,7 @@
       ];
 }
 
+// Called after edit
 +(NSURLSessionTask*)updateImageInfo:(ImageUpload*)imageInfo
                          onProgress:(void (^)(NSProgress *))progress
                        OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
@@ -190,23 +191,29 @@
                                  onProgress:progress
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                       
-                // Call method again to set filename
-                // because the server set the original filename to the image title
-                // See https://github.com/Piwigo/Piwigo/issues/1078
-                [self setImageFileForImageWithId:imageInfo.imageId
-                                    withFileName:[imageInformation objectForKey:kPiwigoImagesUploadParamFileName]
-                                      onProgress:progress
-                                    OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+                if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+                {
+                    // Update cache
+                    [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImageAfterEdit:imageInfo];
+                    
+                    if(completion)
+                    {
+                        completion(task, response);
+                    }
+                } else {
+                   // Display Piwigo error
+                   NSInteger errorCode = NSNotFound;
+                   if ([response objectForKey:@"err"]) {
+                       errorCode = [[response objectForKey:@"err"] intValue];
+                   }
+                   NSString *errorMsg = @"";
+                   if ([response objectForKey:@"message"]) {
+                       errorMsg = [response objectForKey:@"message"];
+                   }
+                   [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImagesGetInfo andURLparams:nil];
 
-                                        // Update cache
-                                        [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImageAfterEdit:imageInfo];
-                                        
-                                        if(completion)
-                                        {
-                                            completion(task, response);
-                                        }
-
-                                    } onFailure:fail];
+                   completion(task, nil);
+                }
                                }
                                 onFailure:fail];
 }
@@ -245,7 +252,20 @@
                         if(completion) {
                             if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                             {
-                                completion(task, responseObject);
+                                // Call method again to set filename
+                                // because the server set the original filename to the image title
+                                // See https://github.com/Piwigo/Piwigo/issues/1078
+                                [self setImageFileForImageWithId:imageId
+                                                    withFileName:[imageInfo objectForKey:kPiwigoImagesUploadParamFileName]
+                                                      onProgress:progress
+                                                    OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+
+                                                        if(completion)
+                                                        {
+                                                            completion(task, responseObject);
+                                                        }
+
+                                                    } onFailure:fail];
                             }
                             else
                             {
