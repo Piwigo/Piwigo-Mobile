@@ -65,12 +65,12 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Sd-M7-eA6">
-                                                    <rect key="frame" x="377" y="42" width="17" height="17"/>
+                                                    <rect key="frame" x="371" y="39" width="23" height="23"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="7Sd-M7-eA6" secondAttribute="height" multiplier="1:1" id="8R9-7i-8Kp"/>
-                                                        <constraint firstAttribute="width" constant="17" id="LLn-z7-r0H"/>
+                                                        <constraint firstAttribute="width" constant="23" id="LLn-z7-r0H"/>
                                                     </constraints>
-                                                    <state key="normal" image="edit">
+                                                    <state key="normal" image="imageEdit">
                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="medium" weight="regular"/>
                                                     </state>
                                                     <connections>
@@ -304,6 +304,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="edit" width="26" height="26"/>
+        <image name="imageEdit" width="26" height="26"/>
     </resources>
 </document>
