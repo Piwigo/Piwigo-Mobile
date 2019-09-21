@@ -532,31 +532,31 @@ NSInteger const loadingViewTag = 899;
                               POST:[NetworkHandler getURLWithPath:path withURLParams:nil]
                         parameters:nil
          constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
-                  {
-                      [formData appendPartWithFileData:fileData
-                                                  name:@"file"
-                                              fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
-                                              mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];
-                      
-                      // Fixes bug #212 — Problem solved by disabling extension "Autocorrect Filename"
-                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamTitle] dataUsingEncoding:NSUTF8StringEncoding]
-                                                    name:@"name"];
-                          
-                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]
-                                                  name:@"chunk"];
-                      
-                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding]
-                                                  name:@"chunks"];
-                      
-                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding]
-                                                  name:@"category"];
-                      
-                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding]
-                                                  name:@"level"];
-                      
-                      [formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding]
-                                                  name:@"pwg_token"];
-                  }
+                {
+                    NSString *name = [parameters valueForKey:kPiwigoImagesUploadParamTitle];
+                    if (name.length == 0) {
+                        name = [[parameters valueForKey:kPiwigoImagesUploadParamFileName] stringByDeletingPathExtension];
+                    }
+        
+                    [formData appendPartWithFileData:fileData
+                                                name:@"file"
+                                            fileName:[parameters valueForKey:kPiwigoImagesUploadParamFileName]
+                                            mimeType:[parameters valueForKey:kPiwigoImagesUploadParamMimeType]];
+                    
+                    // Image title is mandatory and must not be empty
+                    // so we provide the file name without extension and will then replace it with the image title
+                    [formData appendPartWithFormData:[name dataUsingEncoding:NSUTF8StringEncoding] name:@"name"];
+                    
+                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding] name:@"chunk"];
+
+                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding] name:@"chunks"];
+
+                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding] name:@"category"];
+
+                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding] name:@"level"];
+
+                    [formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding] name:@"pwg_token"];
+                }
                                   progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
                                        if (success) {

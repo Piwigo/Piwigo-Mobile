@@ -146,6 +146,14 @@
     [imageInformation setObject:fileName
                          forKey:kPiwigoImagesUploadParamFileName];
     
+    // Title
+    NSString *title = @"";
+    if ((imageInfo.imageTitle != nil) && (imageInfo.imageTitle.length > 0)) {
+        title = imageInfo.imageTitle;
+    }
+    [imageInformation setObject:title
+                         forKey:kPiwigoImagesUploadParamTitle];
+
     // Author
     NSString *author = imageInfo.author;
     if ([author isEqualToString:@"NSNotFound"] || (author == nil)) {
@@ -154,14 +162,6 @@
     }
     [imageInformation setObject:author
                          forKey:kPiwigoImagesUploadParamAuthor];
-
-    // Title
-    NSString *title = @"";
-    if ((imageInfo.imageTitle != nil) && (imageInfo.imageTitle.length > 0)) {
-        title = imageInfo.imageTitle;
-    }
-    [imageInformation setObject:title
-                         forKey:kPiwigoImagesUploadParamTitle];
 
     // Description
     NSString *description = @"";

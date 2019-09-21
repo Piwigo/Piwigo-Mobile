@@ -1245,9 +1245,6 @@ static NSString * FourCCString(FourCharCode code) {
                        withImage:image];
         return;
     }
-
-    // Check that title is not empty (should never happen)
-//    if ([image.title length] == 0) image.title = @"Image";
     
     // Append Tags
     NSMutableArray *tagIds = [NSMutableArray new];

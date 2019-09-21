@@ -181,7 +181,8 @@ typedef enum {
     
     // Store actual title if cell exists
     EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-    if (textFieldCell != nil) self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
+    if (textFieldCell != nil)
+        self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
 
     // Store actual author if cell exists
     textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
@@ -222,6 +223,9 @@ typedef enum {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showUpdatingImageInfoHUD];
     });
+    
+    // Store image data
+    [self storeImageData];
     
     // Update image info on server and in cache
 	[UploadService updateImageInfo:self.imageDetails
