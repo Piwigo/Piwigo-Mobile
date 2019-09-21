@@ -15,7 +15,8 @@
 
 @interface EditImageThumbnailTableViewCell() <UITextFieldDelegate>
 
-@property (nonatomic, strong) UIAlertAction *editFilenameAction;
+@property (nonatomic, strong) UIAlertAction *renameFileNameAction;
+@property (nonatomic, strong) NSString *oldFileName;
 @property (nonatomic, assign) NSInteger imageId;
 
 @end
@@ -160,6 +161,9 @@
 // Propose to edit original filename
 - (IBAction)editImage
 {
+    // Store old file name
+    self.oldFileName = self.imageFile.text;
+    
     // Determine the present view controller
     UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
     while (topViewController.presentedViewController) {
@@ -188,7 +192,7 @@
         style:UIAlertActionStyleCancel
         handler:^(UIAlertAction * action) {}];
 
-    self.editFilenameAction = [UIAlertAction
+    self.renameFileNameAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"renameCategory_button", @"Rename")
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
@@ -199,7 +203,7 @@
         }];
     
     [alert addAction:cancelAction];
-    [alert addAction:self.editFilenameAction];
+    [alert addAction:self.renameFileNameAction];
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
@@ -338,22 +342,23 @@
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     // Disable Add/Delete Category action
-    [self.editFilenameAction setEnabled:NO];
+    [self.renameFileNameAction setEnabled:NO];
     return YES;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    // Enable Add/Delete Category action if text field not empty
+    // Enable Rename button if name and extension not empty
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    [self.editFilenameAction setEnabled:(finalString.length >= 1)];
+    NSString *extension = [finalString pathExtension];
+    [self.renameFileNameAction setEnabled:((finalString.length >= 1) && (extension.length >= 3) && ![finalString isEqualToString:self.oldFileName])];
     return YES;
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    // Disable Add/Delete Category action
-    [self.editFilenameAction setEnabled:NO];
+    // Disable Rename button
+    [self.renameFileNameAction setEnabled:NO];
     return YES;
 }
 
