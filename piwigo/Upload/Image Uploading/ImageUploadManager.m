@@ -1257,8 +1257,6 @@ static NSString * FourCCString(FourCharCode code) {
     }
     
     // Prepare properties for uploaded image/video (filename key is kPiwigoImagesUploadParamFileName)
-    // pwg.images.upload: file name key is kPiwigoImagesUploadParamTitle
-    // pwg.images.setInfo: file name key is kPiwigoImagesUploadParamFileName
     __block NSDictionary *imageProperties = @{
                                       kPiwigoImagesUploadParamFileName : image.fileName,
                                       kPiwigoImagesUploadParamTitle : image.imageTitle,
@@ -1301,7 +1299,7 @@ static NSString * FourCCString(FourCharCode code) {
                             // Set properties of uploaded image/video on Piwigo server and add it to cahe
                             [self setImage:image withInfo:imageProperties andId:imageId];
 
-                        // The image must be moderated if the Community plugin is installed
+                            // The image must be moderated if the Community plugin is installed
                             if ([Model sharedInstance].usesCommunityPluginV29)
                             {
                                 // Append image to list of images to moderate

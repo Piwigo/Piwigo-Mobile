@@ -201,17 +201,7 @@
                         completion(task, response);
                     }
                 } else {
-                   // Display Piwigo error
-                   NSInteger errorCode = NSNotFound;
-                   if ([response objectForKey:@"err"]) {
-                       errorCode = [[response objectForKey:@"err"] intValue];
-                   }
-                   NSString *errorMsg = @"";
-                   if ([response objectForKey:@"message"]) {
-                       errorMsg = [response objectForKey:@"message"];
-                   }
-                   [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImagesGetInfo andURLparams:nil];
-
+                   // Called method did display Piwigo error
                    completion(task, nil);
                 }
                                }
@@ -252,20 +242,10 @@
                         if(completion) {
                             if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                             {
-                                // Call method again to set filename
-                                // because the server set the original filename to the image title
-                                // See https://github.com/Piwigo/Piwigo/issues/1078
-                                [self setImageFileForImageWithId:imageId
-                                                    withFileName:[imageInfo objectForKey:kPiwigoImagesUploadParamFileName]
-                                                      onProgress:progress
-                                                    OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-
-                                                        if(completion)
-                                                        {
-                                                            completion(task, responseObject);
-                                                        }
-
-                                                    } onFailure:fail];
+                                if(completion)
+                                {
+                                    completion(task, responseObject);
+                                }
                             }
                             else
                             {
