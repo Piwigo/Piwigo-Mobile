@@ -76,7 +76,7 @@ public extension UIDevice {
                 
             }
         }
-        var modelMap : [ String : Model ] = [
+        let modelMap : [ String : Model ] = [
             "i386"      : .simulator,
             "x86_64"    : .simulator,
             //iPod
@@ -236,6 +236,7 @@ class piwigoAppStore: XCTestCase {
         
         // Screenshot #2: collection of images
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
+        sleep(1);
         if deviceType.hasPrefix("iPhone") {
             app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
             sleep(2);
@@ -243,10 +244,10 @@ class piwigoAppStore: XCTestCase {
         snapshot("Image2")
 
         // Screenshot #3: collection with selected images
+        app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
+        sleep(2);
         app.navigationBars.buttons["Select"].tap()
         if deviceType.hasPrefix("iPhone") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
-            sleep(2);
             app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
@@ -254,8 +255,6 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
         } else {
             if (deviceType == "iPad Pro 9.7\"") {
-                app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
-                sleep(2);
                 app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
                 app.collectionViews.children(matching: .cell).element(boundBy: 24).tap()
                 app.collectionViews.children(matching: .cell).element(boundBy: 23).tap()
@@ -263,8 +262,6 @@ class piwigoAppStore: XCTestCase {
                 app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
                 app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
             } else {
-                app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
-                sleep(2);
                 app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
                 app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
                 app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
@@ -286,39 +283,34 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.49, velocity: -2.0)
         }
         else if deviceType == "iPhone 8" {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.52, velocity: -2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.14, velocity: 2.0)
         }
         else if deviceType == "iPhone 8 Plus" {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.59, velocity: -2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.2, velocity: 2.0)
         }
-        else if deviceType == "iPhone X" {
+        else if deviceType == "iPhone XS" {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.735, velocity: -2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.4, velocity: 2.0)
         }
         else if deviceType == "iPhone XS Max" {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.4, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 9.7\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
@@ -359,16 +351,16 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
         }
         else if deviceType == "iPhone 8" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
         }
         else if deviceType == "iPhone 8 Plus" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
         }
-        else if deviceType == "iPhone X" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+        else if deviceType == "iPhone XS" {
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
         }
         else if deviceType == "iPhone XS Max" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
         }
         else if deviceType == "iPad Pro 9.7\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 10).tap()
@@ -399,7 +391,8 @@ class piwigoAppStore: XCTestCase {
         snapshot("Image6")
         
         // Screenshot #7: local images
-        app.tables.children(matching: .cell).element(boundBy: 0).tap()
+        sleep(1)                        // Leave time for animation
+        app.tables["PickPiwigoAlbum"].cells.element(boundBy: 0).tap();
         app.tables.children(matching: .cell).matching(identifier: "CameraRoll").element.tap()
         let images = app.collectionViews.matching(identifier: "CameraRoll").children(matching: .cell)
         images.element(boundBy: 0).children(matching: .other).element.tap()
@@ -419,15 +412,17 @@ class piwigoAppStore: XCTestCase {
         snapshot("Image8")
 
         // Screenshot #9: settings
+        sleep(1)                        // Leave time for animation
         app.navigationBars["ImageUploadNav"].buttons.element(boundBy: 0).tap()
         sleep(1)                        // Leave time for animation
-        app.navigationBars["CameraRollNav"].buttons.element(boundBy: 0).tap()
+        app.navigationBars["ImageUploadNav"].buttons.element(boundBy: 0).tap()
         sleep(1)                        // Leave time for animation
-        app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
+        app.buttons["Cancel"].tap()
         sleep(1)                        // Leave time for animation
-        app.navigationBars["AlbumImagesNav"].buttons.element(boundBy: 0).tap()
+        app.buttons["rootAlbum"].tap()
         sleep(1)                        // Leave time for animation
-        app.navigationBars["AlbumImagesNav"].buttons["preferences"].tap()
+        app.buttons["preferences"].tap()
+        sleep(1)                        // Leave time for animation
         app.tables["preferences"].cells["server"].swipeUp()
         snapshot("Image9")
     }

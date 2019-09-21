@@ -59,6 +59,7 @@
             self.categoriesTableView.delegate = self;
             self.categoriesTableView.dataSource = self;
             [self.categoriesTableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:@"CategoryTableViewCell"];
+            [self.categoriesTableView setAccessibilityIdentifier:@"PickPiwigoAlbum"];
             [self.view addSubview:self.categoriesTableView];
             [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
