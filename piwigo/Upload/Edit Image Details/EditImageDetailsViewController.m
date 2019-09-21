@@ -33,7 +33,7 @@ typedef enum {
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
 
@@ -106,9 +106,6 @@ typedef enum {
     
     // Set colors, fonts, etc.
     [self applyColorPalette];
-
-    // Register for the keyboard notifications
-    [self registerForKeyboardNotifications];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -117,17 +114,8 @@ typedef enum {
     // Reload the tableview on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         
-        // Store title if user rotates the device while typing text
-        EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-        if (textFieldCell != nil) self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
-
-        // Store author if user rotates the device while typing text
-        textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-        if (textFieldCell != nil) self.imageDetails.author = textFieldCell.cellTextField.text;
-
-        // Store description if user rotates the device while typing text
-        EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-        if (textViewCell != nil) self.imageDetails.comment = textViewCell.getTextViewText;
+        // Store title, author and description before user rotates the device
+        [self storeImageData];
 
         // Adjust content inset
         // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
@@ -153,14 +141,61 @@ typedef enum {
 {
     [super viewWillDisappear:animated];
     
-    // Unregister for the keyboard notifications.
-    [self unregisterKeyboardNotifications];
-
+    // Store image data
+    [self storeImageData];
+    
     // Return updated parameters or nil
     if ([self.delegate respondsToSelector:@selector(didFinishEditingDetails:)])
     {
         [self.delegate didFinishEditingDetails:self.imageDetails];
     }
+}
+
+
+#pragma mark - Image Data update
+
+-(void)updateImageData:(NSNotification *)notification
+{
+    // Extract notification user info
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.object;
+
+        // Right image Id?
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        if (imageId != self.imageDetails.imageId) return;
+        
+        // Update image data
+        NSString *fileName = [userInfo objectForKey:@"fileName"];
+        if (fileName) self.imageDetails.fileName = fileName;
+
+        // Update table view cell
+        EditImageThumbnailTableViewCell *cell = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
+        if (cell) [cell setupWithImage:self.imageDetails forEdit:self.isEdit];
+    }
+}
+
+-(void)storeImageData
+{
+    // NOP if user pressed Cancel
+    if (self.imageDetails == nil) return;
+    
+    // Store actual title if cell exists
+    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+    if (textFieldCell != nil) self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
+
+    // Store actual author if cell exists
+    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+    if (textFieldCell != nil) {
+        if (textFieldCell.cellTextField.text.length > 0) {
+            self.imageDetails.author = textFieldCell.cellTextField.text;
+        } else {
+            self.imageDetails.author = @"NSNotFound";
+        }
+    }
+
+    // Store actual description if cell exists
+    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
+    if (textViewCell != nil) self.imageDetails.comment = textViewCell.getTextViewText;
 }
 
 
@@ -183,9 +218,6 @@ typedef enum {
 
 -(void)doneEdit
 {
-    // Store recent modification
-    [self updateImageParameters];
-	
     // Display HUD during the update
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showUpdatingImageInfoHUD];
@@ -350,6 +382,8 @@ typedef enum {
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title:")
                      placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
                   andImageDetail:self.imageDetails.imageTitle];
+            cell.cellTextField.tag = EditImageDetailsOrderImageName;
+            cell.cellTextField.delegate = self;
             tableViewCell = cell;
             break;
 		}
@@ -363,6 +397,8 @@ typedef enum {
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author:")
                      placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
                   andImageDetail:[self.imageDetails.author isEqualToString:@"NSNotFound"] ? @"" : self.imageDetails.author];
+            cell.cellTextField.tag = EditImageDetailsOrderAuthor;
+            cell.cellTextField.delegate = self;
             tableViewCell = cell;
 			break;
 		}
@@ -419,9 +455,6 @@ typedef enum {
         // Dismiss the keyboard
         [self.view endEditing:YES];
         
-        // Store recent modification
-        [self updateImageParameters];
-        
         // Create view controller
         SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
 		privacySelectVC.delegate = self;
@@ -432,9 +465,6 @@ typedef enum {
 	{
         // Dismiss the keyboard
         [self.view endEditing:YES];
-        
-        // Store recent modification
-        [self updateImageParameters];
         
         // Create view controller
 		TagsViewController *tagsVC = [TagsViewController new];
@@ -473,67 +503,39 @@ typedef enum {
 }
 
 
-#pragma mark - Keyboard Notifications
+#pragma mark - UITextFieldDelegate Methods
 
-- (void)registerForKeyboardNotifications
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification object:nil];
+    [self.editImageDetailsTableView endEditing:YES];
+    return YES;
 }
 
--(void)keyboardWillHide:(NSNotification*)aNotification
+-(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    [self updateImageParameters];
-}
-
--(void)updateImageParameters
-{
-    // Title
-    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-    if (textFieldCell.cellTextField.text != nil) {
-        self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
-    } else {
-        self.imageDetails.imageTitle = @"";
-    }
-
-    // Author
-    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-    if ((textFieldCell.cellTextField.text != nil) && (textFieldCell.cellTextField.text.length > 0)) {
-        self.imageDetails.author = textFieldCell.cellTextField.text;
-    } else {
-        self.imageDetails.author = @"NSNotFound";
-    }
-
-    // Description
-    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-    self.imageDetails.comment = textViewCell.getTextViewText;
-}
-
-- (void)unregisterKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-}
-
-
-#pragma mark - Image Data Updated
-
--(void)updateImageData:(NSNotification *)notification
-{
-    // Extract notification user info
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.object;
-
-        // Right image Id?
-        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        if (imageId != self.imageDetails.imageId) return;
-        
-        // Update image data
-        NSString *fileName = [userInfo objectForKey:@"fileName"];
-        if (fileName) self.imageDetails.fileName = fileName;
-
-        // Update table view cell
-        EditImageThumbnailTableViewCell *cell = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
-        if (cell) [cell setupWithImage:self.imageDetails forEdit:self.isEdit];
+    switch (textField.tag)
+    {
+        case EditImageDetailsOrderImageName:
+        {
+            // Title
+            EditImageTextFieldTableViewCell *cell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+            if (cell) self.imageDetails.imageTitle = cell.cellTextField.text;
+            break;
+        }
+            
+        case EditImageDetailsOrderAuthor:
+        {
+            // Author
+            EditImageTextFieldTableViewCell *cell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+            if (cell) {
+                if (cell.cellTextField.text.length > 0) {
+                    self.imageDetails.author = cell.cellTextField.text;
+                } else {
+                    self.imageDetails.author = @"NSNotFound";
+                }
+            }
+            break;
+        }
     }
 }
 
@@ -562,5 +564,6 @@ typedef enum {
     EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
     if (cell) [cell setTagList:self.imageDetails.tags];
 }
+
 
 @end

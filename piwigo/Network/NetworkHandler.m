@@ -538,9 +538,8 @@ NSInteger const loadingViewTag = 899;
                                               fileName:[parameters objectForKey:kPiwigoImagesUploadParamFileName]
                                               mimeType:[parameters objectForKey:kPiwigoImagesUploadParamMimeType]];
                       
-                      // Fixes bug #212 — pwg.images.upload: filename key is "name"
-                      // This parameter is mandatory and the server will set both the title and the file name
-                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamFileName] dataUsingEncoding:NSUTF8StringEncoding]
+                      // Fixes bug #212 — Problem solved by disabling extension "Autocorrect Filename"
+                      [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamTitle] dataUsingEncoding:NSUTF8StringEncoding]
                                                     name:@"name"];
                           
                       [formData appendPartWithFormData:[[parameters objectForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding]

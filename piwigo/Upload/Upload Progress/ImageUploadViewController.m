@@ -400,8 +400,10 @@
             index++;
         }
 
-        [self.imagesToEdit replaceObjectAtIndex:index withObject:details];
-        [self.uploadImagesTableView reloadData];
+        if (index < self.imagesToEdit.count) {
+            [self.imagesToEdit replaceObjectAtIndex:index withObject:details];
+            [self.uploadImagesTableView reloadData];
+        }
     }
 }
 

@@ -214,6 +214,13 @@
                                   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // Author
+    NSString *author = [imageInfo objectForKey:kPiwigoImagesUploadParamAuthor];
+    if ([author isEqualToString:@"NSNotFound"] || (author == nil)) {
+        // We should never set NSNotFound in the database
+        author = @"";
+    }
+
     // Prepare tag ids
     NSString *tagIdList;
     if ([[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
@@ -230,7 +237,7 @@
                          @"image_id" : @(imageId),
                          @"file" : [imageInfo objectForKey:kPiwigoImagesUploadParamFileName],
                          @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
-                         @"author" : [imageInfo objectForKey:kPiwigoImagesUploadParamAuthor],
+                         @"author" : author,
                          @"level" : [imageInfo objectForKey:kPiwigoImagesUploadParamPrivacy],
                          @"comment" : [imageInfo objectForKey:kPiwigoImagesUploadParamDescription],
                          @"single_value_mode" : @"replace",
