@@ -46,8 +46,8 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 	self.loginVC = nil;
     
     // Observe the UIScreenBrightnessDidChangeNotification.
-    // When that notification is posted, the method setColorPaletteWithiOSInDarkMode: will be called.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setColorPalette) name:UIScreenBrightnessDidChangeNotification object:nil];
+    // When that notification is posted, the method screenBrightnessChanged will be called.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged) name:UIScreenBrightnessDidChangeNotification object:nil];
 
     // Observe the PiwigoNetworkErrorEncounteredNotification.
     // When that notification is posted, the app checks the login.
@@ -82,8 +82,17 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
     [self.window.rootViewController.view setNeedsUpdateConstraints];
 
-    // Set and apply color palette
-    [self setColorPalette];
+    // Color palette depends on system settings
+    if (@available(iOS 13.0, *)) {
+        [Model sharedInstance].isSystemDarkModeActive = (self.loginVC.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+//        NSLog(@"•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", [Model sharedInstance].isSystemDarkModeActive ? @"Dark" : @"Light", [Model sharedInstance].isDarkPaletteModeActive ? @"Dark" : @"Light", lroundf([[UIScreen mainScreen] brightness] * 100.0), (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+    } else {
+        // Fallback on earlier versions
+        [Model sharedInstance].isSystemDarkModeActive = NO;
+    }
+    
+    // Apply color palette
+    [self screenBrightnessChanged];
 }
 
 -(LoginViewController*)loginVC
@@ -280,35 +289,25 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
 
 #pragma mark - Light and dark modes
 
-// Called when the screen brightness has changed or when user changes settings
--(void)setColorPalette
+// Called when the screen brightness has changed, when user changes settings
+// and by traitCollectionDidChange: when the system switches between Light and Dark modes
+-(void)screenBrightnessChanged
 {
-//    if (@available(iOS 13.0, *)) {
-//        NSLog(@"==========>");
-//        NSLog(@"setColor => iOS mode: %@, Dark requested: %@, Brightness: %.1ld/%ld, app: %@", ([UITraitCollection currentTraitCollection].userInterfaceStyle == UIUserInterfaceStyleLight) ? @"Light" : @"Dark", [Model sharedInstance].isDarkPaletteModeActive ? @"Yes" : @"No", lroundf([[UIScreen mainScreen] brightness] * 100.0), (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
-//    } else {
-//        // Fallback on earlier versions
-//    }
-
-    BOOL isDarkMode;
-    if (@available(iOS 13.0, *)) {
-        isDarkMode = ([UITraitCollection currentTraitCollection].userInterfaceStyle == UIUserInterfaceStyleDark);
-    } else {
-        // Fallback on earlier versions
-        isDarkMode = NO;
-    }
-    
-    if ([Model sharedInstance].isDarkPaletteModeActive || isDarkMode)
+    if ([Model sharedInstance].isDarkPaletteModeActive || [Model sharedInstance].isSystemDarkModeActive)
     {
-        // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
-        [Model sharedInstance].isDarkPaletteActive = YES;
+        if ([Model sharedInstance].isDarkPaletteActive) {
+            // Already showing dark palette
+            return;
+        } else {
+            // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
+            [Model sharedInstance].isDarkPaletteActive = YES;
+        }
     }
     else if ([Model sharedInstance].switchPaletteAutomatically)
     {
         // Dynamic palette mode chosen and iOS Light Mode active
         NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
-        if ([Model sharedInstance].isDarkPaletteActive)
-        {
+        if ([Model sharedInstance].isDarkPaletteActive) {
             // Dark palette displayed
             if (currentBrightness > [Model sharedInstance].switchPaletteThreshold)
             {
@@ -335,77 +334,35 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
         {
             // Switch to light palette
             [Model sharedInstance].isDarkPaletteActive = NO;
+        } else {
+            // Keep light palette
+            return;
         }
     }
     
     // Store modified settings
     [[Model sharedInstance] saveToDisk];
     
-    // Notify palette change to views
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
-
-    // Apply global color change
-    [self applyColorPalette];
-
-//    NSLog(@"setColor => app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
-//    NSLog(@"==========>");
-}
-
-// Called at start and when changing color palette
--(void)applyColorPalette
-{
     // Activity indicator
     [UIActivityIndicatorView appearance].color = [UIColor piwigoOrange];
-    
-    // Navigation bars
-    [UINavigationBar appearance].barTintColor = [UIColor piwigoBackgroundColor];
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    [UINavigationBar appearance].titleTextAttributes = attributes;
 
-    // Progress bars
-    [UIProgressView appearance].progressTintColor = [UIColor piwigoOrange];
-    [UIProgressView appearance].trackTintColor = [UIColor piwigoRightLabelColor];
-
-    // Sliders
-    [UISlider appearance].thumbTintColor = [UIColor piwigoThumbColor];
-    
-    // Switches
-    [UISwitch appearance].thumbTintColor = [UIColor piwigoThumbColor];
-    [UISwitch appearance].onTintColor = [UIColor piwigoOrange];
-    
     // Tab bars
     [UITabBar appearance].barTintColor = [UIColor piwigoBackgroundColor];
-    
-    // Toolbars
-    [UIToolbar appearance].barTintColor = [UIColor piwigoBackgroundColor];
-    
-    // Tables
-    [UITableView appearance].separatorColor = [UIColor piwigoSeparatorColor];
 
     // Styles
     if ([Model sharedInstance].isDarkPaletteActive)
     {
-        [UINavigationBar appearance].barStyle = UIBarStyleBlack;
         [UITabBar appearance].barStyle = UIBarStyleBlack;
         [UIToolbar appearance].barStyle = UIBarStyleBlack;
     }
     else {
-        [UINavigationBar appearance].barStyle = UIBarStyleDefault;
         [UITabBar appearance].barStyle = UIBarStyleDefault;
         [UIToolbar appearance].barStyle = UIBarStyleDefault;
     }
 
-    // Tell iOS to apply appearance changes
-    NSArray *subViews = self.window.subviews;
-//    NSLog(@"applyColorPalette => %lu subViews", (unsigned long)subViews.count);
-    for (UIView *view in subViews) {
-        UIView *superView = view.superview;
-        [view removeFromSuperview];
-        [superView addSubview:view];
-    }
+    // Notify palette change to views
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
+    NSLog(@"•••> app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
 }
 
 @end

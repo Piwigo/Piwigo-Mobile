@@ -80,7 +80,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Optimised image thumbnail size, will be cross-checked at login
         instance.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
-        instance.thumbnailsPerRowInPortrait = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)instance.defaultThumbnailSize]];
+        instance.thumbnailsPerRowInPortrait = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 6.0;
 
         // Default image settings
         instance.didOptimiseImagePreviewSize = NO;  // ===> Unused and therefore available…
@@ -118,6 +118,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.switchPaletteAutomatically = NO;
         instance.switchPaletteThreshold = 50;
         instance.isDarkPaletteModeActive = NO;
+        instance.isSystemDarkModeActive = NO;
         
         // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
@@ -505,7 +506,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.isDarkPaletteModeActive = NO;
     }
-    NSInteger nberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)self.defaultThumbnailSize]];
+    NSInteger nberOfImages = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 6.0;
     if(savedData.count > 23) {
         if(savedData.count > 47) {
             self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];

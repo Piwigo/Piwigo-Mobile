@@ -113,15 +113,13 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-//    if (@available(iOS 13.0, *)) {
-//        self.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-//    } else {
-//        // Fallback on earlier versions
-//    }
 
     // Navigation bar
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
         NSDictionary *attributesLarge = @{
                                           NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -130,8 +128,13 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
         self.navigationController.navigationBar.prefersLargeTitles = YES;
     }
-    
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+
     // Table view
+    self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.settingsTableView reloadData];
 }
@@ -1084,7 +1087,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         
                         // Notify palette change
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate setColorPalette];
+                        [appDelegate screenBrightnessChanged];
                     };
                     
                     tableViewCell = cell;
@@ -1131,7 +1134,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
                             // Notify palette change
                             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            [appDelegate setColorPalette];
+                            [appDelegate screenBrightnessChanged];
                         };
                         
                         tableViewCell = cell;
@@ -2182,7 +2185,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
     // Update palette if needed
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate setColorPalette];
+    [appDelegate screenBrightnessChanged];
 }
 
 - (IBAction)updateDiskCacheSize:(id)sender

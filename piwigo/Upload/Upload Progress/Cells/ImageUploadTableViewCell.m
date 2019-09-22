@@ -50,6 +50,8 @@
 	
 	self.uploadingProgressBar = [UIProgressView new];
 	self.uploadingProgressBar.translatesAutoresizingMaskIntoConstraints = NO;
+    self.uploadingProgressBar.progressTintColor = [UIColor piwigoOrange];
+    self.uploadingProgressBar.trackTintColor = [UIColor piwigoLeftLabelColor];
 	[self.uploadingOverlay addSubview:self.uploadingProgressBar];
     [self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintViewFromTop:self.uploadingProgressBar amount:97.0]];
 	[self.uploadingOverlay addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[bar]-20-|"

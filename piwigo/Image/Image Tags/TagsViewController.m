@@ -82,13 +82,21 @@
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Navigation bar
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+
     // Table view
+    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.tagsTableView reloadData];
 }

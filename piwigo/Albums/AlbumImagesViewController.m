@@ -244,23 +244,26 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
+
     // Refresh controller
     self.refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
     self.refreshControl.tintColor = [UIColor piwigoOrange];
-    NSDictionary *attributes = @{
+    NSDictionary *attributesRefresh = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoOrange],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
-    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributes];
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
     
     // Buttons
     self.homeAlbumButton.backgroundColor = [UIColor piwigoRightLabelColor];
     self.homeAlbumButton.tintColor = [UIColor piwigoBackgroundColor];
 
     // Navigation bar appearence
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
         if (self.categoryId == [Model sharedInstance].defaultCategory) {
             // Title
@@ -282,6 +285,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             self.navigationController.navigationBar.prefersLargeTitles = NO;
         }
     }
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
+
+    // Toolbar
+    self.navigationController.toolbar.barTintColor =[UIColor piwigoBackgroundColor];
+    self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -503,8 +515,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
             NSLog(@"AlbumImages => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
+            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate setColorPalette];
+            [appDelegate screenBrightnessChanged];
         }
     } else {
         // Fallback on earlier versions

@@ -136,13 +136,25 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
 {
     // Navigation bar
     [self setTitleViewFromImageData];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Toolbar
+    self.navigationController.toolbar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 
     // Progress bar
+    self.progressBar.progressTintColor = [UIColor piwigoOrange];
     self.progressBar.trackTintColor = [UIColor piwigoLeftLabelColor];
 }
 
@@ -188,8 +200,9 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
             NSLog(@"ImageDetail => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
+            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate setColorPalette];
+            [appDelegate screenBrightnessChanged];
         }
 
     } else {

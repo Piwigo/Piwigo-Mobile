@@ -135,6 +135,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL switchPaletteAutomatically;
 @property (nonatomic, assign) NSInteger switchPaletteThreshold;
 @property (nonatomic, assign) BOOL isDarkPaletteModeActive;
+@property (nonatomic, assign) BOOL isSystemDarkModeActive;
 
 // Default cache settings
 @property (nonatomic, assign) BOOL loadAllCategoryInfo;

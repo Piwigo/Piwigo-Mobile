@@ -36,6 +36,7 @@
 		self.slider.minimumValue = 10;
 		self.slider.maximumValue = 200;
         self.slider.tintColor = [UIColor piwigoOrange];
+        self.slider.thumbTintColor = [UIColor piwigoThumbColor];
 		[self.slider addTarget:self action:@selector(sliderChanged) forControlEvents:UIControlEventValueChanged];
 		[self.contentView addSubview:self.slider];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.slider]];

@@ -51,6 +51,15 @@
         self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Navigation bar
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
     self.navigationBarHidden = YES;
 }
 
