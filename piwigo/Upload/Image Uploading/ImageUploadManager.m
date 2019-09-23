@@ -26,9 +26,6 @@
 @property (nonatomic, assign) NSInteger currentChunk;
 @property (nonatomic, assign) NSInteger totalChunks;
 @property (nonatomic, assign) CGFloat iCloudProgress;
-@property (nonatomic, strong) NSMutableArray *cachedImages;
-@property (nonatomic, strong) PHCachingImageManager *cachingManager;
-@property (nonatomic, strong) PHImageRequestOptions *options;
 
 @end
 
@@ -57,13 +54,6 @@
         self.imageNamesUploadQueue = [NSMutableArray new];
         self.imageDeleteQueue = [NSMutableArray new];
         self.uploadedImagesToBeModerated = [NSString new];
-        self.cachedImages = [NSMutableArray new];
-        self.cachingManager = [[PHCachingImageManager alloc] init];
-        self.options = [[PHImageRequestOptions alloc] init];
-        // Requests the most recent version of the image asset
-        self.options.version = PHImageRequestOptionsVersionCurrent;
-        // Requests the highest-quality image available, regardless of how much time it takes to load.
-        self.options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
         self.isUploading = NO;
         
         self.current = 0;
@@ -83,16 +73,11 @@
     {
         [self addImage:image];
     }
-    
-    // Caching images…
-    [self.cachingManager startCachingImagesForAssets:self.cachedImages
-            targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeDefault options:self.options];
 }
 
 -(void)addImage:(ImageUpload*)image
 {
     [self.imageUploadQueue addObject:image];
-    [self.cachedImages addObject:image.imageAsset];
     self.maximumImagesForBatch++;
     [self startUploadIfNeeded];
     
@@ -152,9 +137,6 @@
     {
         // Stop uploading
         self.isUploading = NO;
-        
-        // Stop caching images
-        [self.cachingManager stopCachingImagesForAllAssets];
         return;
     }
     
@@ -1235,6 +1217,44 @@ static NSString * FourCCString(FourCharCode code) {
 
 #pragma mark - Upload image/video
 
+//-(void)uploadImage:(ImageUpload *)image withMimeType:(NSString *)mimeType
+//{
+//    // Chek that the final image format will be accepted by the Piwigo server
+//    if (![[Model sharedInstance].uploadFileTypes containsString:[[image.fileName pathExtension] lowercaseString]]) {
+//        [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+//                      andMessage:[NSString stringWithFormat:NSLocalizedString(@"uploadError_message", @"Could not upload your image. Error: %@"), NSLocalizedString(@"imageUploadError_destination", @"cannot create image destination")]
+//                     forRetrying:YES
+//                       withImage:image];
+//        return;
+//    }
+//
+//    // Append Tags
+//    NSMutableArray *tagIds = [NSMutableArray new];
+//    for(PiwigoTagData *tagData in image.tags)
+//    {
+//        [tagIds addObject:@(tagData.tagId)];
+//    }
+//
+//    // Prepare properties for uploaded image/video (filename key is kPiwigoImagesUploadParamFileName)
+//    __block NSDictionary *imageProperties = @{
+//                                      kPiwigoImagesUploadParamFileName : image.fileName,
+//                                      kPiwigoImagesUploadParamTitle : image.imageTitle,
+//                                      kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
+//                                      kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(image.privacyLevel)],
+//                                      kPiwigoImagesUploadParamAuthor : image.author,
+//                                      kPiwigoImagesUploadParamDescription : image.comment,
+//                                      kPiwigoImagesUploadParamTags : [tagIds copy],
+//                                      kPiwigoImagesUploadParamMimeType : mimeType
+//                                      };
+//    tagIds = nil;
+//
+//    // Release memory
+//    imageProperties = nil;
+//    self.imageData = nil;
+//
+//    NSLog(@"END");
+//}
+
 -(void)uploadImage:(ImageUpload *)image withMimeType:(NSString *)mimeType
 {
     // Chek that the final image format will be accepted by the Piwigo server
@@ -1286,8 +1306,8 @@ static NSString * FourCCString(FourCharCode code) {
 
                         if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
                         {
-                        // Consider image job done
-                        self.onCurrentImageUpload++;
+                            // Consider image job done
+                            self.onCurrentImageUpload++;
                         
                             // Get imageId
                             NSDictionary *imageResponse = [response objectForKey:@"result"];
@@ -1307,16 +1327,16 @@ static NSString * FourCCString(FourCharCode code) {
                             imageProperties = nil;
                             self.imageData = nil;
                         
-                        // Delete image from Photos library if requested
-                        if ([Model sharedInstance].deleteImageAfterUpload &&
-                            (image.imageAsset.sourceType != PHAssetSourceTypeCloudShared)) {
-                            [self.imageDeleteQueue addObject:image.imageAsset];
-                        }
+                            // Delete image from Photos library if requested
+                            if ([Model sharedInstance].deleteImageAfterUpload &&
+                                (image.imageAsset.sourceType != PHAssetSourceTypeCloudShared)) {
+                                [self.imageDeleteQueue addObject:image.imageAsset];
+                            }
 
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            // Remove image from queue and upload next one
-                            [self uploadNextImageAndRemoveImageFromQueue:image withResponse:response];
-                        });
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                // Remove image from queue and upload next one
+                                [self uploadNextImageAndRemoveImageFromQueue:image withResponse:response];
+                            });
                         }
                         else {
                             // Release memory
@@ -1345,10 +1365,6 @@ static NSString * FourCCString(FourCharCode code) {
                             
                             // Upload was cancelled by user
                             self.maximumImagesForBatch--;
-                            
-                            // Remove image from caching
-                            [self.cachingManager stopCachingImagesForAssets:@[image.imageAsset]
-                                            targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeDefault options:self.options];
                             
                             // Remove image from queue and upload next one
                             [self uploadNextImageAndRemoveImageFromQueue:image withResponse:nil];
@@ -1386,8 +1402,6 @@ static NSString * FourCCString(FourCharCode code) {
                                     actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                                     style:UIAlertActionStyleCancel
                                     handler:^(UIAlertAction * action) {
-                                        // Stop caching images
-                                        [self.cachingManager stopCachingImagesForAllAssets];
 
                                         // Consider image job done
                                         self.onCurrentImageUpload++;
@@ -1429,9 +1443,6 @@ static NSString * FourCCString(FourCharCode code) {
                                      actionWithTitle:NSLocalizedString(@"alertNextButton", @"Next Image")
                                      style:UIAlertActionStyleDefault
                                      handler:^(UIAlertAction * action) {
-                                         // Remove image from caching
-                                         [self.cachingManager stopCachingImagesForAssets:@[image.imageAsset]
-                                                targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeDefault options:self.options];
 
                                          // Consider image job done
                                          self.onCurrentImageUpload++;
