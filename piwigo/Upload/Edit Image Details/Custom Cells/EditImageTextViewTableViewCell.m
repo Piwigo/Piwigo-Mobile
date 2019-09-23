@@ -7,54 +7,51 @@
 //
 
 #import "EditImageTextViewTableViewCell.h"
-#import "UIPlaceHolderTextView.h"
 #import "Model.h"
 
 @interface EditImageTextViewTableViewCell()
 
-@property (weak, nonatomic) IBOutlet UIPlaceHolderTextView *textView;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
 
 @end
 
 @implementation EditImageTextViewTableViewCell
 
--(void)awakeFromNib {
-
+- (void)awakeFromNib {
     // Initialization code
     [super awakeFromNib];
-
-    self.textView.font = [UIFont piwigoFontNormal];
-    self.textView.placeholder = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
+    
+    self.cellTextView.font = [UIFont piwigoFontNormal];
+    self.cellTextView.keyboardType = UIKeyboardTypeDefault;
+    self.cellTextView.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+    self.cellTextView.autocorrectionType = UITextAutocorrectionTypeYes;
+    self.cellTextView.returnKeyType = UIReturnKeyDefault;
+    self.cellTextView.layer.cornerRadius = 5.0;
 }
 
--(void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-	if(selected)
-	{
-		[self.textView becomeFirstResponder];
-		[self.textView scrollRangeToVisible:NSMakeRange([self.textView.text length], 0)];
-	}
-}
-
--(NSString*)getTextViewText
+-(void)setupWithImageDetail:(NSString *)imageDetail
 {
-    return self.textView.text == nil ? @"" : self.textView.text;
+    // Cell background
+    self.backgroundColor = [UIColor piwigoBackgroundColor];
+
+    // Cell text view
+    if ((imageDetail == nil) || (imageDetail.length == 0)) {
+        self.cellTextView.text = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
+        self.cellTextView.textColor = [UIColor piwigoRightLabelColor];
+    } else {
+        self.cellTextView.text = imageDetail;
+        self.cellTextView.textColor = [UIColor piwigoLeftLabelColor];
+    }
+    self.cellTextView.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.cellTextView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
--(void)setTextForTextView:(NSString*)text
+-(void)prepareForReuse
 {
-	self.textView.text = text;
-    self.textView.textColor = [UIColor piwigoLeftLabelColor];
-    self.textView.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    self.textView.placeholderColor = [UIColor piwigoRightLabelColor];
-    self.textView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-}
+    [super prepareForReuse];
 
--(BOOL)isEditingTextView
-{
-    return self.textView.isFirstResponder;
+    self.cellTextView.delegate = nil;
+    self.cellTextView.text = @"";
 }
 
 @end

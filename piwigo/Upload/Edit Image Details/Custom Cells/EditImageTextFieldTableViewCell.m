@@ -11,8 +11,6 @@
 
 @interface EditImageTextFieldTableViewCell()
 
-@property (nonatomic, strong) NSString *textString;
-
 @end
 
 @implementation EditImageTextFieldTableViewCell
@@ -40,7 +38,6 @@
     self.cellLabel.textColor = [UIColor piwigoLeftLabelColor];
     
     // Cell text field
-    self.textString = imageDetail;
     if (imageDetail == nil) {
         self.cellTextField.text = @"";
     } else {
@@ -61,6 +58,5 @@
     self.cellTextField.delegate = nil;
     self.cellTextField.text = @"";
 }
-
 
 @end

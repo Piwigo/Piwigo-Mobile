@@ -10,8 +10,8 @@
 
 @interface EditImageTextViewTableViewCell : UITableViewCell
 
--(NSString*)getTextViewText;
--(void)setTextForTextView:(NSString*)text;
--(BOOL)isEditingTextView;
+@property (weak, nonatomic) IBOutlet UITextView *cellTextView;
+
+-(void)setupWithImageDetail:(NSString *)imageDetail;
 
 @end

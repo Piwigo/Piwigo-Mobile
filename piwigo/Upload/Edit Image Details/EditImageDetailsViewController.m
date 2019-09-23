@@ -33,7 +33,7 @@ typedef enum {
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
 
@@ -204,7 +204,7 @@ typedef enum {
 
     // Store actual description if cell exists
     EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-    if (textViewCell != nil) self.imageDetails.comment = textViewCell.getTextViewText;
+    if (textViewCell != nil) self.imageDetails.comment = textViewCell.cellTextView.text;
 }
 
 
@@ -444,7 +444,8 @@ typedef enum {
             if (!cell) {
                 cell = [EditImageTextViewTableViewCell new];
             }
-			[cell setTextForTextView:self.imageDetails.comment];
+            [cell setupWithImageDetail:self.imageDetails.comment];
+            cell.cellTextView.delegate = self;
             tableViewCell = cell;
 			break;
 		}
@@ -517,7 +518,7 @@ typedef enum {
 
 #pragma mark - UITextFieldDelegate Methods
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self.editImageDetailsTableView endEditing:YES];
     return YES;
@@ -530,25 +531,43 @@ typedef enum {
         case EditImageDetailsOrderImageName:
         {
             // Title
-            EditImageTextFieldTableViewCell *cell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-            if (cell) self.imageDetails.imageTitle = cell.cellTextField.text;
+            self.imageDetails.imageTitle = textField.text;
             break;
         }
             
         case EditImageDetailsOrderAuthor:
         {
             // Author
-            EditImageTextFieldTableViewCell *cell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-            if (cell) {
-                if (cell.cellTextField.text.length > 0) {
-                    self.imageDetails.author = cell.cellTextField.text;
-                } else {
-                    self.imageDetails.author = @"NSNotFound";
-                }
+            if (textField.text.length > 0) {
+                self.imageDetails.author = textField.text;
+            } else {
+                self.imageDetails.author = @"NSNotFound";
             }
             break;
         }
     }
+}
+
+
+#pragma mark - UITextViewDelegate Methods
+
+-(void)textViewDidBeginEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description")]) {
+         textView.text = @"";
+         textView.textColor = [UIColor piwigoLeftLabelColor];
+    }
+}
+
+-(void)textViewDidEndEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:@""]) {
+        textView.text = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
+        textView.textColor = [UIColor piwigoRightLabelColor];
+    }
+
+    // Store actual description if cell exists
+    self.imageDetails.comment = textView.text;
 }
 
 
