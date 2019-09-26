@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ billeder valgt";
 "selectAll" = "Alle";
 
+// Image rename (filename)
+"renameImage_title" = "Oprindelig fil";
+"renameImage_message" = "Indtast et nyt filnavn for dette billede";
+"renameImageHUD_label" = "Omdøb fil…";
+
+// Image rename — Errors
+"renameImageError_message" = "Kunne ikke omdøbe billedfil";
+
 // Image delete
 "deleteImage_delete" = "Slet";
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Billedfiler med filnavn .%@ og .jpg accepteres ikke af Piwigo server.";
 "imageUploadError_source" = "kan ikke oprette billede kilde";
 "imageUploadError_destination" = "kan ikke oprette billed destination";
-"imageUploadError_iCloud" = "Kunne ikke hente billedet fra iCloud. Fejl: %@";
+"imageUploadError_iCloud" = "Kunne ikke hente billedet. Fejl: %@";
 
 "audioUploadError_title" = "Fejl ved upload af lydfil";
 "audioUploadError_format" = "Piwigo understøtter endnu ikke lydfiler.";
 
 "videoUploadError_title" = "Video Upload fejl";
 "videoUploadError_format" = "Vidiofiler af typen .%@ accepteres ikke af Piwigo server.";
-"videoUploadError_iCloud" = "Kunne ikke hente video fra iCloud. Fejl: %@";
+"videoUploadError_iCloud" = "Kunne ikke hente video. Fejl: %@";
 "videoUploadError_export" = "Videoen kunne ikke åbnes for upload. Fejl: %@";
 "videoUploadError_unknown" = "Upload af videoen mislykkedes med en ukendt fejl under MP4 konvertering. Fejl: %@";
 "videoUploadCancelled_message" = "Upload af video er annulleret.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Farver";
-"settings_darkPalette" = "Mørk palet";
+"settings_darkPalette" = "Altid mørk palet";
 "settings_switchPalette" = "Skift automatisk";
 "settings_brightness" = "Lysstyrke";
 

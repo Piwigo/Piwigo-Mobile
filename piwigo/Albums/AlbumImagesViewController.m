@@ -38,6 +38,10 @@
 #import "SettingsViewController.h"
 #import "TagSelectViewController.h"
 
+//#ifndef DEBUG_LIFECYCLE
+//#define DEBUG_LIFECYCLE
+//#endif
+
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
@@ -75,7 +79,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
-@property (nonatomic, strong) UISearchController *searchController;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
@@ -124,6 +128,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             // Fallback on earlier versions
         }
 
+        // Refresh view
+        self.refreshControl = [[UIRefreshControl alloc] init];
+
         // Bar buttons
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] landscapeImagePhone:[UIImage imageNamed:@"preferencesCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(displayPreferences)];
         [self.settingsBarButton setAccessibilityIdentifier:@"preferences"];
@@ -135,13 +142,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-		self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelected)];
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"trashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelected)];
         self.deleteBarButton.tintColor = [UIColor redColor];
-        self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareSelected)];
+        self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelected)];
         self.shareBarButton.tintColor = [UIColor piwigoOrange];
-        self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
+        self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
-        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
         self.navigationController.toolbarHidden = YES;
 
         // Upload button above collection view
@@ -187,7 +193,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 		
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 
         // Register root album changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
@@ -201,59 +207,52 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     [super viewDidLoad];
     
+    // Reload category data
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"viewDidLoad => ID:%ld", (long)self.categoryId);
+#endif
+    [self getCategoryData:nil];
+
+    // Navigation bar
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
+
     // For iOS 11 and later: place search bar in navigation bar or root album
     if (@available(iOS 11.0, *)) {
         // Initialise search controller when displaying root album
         if (self.categoryId == 0) {
             SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-            self.searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-            self.searchController.delegate = self;
-            self.searchController.hidesNavigationBarDuringPresentation = YES;
-            self.searchController.searchResultsUpdater = self;
+            UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+            searchController.delegate = self;
+            searchController.hidesNavigationBarDuringPresentation = YES;
+            searchController.searchResultsUpdater = self;
             
-            self.searchController.searchBar.tintColor = [UIColor piwigoOrange];
-            self.searchController.searchBar.showsCancelButton = NO;
-            self.searchController.searchBar.showsSearchResultsButton = NO;
-            self.searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
+            searchController.searchBar.tintColor = [UIColor piwigoOrange];
+            searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+            searchController.searchBar.translucent = NO;
+            searchController.searchBar.showsCancelButton = NO;
+            searchController.searchBar.showsSearchResultsButton = NO;
+            searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
             self.definesPresentationContext = YES;
             
             // Place the search bar in the navigation bar.
-            self.navigationItem.searchController = self.searchController;
-
-//        for (UIView *subView in self.searchController.searchBar.subviews)
-//        {
-//            if ([subView isKindOfClass: [UITextField class]])
-//            {
-//                [(UITextField *)subView setKeyboardAppearance:[Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault];
-//            }
-//        }
+            self.navigationItem.searchController = searchController;
         }
     }
 }
 
-//-(void)setKeyboardAppearence: (UIKeyboardAppearance) appearence {
-//    [(id<UITextInputTraits>) [self firstSubviewConformingToProtocol: @protocol(UITextInputTraits)] setKeyboardAppearance: appearence];
-//}
-//
-//- (UIView *)firstSubviewConformingToProtocol: (Protocol *) pro {
-//    for (UIView *sub in self.searchController.searchBar.subviews)
-//        if ([sub conformsToProtocol: pro])
-//            return sub;
-//
-//    for (UIView *sub in self.searchController.searchBar.subviews) {
-//        UIView *ret = [sub firstSubviewConformingToProtocol: pro];
-//        if (ret)
-//            return ret;
-//    }
-//
-//    return nil;
-//}
-
--(void)paletteChanged
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+
+    // Refresh controller
+    self.refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.refreshControl.tintColor = [UIColor piwigoOrange];
+    NSDictionary *attributesRefresh = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoOrange],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
     
     // Buttons
     self.homeAlbumButton.backgroundColor = [UIColor piwigoRightLabelColor];
@@ -267,35 +266,52 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
         if (self.categoryId == [Model sharedInstance].defaultCategory) {
+            // Title
             NSDictionary *attributesLarge = @{
                                               NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                               NSFontAttributeName: [UIFont piwigoFontLargeTitle],
                                               };
             self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
             self.navigationController.navigationBar.prefersLargeTitles = YES;
+
+            // Search bar
+            self.navigationItem.searchController.searchBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+            if (@available(iOS 13.0, *)) {
+                self.navigationItem.searchController.searchBar.searchTextField.textColor = [UIColor piwigoLeftLabelColor];
+                self.navigationItem.searchController.searchBar.searchTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceLight;
+            }
         }
         else {
             self.navigationController.navigationBar.prefersLargeTitles = NO;
         }
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
-    
+
     // Toolbar
-    [self.navigationController.toolbar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    self.navigationController.toolbar.barTintColor =[UIColor piwigoBackgroundColor];
     self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
-    [self refreshShowingCells];
+    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    [self.imagesCollection reloadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 	
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"viewWillAppear  => ID:%ld", (long)self.categoryId);
+#endif
+    
+    // Set colors, fonts, etc.
+    [self applyColorPalette];
+
     // Called before displaying SearchImagesViewController?
     UIViewController *presentedViewController = [self presentedViewController];
     if ([presentedViewController isKindOfClass:[UISearchController class]]) {
@@ -304,36 +320,35 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         return;
     }
     
-    // Set colors, fonts, etc.
-    [self paletteChanged];
-    
-    // Reload category data and refresh showing cells
-    [self getCategoryData:nil];
-    [self refreshShowingCells];
-
     // Inform Upload view controllers that user selected this category
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
     
     // Load, sort images and reload collection
     if (self.categoryId != 0) {
+#if defined(DEBUG_LIFECYCLE)
+        NSLog(@"viewWillAppear  => load images");
+#endif
         self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
             // Set navigation bar buttons
-            [self updateNavBar];
+            [self updateBarButtons];
 
             self.loadingImages = NO;
             [self.imagesCollection reloadData];
         }];
     }
     else {
+#if defined(DEBUG_LIFECYCLE)
+        NSLog(@"viewWillAppear  => reload albums table");
+#endif
         if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
             [self.imagesCollection reloadData];
         }
     }
     
-    // Refresh image collection if displayImageTitles option changed
+    // Refresh image collection if displayImageTitles option changed in Settings
     if (self.displayImageTitles != [Model sharedInstance].displayImageTitles) {
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         if (self.categoryId != 0) {
@@ -352,7 +367,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
 
     // Set navigation bar buttons
-    [self updateNavBar];
+    [self updateBarButtons];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -360,27 +375,21 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 	[super viewDidAppear:animated];
 	
     // Called after displaying SearchImagesViewController?
-    UIViewController *presentedViewController = [self presentedViewController];
-    if ([presentedViewController isKindOfClass:[UISearchController class]]) {
-        // Scroll to image of interest if needed
-        if ([self.searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
-            SearchImagesViewController *resultsController = (SearchImagesViewController *)self.searchController.searchResultsController;
-            [resultsController scrollToHighlightedCell];
+    if (@available(iOS 11.0, *)) {
+        UIViewController *presentedViewController = [self presentedViewController];
+        if ([presentedViewController isKindOfClass:[UISearchController class]]) {
+            // Scroll to image of interest if needed
+            if ([self.navigationItem.searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
+                SearchImagesViewController *resultsController = (SearchImagesViewController *)self.navigationItem.searchController.searchResultsController;
+                [resultsController scrollToHighlightedCell];
+            }
+            return;
         }
-        return;
     }
     
     // Refresh controller
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-	refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
-	refreshControl.tintColor = [UIColor piwigoOrange];
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoOrange],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributes];
-	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.imagesCollection addSubview:refreshControl];
+	[self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self.imagesCollection addSubview:self.refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
     
     // Allows hiding search bar when scrolling
@@ -487,6 +496,34 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
 }
 
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    // Update the navigation bar on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self updateBarButtons];
+        [self.imagesCollection reloadData];
+    } completion:nil];
+}
+
+-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    // Should we update user interface based on the appearance?
+    if (@available(iOS 13.0, *)) {
+        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
+        if (hasUserInterfaceStyleChanged) {
+            NSLog(@"AlbumImages => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
+            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate screenBrightnessChanged];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -501,17 +538,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.uploadButton setHidden:YES];
 }
 
--(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
-    // Update the navigation bar on orientation change, to match the new width of the table.
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self updateNavBar];
-        [self.imagesCollection reloadData];
-    } completion:nil];
-}
-
--(void)updateNavBar
+-(void)updateBarButtons
 {
     // For positioning the buttons
     CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
@@ -633,11 +660,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
                 // Redefine bar buttons (definition lost after rotation of device)
                 self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-                self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelected)];
+                self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"trashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelected)];
                 self.deleteBarButton.tintColor = [UIColor redColor];
-                self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareSelected)];
+                self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelected)];
                 self.shareBarButton.tintColor = [UIColor piwigoOrange];
-                self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
+                self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
                 self.moveBarButton.tintColor = [UIColor piwigoOrange];
 
                 // Present toolbar
@@ -671,9 +698,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     
                     // Redefine bar buttons (definition lost after rotation of device)
                     self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-                    self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareSelected)];
+                    self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelected)];
                     self.shareBarButton.tintColor = [UIColor piwigoOrange];
-                    self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
+                    self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
                     self.moveBarButton.tintColor = [UIColor piwigoOrange];
                     
                     // Present toolbar
@@ -705,34 +732,49 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         
         // Right side of navigation bar
         [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
+        [self.cancelBarButton setEnabled:YES];
     }
 }
 
+-(void)disableBarButtons
+{
+    [self.cancelBarButton setEnabled:NO];
+    [self.deleteBarButton setEnabled:NO];
+    [self.moveBarButton setEnabled:NO];
+    [self.shareBarButton setEnabled:NO];
+}
 
 #pragma mark - Category Data
 
 -(void)getCategoryData:(NSNotification *)notification
 {
-    // Reload category data
-//    NSLog(@"getCategoryData => getAlbumListForCategory(%ld,%d,%d)", (long)self.categoryId,([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit),[Model sharedInstance].loadAllCategoryInfo);
-
-    // Display HUD if requested
+    // Extract notification user info
     BOOL noHUD = NO;
     if (notification != nil) {
         NSDictionary *userInfo = notification.userInfo;
+
+        // Right category Id?
+        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+        if (catId != self.categoryId) return;
+        
+        // Display HUD?
         noHUD = [[userInfo objectForKey:@"NoHUD"] boolValue];
+
+        // Disable cache?
+        self.isCachedAtInit = [[userInfo objectForKey:@"fromCache"] boolValue];
     }
+
+    // Display HUD if requested
     if (!([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) && !noHUD) {
         // Show loading HD
         [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
     }
     
-    // Disable cache if requested
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
-        self.isCachedAtInit = [[userInfo objectForKey:@"fromCache"] boolValue];
-    }
-
+    // Reload category data
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"getCategoryData => getAlbumListForCategory(ID:%ld, cache:%@, recursive:%@)", (long)self.categoryId,([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) ? @"Yes" : @"No",[Model sharedInstance].loadAllCategoryInfo ? @"Yes" : @"No");
+#endif
+    
     // Load category data
     [AlbumService getAlbumListForCategory:self.categoryId
                                usingCache:([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit)
@@ -756,8 +798,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-//    NSLog(@"refreshControl => getAlbumListForCategory(%ld,NO,NO)", [Model sharedInstance].loadAllCategoryInfo ? (long)0 : (long)self.categoryId);
-
     // Show loading HD
     [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
 
@@ -781,50 +821,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
      ];
 }
 
--(void)refreshShowingCells
-{
-//    NSLog(@"refreshShowingCells…");
-    NSArray *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
-
-    for(UICollectionViewCell *cell in self.imagesCollection.visibleCells)
-    {
-        // Get indexPath for visible cell in collection
-        NSIndexPath *indexPath = [self.imagesCollection indexPathForCell:cell];
-        
-        // Case of a category
-        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
-            if ([categories count] > indexPath.row) {
-                PiwigoAlbumData *albumData = [categories objectAtIndex:indexPath.row];
-                CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
-                [categoryCell setupWithAlbumData:albumData];
-            }
-        }
-
-        // Case of an image
-        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
-            if ([self.albumData.images count] > indexPath.row) {
-                PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-                ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
-                [imageCell setupWithImageData:imageData forCategoryId:self.categoryId];
-
-                if([self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]])
-                {
-                    imageCell.isSelected = YES;
-                }
-            }
-        }
-    }
-    
-    // Refresh headers on palette color change
-    if (self.imagesCollection.visibleCells.count > 0) {
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0,2)]];
-    }
-}
-
 -(void)categoriesUpdated
 {
-//    NSLog(@"=> categoriesUpdated… %ld", self.categoryId);
-
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"                => categoriesUpdated… %ld", (long)self.categoryId);
+#endif
+    
     // Images ?
     if (self.categoryId != 0) {
         self.loadingImages = YES;
@@ -832,14 +834,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
              // Sort images
              [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-//                 NSLog(@"categoriesUpdated:Sorting images…");
 
                  // The album title is not shown in backButtonItem to provide enough space
                  // for image title on devices of screen width <= 414 ==> Restore album title
                  self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
                 
                  // Set navigation bar buttons
-                 [self updateNavBar];
+                 [self updateBarButtons];
 
                  // Reload collection view
                  self.loadingImages = NO;
@@ -854,7 +855,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
          self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 
          // Set navigation bar buttons
-         [self updateNavBar];
+         [self updateBarButtons];
 
          // Reload collection view
          [self.imagesCollection reloadData];
@@ -962,7 +963,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     }
     
     // Update navigation bar
-    [self updateNavBar];
+    [self updateBarButtons];
 }
 
 -(void)cancelSelect
@@ -971,7 +972,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     self.isSelect = NO;
     
     // Update navigation bar
-	[self updateNavBar];
+	[self updateBarButtons];
     
     // Enable interaction with category cells and deselect image cells
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
@@ -1061,7 +1062,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 
                 // Reload the cell and update the navigation bar
                 [self.imagesCollection reloadData];
-                [self updateNavBar];
+                [self updateBarButtons];
             }
         }
     }
@@ -1088,6 +1089,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     if(self.selectedImageIds.count <= 0) return;
     
+    // Disable buttons
+    [self disableBarButtons];
+    
     // Display HUD
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
@@ -1113,6 +1117,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Image data are not complete when retrieved with pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToDelete lastObject] integerValue]
+                andAddImageToCache:NO
           ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
               if (imageData != nil) {
@@ -1155,6 +1160,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         style:UIAlertActionStyleCancel
         handler:^(UIAlertAction * action) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                [self updateBarButtons];
                 [self hideHUD];
             });
         }];
@@ -1168,6 +1174,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     [alert addAction:dismissAction];
     [alert addAction:retryAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -1191,7 +1202,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     UIAlertAction* cancelAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
         style:UIAlertActionStyleCancel
-        handler:^(UIAlertAction * action) {}];
+        handler:^(UIAlertAction * action) {
+            [self updateBarButtons];
+        }];
     
     UIAlertAction* removeImagesAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"deleteCategory_orphanedImages", @"Delete Orphans")
@@ -1242,10 +1255,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Add actions
     [alert addAction:cancelAction];
-    if (self.selectedImagesToRemove.count > 0) { [alert addAction:removeImagesAction]; }
     [alert addAction:deleteImagesAction];
+    if (self.selectedImagesToRemove.count > 0) { [alert addAction:removeImagesAction]; }
 
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
@@ -1308,7 +1326,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                         style:UIAlertActionStyleCancel
                         handler:^(UIAlertAction * action) {
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                [self hideHUDwithSuccess:NO completion:nil];
+                                [self hideHUDwithSuccess:NO completion:^{
+                                    [self updateBarButtons];
+                                }];
                             });
                         }];
                     
@@ -1324,6 +1344,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     [alert addAction:retryAction];
                     
                     // Present list of actions
+                    if (@available(iOS 13.0, *)) {
+                        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                    } else {
+                        // Fallback on earlier versions
+                    }
                     [self presentViewController:alert animated:YES completion:nil];
                 }
            }
@@ -1339,7 +1364,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                       style:UIAlertActionStyleCancel
                       handler:^(UIAlertAction * action) {
                           dispatch_async(dispatch_get_main_queue(), ^{
-                              [self hideHUDwithSuccess:NO completion:nil];
+                              [self hideHUDwithSuccess:NO completion:^{
+                                  [self updateBarButtons];
+                              }];
                           });
                       }];
                   
@@ -1355,6 +1382,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                   [alert addAction:retryAction];
                   
                   // Present list of actions
+                  if (@available(iOS 13.0, *)) {
+                      alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                  } else {
+                      // Fallback on earlier versions
+                  }
                   [self presentViewController:alert animated:YES completion:nil];
               }];
 }
@@ -1403,7 +1435,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                             style:UIAlertActionStyleCancel
                             handler:^(UIAlertAction * action) {
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    [self hideHUDwithSuccess:NO completion:nil];
+                                    [self hideHUDwithSuccess:NO completion:^{
+                                        [self updateBarButtons];
+                                    }];
                                 });
                             }];
                         
@@ -1419,6 +1453,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                         [alert addAction:retryAction];
                         
                         // Present list of actions
+                        if (@available(iOS 13.0, *)) {
+                            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                        } else {
+                            // Fallback on earlier versions
+                        }
                         [self presentViewController:alert animated:YES completion:nil];
                     }];
 }
@@ -1430,6 +1469,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     if (self.selectedImageIds.count <= 0) return;
 
+    // Disable buttons
+    [self disableBarButtons];
+    
     // Display HUD
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
@@ -1454,6 +1496,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToShare lastObject] integerValue]
+                andAddImageToCache:NO
                   ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       
                       if (imageData != nil) {
@@ -1560,7 +1603,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         } else {
             if (activityType == NULL) {
 //                NSLog(@"User dismissed the view controller without making a selection.");
-            } else {
+                [self updateBarButtons];
+            }
+            else {
 //                NSLog(@"Activity was not performed.");
                 [self cancelSelect];
                 for (PiwigoImageData *imageData in self.selectedImagesToShare) {
@@ -1594,6 +1639,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)addImagesToCategory
 {
+    // Disable buttons
+    [self disableBarButtons];
+    
     // Determine index of first selected cell
     NSInteger indexOfFirstSelectedImage = INFINITY;
     for (NSNumber *imageId in self.selectedImageIds) {
@@ -1615,7 +1663,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     UIAlertAction* cancelAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
                                    style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {}];
+                                   handler:^(UIAlertAction * action) {
+                                       [self updateBarButtons];
+                                   }];
     
     UIAlertAction* copyAction = [UIAlertAction
                                  actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
@@ -1641,6 +1691,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [alert addAction:moveAction];
     
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.barButtonItem = self.moveBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
@@ -2007,7 +2062,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 [collectionView reloadData];
                 
                 // and display nav buttons
-                [self updateNavBar];
+                [self updateBarButtons];
             }
         }
     }
@@ -2139,6 +2194,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - MoveImagesDelegate methods
 
+-(void)cancelMoveImages
+{
+    // Re-enable buttons
+    [self updateBarButtons];
+}
+
 -(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     [self.albumData removeImage:image];
@@ -2150,6 +2211,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)deselectImages
 {
+    // Deselect images and leave select mode
     [self cancelSelect];
 }
 
@@ -2197,8 +2259,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         }
         else {
             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            navController.modalPresentationStyle = UIModalPresentationPopover;
+            navController.popoverPresentationController.sourceView = self.view;
             navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            navController.modalPresentationStyle = UIModalPresentationFullScreen;
             [self.navigationController presentViewController:navController animated:YES completion:nil];
         }
     }
@@ -2273,6 +2336,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                                        handler:^(UIAlertAction * action) { }];
                        
                        [alert addAction:dismissAction];
+                       if (@available(iOS 13.0, *)) {
+                           alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                       } else {
+                           // Fallback on earlier versions
+                       }
                        [topViewController presentViewController:alert animated:YES completion:nil];
                    });
 }
@@ -2298,7 +2366,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     
     // Query string
-    NSString *searchString = [self.searchController.searchBar text];
+    NSString *searchString = [searchController.searchBar text];
     
     // Resfresh image collection for new query only
     if ([searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
@@ -2315,15 +2383,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [resultsController searchAndLoadImages];
         }
     }
-}
-
-
-#pragma mark - UISearchBarDelegate
-
-// Workaround for bug: -updateSearchResultsForSearchController: is not called when scope buttons change
-- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
-{
-    [self updateSearchResultsForSearchController:self.searchController];
 }
 
 
@@ -2383,6 +2442,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [alert addAction:recentAction];
     
     // Present list of Discover views
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.barButtonItem = self.discoverBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }

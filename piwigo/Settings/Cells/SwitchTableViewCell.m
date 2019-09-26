@@ -33,7 +33,6 @@
 		self.cellSwitch = [UISwitch new];
 		self.cellSwitch.translatesAutoresizingMaskIntoConstraints = NO;
         self.cellSwitch.thumbTintColor = [UIColor piwigoThumbColor];
-        self.cellSwitch.tintColor = [UIColor piwigoRightLabelColor];
         self.cellSwitch.onTintColor = [UIColor piwigoOrange];
 		[self.contentView addSubview:self.cellSwitch];
 		[self.cellSwitch addTarget:self action:@selector(switchChanged) forControlEvents:UIControlEventValueChanged];

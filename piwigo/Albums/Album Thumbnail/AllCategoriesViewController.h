@@ -10,7 +10,15 @@
 
 #import "PiwigoImageData.h"
 
+@protocol SetAlbumImageDelegate <NSObject>
+
+-(void)didSetImageAsAlbumThumbnail;
+
+@end
+
 @interface AllCategoriesViewController : UIViewController
+
+@property (nonatomic, weak) id<SetAlbumImageDelegate> setAlbumImageDelegate;
 
 -(instancetype)initForImage:(PiwigoImageData *)imageData andCategoryId:(NSInteger)categoryId;
 

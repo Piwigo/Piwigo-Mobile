@@ -197,6 +197,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 handler:^(UIAlertAction * action) {}];
         
         [alert addAction:defaultAction];
+        if (@available(iOS 13.0, *)) {
+            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
         [self presentViewController:alert animated:YES completion:nil];
         
         return;
@@ -338,6 +343,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     
     [self.httpAlertController addAction:cancelAction];
     [self.httpAlertController addAction:self.httpLoginAction];
+    if (@available(iOS 13.0, *)) {
+        self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [self presentViewController:self.httpAlertController animated:YES completion:nil];
 }
 
@@ -549,7 +559,12 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                             
                             [alert addAction:defaultAction];
                             [alert addAction:continueAction];
-                            [self presentViewController:alert animated:YES completion:nil];                            
+                            if (@available(iOS 13.0, *)) {
+                                alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                            } else {
+                                // Fallback on earlier versions
+                            }
+                            [self presentViewController:alert animated:YES completion:nil];
                         });
                     }];
                 } else {
@@ -562,7 +577,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                             [appDelegate loadNavigation];
                         } else {
                             // Refresh category data
-                            NSDictionary *userInfo = @{@"fromCache" : @"NO"};
+                            NSDictionary *userInfo = @{@"NoHUD" : @"NO", @"fromCache" : @"NO", @"albumId" : @(0)};
                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
                         }
                     }];
@@ -987,6 +1002,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         handler:^(UIAlertAction * action) {}];
     
     [alert addAction:defaultAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 

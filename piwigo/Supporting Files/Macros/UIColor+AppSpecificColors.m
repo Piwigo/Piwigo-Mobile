@@ -20,7 +20,7 @@
         return [UIColor darkTextColor];
 }
 
-// Background Color of Views (was piwigoGray)
+// Background Color of Views
 +(UIColor*)piwigoBackgroundColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
@@ -28,7 +28,6 @@
             return [UIColor colorWithRed:23/255.0 green:23/255.0 blue:23/255.0 alpha:1.0];
         else
             return [UIColor colorWithRed:23/255.0 green:23/255.0 blue:23/255.0 alpha:1.0];
-//            return [UIColor colorWithRed:64/255.0 green:64/255.0 blue:64/255.0 alpha:1.0];
     else
         return [UIColor colorWithRed:239/255.0 green:239/255.0 blue:244/255.0 alpha:1.0];
 }
@@ -79,7 +78,7 @@
             return [UIColor colorWithRed:28/255.0 green:28/255.0 blue:30/255.0 alpha:1.0];
 }
 
-// Color of TableView Headers (was piwigoGrayXXLight)
+// Color of TableView Headers
 +(UIColor*)piwigoHeaderColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
@@ -91,7 +90,7 @@
             return [UIColor colorWithRed:46/255.0 green:46/255.0 blue:46/255.0 alpha:1.0];
 }
 
-// Color of TableView Separators (was piwigoGrayXLight)
+// Color of TableView Separators
 +(UIColor*)piwigoSeparatorColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
@@ -100,7 +99,7 @@
         return [UIColor colorWithRed:128/255.0 green:128/255.0 blue:128/255.0 alpha:1.0];
 }
 
-// Background Color of TableView Cells (was piwigoGrayLight)
+// Background Color of TableView Cells
 +(UIColor*)piwigoCellBackgroundColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
@@ -118,7 +117,7 @@
         return [UIColor darkTextColor];
 }
 
-// Color of TableView Right Labels (was piwigoGrayXXLight)
+// Color of TableView Right Labels
 +(UIColor*)piwigoRightLabelColor
 {
     if ([Model sharedInstance].isDarkPaletteActive)
@@ -152,20 +151,6 @@
         return [UIColor colorWithRed:23/255.0 green:23/255.0 blue:23/255.0 alpha:1.0];
     else
         return [UIColor colorWithRed:23/255.0 green:23/255.0 blue:23/255.0 alpha:1.0];
-}
-+(UIColor*)piwigoGrayLight
-{
-    if ([Model sharedInstance].isDarkPaletteActive)
-        return [UIColor colorWithRed:28/255.0 green:28/255.0 blue:30/255.0 alpha:1.0];
-    else
-        return [UIColor colorWithRed:28/255.0 green:28/255.0 blue:30/255.0 alpha:1.0];
-}
-+(UIColor*)piwigoGrayXXLight
-{
-    if ([Model sharedInstance].isDarkPaletteActive)
-        return [UIColor colorWithRed:128/255.0 green:128/255.0 blue:128/255.0 alpha:1.0];
-    else
-        return [UIColor colorWithRed:51/255.0 green:51/255.0 blue:53/255.0 alpha:1.0];
 }
 +(UIColor*)piwigoWhiteCream
 {

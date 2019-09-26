@@ -18,12 +18,13 @@
 
 @implementation LoginViewController_iPad
 
-- (void)viewDidLoad {
+-(void)viewDidLoad
+{
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
 
-- (void)viewWillAppear:(BOOL)animated
+-(void)viewWillAppear:(BOOL)animated
 {
     // Register for keyboard notifications
     [super viewWillAppear:YES];
@@ -32,7 +33,8 @@
     self.websiteNotSecure.hidden = [[Model sharedInstance].serverProtocol isEqualToString:@"https://"];
 }
 
-- (void)didReceiveMemoryWarning {
+-(void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }

@@ -48,7 +48,16 @@
         _titleButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _titleButton.enabled = NO;
         _titleButton.titleLabel.numberOfLines = 3;
-        [_titleButton setTitleColor:[UIColor colorWithRed:0.0 green:0.5 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
+        #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+        if (@available(iOS 13.0, *)) {
+            [_titleButton setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+        } else
+        #endif
+        {
+        #if __IPHONE_OS_VERSION_MIN_REQUIRED < 130000
+            [_titleButton setTitleColor:[UIColor colorWithRed:0.0 green:0.5 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
+        #endif
+        }
         [_titleButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         [_titleButton setBackgroundColor:[UIColor clearColor]];
         [_titleButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
@@ -119,7 +128,16 @@
 -(void)setSelectableTitleColor:(UIColor*)selectableTitleColor
 {
     _selectableTitleColor = selectableTitleColor;
-    [_titleButton setTitleColor:_selectableTitleColor?:[UIColor colorWithRed:0.0 green:0.5 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
+    #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+    if (@available(iOS 13.0, *)) {
+        [_titleButton setTitleColor:_selectableTitleColor?:[UIColor systemBlueColor] forState:UIControlStateNormal];
+    } else
+    #endif
+    {
+    #if __IPHONE_OS_VERSION_MIN_REQUIRED < 130000
+        [_titleButton setTitleColor:_selectableTitleColor?:[UIColor colorWithRed:0.0 green:0.5 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
+    #endif
+    }
 }
 
 -(void)setInvocation:(NSInvocation *)invocation

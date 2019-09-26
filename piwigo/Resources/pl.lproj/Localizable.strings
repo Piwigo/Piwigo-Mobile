@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ wybranych zdjęć";
 "selectAll" = "Wszystkie";
 
+// Image rename (filename)
+"renameImage_title" = "Oryginalny plik";
+"renameImage_message" = "Wprowadź nową nazwę pliku dla tego obrazu";
+"renameImageHUD_label" = "Zmienianie nazwy pliku…";
+
+// Image rename — Errors
+"renameImageError_message" = "Nie można zmienić nazwy pliku obrazu";
+
 // Image delete
 "deleteImage_delete" = "Usuń";
 "deleteImageProgress_title" = "Usuwanie %@%% zakończone";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Przepraszamy, pliki obrazów z rozszerzeniem .%@ i jpg nie są akceptowane przez serwer Piwigo.";
 "imageUploadError_source" = "nie można utworzyć źródła obrazu";
 "imageUploadError_destination" = "nie można utworzyć obrazu docelowego";
-"imageUploadError_iCloud" = "Nie można pobrać obrazu z iCloud. Błąd: %@";
+"imageUploadError_iCloud" = "Nie można pobrać obrazu. Błąd: %@";
 
 "audioUploadError_title" = "Błąd Przesyłania Audio";
 "audioUploadError_format" = "Niestety, pliki audio nie są jeszcze obsługiwane przez Piwigo Mobile.";
 
 "videoUploadError_title" = "Błąd Przesyłania Wideo";
 "videoUploadError_format" = "Przepraszamy, pliki wideo z rozszerzeniem .%@ nie są akceptowane przez serwer Piwigo.";
-"videoUploadError_iCloud" = "Nie można pobrać wideo z usługi iCloud. Błąd: %@";
+"videoUploadError_iCloud" = "Nie można pobrać wideo. Błąd: %@";
 "videoUploadError_export" = "Niestety, film nie mógł zostać odzyskany do wysłania. Błąd: %@";
 "videoUploadError_unknown" = "Niestety, wysyłanie wideo nie udało się z powodu nieznanego błędu podczas konwersji w MP4. Błąd: %@";
 "videoUploadCancelled_message" = "Wysyłanie wideo zostało anulowane.";
@@ -496,8 +504,8 @@
 "defaultImageSort" = "Sortowanie";
 "defaultImageSort>320px" = "Sortowanie";
 "defaultImageSort>414px" = "Domyślne Sortowanie Zdjęć";
-"defaultAlbumThumbnailFile>414px" = "Plik miniatury albumu";
-"defaultAlbumThumbnailSizeHeader" = "Wybierz rozmiar miniaturki";
+"defaultAlbumThumbnailFile>414px" = "Plik miniatur albumów";
+"defaultAlbumThumbnailSizeHeader" = "Wybierz rozmiar miniatury albumu";
 
 "thumbnailSizeSquare" = "Kwadrat";
 "thumbnailSizeThumbnail" = "Miniaturka";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Kolory";
-"settings_darkPalette" = "Ciemna paleta";
+"settings_darkPalette" = "Ciemny motyw";
 "settings_switchPalette" = "Przełącz automatycznie";
 "settings_brightness" = "Jasność";
 

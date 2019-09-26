@@ -58,7 +58,7 @@
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -86,6 +86,11 @@
                 }];
             
             [alert addAction:dismissAction];
+            if (@available(iOS 13.0, *)) {
+                alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+            } else {
+                // Fallback on earlier versions
+            }
             [self presentViewController:alert animated:YES completion:nil];
         }
         else
@@ -100,21 +105,32 @@
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    // Navigation bar
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
+}
+
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
+
+    // Navigation bar
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Table view
     self.localAlbumsTableView.separatorColor = [UIColor piwigoSeparatorColor];
@@ -130,12 +146,11 @@
     self.title = NSLocalizedString(@"localAlbums", @"Photos library");
 
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyColorPalette];
     
     // Navigation bar button
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
 }
-
 
 -(void)viewWillDisappear:(BOOL)animated
 {

@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ Images Selected";
 "selectAll" = "الكل";
 
+// Image rename (filename)
+"renameImage_title" = "Original File";
+"renameImage_message" = "Enter a new file name for this image";
+"renameImageHUD_label" = "Renaming File…";
+
+// Image rename — Errors
+"renameImageError_message" = "Failed to rename image file";
+
 // Image delete
 "deleteImage_delete" = "حذف";
 "deleteImageProgress_title" = "تم حذف %@%%";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "عذرا، لا يتم قبول ملفات الصور ذات الإضافات.%@ و .jpg بواسطة خادم Piwigo.";
 "imageUploadError_source" = "لا يمكن إنشاء مصدر الصورة";
 "imageUploadError_destination" = "لا يمكن إنشاء وجهة الصورة";
-"imageUploadError_iCloud" = "تعذر استرداد الصورة من iCloud. خطأ:%@";
+"imageUploadError_iCloud" = "تعذر استرداد الصورة. خطأ:%@";
 
 "audioUploadError_title" = "خطأ في تحميل الصوت";
 "audioUploadError_format" = "عذرا، لا يتم اعتماد الملفات الصوتية من قبل Piwigo موبايل حتى الآن.";
 
 "videoUploadError_title" = "خطأ في تحميل الفيديو";
 "videoUploadError_format" = "عذرا، لا يتم قبول ملفات الفيديو التي تحتوي على إضافة .%@ بواسطة خادم Piwigo.";
-"videoUploadError_iCloud" = "تعذر استرداد الفيديو من iCloud. خطأ:%@";
+"videoUploadError_iCloud" = "تعذر استرداد الفيديو. خطأ:%@";
 "videoUploadError_export" = "عذرا، تعذر استرداد الفيديوليتم تحميله. خطأ:%@";
 "videoUploadError_unknown" = "عذرا، أخفق تحميل الفيديو بسبب خطأ غير معروف أثناء عملية التحويل MP4. خطأ:%@";
 "videoUploadCancelled_message" = "تم إلغاء تحميل الفيديو.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "الألوان";
-"settings_darkPalette" = "اللوحة المظلمة";
+"settings_darkPalette" = "دائما لوحة مظلمة";
 "settings_switchPalette" = "التبديل تلقائيا";
 "settings_brightness" = "السطوع";
 

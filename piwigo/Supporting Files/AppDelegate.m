@@ -38,82 +38,6 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     
 }
 
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	
-    // Override point for customization after application launch.
-
-    // Cache settings
-#if defined(DEBUG_NOCACHE)
-    // set it to 0 to clear cache
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-                                                       diskCapacity:0
-                                                           diskPath:nil];
-    [NSURLCache setSharedURLCache:URLCache];
-#else
-    if ([NSURLCache sharedURLCache] == nil)
-    {
-        NSURLCache *URLCache = [[NSURLCache alloc]
-                                initWithMemoryCapacity:0
-                                diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                                diskPath:nil];
-        [NSURLCache setSharedURLCache:URLCache];
-    }
-#endif
-
-    // Login ?
-    NSString *user, *password;
-    NSString *server = [Model sharedInstance].serverName;
-    [SAMKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
-    
-    // Look for credentials if server address provided
-    if (server.length > 0)
-    {
-        // Known acounts for that server?
-        NSArray *accounts = [SAMKeychain accountsForService:server];
-        if ((accounts == nil) || ([accounts count] <= 0))
-        {
-            // No credentials available for that server. And with the old methods?
-            user = [KeychainAccess getLoginUser];
-            password = [KeychainAccess getLoginPassword];
-            
-            // Store credentials with new method if found
-            if (user.length > 0) {
-                [Model sharedInstance].username = user;
-                [[Model sharedInstance] saveToDisk];
-                [SAMKeychain setPassword:password forService:server account:user];
-            }
-        } else {
-            // Credentials available
-            user = [Model sharedInstance].username;
-            if (user.length > 0) {
-                password = [SAMKeychain passwordForService:server account:user];
-            }
-        }
-    }
-    
-    if(server.length > 0 || (user.length > 0 && password.length > 0))
-	{
-        [self.loginVC launchLogin];
-	}
-	
-    // No login
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	[self.window makeKeyAndVisible];
-	[self loadLoginView];
-	
-    // Enable network activity indicator
-	[AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-    
-    // Enable network reachability monitoring
-    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-    
-    // Set Settings Bundle data
-    [self setSettingsBundleData];
-
-    return YES;
-}
-
 -(void)loadNavigation
 {
     AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
@@ -146,6 +70,43 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     }];
 }
 
+
+#pragma mark - Login view
+
+-(void)loadLoginView
+{
+    LoginNavigationController *nav = [[LoginNavigationController alloc] initWithRootViewController:self.loginVC];
+	[nav setNavigationBarHidden:YES];
+	self.window.rootViewController = nav;
+    
+    // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
+    [self.window.rootViewController.view setNeedsUpdateConstraints];
+
+    // Color palette depends on system settings
+    if (@available(iOS 13.0, *)) {
+        [Model sharedInstance].isSystemDarkModeActive = (self.loginVC.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+//        NSLog(@"•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", [Model sharedInstance].isSystemDarkModeActive ? @"Dark" : @"Light", [Model sharedInstance].isDarkPaletteModeActive ? @"Dark" : @"Light", lroundf([[UIScreen mainScreen] brightness] * 100.0), (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+    } else {
+        // Fallback on earlier versions
+        [Model sharedInstance].isSystemDarkModeActive = NO;
+    }
+    
+    // Apply color palette
+    [self screenBrightnessChanged];
+}
+
+-(LoginViewController*)loginVC
+{
+	if(_loginVC) return _loginVC;
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        _loginVC = [LoginViewController_iPhone new];
+    } else {
+        _loginVC = [LoginViewController_iPad new];
+    }
+	return _loginVC;
+}
+
 -(void)checkSessionStatusAndTryRelogin
 {
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
@@ -161,83 +122,8 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     }
 }
 
-// Called when the screen brightness has changed or when user changed settings
--(void)screenBrightnessChanged
-{
-//    NSLog(@"Screen Brightness: %f",[[UIScreen mainScreen] brightness]);
-    if (![Model sharedInstance].isDarkPaletteModeActive) {
-        // Static light palette mode chosen
-        if (![Model sharedInstance].isDarkPaletteActive) {
-            // Already showing light palette
-            return;
-        } else {
-            // Switch to light palette
-            [Model sharedInstance].isDarkPaletteActive = NO;
-        }
-    } else {
-        // Dark palette mode chosen
-        if (![Model sharedInstance].switchPaletteAutomatically) {
-            // Static dark palette chosen
-            if ([Model sharedInstance].isDarkPaletteActive) {
-                // Already showing dark palette
-                return;
-            } else {
-                // Switch to dark palette
-                [Model sharedInstance].isDarkPaletteActive = YES;
-            }
-        } else {
-            // Dynamic dark palette chosen
-            NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
-            if ([Model sharedInstance].isDarkPaletteActive) {
-                // Dark palette displayed
-                if (currentBrightness > [Model sharedInstance].switchPaletteThreshold) {
-                    // Screen brightness > thereshold, switch to light palette
-                    [Model sharedInstance].isDarkPaletteActive = NO;
-                } else {
-                    // Keep dark palette
-                    return;
-                }
-            } else {
-                // Light palette displayed
-                if (currentBrightness < [Model sharedInstance].switchPaletteThreshold) {
-                    // Screen brightness < threshold, switch to dark palette
-                    [Model sharedInstance].isDarkPaletteActive = YES;
-                } else {
-                    // Keep light palette
-                    return;
-                }
-            }
-        }
-    }
-    
-    // Store modified settings
-    [[Model sharedInstance] saveToDisk];
 
-    // Notify palette change
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
-}
-
--(void)loadLoginView
-{
-	LoginNavigationController *nav = [[LoginNavigationController alloc] initWithRootViewController:self.loginVC];
-	[nav setNavigationBarHidden:YES];
-	self.window.rootViewController = nav;
-    
-    // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-    [self.window.rootViewController.view setNeedsUpdateConstraints];
-}
-
--(LoginViewController*)loginVC
-{
-	if(_loginVC) return _loginVC;
-    
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        _loginVC = [LoginViewController_iPhone new];
-    } else {
-        _loginVC = [LoginViewController_iPad new];
-    }
-	return _loginVC;
-}
+#pragma mark - Settings bundle
 
 // Updates the version and build numbers in the app's settings bundle.
 - (void)setSettingsBundleData
@@ -255,6 +141,85 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     
     // Set the build date and version number in the settings bundle reflected in app settings.
     [defaults setObject:versionNumberInSettings forKey:@"version_prefs"];
+}
+
+
+#pragma mark - Application delegate methods
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    // Override point for customization after application launch.
+    
+    // Cache settings
+#if defined(DEBUG_NOCACHE)
+    // set it to 0 to clear cache
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
+                                                         diskCapacity:0
+                                                             diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
+#else
+    if ([NSURLCache sharedURLCache] == nil)
+    {
+        NSURLCache *URLCache = [[NSURLCache alloc]
+                                initWithMemoryCapacity:0
+                                diskCapacity:[Model sharedInstance].diskCache * 1024*1024
+                                diskPath:nil];
+        [NSURLCache setSharedURLCache:URLCache];
+    }
+#endif
+    
+    // Login ?
+    NSString *user, *password;
+    NSString *server = [Model sharedInstance].serverName;
+    [SAMKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
+    
+    // Look for credentials if server address provided
+    if (server.length > 0)
+    {
+        // Known acounts for that server?
+        NSArray *accounts = [SAMKeychain accountsForService:server];
+        if ((accounts == nil) || ([accounts count] <= 0))
+        {
+            // No credentials available for that server. And with the old methods?
+            user = [KeychainAccess getLoginUser];
+            password = [KeychainAccess getLoginPassword];
+            
+            // Store credentials with new method if found
+            if (user.length > 0) {
+                [Model sharedInstance].username = user;
+                [[Model sharedInstance] saveToDisk];
+                [SAMKeychain setPassword:password forService:server account:user];
+            }
+        } else {
+            // Credentials available
+            user = [Model sharedInstance].username;
+            if (user.length > 0) {
+                password = [SAMKeychain passwordForService:server account:user];
+            }
+        }
+    }
+    
+    // Login?
+    if(server.length > 0 || (user.length > 0 && password.length > 0))
+    {
+        [self.loginVC launchLogin];
+    }
+    
+    // No login
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
+    [self loadLoginView];
+    
+    // Enable network activity indicator
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    
+    // Enable network reachability monitoring
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    
+    // Set Settings Bundle data
+    [self setSettingsBundleData];
+    
+    return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -286,7 +251,7 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
     NSString *server = [Model sharedInstance].serverName;
     NSString *user = [Model sharedInstance].username;
-    if(hadOpenedSession && (server.length > 0) && (user.length > 0))
+    if (hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
         // Let's see…
         [self.loginVC checkSessionStatusAndTryRelogin];
@@ -305,9 +270,6 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
             [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
         }
     }
-
-    // Should we change the theme ?
-    [self screenBrightnessChanged];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -322,6 +284,85 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     
     // Disable network reachability monitoring
     [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
+}
+
+
+#pragma mark - Light and dark modes
+
+// Called when the screen brightness has changed, when user changes settings
+// and by traitCollectionDidChange: when the system switches between Light and Dark modes
+-(void)screenBrightnessChanged
+{
+    if ([Model sharedInstance].isDarkPaletteModeActive || [Model sharedInstance].isSystemDarkModeActive)
+    {
+        if ([Model sharedInstance].isDarkPaletteActive) {
+            // Already showing dark palette
+            return;
+        } else {
+            // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
+            [Model sharedInstance].isDarkPaletteActive = YES;
+        }
+    }
+    else if ([Model sharedInstance].switchPaletteAutomatically)
+    {
+        // Dynamic palette mode chosen and iOS Light Mode active
+        NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
+        if ([Model sharedInstance].isDarkPaletteActive) {
+            // Dark palette displayed
+            if (currentBrightness > [Model sharedInstance].switchPaletteThreshold)
+            {
+                // Screen brightness > thereshold, switch to light palette
+                [Model sharedInstance].isDarkPaletteActive = NO;
+            } else {
+                // Keep dark palette
+                return;
+            }
+        } else {
+            // Light palette displayed
+            if (currentBrightness < [Model sharedInstance].switchPaletteThreshold)
+            {
+                // Screen brightness < threshold, switch to dark palette
+                [Model sharedInstance].isDarkPaletteActive = YES;
+            } else {
+                // Keep light palette
+                return;
+            }
+        }
+    } else {
+        // Static light palette mode
+        if ([Model sharedInstance].isDarkPaletteActive)
+        {
+            // Switch to light palette
+            [Model sharedInstance].isDarkPaletteActive = NO;
+        } else {
+            // Keep light palette
+            return;
+        }
+    }
+    
+    // Store modified settings
+    [[Model sharedInstance] saveToDisk];
+    
+    // Activity indicator
+    [UIActivityIndicatorView appearance].color = [UIColor piwigoOrange];
+
+    // Tab bars
+    [UITabBar appearance].barTintColor = [UIColor piwigoBackgroundColor];
+
+    // Styles
+    if ([Model sharedInstance].isDarkPaletteActive)
+    {
+        [UITabBar appearance].barStyle = UIBarStyleBlack;
+        [UIToolbar appearance].barStyle = UIBarStyleBlack;
+    }
+    else {
+        [UITabBar appearance].barStyle = UIBarStyleDefault;
+        [UIToolbar appearance].barStyle = UIBarStyleDefault;
+    }
+
+    // Notify palette change to views
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
+    NSLog(@"•••> app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
 }
 
 @end

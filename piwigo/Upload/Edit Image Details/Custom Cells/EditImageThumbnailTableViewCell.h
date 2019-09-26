@@ -13,7 +13,14 @@
 
 @interface EditImageThumbnailTableViewCell : UITableViewCell
 
--(void)paletteChanged;
--(void)setupWithImage:(ImageUpload *)imageDetails;
+@property (weak, nonatomic) IBOutlet UIImageView *imageThumbnail;
+@property (weak, nonatomic) IBOutlet UILabel *imageDate;
+@property (weak, nonatomic) IBOutlet UILabel *imageSize;
+@property (weak, nonatomic) IBOutlet UILabel *imageFile;
+@property (weak, nonatomic) IBOutlet UILabel *imageTime;
+@property (weak, nonatomic) IBOutlet UIButton *editImageButton;
+
+-(void)setupWithImage:(ImageUpload *)imageDetails forEdit:(BOOL)isEdit;
+-(IBAction)editImage;
 
 @end

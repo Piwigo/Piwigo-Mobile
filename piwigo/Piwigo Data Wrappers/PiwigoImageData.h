@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "Model.h"
+
 typedef enum {
 	kPiwigoImageSizeSquare,
 	kPiwigoImageSizeThumb,
@@ -29,10 +31,10 @@ typedef enum {
 //      file, date_creation, date_available, width, height
 //      element_url, derivatives, (page_url)
 //
-@property (nonatomic, assign) NSInteger imageId;               // id
+@property (nonatomic, assign) NSInteger imageId;                // id
 @property (nonatomic, strong) NSArray *categoryIds;             // categories
-@property (nonatomic, strong) NSString *name;                   // name
-@property (nonatomic, strong) NSString *imageDescription;       // comment
+@property (nonatomic, strong) NSString *imageTitle;             // title (don't use title!)
+@property (nonatomic, strong) NSString *comment;                // description (don't use description!)
 @property (nonatomic, assign) NSInteger visits;                 // hit
 @property (nonatomic, strong) NSString *fileName;               // file name
 @property (nonatomic, strong) NSDate *dateCreated;              // date_creation

@@ -245,6 +245,11 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
                                              handler:^(UIAlertAction * action) {}];
                                          
                                          [alert addAction:defaultAction];
+                                         if (@available(iOS 13.0, *)) {
+                                             alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                                         } else {
+                                             // Fallback on earlier versions
+                                         }
                                          [topViewController presentViewController:alert animated:YES completion:nil];
 									 }
 									 self.isLoadingMoreImages = NO;
@@ -312,7 +317,7 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
     self.imageList = newImageList;
 }
 
--(void)updateImageAfterUpload:(ImageUpload *)uploadedImage
+-(void)updateImageAfterEdit:(ImageUpload *)uploadedImage
 {
     // Check that there is something to do
     if (uploadedImage == nil) return;
@@ -331,10 +336,11 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
         {
             // New data replaces old once
             PiwigoImageData *updatedImage = existingImage;
-            updatedImage.name = uploadedImage.title;
+            updatedImage.fileName = uploadedImage.fileName;
+            updatedImage.imageTitle = uploadedImage.imageTitle;
             updatedImage.author = uploadedImage.author;
             updatedImage.privacyLevel = uploadedImage.privacyLevel;
-            updatedImage.imageDescription = [NSString stringWithString:uploadedImage.imageDescription];
+            updatedImage.comment = [NSString stringWithString:uploadedImage.comment];
             updatedImage.tags = [uploadedImage.tags copy];
             [newImageList replaceObjectAtIndex:index withObject:updatedImage];
             break;
@@ -358,19 +364,19 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
     self.imageList = newImageArray;
 }
 
-//-(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload
-//{
-//    PiwigoImageData *newImageData = [[CategoriesData sharedInstance] getImageForCategory:imageUpload.categoryToUploadTo andId:[NSString stringWithFormat:@"%@", @(imageUpload.imageId)]];
-//    
-//    newImageData.fileName = imageUpload.image;
-//    newImageData.name = imageUpload.title;
-//    newImageData.privacyLevel = imageUpload.privacyLevel;
-//    newImageData.author = imageUpload.author;
-//    newImageData.imageDescription = imageUpload.imageDescription;
-//    newImageData.tags = imageUpload.tags;
-//    
-//    [self addImages:@[newImageData]];
-//}
+-(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload
+{
+    PiwigoImageData *newImageData = [[CategoriesData sharedInstance] getImageForCategory:imageUpload.categoryToUploadTo andId:imageUpload.imageId];
+    
+    newImageData.fileName = imageUpload.fileName;
+    newImageData.imageTitle = imageUpload.imageTitle;
+    newImageData.privacyLevel = imageUpload.privacyLevel;
+    newImageData.author = imageUpload.author;
+    newImageData.comment = imageUpload.comment;
+    newImageData.tags = imageUpload.tags;
+    
+    [self addImages:@[newImageData]];
+}
 
 -(NSInteger)getDepthOfCategory
 {
@@ -400,9 +406,9 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages++;
 	}
     
-    // If first added image, update category cache to get thumbnail image
+    // If first added image, update category cache to get thumbnail image URL from server
     if (self.numberOfImages == 1) {
-        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
+        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
         [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
     }
 }
@@ -416,9 +422,9 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages--;
 	}
 
-    // If no image left, update category cache to get thumbnail image
+    // If no image left, update category cache to remove thumbnail image
     if (self.numberOfImages == 0) {
-        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
+        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
         [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
     }
 }

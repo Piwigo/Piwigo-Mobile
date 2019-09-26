@@ -36,12 +36,9 @@
              // Filename must not be empty!
              if (imgData.fileName && [imgData.fileName length]) {
                  
-                 // Don't forget to replace the extension of video files (.mov in iOS device, .mp4 in Piwigo server)
-                 if([[[imgData.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"])
-                 {
-                     // Replace file extension
-                     imgData.fileName = [[imgData.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"MOV"];
-                 }
+                 // Don't forget that files can be converted (e.g. .mov in iOS device, .mp4 in Piwigo server)
+                 imgData.fileName = [imgData.fileName stringByDeletingPathExtension];
+                 
                  // Append to list of Piwigo images
                  [onlineImageNamesLookup setObject:imgData.fileName forKey:imgData.fileName];
              }
@@ -68,36 +65,11 @@
              NSMutableArray *images = [NSMutableArray new];
              for (PHAsset *imageAsset in imagesInSection) {
                  
-                 // For some unknown reason, the asset resource may be empty
-                 NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-                 NSString *imageAssetKey;
-                 if ([resources count] > 0) {
-                     // File name is available
-                     imageAssetKey = ((PHAssetResource*)resources[0]).originalFilename;
-                     
-                     // HEIC images were converted to JPEG if uploaded
-                     if ([[[imageAssetKey pathExtension] uppercaseString] isEqualToString:@"HEIC"])
-                     {
-                         // Replace file extension
-                         imageAssetKey = [[imageAssetKey stringByDeletingPathExtension] stringByAppendingPathExtension:@"JPG"];
-                     }
-                 } else {
-                     // No filename => Build filename from 32 characters of local identifier
-                     NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
-                     imageAssetKey = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
-                     
-                     // Filename extension required by Piwigo so that it knows how to deal with it
-                     if (imageAsset.mediaType == PHAssetMediaTypeImage) {
-                         // Adopt JPEG photo format by default, will be rechecked
-                         imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"JPG"];
-                     } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
-                         // Videos are exported in MP4 format
-                         imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"MP4"];
-                     } else if (imageAsset.mediaType == PHAssetMediaTypeAudio) {
-                         // Arbitrary extension, not managed yet
-                         imageAssetKey = [imageAssetKey stringByAppendingPathExtension:@"M4A"];
-                     }
-                 }
+                 // Get filename of image asset
+                 NSString *imageAssetKey = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
+
+                 // Don't forget that files can be converted (e.g. .mov in iOS device, .mp4 in Piwigo server)
+                 imageAssetKey = [imageAssetKey stringByDeletingPathExtension];
                  
                  // Compare filenames of local and remote images
                  if(imageAssetKey && ![imageAssetKey isEqualToString:@""] && ![onlineImageNamesLookup objectForKey:imageAssetKey])

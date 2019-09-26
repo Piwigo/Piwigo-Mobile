@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+#import "ImageUpload.h"
+
 @interface EditImageTextFieldTableViewCell : UITableViewCell
 
 @property (weak, nonatomic)     IBOutlet UILabel *cellLabel;
 @property (weak, nonatomic)     IBOutlet UITextField *cellTextField;
 
--(void)paletteChanged;
+-(void)setupWithLabel:(NSString *)label placeHolder:(NSString *)placeHolder andImageDetail:(NSString *)imageDetail;
 
 @end

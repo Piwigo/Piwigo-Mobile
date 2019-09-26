@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ Bilder ausgewählt";
 "selectAll" = "Alle";
 
+// Image rename (filename)
+"renameImage_title" = "Originaldatei";
+"renameImage_message" = "Neuen Dateinamen für dieses Bild eingeben";
+"renameImageHUD_label" = "Umbenennen der Datei…";
+
+// Image rename — Errors
+"renameImageError_message" = "Fehler beim Umbenennen der Bilddatei";
+
 // Image delete
 "deleteImage_delete" = "Löschen";
 "deleteImageProgress_title" = "Löschen von %@%% erledigt";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Entschuldigung, Bilddateien mit der Erweiterung .%@ und .jpg werden von diesem Piwigo Server nicht akzeptiert.";
 "imageUploadError_source" = "Kann Bild am Ursprung nicht erstellen";
 "imageUploadError_destination" = "Kann Bild am Ziel nicht erstellen";
-"imageUploadError_iCloud" = "Bild konnte von iCloud nicht abgerufen werden. Fehler: %@";
+"imageUploadError_iCloud" = "Bild konnte nicht abgerufen werden. Fehler: %@";
 
 "audioUploadError_title" = "Fehler beim Audio Hochladen";
 "audioUploadError_format" = "Entschuldigung, Audio Dateien werden derzeit nicht von Piwigo Mobile unterstützt.";
 
 "videoUploadError_title" = "Fehler beim Video Hochladen";
 "videoUploadError_format" = "Entschuldigung, Videodateien mit der Erweiterung .%@ werden von diesem Piwigo Server nicht akzeptiert.";
-"videoUploadError_iCloud" = "Video konnte von iCloud nicht abgerufen werden. Fehler: %@";
+"videoUploadError_iCloud" = "Video konnte nicht abgerufen werden. Fehler: %@";
 "videoUploadError_export" = "Entschuldigung, das Video konnte nicht zum Hochladen abgerufen werden. Fehler: %@";
 "videoUploadError_unknown" = "Entschuldigung, das Hochladen des Videos schlug aufgrund eines unbekannten Fehlers während der MP4 Konvertierung fehl. Fehler: %@";
 "videoUploadCancelled_message" = "Das Hochladen des Videos wurde abgebrochen.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Farben";
-"settings_darkPalette" = "Dunkle Palette";
+"settings_darkPalette" = "Immer dunkle Palette";
 "settings_switchPalette" = "Automatisch umschalten";
 "settings_brightness" = "Helligkeit";
 

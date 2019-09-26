@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ foto's geselecteerd";
 "selectAll" = "Allemaal";
 
+// Image rename (filename)
+"renameImage_title" = "Origineel bestand";
+"renameImage_message" = "Voer een nieuwe bestandsnaam in voor deze afbeelding";
+"renameImageHUD_label" = "Bestand hernoemen…";
+
+// Image rename — Errors
+"renameImageError_message" = "Kan afbeeldingbestand niet hernoemen";
+
 // Image delete
 "deleteImage_delete" = "Verwijderen";
 "deleteImageProgress_title" = "Verwijderen van %@%% voltooid";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Sorry. Fotobestanden met extensie %@ en .jpg worden niet ondersteund door de Piwigo-server.";
 "imageUploadError_source" = "kan geen foto-bron maken";
 "imageUploadError_destination" = "kan geen foto-bestemming maken";
-"imageUploadError_iCloud" = "Kon afbeelding niet ophalen van iCloud. Fout: %@";
+"imageUploadError_iCloud" = "Kon afbeelding niet ophalen. Fout: %@";
 
 "audioUploadError_title" = "Audio-upload-fout";
 "audioUploadError_format" = "Sorry, audio bestanden worden nog niet niet ondersteund door Piwigo Mobiel.";
 
 "videoUploadError_title" = "Video-upload-fout";
 "videoUploadError_format" = "Sorry, video bestanden met de extensie .%@ worden niet geaccepteerd door de Piwigo-server.";
-"videoUploadError_iCloud" = "Kon de video niet ophalen van de iCloud. Fout: %@";
+"videoUploadError_iCloud" = "Kon de video niet ophalen van. Fout: %@";
 "videoUploadError_export" = "Sorry, de video kon niet opgehaald worden om te uploaden. Fout: %@";
 "videoUploadError_unknown" = "Sorry, het uploaden van de video is mislukt vanwege een onbekende fout tijdens de MP4-conversie. Fout: %@";
 "videoUploadCancelled_message" = "De upload van de video is afgebroken.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Kleuren";
-"settings_darkPalette" = "Donker palet";
+"settings_darkPalette" = "Altijd donker palet";
 "settings_switchPalette" = "Schakel automatisch";
 "settings_brightness" = "Helderheid";
 

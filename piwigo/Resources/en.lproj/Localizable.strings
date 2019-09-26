@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ Images Selected";
 "selectAll" = "All";
 
+// Image rename (filename)
+"renameImage_title" = "Original File";
+"renameImage_message" = "Enter a new file name for this image";
+"renameImageHUD_label" = "Renaming File…";
+
+// Image rename — Errors
+"renameImageError_message" = "Failed to rename image file";
+
 // Image delete
 "deleteImage_delete" = "Delete";
 "deleteImageProgress_title" = "Deleting %@%% Done";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Sorry, image files with extensions .%@ and .jpg are not accepted by the Piwigo server.";
 "imageUploadError_source" = "cannot create image source";
 "imageUploadError_destination" = "cannot create image destination";
-"imageUploadError_iCloud" = "Could not retrieve image from iCloud. Error: %@";
+"imageUploadError_iCloud" = "Could not retrieve image. Error: %@";
 
 "audioUploadError_title" = "Audio Upload Error";
 "audioUploadError_format" = "Sorry, audio files are not supported by Piwigo Mobile yet.";
 
 "videoUploadError_title" = "Video Upload Error";
 "videoUploadError_format" = "Sorry, video files with extension .%@ are not accepted by the Piwigo server.";
-"videoUploadError_iCloud" = "Could not retrieve video from iCloud. Error: %@";
+"videoUploadError_iCloud" = "Could not retrieve video. Error: %@";
 "videoUploadError_export" = "Sorry, the video could not be retrieved for the upload. Error: %@";
 "videoUploadError_unknown" = "Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: %@";
 "videoUploadCancelled_message" = "The upload of the video has been cancelled.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Colors";
-"settings_darkPalette" = "Dark Palette";
+"settings_darkPalette" = "Always Dark Palette";
 "settings_switchPalette" = "Switch Automatically";
 "settings_brightness" = "Brightness";
 

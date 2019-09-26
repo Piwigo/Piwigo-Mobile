@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ bilder valda";
 "selectAll" = "Alla";
 
+// Image rename (filename)
+"renameImage_title" = "Originalfil";
+"renameImage_message" = "Ange ett nytt filnamn för den här bilden";
+"renameImageHUD_label" = "Byt namn på fil…";
+
+// Image rename — Errors
+"renameImageError_message" = "Det gick inte att byta namn på bildfil";
+
 // Image delete
 "deleteImage_delete" = "Radera";
 "deleteImageProgress_title" = "Radering av %@%% utförd";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Tyvärr, men bildfiler med tillägg .%@ och .jpg accepteras inte av Piwigo servern.";
 "imageUploadError_source" = "kan inte skapa bildkälla";
 "imageUploadError_destination" = "kan inte skapa bild destination";
-"imageUploadError_iCloud" = "Kunde inte att hämta bild från iCloud. Fel: %@";
+"imageUploadError_iCloud" = "Kunde inte att hämta bild. Fel: %@";
 
 "audioUploadError_title" = "Fel vid ljuduppladdning";
 "audioUploadError_format" = "Tyvärr, ljudfiler stöds inte av Piwigo Mobile ännu.";
 
 "videoUploadError_title" = "Fel vid videouppladdning";
 "videoUploadError_format" = "Tyvärr, men videofiler med tillägg .%@ accepteras inte av Piwigo server.";
-"videoUploadError_iCloud" = "Kunde inte att hämta video från iCloud. Fel: %@";
+"videoUploadError_iCloud" = "Kunde inte att hämta video. Fel: %@";
 "videoUploadError_export" = "Tyvärr, videon kunde inte hämtas för uppladdning. Fel: %@";
 "videoUploadError_unknown" = "Tyvärr, uppladdning av video misslyckades p.g.a ett okänt fel under MP4 konvertering. Fel: %@";
 "videoUploadCancelled_message" = "Uppladdning av videon har avbrutits.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Färger";
-"settings_darkPalette" = "Mörk palett";
+"settings_darkPalette" = "Alltid mörk palett";
 "settings_switchPalette" = "Växla automatiskt";
 "settings_brightness" = "Ljusstyrka";
 

@@ -59,6 +59,7 @@
             self.categoriesTableView.delegate = self;
             self.categoriesTableView.dataSource = self;
             [self.categoriesTableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:@"CategoryTableViewCell"];
+            [self.categoriesTableView setAccessibilityIdentifier:@"PickPiwigoAlbum"];
             [self.view addSubview:self.categoriesTableView];
             [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
@@ -69,7 +70,7 @@
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoNotificationChangedCurrentCategory object:nil];
 
             // Register palette changes
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
         }
         else
         {
@@ -132,21 +133,25 @@
     self.currentCategoryId = [[userInfo objectForKey:@"currentCategoryId"] integerValue];
 }
 
--(void)paletteChanged
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
+
+    // Navigation bar
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+
     // Table view
     self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
@@ -165,7 +170,7 @@
     self.title = NSLocalizedString(@"alertAddButton", @"Add");
 
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyColorPalette];
     
     // Add Done button
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
@@ -645,6 +650,11 @@
     rectOfCellInTableView.origin.x -= tableView.frame.size.width - textRect.size.width - tableView.layoutMargins.left - 12;
 
     // Present popover view
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.sourceView = tableView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
     alert.popoverPresentationController.sourceRect = rectOfCellInTableView;
@@ -700,6 +710,11 @@
     
     [alert addAction:cancelAction];
     [alert addAction:self.createAlbumAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -764,6 +779,11 @@
     [alert addAction:dismissAction];
 
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 

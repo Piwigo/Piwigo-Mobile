@@ -31,21 +31,13 @@
 	self.leftLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
     self.leftLabel.font = [UIFont piwigoFontNormal];
     self.rightLabel.font = [UIFont piwigoFontNormal];
-    [self paletteChanged];
-}
-
--(void)paletteChanged
-{
-    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
 }
 
 -(void)setTagsString:(NSString *)tagsString
 {
 	_tagsString = tagsString;
-	
-	if(tagsString.length <= 0)
+
+	if (tagsString.length <= 0)
 	{
 		self.rightLabel.text = NSLocalizedString(@"none", @"none");
 	}
@@ -58,6 +50,9 @@
 -(void)setTagList:(NSArray*)tags
 {
 	self.tagsString = [[TagsData sharedInstance] getTagsStringFromList:tags];
+    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
 }
 
 @end

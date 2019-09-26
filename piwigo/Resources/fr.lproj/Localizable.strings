@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ Images";
 "selectAll" = "Tout";
 
+// Image rename (filename)
+"renameImage_title" = "Fichier d'origine";
+"renameImage_message" = "Entrez un nouveau nom de fichier pour cette image";
+"renameImageHUD_label" = "Changement du Nom…";
+
+// Image rename — Errors
+"renameImageError_message" = "Échec lors du renommage du fichier";
+
 // Image delete
 "deleteImage_delete" = "Supprimer";
 "deleteImageProgress_title" = "Suppression %@%%";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Désolé, les fichiers d'image ayant comme extension .%@ et .jpg ne sont pas acceptés par le serveur Piwigo.";
 "imageUploadError_source" = "impossible de créer le source de l’image";
 "imageUploadError_destination" = "impossible de créer la destination de l’image";
-"imageUploadError_iCloud" = "Echec de la récupération de l'image stockée sur iCloud. Erreur : %@";
+"imageUploadError_iCloud" = "Echec de la récupération de l'image. Erreur : %@";
 
 "audioUploadError_title" = "Echec du Téléversement";
 "audioUploadError_format" = "Désolé, les fichiers audio ne sont pas encore supportés par Piwigo Mobile.";
 
 "videoUploadError_title" = "Echec du Téléversement";
 "videoUploadError_format" = "Désolé, les fichiers de vidéo ayant comme extension .%@ ne sont pas acceptés par le serveur Piwigo.";
-"videoUploadError_iCloud" = "Echec de la récupération de la vidéo stockée sur iCloud. Erreur : %@";
+"videoUploadError_iCloud" = "Echec de la récupération de la vidéo. Erreur : %@";
 "videoUploadError_export" = "Désolé, la vidéo n'a pas pu être récupérée pour le téléversement vers votre Piwigo. Erreur : %@";
 "videoUploadError_unknown" = "Désolé, le transfert vers votre Piwigo de la vidéo a échoué pour une erreur inconnue lors de la conversion MP4. Erreur : %@";
 "videoUploadCancelled_message" = "Le transfert de la vidéo vers votre Piwigo a été annulé.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Couleurs";
-"settings_darkPalette" = "Palette Sombre";
+"settings_darkPalette" = "Palette Toujours Sombre";
 "settings_switchPalette" = "Commuter Automatiquement";
 "settings_brightness" = "Luminosité";
 

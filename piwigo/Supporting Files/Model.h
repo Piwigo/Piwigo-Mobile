@@ -135,6 +135,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL switchPaletteAutomatically;
 @property (nonatomic, assign) NSInteger switchPaletteThreshold;
 @property (nonatomic, assign) BOOL isDarkPaletteModeActive;
+@property (nonatomic, assign) BOOL isSystemDarkModeActive;
 
 // Default cache settings
 @property (nonatomic, assign) BOOL loadAllCategoryInfo;
@@ -144,7 +145,7 @@ typedef enum {
 // Request help for translating Piwigo every month or so
 @property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;
 
--(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
+-(NSString *)getNameForPrivacyLevel:(NSInteger)privacyLevel;
 -(NSString *)getNameForShareActivity:(NSString *)activity forWidth:(CGFloat)width;
 
 @end

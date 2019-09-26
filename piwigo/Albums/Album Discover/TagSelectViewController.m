@@ -30,8 +30,6 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     self = [super init];
     if(self)
     {
-        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-                
         self.tagsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.tagsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.tagsTableView.backgroundColor = [UIColor clearColor];
@@ -47,7 +45,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitTagSelect)];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -55,12 +53,12 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
+
+    // Navigation bar
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
@@ -69,10 +67,11 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+
     // Table view
     self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
@@ -84,10 +83,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     [super viewWillAppear:animated];
 
     // Set colors, fonts, etc.
-    [self paletteChanged];
-
-    // Title
-    self.title = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
+    [self applyColorPalette];
 
     // Add Cancel button
     [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
@@ -167,6 +163,79 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
 }
 
 
+#pragma mark - UITableView - Header
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tags", @"Tags")];
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:titleAttributes
+                                                 context:context];
+    
+    // Text
+    NSString *textString = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
+    NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:textAttributes
+                                               context:context];
+    return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    // Title
+    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tags", @"Tags")];
+    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                  range:NSMakeRange(0, [titleString length])];
+    [headerAttributedString appendAttributedString:titleAttributedString];
+    
+    // Text
+    NSString *textString = NSLocalizedString(@"tagsTitle_selectOne", @"Select a Tag");
+    NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+    [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                 range:NSMakeRange(0, [textString length])];
+    [headerAttributedString appendAttributedString:textAttributedString];
+    
+    // Header label
+    UILabel *headerLabel = [UILabel new];
+    headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.numberOfLines = 0;
+    headerLabel.adjustsFontSizeToFitWidth = NO;
+    headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    headerLabel.attributedText = headerAttributedString;
+
+    // Header view
+    UIView *header = [[UIView alloc] init];
+    [header addSubview:headerLabel];
+    [header addConstraint:[NSLayoutConstraint constraintViewFromBottom:headerLabel amount:4]];
+    if (@available(iOS 11, *)) {
+        [header addConstraints:[NSLayoutConstraint
+                   constraintsWithVisualFormat:@"|-[header]-|"
+                                       options:kNilOptions
+                                       metrics:nil
+                                         views:@{@"header" : headerLabel}]];
+    } else {
+        [header addConstraints:[NSLayoutConstraint
+                   constraintsWithVisualFormat:@"|-15-[header]-15-|"
+                                       options:kNilOptions
+                                       metrics:nil
+                                         views:@{@"header" : headerLabel}]];
+    }
+    
+    return header;
+}
+
+
 #pragma mark - UITableView - Rows
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -196,7 +265,15 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         
     // => pwg.tags.getList returns in addition: counter, url
     NSInteger nber = currentTag.numberOfImagesUnderTag;
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld %@)", currentTag.tagName, (long)nber, nber > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+    if (nber == NSNotFound)
+    {
+        // Unknown number of images
+        cell.textLabel.text = currentTag.tagName;
+    }
+    else {
+        // Number of images collected
+        cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld %@)", currentTag.tagName, (long)nber, nber > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+    }
     
     return cell;
 }

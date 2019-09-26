@@ -36,5 +36,6 @@ typedef void(^CompletionBlock)(id responseObject1, id responseObject2);
 -(NSArray *)getImagesOfAlbumCollection:(PHAssetCollection*)imageCollection
                           withSortType:(kPiwigoSortBy)sortType;
 -(NSArray *)getImagesOfMomentCollections:(PHFetchResult *)imageCollections;
+-(NSString *)getFileNameFomImageAsset:(PHAsset *)imageAsset;
 
 @end

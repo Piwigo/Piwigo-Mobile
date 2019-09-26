@@ -15,6 +15,10 @@ NSString * const kCategoryDeletionModeNone = @"no_delete";
 NSString * const kCategoryDeletionModeOrphaned = @"delete_orphans";
 NSString * const kCategoryDeletionModeAll = @"force_delete";
 
+//#ifndef DEBUG_ALBUM
+//#define DEBUG_ALBUM
+//#endif
+
 @implementation AlbumService
 
 +(NSURLSessionTask*)getInfosOnCompletion:(void (^)(NSURLSessionTask *task, NSArray *infos))completion
@@ -56,7 +60,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
+#if defined(DEBUG_ALBUM)
                   NSLog(@"getInfos — Fail: %@", [error description]);
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?
@@ -85,7 +89,9 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     // Use cache with care!
     NSArray *parentCategories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:categoryId];
     if (cached && (parentCategories != nil)) {
-//        NSLog(@"                => use cache");
+#if defined(DEBUG_ALBUM)
+        NSLog(@"                => use cache");
+#endif
         if(completion) {
             completion(nil, nil);
             return nil;
@@ -160,7 +166,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                                  };
     
     // Get albums list for category
-//    NSLog(@"                => getAlbumListForCategory(%ld,%@)", (long)categoryId, recursiveString);
     return [self post:kPiwigoCategoriesGetList
         URLParameters:nil
            parameters:parameters
@@ -172,9 +177,11 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       // Extract albums data from JSON message
                       NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
 
-//                      NSLog(@"                => %ld albums returned", (long)[albums count]);
+#if defined(DEBUG_ALBUM)
+                      NSLog(@"                => %ld albums returned", (long)[albums count]);
+#endif
                       // Update Categories Data cache
-                      if ([Model sharedInstance].loadAllCategoryInfo)
+                      if ([Model sharedInstance].loadAllCategoryInfo && (categoryId == 0))
                       {
                           [[CategoriesData sharedInstance] replaceAllCategories:albums];
                       }
@@ -212,7 +219,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
+#if defined(DEBUG_ALBUM)
                   NSLog(@"getAlbumListForCategory — Fail: %@", [error description]);
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?
@@ -350,7 +357,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
+#if defined(DEBUG_ALBUM)
                   NSLog(@"getCommunityAlbumListForCategory — Fail: %@", [error description]);
 #endif
                   // Check session (closed or IPv4/IPv6 switch)?

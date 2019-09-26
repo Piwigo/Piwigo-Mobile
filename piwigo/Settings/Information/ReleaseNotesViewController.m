@@ -69,6 +69,16 @@
         NSRange spacerRange = NSMakeRange(0, [spacerAttributedString length]);
         [spacerAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall] range:spacerRange];
 
+        // Release 2.4.3 — Bundle string
+        NSString *v243String = NSLocalizedStringFromTableInBundle(@"v2.4.3_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.4.3 Release Notes text");
+        NSMutableAttributedString *v243AttributedString = [[NSMutableAttributedString alloc] initWithString:v243String];
+        NSRange v243Range = NSMakeRange(0, [v243String length]);
+        [v243AttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall] range:v243Range];
+        v243Range = NSMakeRange(0, [v243String rangeOfString:@"\n"].location);
+        [v243AttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold] range:v243Range];
+        [notesAttributedString appendAttributedString:v243AttributedString];
+        [notesAttributedString appendAttributedString:spacerAttributedString];
+        
         // Release 2.4.2 — Bundle string
         NSString *v242String = NSLocalizedStringFromTableInBundle(@"v2.4.2_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.4.2 Release Notes text");
         NSMutableAttributedString *v242AttributedString = [[NSMutableAttributedString alloc] initWithString:v242String];
@@ -418,19 +428,19 @@
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
+
+    // Navigation bar
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
@@ -439,10 +449,11 @@
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+
     // Text color depdending on background color
     self.byLabel1.textColor = [UIColor piwigoTextColor];
     self.byLabel2.textColor = [UIColor piwigoTextColor];
@@ -456,7 +467,7 @@
     [super viewWillAppear:animated];
     
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyColorPalette];
 
     // Set navigation buttons
     [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];

@@ -8,6 +8,7 @@
 #import <Photos/Photos.h>
 #import <UIKit/UIKit.h>
 
+#import "Model.h"
 #import "PhotosFetch.h"
 #import "SplitLocalImages.h"
 
@@ -180,6 +181,11 @@
     [alert addAction:prefsAction];
     
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [viewController presentViewController:alert animated:YES completion:nil];
 }
 
@@ -197,6 +203,11 @@
     
     // Present alert
     [alert addAction:dismissAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [viewController presentViewController:alert animated:YES completion:nil];
 }
 
@@ -390,6 +401,58 @@
         [images addObject:[PHAsset fetchAssetsInAssetCollection:sectionCollection options:fetchOptions]];
     }
     return images;
+}
+
+-(NSString *)getFileNameFomImageAsset:(PHAsset *)imageAsset
+{
+    NSString *fileName = @"";
+    if (imageAsset)
+    {
+        // Get file name from image asset
+        if (@available(iOS 9, *))
+        {
+            NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
+            if ([resources count] > 0) {
+                for (PHAssetResource *resource in resources) {
+//                    NSLog(@"=> PHAssetResourceType = %ld — %@", resource.type, resource.originalFilename);
+                    if (resource.type == PHAssetResourceTypeAdjustmentData) {
+                        continue;
+                    }
+                    fileName = [resource originalFilename];
+                    if ((resource.type == PHAssetResourceTypePhoto) ||
+                        (resource.type == PHAssetResourceTypeVideo) ||
+                        (resource.type == PHAssetResourceTypeAudio) )  {
+                        // We preferably select the original filename
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // If no filename…
+        if (fileName.length == 0)
+        {
+            // No filename => Build filename from creation date
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyyMMdd-HHmmssSSSS"];
+            fileName = [dateFormatter stringFromDate:[imageAsset creationDate]];
+
+            // Filename extension required by Piwigo so that it knows how to deal with it
+            if (imageAsset.mediaType == PHAssetMediaTypeImage) {
+                // Adopt JPEG photo format by default, will be rechecked
+                fileName = [fileName stringByAppendingPathExtension:@"jpg"];
+            } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
+                // Videos are exported in MP4 format
+                fileName = [fileName stringByAppendingPathExtension:@"mp4"];
+            } else if (imageAsset.mediaType == PHAssetMediaTypeAudio) {
+                // Arbitrary extension, not managed yet
+                fileName = [fileName stringByAppendingPathExtension:@"m4a"];
+            }
+        }
+    }
+    
+//    NSLog(@"=> filename = %@", fileName);
+    return fileName;
 }
 
 @end

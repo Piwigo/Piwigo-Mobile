@@ -61,18 +61,18 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitAllCategories)];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }
 
 #pragma mark - View Lifecycle
 
--(void)paletteChanged
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
+
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
@@ -82,10 +82,11 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+
     // Table view
     self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
@@ -101,7 +102,7 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
     [super viewWillAppear:animated];
     
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyColorPalette];
 
     // Add Cancel button
     [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
@@ -128,6 +129,17 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
 {
     // Leave action and return to Albums and Images
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // If returning to image preview, re-enable buttons
+    if ([self.setAlbumImageDelegate respondsToSelector:@selector(didSetImageAsAlbumThumbnail)])
+    {
+        [self.setAlbumImageDelegate didSetImageAsAlbumThumbnail];
+    }
 }
 
 
@@ -347,6 +359,11 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
     rectOfCellInTableView.origin.x -= tableView.frame.size.width - textRect.size.width - tableView.layoutMargins.left - 12;
 
     // Present popover view
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.sourceView = tableView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
     alert.popoverPresentationController.sourceRect = rectOfCellInTableView;
@@ -422,6 +439,11 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
     
     // Add actions
     [alert addAction:defaultAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 

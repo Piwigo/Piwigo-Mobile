@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ immagini selezionate";
 "selectAll" = "Tutto";
 
+// Image rename (filename)
+"renameImage_title" = "File Originale";
+"renameImage_message" = "Inserisci un nuovo nome di file per questa immagine";
+"renameImageHUD_label" = "Rinomina file…";
+
+// Image rename — Errors
+"renameImageError_message" = "Impossibile rinominare file";
+
 // Image delete
 "deleteImage_delete" = "Elimina";
 "deleteImageProgress_title" = "Eliminazione di %@%% completata";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Siamo spiacenti, immagini e file con estensioni .%@ e. jpg non sono accettati dal server Piwigo.";
 "imageUploadError_source" = "non è possibile creare l'origine dell'immagine";
 "imageUploadError_destination" = "non è possibile creare immagine destinazione";
-"imageUploadError_iCloud" = "Impossibile recuperare l'immagine da iCloud. Errore: %@";
+"imageUploadError_iCloud" = "Impossibile recuperare l'immagine. Errore: %@";
 
 "audioUploadError_title" = "Errore di caricamento audio";
 "audioUploadError_format" = "Siamo spiacenti, i file audio non sono ancora supportati da Piwigo Mobile.";
 
 "videoUploadError_title" = "Errore nel caricamento del video";
 "videoUploadError_format" = "Siamo spiacenti, i file video con estensione .%@ non sono accettati dal server Piwigo.";
-"videoUploadError_iCloud" = "Impossibile recuperare video da iCloud. Errore: %@";
+"videoUploadError_iCloud" = "Impossibile recuperare video. Errore: %@";
 "videoUploadError_export" = "Spiacenti, non è stato possibile recuperare il video per il caricamento. Errore: %@";
 "videoUploadError_unknown" = "Spiacenti, il caricamento del video è fallito per un errore sconosciuto durante la conversione MP4. Errore: %@";
 "videoUploadCancelled_message" = "Il caricamento del video è stato annullato.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Colori";
-"settings_darkPalette" = "Tavolozza scura";
+"settings_darkPalette" = "Tavolozza sempre scura";
 "settings_switchPalette" = "Scambia automaticamente";
 "settings_brightness" = "Luminosità";
 

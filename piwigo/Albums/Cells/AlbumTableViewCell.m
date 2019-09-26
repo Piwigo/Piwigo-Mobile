@@ -275,6 +275,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     
     [alert addAction:cancelAction];
     [alert addAction:self.categoryAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
@@ -335,6 +340,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     [alert addAction:defaultAction];
 
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.sourceView = self.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
     alert.popoverPresentationController.sourceRect = self.contentView.frame;
@@ -403,6 +413,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     [alert addAction:defaultAction];
 
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.sourceView = self.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
     alert.popoverPresentationController.sourceRect = self.contentView.frame;
@@ -474,6 +489,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     }
     
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.sourceView = self.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
     alert.popoverPresentationController.sourceRect = self.contentView.frame;
@@ -512,6 +532,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     
     [alert addAction:defaultAction];
     [alert addAction:self.deleteAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
@@ -563,6 +588,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         [alert addAction:defaultAction];
 
         // Present list of actions
+        if (@available(iOS 13.0, *)) {
+            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
         [topViewController presentViewController:alert animated:YES completion:nil];
     }
 }

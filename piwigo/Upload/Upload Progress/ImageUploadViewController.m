@@ -63,26 +63,29 @@
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }
 
--(void)paletteChanged
+-(void)applyColorPalette
 {
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoBackgroundColor];
 
-    // Navigation bar appearence
+    // Navigation bar
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"ImageUploadNav"];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Table view
     self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
@@ -98,13 +101,14 @@
 	[super viewWillAppear:animated];
 	
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyColorPalette];
     
     // Navigation bar buttons
     self.navigationItem.rightBarButtonItem = self.uploadBarButton;
-	    
+    self.navigationController.navigationBar.accessibilityIdentifier = @"ImageUploadNav";
+
     // Progress bar
-    if([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
+    if ([ImageUploadManager sharedInstance].imageUploadQueue.count > 0)
 	{
 		[[ImageUploadProgressView sharedInstance] addViewToView:self.view forBottomLayout:self.bottomLayoutGuide];
 	}
@@ -146,19 +150,24 @@
 	for(PHAsset *imageAsset in self.imagesSelected)
 	{
 		ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset
+                                                         orImageData:nil
                                                          forCategory:self.selectedCategory
-                                                     forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel
-                                                              author:[Model sharedInstance].defaultAuthor
-                                                         description:@"" andTags:nil];
+                                                        privacyLevel:[Model sharedInstance].defaultPrivacyLevel
+                                                              author:[Model sharedInstance].defaultAuthor];
+//        ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset
+//                                                         forCategory:self.selectedCategory
+//                                                     forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel
+//                                                              author:[Model sharedInstance].defaultAuthor
+//                                                         description:@"" andTags:nil];
 		[self.imagesToEdit addObject:image];
 	}
 }
 
 -(void)removeImageFromTableView:(ImageUpload*)imageToRemove
 {
-	for(NSInteger i = 0; i < self.imagesToEdit.count; i++)
+	for (NSInteger i = 0; i < self.imagesToEdit.count; i++)
 	{
-		if([((ImageUpload*)[self.imagesToEdit objectAtIndex:i]).fileName isEqualToString:imageToRemove.fileName])
+        if ([[((ImageUpload *)[self.imagesToEdit objectAtIndex:i]).fileName stringByDeletingPathExtension] isEqualToString:[imageToRemove.fileName stringByDeletingPathExtension]])
 		{
 			[self.imagesToEdit removeObjectAtIndex:i];
 			[self.uploadImagesTableView reloadData];
@@ -300,6 +309,7 @@
 		EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
 		editImageVC.imageDetails = [self.imagesToEdit objectAtIndex:indexPath.row];
 		editImageVC.delegate = self;
+        editImageVC.isEdit = NO;       // Not in edition mode
 		[self.navigationController pushViewController:editImageVC animated:YES];
 	}
 }
@@ -388,17 +398,21 @@
 
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {
-	NSInteger index = 0;
-	for(ImageUpload *image in self.imagesToEdit)
-	{
-		if (([image.fileName isEqualToString:details.fileName]) &&
-            (image.creationDate == details.creationDate))
-             break;
-		index++;
-	}
-	
-	[self.imagesToEdit replaceObjectAtIndex:index withObject:details];
-	[self.uploadImagesTableView reloadData];
+    if (details != nil) {
+        NSInteger index = 0;
+        for(ImageUpload *image in self.imagesToEdit)
+        {
+            if (([image.fileName isEqualToString:details.fileName]) &&
+                (image.creationDate == details.creationDate))
+                 break;
+            index++;
+        }
+
+        if (index < self.imagesToEdit.count) {
+            [self.imagesToEdit replaceObjectAtIndex:index withObject:details];
+            [self.uploadImagesTableView reloadData];
+        }
+    }
 }
 
 @end

@@ -30,8 +30,6 @@
 +(UIColor*)piwigoUnderlineColor;
 
 +(UIColor*)piwigoGray;
-+(UIColor*)piwigoGrayLight;
-+(UIColor*)piwigoGrayXXLight;
 +(UIColor*)piwigoWhiteCream;
 
 @end

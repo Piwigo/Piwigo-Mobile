@@ -129,40 +129,193 @@
       ];
 }
 
-+(NSURLSessionTask*)setImageInfoForImageWithId:(NSString*)imageId
-                               withInformation:(NSDictionary*)imageInformation
+// Called after edit
++(NSURLSessionTask*)updateImageInfo:(ImageUpload*)imageInfo
+                         onProgress:(void (^)(NSProgress *))progress
+                       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    // Prepare dictionary of parameters
+    NSMutableDictionary *imageInformation = [NSMutableDictionary new];
+    
+    // File name
+    NSString *fileName = imageInfo.fileName;
+    if ([fileName isEqualToString:@"NSNotFound"] || (fileName == nil)) {
+        fileName = @"Unknown.jpg";
+    }
+    [imageInformation setObject:fileName
+                         forKey:kPiwigoImagesUploadParamFileName];
+    
+    // Title
+    NSString *title = @"";
+    if ((imageInfo.imageTitle != nil) && (imageInfo.imageTitle.length > 0)) {
+        title = imageInfo.imageTitle;
+    }
+    [imageInformation setObject:title
+                         forKey:kPiwigoImagesUploadParamTitle];
+
+    // Author
+    NSString *author = imageInfo.author;
+    if ([author isEqualToString:@"NSNotFound"] || (author == nil)) {
+        // We should never set NSNotFound in the database
+        author = @"";
+    }
+    [imageInformation setObject:author
+                         forKey:kPiwigoImagesUploadParamAuthor];
+
+    // Description
+    NSString *description = @"";
+    if ((imageInfo.comment != nil) && (imageInfo.comment.length > 0)) {
+        description = imageInfo.comment;
+    }
+    [imageInformation setObject:description
+                         forKey:kPiwigoImagesUploadParamDescription];
+
+    // Tags
+    NSMutableArray *tagIds = [NSMutableArray new];
+    for(PiwigoTagData *tagData in imageInfo.tags)
+    {
+        [tagIds addObject:@(tagData.tagId)];
+    }
+    [imageInformation setObject:[tagIds copy]
+                         forKey:kPiwigoImagesUploadParamTags];
+
+    // Privacy level
+    NSString *privacyLevel = [NSString stringWithFormat:@"%@", @(imageInfo.privacyLevel)];
+    [imageInformation setObject:privacyLevel
+                         forKey:kPiwigoImagesUploadParamPrivacy];
+    
+    // Call pwg.images.setInfo to set image parameters
+    return [self setImageInfoForImageWithId:imageInfo.imageId
+                            withInformation:imageInformation
+                                 onProgress:progress
+                               OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
+                      
+                if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+                {
+                    // Update cache
+                    [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImageAfterEdit:imageInfo];
+                    
+                    if(completion)
+                    {
+                        completion(task, response);
+                    }
+                } else {
+                   // Called method did display Piwigo error
+                   completion(task, nil);
+                }
+                               }
+                                onFailure:fail];
+}
+
++(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
+                               withInformation:(NSDictionary*)imageInfo
                                     onProgress:(void (^)(NSProgress *))progress
                                   OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-	
+    // Author
+    NSString *author = [imageInfo objectForKey:kPiwigoImagesUploadParamAuthor];
+    if ([author isEqualToString:@"NSNotFound"] || (author == nil)) {
+        // We should never set NSNotFound in the database
+        author = @"";
+    }
+
+    // Prepare tag ids
     NSString *tagIdList;
-    if ([[[imageInformation objectForKey:kPiwigoImagesUploadParamTags]
+    if ([[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
           valueForKey:@"description"] count]) {
-        tagIdList = [[[imageInformation objectForKey:kPiwigoImagesUploadParamTags]
+        tagIdList = [[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
                             valueForKey:@"description"] componentsJoinedByString:@","];
     } else {
         tagIdList = @"";
     }
-	
-	NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
-                             URLParameters:nil
-                                parameters:@{
-                                             @"image_id" : imageId,
-                                             @"file" : [imageInformation objectForKey:kPiwigoImagesUploadParamFileName],
-                                             @"name" : [imageInformation objectForKey:kPiwigoImagesUploadParamTitle],
-                                             @"author" : [imageInformation objectForKey:kPiwigoImagesUploadParamAuthor],
-                                             @"comment" : [imageInformation objectForKey:kPiwigoImagesUploadParamDescription],
-                                             @"tag_ids" : tagIdList,
-                                             @"level" : [imageInformation objectForKey:kPiwigoImagesUploadParamPrivacy],
-                                             @"single_value_mode" : @"replace",
-                                             @"multiple_value_mode" : @"replace"
-                                             }
-                                  progress:progress
-                                   success:completion
-                                   failure:fail];
-	
-	return request;
+
+    return [self post:kPiwigoImageSetInfo
+         URLParameters:nil
+            parameters:@{
+                         @"image_id" : @(imageId),
+                         @"file" : [imageInfo objectForKey:kPiwigoImagesUploadParamFileName],
+                         @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
+                         @"author" : author,
+                         @"level" : [imageInfo objectForKey:kPiwigoImagesUploadParamPrivacy],
+                         @"comment" : [imageInfo objectForKey:kPiwigoImagesUploadParamDescription],
+                         @"single_value_mode" : @"replace",
+                         @"tag_ids" : tagIdList,
+                         @"multiple_value_mode" : @"replace"
+                         }
+              progress:progress
+               success:^(NSURLSessionTask *task, id responseObject) {
+                        if(completion) {
+                            if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                            {
+                                if(completion)
+                                {
+                                    completion(task, responseObject);
+                                }
+                            }
+                            else
+                            {
+                                // Display Piwigo error
+                                NSInteger errorCode = NSNotFound;
+                                if ([responseObject objectForKey:@"err"]) {
+                                    errorCode = [[responseObject objectForKey:@"err"] intValue];
+                                }
+                                NSString *errorMsg = @"";
+                                if ([responseObject objectForKey:@"message"]) {
+                                    errorMsg = [responseObject objectForKey:@"message"];
+                                }
+                                [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImagesGetInfo andURLparams:nil];
+
+                                completion(task, nil);
+                            }
+                        }
+                    }
+                   failure:fail
+    ];
+}
+
++(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
+                                  withFileName:(NSString*)fileName
+                                    onProgress:(void (^)(NSProgress *))progress
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+{
+    NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
+         URLParameters:nil
+            parameters:@{
+                         @"image_id" : @(imageId),
+                         @"file" : fileName,
+                         @"single_value_mode" : @"replace"
+                         }
+              progress:progress
+               success:^(NSURLSessionTask *task, id responseObject) {
+                        if(completion) {
+                            if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                            {
+                                completion(task, responseObject);
+                            }
+                            else
+                            {
+                                // Display Piwigo error
+                                NSInteger errorCode = NSNotFound;
+                                if ([responseObject objectForKey:@"err"]) {
+                                    errorCode = [[responseObject objectForKey:@"err"] intValue];
+                                }
+                                NSString *errorMsg = @"";
+                                if ([responseObject objectForKey:@"message"]) {
+                                    errorMsg = [responseObject objectForKey:@"message"];
+                                }
+                                [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImagesGetInfo andURLparams:nil];
+
+                                completion(task, nil);
+                            }
+                        }
+                    }
+                   failure:fail
+    ];
+    
+    return request;
 }
 
 +(NSURLSessionTask*)getUploadedImageStatusById:(NSString*)imageId
@@ -183,42 +336,6 @@
                                    failure:fail];
 	
 	return request;
-}
-
-+(NSURLSessionTask*)updateImageInfo:(ImageUpload*)imageInfo
-                         onProgress:(void (^)(NSProgress *))progress
-                       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
-                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-	NSMutableArray *tagIds = [NSMutableArray new];
-	for(PiwigoTagData *tagData in imageInfo.tags)
-	{
-		[tagIds addObject:@(tagData.tagId)];
-	}
-	
-	NSDictionary *imageProperties = @{
-                                      kPiwigoImagesUploadParamFileName : imageInfo.fileName,
-                                      kPiwigoImagesUploadParamTitle : imageInfo.title,
-									  kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(imageInfo.privacyLevel)],
-									  kPiwigoImagesUploadParamAuthor : imageInfo.author,
-									  kPiwigoImagesUploadParamDescription : imageInfo.imageDescription,
-									  kPiwigoImagesUploadParamTags : [tagIds copy]
-									  };
-	
-	return [self setImageInfoForImageWithId:[NSString stringWithFormat:@"%@", @(imageInfo.imageId)]
-                            withInformation:imageProperties
-                                 onProgress:progress
-                               OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-                                   
-                                   // Update cache
-                                   [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImageAfterUpload:imageInfo];
-                                   
-                                   if(completion)
-                                   {
-                                       completion(task, response);
-                                   }
-                               }
-                                  onFailure:fail];
 }
 
 @end

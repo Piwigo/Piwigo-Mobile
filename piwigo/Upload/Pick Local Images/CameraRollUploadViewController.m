@@ -56,7 +56,6 @@
     self = [super init];
     if(self)
     {
-        self.view.backgroundColor = [UIColor piwigoBackgroundColor];
         self.categoryId = categoryId;
         self.sortType = kPiwigoSortByNewest;
         self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:kPiwigoSortByNewest];
@@ -117,7 +116,7 @@
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paletteChanged) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -129,10 +128,37 @@
 {
     [super viewDidLoad];
     
-    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
     {
         [self setEdgesForExtendedLayout:UIRectEdgeNone];
     }
+
+    // Navigation bar
+    self.navigationController.navigationBar.accessibilityIdentifier = @"CameraRollNav";
+}
+
+-(void)applyColorPalette
+{
+    // Background color of the view
+    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+
+    // Navigation bar
+    NSDictionary *attributes = @{
+                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSFontAttributeName: [UIFont piwigoFontNormal],
+                                 };
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = NO;
+    }
+    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+
+    // Collection view
+    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    [self.localImagesCollection reloadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -143,7 +169,7 @@
     [self initSelectButtons];
 
     // Set colors, fonts, etc.
-    [self paletteChanged];
+    [self applyColorPalette];
     
     // Update navigation bar and title
     [self updateNavBar];
@@ -196,27 +222,6 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-}
-
--(void)paletteChanged
-{
-    // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
-    
-    // Navigation bar appearence
-    NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    [self.navigationController.navigationBar setTintColor:[UIColor piwigoOrange]];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor piwigoBackgroundColor]];
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"CameraRollNav"];
-    
-    // Collection view
-    self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self.localImagesCollection reloadData];
 }
 
 -(void)updateNavBar
@@ -362,6 +367,11 @@
     }
     
     // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.barButtonItem = self.sortBarButton;
     [self presentViewController:alert animated:YES completion:nil];
 }
@@ -809,28 +819,6 @@
     PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:self.nberOfImagesPerRow collectionType:kImageCollectionPopup]];
     
-    // For some unknown reason, the asset resource may be empty
-    NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-    NSString *originalFilename;
-    if ([resources count] > 0) {
-        originalFilename = ((PHAssetResource*)resources[0]).originalFilename;
-    } else {
-        // No filename => Build filename from 32 characters of local identifier
-        NSRange range = [imageAsset.localIdentifier rangeOfString:@"/"];
-        originalFilename = [[imageAsset.localIdentifier substringToIndex:range.location] stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        // Filename extension required by Piwigo so that it knows how to deal with it
-        if (imageAsset.mediaType == PHAssetMediaTypeImage) {
-            // Adopt JPEG photo format by default, will be rechecked
-            originalFilename = [originalFilename stringByAppendingPathExtension:@"jpg"];
-        } else if (imageAsset.mediaType == PHAssetMediaTypeVideo) {
-            // Videos are exported in MP4 format
-            originalFilename = [originalFilename stringByAppendingPathExtension:@"mp4"];
-        } else if (imageAsset.mediaType == PHAssetMediaTypeAudio) {
-            // Arbitrary extension, not managed yet
-            originalFilename = [originalFilename stringByAppendingPathExtension:@"m4a"];
-        }
-    }
-    
     // Add pan gesture recognition
     UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
     imageSeriesRocognizer.minimumNumberOfTouches = 1;
@@ -842,6 +830,7 @@
     
     // Cell state
     cell.cellSelected = [self.selectedImages containsObject:imageAsset];
+    NSString *originalFilename = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
     cell.cellUploading = [[ImageUploadManager sharedInstance].imageNamesUploadQueue containsObject:[originalFilename stringByDeletingPathExtension]];
     
     return cell;
@@ -946,8 +935,33 @@
         // Images in sections
         self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
         
+        // Loop over selection
+        for (PHAsset *selectedImage in [self.selectedImages copy])
+        {
+            // Loop over all sections
+            BOOL selectedImageExists = NO;
+            for (NSInteger section = 0; section < [self.imagesInSections count]; section++)
+            {
+                // Loop over images in section
+                for (NSInteger row = 0; row < [[self.imagesInSections objectAtIndex:section] count]; row++)
+                {
+                    // Check that image exists
+                    PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:section] objectAtIndex:row];
+                    if ([self.selectedImages containsObject:imageAsset]) {
+                        selectedImageExists = YES;
+                    }
+                }
+            }
+            
+            // Remove selected image if it has been deleted
+            if (!selectedImageExists) [self.selectedImages removeObject:selectedImage];
+        }
+        
         // Reload local image collection
         [self.localImagesCollection reloadData];
+        
+        // Update Select buttons
+        [self updateSelectButtons];
     });
 }
 

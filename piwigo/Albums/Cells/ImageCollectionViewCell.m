@@ -256,18 +256,19 @@
     if (([Model sharedInstance].displayImageTitles) ||
         (categoryId == kPiwigoVisitsCategoryId)     ||
         (categoryId == kPiwigoBestCategoryId)       ||
-        (categoryId == kPiwigoRecentCategoryId)) {
+        (categoryId == kPiwigoRecentCategoryId)     ||
+        (categoryId == kPiwigoTagsCategoryId)) {
         self.bottomLayer.hidden = NO;
         self.nameLabel.hidden = NO;
         if (categoryId == kPiwigoVisitsCategoryId) {
             self.nameLabel.text = [NSString stringWithFormat:@"%ld %@", (long)imageData.visits, NSLocalizedString(@"categoryDiscoverVisits_legend", @"hits")];
         } else if (categoryId == kPiwigoBestCategoryId) {
 //            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
-            self.nameLabel.text = imageData.name.length ? imageData.name : imageData.fileName;
+            self.nameLabel.text = imageData.imageTitle.length ? imageData.imageTitle : imageData.fileName;
         } else if (categoryId == kPiwigoRecentCategoryId) {
             self.nameLabel.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
         } else {
-            self.nameLabel.text = imageData.name.length ? imageData.name : imageData.fileName;
+            self.nameLabel.text = imageData.imageTitle.length ? imageData.imageTitle : imageData.fileName;
         }
     } else {
         self.bottomLayer.hidden = YES;

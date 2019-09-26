@@ -308,6 +308,14 @@
 "selectImagesSelected" = "%@ gambar yang dipilih";
 "selectAll" = "Semua";
 
+// Image rename (filename)
+"renameImage_title" = "Original File";
+"renameImage_message" = "Enter a new file name for this image";
+"renameImageHUD_label" = "Renaming File…";
+
+// Image rename — Errors
+"renameImageError_message" = "Failed to rename image file";
+
 // Image delete
 "deleteImage_delete" = "Hapus";
 "deleteImageProgress_title" = "Menghapus %@%% Selesai";
@@ -405,14 +413,14 @@
 "imageUploadError_format" = "Maaf, berkas gambar dengan ekstensi .%@ dan .jpg tidak diterima oleh peladen Piwigo.";
 "imageUploadError_source" = "tidak dapat membuat sumber gambar";
 "imageUploadError_destination" = "tidak dapat membuat tujuan gambar";
-"imageUploadError_iCloud" = "Tidak dapat mengambil gambar dari iCloud. Galat: %@";
+"imageUploadError_iCloud" = "Tidak dapat mengambil gambar. Galat: %@";
 
 "audioUploadError_title" = "Galat dalam Mengunggah Audio";
 "audioUploadError_format" = "Maaf, berkas audio belum didukung oleh Piwigo Mobile.";
 
 "videoUploadError_title" = "Galat dalam Menunggah Video";
 "videoUploadError_format" = "Maaf, berkas video dengan ekstensi .%@ tidak diterima oleh peladen Piwigo.";
-"videoUploadError_iCloud" = "Tidak dapat mengambil video dari iCloud. Galat: %@";
+"videoUploadError_iCloud" = "Tidak dapat mengambil video. Galat: %@";
 "videoUploadError_export" = "Maaf, video tidak dapat diambil untuk diunggah. Galat: %@";
 "videoUploadError_unknown" = "Maaf, pengunggahan video telah gagal karena kesalahan yang tidak diketahui selama konversi MP4. Galat: %@";
 "videoUploadCancelled_message" = "Pengunggahan video telah dibatalkan.";
@@ -586,7 +594,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Warna";
-"settings_darkPalette" = "Palet gelap";
+"settings_darkPalette" = "Palet Selalu Gelap";
 "settings_switchPalette" = "Beralih secara otomatis";
 "settings_brightness" = "Kecerahan";
 
