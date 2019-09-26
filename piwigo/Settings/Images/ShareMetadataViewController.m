@@ -42,7 +42,6 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.privacyTableView]];
         
         // Buttons
-        self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(startEditingOptions)];
         self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(stopEditingOptions)];
         
         // Register palette changes
@@ -206,18 +205,6 @@
 
 
 #pragma mark - Editing mode
-
--(void)startEditingOptions
-{
-    // Hide back button
-    [self.navigationItem setHidesBackButton:YES animated:YES];
-    
-    // Replace "Edit" button with "Done" button
-    [self.navigationItem setRightBarButtonItem:self.doneBarButton animated:YES];
-
-    // Refresh table to display [+] and [-] buttons
-    [self.privacyTableView reloadData];
-}
 
 -(void)stopEditingOptions
 {
@@ -389,16 +376,14 @@
         {
             NSString *activity = [self.activitiesSharingMetadata objectAtIndex:indexPath.row];
             NSString *name = [[Model sharedInstance] getNameForShareActivity:activity forWidth:width];
-            int option = kPiwigoActionCellEditRemove * [self.navigationItem hidesBackButton];
-            [cell setupWithActivityName:name andEditOption:option];
+            [cell setupWithActivityName:name andEditOption:kPiwigoActionCellEditRemove];
             break;
         }
         case 1:
         {
             NSString *activity = [self.activitiesNotSharingMetadata objectAtIndex:indexPath.row];
             NSString *name = [[Model sharedInstance] getNameForShareActivity:activity forWidth:width];
-            int option = kPiwigoActionCellEditAdd * [self.navigationItem hidesBackButton];
-            [cell setupWithActivityName:name andEditOption:option];
+            [cell setupWithActivityName:name andEditOption:kPiwigoActionCellEditAdd];
             break;
         }
         default:
@@ -408,11 +393,6 @@
     [cell setAccessibilityIdentifier:@"shareMetadata"];
     cell.isAccessibilityElement = YES;
     return cell;
-}
-
--(BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    return [self.navigationItem hidesBackButton];
 }
 
 
@@ -426,6 +406,7 @@
     NSMutableArray *activitiesNotSharingMetadata = [[NSMutableArray alloc] initWithArray:self.activitiesNotSharingMetadata];
 
     NSString *activity = nil;
+    NSIndexPath *newIndexPath = [NSIndexPath new];
     switch (indexPath.section) {
         case 0:
             activity = [self.activitiesSharingMetadata objectAtIndex:indexPath.row];
@@ -453,8 +434,48 @@
     activitiesSharingMetadata = nil;
     activitiesNotSharingMetadata = nil;
 
-    // Resfresh table
-    [self.privacyTableView reloadData];
+    // Get new indexPath of tapped activity
+    switch (indexPath.section) {
+        case 0:
+            {
+                NSUInteger index = [self.activitiesNotSharingMetadata indexOfObjectPassingTest:^BOOL(NSString *someActivity, NSUInteger idx, BOOL *stop) {
+                    return ([someActivity isEqualToString:activity]);
+                }];
+                newIndexPath = [NSIndexPath indexPathForRow:index inSection:1];
+                break;
+            }
+        case 1:
+            {
+                NSUInteger index = [self.activitiesSharingMetadata indexOfObjectPassingTest:^BOOL(NSString *someActivity, NSUInteger idx, BOOL *stop) {
+                    return ([someActivity isEqualToString:activity]);
+                }];
+                newIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                break;
+            }
+
+        default:
+            break;
+    }
+
+    // Move cell of tapped activity
+    [tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+
+    // Update cell icon
+    LabelImageTableViewCell *cell = [tableView cellForRowAtIndexPath:newIndexPath];
+    CGFloat width = self.view.bounds.size.width;
+    NSString *name = [[Model sharedInstance] getNameForShareActivity:activity forWidth:width];
+    switch (newIndexPath.section) {
+        case 0:
+            [cell setupWithActivityName:name andEditOption:kPiwigoActionCellEditRemove];
+            break;
+            
+        case 1:
+            [cell setupWithActivityName:name andEditOption:kPiwigoActionCellEditAdd];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 #pragma mark - Utilities
