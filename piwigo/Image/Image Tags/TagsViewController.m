@@ -241,7 +241,13 @@
     if (indexPath.section == 0) {
         // Selected tags
         currentTag = self.alreadySelectedTags[indexPath.row];
-        [cell setupWithActivityName:currentTag.tagName andEditOption:kPiwigoActionCellEditRemove];
+        
+        // Number of images not known if getAdminList called
+        if (currentTag.numberOfImagesUnderTag == NSNotFound) {
+            [cell setupWithActivityName:currentTag.tagName andEditOption:kPiwigoActionCellEditRemove];
+        } else {
+            [cell setupWithActivityName:[NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag] andEditOption:kPiwigoActionCellEditRemove];
+        }
     }
     else {
         // Not selected tags
@@ -272,7 +278,6 @@
         
         // Delete tag tapped in tag list
         [self.alreadySelectedTags removeObject:currentTag];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         
         // Add deselected tag to list of not selected tags
         [self updateListOfNotSelectedTags];
@@ -282,7 +287,17 @@
             return (someTag.tagId == currentTag.tagId);
         }];
         NSIndexPath *insertPath = [NSIndexPath indexPathForRow:indexOfTag inSection:1];
-        [tableView insertRowsAtIndexPaths:@[insertPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        // Move cell from top to bottom section
+        [tableView moveRowAtIndexPath:indexPath toIndexPath:insertPath];
+        
+        // Update icon of cell
+        LabelImageTableViewCell *cell = [tableView cellForRowAtIndexPath:insertPath];
+        if (currentTag.numberOfImagesUnderTag == NSNotFound) {
+            [cell setupWithActivityName:currentTag.tagName andEditOption:kPiwigoActionCellEditAdd];
+        } else {
+            [cell setupWithActivityName:[NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag] andEditOption:kPiwigoActionCellEditAdd];
+        }
     }
     else {
         // Tapped not selected tag
@@ -290,7 +305,6 @@
         
         // Delete tag tapped in list of not selected tag
         [self.notSelectedTags removeObject:currentTag];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         
         // Add tag to list of selected tags
         [self.alreadySelectedTags addObject:currentTag];
@@ -303,7 +317,17 @@
             return (someTag.tagId == currentTag.tagId);
         }];
         NSIndexPath *insertPath = [NSIndexPath indexPathForRow:indexOfTag inSection:0];
-        [tableView insertRowsAtIndexPaths:@[insertPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        // Move cell from bottom to top section
+        [tableView moveRowAtIndexPath:indexPath toIndexPath:insertPath];
+        
+        // Update icon of cell
+        LabelImageTableViewCell *cell = [tableView cellForRowAtIndexPath:insertPath];
+        if (currentTag.numberOfImagesUnderTag == NSNotFound) {
+            [cell setupWithActivityName:currentTag.tagName andEditOption:kPiwigoActionCellEditRemove];
+        } else {
+            [cell setupWithActivityName:[NSString stringWithFormat:@"%@ (%ld)", currentTag.tagName, (long)currentTag.numberOfImagesUnderTag] andEditOption:kPiwigoActionCellEditRemove];
+        }
     }
 }
 
@@ -378,7 +402,7 @@
                                     PiwigoTagData *newTag = [PiwigoTagData new];
                                     newTag.tagId = tagId;
                                     newTag.tagName = tagName;
-                                    newTag.numberOfImagesUnderTag = 0;
+                                    newTag.numberOfImagesUnderTag = NSNotFound;
                                     [[TagsData sharedInstance] addTagToList:@[newTag]];
                                     
                                     // Add tag to list of selected tags
