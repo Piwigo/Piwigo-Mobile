@@ -103,6 +103,7 @@
                   
                   if(fail)
                   {
+                      [Model sharedInstance].hadOpenedSession = NO;
                       fail(task, error);
                   }
               }];
