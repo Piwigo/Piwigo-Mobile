@@ -314,7 +314,7 @@
 "renameImageHUD_label" = "ファイルの名前を変更しています…";
 
 // Image rename — Errors
-"renameImageError_message" = "ファイル名を変更できませんでした";
+"renameImageError_message" = "画像ファイルの名前変更に失敗しました";
 
 // Image delete
 "deleteImage_delete" = "削除";
@@ -413,14 +413,14 @@
 "imageUploadError_format" = "申し訳ありませんが、このPiwigoサーバでは拡張子 %@ と .jpg の画像ファイルを受け付けていません。";
 "imageUploadError_source" = "元画像を作成できません";
 "imageUploadError_destination" = "画像の保存先を作成できません";
-"imageUploadError_iCloud" = "iCloudから画像を取得できませんでした。エラー：%@";
+"imageUploadError_iCloud" = "画像を取得できませんでした。エラー：%@";
 
 "audioUploadError_title" = "音声アップロードのエラー";
 "audioUploadError_format" = "申し訳ありませんが、Piwigo Mobileではまだ音声ファイルをサポートしていません。";
 
 "videoUploadError_title" = "動画アップロードのエラー";
 "videoUploadError_format" = "申し訳ありませんが、このPiwigoサーバでは拡張子 %@ の動画ファイルを受け付けていません。";
-"videoUploadError_iCloud" = "iCloudから動画を取得できませんでした。エラー：%@";
+"videoUploadError_iCloud" = "動画を取得できませんでした。エラー：%@";
 "videoUploadError_export" = "申し訳ありませんが、アップロードする動画を取得できませんでした。エラー：%@";
 "videoUploadError_unknown" = "申し訳ありませんが、動画のアップロードはMP4変換中に原因不明のエラーのため失敗しました。エラー：%@";
 "videoUploadCancelled_message" = "動画のアップロードは取り消されました。";

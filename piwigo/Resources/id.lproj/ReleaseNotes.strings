@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.3_text" = "Version 2.4.3\n\n• Kompatibilitas iOS 13\n• Perbaikan bug minor dan perbaikan antarmuka";
+"v2.4.4_text" = "Version 2.4.4\n\n• Perbaiki masalah upload video di beberapa server\n• Perbaikan bug minor dan perbaikan antarmuka";
+
+"v2.4.3_text" = "Version 2.4.3\n25 September 2019\n\n• Kompatibilitas iOS 13\n• Perbaikan bug minor dan perbaikan antarmuka";
 
 "v2.4.2_text" = "Versi 2.4.2\n3 September 2019\n\n• Menambahkan kemampuan untuk membuat tag (hanya pengguna admin)\n• Menambahkan kemampuan untuk mengubah ukuran thumbnail album\n• Menambahkan manajemen tampilan Retina\n• Perbaikan bug minor dan peningkatan antarmuka";
 

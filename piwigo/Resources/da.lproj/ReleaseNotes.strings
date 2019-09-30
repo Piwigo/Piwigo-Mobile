@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.3_text" = "Version 2.4.3\n\n• iOS 13 kompabilitet\n• Mindre fejl rettet og forbedringer af brugerflade";
+"v2.4.4_text" = "Version 2.4.4\n\n• Løst videooverførselsproblemer på nogle servere\n• Minor bug fixes and improvements of the interface";
+
+"v2.4.3_text" = "Version 2.4.3\n25 september 2019\n\n• iOS 13 kompabilitet\n• Mindre fejl rettet og forbedringer af brugerflade";
 
 "v2.4.2_text" = "Version 2.4.2\n3 september 2019\n\n• Mulighed for oprettelse af etiketter (kun admin brugere)\n• Mulighed for ændring af album miniature størrelse\n• Retina display management tilføjet\n• Mindre fejl rettet og forbedringer af brugerflade";
 
