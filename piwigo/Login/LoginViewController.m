@@ -472,7 +472,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
     NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting…", isFirstLogin ? @"YES" : @"NO");
 #endif
-    if((self.usesCommunityPluginV29) &&(![Model sharedInstance].userCancelledCommunication)) {
+    if((self.usesCommunityPluginV29) && (![Model sharedInstance].userCancelledCommunication)) {
 
         // Update HUD during login
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -489,6 +489,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
             
             } else {
                 // Inform user that server failed to retrieve Community parameters
+                [Model sharedInstance].hadOpenedSession = NO;
                 NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                 self.isAlreadyTryingToLogin = NO;
@@ -497,6 +498,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
             // Display error message
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+            [Model sharedInstance].hadOpenedSession = NO;
             self.isAlreadyTryingToLogin = NO;
         }];
 
@@ -584,16 +586,19 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 }
             } else {
                 // Inform user that we could not authenticate with server
+                [Model sharedInstance].hadOpenedSession = NO;
                 self.isAlreadyTryingToLogin = NO;
                 NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
+            [Model sharedInstance].hadOpenedSession = NO;
             self.isAlreadyTryingToLogin = NO;
             // Display error message
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }];
     } else {
+        [Model sharedInstance].hadOpenedSession = NO;
         self.isAlreadyTryingToLogin = NO;
         [self loggingInConnectionError:nil];
     }
@@ -645,6 +650,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 // Connection really lost, inform user
                 NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                [Model sharedInstance].hadOpenedSession = NO;
                 self.isAlreadyTryingToLogin = NO;
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {

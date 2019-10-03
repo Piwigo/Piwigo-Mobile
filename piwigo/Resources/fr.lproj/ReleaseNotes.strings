@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.3_text" = "Version 2.4.3\n\n• Compatibilité avec iOS 13\n• Corrige des bugs mineurs et améliore l'interface";
+"v2.4.4_text" = "Version 2.4.4\n\n• Résout les problèmes de téléchargement de vidéos sur certains serveurs\n• Corrige des bugs mineurs et améliore l'interface";
+
+"v2.4.3_text" = "Version 2.4.3\n25 Septembre 2019\n\n• Compatibilité avec iOS 13\n• Corrige des bugs mineurs et améliore l'interface";
 
 "v2.4.2_text" = "Version 2.4.2\n3 Septembre 2019\n\n• Ajoute la possibilité de créer des tags (pour administrateurs seulement)\n• Ajoute la possibilité de changer la taille des vignettes d'album\n• Ajoute la gestion des écrans Retina\n• Corrige des bugs mineurs et améliore l'interface";
 
@@ -46,7 +48,7 @@
 
 "v2.1.8_text" = "Version 2.1.8\n29 Avril 2018\n\n• Ajoute la possibilité de changer la taille des vignettes\n• HTTPS devient le protocole par défaut\n• Traduction japonaise\n• Corrections de bugs mineurs et amélioration de l'interface";
 
-"v2.1.7_text" = "Version 2.1.7\n3 Février 2018\n\n• Résoud les problèmes de téléchargement de vidéos sur certains serveurs";
+"v2.1.7_text" = "Version 2.1.7\n3 Février 2018\n\n• Résout les problèmes de téléchargement de vidéos sur certains serveurs";
 
 "v2.1.6_text" = "Version 2.1.6\n7 Janvier 2018\n\n• Traduction en Arabe\n• Amélioration de la gestion de l'authentification HTTP\n• Corrections de bugs mineurs et amélioration de l'interface";
 

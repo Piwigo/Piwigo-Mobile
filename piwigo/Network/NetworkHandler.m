@@ -533,19 +533,15 @@ NSInteger const loadingViewTag = 899;
                         parameters:nil
          constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
                 {
-                    NSString *name = [parameters valueForKey:kPiwigoImagesUploadParamTitle];
-                    if (name.length == 0) {
-                        name = [[parameters valueForKey:kPiwigoImagesUploadParamFileName] stringByDeletingPathExtension];
-                    }
-        
                     [formData appendPartWithFileData:fileData
                                                 name:@"file"
                                             fileName:[parameters valueForKey:kPiwigoImagesUploadParamFileName]
                                             mimeType:[parameters valueForKey:kPiwigoImagesUploadParamMimeType]];
                     
-                    // Image title is mandatory and must not be empty
-                    // so we provide the file name without extension and will then replace it with the image title
-                    [formData appendPartWithFormData:[name dataUsingEncoding:NSUTF8StringEncoding] name:@"name"];
+                    // Image title is mandatory and must not be empty.
+                    // We provide the file name with extension and will then replace it with the image title
+                    // Not doing so prevents video uploads — see bug #212 — pwg.images.upload
+                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamFileName] dataUsingEncoding:NSUTF8StringEncoding] name:@"name"];
                     
                     [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding] name:@"chunk"];
 
