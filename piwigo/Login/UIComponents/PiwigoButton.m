@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
+#import "Model.h"
 #import "PiwigoButton.h"
 
 @implementation PiwigoButton
@@ -13,11 +14,9 @@
 -(instancetype)init
 {
 	self = [super init];
-	if(self)
+	if (self)
 	{
-		self.backgroundColor = [UIColor piwigoOrange];
-		self.layer.cornerRadius = 5.0;
-		
+		self.layer.cornerRadius = 10.0;
 		self.titleLabel.font = [UIFont piwigoFontButton];
 		[self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 	}
@@ -27,11 +26,20 @@
 -(void)setHighlighted:(BOOL)highlighted
 {
 	[super setHighlighted:highlighted];
-	if(highlighted) {
-		self.backgroundColor = [UIColor piwigoOrangeSelected];
-	} else {
-		self.backgroundColor = [UIColor piwigoOrange];
-	}
+    
+    if ([Model sharedInstance].isDarkPaletteActive) {
+        if (highlighted) {
+            self.backgroundColor = [UIColor piwigoOrange];
+        } else {
+            self.backgroundColor = [UIColor piwigoOrangeSelected];
+        }
+    } else {
+        if (highlighted) {
+            self.backgroundColor = [UIColor piwigoOrangeSelected];
+        } else {
+            self.backgroundColor = [UIColor piwigoOrange];
+        }
+    }
 }
 
 @end

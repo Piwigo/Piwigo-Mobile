@@ -60,7 +60,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"example.com");
 		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverName];
-        self.serverTextField.textColor = [UIColor darkTextColor];
 		self.serverTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
@@ -74,7 +73,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username (optional)");
 		self.userTextField.text = [Model sharedInstance].username;
-        self.userTextField.textColor = [UIColor darkTextColor];
 		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.userTextField.keyboardType = UIKeyboardTypeDefault;
@@ -89,7 +87,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
 		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
-        self.passwordTextField.textColor = [UIColor darkTextColor];
         self.passwordTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         self.passwordTextField.keyboardType = UIKeyboardTypeDefault;
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
@@ -141,21 +138,67 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 		
 		[self performSelector:@selector(setupAutoLayout) withObject:nil]; // now located in child VC, thus import .h files
     }
-	return self;
+
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+
+    return self;
 }
 
 
 #pragma mark - View Lifecycle
 
-- (void)viewWillAppear:(BOOL)animated
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 
+    // Set colors, fonts, etc.
+    [self applyColorPalette];
+    
     // Not yet trying to login
     self.isAlreadyTryingToLogin = NO;
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+-(void)applyColorPalette
+{
+    // Server
+    self.serverTextField.textColor = [UIColor piwigoTextColor];
+    self.serverTextField.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Username
+    self.userTextField.textColor = [UIColor piwigoTextColor];
+    self.userTextField.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Password
+    self.passwordTextField.textColor = [UIColor piwigoTextColor];
+    self.passwordTextField.backgroundColor = [UIColor piwigoBackgroundColor];
+    
+    // Login button
+    if ([Model sharedInstance].isDarkPaletteActive) {
+        self.loginButton.backgroundColor = [UIColor piwigoOrangeSelected];
+    } else {
+        self.loginButton.backgroundColor = [UIColor piwigoOrange];
+    }
+}
+
+-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    // Should we update user interface based on the appearance?
+    if (@available(iOS 13.0, *)) {
+        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
+        if (hasUserInterfaceStyleChanged) {
+            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate screenBrightnessChanged];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 }
@@ -935,6 +978,12 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
 -(BOOL)saveServerAddress:(NSString *)serverString andUsername:(NSString *)user
 {
+    if (serverString.length == 0) {
+        // The URL is not correct
+//        NSLog(@"ATTENTION!!! Incorrect URL");
+        return NO;
+    }
+
     // Remove extra "/" at the end of the server address
     while ([serverString hasSuffix:@"/"]) {
         serverString = [serverString substringWithRange:NSMakeRange(0, serverString.length-1)];
