@@ -383,7 +383,13 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 - (id)initWithCoder:(NSCoder *)decoder {
 	self = [super init];
 	NSArray *savedData = [decoder decodeObjectForKey:@"Model"];
-	self.serverName = [savedData objectAtIndex:0];
+    
+    NSString *serverName = [savedData objectAtIndex:0];
+    if ([serverName isEqualToString:@"(null)(null)"]) {
+        self.serverName = @"";
+    } else {
+        self.serverName = serverName;
+    }
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
 
