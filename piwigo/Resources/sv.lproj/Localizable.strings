@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "träffar";
 "categoryDiscoverBest_title" = "Högst betygsatta";
 "categoryDiscoverRecent_title" = "Senaste bilder";
+"categoryDiscoverFavorites_title" = "Mina favoriter";
 
 // Albums sort
 "categorySort_nameAscending" = "Bildtitel, A → Ö";

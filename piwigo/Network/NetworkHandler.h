@@ -41,6 +41,10 @@ FOUNDATION_EXPORT NSString * const kPiwigoTagsGetAdminList;
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetImages;
 FOUNDATION_EXPORT NSString * const kPiwigoTagsAdd;
 
+FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesAdd;
+FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesRemove;
+FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesGetList;
+
 // Parameter keys:
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamData;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamFileName;

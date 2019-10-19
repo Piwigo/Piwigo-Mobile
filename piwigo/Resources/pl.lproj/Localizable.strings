@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "wejść";
 "categoryDiscoverBest_title" = "Najwyżej oceniane";
 "categoryDiscoverRecent_title" = "Najnowsze zdjęcia";
+"categoryDiscoverFavorites_title" = "Moje ulubione";
 
 // Albums sort
 "categorySort_nameAscending" = "Tytuł Zdjęcia, A → Z";
@@ -311,7 +312,7 @@
 // Image rename (filename)
 "renameImage_title" = "Oryginalny plik";
 "renameImage_message" = "Wprowadź nową nazwę pliku dla tego obrazu";
-"renameImageHUD_label" = "Zmienianie nazwy pliku…";
+"renameImageHUD_label" = "Zmiana nazwy pliku…";
 
 // Image rename — Errors
 "renameImageError_message" = "Nie można zmienić nazwy pliku obrazu";

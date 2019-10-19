@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "ヒット";
 "categoryDiscoverBest_title" = "最高評価";
 "categoryDiscoverRecent_title" = "最近の写真";
+"categoryDiscoverFavorites_title" = "お気に入り";
 
 // Albums sort
 "categorySort_nameAscending" = "写真題名、A → Z";

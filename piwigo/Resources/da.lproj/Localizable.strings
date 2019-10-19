@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "visninger";
 "categoryDiscoverBest_title" = "Bedst bedømte";
 "categoryDiscoverRecent_title" = "Nye fotografier";
+"categoryDiscoverFavorites_title" = "Dine favoritter";
 
 // Albums sort
 "categorySort_nameAscending" = "Billedtitel, A → Z";

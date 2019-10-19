@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "hits";
 "categoryDiscoverBest_title" = "Best gewaardeerd";
 "categoryDiscoverRecent_title" = "Recente foto's";
+"categoryDiscoverFavorites_title" = "Jouw favorieten";
 
 // Albums sort
 "categorySort_nameAscending" = "Foto titel, A → Z";

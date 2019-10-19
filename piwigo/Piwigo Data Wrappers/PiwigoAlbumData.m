@@ -13,11 +13,12 @@
 #import "ImageUpload.h"
 #import "ImagesCollection.h"
 
-NSInteger const kPiwigoSearchCategoryId = -1;           // Search
-NSInteger const kPiwigoVisitsCategoryId = -2;           // Most visited
-NSInteger const kPiwigoBestCategoryId   = -3;           // Best rated
-NSInteger const kPiwigoRecentCategoryId = -4;           // Recent photos
-NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
+NSInteger const kPiwigoSearchCategoryId     = -1;           // Search
+NSInteger const kPiwigoVisitsCategoryId     = -2;           // Most visited
+NSInteger const kPiwigoBestCategoryId       = -3;           // Best rated
+NSInteger const kPiwigoRecentCategoryId     = -4;           // Recent photos
+NSInteger const kPiwigoTagsCategoryId       = -5;           // Tag images
+NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 @interface PiwigoAlbumData()
 
@@ -132,6 +133,8 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
         albumData.name = NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent photos");
     } else if (categoryId == kPiwigoTagsCategoryId) {
         albumData.name = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
+    } else if (categoryId == kPiwigoFavoritesCategoryId) {
+        albumData.name = NSLocalizedString(@"categoryDiscoverFavorites_title", @"Your favorites");
     } else {
         albumData.name = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
     }

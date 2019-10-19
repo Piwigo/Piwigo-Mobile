@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "visualizzazioni";
 "categoryDiscoverBest_title" = "I più votati";
 "categoryDiscoverRecent_title" = "Ultime foto";
+"categoryDiscoverFavorites_title" = "Le mie preferite";
 
 // Albums sort
 "categorySort_nameAscending" = "Titolo foto, A → Z";

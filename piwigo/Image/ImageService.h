@@ -47,6 +47,11 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                          OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *searchedImages))completion
                             onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
++(NSURLSessionTask*)getFavoritesOnPage:(NSInteger)page
+                              forOrder:(NSString *)order
+                          OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *searchedImages))completion
+                             onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
 +(NSURLSessionTask*)loadImageChunkForLastChunkCount:(NSInteger)lastImageBulkCount
                                         forCategory:(NSInteger)categoryId orQuery:(NSString*)query
                                              onPage:(NSInteger)onPage
@@ -58,6 +63,15 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                   andAddImageToCache:(BOOL)addImage
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+
++(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
+                            ofMinimumSize:(NSInteger)minSize
+                       onProgress:(void (^)(NSProgress *))progress
+                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+
++(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
+                       onProgress:(void (^)(NSProgress *))progress
+                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
 +(NSURLSessionTask*)deleteImage:(PiwigoImageData*)image
                ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
@@ -73,14 +87,15 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                              OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setCategoriesSuccessfully))completion
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
-                            ofMinimumSize:(NSInteger)minSize
-                       onProgress:(void (^)(NSProgress *))progress
-                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
++(NSURLSessionTask*)addImageToFavorites:(PiwigoImageData *)image
+                             onProgress:(void (^)(NSProgress *))progress
+                           OnCompletion:(void (^)(NSURLSessionTask *task, BOOL addedSuccessfully))completion
+                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
-                       onProgress:(void (^)(NSProgress *))progress
-                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
++(NSURLSessionTask*)removeImageFromFavorites:(PiwigoImageData *)image
+                                  onProgress:(void (^)(NSProgress *))progress
+                                OnCompletion:(void (^)(NSURLSessionTask *task, BOOL removedSuccessfully))completion
+                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSMutableDictionary *)metadata;
 +(NSMutableDictionary *)fixMetadata:(NSMutableDictionary *)metadata ofImage:(UIImage*)image;

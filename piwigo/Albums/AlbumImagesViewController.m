@@ -21,6 +21,7 @@
 //#import "CategoryImageSort.h"
 #import "CategoryPickViewController.h"
 #import "DiscoverImagesViewController.h"
+#import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
@@ -2232,8 +2233,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)pushView:(UIViewController *)viewController
 {
     // Push sub-album or Discover album
-    if (([viewController isKindOfClass:[AlbumImagesViewController class]]) ||
-        ([viewController isKindOfClass:[DiscoverImagesViewController class]])) {
+    if (([viewController isKindOfClass:[AlbumImagesViewController class]])    ||
+        ([viewController isKindOfClass:[DiscoverImagesViewController class]]) ||
+        ([viewController isKindOfClass:[FavoritesImagesViewController class]]) ) {
         // Push sub-album view
         [self.navigationController pushViewController:viewController animated:YES];
     }
@@ -2401,6 +2403,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
        style:UIAlertActionStyleCancel
        handler:^(UIAlertAction * action) {}];
 
+    UIAlertAction* favoritesSelectorAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"categoryDiscoverFavorites_title", @"Your favorites")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            // Show tags for selecting images
+            [self discoverFavoritesImages];
+         }];
+    
     UIAlertAction* tagSelectorAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"tags", @"Tags")
         style:UIAlertActionStyleDefault
@@ -2435,6 +2445,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Add actions
     [alert addAction:cancelAction];
+    [alert addAction:favoritesSelectorAction];
     [alert addAction:tagSelectorAction];
     [alert addAction:mostVisitedAction];
     [alert addAction:bestRatedAction];
@@ -2465,6 +2476,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self pushView:discoverController];
 }
 
+-(void)discoverFavoritesImages
+{
+    // Create Discover view
+    FavoritesImagesViewController *discoverController = [[FavoritesImagesViewController alloc] initWithCategoryId:kPiwigoFavoritesCategoryId];
+    [self pushView:discoverController];
+}
 
 #pragma mark - TagSelectViewDelegate Methods
 
