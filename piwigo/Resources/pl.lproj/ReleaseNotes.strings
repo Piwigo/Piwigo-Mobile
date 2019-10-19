@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.4_text" = "Wersja 2.4.4\n\n• Naprawiono problemy z przesyłaniem wideo na niektórych serwerach\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.4.5_text" = "Wersja 2.4.5\n\n• Wyświetla twoje ulubione obrazy\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.4.4_text" = "Wersja 2.4.4\n1 października 2019\n\n• Naprawia problemy z przesyłaniem wideo na niektórych serwerach\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
 "v2.4.3_text" = "Wersja 2.4.3\n25 września 2019\n\n• Kompatybilność z iOS 13\n• Drobne poprawki błędów i ulepszenia interfejsu";
 

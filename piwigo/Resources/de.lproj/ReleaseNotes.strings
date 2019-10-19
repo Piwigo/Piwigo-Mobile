@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.4_text" = "Version 2.4.4\n\n• Behebt Probleme beim Hochladen von Videos auf einigen Servern\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
+"v2.4.5_text" = "Version 2.4.5\n\n• Zeigt Ihre Lieblingsbilder an\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
+
+"v2.4.4_text" = "Version 2.4.4\n1. Oktober 2019\n\n• Behebt Probleme beim Hochladen von Videos auf einigen Servern\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
 
 "v2.4.3_text" = "Version 2.4.3\n25. September 2019\n\n• iOS 13-Kompatibilität\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
 
