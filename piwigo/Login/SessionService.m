@@ -131,7 +131,26 @@
                           if (isLogginIn) {
                               [Model sharedInstance].pwgToken = [result objectForKey:@"pwg_token"];
                               [Model sharedInstance].language = [result objectForKey:@"language"];
-                              [Model sharedInstance].version = [result objectForKey:@"version"];
+                              
+                              // Piwigo server version should be of format 1.2.3
+                              NSMutableString *versionStr = [result objectForKey:@"version"];
+                              NSArray<NSString *> *components = [versionStr componentsSeparatedByString:@"."];
+                              switch (components.count) {
+                                  case 1:
+                                      // Version of type 1
+                                      [versionStr appendString:@".0.0"];
+                                      break;
+
+                                  case 2:
+                                      // Version of type 1.2
+                                      [versionStr appendString:@".0"];
+                                      break;
+
+                                  default:
+                                      break;
+                              }
+                              [Model sharedInstance].version = versionStr;
+                              
                               NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
                               if ([charset isEqualToString:@"UTF-8"]) {
                                   [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;

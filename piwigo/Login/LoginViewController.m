@@ -572,7 +572,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                                   OnCompletion:^(NSDictionary *responseObject) {
             if(responseObject)
             {
-                if([@"2.8" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedAscending)
+                if([@"2.8.0" compare:[Model sharedInstance].version options:NSNumericSearch] == NSOrderedDescending)
                 {
                     // They need to update, ask user what to do
                     // Close loading or re-login view and ask what to do
