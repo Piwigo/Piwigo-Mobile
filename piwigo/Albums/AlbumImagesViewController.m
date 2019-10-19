@@ -2445,7 +2445,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Add actions
     [alert addAction:cancelAction];
-    [alert addAction:favoritesSelectorAction];
+    if ([@"2.10.0" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedDescending)
+    {
+        [alert addAction:favoritesSelectorAction];
+    }
     [alert addAction:tagSelectorAction];
     [alert addAction:mostVisitedAction];
     [alert addAction:bestRatedAction];

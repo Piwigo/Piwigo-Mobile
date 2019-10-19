@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.5_text" = "Version 2.4.5\n\n• Menampilkan gambar favorit Anda\n• Perbaikan bug minor dan perbaikan antarmuka";
+"v2.4.5_text" = "Version 2.4.5\n\n• Menampilkan gambar favorit Anda (membutuhkan Piwigo 2.10 atau lebih baru)\n• Perbaikan bug minor dan perbaikan antarmuka";
 
 "v2.4.4_text" = "Version 2.4.4\n1 Oktober, 2019\n\n• Perbaiki masalah upload video di beberapa server\n• Perbaikan bug minor dan perbaikan antarmuka";
 

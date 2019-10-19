@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.5_text" = "Versie 2.4.5\n\n• Toont uw favoriete afbeeldingen\n• Kleine foutjes hersteld en verbetering van de interface";
+"v2.4.5_text" = "Versie 2.4.5\n\n• Toont uw favoriete afbeeldingen (vereist Piwigo 2.10 of hoger)\n• Kleine foutjes hersteld en verbetering van de interface";
 
 "v2.4.4_text" = "Versie 2.4.4\n1 Oktober 2019\n\n• Problemen met video-uploads op sommige servers oplossen\n• Kleine foutjes hersteld en verbetering van de interface";
 
