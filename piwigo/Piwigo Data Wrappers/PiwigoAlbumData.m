@@ -204,7 +204,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
-//    NSLog(@"loadCategoryImageDataChunkWithSort: page %ld", self.onPage);
+    NSLog(@"loadCategoryImageDataChunkWithSort: page %ld", self.onPage);
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
                                       forCategory:self.albumId orQuery:self.query
 										   onPage:self.onPage

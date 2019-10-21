@@ -298,7 +298,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                           if ([responseObject objectForKey:@"message"]) {
                               errorMsg = [responseObject objectForKey:@"message"];
                           }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImageSearch andURLparams:nil];
+                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesGetImages andURLparams:nil];
                           
                           completion(task, nil);
                       }
@@ -405,7 +405,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                           if ([responseObject objectForKey:@"message"]) {
                               errorMsg = [responseObject objectForKey:@"message"];
                           }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImageSearch andURLparams:nil];
+                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoTagsGetImages andURLparams:nil];
                           
                           completion(task, nil);
                       }
@@ -489,12 +489,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
                           // Store number of images in cache
-                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
-                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages = nberImages;
-                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].totalNumberOfImages = nberImages;
+                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages = nberImages;
+                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages = nberImages;
                           
                           // Parse images
-                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoTagsCategoryId];
+                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoFavoritesCategoryId];
                           completion(task, searchedImages);
                       }
                       else
@@ -508,7 +508,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                           if ([responseObject objectForKey:@"message"]) {
                               errorMsg = [responseObject objectForKey:@"message"];
                           }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImageSearch andURLparams:nil];
+                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoUserFavoritesGetList andURLparams:nil];
                           
                           completion(task, nil);
                       }
@@ -588,7 +588,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     else if ((categoryId == kPiwigoVisitsCategoryId) ||
              (categoryId == kPiwigoBestCategoryId)   ||
              (categoryId == kPiwigoRecentCategoryId)) {
-        // Load most visited images
+        // Load most visited images, best images, recent images
         task = [ImageService getImagesForDiscoverId:categoryId
                                              onPage:onPage
                                            forOrder:sort
@@ -613,7 +613,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                   }];
     }
     else if (categoryId == kPiwigoTagsCategoryId) {
-        // Load tag images
+        // Load tagged images
         NSInteger tagId = [[[CategoriesData sharedInstance] getCategoryById:categoryId].query integerValue];
         task = [ImageService getImagesForTagId:tagId
                                         onPage:onPage
