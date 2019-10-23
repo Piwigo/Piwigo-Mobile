@@ -99,6 +99,9 @@
 //        }
 // and level (permissions)
 
+        case kPiwigoSortCategoryManual:                 // Manual sort order
+            break;
+            
 //		case kPiwigoSortCategoryVideoOnly:
 //		{
 //			NSIndexSet *set = [images indexesOfObjectsPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL *stop) {

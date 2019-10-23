@@ -132,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "Ocena, niska → wysoka";
 "categorySort_visitsDescending" = "Odwiedzin, mniej → więcej";
 "categorySort_visitsAscending" = "Odwiedzin, mniej → więcej";
+"categorySort_manual" = "Zamówienie ręczne";
+
 "categorySort_videosOnly" = "Tylko Filmy";
 "categorySort_imagesOnly" = "Tylko Zdjęcia";
 

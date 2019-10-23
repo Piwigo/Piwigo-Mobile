@@ -120,6 +120,10 @@
         case kPiwigoSortCategoryVisitsDescending:       // Visits, low → high
             sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderDescending];
             break;
+            
+        case kPiwigoSortCategoryManual:                 // Manual order
+            // Empty string
+            break;
 
 //		case kPiwigoSortCategoryVideoOnly:
 //			//			sort = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");

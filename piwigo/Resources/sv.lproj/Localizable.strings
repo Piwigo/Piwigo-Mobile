@@ -132,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "Betyg, låg → hög";
 "categorySort_visitsDescending" = "Besökare, hög → låg";
 "categorySort_visitsAscending" = "Besökare, låg → hög";
+"categorySort_manual" = "Manuell ordning";
+
 "categorySort_videosOnly" = "Endast filmer";
 "categorySort_imagesOnly" = "Endast bilder";
 

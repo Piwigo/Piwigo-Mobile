@@ -132,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "Valutazione, basso → alto";
 "categorySort_visitsDescending" = "Visite, alto → basso";
 "categorySort_visitsAscending" = "Visite, basso → alto";
+"categorySort_manual" = "Ordine manuale";
+
 "categorySort_videosOnly" = "Soli Video";
 "categorySort_imagesOnly" = "Solo Immagini";
 

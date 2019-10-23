@@ -132,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "Waarderingsscore, laag → hoog";
 "categorySort_visitsDescending" = "Bezoeken, hoog → laag";
 "categorySort_visitsAscending" = "Bezoeken, laag → hoog";
+"categorySort_manual" = "Handmatige volgorde";
+
 "categorySort_videosOnly" = "Alleen video's";
 "categorySort_imagesOnly" = "Alleen foto's";
 

@@ -132,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "評価スコア、低い→高い";
 "categorySort_visitsDescending" = "訪問回数, 高 → 低";
 "categorySort_visitsAscending" = "訪問回数, 低 → 高";
+"categorySort_manual" = "手動注文";
+
 "categorySort_videosOnly" = "動画のみ";
 "categorySort_imagesOnly" = "画像のみ";
 

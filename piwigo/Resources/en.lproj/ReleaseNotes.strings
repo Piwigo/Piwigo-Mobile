@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.5_text" = "Version 2.4.5\n\n• Displays your favorite images (requires Piwigo 2.10 or later)\n• Allows Community users to create albums (with appropriate rights)\n• Minor bug fixes and improvements of the interface";
+"v2.4.5_text" = "Version 2.4.5\n\n• Displays your favorite images (requires Piwigo 2.10 or later)\n• Option for presenting images in manual sort order\n• Allows Community users to create albums (with appropriate rights)\n• Minor bug fixes and improvements of the interface";
 
 "v2.4.4_text" = "Version 2.4.4\nOctober 1, 2019\n\n• Fix video upload issues on some servers\n• Minor bug fixes and improvements of the interface";
 

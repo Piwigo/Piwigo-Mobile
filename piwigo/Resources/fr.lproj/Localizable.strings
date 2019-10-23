@@ -132,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "Note, basse → haute";
 "categorySort_visitsDescending" = "Nombre de visites, élevé → faible";
 "categorySort_visitsAscending" = "Nombre de visites, faible → élevé";
+"categorySort_manual" = "Tri manuel";
+
 "categorySort_videosOnly" = "Vidéos Uniquement";
 "categorySort_imagesOnly" = "Images Uniquement";
 

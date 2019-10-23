@@ -132,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "Bedømmelse, lav → høj";
 "categorySort_visitsDescending" = "Besøg, høj → lav";
 "categorySort_visitsAscending" = "Besøg, lav → høj";
+"categorySort_manual" = "Manuel ordre";
+
 "categorySort_videosOnly" = "Kun Videoer";
 "categorySort_imagesOnly" = "Kun Billeder";
 
