@@ -85,7 +85,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         // Bar buttons
         self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
         [self.editBarButton setAccessibilityIdentifier:@"edit"];
-        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"trashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteImage)];
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteImage)];
         self.deleteBarButton.tintColor = [UIColor redColor];
         [self.deleteBarButton setAccessibilityIdentifier:@"delete"];
         self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareImage)];
