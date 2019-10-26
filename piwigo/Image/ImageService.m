@@ -1062,6 +1062,15 @@ NSString * const kGetImageOrderDescending = @"desc";
             PiwigoTagData *tagData = [PiwigoTagData new];
             tagData.tagId = [[tag objectForKey:@"id"] integerValue];
             tagData.tagName = [NetworkHandler UTF8EncodedStringFromString:[tag objectForKey:@"name"]];
+            NSDateFormatter *dateFormat = [NSDateFormatter new];
+            [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            NSString *lastModifiedString = [tag objectForKey:@"lastmodified"];
+            if (![lastModifiedString isKindOfClass:[NSNull class]]) {
+                tagData.lastModified = [dateFormat dateFromString:lastModifiedString];
+            } else {
+                tagData.lastModified = [NSDate date];
+            }
+            tagData.numberOfImagesUnderTag = NSNotFound;
             [imageTags addObject:tagData];
         }
         imageData.tags = imageTags;

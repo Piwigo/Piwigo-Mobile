@@ -50,8 +50,14 @@
         if (index != NSNotFound)
         {
             // Retrieve exisiting data…
-            // Nothing to keep from old list…
-            // PiwigoTagData *existingTag = [self.tagList objectAtIndex:index];
+            PiwigoTagData *existingTag = [self.tagList objectAtIndex:index];
+            
+            // Keep number of tagged images if did not return number
+            if ((existingTag.numberOfImagesUnderTag != NSNotFound) &&
+                (tagData.numberOfImagesUnderTag == NSNotFound))
+            {
+                tagData.numberOfImagesUnderTag = existingTag.numberOfImagesUnderTag;
+            }
         }
 
         // Append category to new list
@@ -119,11 +125,19 @@
 	for(NSDictionary *tagData in tagsArray)
 	{
         // => pwg.tags.getAdminList returns:
-        // id, (lastmodified), name e.g. "Médicaments", (url_name) e.g. "divers_medicaments"
+        // id, lastmodified, name e.g. "Médicaments", (url_name) e.g. "divers_medicaments"
         PiwigoTagData *newTagData = [PiwigoTagData new];
         newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
         newTagData.tagName = [NetworkHandler UTF8EncodedStringFromString:[tagData objectForKey:@"name"]];
-        
+        NSDateFormatter *dateFormat = [NSDateFormatter new];
+        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        NSString *lastModifiedString = [tagData objectForKey:@"lastmodified"];
+        if (![lastModifiedString isKindOfClass:[NSNull class]]) {
+            newTagData.lastModified = [dateFormat dateFromString:lastModifiedString];
+        } else {
+            newTagData.lastModified = [NSDate date];
+        }
+
         // => pwg.tags.getList returns in addition: counter, url
         if ([tagData objectForKey:@"counter"]) {
             newTagData.numberOfImagesUnderTag = [[tagData objectForKey:@"counter"] integerValue];
