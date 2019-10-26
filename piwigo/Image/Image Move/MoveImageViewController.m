@@ -316,9 +316,9 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     }
     else {
         if (self.copyImage)
-            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle];
+            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
         else
-            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle];
+            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
     }
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
@@ -349,9 +349,9 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     }
     else {
         if (self.copyImage)
-            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle];
+            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
         else
-            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle];
+            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
     }
     NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
     [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
