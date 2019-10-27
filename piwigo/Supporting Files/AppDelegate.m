@@ -421,7 +421,7 @@ NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlb
     // Update list
     [Model sharedInstance].recentCategories = [newList componentsJoinedByString:@","];
     [[Model sharedInstance] saveToDisk];
-    NSLog(@"•••> Recent albums: %@ (max: %ld)", [Model sharedInstance].recentCategories, [Model sharedInstance].maxNberRecentCategories);
+//    NSLog(@"•••> Recent albums: %@ (max: %ld)", [Model sharedInstance].recentCategories, [Model sharedInstance].maxNberRecentCategories);
 }
 
 -(void)removeRecentAlbumWithAlbumId:(NSNotification *)notification
