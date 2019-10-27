@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "PiwigoAlbumData.h"
 
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationGetCategoryData;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryDataUpdated;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
+FOUNDATION_EXPORT NSString * const kPiwigoGetCategoryDataNotification;
+FOUNDATION_EXPORT NSString * const kPiwigoCategoryDataUpdatedNotification;
+FOUNDATION_EXPORT NSString * const kPiwigoChangedCurrentCategoryNotification;
 
 @interface CategoriesData : NSObject
 

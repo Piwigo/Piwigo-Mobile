@@ -1,5 +1,5 @@
 //
-//  AllCategoriesViewController.m
+//  ThumbnailCategoryViewController.m
 //  piwigo
 //
 //  Created by Spencer Baker on 3/16/15.
@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "AllCategoriesViewController.h"
+#import "ThumbnailCategoryViewController.h"
 #import "CategoriesData.h"
 #import "AlbumService.h"
 #import "Model.h"
@@ -16,7 +16,7 @@
 
 CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
 
-@interface AllCategoriesViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
+@interface ThumbnailCategoryViewController () <UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate>
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
 @property (nonatomic, strong) NSMutableArray *categories;
@@ -29,7 +29,7 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
 
 @end
 
-@implementation AllCategoriesViewController
+@implementation ThumbnailCategoryViewController
 
 -(instancetype)initForImage:(PiwigoImageData *)imageData andCategoryId:(NSInteger)categoryId
 {
@@ -61,7 +61,7 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitAllCategories)];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
     }
 	return self;
 }
@@ -150,7 +150,7 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
     
-    if (section == 0)
+    if (section == 0)   // Albums containing image
     {
         // Title
         NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
@@ -188,7 +188,7 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
 {
     NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
     
-    if (section == 0)   // Current album
+    if (section == 0)   // Albums containing image
     {
         // Title
         NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
@@ -286,7 +286,7 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
         NSInteger depth = [categoryData getDepthOfCategory];
         PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
         depth -= [defaultCategoryData getDepthOfCategory];
-        [cell setupWithCategoryData:categoryData atDepth:depth];
+        [cell setupWithCategoryData:categoryData atDepth:depth withSubCategoryButton:YES];
 
         // Switch between Open/Close cell disclosure
         cell.categoryDelegate = self;

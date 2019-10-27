@@ -27,6 +27,6 @@
 
 -(void)tappedLoadView;
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category;
--(void)setupWithCategoryData:(PiwigoAlbumData*)category atDepth:(NSInteger)depth;
+-(void)setupWithCategoryData:(PiwigoAlbumData*)category atDepth:(NSInteger)depth withSubCategoryButton:(BOOL)access;
 
 @end

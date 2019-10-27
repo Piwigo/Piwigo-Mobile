@@ -8,7 +8,7 @@
 
 #import <Photos/Photos.h>
 
-#import "AllCategoriesViewController.h"
+#import "ThumbnailCategoryViewController.h"
 #import "AsyncImageActivityItemProvider.h"
 #import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
@@ -131,7 +131,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
 	}
 	return self;
 }
@@ -927,7 +927,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
     [self setEnableStateOfButtons:NO];
 
     // Present AllCategories view
-    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImage:self.imageData andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+    ThumbnailCategoryViewController *allCategoriesPickVC = [[ThumbnailCategoryViewController alloc] initForImage:self.imageData andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
     allCategoriesPickVC.setAlbumImageDelegate = self;
     [self pushView:allCategoriesPickVC];
 }
@@ -1043,7 +1043,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
-        if ([viewController isKindOfClass:[AllCategoriesViewController class]])
+        if ([viewController isKindOfClass:[ThumbnailCategoryViewController class]])
         {
             viewController.modalPresentationStyle = UIModalPresentationPopover;
             viewController.popoverPresentationController.sourceView = self.view;

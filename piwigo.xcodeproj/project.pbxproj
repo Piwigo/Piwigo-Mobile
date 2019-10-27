@@ -65,7 +65,7 @@
 		D8083AA21A81B34000A95605 /* ImageUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083AA11A81B34000A95605 /* ImageUpload.m */; };
 		D8083AA61A82905B00A95605 /* ImageUploadProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */; };
 		D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */; };
-		D8172E201AB7D2EA00271DB0 /* AllCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */; };
+		D8172E201AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */; };
 		D818B1801AA4265D006FC32A /* CategorySortViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D818B17F1AA4265D006FC32A /* CategorySortViewController.m */; };
 		D818E9FB1A74C18500733991 /* AlbumService.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FA1A74C18500733991 /* AlbumService.m */; };
 		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
@@ -307,8 +307,8 @@
 		D8083AA51A82905B00A95605 /* ImageUploadProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadProgressView.m; sourceTree = "<group>"; };
 		D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveCategoryViewController.h; sourceTree = "<group>"; };
 		D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveCategoryViewController.m; sourceTree = "<group>"; };
-		D8172E1E1AB7D2EA00271DB0 /* AllCategoriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllCategoriesViewController.h; sourceTree = "<group>"; };
-		D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllCategoriesViewController.m; sourceTree = "<group>"; };
+		D8172E1E1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCategoryViewController.h; sourceTree = "<group>"; };
+		D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailCategoryViewController.m; sourceTree = "<group>"; };
 		D818B17E1AA4265D006FC32A /* CategorySortViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySortViewController.h; sourceTree = "<group>"; };
 		D818B17F1AA4265D006FC32A /* CategorySortViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySortViewController.m; sourceTree = "<group>"; };
 		D818E9F91A74C18500733991 /* AlbumService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumService.h; sourceTree = "<group>"; };
@@ -695,8 +695,8 @@
 		ADE535911F65C17E00372CBD /* Album Thumbnail */ = {
 			isa = PBXGroup;
 			children = (
-				D8172E1E1AB7D2EA00271DB0 /* AllCategoriesViewController.h */,
-				D8172E1F1AB7D2EA00271DB0 /* AllCategoriesViewController.m */,
+				D8172E1E1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.h */,
+				D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */,
 			);
 			path = "Album Thumbnail";
 			sourceTree = "<group>";
@@ -1483,7 +1483,7 @@
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
 				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
 				ADE936F82182D54D0003F037 /* PrivacyPolicyViewController.m in Sources */,
-				D8172E201AB7D2EA00271DB0 /* AllCategoriesViewController.m in Sources */,
+				D8172E201AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m in Sources */,
 				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
 				D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */,

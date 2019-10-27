@@ -302,7 +302,9 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     self.albumData.name = albumName;
                                     self.albumData.comment = albumComment;
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                                    
+                                    // Notify album/image view of modification
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
                                 });
                             }];
                         }
@@ -374,7 +376,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
               {
                   [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
                       });
                   }];
               }

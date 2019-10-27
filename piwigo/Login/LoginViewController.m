@@ -140,7 +140,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     }
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
 
     return self;
 }
@@ -623,7 +623,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                         } else {
                             // Refresh category data
                             NSDictionary *userInfo = @{@"NoHUD" : @"NO", @"fromCache" : @"NO", @"albumId" : @(0)};
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoGetCategoryDataNotification object:nil userInfo:userInfo];
                         }
                     }];
                 }

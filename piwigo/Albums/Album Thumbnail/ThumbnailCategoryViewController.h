@@ -1,5 +1,5 @@
 //
-//  AllCategoriesViewController.h
+//  ThumbnailCategoryViewController.h
 //  piwigo
 //
 //  Created by Spencer Baker on 3/16/15.
@@ -16,7 +16,7 @@
 
 @end
 
-@interface AllCategoriesViewController : UIViewController
+@interface ThumbnailCategoryViewController : UIViewController
 
 @property (nonatomic, weak) id<SetAlbumImageDelegate> setAlbumImageDelegate;
 

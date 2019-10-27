@@ -67,10 +67,10 @@
             self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
             
             // Register category changes
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoNotificationChangedCurrentCategory object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoChangedCurrentCategoryNotification object:nil];
 
             // Register palette changes
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
         }
         else
         {
@@ -473,7 +473,7 @@
             NSInteger depth = [categoryData getDepthOfCategory];
             PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
             depth -= [defaultCategoryData getDepthOfCategory];
-            [cell setupWithCategoryData:categoryData atDepth:depth];
+            [cell setupWithCategoryData:categoryData atDepth:depth withSubCategoryButton:YES];
             
             // Switch between Open/Close cell disclosure
             cell.categoryDelegate = self;

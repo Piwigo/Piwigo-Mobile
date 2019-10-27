@@ -44,7 +44,7 @@
 //#endif
 
 CGFloat const kRadius = 25.0;
-NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
+NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultAlbumNotification";
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectViewDelegate>
 
@@ -190,14 +190,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         [self.view addSubview:self.homeAlbumButton];
 
         // Register category data updates
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoNotificationGetCategoryData object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoGetCategoryDataNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoCategoryDataUpdatedNotification object:nil];
 		
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
 
         // Register root album changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoBackToDefaultAlbumNotification object:nil];
     }
 	return self;
 }
@@ -323,7 +323,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Inform Upload view controllers that user selected this category
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoChangedCurrentCategoryNotification object:nil userInfo:userInfo];
     
     // Load, sort images and reload collection
     if (self.categoryId != 0) {
@@ -2042,6 +2042,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             // Action depends on mode
             if(!self.isSelect)
             {
+                // Add category to list of recent albums
+                NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)self.categoryId]};
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoAddRecentAlbumNotification object:nil userInfo:userInfo];
+
                 // Selection mode not active => display full screen image
                 self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
                 self.imageDetailView.hidesBottomBarWhenPushed = YES;
@@ -2352,13 +2356,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 - (void)willPresentSearchController:(UISearchController *)searchController
 {
     // Unregister category data updates
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoCategoryDataUpdatedNotification object:nil];
 }
 
 - (void)didDismissSearchController:(UISearchController *)searchController
 {
     // Register category data updates
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoCategoryDataUpdatedNotification object:nil];
 }
 
 

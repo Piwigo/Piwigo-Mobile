@@ -38,7 +38,7 @@
     [self.loadTapView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedLoadView)]];
 }
 
--(void)setupWithCategoryData:(PiwigoAlbumData*)category atDepth:(NSInteger)depth
+-(void)setupWithCategoryData:(PiwigoAlbumData*)category atDepth:(NSInteger)depth withSubCategoryButton:(BOOL)access
 {
     // General settings
     self.backgroundColor = [UIColor piwigoCellBackgroundColor];
@@ -50,7 +50,7 @@
 
     // Is this a sub-category?
     self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
-    if(depth < 1) {
+    if ((depth < 1) || !access) {
         // Categories in root album
         self.categoryLabel.text = self.categoryData.name;
     } else {
@@ -64,7 +64,7 @@
     }
     
     // Show open/close button (# sub-albums) if there are sub-categories
-	if(category.numberOfSubCategories <= 0) {
+	if ((category.numberOfSubCategories <= 0) || !access) {
         self.subAlbumsLabel.text = @"";
         self.upDownImage.hidden = YES;
     } else {

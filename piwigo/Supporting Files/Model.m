@@ -60,6 +60,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         // Album/category settings
         instance.defaultCategory = 0;                   // Root album by default
         instance.defaultAlbumThumbnailSize = [PiwigoImageData optimumAlbumThumbnailSizeForDevice];
+        instance.recentCategories = @"0";
+        instance.maxNberRecentCategories = 5;
 
         // Sort images by date: old to new
 		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
@@ -304,6 +306,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.uploadChunkSize = modelData.uploadChunkSize;
         self.stringEncoding = modelData.stringEncoding;
         self.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
+        self.recentCategories = modelData.recentCategories;
+        self.maxNberRecentCategories = modelData.maxNberRecentCategories;
 	}
 }
 
@@ -376,7 +380,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.stringEncoding]];
     // Added in v2.4.2…
     [saveObject addObject:[NSNumber numberWithInteger:self.defaultAlbumThumbnailSize]];
-    
+    // Added in v2.4.5…
+    [saveObject addObject:self.recentCategories];
+    [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.maxNberRecentCategories]];
+
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
 
@@ -645,6 +652,16 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.defaultAlbumThumbnailSize = [[savedData objectAtIndex:47] integerValue];
     } else {
         self.defaultAlbumThumbnailSize = [PiwigoImageData optimumAlbumThumbnailSizeForDevice];
+    }
+    if(savedData.count > 48) {
+        self.recentCategories = [savedData objectAtIndex:48];
+    } else {
+        self.recentCategories = @"0";   // i.e. root album
+    }
+    if(savedData.count > 49) {
+        self.maxNberRecentCategories = [[savedData objectAtIndex:49] unsignedIntegerValue];
+    } else {
+        self.maxNberRecentCategories = 5;      // Default value
     }
 	return self;
 }
