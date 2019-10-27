@@ -216,6 +216,8 @@
 // Album move
 "moveCategory" = "Flyt Album";
 "moveCategory_selectParent" = "Vælg et album at flytte albummet \"%@\" ind i";
+"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
 "moveCategory_message" = "Er du sikker på du vil flytte \"%@\" til albummet \"%@\"?";
 "moveCategoryHUD_moving" = "Flytter album…";
 
@@ -361,7 +363,11 @@
 // Image move
 "moveImage_title" = "Flyt til album";
 "moveSingleImage_selectAlbum" = "Vælg et album at flytte billede \"%@\" til";
+"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
+"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Vælg et album at flytte billederne til";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
+"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
 "moveSingleImage_message" = "Er du sikker på du vil flytte billede \"%@\" til albummet \"%@\"?";
 "moveSeveralImages_message" = "Er du sikker på du vil flytte billederne til album \"%@\"?";
 "moveSingleImageHUD_moving" = "Flytter billeder…";
@@ -374,7 +380,11 @@
 // Image copy
 "copyImage_title" = "Kopier til album";
 "copySingleImage_selectAlbum" = "Vælg et album at kopiere billede \"%@\" til";
+"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
+"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
 "copySeveralImages_selectAlbum" = "Vælg et album at kopiere billederne til";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
+"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
 "copySingleImage_message" = "Er du sikker på du vil flytte billede \"%@\" til album \"%@\"?";
 "copySeveralImages_message" = "Er du sikker på du vil flytte billederne til album \"%@\"?";
 "copySingleImageHUD_copying" = "Kopierer billeder…";
@@ -509,6 +519,9 @@
 "defaultImageSort>414px" = "Standard Sorteringsrækkefølge";
 "defaultAlbumThumbnailFile>414px" = "Album miniature";
 "defaultAlbumThumbnailSizeHeader" = "Vælg album miniature størrelse";
+"maxNberOfRecentAlbums" = "Seneste";
+"maxNberOfRecentAlbums>320px" = "Recent Albums";
+"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
 
 "thumbnailSizeSquare" = "Firkant";
 "thumbnailSizeThumbnail" = "Miniature";

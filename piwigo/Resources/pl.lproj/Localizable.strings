@@ -216,6 +216,8 @@
 // Album move
 "moveCategory" = "Przenieść Album";
 "moveCategory_selectParent" = "Wybierz album, do którego chcesz przenieść album \"%@\"";
+"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
 "moveCategory_message" = "Czy na pewno chcesz przenieść \"%@\" do albumu \"%@\"?";
 "moveCategoryHUD_moving" = "Przenoszenie albumu…";
 
@@ -361,7 +363,11 @@
 // Image move
 "moveImage_title" = "Przenieś do albumu";
 "moveSingleImage_selectAlbum" = "Wybierz album, do którego chcesz przenieść obraz \"%@\"";
+"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
+"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Wybierz album, do którego chcesz przenieść obrazy";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
+"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
 "moveSingleImage_message" = "Czy na pewno chcesz przenieść obraz \"%@\" do albumu \"%@\"?";
 "moveSeveralImages_message" = "Czy na pewno chcesz przenieść obrazy do albumu \"%@\"?";
 "moveSingleImageHUD_moving" = "Przenoszenie obrazu…";
@@ -374,7 +380,11 @@
 // Image copy
 "copyImage_title" = "Skopiuj do albumu";
 "copySingleImage_selectAlbum" = "Wybierz album, do którego skopiować obraz \"%@\"";
+"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
+"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
 "copySeveralImages_selectAlbum" = "Wybierz album, do którego chcesz skopiować obrazy";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
+"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
 "copySingleImage_message" = "Czy na pewno chcesz skopiować obraz \"%@\" do albumu \"%@\"?";
 "copySeveralImages_message" = "Czy na pewno chcesz skopiować obrazy do albumu \"%@\"?";
 "copySingleImageHUD_copying" = "Kopiowanie obrazu…";
@@ -509,6 +519,9 @@
 "defaultImageSort>414px" = "Domyślne Sortowanie Zdjęć";
 "defaultAlbumThumbnailFile>414px" = "Plik miniatur albumów";
 "defaultAlbumThumbnailSizeHeader" = "Wybierz rozmiar miniatury albumu";
+"maxNberOfRecentAlbums" = "Recent";
+"maxNberOfRecentAlbums>320px" = "Recent Albums";
+"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
 
 "thumbnailSizeSquare" = "Kwadrat";
 "thumbnailSizeThumbnail" = "Miniaturka";

@@ -216,6 +216,8 @@
 // Album move
 "moveCategory" = "Pindahkan Album";
 "moveCategory_selectParent" = "Pilih album yang akan dipindahkan ke dalam album \"%@\"";
+"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
 "moveCategory_message" = "Anda yakin ingin memindahkan \"%@\" ke dalam album \"%@\"?";
 "moveCategoryHUD_moving" = "Memindahkan Album…";
 
@@ -361,7 +363,11 @@
 // Image move
 "moveImage_title" = "Pindah ke Album";
 "moveSingleImage_selectAlbum" = "Pilih album untuk memindahkan gambar \"%@\"";
+"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
+"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Pilih album untuk memindahkan gambar";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
+"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
 "moveSingleImage_message" = "Apakah anda ingin memindahkan gambar \"%@\" ke album \"%@\"?";
 "moveSeveralImages_message" = "Apakah anda ingin memindahkan gambar ke album \"%@\"?";
 "moveSingleImageHUD_moving" = "Memindahkan…";
@@ -374,7 +380,11 @@
 // Image copy
 "copyImage_title" = "Salin ke Album";
 "copySingleImage_selectAlbum" = "Pilih album untuk menyalin gambar \"%@\"";
+"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
+"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
 "copySeveralImages_selectAlbum" = "Pilih album untuk menyalin gambar";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
+"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
 "copySingleImage_message" = "Apakah anda ingin menyalin gambar \"%@\" ke album \"%@\"?";
 "copySeveralImages_message" = "Apakah anda ingin menyalin gambar ke album \"%@\"?";
 "copySingleImageHUD_copying" = "Menyalin Gambar…";
@@ -509,6 +519,9 @@
 "defaultImageSort>414px" = "Sortir Standar untuk Gambar";
 "defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
 "defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
+"maxNberOfRecentAlbums" = "Recent";
+"maxNberOfRecentAlbums>320px" = "Recent Albums";
+"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
 
 "thumbnailSizeSquare" = "Persegi";
 "thumbnailSizeThumbnail" = "Tampilan Besar";

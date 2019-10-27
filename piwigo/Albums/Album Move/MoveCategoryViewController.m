@@ -412,8 +412,8 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
                                   
                                   // Update moved category
                                   NSMutableArray *upperCategories = [self.selectedCategory.upperCategories mutableCopy];
-                                  [upperCategories removeObject:[NSString stringWithFormat:@"%ld", self.selectedCategory.parentAlbumId]];
-                                  [upperCategories addObject:[NSString stringWithFormat:@"%ld", categoryId]];
+                                  [upperCategories removeObject:[NSString stringWithFormat:@"%ld", (long)self.selectedCategory.parentAlbumId]];
+                                  [upperCategories addObject:[NSString stringWithFormat:@"%ld", (long)categoryId]];
                                   self.selectedCategory.upperCategories = upperCategories;
                                   self.selectedCategory.parentAlbumId = categoryId;
                                   

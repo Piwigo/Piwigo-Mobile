@@ -390,7 +390,7 @@ NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlb
     NSMutableArray *newList = [NSMutableArray new];
     
     // Compile new list
-    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", categoryId];
+    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)categoryId];
     if (recentAlbumsStr.length == 0)
     {
         // Empty list => simply add albumId
@@ -436,7 +436,7 @@ NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlb
     if (recentAlbumsStr.length == 0) return;
 
     // Non-empty list, continue
-    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", categoryId];
+    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)categoryId];
     NSMutableArray<NSString *> *recentCategories = [[recentAlbumsStr componentsSeparatedByString:@","] mutableCopy];
         
     // Remove albumId from list if necessary
