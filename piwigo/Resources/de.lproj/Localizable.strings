@@ -216,8 +216,8 @@
 // Album move
 "moveCategory" = "Album verschieben";
 "moveCategory_selectParent" = "Wähle ein Album aus, in das Du das Album \"%@\" verschieben möchtest";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
+"moveCategory_selectRecent" = "Wählen Sie ein Album aus, in das Sie das Album \"%@\" verschieben möchten";
+"moveCategory_selectRecentOther" = "oder wählen Sie ein anderes Album aus, in das Sie das Album \"%@\" verschieben möchten";
 "moveCategory_message" = "Möchtest Du wirklich das Album \"%@\" in das Album \"%@\" verschieben?";
 "moveCategoryHUD_moving" = "Album wird verschoben…";
 
@@ -363,11 +363,11 @@
 // Image move
 "moveImage_title" = "Zum Album verschieben";
 "moveSingleImage_selectAlbum" = "Wähle ein Album aus, in das Du das Bild \"%@\" verschieben möchtest";
-"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
-"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
+"moveSingleImage_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie das Bild \"%@\" verschieben möchten";
+"moveSingleImage_selectRecentOther" = "oder wählen Sie ein anderes Album aus, in das Sie das Bild \"%@\" verschieben möchten";
 "moveSeveralImages_selectAlbum" = "Wähle ein Album zum Verschieben der Bilder";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
-"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
+"moveSeveralImages_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie die Bilder verschieben möchten";
+"moveSeveralImages_selectRecentOther" = "oder wählen Sie ein anderes Album aus, in das Sie die Bilder verschieben möchten";
 "moveSingleImage_message" = "Möchtest Du wirklich das Bild \"%@\" in das Album \"%@\" verschieben?";
 "moveSeveralImages_message" = "Möchtest Du wirklich die Bilder in das Album \"%@\" verschieben?";
 "moveSingleImageHUD_moving" = "Bild verschieben…";
@@ -380,11 +380,11 @@
 // Image copy
 "copyImage_title" = "Zum Album kopieren";
 "copySingleImage_selectAlbum" = "Wähle ein Album aus, in das Du das Bild \"%@\" kopieren möchtest";
-"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
-"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
+"copySingleImage_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie das Bild \"%@\" kopieren möchten";
+"copySingleImage_selectRecentOther" = "oder wählen Sie ein anderes Album aus, in das Sie das Bild \"%@\" kopieren möchten";
 "copySeveralImages_selectAlbum" = "Wähle ein Album zum Kopieren der Bilder";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
-"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
+"copySeveralImages_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie die Bilder kopieren möchten";
+"copySeveralImages_selectRecentOther" = "oder wählen Sie ein anderes Album aus, in das Sie die Bilder kopieren möchten";
 "copySingleImage_message" = "Möchtest Du wirklich das Bild \"%@\" in das Album \"%@\" kopieren?";
 "copySeveralImages_message" = "Möchtest Du wirklich die Bilder in das Album \"%@\" Kopieren?";
 "copySingleImageHUD_copying" = "Bild kopieren…";
@@ -519,9 +519,9 @@
 "defaultImageSort>414px" = "Standardsortierung der Bilder";
 "defaultAlbumThumbnailFile>414px" = "Album-Miniaturbild Datei";
 "defaultAlbumThumbnailSizeHeader" = "Bitte wähle eine Miniaturbildgröße";
-"maxNberOfRecentAlbums" = "Recent";
-"maxNberOfRecentAlbums>320px" = "Recent Albums";
-"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"maxNberOfRecentAlbums" = "Zuletzt";
+"maxNberOfRecentAlbums>320px" = "Letzte Alben";
+"maxNberOfRecentAlbums>414px" = "Anzahl der letzten Alben";
 
 "thumbnailSizeSquare" = "Quadratisch";
 "thumbnailSizeThumbnail" = "Miniaturbild";
