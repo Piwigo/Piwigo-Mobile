@@ -989,6 +989,9 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 
         // Add category
         if (categoryData != nil) [recentCategories addObject:categoryData];
+        
+        // Reach max number of recent categories?
+        if (recentCategories.count == [Model sharedInstance].maxNberRecentCategories) break;
     }
     
     // Set list of recent categories

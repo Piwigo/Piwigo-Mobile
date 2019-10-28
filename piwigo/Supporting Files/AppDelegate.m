@@ -409,11 +409,11 @@ NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlb
         // Append old list
         [newList addObjectsFromArray:recentCategories];
 
-        // Limit list to 3 - 10 objects (5 by default)
+        // Will limit list to 3 - 10 objects (5 by default) when presenting albums
+        // As some recent albums may not be suggested or other may be deleted, we store more than 10, say 20
         NSUInteger count = [newList count];
-        NSUInteger maxNber = [Model sharedInstance].maxNberRecentCategories;
-        if (count > maxNber) {
-            NSRange range = NSMakeRange(maxNber, count - maxNber);
+        if (count > 20) {
+            NSRange range = NSMakeRange(20, count - 20);
             [newList removeObjectsInRange:range];
         }
     }
@@ -421,7 +421,7 @@ NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlb
     // Update list
     [Model sharedInstance].recentCategories = [newList componentsJoinedByString:@","];
     [[Model sharedInstance] saveToDisk];
-//    NSLog(@"•••> Recent albums: %@ (max: %ld)", [Model sharedInstance].recentCategories, [Model sharedInstance].maxNberRecentCategories);
+    NSLog(@"•••> Recent albums: %@ (max: %ld)", [Model sharedInstance].recentCategories, [Model sharedInstance].maxNberRecentCategories);
 }
 
 -(void)removeRecentAlbumWithAlbumId:(NSNotification *)notification

@@ -693,6 +693,9 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
 
         // Add category if it exists in cache
         [recentCategories addObject:categoryData];
+        
+        // Reach max number of recent categories?
+        if (recentCategories.count == [Model sharedInstance].maxNberRecentCategories) break;
     }
     
     // Set list of recent categories

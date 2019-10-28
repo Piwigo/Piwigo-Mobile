@@ -2179,26 +2179,6 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // Update max number of recent albums
     SliderTableViewCell *maxNberRecentAlbumsCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingsSectionAlbums]];
     [Model sharedInstance].maxNberRecentCategories = [maxNberRecentAlbumsCell getCurrentSliderValue];
-    
-    // Reduce current list of recent albums if necessary
-    NSString *recentAlbumsStr = [Model sharedInstance].recentCategories;
-    if (recentAlbumsStr.length > 0)
-    {
-        // Non-empty list
-        NSMutableArray<NSString *> *recentCategories = [[recentAlbumsStr componentsSeparatedByString:@","] mutableCopy];
-        
-        // Limit list to 3 - 10 objects (5 by default)
-        NSUInteger count = [recentCategories count];
-        NSUInteger maxNber = [maxNberRecentAlbumsCell getCurrentSliderValue];
-        if (count > maxNber) {
-            NSRange range = NSMakeRange(maxNber, count - maxNber);
-            [recentCategories removeObjectsInRange:range];
-        }
-        
-        // Update list
-        [Model sharedInstance].recentCategories = [recentCategories componentsJoinedByString:@","];
-    }
-
     [[Model sharedInstance] saveToDisk];
 }
 
