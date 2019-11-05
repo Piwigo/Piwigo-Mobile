@@ -1965,6 +1965,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                                [Model sharedInstance].defaultCategory = 0;
                                [Model sharedInstance].usesCommunityPluginV29 = NO;
                                [Model sharedInstance].hasAdminRights = NO;
+                               [Model sharedInstance].recentCategories = @"0";
                                [[Model sharedInstance] saveToDisk];
                                
                                // Erase cache
