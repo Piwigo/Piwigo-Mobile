@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "träffar";
 "categoryDiscoverBest_title" = "Högst betygsatta";
 "categoryDiscoverRecent_title" = "Senaste bilder";
+"categoryDiscoverFavorites_title" = "Mina favoriter";
 
 // Albums sort
 "categorySort_nameAscending" = "Bildtitel, A → Ö";
@@ -131,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "Betyg, låg → hög";
 "categorySort_visitsDescending" = "Besökare, hög → låg";
 "categorySort_visitsAscending" = "Besökare, låg → hög";
+"categorySort_manual" = "Manuell sortering";
+
 "categorySort_videosOnly" = "Endast filmer";
 "categorySort_imagesOnly" = "Endast bilder";
 
@@ -213,6 +216,8 @@
 // Album move
 "moveCategory" = "Flytta Album";
 "moveCategory_selectParent" = "Välj ett album att flytta album ”%@” till";
+"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
 "moveCategory_message" = "Är du säker du vill flytta ”%@” in i album ”%@”?";
 "moveCategoryHUD_moving" = "Flyttar Album…";
 
@@ -358,7 +363,11 @@
 // Image move
 "moveImage_title" = "Flytta till Album";
 "moveSingleImage_selectAlbum" = "Välj ett album att flytta bild \"%@\" till";
+"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
+"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Välj ett album att flytta bilderna till";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
+"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
 "moveSingleImage_message" = "Är du säker på att du vill flytta bilden ”%@” till albumet ”%@”?";
 "moveSeveralImages_message" = "Är du säker på att du vill flytta bilderna till albumet ”%@”?";
 "moveSingleImageHUD_moving" = "Flyttar bild…";
@@ -371,7 +380,11 @@
 // Image copy
 "copyImage_title" = "Kopiera till Album";
 "copySingleImage_selectAlbum" = "Välj ett album att kopiera bild \"%@\" till";
+"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
+"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
 "copySeveralImages_selectAlbum" = "Välj ett album att kopiera bilderna till";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
+"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
 "copySingleImage_message" = "Är du säker att du vill kopiera bild ”%@” till albumet ”%@”?";
 "copySeveralImages_message" = "Är du säker att du vill kopiera bilderna till albumet ”%@”?";
 "copySingleImageHUD_copying" = "Kopierar bild…";
@@ -506,6 +519,9 @@
 "defaultImageSort>414px" = "Standardsortering av bilder";
 "defaultAlbumThumbnailFile>414px" = "Miniatyrfil för album";
 "defaultAlbumThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
+"maxNberOfRecentAlbums" = "Recent";
+"maxNberOfRecentAlbums>320px" = "Recent Albums";
+"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
 
 "thumbnailSizeSquare" = "Kvadrat";
 "thumbnailSizeThumbnail" = "Miniatyrbild";

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.4_text" = "Version 2.4.4\n\n• Résout les problèmes de téléchargement de vidéos sur certains serveurs\n• Corrige des bugs mineurs et améliore l'interface";
+"v2.4.5_text" = "Version 2.4.5\n\n• Affiche vos images favorites (nécessite Piwigo 2.10 ou ultérieur)\n• Option de présentation des images triées manuellement\n• Permet aux utilisateurs Community de créer des albums (avec les droits appropriés)\n• Corrige des bugs mineurs et améliore l'interface";
+
+"v2.4.4_text" = "Version 2.4.4\n1er Octobre 2019\n\n• Résout les problèmes de téléchargement de vidéos sur certains serveurs\n• Corrige des bugs mineurs et améliore l'interface";
 
 "v2.4.3_text" = "Version 2.4.3\n25 Septembre 2019\n\n• Compatibilité avec iOS 13\n• Corrige des bugs mineurs et améliore l'interface";
 
@@ -14,7 +16,7 @@
 
 "v2.4.1_text" = "Version 2.4.1\n10 Août 2019\n\n• Ajoute les albums \"Tags\", \"Plus vues\", \"Mieux notées\" et \"Photos récentes\"\n• Corrige des bugs mineurs et améliore l'interface";
 
-"v2.4.0_text" = "Version 2.4\n15 Juillet 2019\n\n• Ajoute un outil de recherche (nécessite iOS 11 ou une version ultérieure)\n• Ajoute le tri des images par note\n• Accélère le téléchargement des vignettes d'albums (nécessite Piwigo 2.8 ou version ultérieure)\n• Les titres des images téléversées ne sont plus des noms de fichiers par défaut\n• Corrige l'impossibilité de supprimer les balises\n• Corrige les données d'image inexactes dans certaines circonstances";
+"v2.4.0_text" = "Version 2.4\n15 Juillet 2019\n\n• Ajoute un outil de recherche (nécessite iOS 11+)\n• Ajoute le tri des images par note\n• Accélère le téléchargement des vignettes d'albums (nécessite Piwigo 2.8 ou version ultérieure)\n• Les titres des images téléversées ne sont plus des noms de fichiers par défaut\n• Corrige l'impossibilité de supprimer les balises\n• Corrige les données d'image inexactes dans certaines circonstances";
 
 "v2.3.5_text" = "Version 2.3.5\n6 Juin 2019\n\n• Correction d'un crash qui se produit parfois lors de la modification de l'adresse du serveur après la déconnexion";
 

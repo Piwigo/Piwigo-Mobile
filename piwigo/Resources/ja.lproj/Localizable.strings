@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "ヒット";
 "categoryDiscoverBest_title" = "最高評価";
 "categoryDiscoverRecent_title" = "最近の写真";
+"categoryDiscoverFavorites_title" = "お気に入り";
 
 // Albums sort
 "categorySort_nameAscending" = "写真題名、A → Z";
@@ -131,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "評価スコア、低い→高い";
 "categorySort_visitsDescending" = "訪問回数, 高 → 低";
 "categorySort_visitsAscending" = "訪問回数, 低 → 高";
+"categorySort_manual" = "手動注文";
+
 "categorySort_videosOnly" = "動画のみ";
 "categorySort_imagesOnly" = "画像のみ";
 
@@ -213,6 +216,8 @@
 // Album move
 "moveCategory" = "アルバムを移動します";
 "moveCategory_selectParent" = "アルバム「%@」へ移動するアルバムを選択して下さい";
+"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
 "moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
 "moveCategoryHUD_moving" = "アルバムを移動中...";
 
@@ -358,7 +363,11 @@
 // Image move
 "moveImage_title" = "アルバムに移動する";
 "moveSingleImage_selectAlbum" = "画像「%@」を移動するアルバムを選択する";
+"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
+"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
 "moveSeveralImages_selectAlbum" = "画像を移動するアルバムを選択する";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
+"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
 "moveSingleImage_message" = "画像「%@」をアルバム「%@」へ移動していいですか？";
 "moveSeveralImages_message" = "画像をアルバム「%@」へ移動していいですか？";
 "moveSingleImageHUD_moving" = "画像を移動しています...";
@@ -371,7 +380,11 @@
 // Image copy
 "copyImage_title" = "アルバムにコピーする";
 "copySingleImage_selectAlbum" = "画像「%@」をコピーするアルバムを選択する";
+"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
+"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
 "copySeveralImages_selectAlbum" = "画像をコピーするアルバムを選択する";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
+"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
 "copySingleImage_message" = "画像「%@」をアルバム「%@」へコピーしていいですか？";
 "copySeveralImages_message" = "画像をアルバム「%@」へコピーしていいですか？";
 "copySingleImageHUD_copying" = "画像をコピーしています...";
@@ -506,6 +519,9 @@
 "defaultImageSort>414px" = "画像の既定並び順";
 "defaultAlbumThumbnailFile>414px" = "アルバムのサムネイルファイル";
 "defaultAlbumThumbnailSizeHeader" = "アルバムのサムネイルサイズを選択してください";
+"maxNberOfRecentAlbums" = "Recent";
+"maxNberOfRecentAlbums>320px" = "Recent Albums";
+"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
 
 "thumbnailSizeSquare" = "正方形";
 "thumbnailSizeThumbnail" = "サムネイル";

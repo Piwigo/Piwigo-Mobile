@@ -36,7 +36,7 @@
 		[self.contentView addSubview:self.tableView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
     
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoCategoryDataUpdatedNotification object:nil];
 	}
 	return self;
 }

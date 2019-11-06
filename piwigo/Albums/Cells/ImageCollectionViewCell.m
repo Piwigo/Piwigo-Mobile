@@ -257,7 +257,8 @@
         (categoryId == kPiwigoVisitsCategoryId)     ||
         (categoryId == kPiwigoBestCategoryId)       ||
         (categoryId == kPiwigoRecentCategoryId)     ||
-        (categoryId == kPiwigoTagsCategoryId)) {
+        (categoryId == kPiwigoTagsCategoryId)       ||
+        (categoryId == kPiwigoFavoritesCategoryId)) {
         self.bottomLayer.hidden = NO;
         self.nameLabel.hidden = NO;
         if (categoryId == kPiwigoVisitsCategoryId) {

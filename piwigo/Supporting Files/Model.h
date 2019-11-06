@@ -73,6 +73,8 @@ typedef enum {
 // Album/category settings
 @property (nonatomic, assign) NSInteger defaultCategory;
 @property (nonatomic, assign) NSInteger defaultAlbumThumbnailSize;
+@property (nonatomic, strong) NSString *recentCategories;
+@property (nonatomic, assign) NSUInteger maxNberRecentCategories;
 
 // Sort images by date: old to new
 @property (nonatomic, assign) kPiwigoSortCategory defaultSort;

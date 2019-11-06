@@ -21,6 +21,7 @@
 //#import "CategoryImageSort.h"
 #import "CategoryPickViewController.h"
 #import "DiscoverImagesViewController.h"
+#import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
@@ -43,7 +44,7 @@
 //#endif
 
 CGFloat const kRadius = 25.0;
-NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
+NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultAlbumNotification";
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectViewDelegate>
 
@@ -142,7 +143,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"trashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelected)];
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelected)];
         self.deleteBarButton.tintColor = [UIColor redColor];
         self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelected)];
         self.shareBarButton.tintColor = [UIColor piwigoOrange];
@@ -189,14 +190,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         [self.view addSubview:self.homeAlbumButton];
 
         // Register category data updates
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoNotificationGetCategoryData object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoGetCategoryDataNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoCategoryDataUpdatedNotification object:nil];
 		
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
 
         // Register root album changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoBackToDefaultAlbumNotification object:nil];
     }
 	return self;
 }
@@ -322,7 +323,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Inform Upload view controllers that user selected this category
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoChangedCurrentCategoryNotification object:nil userInfo:userInfo];
     
     // Load, sort images and reload collection
     if (self.categoryId != 0) {
@@ -514,7 +515,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            NSLog(@"AlbumImages => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
             [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
@@ -660,7 +660,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
                 // Redefine bar buttons (definition lost after rotation of device)
                 self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-                self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"trashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelected)];
+                self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelected)];
                 self.deleteBarButton.tintColor = [UIColor redColor];
                 self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelected)];
                 self.shareBarButton.tintColor = [UIColor piwigoOrange];
@@ -2042,6 +2042,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             // Action depends on mode
             if(!self.isSelect)
             {
+                // Add category to list of recent albums
+                NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)self.categoryId]};
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoAddRecentAlbumNotification object:nil userInfo:userInfo];
+
                 // Selection mode not active => display full screen image
                 self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
                 self.imageDetailView.hidesBottomBarWhenPushed = YES;
@@ -2233,8 +2237,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)pushView:(UIViewController *)viewController
 {
     // Push sub-album or Discover album
-    if (([viewController isKindOfClass:[AlbumImagesViewController class]]) ||
-        ([viewController isKindOfClass:[DiscoverImagesViewController class]])) {
+    if (([viewController isKindOfClass:[AlbumImagesViewController class]])    ||
+        ([viewController isKindOfClass:[DiscoverImagesViewController class]]) ||
+        ([viewController isKindOfClass:[FavoritesImagesViewController class]]) ) {
         // Push sub-album view
         [self.navigationController pushViewController:viewController animated:YES];
     }
@@ -2351,13 +2356,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 - (void)willPresentSearchController:(UISearchController *)searchController
 {
     // Unregister category data updates
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoCategoryDataUpdatedNotification object:nil];
 }
 
 - (void)didDismissSearchController:(UISearchController *)searchController
 {
     // Register category data updates
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoCategoryDataUpdatedNotification object:nil];
 }
 
 
@@ -2402,6 +2407,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
        style:UIAlertActionStyleCancel
        handler:^(UIAlertAction * action) {}];
 
+    UIAlertAction* favoritesSelectorAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"categoryDiscoverFavorites_title", @"Your favorites")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            // Show tags for selecting images
+            [self discoverFavoritesImages];
+         }];
+    
     UIAlertAction* tagSelectorAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"tags", @"Tags")
         style:UIAlertActionStyleDefault
@@ -2436,6 +2449,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Add actions
     [alert addAction:cancelAction];
+    if ([@"2.10.0" compare:[Model sharedInstance].version options:NSNumericSearch] != NSOrderedDescending)
+    {
+        [alert addAction:favoritesSelectorAction];
+    }
     [alert addAction:tagSelectorAction];
     [alert addAction:mostVisitedAction];
     [alert addAction:bestRatedAction];
@@ -2466,6 +2483,12 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self pushView:discoverController];
 }
 
+-(void)discoverFavoritesImages
+{
+    // Create Discover view
+    FavoritesImagesViewController *discoverController = [[FavoritesImagesViewController alloc] initWithCategoryId:kPiwigoFavoritesCategoryId];
+    [self pushView:discoverController];
+}
 
 #pragma mark - TagSelectViewDelegate Methods
 

@@ -93,7 +93,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
     }
 	return self;
 }
@@ -427,7 +427,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 1;
             break;
         case SettingsSectionAlbums:
-            nberOfRows = 3;
+            nberOfRows = 4;
             break;
         case SettingsSectionImages:
             nberOfRows = 5;
@@ -597,6 +597,34 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
 					break;
 				}
+                case 3:     // Number of recent albums
+                {
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"maxNberRecentAlbums"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                        cell.sliderName.text = NSLocalizedString(@"maxNberOfRecentAlbums>414px", @"Number of Recent Albums");
+                    } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+                        cell.sliderName.text = NSLocalizedString(@"maxNberOfRecentAlbums>320px", @"Recent Albums");
+                    } else {
+                        cell.sliderName.text = NSLocalizedString(@"maxNberOfRecentAlbums", @"Recent");
+                    }
+                    
+                    // Min/max number of recent albums
+                    cell.slider.minimumValue = 3;
+                    cell.slider.maximumValue = 10;
+                    cell.incrementSliderBy = 1;
+                    cell.sliderCountPrefix = @"";
+                    cell.sliderCountSuffix = [NSString stringWithFormat:@"/%d", (int)cell.slider.maximumValue];
+                    cell.sliderValue = [Model sharedInstance].maxNberRecentCategories;
+                    [cell.slider addTarget:self action:@selector(updateNberRecentAlbums:) forControlEvents:UIControlEventValueChanged];
+                    [cell setAccessibilityIdentifier:@"maxNberRecentAlbums"];
+                    
+                    tableViewCell = cell;
+                    break;
+                }
 			}
 			break;
 		}
@@ -1472,6 +1500,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 case 2:     // Default Sort
                     result = YES;
                     break;
+                case 3:     // Nber Rcent albums
+                    result = NO;
+                    break;
             }
             break;
         }
@@ -1934,6 +1965,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                                [Model sharedInstance].defaultCategory = 0;
                                [Model sharedInstance].usesCommunityPluginV29 = NO;
                                [Model sharedInstance].hasAdminRights = NO;
+                               [Model sharedInstance].recentCategories = @"0";
                                [[Model sharedInstance] saveToDisk];
                                
                                // Erase cache
@@ -2142,6 +2174,14 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 
 #pragma mark - Sliders changed value Methods
+
+- (IBAction)updateNberRecentAlbums:(id)sender
+{
+    // Update max number of recent albums
+    SliderTableViewCell *maxNberRecentAlbumsCell = (SliderTableViewCell*)[self.settingsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SettingsSectionAlbums]];
+    [Model sharedInstance].maxNberRecentCategories = [maxNberRecentAlbumsCell getCurrentSliderValue];
+    [[Model sharedInstance] saveToDisk];
+}
 
 - (IBAction)updateThumbnailSize:(id)sender
 {

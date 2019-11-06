@@ -23,8 +23,10 @@
 //#define DEBUG_NOCACHE
 //#endif
 
-NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
+NSString * const kPiwigoPaletteChangedNotification = @"kPiwigoPaletteChangedNotification";
 NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkErrorEncounteredNotification";
+NSString * const kPiwigoAddRecentAlbumNotification = @"kPiwigoAddRecentAlbumNotification";
+NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlbumNotification";
 
 @interface AppDelegate ()
 
@@ -45,14 +47,20 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     
-    // Observe the UIScreenBrightnessDidChangeNotification.
+    // Observe the UIScreenBrightnessDidChangeNotification
     // When that notification is posted, the method screenBrightnessChanged will be called.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged) name:UIScreenBrightnessDidChangeNotification object:nil];
 
-    // Observe the PiwigoNetworkErrorEncounteredNotification.
+    // Observe the PiwigoNetworkErrorEncounteredNotification
     // When that notification is posted, the app checks the login.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoNetworkErrorEncounteredNotification object:nil];
     
+    // Observe the PiwigoAddRecentAlbumNotification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addRecentAlbumWithAlbumId:) name:kPiwigoAddRecentAlbumNotification object:nil];
+
+    // Observe the PiwigoRemoveRecentAlbumNotification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeRecentAlbumWithAlbumId:) name:kPiwigoRemoveRecentAlbumNotification object:nil];
+
     // Set network reachability status change block
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
 //#if defined(DEBUG)
@@ -361,8 +369,86 @@ NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkEr
     }
 
     // Notify palette change to views
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
-    NSLog(@"•••> app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoPaletteChangedNotification object:nil];
+//    NSLog(@"•••> app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+}
+
+
+#pragma mark - Recent albums
+
+-(void)addRecentAlbumWithAlbumId:(NSNotification *)notification
+{
+    // NOP if albumId undefined, root or smart album
+    NSDictionary *userInfo = notification.userInfo;
+    NSInteger categoryId = [[userInfo objectForKey:@"categoryId"] integerValue];
+    if ((categoryId <= 0) || (categoryId == NSNotFound)) return;
+
+    // Get current list of recent albums
+    NSString *recentAlbumsStr = [Model sharedInstance].recentCategories;
+
+    // Create new list of recent albums
+    NSMutableArray *newList = [NSMutableArray new];
+    
+    // Compile new list
+    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)categoryId];
+    if (recentAlbumsStr.length == 0)
+    {
+        // Empty list => simply add albumId
+        [newList addObject:categoryIdStr];
+    }
+    else {
+        // Non-empty list
+        NSMutableArray<NSString *> *recentCategories = [[recentAlbumsStr componentsSeparatedByString:@","] mutableCopy];
+        
+        // Add albumId to top of list
+        [newList addObject:categoryIdStr];
+
+        // Remove albumId from old list if necessary
+        [recentCategories removeObjectIdenticalTo:categoryIdStr];
+        
+        // Append old list
+        [newList addObjectsFromArray:recentCategories];
+
+        // Will limit list to 3 - 10 objects (5 by default) when presenting albums
+        // As some recent albums may not be suggested or other may be deleted, we store more than 10, say 20
+        NSUInteger count = [newList count];
+        if (count > 20) {
+            NSRange range = NSMakeRange(20, count - 20);
+            [newList removeObjectsInRange:range];
+        }
+    }
+
+    // Update list
+    [Model sharedInstance].recentCategories = [newList componentsJoinedByString:@","];
+    [[Model sharedInstance] saveToDisk];
+//    NSLog(@"•••> Recent albums: %@ (max: %lu)", [Model sharedInstance].recentCategories, (unsigned long)[Model sharedInstance].maxNberRecentCategories);
+}
+
+-(void)removeRecentAlbumWithAlbumId:(NSNotification *)notification
+{
+    // NOP if albumId undefined, root or smart album
+    NSDictionary *userInfo = notification.userInfo;
+    NSInteger categoryId = [[userInfo objectForKey:@"categoryId"] integerValue];
+    if ((categoryId <= 0) || (categoryId == NSNotFound)) return;
+
+    // Get current list of recent albums
+    NSString *recentAlbumsStr = [Model sharedInstance].recentCategories;
+    if (recentAlbumsStr.length == 0) return;
+
+    // Non-empty list, continue
+    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)categoryId];
+    NSMutableArray<NSString *> *recentCategories = [[recentAlbumsStr componentsSeparatedByString:@","] mutableCopy];
+        
+    // Remove albumId from list if necessary
+    [recentCategories removeObjectIdenticalTo:categoryIdStr];
+    
+    // List should not be empty (add root album Id)
+    if (recentCategories.count == 0) [recentCategories addObject:@"0"];
+    
+    // Update list
+    [Model sharedInstance].recentCategories = [recentCategories componentsJoinedByString:@","];
+    [[Model sharedInstance] saveToDisk];
+    NSLog(@"•••> Recent albums: %@", [Model sharedInstance].recentCategories);
 }
 
 @end

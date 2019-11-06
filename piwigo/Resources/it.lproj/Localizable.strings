@@ -117,6 +117,7 @@
 "categoryDiscoverVisits_legend" = "visualizzazioni";
 "categoryDiscoverBest_title" = "I più votati";
 "categoryDiscoverRecent_title" = "Ultime foto";
+"categoryDiscoverFavorites_title" = "Le mie preferite";
 
 // Albums sort
 "categorySort_nameAscending" = "Titolo foto, A → Z";
@@ -131,6 +132,8 @@
 "categorySort_ratingScoreAscending" = "Valutazione, basso → alto";
 "categorySort_visitsDescending" = "Visite, alto → basso";
 "categorySort_visitsAscending" = "Visite, basso → alto";
+"categorySort_manual" = "Ordine manuale";
+
 "categorySort_videosOnly" = "Soli Video";
 "categorySort_imagesOnly" = "Solo Immagini";
 
@@ -213,6 +216,8 @@
 // Album move
 "moveCategory" = "Sposta album";
 "moveCategory_selectParent" = "Seleziona un album per spostare l'album \"%@\" in";
+"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
 "moveCategory_message" = "Sei sicuro di voler spostare \"%@\" nell'album \"%@\"?";
 "moveCategoryHUD_moving" = "Spostamento dell'album…";
 
@@ -358,7 +363,11 @@
 // Image move
 "moveImage_title" = "Sposta nell'Album";
 "moveSingleImage_selectAlbum" = "Selezionare un album per spostare l'immagine \"%@\" su";
+"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
+"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Selezionare un album per spostare le immagini su";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
+"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
 "moveSingleImage_message" = "Sei sicuro di voler spostare l'immagine \"%@\" nell'album \"%@\"?";
 "moveSeveralImages_message" = "Sei sicuro di voler spostare le immagini nell'album \"%@\"?";
 "moveSingleImageHUD_moving" = "Sposto l'immagine...";
@@ -371,7 +380,11 @@
 // Image copy
 "copyImage_title" = "Copio nell'Album";
 "copySingleImage_selectAlbum" = "Seleziona un album per copiare l'immagine \"%@\" su";
+"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
+"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
 "copySeveralImages_selectAlbum" = "Seleziona un album per copiare le immagini";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
+"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
 "copySingleImage_message" = "Sei sicuro di voler copiare l'immagine \"%@\" nell'album \"%@\"?";
 "copySeveralImages_message" = "Sei sicuro di voler copiare le immagini nell'album \"%@\"?";
 "copySingleImageHUD_copying" = "Copia immagine …";
@@ -506,6 +519,9 @@
 "defaultImageSort>414px" = "Ordinamento predefinito delle immagini";
 "defaultAlbumThumbnailFile>414px" = "File miniatura album";
 "defaultAlbumThumbnailSizeHeader" = "Seleziona una dimensione miniatura album";
+"maxNberOfRecentAlbums" = "Recent";
+"maxNberOfRecentAlbums>320px" = "Recent Albums";
+"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
 
 "thumbnailSizeSquare" = "Quadrato";
 "thumbnailSizeThumbnail" = "Anteprima";

@@ -13,5 +13,6 @@
 @property (nonatomic, assign) NSInteger tagId;
 @property (nonatomic, strong) NSString *tagName;
 @property (nonatomic, assign) NSInteger numberOfImagesUnderTag;
+@property (nonatomic, strong) NSDate *lastModified;
 
 @end

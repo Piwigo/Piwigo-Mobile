@@ -33,6 +33,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 @property (nonatomic, assign) BOOL copyImage;
 @property (nonatomic, assign) BOOL isLoadingImageData;
 
+@property (nonatomic, strong) NSArray *recentCategories;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
 @property (nonatomic, strong) UIViewController *hudViewController;
@@ -63,7 +64,11 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
         self.indexOfFirstSelectedImage = index;
         self.copyImage = copyImage;
         
-        // List of categories to present
+        // List of categories to present in 1st section
+        self.recentCategories = [NSArray new];
+        [self buildRecentCategoryArray];
+        
+        // List of categories to present in 2nd section
         self.categories = [NSMutableArray new];
         self.categoriesThatShowSubCategories = [NSMutableArray new];
         
@@ -83,7 +88,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitMoveImage)];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
     }
     return self;
 }
@@ -296,67 +301,130 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    // Title
-    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
-    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
-    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                 options:NSStringDrawingUsesLineFragmentOrigin
-                                              attributes:titleAttributes
-                                                 context:context];
+
+    if (section == 0)   // Recent albums (if any)
+    {
+        // Title
+        NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+        NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+        CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                  attributes:titleAttributes
+                                                     context:context];
+    
+        // Text
+        NSString *textString;
+        if (self.recentCategories.count > 0)
+        {
+            if (self.selectedImages.count > 0)
+            {
+                textString = self.copyImage ? NSLocalizedString(@"copySeveralImages_selectRecent", @"Select a recent album to copy the images to") : NSLocalizedString(@"moveSeveralImages_selectRecent", @"Select a recent album to move the images to");
+            }
+            else
+            {
+                textString = self.copyImage ? [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectRecent", @"Select a recent album to copy image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName] : [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectRecent", @"Select a recent album to move image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
+            }
+        }
+        else
+        {
+            if (self.selectedImages.count > 0)
+            {
+                textString = self.copyImage ? NSLocalizedString(@"copySeveralImages_selectAlbum", @"Select an album to copy images to") : NSLocalizedString(@"moveSeveralImages_selectAlbum", @"Select an album to move images to");
+            }
+            else
+            {
+                textString = self.copyImage ? [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName] : [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
+            }
+        }
+        NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+        CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                attributes:textAttributes
+                                                   context:context];
+        
+        return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+    }
+
     
     // Text
     NSString *textString;
-    if (self.selectedImages.count > 0) {
-        if (self.copyImage)
-            textString = NSLocalizedString(@"copySeveralImages_selectAlbum", @"Select an album to copy images to");
-        else
-            textString = NSLocalizedString(@"moveSeveralImages_selectAlbum", @"Select an album to move images to");
+    if (self.selectedImages.count > 0)
+    {
+        textString = self.copyImage ? NSLocalizedString(@"copySeveralImages_selectRecentOther", @"or select another album to copy the images to") : NSLocalizedString(@"moveSeveralImages_selectRecentOther", @"or select another album to move the images to");
     }
-    else {
-        if (self.copyImage)
-            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle];
-        else
-            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle];
+    else
+    {
+        textString = self.copyImage ? [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectRecentOther", @"or select another album to copy image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName] : [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectRecentOther", @"or select another album to move image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
     }
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                options:NSStringDrawingUsesLineFragmentOrigin
                                             attributes:textAttributes
                                                context:context];
-    return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+    return fmax(44.0, ceil(textRect.size.height));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
     
-    // Title
-    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
-    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
-    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
-                                  range:NSMakeRange(0, [titleString length])];
-    [headerAttributedString appendAttributedString:titleAttributedString];
+    if (section == 0)   // Albums containing image
+    {
+        // Title
+        NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+        NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+        [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                      range:NSMakeRange(0, [titleString length])];
+        [headerAttributedString appendAttributedString:titleAttributedString];
     
-    // Text
-    NSString *textString;
-    if (self.selectedImages.count > 0) {
-        if (self.copyImage)
-            textString = NSLocalizedString(@"copySeveralImages_selectAlbum", @"Select an album to copy images to");
+        // Text
+        NSString *textString;
+        if (self.recentCategories.count > 0)
+        {
+            if (self.selectedImages.count > 0)
+            {
+                textString = self.copyImage ? NSLocalizedString(@"copySeveralImages_selectRecent", @"Select a recent album to copy the images to") : NSLocalizedString(@"moveSeveralImages_selectRecent", @"Select a recent album to move the images to");
+            }
+            else
+            {
+                textString = self.copyImage ? [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectRecent", @"Select a recent album to copy image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName] : [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectRecent", @"Select a recent album to move image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
+            }
+        }
         else
-            textString = NSLocalizedString(@"moveSeveralImages_selectAlbum", @"Select an album to move images to");
+        {
+            if (self.selectedImages.count > 0)
+            {
+                textString = self.copyImage ? NSLocalizedString(@"copySeveralImages_selectAlbum", @"Select an album to copy images to") : NSLocalizedString(@"moveSeveralImages_selectAlbum", @"Select an album to move images to");
+            }
+            else
+            {
+                textString = self.copyImage ? [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName] : [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
+            }
+        }
+        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                     range:NSMakeRange(0, [textString length])];
+        [headerAttributedString appendAttributedString:textAttributedString];
     }
-    else {
-        if (self.copyImage)
-            textString = [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectAlbum", @"Select an album to copy image \"%@\" to"), self.selectedImage.imageTitle];
+    else                // Or other albums
+    {
+        // Text
+        NSString *textString;
+        if (self.selectedImages.count > 0)
+        {
+            textString = self.copyImage ? NSLocalizedString(@"copySeveralImages_selectRecentOther", @"or select another album to copy the images to") : NSLocalizedString(@"moveSeveralImages_selectRecentOther", @"or select another album to move the images to");
+        }
         else
-            textString = [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectAlbum", @"Select an album to move image \"%@\" to"), self.selectedImage.imageTitle];
+        {
+            textString = self.copyImage ? [NSString stringWithFormat:NSLocalizedString(@"copySingleImage_selectRecentOther", @"or select another album to copy image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName] : [NSString stringWithFormat:NSLocalizedString(@"moveSingleImage_selectRecentOther", @"or select another album to move image \"%@\" to"), self.selectedImage.imageTitle.length ? self.selectedImage.imageTitle : self.selectedImage.fileName];
+        }
+        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                     range:NSMakeRange(0, [textString length])];
+        [headerAttributedString appendAttributedString:textAttributedString];
     }
-    NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
-    [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
-                                 range:NSMakeRange(0, [textString length])];
-    [headerAttributedString appendAttributedString:textAttributedString];
     
     // Header label
     UILabel *headerLabel = [UILabel new];
@@ -393,12 +461,19 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 1 + (self.recentCategories.count > 0);
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.categories.count;
+    NSInteger numberOfRows;
+    if ((self.recentCategories.count > 0) && (section == 0)) {
+        numberOfRows = self.recentCategories.count;
+    } else {
+        numberOfRows = self.categories.count;
+    }
+
+    return numberOfRows;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -410,28 +485,34 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CategoryTableViewCell" forIndexPath:indexPath];
     
-    // Determine the depth before setting up the cell
-    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-    NSInteger depth = [categoryData getDepthOfCategory];
-    PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
-    depth -= [defaultCategoryData getDepthOfCategory];
-    [cell setupWithCategoryData:categoryData atDepth:depth];
-    
-    // Category contains selected image?
-    if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
-    {
-        cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
-        cell.userInteractionEnabled = NO;
+    if ((self.recentCategories.count > 0) && (indexPath.section == 0)) {
+        PiwigoAlbumData *categoryData = [self.recentCategories objectAtIndex:indexPath.row];
+        [cell setupWithCategoryData:categoryData atDepth:0 withSubCategoryButton:NO];
     }
-    
-    // Switch between Open/Close cell disclosure
-    cell.categoryDelegate = self;
-    if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
-        cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
-        cell.userInteractionEnabled = YES;
-    } else {
-        cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
-        cell.userInteractionEnabled = YES;
+    else {
+        // Determine the depth before setting up the cell
+        PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+        NSInteger depth = [categoryData getDepthOfCategory];
+        PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
+        depth -= [defaultCategoryData getDepthOfCategory];
+        [cell setupWithCategoryData:categoryData atDepth:depth withSubCategoryButton:YES];
+        
+        // Category contains selected image?
+        if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
+        {
+            cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.userInteractionEnabled = NO;
+        }
+        
+        // Switch between Open/Close cell disclosure
+        cell.categoryDelegate = self;
+        if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
+            cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
+            cell.userInteractionEnabled = YES;
+        } else {
+            cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
+            cell.userInteractionEnabled = YES;
+        }
     }
     
     cell.isAccessibilityElement = YES;
@@ -454,7 +535,12 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+    PiwigoAlbumData *categoryData;
+    if ((self.recentCategories.count > 0) && (indexPath.section == 0)) {
+        categoryData = [self.recentCategories objectAtIndex:indexPath.row];
+    } else {
+        categoryData = [self.categories objectAtIndex:indexPath.row];
+    }
     
     // User cannot move/copy image at current place
     if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)]) return;
@@ -579,7 +665,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
                         [[[CategoriesData sharedInstance] getCategoryById:self.categoryIdOfSelectedImages] deincrementImageSizeByOne];
 
                         // Notify album/image view of modification
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
                     }
 
                     // When called from image preview, return to image or album
@@ -872,12 +958,44 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
             [self.categories addObject:category];
         }
     }
+}
+
+-(void)buildRecentCategoryArray
+{
+    // Current recent categories
+    NSArray *recentCat = [[Model sharedInstance].recentCategories componentsSeparatedByString:@","];
+
+    // Build mutable list of recent categories
+    NSMutableArray *recentCategories = [NSMutableArray new];
+    for (NSString *catIdStr in recentCat)
+    {
+        // Get category data
+        NSInteger catId = [catIdStr integerValue];
+        PiwigoAlbumData *categoryData = [[CategoriesData sharedInstance] getCategoryById:catId];
+        
+        // Check collected data are in cache
+        if (categoryData == nil) continue;
+        
+        // Do not add root and smart albums as one cannot store images into them
+        if (categoryData.albumId <= 0) continue;
+        
+        // Non-admin Community users can only upload in specific albums
+        if (![Model sharedInstance].hasAdminRights && !categoryData.hasUploadRights) {
+            continue;
+        }
+        
+        // Do not add categories already containing the images
+        if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)]) continue;
+
+        // Add category
+        if (categoryData != nil) [recentCategories addObject:categoryData];
+        
+        // Reach max number of recent categories?
+        if (recentCategories.count == [Model sharedInstance].maxNberRecentCategories) break;
+    }
     
-    // Do not add root album as one cannot store images into it
-//    PiwigoAlbumData *rootAlbum = [PiwigoAlbumData new];
-//    rootAlbum.albumId = 0;
-//    rootAlbum.name = NSLocalizedString(@"categorySelection_root", @"Root Album");
-//    [self.categories insertObject:rootAlbum atIndex:0];
+    // Set list of recent categories
+    self.recentCategories = [recentCategories copy];
 }
 
 

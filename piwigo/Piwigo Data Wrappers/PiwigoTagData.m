@@ -22,9 +22,13 @@
 
     [descriptionArray addObject:[NSString stringWithFormat:@"tagId                  = %ld", (long)self.tagId]];
     [descriptionArray addObject:[NSString stringWithFormat:@"numberOfImagesUnderTag = %ld", (long)self.numberOfImagesUnderTag]];
+    [descriptionArray addObject:[NSDateFormatter localizedStringFromDate:self.lastModified
+                                                               dateStyle:NSDateFormatterMediumStyle
+                                                               timeStyle:NSDateFormatterMediumStyle]];
     [descriptionArray addObject:@"}"];
     
     return [descriptionArray componentsJoinedByString:@"\n"];
 }
 
 @end
+;

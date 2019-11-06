@@ -399,6 +399,10 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                           // Add new album to cache
                           NSInteger newCatId = [[[responseObject objectForKey:@"result"] objectForKey:@"id"] integerValue];
                           [[CategoriesData sharedInstance] addCategory:newCatId withParameters:parameters];
+
+                          // Add new category to list of recent albums
+                          NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)newCatId]};
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoAddRecentAlbumNotification object:nil userInfo:userInfo];
                       }
                       else {
                           // Display Piwigo error
@@ -467,7 +471,11 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion)
 				  {
-					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+                      // Remove category from list of recent albums
+                      NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)categoryId]};
+                      [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoRemoveRecentAlbumNotification object:nil userInfo:userInfo];
+
+                      completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }
               } failure:^(NSURLSessionTask *task, NSError *error) {
                   if (fail)

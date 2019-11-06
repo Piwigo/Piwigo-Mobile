@@ -67,10 +67,10 @@
             self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(quitUpload)];
             
             // Register category changes
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoNotificationChangedCurrentCategory object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeCurrentCategory:) name:kPiwigoChangedCurrentCategoryNotification object:nil];
 
             // Register palette changes
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
         }
         else
         {
@@ -362,8 +362,10 @@
                        ([Model sharedInstance].hasAdminRights ||
                         [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights]);
 
-            // Only admins can create sub-albums
-            nberRows += ([Model sharedInstance].hasAdminRights ? 1 : 0);
+            // Admins can create sub-albums
+            // and sometimes also Community users
+            nberRows += (([Model sharedInstance].hasAdminRights ||
+                          [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights]) ? 1 : 0) ;
             
             // Anyone can set a default album
             nberRows += (self.currentCategoryId != [Model sharedInstance].defaultCategory);
@@ -403,7 +405,8 @@
                         cell.leftText = NSLocalizedString(@"categoryUpload_images", @"Upload Images");
                         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     }
-                    else if ([Model sharedInstance].hasAdminRights) {
+                    else if ([Model sharedInstance].hasAdminRights ||
+                             [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights]) {
                         cell.leftText = NSLocalizedString(@"categoryUpload_subAlbum", @"Create Sub-Album");
                         cell.accessoryType = UITableViewCellAccessoryNone;
                     }
@@ -422,9 +425,8 @@
                         cell = [LabelTableViewCell new];
                     }
                     
-                    if (((self.currentCategoryId != 0) &&
-                         ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) &&
-                        ([Model sharedInstance].hasAdminRights)) {
+                    if ((self.currentCategoryId != 0) &&
+                        ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) {
                         cell.leftText = NSLocalizedString(@"categoryUpload_subAlbum", @"Create Sub-Album");
                         cell.accessoryType = UITableViewCellAccessoryNone;
                     }
@@ -471,7 +473,7 @@
             NSInteger depth = [categoryData getDepthOfCategory];
             PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
             depth -= [defaultCategoryData getDepthOfCategory];
-            [cell setupWithCategoryData:categoryData atDepth:depth];
+            [cell setupWithCategoryData:categoryData atDepth:depth withSubCategoryButton:YES];
             
             // Switch between Open/Close cell disclosure
             cell.categoryDelegate = self;
@@ -509,7 +511,8 @@
                         // Upload images in the current category
                         [self selectedCategory:self.currentCategoryId];
                     }
-                    else if ([Model sharedInstance].hasAdminRights) {
+                    else if ([Model sharedInstance].hasAdminRights ||
+                             [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights]) {
                         // Create Sub-Album
                         [self showCreateCategoryDialog];
                     }
@@ -521,9 +524,8 @@
                 }
                 case 1:
                 {
-                    if (((self.currentCategoryId != 0) &&
-                         ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) &&
-                        ([Model sharedInstance].hasAdminRights)) {
+                    if ((self.currentCategoryId != 0) &&
+                        ([Model sharedInstance].hasAdminRights || [[[CategoriesData sharedInstance] getCategoryById:self.currentCategoryId] hasUploadRights])) {
                         // Create Sub-Album
                         [self showCreateCategoryDialog];
                     }

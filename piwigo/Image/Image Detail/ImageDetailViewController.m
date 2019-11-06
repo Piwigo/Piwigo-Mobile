@@ -8,7 +8,7 @@
 
 #import <Photos/Photos.h>
 
-#import "AllCategoriesViewController.h"
+#import "ThumbnailCategoryViewController.h"
 #import "AsyncImageActivityItemProvider.h"
 #import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
@@ -42,6 +42,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
 @property (nonatomic, strong) UIBarButtonItem *shareBarButton;
 @property (nonatomic, strong) UIBarButtonItem *setThumbnailBarButton;
 @property (nonatomic, strong) UIBarButtonItem *moveBarButton;
+//@property (nonatomic, strong) UIBarButtonItem *favoriteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *spaceBetweenButtons;
 @property (nonatomic, assign) BOOL isToolbarRequired;
 
@@ -84,15 +85,21 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         // Bar buttons
         self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
         [self.editBarButton setAccessibilityIdentifier:@"edit"];
-        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"trashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteImage)];
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteImage)];
         self.deleteBarButton.tintColor = [UIColor redColor];
+        [self.deleteBarButton setAccessibilityIdentifier:@"delete"];
         self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareImage)];
         self.shareBarButton.tintColor = [UIColor piwigoOrange];
+        [self.shareBarButton setAccessibilityIdentifier:@"share"];
         self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
         self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
+        [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
         self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
-        [self.moveBarButton setAccessibilityIdentifier:@"Move"];
+        [self.moveBarButton setAccessibilityIdentifier:@"move"];
+//        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToFavorites)];
+//        self.favoriteBarButton.tintColor = [UIColor piwigoOrange];
+//        [self.favoriteBarButton setAccessibilityIdentifier:@"favorite"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
 
         // Current image
@@ -124,7 +131,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
 	}
 	return self;
 }
@@ -199,7 +206,6 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            NSLog(@"ImageDetail => did change, previous was %@", previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? @"Dark" :  @"Light");
             [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
@@ -231,8 +237,12 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         {
             // User with admin rights can move, edit, delete images and set as album image
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
-            self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
-
+//            if ([@"2.10.0" compare:[Model sharedInstance].version options:NSNumericSearch] == NSOrderedDescending) {
+                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+//            } else {
+//                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.favoriteBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+//            }
+            
             // Present toolbar if needed
             self.isToolbarRequired = YES;
             BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
@@ -292,6 +302,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
     self.moveBarButton.enabled = state;
     self.setThumbnailBarButton.enabled = state;
     self.deleteBarButton.enabled = state;
+//    self.favoriteBarButton.enabled = state;
 }
 
 
@@ -916,7 +927,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
     [self setEnableStateOfButtons:NO];
 
     // Present AllCategories view
-    AllCategoriesViewController *allCategoriesPickVC = [[AllCategoriesViewController alloc] initForImage:self.imageData andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
+    ThumbnailCategoryViewController *allCategoriesPickVC = [[ThumbnailCategoryViewController alloc] initForImage:self.imageData andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
     allCategoriesPickVC.setAlbumImageDelegate = self;
     [self pushView:allCategoriesPickVC];
 }
@@ -984,12 +995,55 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
 }
 
 
+#pragma mark - Add to / remove from favorites
+
+-(void)addImageToFavorites
+{
+    // Disable buttons during action
+    [self setEnableStateOfButtons:NO];
+
+    // Send request to Piwigo server
+    [ImageService addImageToFavorites:self.imageData
+                           onProgress:nil
+                         OnCompletion:^(NSURLSessionTask *task, BOOL addedSuccessfully) {
+        
+                            // Enable buttons during action
+                            [self setEnableStateOfButtons:YES];
+
+                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                
+                            // Enable buttons during action
+                            [self setEnableStateOfButtons:YES];
+                        }];
+}
+
+-(void)removeImageFromFavorites
+{
+    // Disable buttons during action
+    [self setEnableStateOfButtons:NO];
+
+    // Send request to Piwigo server
+    [ImageService removeImageFromFavorites:self.imageData
+                                onProgress:nil
+                              OnCompletion:^(NSURLSessionTask *task, BOOL removedSuccessfully) {
+        
+                                // Enable buttons during action
+                                [self setEnableStateOfButtons:YES];
+
+                            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                                    
+                                // Enable buttons during action
+                                [self setEnableStateOfButtons:YES];
+                            }];
+}
+
+
 #pragma mark - push view
 -(void)pushView:(UIViewController *)viewController
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
-        if ([viewController isKindOfClass:[AllCategoriesViewController class]])
+        if ([viewController isKindOfClass:[ThumbnailCategoryViewController class]])
         {
             viewController.modalPresentationStyle = UIModalPresentationPopover;
             viewController.popoverPresentationController.sourceView = self.view;

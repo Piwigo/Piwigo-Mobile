@@ -37,7 +37,7 @@
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.sortSelectTableView]];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
     }
 	return self;
 }
@@ -252,6 +252,8 @@
         case kPiwigoSortCategoryVisitsAscending:
             name = NSLocalizedString(@"categorySort_visitsAscending", @"Visits, low → high");
             break;
+        case kPiwigoSortCategoryManual:
+            name = NSLocalizedString(@"categorySort_manual", @"Manual Order");
 
 //		case kPiwigoSortCategoryVideoOnly:
 //			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");

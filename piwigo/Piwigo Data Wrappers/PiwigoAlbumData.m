@@ -13,11 +13,12 @@
 #import "ImageUpload.h"
 #import "ImagesCollection.h"
 
-NSInteger const kPiwigoSearchCategoryId = -1;           // Search
-NSInteger const kPiwigoVisitsCategoryId = -2;           // Most visited
-NSInteger const kPiwigoBestCategoryId   = -3;           // Best rated
-NSInteger const kPiwigoRecentCategoryId = -4;           // Recent photos
-NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
+NSInteger const kPiwigoSearchCategoryId     = -1;           // Search
+NSInteger const kPiwigoVisitsCategoryId     = -2;           // Most visited
+NSInteger const kPiwigoBestCategoryId       = -3;           // Best rated
+NSInteger const kPiwigoRecentCategoryId     = -4;           // Recent photos
+NSInteger const kPiwigoTagsCategoryId       = -5;           // Tag images
+NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 @interface PiwigoAlbumData()
 
@@ -132,6 +133,8 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
         albumData.name = NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent photos");
     } else if (categoryId == kPiwigoTagsCategoryId) {
         albumData.name = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
+    } else if (categoryId == kPiwigoFavoritesCategoryId) {
+        albumData.name = NSLocalizedString(@"categoryDiscoverFavorites_title", @"Your favorites");
     } else {
         albumData.name = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
     }
@@ -201,7 +204,7 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
-//    NSLog(@"loadCategoryImageDataChunkWithSort: page %ld", self.onPage);
+//    NSLog(@"loadCategoryImageDataChunkWithSort: page %ld", (long)self.onPage);
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
                                       forCategory:self.albumId orQuery:self.query
 										   onPage:self.onPage
@@ -409,7 +412,7 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
     // If first added image, update category cache to get thumbnail image URL from server
     if (self.numberOfImages == 1) {
         NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoGetCategoryDataNotification object:nil userInfo:userInfo];
     }
 }
 
@@ -425,7 +428,7 @@ NSInteger const kPiwigoTagsCategoryId   = -5;           // Tag images
     // If no image left, update category cache to remove thumbnail image
     if (self.numberOfImages == 0) {
         NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoGetCategoryDataNotification object:nil userInfo:userInfo];
     }
 }
 

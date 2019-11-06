@@ -51,7 +51,7 @@ typedef enum {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
 }
 
 #pragma mark - View Lifecycle

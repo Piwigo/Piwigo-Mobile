@@ -21,6 +21,7 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
 
 @property (nonatomic, strong) UITableView *categoriesTableView;
 @property (nonatomic, strong) PiwigoAlbumData *selectedCategory;
+@property (nonatomic, strong) NSArray *recentCategories;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *categoriesThatShowSubCategories;
 @property (nonatomic, strong) UIViewController *hudViewController;
@@ -38,6 +39,10 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
 		self.title = NSLocalizedString(@"moveCategory", @"Move Album");
 		self.selectedCategory = category;
 
+        // List of categories to present in 1st section
+        self.recentCategories = [NSArray new];
+        [self buildRecentCategoryArray];
+        
         // List of categories to present in 2nd section
         self.categories = [NSMutableArray new];
         self.categoriesThatShowSubCategories = [NSMutableArray new];
@@ -58,7 +63,7 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitMoveCategory)];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
     }
     return self;
 }
@@ -135,43 +140,83 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    // Title
-    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
-    NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
-    CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
-                                                 options:NSStringDrawingUsesLineFragmentOrigin
-                                              attributes:titleAttributes
-                                                 context:context];
+
+    if (section == 0)   // Recent albums (if any)
+    {
+        // Title
+        NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+        NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont piwigoFontBold]};
+        CGRect titleRect = [titleString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                  attributes:titleAttributes
+                                                     context:context];
+    
+        // Text
+        NSString *textString;
+        if (self.recentCategories.count > 0) {
+            textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectRecent", @"Select a recent album to move album \"%@\" into"), self.selectedCategory.name];
+        } else {
+            textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectParent", @"Select an album to move album \"%@\" into"), self.selectedCategory.name];
+        }
+        NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
+        CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                attributes:textAttributes
+                                                   context:context];
+        
+        return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+    }
     
     // Text
-    NSString *textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectParent", @"Select an album to move album \"%@\" into"), self.selectedCategory.name];
+    NSString *textString;
+    if (self.recentCategories.count > 0) {
+        textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectRecentOther", @"or select another album to move album \"%@\" into"), self.selectedCategory.name];
+    }
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontSmall]};
     CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
                                                options:NSStringDrawingUsesLineFragmentOrigin
                                             attributes:textAttributes
                                                context:context];
-    return fmax(44.0, ceil(titleRect.size.height + textRect.size.height));
+    
+    return fmax(44.0, ceil(textRect.size.height));
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSMutableAttributedString *headerAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
     
-    // Title
-    NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
-    NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
-    [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
-                                  range:NSMakeRange(0, [titleString length])];
-    [headerAttributedString appendAttributedString:titleAttributedString];
+    if (section == 0)   // Albums containing image
+    {
+        // Title
+        NSString *titleString = [NSString stringWithFormat:@"%@\n", NSLocalizedString(@"tabBar_albums", @"Albums")];
+        NSMutableAttributedString *titleAttributedString = [[NSMutableAttributedString alloc] initWithString:titleString];
+        [titleAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold]
+                                      range:NSMakeRange(0, [titleString length])];
+        [headerAttributedString appendAttributedString:titleAttributedString];
     
-    // Text
-    NSString *textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectParent", @"Select an album to move album \"%@\" into"), self.selectedCategory.name];
-    NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
-    [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
-                                 range:NSMakeRange(0, [textString length])];
-    [headerAttributedString appendAttributedString:textAttributedString];
+        // Text
+        NSString *textString;
+        if (self.recentCategories.count > 0) {
+            textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectRecent", @"Select a recent album to move album \"%@\" into"), self.selectedCategory.name];
+        } else {
+            textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectParent", @"Select an album to move album \"%@\" into"), self.selectedCategory.name];
+        }
+        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                     range:NSMakeRange(0, [textString length])];
+        [headerAttributedString appendAttributedString:textAttributedString];
+    }
+    else                // Or other albums
+    {
+        // Text
+        NSString *textString = [NSString stringWithFormat:NSLocalizedString(@"moveCategory_selectRecentOther", @"or select another album to move album \"%@\" into"), self.selectedCategory.name];
+        NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:textString];
+        [textAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall]
+                                     range:NSMakeRange(0, [textString length])];
+        [headerAttributedString appendAttributedString:textAttributedString];
+    }
     
     // Header label
     UILabel *headerLabel = [UILabel new];
@@ -206,12 +251,19 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 1 + (self.recentCategories.count > 0);
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.categories.count;
+    NSInteger numberOfRows;
+    if ((self.recentCategories.count > 0) && (section == 0)) {
+        numberOfRows = self.recentCategories.count;
+    } else {
+        numberOfRows = self.categories.count;
+    }
+
+    return numberOfRows;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -223,30 +275,45 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CategoryTableViewCell" forIndexPath:indexPath];
     
-    // Determine the depth before setting up the cell
-    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-    NSInteger depth = [categoryData getDepthOfCategory];
-    PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
-    depth -= [defaultCategoryData getDepthOfCategory];
-    [cell setupWithCategoryData:categoryData atDepth:depth];
-    
-    // Cell is parent category?
-    if(categoryData.albumId == self.selectedCategory.parentAlbumId)
-    {
-        cell.userInteractionEnabled = NO;
-        cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
+    if ((self.recentCategories.count > 0) && (indexPath.section == 0)) {
+        PiwigoAlbumData *categoryData = [self.recentCategories objectAtIndex:indexPath.row];
+        [cell setupWithCategoryData:categoryData atDepth:0 withSubCategoryButton:NO];
     }
+    else {
+        // Determine the depth before setting up the cell
+        PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+        NSInteger depth = [categoryData getDepthOfCategory];
+        PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
+        depth -= [defaultCategoryData getDepthOfCategory];
+        [cell setupWithCategoryData:categoryData atDepth:depth withSubCategoryButton:YES];
+        
+        // Cell is parent category?
+        if (categoryData.albumId == self.selectedCategory.parentAlbumId)
+        {
+            cell.userInteractionEnabled = NO;
+            cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
+        }
 
-    // Switch between Open/Close cell disclosure
-    cell.categoryDelegate = self;
-    if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
-        cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
-    } else {
-        cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
+        // Switch between Open/Close cell disclosure
+        cell.categoryDelegate = self;
+        if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
+            cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
+        } else {
+            cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
+        }
     }
 
     cell.isAccessibilityElement = YES;
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+    if (categoryData.albumId == self.selectedCategory.parentAlbumId)
+        return NO;
+    
+    return YES;
 }
 
 
@@ -257,7 +324,11 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     PiwigoAlbumData *categoryData;
-    categoryData = [self.categories objectAtIndex:indexPath.row];
+    if ((self.recentCategories.count > 0) && (indexPath.section == 0)) {
+        categoryData = [self.recentCategories objectAtIndex:indexPath.row];
+    } else {
+        categoryData = [self.categories objectAtIndex:indexPath.row];
+    }
     
     // User cannot move album at current place
     if (categoryData.albumId == self.selectedCategory.parentAlbumId) return;
@@ -331,8 +402,24 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
 					  {
                           [self hideHUDwithSuccess:YES completion:^{
                               dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                  // Update old parent category
+                                  PiwigoAlbumData *oldParent = [[CategoriesData sharedInstance] getCategoryById:self.selectedCategory.parentAlbumId];
+                                  oldParent.numberOfSubCategories--;
+                                  
+                                  // Update new parent category
+                                  PiwigoAlbumData *newParent = [[CategoriesData sharedInstance] getCategoryById:categoryId];
+                                  newParent.numberOfSubCategories++;
+                                  
+                                  // Update moved category
+                                  NSMutableArray *upperCategories = [self.selectedCategory.upperCategories mutableCopy];
+                                  [upperCategories removeObject:[NSString stringWithFormat:@"%ld", (long)self.selectedCategory.parentAlbumId]];
+                                  [upperCategories addObject:[NSString stringWithFormat:@"%ld", (long)categoryId]];
+                                  self.selectedCategory.upperCategories = upperCategories;
                                   self.selectedCategory.parentAlbumId = categoryId;
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                                  
+                                  // Update cache
+                                  [[CategoriesData sharedInstance] updateCategories:@[oldParent, newParent, self.selectedCategory]];
+
                                   [self quitMoveCategory];
                               });
                           }];
@@ -579,6 +666,40 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
     rootAlbum.albumId = 0;
     rootAlbum.name = NSLocalizedString(@"categorySelection_root", @"Root Album");
     [self.categories insertObject:rootAlbum atIndex:0];
+}
+
+-(void)buildRecentCategoryArray
+{
+    // Current recent categories
+    NSArray *recentCat = [[Model sharedInstance].recentCategories componentsSeparatedByString:@","];
+
+    // Build mutable list of recent categories
+    NSMutableArray *recentCategories = [NSMutableArray new];
+    for (NSString *catIdStr in recentCat)
+    {
+        // Get category data
+        NSInteger catId = [catIdStr integerValue];
+        PiwigoAlbumData *categoryData = [[CategoriesData sharedInstance] getCategoryById:catId];
+        
+        // Check collected data are in cache
+        if (categoryData == nil) continue;
+        
+        // Do not add current category
+        if (catId == self.selectedCategory.albumId) continue;
+
+        // Do not add parent categories
+        if (self.selectedCategory.parentAlbumId == catId) continue;
+        if ([self.selectedCategory.upperCategories containsObject:catIdStr]) continue;
+
+        // Add category if it exists in cache
+        [recentCategories addObject:categoryData];
+        
+        // Reach max number of recent categories?
+        if (recentCategories.count == [Model sharedInstance].maxNberRecentCategories) break;
+    }
+    
+    // Set list of recent categories
+    self.recentCategories = [recentCategories copy];
 }
 
 

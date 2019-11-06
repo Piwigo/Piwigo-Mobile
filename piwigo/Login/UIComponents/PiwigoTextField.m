@@ -15,8 +15,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor whiteColor];
-		self.layer.cornerRadius = 5.0;
+		self.layer.cornerRadius = 10.0;
 		self.font = [UIFont piwigoFontNormal];
 	}
 	return self;

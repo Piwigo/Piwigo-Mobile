@@ -8,9 +8,9 @@
 
 #import "CategoriesData.h"
 
-NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
-NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
-NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
+NSString * const kPiwigoGetCategoryDataNotification = @"kPiwigoGetCategoryDataNotification";
+NSString * const kPiwigoCategoryDataUpdatedNotification = @"kPiwigoCategoryDataUpdatedNotification";
+NSString * const kPiwigoChangedCurrentCategoryNotification = @"kPiwigoChangedCurrentCategoryNotification";
 
 @interface CategoriesData()
 
@@ -86,7 +86,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     self.allCategories = newCategories;
 
     // Post to the app that category data have changed
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
 }
 
 -(void)deleteCategory:(NSInteger)categoryId
@@ -140,7 +140,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         self.allCategories = newCategories;
 
         // Post to the app that category data have changed
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
     }
 }
 
@@ -178,56 +178,57 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	
     // Post to the app that the category data has been updated (if necessary)
     if (self.allCategories.count > 0)
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
 }
 
 -(void)updateCategories:(NSArray*)categories
 {
-    // Create new list of categories
-    NSMutableArray *newCategories = [[NSMutableArray alloc] init];
-    
-    // First add freshly retrieved categories
-    for(PiwigoAlbumData *categoryData in categories)
-    {
-        // Is this a known category?
-        NSInteger index = [self indexOfCategoryWithId:categoryData.albumId inArray:self.allCategories];
+    // Known categories are updated if needed
+    NSMutableArray *updatedCategories = [NSMutableArray new];
 
-        // Update exisiting data with new ones
+    // New categories will be added to the top of the list
+    NSMutableArray *newCategories = [categories mutableCopy];
+
+    // Loop over all known categories
+    for (PiwigoAlbumData *category in self.allCategories)
+    {
+        // Is this a category to update?
+        NSInteger index = [self indexOfCategoryWithId:category.albumId inArray:newCategories];
         if (index != NSNotFound)
         {
-            // Retrieve exisiting data
-            PiwigoAlbumData *existingData = [self.allCategories objectAtIndex:index];
-            categoryData.hasUploadRights = existingData.hasUploadRights;
-
+            // Retrieve updated data
+            PiwigoAlbumData *updatedCategory = [newCategories objectAtIndex:index];
+            
+            // Keep upload rights
+            updatedCategory.hasUploadRights = category.hasUploadRights;
+            
             // Reuse the image if the URL is identical
-            if(existingData.albumThumbnailId == categoryData.albumThumbnailId)
+            if (updatedCategory.albumThumbnailId == category.albumThumbnailId)
             {
-                categoryData.categoryImage = existingData.categoryImage;
+                updatedCategory.categoryImage = category.categoryImage;
             }
+            
+            // Append updated category to new list
+            [updatedCategories addObject:updatedCategory];
+            
+            // Remove updated category from top list
+            [newCategories removeObjectAtIndex:index];
         }
-        
-        // Append category to new list
-        [newCategories addObject:categoryData];
-    }
-    
-    // Second, keep other known categories
-    for(PiwigoAlbumData *categoryData in self.allCategories)
-    {
-        // Look for updated categories
-        NSInteger index = [self indexOfCategoryWithId:categoryData.albumId inArray:newCategories];
-        
-        // Add category which was not updated
-        if (index == NSNotFound) {
-            [newCategories addObject:categoryData];
+        else
+        {
+            [updatedCategories addObject:category];
         }
     }
+
+    // Append new categories
+    [newCategories addObjectsFromArray:updatedCategories];
     
     // Update list of displayed categories
     self.allCategories = newCategories;
     
     // Post to the app that the category data has been updated (if necessary)
     if (self.allCategories.count > 0)
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
 }
 
 -(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
@@ -281,7 +282,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     self.communityCategoriesForUploadOnly = existingComCategories;
 
     // Post to the app that the category data has been updated
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
 }
 
 
