@@ -217,7 +217,7 @@
 "moveCategory" = "Pindahkan Album";
 "moveCategory_selectParent" = "Pilih album yang akan dipindahkan ke dalam album \"%@\"";
 "moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
 "moveCategory_message" = "Anda yakin ingin memindahkan \"%@\" ke dalam album \"%@\"?";
 "moveCategoryHUD_moving" = "Memindahkan Album…";
 
@@ -225,7 +225,7 @@
 "moveCategoryError_title" = "Gagal Memindahkan";
 "moveCategoryError_message" = "Gagal untuk memindahkan album Anda";
 
-// Album set image thumbnail
+// Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Pilih album saat ini untuk gambar ini";
 "categorySelection_one" = "Pilih album yang didalamnya terdapat gambar ini";
@@ -234,7 +234,7 @@
 "categoryImageSet_message" = "Anda yakin ingin membuat gambar ini sebagai gambar untuk album \"%@\"?";
 "categoryImageSetHUD_updating" = "Memperbarui Gambar Mini Album…";
 
-// Album set image thumbnail — Errors
+// Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Penetapan Gambar Galat";
 "categoryImageSetError_message" = "Gagal untuk menetapkan gambar album";
 
@@ -256,7 +256,7 @@
 // Image sort
 "sortBy" = "Sortir Berdasarkan";
 "imageSortTitle" = "Pilah Gambar";
-"imageSortingHUD" = "Sorting Images";
+"imageSortingHUD" = "Sorting Photos";
 "imageSortMessage" = "Silakan pilih bagaimana Anda ingin memilah gambar";
 
 // Image options (actions)
@@ -315,11 +315,11 @@
 
 // Image rename (filename)
 "renameImage_title" = "Original File";
-"renameImage_message" = "Enter a new file name for this image";
+"renameImage_message" = "Enter a new file name for this photo";
 "renameImageHUD_label" = "Renaming File…";
 
 // Image rename — Errors
-"renameImageError_message" = "Failed to rename image file";
+"renameImageError_message" = "Failed to rename photo file";
 
 // Image delete
 "deleteImage_delete" = "Hapus";
@@ -363,11 +363,11 @@
 // Image move
 "moveImage_title" = "Pindah ke Album";
 "moveSingleImage_selectAlbum" = "Pilih album untuk memindahkan gambar \"%@\"";
-"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
-"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
+"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
+"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Pilih album untuk memindahkan gambar";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
-"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
+"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
 "moveSingleImage_message" = "Apakah anda ingin memindahkan gambar \"%@\" ke album \"%@\"?";
 "moveSeveralImages_message" = "Apakah anda ingin memindahkan gambar ke album \"%@\"?";
 "moveSingleImageHUD_moving" = "Memindahkan…";
@@ -380,11 +380,11 @@
 // Image copy
 "copyImage_title" = "Salin ke Album";
 "copySingleImage_selectAlbum" = "Pilih album untuk menyalin gambar \"%@\"";
-"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
-"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
+"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
+"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
 "copySeveralImages_selectAlbum" = "Pilih album untuk menyalin gambar";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
-"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
+"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
 "copySingleImage_message" = "Apakah anda ingin menyalin gambar \"%@\" ke album \"%@\"?";
 "copySeveralImages_message" = "Apakah anda ingin menyalin gambar ke album \"%@\"?";
 "copySingleImageHUD_copying" = "Menyalin Gambar…";
@@ -407,7 +407,7 @@
 "imageUploadDetailsUploading_title" = "Gambar yang Akan Diunggah";
 "imageUploadDetailsCell_uploadComplete" = "Lengkap! Selesaikan...";
 
-"imageUploadRemove" = "Removing uploaded images";
+"imageUploadRemove" = "Removing uploaded photos";
 
 "imageUploadTableCell_uploading" = "Mengunggah...";
 "imageUploadProgressBar_zero" = "Mengunggah 0/0";
@@ -440,44 +440,44 @@
 
 // Image share
 "shareImageMetadata_Title" = "Share Metadata";
-"shareImageMetadata_subTitle1" = "Actions sharing images with private metadata";
-"shareImageMetadata_subTitle2" = "Actions sharing images without private metadata";
+"shareImageMetadata_subTitle1" = "Actions sharing photos with private metadata";
+"shareImageMetadata_subTitle2" = "Actions sharing photos without private metadata";
 "shareActivityCode_AirDrop" = "Transfer with AirDrop";
-"shareActivityCode_AirDrop>375px" = "Transfer images with AirDrop";
+"shareActivityCode_AirDrop>375px" = "Transfer photos with AirDrop";
 "shareActivityCode_AssignToContact" = "Assign to Contact";
-"shareActivityCode_AssignToContact>375px" = "Assign image to Contact";
+"shareActivityCode_AssignToContact>375px" = "Assign photo to Contact";
 "shareActivityCode_CopyToPasteboard" = "Copy to Pasteboard";
-"shareActivityCode_CopyToPasteboard>375px" = "Copy images to Pasteboard";
+"shareActivityCode_CopyToPasteboard>375px" = "Copy photos to Pasteboard";
 "shareActivityCode_Mail" = "Post by Email";
-"shareActivityCode_Mail>375px" = "Post images by Email";
+"shareActivityCode_Mail>375px" = "Post photos by Email";
 "shareActivityCode_Message" = "Post with Message";
-"shareActivityCode_Message>375px" = "Post images with the Message app";
+"shareActivityCode_Message>375px" = "Post photos with the Message app";
 "shareActivityCode_Facebook" = "Post to Facebook";
-"shareActivityCode_Facebook>375px" = "Post images to Facebook";
+"shareActivityCode_Facebook>375px" = "Post photos to Facebook";
 "shareActivityCode_Messenger" = "Post with Messenger";
-"shareActivityCode_Messenger>375px" = "Post images with the Messenger app";
+"shareActivityCode_Messenger>375px" = "Post photos with the Messenger app";
 "shareActivityCode_Flickr" = "Post to Flickr";
-"shareActivityCode_Flickr>375px" = "Post images to Flickr";
+"shareActivityCode_Flickr>375px" = "Post photos to Flickr";
 "shareActivityCode_Instagram" = "Post to Instagram";
-"shareActivityCode_Instagram>375px" = "Post images to Instagram";
+"shareActivityCode_Instagram>375px" = "Post photos to Instagram";
 "shareActivityCode_Signal" = "Post with Signal";
-"shareActivityCode_Signal>375px" = "Post images with the Signal app";
+"shareActivityCode_Signal>375px" = "Post photos with the Signal app";
 "shareActivityCode_Snapchat" = "Post to Snapchat";
-"shareActivityCode_Snapchat>375px" = "Post images to Snapchat app";
+"shareActivityCode_Snapchat>375px" = "Post photos to Snapchat app";
 "shareActivityCode_TencentWeibo" = "Post to TencentWeibo";
-"shareActivityCode_TencentWeibo>375px" = "Post images to TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Post photos to TencentWeibo";
 "shareActivityCode_Twitter" = "Post to Twitter";
-"shareActivityCode_Twitter>375px" = "Post images to Twitter";
+"shareActivityCode_Twitter>375px" = "Post photos to Twitter";
 "shareActivityCode_Vimeo" = "Post to Vimeo";
 "shareActivityCode_Vimeo>375px" = "Post videos to Vimeo";
 "shareActivityCode_Weibo" = "Post to Weibo";
-"shareActivityCode_Weibo>375px" = "Post images to Weibo";
+"shareActivityCode_Weibo>375px" = "Post photos to Weibo";
 "shareActivityCode_WhatsApp" = "Post with WhatsApp";
-"shareActivityCode_WhatsApp>375px" = "Post images with the WhatsApp app";
+"shareActivityCode_WhatsApp>375px" = "Post photos with the WhatsApp app";
 "shareActivityCode_CameraRoll" = "Save to Camera Roll";
-"shareActivityCode_CameraRoll>375px" = "Save images to Camera Roll";
+"shareActivityCode_CameraRoll>375px" = "Save photos to Camera Roll";
 "shareActivityCode_Other" = "Share with other apps";
-"shareActivityCode_Other>375px" = "Share images with other apps";
+"shareActivityCode_Other>375px" = "Share photos with other apps";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
@@ -547,7 +547,7 @@
 "defaultNberOfThumbnails>320px" = "Number/Row";
 "defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Please select an image thumbnail size";
+"defaultThumbnailSizeHeader" = "Please select an photo thumbnail size";
 "settings_displayTitles" = "Judul dalam Gambar Mini";
 "settings_displayTitles>320px" = "Tampilkan Judul dalam Gambar Mini";
 
@@ -583,7 +583,7 @@
 "settings_defaultAuthor>320px" = "Nama Penulis";
 "settings_defaultAuthorPlaceholder" = "Nama Penulis";
 "settings_defaultPrivacy" = "Privasi";
-"settings_defaultPrivacy>414px" = "Please select who will be able to see images";
+"settings_defaultPrivacy>414px" = "Please select who will be able to see photos";
 "settings_stripGPSdata" = "Hapus Metadata Pribadi";
 "settings_stripGPSdata>375px" = "Hapus Metadata Pribadi Sebelum Mengunggah";
 "settings_photoResize" = "Ubah Ukuran Sebelum Mengunggah";

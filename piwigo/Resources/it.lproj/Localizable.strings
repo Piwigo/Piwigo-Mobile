@@ -217,7 +217,7 @@
 "moveCategory" = "Sposta album";
 "moveCategory_selectParent" = "Seleziona un album per spostare l'album \"%@\" in";
 "moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
 "moveCategory_message" = "Sei sicuro di voler spostare \"%@\" nell'album \"%@\"?";
 "moveCategoryHUD_moving" = "Spostamento dell'album…";
 
@@ -225,7 +225,7 @@
 "moveCategoryError_title" = "Spostamento fallito";
 "moveCategoryError_message" = "Impossibile spostare l'album";
 
-// Album set image thumbnail
+// Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Seleziona l'album corrente per questa immagine";
 "categorySelection_one" = "Selezionare uno degli album che contiene questa immagine";
@@ -234,7 +234,7 @@
 "categoryImageSet_message" = "Sei sicuro di voler impostare questa immagine per l'album \"%@\"?";
 "categoryImageSetHUD_updating" = "Aggiornamento miniatura dell'Album…";
 
-// Album set image thumbnail — Errors
+// Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Errore nel set di immagini";
 "categoryImageSetError_message" = "Impossibile impostare l'immagine dell'album";
 
@@ -363,11 +363,11 @@
 // Image move
 "moveImage_title" = "Sposta nell'Album";
 "moveSingleImage_selectAlbum" = "Selezionare un album per spostare l'immagine \"%@\" su";
-"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
-"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
+"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
+"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Selezionare un album per spostare le immagini su";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
-"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
+"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
 "moveSingleImage_message" = "Sei sicuro di voler spostare l'immagine \"%@\" nell'album \"%@\"?";
 "moveSeveralImages_message" = "Sei sicuro di voler spostare le immagini nell'album \"%@\"?";
 "moveSingleImageHUD_moving" = "Sposto l'immagine...";
@@ -380,11 +380,11 @@
 // Image copy
 "copyImage_title" = "Copio nell'Album";
 "copySingleImage_selectAlbum" = "Seleziona un album per copiare l'immagine \"%@\" su";
-"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
-"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
+"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
+"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
 "copySeveralImages_selectAlbum" = "Seleziona un album per copiare le immagini";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
-"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
+"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
 "copySingleImage_message" = "Sei sicuro di voler copiare l'immagine \"%@\" nell'album \"%@\"?";
 "copySeveralImages_message" = "Sei sicuro di voler copiare le immagini nell'album \"%@\"?";
 "copySingleImageHUD_copying" = "Copia immagine …";

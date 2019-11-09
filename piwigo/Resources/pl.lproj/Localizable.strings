@@ -225,7 +225,7 @@
 "moveCategoryError_title" = "Błąd Przenoszenia";
 "moveCategoryError_message" = "Nie można przenieść Twojego albumu";
 
-// Album set image thumbnail
+// Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Wybierz bieżący album dla tego zdjęcia";
 "categorySelection_one" = "Wybierz jeden z albumów zawierających ten obraz";
@@ -234,7 +234,7 @@
 "categoryImageSet_message" = "Czy na pewno chcesz ustawić to zdjęcie dla albumu \"%@\"?";
 "categoryImageSetHUD_updating" = "Aktualizowanie miniatury albumu…";
 
-// Album set image thumbnail — Errors
+// Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Błąd ustawiania zdjęcia";
 "categoryImageSetError_message" = "Nie można ustawić zdjęcia albumu";
 

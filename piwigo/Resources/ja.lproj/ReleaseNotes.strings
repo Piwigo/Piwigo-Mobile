@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.4.6_text" = "Version 2.4.6\n\n• Edit properties of a selection of photos\n• Minor bug fixes and improvements of the interface";
+
 "v2.4.5_text" = "バージョン 2.4.5\n\n• お気に入りの画像を表示します （Piwigo 2.10以降が必要です）\n• 手動でソートされた画像を表示するオプション\n• Communityユーザーがアルバムを作成できるようにします（適切な権限を持つ）\n• 軽微なバグの修正とインタフェースの改善";
 
 "v2.4.4_text" = "バージョン 2.4.4\n2019年10月1日\n\n• 幾つかのサーバにおける動画アップロード問題の解決\n• 軽微なバグの修正とインタフェースの改善";

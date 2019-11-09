@@ -225,7 +225,7 @@
 "moveCategoryError_title" = "Verschieben fehlgeschlagen";
 "moveCategoryError_message" = "Fehler beim Verschieben Deines Albums";
 
-// Album set image thumbnail
+// Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Bild";
 "categorySelection_one" = "Wähle ein Album in dem dieses Bild vorkommt";
@@ -234,7 +234,7 @@
 "categoryImageSet_message" = "Möchtest Du wirklich dieses Miniaturbild für das Album \"%@\" festlegen?";
 "categoryImageSetHUD_updating" = "Album Miniaturbild wird aktualisiert…";
 
-// Album set image thumbnail — Errors
+// Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Fehler beim setzen des Miniaturbild";
 "categoryImageSetError_message" = "Setzen des Miniaturbild für das Album fehlgeschlagen";
 

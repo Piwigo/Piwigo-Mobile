@@ -217,7 +217,7 @@
 "moveCategory" = "アルバムを移動します";
 "moveCategory_selectParent" = "アルバム「%@」へ移動するアルバムを選択して下さい";
 "moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
 "moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
 "moveCategoryHUD_moving" = "アルバムを移動中...";
 
@@ -225,7 +225,7 @@
 "moveCategoryError_title" = "移動に失敗しました";
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
-// Album set image thumbnail
+// Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
 "categorySelection_current" = "この画像のためのアルバムを選択します";
 "categorySelection_one" = "この画像を含むアルバムを1つ選択して下さい";
@@ -234,7 +234,7 @@
 "categoryImageSet_message" = "この画像をアルバム「%@」に設定してよろしいですか？";
 "categoryImageSetHUD_updating" = "アルバムのサムネイルを更新中...";
 
-// Album set image thumbnail — Errors
+// Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "画像設定エラー";
 "categoryImageSetError_message" = "アルバム画像の設定に失敗しました";
 
@@ -363,11 +363,11 @@
 // Image move
 "moveImage_title" = "アルバムに移動する";
 "moveSingleImage_selectAlbum" = "画像「%@」を移動するアルバムを選択する";
-"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
-"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
+"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
+"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
 "moveSeveralImages_selectAlbum" = "画像を移動するアルバムを選択する";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
-"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
+"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
 "moveSingleImage_message" = "画像「%@」をアルバム「%@」へ移動していいですか？";
 "moveSeveralImages_message" = "画像をアルバム「%@」へ移動していいですか？";
 "moveSingleImageHUD_moving" = "画像を移動しています...";
@@ -380,11 +380,11 @@
 // Image copy
 "copyImage_title" = "アルバムにコピーする";
 "copySingleImage_selectAlbum" = "画像「%@」をコピーするアルバムを選択する";
-"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
-"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
+"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
+"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
 "copySeveralImages_selectAlbum" = "画像をコピーするアルバムを選択する";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
-"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
+"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
 "copySingleImage_message" = "画像「%@」をアルバム「%@」へコピーしていいですか？";
 "copySeveralImages_message" = "画像をアルバム「%@」へコピーしていいですか？";
 "copySingleImageHUD_copying" = "画像をコピーしています...";

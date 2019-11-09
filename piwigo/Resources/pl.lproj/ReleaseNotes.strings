@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.4.6_text" = "Version 2.4.6\n\n• Edit properties of a selection of photos\n• Minor bug fixes and improvements of the interface";
+
 "v2.4.5_text" = "Wersja 2.4.5\n\n• Wyświetla twoje ulubione obrazy (wymaga Piwigo 2.10 lub nowszego)\n• Opcja prezentacji obrazów posortowanych ręcznie\n• Pozwala użytkownikom Community (z odpowiednimi uprawnieniami) tworzyć albumy\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
 "v2.4.4_text" = "Wersja 2.4.4\n1 października 2019\n\n• Naprawia problemy z przesyłaniem wideo na niektórych serwerach\n• Poprawki drobnych błędów i ulepszenia interfejsu";

@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.4.6_text" = "Version 2.4.6\n\n• Edit properties of a selection of photos\n• Minor bug fixes and improvements of the interface";
+
 "v2.4.5_text" = "Versie 2.4.5\n\n• Toont uw favoriete afbeeldingen (vereist Piwigo 2.10 of hoger)\n• Optie voor het handmatig presenteren van afbeeldingen\n• Hiermee kunnen Community gebruikers albums maken (met de juiste rechten)\n• Kleine foutjes hersteld en verbetering van de interface";
 
 "v2.4.4_text" = "Versie 2.4.4\n1 Oktober 2019\n\n• Problemen met video-uploads op sommige servers oplossen\n• Kleine foutjes hersteld en verbetering van de interface";
