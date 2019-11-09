@@ -24,6 +24,8 @@
 
 @implementation AlbumData
 
+#pragma mark - Initialisation
+
 -(instancetype)initWithCategoryId:(NSInteger)categoryId andQuery:(NSString *)query
 {
 	self = [super init];
@@ -35,6 +37,33 @@
 		self.sortType = -1;
 	}
 	return self;
+}
+
+
+#pragma mark - Load image data
+
+-(void)reloadAlbumOnCompletion:(void (^)(void))completion
+{
+    NSInteger currentPage = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].onPage;
+    [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
+    
+    [self loadImagePageUntil:currentPage onPage:0 onCompletion:completion];
+}
+
+-(void)loadImagePageUntil:(NSInteger)page onPage:(NSInteger)onPage onCompletion:(void (^)(void))completion
+{
+    if((onPage != 0) && (onPage >= page))
+    {
+        if(completion)
+        {
+            completion();
+        }
+        return;
+    }
+    
+    [self loadMoreImagesOnCompletion:^{
+        [self loadImagePageUntil:page onPage:onPage + 1 onCompletion:completion];
+    }];
 }
 
 -(void)loadMoreImagesOnCompletion:(void (^)(void))completion
@@ -73,6 +102,23 @@
 		}
 	}];
 }
+
+-(void)loadAllImagesOnCompletion:(void (^)(void))completion
+{
+    [[[CategoriesData sharedInstance] getCategoryById:self.categoryId]
+     loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
+         if (completed) {
+            self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+            if(completion)
+            {
+                completion();
+            }
+         }
+    }];
+}
+
+
+#pragma mark - Image sorting
 
 -(void)updateSortString
 {
@@ -171,43 +217,46 @@
 	[self loadMoreImagesOnCompletion:completion];
 }
 
--(void)loadAllImagesOnCompletion:(void (^)(void))completion
+
+#pragma mark - Update images
+
+-(void)updateImage:(ImageUpload *)details
 {
-	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId]
-     loadAllCategoryImageDataForProgress:nil OnCompletion:^(BOOL completed) {
-         if (completed) {
-            self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-            if(completion)
-            {
-                completion();
-            }
-         }
-	}];
+    // Anything to do?
+    if (details == nil) return;
+
+    // Initialisation
+    NSInteger index = 0;
+    NSMutableArray *newImages = [self.images mutableCopy];
+    
+    // Lopp over current images
+    for (PiwigoImageData *image in self.images)
+    {
+        if (image.imageId == details.imageId)
+        {
+            // Update image data
+            image.imageTitle = details.imageTitle;
+            image.author = details.author;
+            image.privacyLevel = details.privacyLevel;
+            if (details.comment)
+                image.comment = [NSString stringWithString:details.comment];
+            else
+                image.comment = @"";
+            image.tags = [details.tags copy];
+            
+            // Update list and currently viewed image
+            [newImages replaceObjectAtIndex:index withObject:image];
+            break;
+        }
+        index++;
+    }
+    
+    // Update image list
+    self.images = [newImages copy];
 }
 
--(void)reloadAlbumOnCompletion:(void (^)(void))completion
-{
-	NSInteger currentPage = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].onPage;
-	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
-	
-	[self loadImagePageUntil:currentPage onPage:0 onCompletion:completion];
-}
 
--(void)loadImagePageUntil:(NSInteger)page onPage:(NSInteger)onPage onCompletion:(void (^)(void))completion
-{
-	if((onPage != 0) && (onPage >= page))
-	{
-		if(completion)
-		{
-			completion();
-		}
-		return;
-	}
-	
-	[self loadMoreImagesOnCompletion:^{
-		[self loadImagePageUntil:page onPage:onPage + 1 onCompletion:completion];
-	}];
-}
+#pragma mark - Remove images
 
 -(void)removeImage:(PiwigoImageData*)image
 {

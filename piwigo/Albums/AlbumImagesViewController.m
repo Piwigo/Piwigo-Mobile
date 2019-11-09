@@ -21,11 +21,13 @@
 //#import "CategoryImageSort.h"
 #import "CategoryPickViewController.h"
 #import "DiscoverImagesViewController.h"
+#import "EditImageDetailsViewController.h"
 #import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
+#import "ImageUpload.h"
 #import "LocalAlbumsViewController.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
@@ -46,7 +48,7 @@
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultAlbumNotification";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectViewDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, EditImageDetailsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectViewDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -62,6 +64,7 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *spaceBetweenButtons;
+@property (nonatomic, strong) UIBarButtonItem *editBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
 @property (nonatomic, strong) UIBarButtonItem *shareBarButton;
 @property (nonatomic, strong) UIBarButtonItem *moveBarButton;
@@ -73,6 +76,8 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
 @property (nonatomic, strong) NSMutableArray *selectedImageIds;
 @property (nonatomic, strong) NSMutableArray *touchedImageIds;
 
+@property (nonatomic, strong) NSMutableArray *selectedImageIdsToEdit;
+@property (nonatomic, strong) NSMutableArray *selectedImagesToEdit;
 @property (nonatomic, strong) NSMutableArray *selectedImageIdsToDelete;
 @property (nonatomic, strong) NSMutableArray *selectedImagesToDelete;
 @property (nonatomic, strong) NSMutableArray *selectedImagesToRemove;
@@ -143,9 +148,11 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelected)];
+        self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editSelection)];
+        [self.editBarButton setAccessibilityIdentifier:@"edit"];
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelection)];
         self.deleteBarButton.tintColor = [UIColor redColor];
-        self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelected)];
+        self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
         self.shareBarButton.tintColor = [UIColor piwigoOrange];
         self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoOrange];
@@ -561,7 +568,7 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
         // — admin rights
         // — upload access to the current category
         if ([Model sharedInstance].hasAdminRights ||
-                [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+            [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
             // Show Upload button
             self.uploadButton.frame = CGRectMake(xPos, yPos, 2*kRadius, 2*kRadius);
@@ -655,19 +662,26 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
                 (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
                  ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
         
-                // Hide navigation bar left buttons and use a toolbar
-                [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
-
                 // Redefine bar buttons (definition lost after rotation of device)
                 self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-                self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelected)];
+                self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editSelection)];
+                self.editBarButton.tintColor = [UIColor piwigoOrange];
+                self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelection)];
                 self.deleteBarButton.tintColor = [UIColor redColor];
-                self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelected)];
+                self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
                 self.shareBarButton.tintColor = [UIColor piwigoOrange];
                 self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
                 self.moveBarButton.tintColor = [UIColor piwigoOrange];
 
-                // Present toolbar
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+                self.cancelBarButton.enabled = YES;
+
+                // Right side of navigation bar
+                [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
+                self.editBarButton.enabled = (self.selectedImageIds.count > 0);
+
+                // Toolbar
                 [self.navigationController setToolbarHidden:NO animated:YES];
                 self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton];
                 self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
@@ -679,11 +693,16 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
                 // Hide toolbar
                 [self.navigationController setToolbarHidden:YES animated:YES];
 
-                // Present buttons in the navigation bar
-                [self.navigationItem setLeftBarButtonItems:@[self.shareBarButton, self.moveBarButton, self.deleteBarButton] animated:YES];
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton, self.deleteBarButton] animated:YES];
+                self.cancelBarButton.enabled = YES;
+                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
+
+                // Right side of navigation bar
+                [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
                 self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
-                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.editBarButton.enabled = (self.selectedImageIds.count > 0);
           }
         }
         else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
@@ -693,16 +712,23 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
                 (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
                  ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
                     
-                    // Hide navigation bar left buttons and use a toolbar
-                    [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
-                    
                     // Redefine bar buttons (definition lost after rotation of device)
                     self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-                    self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelected)];
+                    self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editSelection)];
+                    self.editBarButton.tintColor = [UIColor piwigoOrange];
+                    self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
                     self.shareBarButton.tintColor = [UIColor piwigoOrange];
                     self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
                     self.moveBarButton.tintColor = [UIColor piwigoOrange];
                     
+                    // Left side of navigation bar
+                    [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+                    self.cancelBarButton.enabled = YES;
+
+                    // Right side of navigation bar
+                    [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
+                    self.editBarButton.enabled = (self.selectedImageIds.count > 0);
+
                     // Present toolbar
                     [self.navigationController setToolbarHidden:NO animated:YES];
                     self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton];
@@ -714,8 +740,13 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
                 // Hide toolbar
                 [self.navigationController setToolbarHidden:YES animated:YES];
                 
-                // Present buttons in the navigation bar
-                [self.navigationItem setLeftBarButtonItems:@[self.shareBarButton, self.moveBarButton] animated:YES];
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+                self.cancelBarButton.enabled = YES;
+
+                // Right side of navigation bar
+                [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
+                self.editBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
             }
@@ -725,23 +756,24 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
             // Hide toolbar
             [self.navigationController setToolbarHidden:YES animated:YES];
 
-            // Present buttons in the navigation bar
-            [self.navigationItem setLeftBarButtonItems:@[self.shareBarButton] animated:YES];
+            // Left side of navigation bar
+            [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+            self.cancelBarButton.enabled = YES;
+
+            // Right side of navigation bar
+            [self.navigationItem setRightBarButtonItems:@[self.shareBarButton] animated:YES];
             self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
         }
-        
-        // Right side of navigation bar
-        [self.navigationItem setRightBarButtonItems:@[self.cancelBarButton] animated:YES];
-        [self.cancelBarButton setEnabled:YES];
     }
 }
 
 -(void)disableBarButtons
 {
-    [self.cancelBarButton setEnabled:NO];
-    [self.deleteBarButton setEnabled:NO];
-    [self.moveBarButton setEnabled:NO];
-    [self.shareBarButton setEnabled:NO];
+    self.cancelBarButton.enabled = NO;
+    self.editBarButton.enabled = NO;
+    self.deleteBarButton.enabled = NO;
+    self.moveBarButton.enabled = NO;
+    self.shareBarButton.enabled = NO;
 }
 
 #pragma mark - Category Data
@@ -1074,6 +1106,105 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
 }
 
 
+#pragma mark - Edit images
+
+-(void)editSelection
+{
+    if (self.selectedImageIds.count <= 0) return;
+
+    // Disable buttons
+    [self disableBarButtons];
+    
+    // Display HUD
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+    });
+    
+    // Retrieve image data
+    self.selectedImagesToEdit = [NSMutableArray new];
+    self.selectedImageIdsToEdit = [NSMutableArray arrayWithArray:[self.selectedImageIds mutableCopy]];
+    [self retrieveImageDataBeforeEdit];
+}
+
+-(void)retrieveImageDataBeforeEdit
+{
+    if (self.selectedImageIdsToEdit.count <= 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideHUDwithSuccess:NO completion:^{
+                [self editImages];
+            }];
+        });
+        return;
+    }
+    
+    // Image data are not complete when retrieved using pwg.categories.getImages
+    [ImageService getImageInfoById:[[self.selectedImageIdsToEdit lastObject] integerValue]
+                andAddImageToCache:NO
+                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      
+                      if (imageData != nil) {
+                          // Store image data
+                          [self.selectedImagesToEdit addObject:imageData];
+                          
+                          // Next image
+                          [self.selectedImageIdsToEdit removeLastObject];
+                          [self retrieveImageDataBeforeEdit];
+                      }
+                      else {
+                          // Could not retrieve image data
+                          [self couldNotRetrieveImageDataOnRetry:^{
+                              [self retrieveImageDataBeforeEdit];
+                          }];
+                      }
+                  }
+                         onFailure:^(NSURLSessionTask *task, NSError *error) {
+                             // Failed — Ask user if he/she wishes to retry
+                             [self couldNotRetrieveImageDataOnRetry:^{
+                                 [self retrieveImageDataBeforeEdit];
+                             }];
+                         }];
+}
+
+-(void)editImages
+{
+    switch (self.selectedImagesToEdit.count) {
+        case 0:     // No image => End (should never happened)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hideHUDwithSuccess:YES completion:^{
+                    [self cancelSelect];
+                }];
+            });
+            break;
+        }
+            
+        case 1:     // Only one image => same as editing previewed image
+        {
+            // Prepare image to edit
+            PiwigoImageData *imageData = [self.selectedImagesToEdit firstObject];
+            ImageUpload *imageToEdit = [[ImageUpload alloc] initWithImageAsset:nil
+                                             orImageData:imageData
+                                             forCategory:[[[imageData categoryIds] firstObject] integerValue]
+                                            privacyLevel:imageData.privacyLevel
+                                                  author:imageData.author];
+
+            // Present EditImageDetails view
+            UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
+            EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
+            editImageVC.imageDetails = imageToEdit;
+            editImageVC.delegate = self;
+            editImageVC.isEdit = YES;       // In edition mode
+            [self pushView:editImageVC];
+        }
+            
+        default:    // Several images
+            // Deselect images and leave select mode
+            [self cancelSelect];
+            break;
+    }
+}
+
+
 #pragma mark - Upload images
 
 -(void)uploadToThisCategory
@@ -1085,7 +1216,7 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
 
 #pragma mark - Delete images
 
--(void)deleteSelected
+-(void)deleteSelection
 {
     if(self.selectedImageIds.count <= 0) return;
     
@@ -1465,7 +1596,7 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
 
 #pragma mark - Share images
 
--(void)shareSelected
+-(void)shareSelection
 {
     if (self.selectedImageIds.count <= 0) return;
 
@@ -2196,6 +2327,18 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
 }
 
 
+#pragma mark - EditImageDetailsDelegate Methods
+
+-(void)didFinishEditingDetails:(ImageUpload *)details
+{
+    // Update image data
+    [self.albumData updateImage:details];
+
+    // Deselect images and leave select mode
+    [self cancelSelect];
+}
+
+
 #pragma mark - MoveImagesDelegate methods
 
 -(void)cancelMoveImages
@@ -2251,16 +2394,27 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
             viewController.popoverPresentationController.sourceView = self.imagesCollection;
             if ([viewController isKindOfClass:[MoveCategoryViewController class]]) {
                 viewController.popoverPresentationController.permittedArrowDirections = 0;
+                [self.navigationController presentViewController:viewController animated:YES completion:nil];
             }
             else if ([viewController isKindOfClass:[MoveImageViewController class]]) {
                 viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
                 viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+                [self.navigationController presentViewController:viewController animated:YES completion:nil];
             }
             else if ([viewController isKindOfClass:[TagSelectViewController class]]) {
                 viewController.popoverPresentationController.barButtonItem = self.discoverBarButton;
                 viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+                [self.navigationController presentViewController:viewController animated:YES completion:nil];
             }
-            [self.navigationController presentViewController:viewController animated:YES completion:nil];
+            else if ([viewController isKindOfClass:[EditImageDetailsViewController class]]) {
+                // Push Edit view embedded in navigation controller
+                UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+                navController.modalPresentationStyle = UIModalPresentationPopover;
+                navController.popoverPresentationController.sourceView = self.view;
+                navController.popoverPresentationController.barButtonItem = self.editBarButton;
+                navController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+                [self.navigationController presentViewController:navController animated:YES completion:nil];
+            }
         }
         else {
             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
