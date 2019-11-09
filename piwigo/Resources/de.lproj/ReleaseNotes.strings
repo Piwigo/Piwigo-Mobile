@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.6_text" = "Version 2.4.6\n\n• Edit properties of a selection of photos\n• Minor bug fixes and improvements of the interface";
+"v2.4.6_text" = "Version 2.4.6\n\n• Eigenschaften einer Auswahl von Fotos bearbeiten\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 
-"v2.4.5_text" = "Version 2.4.5\n\n• Zeigt Deine Lieblingsbilder an (erfordert Piwigo 2.10 oder neuer)\n• Möglichkeit, Bilder manuell sortiert darzustellen\n• Ermöglicht Community Benutzern das Erstellen von Alben (mit entsprechenden Rechten)\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
+"v2.4.5_text" = "Version 2.4.5\n\n• Zeigt Deine Lieblingsbilder an (erfordert Piwigo 2.10 oder neuer)\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
 
 "v2.4.4_text" = "Version 2.4.4\n1. Oktober 2019\n\n• Behebt Probleme beim Hochladen von Videos auf einigen Servern\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
 
