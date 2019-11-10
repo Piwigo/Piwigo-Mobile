@@ -6,4 +6,4 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"NSPhotoLibraryUsageDescription" = "画像を写真アプリにダウンロードしたり、画像をPiwigoにアップロードしたりできますように。";
+"NSPhotoLibraryUsageDescription" = "写真を写真アプリにダウンロードしたり、写真をPiwigoにアップロードしたりできますように。";

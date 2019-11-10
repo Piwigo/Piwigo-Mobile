@@ -8,7 +8,7 @@
 
 "v2.4.6_text" = "Version 2.4.6\n\n• Edit properties of a selection of photos\n• Minor bug fixes and improvements of the interface";
 
-"v2.4.5_text" = "Version 2.4.5\n\n• Displays your favorite photos (requires Piwigo 2.10 or later)\n• Option for presenting photos sorted manually\n• Allows Community users to create albums (with appropriate rights)\n• Minor bug fixes and improvements of the interface";
+"v2.4.5_text" = "Version 2.4.5\nNovember 6, 2019\n\n• Displays your favorite photos (requires Piwigo 2.10 or later)\n• Option for presenting photos sorted manually\n• Allows Community users to create albums (with appropriate rights)\n• Minor bug fixes and improvements of the interface";
 
 "v2.4.4_text" = "Version 2.4.4\nOctober 1, 2019\n\n• Fix video upload issues on some servers\n• Minor bug fixes and improvements of the interface";
 

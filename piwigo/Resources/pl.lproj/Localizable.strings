@@ -34,7 +34,7 @@
 
 // Upload rights
 "uploadRights_title" = "Wymagane są uprawnienia do wgrywania zdjęć";
-"uploadRights_message" = "Musi mieć uprawnienia do przesłania zdjęcia lub filmu.";
+"uploadRights_message" = "Musisz mieć uprawnienia do przesłania zdjęcia lub filmu.";
 
 // Errors
 "internetErrorGeneral_title" = "Błąd połączenia";
@@ -135,7 +135,7 @@
 "categorySort_manual" = "Ustaw ręcznie";
 
 "categorySort_videosOnly" = "Tylko Filmy";
-"categorySort_imagesOnly" = "Tylko Zdjęcia";
+"categorySort_imagesOnly" = "Tylko zdjęcia";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -145,14 +145,14 @@
 "categorySelectionHUD_label" = "Pobieranie danych o albumach…";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "Nie istnieje podalbum do przesyłania obrazów";
-"categoryUpload_chooseAlbum" = "Wybierz album, do którego przesyłać zdjęcia";
+"categoryUpload_noSubAlbum" = "Nie istnieje podalbum do przesyłania zdjęć";
+"categoryUpload_chooseAlbum" = "Wybierz podalbum, do którego przesyłać zdjęcia";
 "categoryUpload_LocalAlbums" = "Albumy lokalne";
 "categoryUpload_chooseLocalAlbum" = "Wybierz album z którego chcesz pobrać zdjęcia";
 "categoryUpload_iCloudAlbums" = "Albumy iCloud";
 "categoryUpload_chooseiCloudAlbum" = "Wybierz album iCloud z którego chcesz pobrać zdjęcia";
 "categoyUpload_loadSubCategories" = "ładowanie";
-"categoryUpload_images" = "Przesyłanie obrazów";
+"categoryUpload_images" = "Prześlij zdjęcia";
 "categoryUpload_subAlbum" = "Utwórz podalbum";
 "categoryUpload_defaultAlbum" = "Ustaw jako domyślny Album";
 "categoryUpload_defaultSelect" = "Wybierz album lub podalbum który ma być albumem domyślnym";
@@ -197,19 +197,19 @@
 
 // Album delete
 "deleteCategory_title" = "USUŃ ALBUM";
-"deleteCategory_message" = "CZY NA PEWNO CHCESZ USUNĄĆ ALBUM \"%@\" I %@ WSZYSTKIE ZDJĘCIA?";
+"deleteCategory_message" = "CZY NA PEWNO CHCESZ USUNĄĆ ALBUM \"%@\" I WSZYSTKIE %@ ZDJĘĆ?";
 "deleteCategory_empty" = "Usuń pusty Album";
-"deleteCategory_noImages" = "Zachować Zdjęcia";
+"deleteCategory_noImages" = "Zachowaj zdjęcia";
 "deleteCategory_orphanedImages" = "Usunąć sieroty";
-"deleteCategory_allImages" = "Usuń %@ zdjęcia";
+"deleteCategory_allImages" = "Usuń %@ zdjęć";
 "deleteCategoryConfirm_title" = "Czy na pewno?";
-"deleteCategoryConfirm_message" = "Proszę wpisać liczbę zdjęć w celu usunięcia tego albumu. Liczba zdjęć: %@";
+"deleteCategoryConfirm_message" = "Proszę podać liczbę zdjęć, aby usunąć ten album. Liczba zdjęć: %@";
 "deleteCategoryConfirm_deleteButton" = "USUŃ";
 "deleteCategoryHUD_label" = "Usuwanie albumu…";
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Numer nie jest zgodny";
-"deleteCategoryMatchError_message" = "Liczba zdjęć, które wprowadziłeś nie odpowiada liczbie zdjęć w kategorii. Spróbuj ponownie, jeśli chcesz usunąć ten album";
+"deleteCategoryMatchError_message" = "Podana liczba zdjęć nie odpowiada liczbie zdjęć w albumie. Spróbuj ponownie, jeśli chcesz usunąć ten album";
 "deleteCategoryError_title" = "Usuwanie nie Powiodło się";
 "deleteCategoryError_message" = "Nie można usunąć Twojego albumu";
 
@@ -217,7 +217,7 @@
 "moveCategory" = "Przenieść Album";
 "moveCategory_selectParent" = "Wybierz album, do którego chcesz przenieść album \"%@\"";
 "moveCategory_selectRecent" = "Wybierz ostatnio użyty album, żeby przenieść do niego album \"%@\"";
-"moveCategory_selectRecentOther" = "albo wybierz inny abum, aby przenieść do niego album \"%@\"";
+"moveCategory_selectRecentOther" = "lub wybierz inny album, aby przenieść do niego album \"%@\"";
 "moveCategory_message" = "Czy na pewno chcesz przenieść \"%@\" do albumu \"%@\"?";
 "moveCategoryHUD_moving" = "Przenoszenie albumu…";
 
@@ -246,27 +246,27 @@
 "singleVideo" = "Wideo";
 "singleAudio" = "Audio";
 "severalImages" = "Zdjęcia";
-"noImages" = "Brak Zdjęć";
-"pullToRefresh" = "Przeładuj Zdjęcia";
+"noImages" = "Brak zdjęć";
+"pullToRefresh" = "Wczytaj zdjęcia ponownie";
 
 // Errors
 "albumPhotoError_title" = "Błąd Pobierania Zdjęć Albumu";
-"albumPhotoError_message" = "Nie udało się pobrać zdjęć z albumu (jakieś uszkodzone zdjęcie w Twoim albumie?)";
+"albumPhotoError_message" = "Nie udało się pobrać zdjęć albumu (jakieś zdjęcie w Twoim albumie jest uszkodzone?)";
 
 // Image sort
 "sortBy" = "Sortuj wg";
-"imageSortTitle" = "Sortuj Zdjęcia";
-"imageSortingHUD" = "Sortowanie obrazów";
-"imageSortMessage" = "Wybierz sposób sortowania zdjęć";
+"imageSortTitle" = "Sortuj zdjęcia";
+"imageSortingHUD" = "Sortowanie zdjęć";
+"imageSortMessage" = "Wybierz kolejność sortowania zdjęć";
 
 // Image options (actions)
-"imageOptions_title" = "Opcje Zdjęcia";
+"imageOptions_title" = "Opcje zdjęcia";
 "imageOptions_edit" = "Edytuj";
 "imageOptions_download" = "Pobierz";
-"imageOptions_setAlbumImage" = "Ustaw Jako Zdjęcie Albumu";
+"imageOptions_setAlbumImage" = "Ustaw jako zdjęcie albumu";
 
 // Image details
-"imageDetailsView_title" = "Informacje o obrazku";
+"imageDetailsView_title" = "Informacje o zdjęciu";
 "editImageDetails_title" = "Tytuł:";
 "editImageDetails_titlePlaceholder" = "Tytuł";
 "editImageDetails_author" = "Autor:";
@@ -274,14 +274,14 @@
 "editImageDetails_privacyLevel" = "Kto może zobaczyć to zdjęcie?";
 "editImageDetails_descriptionPlaceholder" = "Opis";
 "editImageDetails_comments" = "Komentarze";
-"editImageDetailsHUD_updating" = "Aktualizacja informacji obrazu…";
+"editImageDetailsHUD_updating" = "Aktualizacja informacji o zdjęciu…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Aktualizacja nieudana";
 "editImageDetailsError_message" = "Nie można zaktualizować zmian na serwerze. Spróbować ponownie?";
-"imageDetailsFetchError_title" = "Pobrania szczegółów zdjęcia nie powiodło się";
-"imageDetailsFetchError_retryMessage" = "Pobieranie danych zdjęcia nie powiodło się. Spróbować jeszcze raz?";
-"imageDetailsFetchError_continueMessage" = "Pobieranie danych zdjęcia nie powiodło się. Kontynuować?";
+"imageDetailsFetchError_title" = "Nie udało się pobrać informacji o zdjęciu";
+"imageDetailsFetchError_retryMessage" = "Nie udało się pobrać informacji o zdjęciu. Spróbować ponownie?";
+"imageDetailsFetchError_continueMessage" = "Nie udało się pobrać informacji o zdjęciu. Kontynuować?";
 
 // Image privacy levels
 "privacyLevel" = "Poziom Prywatności";
@@ -315,37 +315,37 @@
 
 // Image rename (filename)
 "renameImage_title" = "Oryginalny plik";
-"renameImage_message" = "Wprowadź nową nazwę pliku dla tego obrazu";
+"renameImage_message" = "Wprowadź nową nazwę pliku dla tego zdjęcia";
 "renameImageHUD_label" = "Zmiana nazwy pliku…";
 
 // Image rename — Errors
-"renameImageError_message" = "Nie można zmienić nazwy pliku obrazu";
+"renameImageError_message" = "Nie udało się zmienić nazwy pliku zdjęcia";
 
 // Image delete
 "deleteImage_delete" = "Usuń";
 "deleteImageProgress_title" = "Usuwanie %@%% zakończone";
 
-"deleteSingleImage_title" = "Usuń Zdjęcie";
-"deleteSingleImageHUD_deleting" = "Usuwanie obrazu…";
-"deleteSeveralImagesHUD_deleting" = "Usuwanie obrazów…";
+"deleteSingleImage_title" = "Usuń zdjęcie";
+"deleteSingleImageHUD_deleting" = "Usuwanie zdjęcia…";
+"deleteSeveralImagesHUD_deleting" = "Usuwanie zdjęć…";
 "removeSingleImage_title" = "Usuń z albumu";
-"removeSingleImageHUD_removing" = "Usuwanie obrazu…";
+"removeSingleImageHUD_removing" = "Usuwanie zdjęcia…";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
 "deleteSeveralImages_title" = "Usuń %@ zdjęcia";
-"deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia %@? Nie można tego cofnąć!";
+"deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia (%@)? Nie można tego cofnąć!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Błąd Usunięcia";
 "deleteImageFail_message" = "Zdjęcie nie może zostać usunięte\n%@";
 
 // Image download
-"downloadSingleImage_title" = "Pobierz Zdjęcie";
+"downloadSingleImage_title" = "Pobierz zdjęcie";
 "downloadSingleImage_confirmation" = "Czy na pewno chcesz pobrać wybrane zdjęcie?";
-"downloadSeveralImages_title" = "Pobierz %@ obrazów";
+"downloadSeveralImages_title" = "Pobierz %@ zdjęć";
 "downloadSeveralImage_confirmation" = "Czy na pewno chcesz pobrać wybrane %@ zdjęcia?";
 
-"downloadingImage" = "Pobieranie Zdjęcia";
-"downloadingImages" = "Pobieranie Zdjęć";
+"downloadingImage" = "Pobieranie zdjęcia";
+"downloadingImages" = "Pobieranie zdjęć";
 "downloadingVideo" = "Pobieranie filmu";
 
 // Image download — Errors
@@ -354,7 +354,7 @@
 "downloadVideoFail_message" = "Nie można pobrać filmu!\n%@";
 "downloadVideoFail_Photos" = "Format wideo nie jest akceptowany przez aplikację Zdjęcia!";
 
-"imageSaveError_title" = "Nie udało się zapisać Zdjęcia";
+"imageSaveError_title" = "Nie udało się zapisać zdjęcia";
 "imageSaveError_message" = "Nie można zapisać zdjęcia. Błąd: %@";
 
 "videoSaveError_title" = "Nie udało się zapisać Filmu";
@@ -362,37 +362,37 @@
 
 // Image move
 "moveImage_title" = "Przenieś do albumu";
-"moveSingleImage_selectAlbum" = "Wybierz album, do którego chcesz przenieść obraz \"%@\"";
-"moveSingleImage_selectRecent" = "Wybierz ostatnio użyty album, żeby przenieść do niego obraz \"%@\"";
-"moveSingleImage_selectRecentOther" = "albo wybierz inny abum, aby przenieść do niego obraz \"%@\"";
-"moveSeveralImages_selectAlbum" = "Wybierz album, do którego chcesz przenieść obrazy";
-"moveSeveralImages_selectRecent" = "Wybierz ostatnio użyty album, aby przenieść do niego obrazy";
-"moveSeveralImages_selectRecentOther" = "albo wybierz inny abum, aby przenieść do niego obrazy";
-"moveSingleImage_message" = "Czy na pewno chcesz przenieść obraz \"%@\" do albumu \"%@\"?";
-"moveSeveralImages_message" = "Czy na pewno chcesz przenieść obrazy do albumu \"%@\"?";
-"moveSingleImageHUD_moving" = "Przenoszenie obrazu…";
-"moveSeveralImagesHUD_moving" = "Przenoszenie obrazów…";
+"moveSingleImage_selectAlbum" = "Wybierz album, do którego chcesz przenieść zdjęcie \"%@\"";
+"moveSingleImage_selectRecent" = "Wybierz ostatnio użyty album, żeby przenieść do niego zdjęcie \"%@\"";
+"moveSingleImage_selectRecentOther" = "albo wybierz inny album, aby przenieść do niego zdjęcie \"%@\"";
+"moveSeveralImages_selectAlbum" = "Wybierz album, do którego chcesz przenieść zdjęcia";
+"moveSeveralImages_selectRecent" = "Wybierz ostatnio użyty album, aby przenieść do niego zdjęcia";
+"moveSeveralImages_selectRecentOther" = "albo wybierz inny album, aby przenieść do niego zdjęcia";
+"moveSingleImage_message" = "Czy na pewno chcesz przenieść zdjęcie \"%@\" do albumu \"%@\"?";
+"moveSeveralImages_message" = "Czy na pewno chcesz przenieść zdjęcia do albumu \"%@\"?";
+"moveSingleImageHUD_moving" = "Przenoszenie zdjęcia…";
+"moveSeveralImagesHUD_moving" = "Przenoszenie zdjęć…";
 
 // Image move — Errors
 "moveImageError_title" = "Błąd przenoszenia";
-"moveSingleImageError_message" = "Nie można przenieść obrazu";
+"moveSingleImageError_message" = "Nie można przenieść zdjęcia";
 
 // Image copy
 "copyImage_title" = "Skopiuj do albumu";
-"copySingleImage_selectAlbum" = "Wybierz album, do którego skopiować obraz \"%@\"";
-"copySingleImage_selectRecent" = "Wybierz ostatnio użyty album, żeby skopiować do niego obraz \"%@\"";
-"copySingleImage_selectRecentOther" = "albo wybierz inny abum, aby skopiować do niego obraz \"%@\"";
-"copySeveralImages_selectAlbum" = "Wybierz album, do którego chcesz skopiować obrazy";
-"copySeveralImages_selectRecent" = "Wybierz ostatnio użyty album, aby skopiować do niego obrazy";
-"copySeveralImages_selectRecentOther" = "albo wybierz inny abum, aby skopiować do niego obrazy";
-"copySingleImage_message" = "Czy na pewno chcesz skopiować obraz \"%@\" do albumu \"%@\"?";
-"copySeveralImages_message" = "Czy na pewno chcesz skopiować obrazy do albumu \"%@\"?";
-"copySingleImageHUD_copying" = "Kopiowanie obrazu…";
-"copySeveralImagesHUD_copying" = "Kopiowanie obrazów…";
+"copySingleImage_selectAlbum" = "Wybierz album, do którego skopiować zdjęcie \"%@\"";
+"copySingleImage_selectRecent" = "Wybierz ostatnio użyty album, żeby skopiować do niego zdjęcie \"%@\"";
+"copySingleImage_selectRecentOther" = "albo wybierz inny album, aby skopiować do niego zdjęcie \"%@\"";
+"copySeveralImages_selectAlbum" = "Wybierz album, do którego chcesz skopiować zdjęcia";
+"copySeveralImages_selectRecent" = "Wybierz ostatnio użyty album, aby skopiować do niego zdjęcia";
+"copySeveralImages_selectRecentOther" = "albo wybierz inny album, aby skopiować do niego zdjęcia";
+"copySingleImage_message" = "Czy na pewno chcesz skopiować zdjęcie \"%@\" do albumu \"%@\"?";
+"copySeveralImages_message" = "Czy na pewno chcesz skopiować zdjęcia do albumu \"%@\"?";
+"copySingleImageHUD_copying" = "Kopiowanie zdjęcia…";
+"copySeveralImagesHUD_copying" = "Kopiowanie zdjęć…";
 
 // Image copy — Errors
 "copyImageError_title" = "Kopiowanie nie powiodło się";
-"copySingleImageError_message" = "Nie można skopiować obrazu";
+"copySingleImageError_message" = "Nie można skopiować zdjęcia";
 
 // Images upload
 "imageUploadDetails_title" = "Tytuł:";
@@ -403,18 +403,18 @@
 
 "imageUploadDetailsView_title" = "Zdjęcia";
 "imageUploadDetailsButton_title" = "Wyślij";
-"imageUploadDetailsEdit_title" = "Edycja zdjęć do przesłania";
-"imageUploadDetailsUploading_title" = "Zdjęcia, które są przesyłane";
+"imageUploadDetailsEdit_title" = "Edycja informacji o zdjęciu";
+"imageUploadDetailsUploading_title" = "Przesyłane zdjęcia";
 "imageUploadDetailsCell_uploadComplete" = "Zakończone! Finalizowanie...";
 
-"imageUploadRemove" = "Usuwanie przesłanych obrazów";
+"imageUploadRemove" = "Usuwanie przesłanych zdjęć";
 
 "imageUploadTableCell_uploading" = "Przesyłanie...";
 "imageUploadProgressBar_zero" = "Przesyłanie 0/0";
 "imageUploadProgressBar_nonZero" = "Przesyłanie %@/%@";
 "imageUploadProgressBar_completed" = "Zakończono";
 "imageUploadCompleted_title" = "Przesyłanie Zakończone";
-"imageUploadCompleted_message" = "zdjęcie/wideo zostało przesłane do Twojego serwera Piwigo.";
+"imageUploadCompleted_message" = "zdjęcie/film zostało przesłane do Twojego serwera Piwigo.";
 "imageUploadCompleted_message>1" = "zdjęcia/filmy zostały przesłane do Twojego serwera Piwigo.";
 
 // Image upload — Errors
@@ -422,11 +422,11 @@
 "uploadError_message" = "Nie można przesłać zdjęcia. Błąd: %@";
 "uploadCancelled_title" = "Anulowano Wysyłanie";
 
-"imageUploadError_title" = "Błąd Przesyłania Obrazu";
-"imageUploadError_format" = "Przepraszamy, pliki obrazów z rozszerzeniem .%@ i jpg nie są akceptowane przez serwer Piwigo.";
-"imageUploadError_source" = "nie można utworzyć źródła obrazu";
-"imageUploadError_destination" = "nie można utworzyć obrazu docelowego";
-"imageUploadError_iCloud" = "Nie można pobrać obrazu. Błąd: %@";
+"imageUploadError_title" = "Błąd przesyłania zdjęcia";
+"imageUploadError_format" = "Przepraszamy, pliki zdjęć z rozszerzeniem .%@ i jpg nie są akceptowane przez serwer Piwigo.";
+"imageUploadError_source" = "nie można utworzyć źródła zdjęcia";
+"imageUploadError_destination" = "nie można utworzyć celu zdjęcia";
+"imageUploadError_iCloud" = "Nie można pobrać zdjęcia. Błąd: %@";
 
 "audioUploadError_title" = "Błąd Przesyłania Audio";
 "audioUploadError_format" = "Niestety, pliki audio nie są jeszcze obsługiwane przez Piwigo Mobile.";
@@ -440,44 +440,44 @@
 
 // Image share
 "shareImageMetadata_Title" = "Udostępnij metadane";
-"shareImageMetadata_subTitle1" = "Funkcje udostępniania obrazów z prywatnymi metadanymi";
-"shareImageMetadata_subTitle2" = "Funkcje udostępniania obrazów bez prywatnych metadanych";
+"shareImageMetadata_subTitle1" = "Funkcje udostępniania zdjęć z prywatnymi metadanymi";
+"shareImageMetadata_subTitle2" = "Funkcje udostępniania zdjęć bez prywatnych metadanych";
 "shareActivityCode_AirDrop" = "Udostępnij za pomocą AirDrop";
-"shareActivityCode_AirDrop>375px" = "Udostępnij obrazy za pomocą AirDrop";
+"shareActivityCode_AirDrop>375px" = "Udostępnij zdjęcia za pomocą AirDrop";
 "shareActivityCode_AssignToContact" = "Przypisz do kontaktu";
-"shareActivityCode_AssignToContact>375px" = "Przypisz obraz do kontaktu";
+"shareActivityCode_AssignToContact>375px" = "Przypisz zdjęcie do kontaktu";
 "shareActivityCode_CopyToPasteboard" = "Kopiuj do schowka";
-"shareActivityCode_CopyToPasteboard>375px" = "Kopiuj obrazy do schowka";
+"shareActivityCode_CopyToPasteboard>375px" = "Kopiuj zdjęcia do schowka";
 "shareActivityCode_Mail" = "Publikacja przez email";
-"shareActivityCode_Mail>375px" = "Publikacja obrazów przez email";
+"shareActivityCode_Mail>375px" = "Publikuj zdjęcia przez email";
 "shareActivityCode_Message" = "Publikacja jako wiadomość";
-"shareActivityCode_Message>375px" = "Publikacja obrazów jako wiadomość";
+"shareActivityCode_Message>375px" = "Publikuj zdjęcia za pomocą Wiadomości";
 "shareActivityCode_Facebook" = "Publikacja na Facebooku";
-"shareActivityCode_Facebook>375px" = "Publikacja obrazów na Facebooku";
+"shareActivityCode_Facebook>375px" = "Publikuj zdjęcia na Facebook";
 "shareActivityCode_Messenger" = "Publikacja przez Messenger";
-"shareActivityCode_Messenger>375px" = "Publikacja obrazów przez Messenger";
+"shareActivityCode_Messenger>375px" = "Publikuj zdjęcia przez Messenger";
 "shareActivityCode_Flickr" = "Publikacja na Flickr";
-"shareActivityCode_Flickr>375px" = "Publikacja obrazów na Flickr";
+"shareActivityCode_Flickr>375px" = "Publikuj zdjęcia na Flickr";
 "shareActivityCode_Instagram" = "Publikacja na Instagram";
-"shareActivityCode_Instagram>375px" = "Publikacja obrazów na Instagram";
+"shareActivityCode_Instagram>375px" = "Publikuj zdjęcia na Instagramie";
 "shareActivityCode_Signal" = "Publikacja przez Signal";
-"shareActivityCode_Signal>375px" = "Publikacja obrazów przez Signal";
+"shareActivityCode_Signal>375px" = "Publikuj zdjęcia przez Signal";
 "shareActivityCode_Snapchat" = "Publikacja przez Snapchat";
-"shareActivityCode_Snapchat>375px" = "Publikacja obrazów przez Snapchat";
+"shareActivityCode_Snapchat>375px" = "Publikuj zdjęcia przez Snapchat";
 "shareActivityCode_TencentWeibo" = "Publikacja na TencentWeibo";
-"shareActivityCode_TencentWeibo>375px" = "Publikacja obrazów na TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Publikuj zdjęcia na TencentWeibo";
 "shareActivityCode_Twitter" = "Publikacja na Twitterze";
-"shareActivityCode_Twitter>375px" = "Publikacja obrazów na Twitterze";
+"shareActivityCode_Twitter>375px" = "Publikuj zdjęcia na Twitterze";
 "shareActivityCode_Vimeo" = "Publikacja na Vimeo";
 "shareActivityCode_Vimeo>375px" = "Publikacja wideo na Vimeo";
 "shareActivityCode_Weibo" = "Publikacja na Weibo";
-"shareActivityCode_Weibo>375px" = "Publikacja obrazów na Weibo";
+"shareActivityCode_Weibo>375px" = "Publikuj zdjęcia na Weibo";
 "shareActivityCode_WhatsApp" = "Publikacja przez WhatsApp";
-"shareActivityCode_WhatsApp>375px" = "Publikacja obrazów przez WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Publikuj zdjęcia przez WhatsApp";
 "shareActivityCode_CameraRoll" = "Zapis w rolce aparatu";
-"shareActivityCode_CameraRoll>375px" = "Zapis obrazów w rolce aparatu";
+"shareActivityCode_CameraRoll>375px" = "Zapisz zdjęcia w Rolce aparatu";
 "shareActivityCode_Other" = "Udostępnianie innym aplikacjom";
-"shareActivityCode_Other>375px" = "Udostępnianie obrazów innym aplikacjom";
+"shareActivityCode_Other>375px" = "Udostępnij zdjęcia innym aplikacjom";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
@@ -516,7 +516,7 @@
 // Settings — Albums
 "defaultImageSort" = "Sortowanie";
 "defaultImageSort>320px" = "Sortowanie";
-"defaultImageSort>414px" = "Domyślne Sortowanie Zdjęć";
+"defaultImageSort>414px" = "Domyślna kolejność zdjęć";
 "defaultAlbumThumbnailFile>414px" = "Plik miniatur albumów";
 "defaultAlbumThumbnailSizeHeader" = "Wybierz rozmiar miniatury albumu";
 "maxNberOfRecentAlbums" = "Ostatnio użyte";
@@ -539,7 +539,7 @@
 
 "defaultThumbnailFile" = "Plik";
 "defaultThumbnailFile>320px" = "Plik miniatury";
-"defaultThumbnailFile>414px" = "Plik miniatury obrazu";
+"defaultThumbnailFile>414px" = "Plik miniatury zdjęcia";
 "defaultThumbnailSize" = "Rozmiar";
 "defaultThumbnailSize>320px" = "Rozmiar Miniatur";
 "defaultThumbnailSize>414px" = "Domyślny Rozmiar Miniatur";
@@ -553,12 +553,12 @@
 
 "defaultPreviewFile" = "Podgląd";
 "defaultPreviewFile>320px" = "Podgląd Pliku";
-"defaultPreviewFile>414px" = "Podgląd pliku obrazu";
+"defaultPreviewFile>414px" = "Plik podglądu zdjęcia";
 "defaultImageSize" = "Zdjęcia";
-"defaultImageSize>320px" = "Rozmiar Zdjęć";
-"defaultImageSize>414px" = "Domyślny Rozmiar Zdjęć";
+"defaultImageSize>320px" = "Rozmiar zdjęć";
+"defaultImageSize>414px" = "Domyślny rozmiar zdjęć";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "Wybierz rozmiar obrazu";
+"defaultImageSizeHeader" = "Proszę wybrać rozmiar zdjęcia";
 "defaultImageSize_recommended" = " (zalecane)";
 "defaultSize_disabled" = " (wyłączone na serwerze)";
 "defaultSizeFooter" = "Wyszarzone rozmiary nie są zalecane lub nie są dostępne na serwerze Piwigo.";
@@ -587,14 +587,14 @@
 "settings_stripGPSdata" = "Usuń prywatne metadane";
 "settings_stripGPSdata>375px" = "Usuń prywatne metadane przed wysłaniem";
 "settings_photoResize" = "Zmień Rozmiar Przed Przesłaniem";
-"settings_photoResize>375px" = "Zmień Rozmiar Zdjęcia Przed Przesłaniem";
+"settings_photoResize>375px" = "Zmień rozmiar zdjęcia przed przesłaniem";
 "settings_photoSize" = "> Rozmiar   ";
 "settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 5 - 100";
 "settings_photoCompress" = "Skompresuj przed wysłaniem";
-"settings_photoCompress>375px" = "Kompresuj obraz przed wysłaniem";
+"settings_photoCompress>375px" = "Kompresuj zdjęcie przed przesłaniem";
 "settings_photoQuality" = "> Jakość";
-"settings_placeholderQuality" = "Wprowadź Jakość Zdjęcia z Zakresu 50 - 98";
-"settings_deleteImage>375px" = "Usuń obraz po wysłaniu";
+"settings_placeholderQuality" = "Wprowadź jakość zdjęcia z zakresu 50-98";
+"settings_deleteImage>375px" = "Usuń zdjęcie po przesłaniu";
 "settings_deleteImage" = "Usuń po wysłaniu";
 
 // Settings — Cache
@@ -605,8 +605,8 @@
 "settings_cacheMemory" = "Pamięć";
 "settings_cacheMegabytes" = "MB";
 "settings_cacheClear" = "Wyczyść bufor";
-"settings_cacheClearAll" = "Wyczyść bufor obrazów";
-"settings_cacheClearMsg" = "Na pewno chcesz wyczyścić bufor obrazów? Spowoduje to, że albumy i obrazy będą się dłużej wczytywały.";
+"settings_cacheClearAll" = "Wyczyść bufor zdjęć";
+"settings_cacheClearMsg" = "Na pewno chcesz wyczyścić bufor zdjęć? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Kolory";
