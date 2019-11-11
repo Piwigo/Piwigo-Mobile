@@ -34,7 +34,7 @@
 
 // Upload rights
 "uploadRights_title" = "Erforderliche Rechte zum Hochladen benötigt";
-"uploadRights_message" = "Du benötigst Rechte zum Hochladen von  oder Videos.";
+"uploadRights_message" = "Sie benötigen Rechte zum Hochladen von oder Videos.";
 
 // Errors
 "internetErrorGeneral_title" = "Verbindungsfehler";
@@ -81,7 +81,7 @@
 "serverConnectionError_message" = "Eine gesicherte HTTPS-Verbindung konnte nicht hergestellt werden. Bitte überprüfen Sie die Adresse oder versuchen Sie es im unverschlüsselten HTTP-Modus?";
 
 "serverVersionNotCompatible_title" = "Serverinkompatibilität";
-"serverVersionNotCompatible_message" = "Deine Piwigo Serverversion ist %@. Piwigo Mobile unterstützt nur Versionen ab 2.7. Bitte aktualisiere Deinen Server um Piwigo Mobile verwenden zu können. Möchtest Du trotzdem fortfahren?";
+"serverVersionNotCompatible_message" = "Ihre Piwigo Serverversion ist %@. Piwigo Mobile unterstützt nur Versionen ab 2.7. Bitte aktualisieren Sie Ihren Server um Piwigo Mobile verwenden zu können. Möchten Sie trotzdem fortfahren?";
 
 "sessionStatusError_title" = "Authentifizierung fehlgeschlagen";
 "sessionStatusError_message" = "Konnte den Server nicht authentifizieren. Versuche erneute Anmeldung.";
@@ -91,7 +91,7 @@
 
 // Logout
 "logoutConfirmation_title" = "Abmelden";
-"logoutConfirmation_message" = "Willst Du Dich wirklich abmelden?";
+"logoutConfirmation_message" = "Wollen Sie sich wirklich abmelden?";
 
 // Logout — Errors
 "logoutFail_title" = "Abmelden fehlgeschlagen";
@@ -102,7 +102,7 @@
 // ==> ALBUMS
 // ===========================================================================
 // Albums view
-"categoryMainEmtpy" = "Bislang keine Alben in Deinem Piwigo enthalten. Du kannst zur Aktualisierung nach unten ziehen oder Dich erneut anmelden.";
+"categoryMainEmtpy" = "Bislang keine Alben in Ihrem Piwigo enthalten. Sie können zur Aktualisierung nach unten ziehen oder Sich erneut anmelden.";
 "categoryTableView_photoCount" = "Foto";
 "categoryTableView_photosCount" = "Fotos";
 "categoryTableView_subCategoryCount" = "Unter-Album";
@@ -117,7 +117,7 @@
 "categoryDiscoverVisits_legend" = "Aufrufe";
 "categoryDiscoverBest_title" = "Am besten bewertet";
 "categoryDiscoverRecent_title" = "Neueste ";
-"categoryDiscoverFavorites_title" = "Deine Favoriten";
+"categoryDiscoverFavorites_title" = "Ihre Favoriten";
 
 // Albums sort
 "categorySort_nameAscending" = "Fototitel, A → Z";
@@ -186,7 +186,7 @@
 
 // Album rename — Errors
 "renameCategoyError_title" = "Umbenennung fehlgeschlagen";
-"renameCategoyError_message" = "Umbenennung Deines Albums fehlgeschlagen";
+"renameCategoyError_message" = "Umbenennung Ihres Albums fehlgeschlagen";
 
 // Album refresh representative
 "refreshCategoryHUD_label" = "Aktualisiere Referenzfoto…";
@@ -197,33 +197,33 @@
 
 // Album delete
 "deleteCategory_title" = "ALBUM LÖSCHEN";
-"deleteCategory_message" = "BIST DU SICHER, DASS DU DAS ALBUM \"%@\" UND DESSEN %@ FOTOS LÖSCHEN MÖCHTEST?";
+"deleteCategory_message" = "SIND SIE SICHER, DASS SIE DAS ALBUM \"%@\" UND DESSEN %@ FOTOS LÖSCHEN MÖCHTEN?";
 "deleteCategory_empty" = "Lösche leeres Album";
 "deleteCategory_noImages" = "Behalte Fotos";
 "deleteCategory_orphanedImages" = "Lösche verwaiste";
 "deleteCategory_allImages" = "Lösche %@ Fotos";
-"deleteCategoryConfirm_title" = "Bist du sicher?";
+"deleteCategoryConfirm_title" = "Sind Sie sicher?";
 "deleteCategoryConfirm_message" = "Gib bitte die Anzahl der Fotos an um dieses Album zu löschen. Anzahl der Fotos: %@";
 "deleteCategoryConfirm_deleteButton" = "LÖSCHEN";
 "deleteCategoryHUD_label" = "Album wird gelöscht…";
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Anzahl stimmt nicht überein";
-"deleteCategoryMatchError_message" = "Die Anzahl der Fotos, die Du eingegeben hast, entspricht nicht der Anzahl der Fotos im Album. Bitte versuche es erneut, wenn Du dieses Album löschen möchtest";
+"deleteCategoryMatchError_message" = "Die Anzahl der Fotos, die Sie eingegeben haben, entspricht nicht der Anzahl der Fotos im Album. Bitte versuchen Sie es erneut, wenn Sie dieses Album löschen möchten";
 "deleteCategoryError_title" = "Löschen fehlgeschlagen";
-"deleteCategoryError_message" = "Fehler beim Löschen Deines Albums";
+"deleteCategoryError_message" = "Fehler beim Löschen Ihres Albums";
 
 // Album move
 "moveCategory" = "Album verschieben";
-"moveCategory_selectParent" = "Wähle ein Album aus, in das Du das Album \"%@\" verschieben möchtest";
+"moveCategory_selectParent" = "Wählen Sie ein Album aus, in das Sie das Album \"%@\" verschieben möchten";
 "moveCategory_selectRecent" = "Wählen Sie ein Album aus, in das Sie das Album \"%@\" verschieben möchten";
 "moveCategory_selectRecentOther" = "oder wählen Sie ein anderes Album aus, in das Sie das Album \"%@\" verschieben möchten";
-"moveCategory_message" = "Möchtest Du wirklich das Album \"%@\" in das Album \"%@\" verschieben?";
+"moveCategory_message" = "Möchtesn Sie wirklich das Album \"%@\" in das Album \"%@\" verschieben?";
 "moveCategoryHUD_moving" = "Album wird verschoben…";
 
 // Album move — Errors
 "moveCategoryError_title" = "Verschieben fehlgeschlagen";
-"moveCategoryError_message" = "Fehler beim Verschieben Deines Albums";
+"moveCategoryError_message" = "Fehler beim Verschieben Ihres Albums";
 
 // Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
@@ -231,7 +231,7 @@
 "categorySelection_one" = "Wähle ein Album in dem dieses Foto vorkommt";
 "categorySelection_other" = "oder wähle ein anderes Album für dieses Foto";
 "categoryImageSet_title" = "Album-Miniaturfoto";
-"categoryImageSet_message" = "Möchtest Du wirklich dieses Miniaturfoto für das Album \"%@\" festlegen?";
+"categoryImageSet_message" = "Sind Sie sicher, dass Sie dieses Foto auf das Album \"%@ \" anwenden möchten?";
 "categoryImageSetHUD_updating" = "Album Miniaturfoto wird aktualisiert…";
 
 // Album set photo thumbnail — Errors
@@ -251,13 +251,13 @@
 
 // Errors
 "albumPhotoError_title" = "Fotofehler im Album";
-"albumPhotoError_message" = "Beim Abrufen der Fotos im Album ist ein Fehler aufgetreten (fehlerhafte Fotodateien in Deinem Album?)";
+"albumPhotoError_message" = "Beim Abrufen der Fotos im Album ist ein Fehler aufgetreten (fehlerhafte Fotodateien in Ihrem Album?)";
 
 // Image sort
 "sortBy" = "Sortieren nach";
 "imageSortTitle" = "Fotos sortieren";
 "imageSortingHUD" = "Fotos sortieren";
-"imageSortMessage" = "Bitte wähle, wie du Fotos sortieren möchtest";
+"imageSortMessage" = "Bitte wählen Sie, wie Sie Fotos sortieren möchten";
 
 // Image options (actions)
 "imageOptions_title" = "Fotooptionen";
@@ -278,7 +278,7 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Fehler bei der Aktualisierung";
-"editImageDetailsError_message" = "Übertragen der Änderungen auf Deinen Server fehlgeschlagen. Erneut versuchen?";
+"editImageDetailsError_message" = "Übertragen der Änderungen auf Ihren Server fehlgeschlagen. Erneut versuchen?";
 "imageDetailsFetchError_title" = "Abrufen der Fotoinformationen fehlgeschlagen";
 "imageDetailsFetchError_retryMessage" = "Abrufen der Fotoinformationen fehlgeschlagen. Erneut versuchen?";
 "imageDetailsFetchError_continueMessage" = "Abrufen der Fotoinformationen fehlgeschlagen. Fortsetzen?";
@@ -332,7 +332,7 @@
 "removeSingleImageHUD_removing" = "Lösche Foto…";
 "deleteSingleImage_message" = "Möchtest Du dieses Foto wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
 "deleteSeveralImages_title" = "Lösche %@ Fotos";
-"deleteSeveralImages_message" = "Möchtest Du die %@ ausgewählten Fotos wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
+"deleteSeveralImages_message" = "Möchten Sie die %@ ausgewählten Fotos wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Löschen fehlgeschlagen";
@@ -340,7 +340,7 @@
 
 // Image download
 "downloadSingleImage_title" = "Foto herunterladen";
-"downloadSingleImage_confirmation" = "Möchtest Du wirklich die markierten Fotos herunterladen?";
+"downloadSingleImage_confirmation" = "Sind Sie sicher, dass Sie das ausgewählte Foto herunterladen möchten?";
 "downloadSeveralImages_title" = "Lade %@ Fotos herunter";
 "downloadSeveralImage_confirmation" = "Möchtest Du wirklich die %@ markierten Fotos herunterladen?";
 
@@ -362,37 +362,37 @@
 
 // Image move
 "moveImage_title" = "Zum Album verschieben";
-"moveSingleImage_selectAlbum" = "Wähle ein Album aus, in das Du das Foto \"%@\" verschieben möchtest";
-"moveSingleImage_selectRecent" = "Wähle ein aktuelles Album aus, in das Du das Foto \"%@\" verschieben möchtest";
-"moveSingleImage_selectRecentOther" = "Oder wähle ein anderes Album aus, in das Du das Foto \"%@\" verschieben möchtest";
+"moveSingleImage_selectAlbum" = "Wählen Sie ein Album aus, in das Sie das Foto \"%@\" verschieben möchten";
+"moveSingleImage_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie das Foto \"%@\" verschieben möchten";
+"moveSingleImage_selectRecentOther" = "Oder wählen Sie ein anderes Album aus, in das Sie das Foto \"%@\" verschieben möchten";
 "moveSeveralImages_selectAlbum" = "Wähle ein Album zum Verschieben der Fotos";
-"moveSeveralImages_selectRecent" = "Wähle ein aktuelles Album aus, in das Du die Fotos verschieben möchtest";
-"moveSeveralImages_selectRecentOther" = "Oder wähle ein anderes Album aus, in das Du die Fotos verschieben möchtest";
-"moveSingleImage_message" = "Möchtest Du wirklich das Foto \"%@\" in das Album \"%@\" verschieben?";
-"moveSeveralImages_message" = "Möchtest Du wirklich die Fotos in das Album \"%@\" verschieben?";
+"moveSeveralImages_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie die Fotos verschieben möchten";
+"moveSeveralImages_selectRecentOther" = "Oder wählen Sie ein anderes Album aus, in das Sie die Fotos verschieben möchten";
+"moveSingleImage_message" = "MöchteN Sie wirklich das Foto \"%@\" in das Album \"%@\" verschieben?";
+"moveSeveralImages_message" = "Möchten Sie wirklich die Fotos in das Album \"%@\" verschieben?";
 "moveSingleImageHUD_moving" = "Foto verschieben…";
 "moveSeveralImagesHUD_moving" = "Fotos verschieben…";
 
 // Image move — Errors
 "moveImageError_title" = "Verschieben fehlgeschlagen";
-"moveSingleImageError_message" = "Fehler beim Verschieben Deines Fotos";
+"moveSingleImageError_message" = "Fehler beim Verschieben Ihres Fotos";
 
 // Image copy
 "copyImage_title" = "Zum Album kopieren";
-"copySingleImage_selectAlbum" = "Wähle ein Album aus, in das Du das Foto \"%@\" kopieren möchtest";
-"copySingleImage_selectRecent" = "Wähle ein aktuelles Album aus, in das Du das Foto \"%@\" kopieren möchten";
-"copySingleImage_selectRecentOther" = "Oder wähle ein anderes Album aus, in das Du das Foto \"%@\" kopieren möchtest";
+"copySingleImage_selectAlbum" = "Wählen Sie ein Album aus, in das Sie das Foto \"%@\" kopieren möchten";
+"copySingleImage_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie das Foto \"%@\" kopieren möchten";
+"copySingleImage_selectRecentOther" = "Oder wählen Sie ein anderes Album aus, in das Sie das Foto \"%@\" kopieren möchten";
 "copySeveralImages_selectAlbum" = "Wähle ein Album zum Kopieren der Fotos";
-"copySeveralImages_selectRecent" = "Wähle ein aktuelles Album aus, in das Du die Fotos kopieren möchtest";
-"copySeveralImages_selectRecentOther" = "Oder wähle ein anderes Album aus, in das Du die Fotos kopieren möchtest";
-"copySingleImage_message" = "Möchtest Du wirklich das Foto \"%@\" in das Album \"%@\" kopieren?";
-"copySeveralImages_message" = "Möchtest Du wirklich die Fotos in das Album \"%@\" Kopieren?";
+"copySeveralImages_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie die Fotos kopieren möchten";
+"copySeveralImages_selectRecentOther" = "Oder wählen Sie ein anderes Album aus, in das Sie die Fotos kopieren möchten";
+"copySingleImage_message" = "Möchten Sie wirklich das Foto \"%@\" in das Album \"%@\" kopieren?";
+"copySeveralImages_message" = "Sind Sie sicher, dass Sie die Fotos in das Album \"%@ \" kopieren möchten?";
 "copySingleImageHUD_copying" = "Foto kopieren…";
 "copySeveralImagesHUD_copying" = "Fotos kopieren…";
 
 // Image copy — Errors
 "copyImageError_title" = "Kopieren fehlgeschlagen";
-"copySingleImageError_message" = "Fehler beim Kopieren Deines Fotos";
+"copySingleImageError_message" = "Fehler beim Kopieren Ihres Fotos";
 
 // Images upload
 "imageUploadDetails_title" = "Titel:";
@@ -414,12 +414,12 @@
 "imageUploadProgressBar_nonZero" = "Hochladen %@/%@";
 "imageUploadProgressBar_completed" = "Abgeschlossen";
 "imageUploadCompleted_title" = "Erfolgreich hochgeladen";
-"imageUploadCompleted_message" = "Fotos/Videos wurden auf Deinen Piwigo-Server hochgeladen.";
-"imageUploadCompleted_message>1" = "Fotos/Videos auf Deinen Piwigo-Server hochgeladen.";
+"imageUploadCompleted_message" = "Fotos/Videos wurden auf Ihren Piwigo-Server hochgeladen.";
+"imageUploadCompleted_message>1" = "Fotos/Videos auf Ihren Piwigo-Server hochgeladen.";
 
 // Image upload — Errors
 "uploadError_title" = "Fehler beim Hochladen";
-"uploadError_message" = "Konnte Dein Foto nicht hochladen. Fehler: %@";
+"uploadError_message" = "Konnte Ihr Foto nicht hochladen. Fehler: %@";
 "uploadCancelled_title" = "Hochladen abgebrochen";
 
 "imageUploadError_title" = "Fehler beim Foto Hochladen";
@@ -606,7 +606,7 @@
 "settings_cacheMegabytes" = "MB";
 "settings_cacheClear" = "Zwischenspeicher leeren";
 "settings_cacheClearAll" = "Zwischenspeicher für Fotos leeren";
-"settings_cacheClearMsg" = "Bist du sicher, dass du den Zwischenspeicher für Fotos leeren möchtest? Dies wird zu Verzögerungen führen um Alben und Fotos erneut zu laden.";
+"settings_cacheClearMsg" = "Sind Sie sicher, dass Sie den Foto-Cache löschen möchten? Alben und Fotos werden eine Weile benötigen, um erneut geladen zu werden.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Farben";
