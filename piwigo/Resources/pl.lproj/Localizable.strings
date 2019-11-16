@@ -34,7 +34,7 @@
 
 // Upload rights
 "uploadRights_title" = "Wymagane są uprawnienia do wgrywania zdjęć";
-"uploadRights_message" = "Musisz mieć uprawnienia do przesłania zdjęcia lub filmu.";
+"uploadRights_message" = "Musisz mieć uprawnienia do przesłania zdjęć lub filmów.";
 
 // Errors
 "internetErrorGeneral_title" = "Błąd połączenia";
@@ -257,7 +257,7 @@
 "sortBy" = "Sortuj wg";
 "imageSortTitle" = "Sortuj zdjęcia";
 "imageSortingHUD" = "Sortowanie zdjęć";
-"imageSortMessage" = "Wybierz kolejność sortowania zdjęć";
+"imageSortMessage" = "Wybierz sposób sortowania zdjęć";
 
 // Image options (actions)
 "imageOptions_title" = "Opcje zdjęcia";
@@ -331,7 +331,7 @@
 "removeSingleImage_title" = "Usuń z albumu";
 "removeSingleImageHUD_removing" = "Usuwanie zdjęcia…";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
-"deleteSeveralImages_title" = "Usuń %@ zdjęcia";
+"deleteSeveralImages_title" = "Usuń %@ zdjęć";
 "deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia (%@)? Nie można tego cofnąć!";
 
 // Image delete — Errors
@@ -342,7 +342,7 @@
 "downloadSingleImage_title" = "Pobierz zdjęcie";
 "downloadSingleImage_confirmation" = "Czy na pewno chcesz pobrać wybrane zdjęcie?";
 "downloadSeveralImages_title" = "Pobierz %@ zdjęć";
-"downloadSeveralImage_confirmation" = "Czy na pewno chcesz pobrać wybrane %@ zdjęcia?";
+"downloadSeveralImage_confirmation" = "Czy na pewno chcesz pobrać wybrane %@ zdjęć?";
 
 "downloadingImage" = "Pobieranie zdjęcia";
 "downloadingImages" = "Pobieranie zdjęć";
@@ -403,7 +403,7 @@
 
 "imageUploadDetailsView_title" = "Zdjęcia";
 "imageUploadDetailsButton_title" = "Wyślij";
-"imageUploadDetailsEdit_title" = "Edycja informacji o zdjęciu";
+"imageUploadDetailsEdit_title" = "Edycja informacji o przesyłanym zdjęciu";
 "imageUploadDetailsUploading_title" = "Przesyłane zdjęcia";
 "imageUploadDetailsCell_uploadComplete" = "Zakończone! Finalizowanie...";
 
@@ -516,7 +516,7 @@
 // Settings — Albums
 "defaultImageSort" = "Sortowanie";
 "defaultImageSort>320px" = "Sortowanie";
-"defaultImageSort>414px" = "Domyślna kolejność zdjęć";
+"defaultImageSort>414px" = "Domyślne sortowanie zdjęć";
 "defaultAlbumThumbnailFile>414px" = "Plik miniatur albumów";
 "defaultAlbumThumbnailSizeHeader" = "Wybierz rozmiar miniatury albumu";
 "maxNberOfRecentAlbums" = "Ostatnio użyte";
@@ -604,9 +604,9 @@
 "settings_cacheDisk" = "Dysk";
 "settings_cacheMemory" = "Pamięć";
 "settings_cacheMegabytes" = "MB";
-"settings_cacheClear" = "Wyczyść bufor";
-"settings_cacheClearAll" = "Wyczyść bufor zdjęć";
-"settings_cacheClearMsg" = "Na pewno chcesz wyczyścić bufor zdjęć? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";
+"settings_cacheClear" = "Wyczyść pamięć podręczną";
+"settings_cacheClearAll" = "Wyczyść pamięć podręczną zdjęć";
+"settings_cacheClearMsg" = "Na pewno chcesz wyczyścić pamięć podręczną zdjęć? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";
 
 // Settings — Colors
 "settingsHeader_colors" = "Kolory";

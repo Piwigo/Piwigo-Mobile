@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.6_text" = "Version 2.4.6\n\n• Edit properties of a selection of photos\n• Minor bug fixes and improvements of the interface";
+"v2.4.6_text" = "Wersja 2.4.6\n\n• Możliwość edycji właściwości wybranych zdjęć\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
-"v2.4.5_text" = "Wersja 2.4.5\n6 listopada 2019\n\n• Wyświetla twoje ulubione obrazy (wymaga Piwigo 2.10 lub nowszego)\n• Opcja prezentacji obrazów posortowanych ręcznie\n• Pozwala użytkownikom Community (z odpowiednimi uprawnieniami) tworzyć albumy\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+"v2.4.5_text" = "Wersja 2.4.5\n6 listopada 2019\n\n• Wyświetla twoje ulubione zdjęcia (wymaga Piwigo 2.10 lub nowszego)\n• Opcja prezentacji zdjęć posortowanych ręcznie\n• Pozwala użytkownikom Community (z odpowiednimi uprawnieniami) tworzyć albumy\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
 "v2.4.4_text" = "Wersja 2.4.4\n1 października 2019\n\n• Naprawia problemy z przesyłaniem wideo na niektórych serwerach\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
@@ -18,7 +18,7 @@
 
 "v2.4.1_text" = "Wersja 2.4.1\n10 sierpnia 2019\n\n• Dodaje albumy „Znaczniki”, „Najczęściej odwiedzane”, „Najlepiej oceniane” i „Najnowsze zdjęcia”\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
-"v2.4.0_text" = "Wersja 2.4\n15 lipca 2019\n\n• Dodaje narzędzie wyszukiwania (wymaga systemu iOS 11 lub nowszego)\n• Dodaje sortowanie obrazów według wyniku oceny\n• Szybsze pobieranie miniatur albumów (wymaga Piwigo 2.8 lub nowszego)\n• Tytuły przesłanych obrazów nie są już domyślnie nazwami plików\n• Naprawiono niemożność usunięcia znaczników\n• Naprawia niedokładne dane obrazu w niektórych okolicznościach";
+"v2.4.0_text" = "Wersja 2.4\n15 lipca 2019\n\n• Dodaje narzędzie wyszukiwania (wymaga systemu iOS 11 lub nowszego)\n• Dodaje sortowanie zdjęć według wyniku oceny\n• Szybsze pobieranie miniatur albumów (wymaga Piwigo 2.8 lub nowszego)\n• Tytuły przesłanych zdjęć nie są już domyślnie nazwami plików\n• Naprawiono niemożność usunięcia znaczników\n• Naprawia niedokładności informacji o zdjęciu w niektórych okolicznościach";
 
 "v2.3.5_text" = "Wersja 2.3.5\n6 czerwca 2019\n\n• Naprawia awarię, która czasami zdarza się podczas edycji adresu serwera po wylogowaniu";
 
@@ -26,7 +26,7 @@
 
 "v2.3.3_text" = "Wersja 2.3.3\n10 kwietnia 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
-"v2.3.2_text" = "Wersja 2.3.2\n27 marca 2019\n\n• Lokalne obrazy prezentowane w widoku osi czasu przed dniem przesłania\n• Drobne poprawki błędów i ulepszenie interfejsu";
+"v2.3.2_text" = "Wersja 2.3.2\n27 marca 2019\n\n• Lokalne zdjęcia prezentowane w widoku osi czasu przed dniem przesłania\n• Poprawki drobnych błędów i ulepszenie interfejsu";
 
 "v2.3.1_text" = "Wersja 2.3.1\n15 lutego 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
 
@@ -42,7 +42,7 @@
 
 "v2.2.3_text" = "Wersja 2.2.3\n27 sierpnia 2018\n\n• Nowy projekt albumu\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
-"v2.2.2_text" = "Wersja 2.2.2\n14 sierpnia 2018\n\n• Kopiowanie i przenoszenie obrazów pomiędzy albumami\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.2.2_text" = "Wersja 2.2.2\n14 sierpnia 2018\n\n• Kopiowanie i przenoszenie zdjęć pomiędzy albumami\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
 "v2.2.1_text" = "Wersja 2.2.1\n25 lipca 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
@@ -74,8 +74,8 @@
 
 "v2.0.2_text" = "Wersja 2.0.2\n8 maja 2017\n\n• Kryteria sortowania teraz identyczne z aplikacją Web\n• Poprawka problemu z sortowaniem \n• Poprawka awarii napotkanych podczas dodawania znaczników do zdjęć przed wysłaniem \n• Poprawka sytuacji gdzie nie działało usunięcie zaznaczonych zdjęć \n• Poprawka sytuacji gdzie album nie pojawiał się po przeniesieniu \n• Rozwiązany problem ze zgodnością z systemem iOS 10 — przestarzały kod";
 
-"v2.0.1_text" = "Wersja 2.0.1\n26 czerwca 2015\n\nNowe ustawienia:\n - Możliwość zmiany rozmiaru obrazów na upload\n + Jakość obrazu jest z zakres 50 - 98%\n- Możliwość ustawiania domyślnego obrazu podglądu rozmiar\nPoprawki";
+"v2.0.1_text" = "Wersja 2.0.1\n26 czerwca 2015\n\nNowe ustawienia:\n - możliwość zmiany rozmiaru przesyłanych zdjęć\n  + jakość zdjęcia z zakresu 50 - 98%\n - możliwość ustawienia domyślnego rozmiaru podglądu zdjęcia\nPoprawki";
 
-"v2.0.0_text" = "Wersja 2.0\n24 kwiecień 2015\n\nNowa natywna aplikacja oferuje:\n - Możliwość zarządzania albumami\n - Oglądanie Twoich obrazów\n - Masowe wysyłanie zdjęć\n - Wysyłanie i odtwarzanie wideo (musi być zainstalowany plugin VideoJS)";
+"v2.0.0_text" = "Wersja 2.0\n24 kwiecień 2015\n\nNowa natywna aplikacja oferuje:\n - możliwość zarządzania albumami\n - przeglądanie Twoich zdjęć\n - hurtowe przesyłanie zdjęć\n - przesyłanie i odtwarzanie filmów (musi być zainstalowany dodatek VideoJS)";
 
 "v1.0.0_text" = "Wersja 1.0\n17 października 2011";
