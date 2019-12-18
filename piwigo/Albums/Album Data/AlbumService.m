@@ -69,9 +69,9 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       (statusCode == 403) ||        // Forbidden
                       (statusCode == 404))          // Not Found
                   {
-                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
                       });
                   }
                   if(fail) {
@@ -228,9 +228,9 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       (statusCode == 403) ||        // Forbidden
                       (statusCode == 404))          // Not Found
                   {
-                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
                       });
                   }
                   if(fail) {
@@ -366,9 +366,9 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       (statusCode == 403) ||        // Forbidden
                       (statusCode == 404))          // Not Found
                   {
-                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
                       });
                   }
               }];
@@ -402,7 +402,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
                           // Add new category to list of recent albums
                           NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)newCatId]};
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoAddRecentAlbumNotification object:nil userInfo:userInfo];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationAddRecentAlbum object:nil userInfo:userInfo];
                       }
                       else {
                           // Display Piwigo error
@@ -473,7 +473,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 				  {
                       // Remove category from list of recent albums
                       NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)categoryId]};
-                      [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoRemoveRecentAlbumNotification object:nil userInfo:userInfo];
+                      [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationRemoveRecentAlbum object:nil userInfo:userInfo];
 
                       completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
 				  }

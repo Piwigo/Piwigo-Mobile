@@ -13,7 +13,7 @@
 #import "Model.h"
 #import "PiwigoImageData.h"
 
-NSString * const kPiwigoUserDeselectedImageNotification = @"kPiwigoUserDeselectedImageNotification";
+NSString * const kPiwigoNotificationUserDeselectedImage = @"kPiwigoNotificationUserDeselectedImage";
 
 @implementation ImageUpload
 

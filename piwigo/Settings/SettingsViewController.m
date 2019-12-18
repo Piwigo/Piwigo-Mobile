@@ -93,7 +93,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }

@@ -63,7 +63,7 @@
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }
@@ -118,7 +118,7 @@
 {
     // Add category to list of recent albums
     NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)self.selectedCategory]};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoAddRecentAlbumNotification object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationAddRecentAlbum object:nil userInfo:userInfo];
 
     // Launch the upload
     [[ImageUploadManager sharedInstance] addImages:self.imagesToEdit];

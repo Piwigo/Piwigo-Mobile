@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-FOUNDATION_EXPORT NSString * const kPiwigoBackToDefaultAlbumNotification;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
 
 @interface AlbumImagesViewController : UIViewController
 

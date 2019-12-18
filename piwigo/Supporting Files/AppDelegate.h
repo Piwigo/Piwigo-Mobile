@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-FOUNDATION_EXPORT NSString * const kPiwigoPaletteChangedNotification;
-FOUNDATION_EXPORT NSString * const kPiwigoNetworkErrorEncounteredNotification;
-FOUNDATION_EXPORT NSString * const kPiwigoAddRecentAlbumNotification;
-FOUNDATION_EXPORT NSString * const kPiwigoRemoveRecentAlbumNotification;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationPaletteChanged;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationNetworkErrorEncountered;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationAddRecentAlbum;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

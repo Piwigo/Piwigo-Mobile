@@ -1495,7 +1495,7 @@ static NSString * FourCCString(FourCharCode code) {
                           // Post to the app that the category data have been updated
 //                          NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
 //                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil userInfo:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil userInfo:nil];
                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
                           //
                       }];

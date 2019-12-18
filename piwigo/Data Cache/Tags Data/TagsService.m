@@ -71,9 +71,9 @@
                       (statusCode == 403) ||        // Forbidden
                       (statusCode == 404))          // Not Found
                   {
-                      NSLog(@"…notify kPiwigoNetworkErrorEncounteredNotification!");
+                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNetworkErrorEncounteredNotification object:nil userInfo:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
                       });
                   }
                   if(fail) {
