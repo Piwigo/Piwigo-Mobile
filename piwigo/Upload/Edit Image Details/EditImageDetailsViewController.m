@@ -265,6 +265,13 @@ typedef enum {
     {
         [self.delegate didFinishEditingDetails:self.imageDetails];
     }
+    
+    // Unregister image data updates
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUpdateImageFileName object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUserDeselectedImage object:nil];
+
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
 }
 
 
