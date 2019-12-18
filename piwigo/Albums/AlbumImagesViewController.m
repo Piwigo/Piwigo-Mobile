@@ -1259,10 +1259,10 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
               if (imageData != nil) {
                   // Split orphaned and non-orphaned images
                   if (imageData.categoryIds.count > 1) {
-                      [self.selectedImagesToRemove addObject:imageData];
+                      [self.selectedImagesToRemove insertObject:imageData atIndex:0];
                   }
                   else {
-                      [self.selectedImagesToDelete addObject:imageData];
+                      [self.selectedImagesToDelete insertObject:imageData atIndex:0];
                   }
               
                   // Next image
@@ -1637,7 +1637,7 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
                       
                       if (imageData != nil) {
                           // Store image data
-                          [self.selectedImagesToShare addObject:imageData];
+                          [self.selectedImagesToShare insertObject:imageData atIndex:0];
                           
                           // Next image
                           [self.selectedImageIdsToShare removeLastObject];
