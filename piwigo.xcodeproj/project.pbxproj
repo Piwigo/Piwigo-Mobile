@@ -29,7 +29,6 @@
 		AD4A8E8C21FDD0CC00749D83 /* LabelImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD4A8E8B21FDCA3A00749D83 /* LabelImageTableViewCell.xib */; };
 		AD5066B821F7AD20008E1B5F /* ShareMetadataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5066B721F7AD20008E1B5F /* ShareMetadataViewController.m */; };
 		AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */; };
-		AD65924D230CA4D4005FB52F /* EditImageThumbnailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD65924C230CA4D4005FB52F /* EditImageThumbnailTableViewCell.m */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD77109A22F48FCD00E64797 /* TagSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109922F48FCD00E64797 /* TagSelectViewController.m */; };
@@ -213,8 +212,6 @@
 		AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DefaultCategoryViewController.m; sourceTree = "<group>"; };
 		AD5E8F0F20EEA06B00E93426 /* DefaultCategoryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultCategoryViewController.h; sourceTree = "<group>"; };
 		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		AD65924B230CA4BC005FB52F /* EditImageThumbnailTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageThumbnailTableViewCell.h; sourceTree = "<group>"; };
-		AD65924C230CA4D4005FB52F /* EditImageThumbnailTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbnailTableViewCell.m; sourceTree = "<group>"; };
 		AD6ABBDC2223191400346E5A /* SplitLocalImages.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SplitLocalImages.h; sourceTree = "<group>"; };
 		AD6ABBDD2223192D00346E5A /* SplitLocalImages.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SplitLocalImages.m; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1086,8 +1083,6 @@
 		D8F3251B1A884E34007CBDAC /* Custom Cells */ = {
 			isa = PBXGroup;
 			children = (
-				AD65924B230CA4BC005FB52F /* EditImageThumbnailTableViewCell.h */,
-				AD65924C230CA4D4005FB52F /* EditImageThumbnailTableViewCell.m */,
 				AD3A6D502383445200767F10 /* EditImageThumbnailCollectionViewCell.h */,
 				AD3A6D512383446900767F10 /* EditImageThumbnailCollectionViewCell.m */,
 				D8B04C621A92B1BB00695281 /* EditImagePrivacyTableViewCell.h */,
@@ -1482,7 +1477,6 @@
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
 				AD4A8E8A21FDC3EA00749D83 /* LabelImageTableViewCell.m in Sources */,
 				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
-				AD65924D230CA4D4005FB52F /* EditImageThumbnailTableViewCell.m in Sources */,
 				AD7B4C1F20E0D6D9003E403A /* CategoryHeaderReusableView.m in Sources */,
 				ADABACB3223591630095C4D0 /* LocalImagesHeaderReusableView.m in Sources */,
 				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,

@@ -15,13 +15,20 @@
 
 @property (assign, nonatomic) NSInteger imageId;
 @property (weak, nonatomic) IBOutlet UIImageView *imageThumbnail;
+@property (weak, nonatomic) IBOutlet UIView *imageDetails;
 @property (weak, nonatomic) IBOutlet UILabel *imageDate;
 @property (weak, nonatomic) IBOutlet UILabel *imageSize;
 @property (weak, nonatomic) IBOutlet UILabel *imageFile;
 @property (weak, nonatomic) IBOutlet UILabel *imageTime;
+
+@property (weak, nonatomic) IBOutlet UIView *editButtonView;
 @property (weak, nonatomic) IBOutlet UIButton *editImageButton;
 
--(void)setupWithImage:(ImageUpload *)imageDetails forEdit:(BOOL)isEdit;
+@property (weak, nonatomic) IBOutlet UIView *removeButtonView;
+@property (weak, nonatomic) IBOutlet UIButton *removeImageButton;
+
+-(void)setupWithImage:(ImageUpload *)imageDetails forEdit:(BOOL)isEdit andRemove:(BOOL)withRemoveButton;
 -(IBAction)editImage;
+-(IBAction)removeImage;
 
 @end

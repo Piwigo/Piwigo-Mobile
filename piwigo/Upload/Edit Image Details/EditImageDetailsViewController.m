@@ -54,7 +54,8 @@ typedef enum {
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Image Details");
 	
     // Register image data updates
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageFileName:) name:kPiwigoNotificationUpdateImageFileName object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deselectedImage:) name:kPiwigoUserDeselectedImageNotification object:nil];
 
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
@@ -190,6 +191,31 @@ typedef enum {
     [self applyColorPalette];
 }
 
+-(void)storeImageData
+{
+    // NOP if user pressed Cancel
+    if (self.imageDetails == nil) return;
+    
+    // Store actual title if cell exists
+    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
+    if (textFieldCell != nil)
+        self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
+
+    // Store actual author if cell exists
+    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
+    if (textFieldCell != nil) {
+        if (textFieldCell.cellTextField.text.length > 0) {
+            self.imageDetails.author = textFieldCell.cellTextField.text;
+        } else {
+            self.imageDetails.author = @"NSNotFound";
+        }
+    }
+
+    // Store actual description if cell exists
+    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
+    if (textViewCell != nil) self.imageDetails.comment = textViewCell.cellTextView.text;
+}
+
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
@@ -234,71 +260,7 @@ typedef enum {
 }
 
 
-#pragma mark - Image Data update
-
--(void)updateImageData:(NSNotification *)notification
-{
-    // Extract notification user info
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.object;
-
-        // Get image Id and filename
-        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        NSString *fileName = [userInfo objectForKey:@"fileName"];
-
-        // Update data source
-        ImageUpload *updatedImage;
-        NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
-        for (ImageUpload *imageData in self.images)
-        {
-            if (imageData.imageId == imageId)
-            {
-                if (fileName) imageData.fileName = fileName;
-                updatedImage = imageData;
-            }
-            [updatedImages addObject:imageData];
-        }
-        self.images = updatedImages;
-        
-        // Update image details cell
-        for (EditImageThumbnailCollectionViewCell *cell in self.editImageThumbnailCollectionView.visibleCells)
-        {
-            // Look for right image details cell
-            if (cell.imageId == imageId)
-            {
-                [cell setupWithImage:updatedImage forEdit:self.isEdit];
-            }
-        }
-    }
-}
-
--(void)storeImageData
-{
-    // NOP if user pressed Cancel
-    if (self.imageDetails == nil) return;
-    
-    // Store actual title if cell exists
-    EditImageTextFieldTableViewCell *textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderImageName inSection:0]];
-    if (textFieldCell != nil)
-        self.imageDetails.imageTitle = textFieldCell.cellTextField.text;
-
-    // Store actual author if cell exists
-    textFieldCell = (EditImageTextFieldTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderAuthor inSection:0]];
-    if (textFieldCell != nil) {
-        if (textFieldCell.cellTextField.text.length > 0) {
-            self.imageDetails.author = textFieldCell.cellTextField.text;
-        } else {
-            self.imageDetails.author = @"NSNotFound";
-        }
-    }
-
-    // Store actual description if cell exists
-    EditImageTextViewTableViewCell *textViewCell = (EditImageTextViewTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderDescription inSection:0]];
-    if (textViewCell != nil) self.imageDetails.comment = textViewCell.cellTextView.text;
-}
-
-
-#pragma mark - Edit methods
+#pragma mark - Edit image methods
 
 // NOTE: make sure that you set the image data before you set isEdit so it can download the appropriate data
 -(void)setIsEdit:(BOOL)isEditChoice
@@ -425,6 +387,64 @@ typedef enum {
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+-(void)updateImageFileName:(NSNotification *)notification
+{
+    // Extract notification user info
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.object;
+
+        // Get image Id and filename
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        NSString *fileName = [userInfo objectForKey:@"fileName"];
+
+        // Update data source
+        ImageUpload *updatedImage;
+        NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
+        for (ImageUpload *imageData in self.images)
+        {
+            if (imageData.imageId == imageId)
+            {
+                if (fileName) imageData.fileName = fileName;
+                updatedImage = imageData;
+            }
+            [updatedImages addObject:imageData];
+        }
+        self.images = updatedImages;
+        
+        // Update image details cell
+        for (EditImageThumbnailCollectionViewCell *cell in self.editImageThumbnailCollectionView.visibleCells)
+        {
+            // Look for right image details cell
+            if (cell.imageId == imageId)
+            {
+                [cell setupWithImage:updatedImage forEdit:self.isEdit andRemove:(self.images.count > 1)];
+            }
+        }
+    }
+}
+
+-(void)deselectedImage:(NSNotification *)notification
+{
+    // Extract notification user info
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.object;
+
+        // Get image Id and filename
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        
+        // Update data source
+        NSMutableArray *newImages = [[NSMutableArray alloc] initWithArray:self.images];
+        for (ImageUpload *imageData in self.images)
+        {
+            if (imageData.imageId == imageId)
+            {
+                [newImages removeObject:imageData];
+            }
+        }
+        self.images = newImages;
+        [self.editImageThumbnailCollectionView reloadData];
+    }
+}
 
 #pragma mark - HUD methods
 
@@ -513,7 +533,7 @@ typedef enum {
     if (!cell) {
         cell = [EditImageThumbnailCollectionViewCell new];
     }
-    [cell setupWithImage:self.images[indexPath.row] forEdit:self.isEdit];
+    [cell setupWithImage:self.images[indexPath.row] forEdit:self.isEdit andRemove:(self.images.count > 1)];
     return cell;
 }
 

@@ -27,7 +27,11 @@
     // Initialization code
     [super awakeFromNib];
         
+    self.layer.cornerRadius = 10;
     self.imageThumbnail.layer.cornerRadius = 10;
+    self.imageDetails.layer.cornerRadius = 10;
+    self.editButtonView.layer.cornerRadius = 5;
+    self.removeButtonView.layer.cornerRadius = 15;
 
     self.imageSize.font = [UIFont piwigoFontSmallLight];
     self.imageSize.userInteractionEnabled = NO;
@@ -44,11 +48,11 @@
     self.editImageButton.tintColor = [UIColor piwigoOrange];
 }
 
--(void)setupWithImage:(ImageUpload *)imageDetails forEdit:(BOOL)isEdit
+-(void)setupWithImage:(ImageUpload *)imageDetails forEdit:(BOOL)isEdit andRemove:(BOOL)isRemove
 {
     // Cell background
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.layer.cornerRadius = 10;
+    self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.editButtonView.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Image size, date and time
     self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
@@ -62,12 +66,20 @@
         self.imageFile.text = imageDetails.fileName;
     }
     if (isEdit) {
-        [self.editImageButton setHidden:NO];
-        self.editImageButton.userInteractionEnabled = YES;
+        // Show button for renaming file
+        [self.editButtonView setHidden:NO];
+        
+        // Show button for removing image from selection if needed
+        if (isRemove) {
+            [self.removeButtonView setHidden:NO];
+        } else {
+            [self.removeButtonView setHidden:YES];
+        }
     }
     else {
-        [self.editImageButton setHidden:YES];
-        self.editImageButton.userInteractionEnabled = NO;
+        // Hide buttons for renaming file and removing image from selection
+        [self.editButtonView setHidden:YES];
+        [self.removeButtonView setHidden:YES];
     }
 
     // Image from Photo Library or Piwigo server…
@@ -145,9 +157,6 @@
     }
 }
 
-
-#pragma mark - Edit Orginal Filename
-
 -(void)prepareForReuse
 {
     [super prepareForReuse];
@@ -158,8 +167,11 @@
     self.imageTime.text = @"";
 }
 
+
+#pragma mark - Edit Orginal Filename
+
 // Propose to edit original filename
-- (IBAction)editImage
+-(IBAction)editImage
 {
     // Store old file name
     self.oldFileName = self.imageFile.text;
@@ -237,9 +249,8 @@
                                 self.imageFile.text = fileName;
                                 
                                 // Notify this change to the image viewed
-                                NSDictionary *objectInfo = @{@"imageId" : [NSString stringWithFormat:@"%ld", (long)self.imageId],
-                                                             @"fileName" : fileName};
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUpdateImageData object:objectInfo];
+                                NSDictionary *objectInfo = @{@"imageId" : [NSString stringWithFormat:@"%ld", (long)self.imageId], @"fileName" : fileName};
+                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUpdateImageFileName object:objectInfo];
                             });
                         }];
                     }
@@ -288,6 +299,15 @@
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
+
+#pragma mark - Remove image from selection
+
+-(IBAction)removeImage
+{
+    // Notify this deselection to album viewed
+    NSDictionary *objectInfo = @{@"imageId" : [NSString stringWithFormat:@"%ld", self.imageId]};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoUserDeselectedImageNotification object:objectInfo];
+}
 
 
 #pragma mark - HUD methods

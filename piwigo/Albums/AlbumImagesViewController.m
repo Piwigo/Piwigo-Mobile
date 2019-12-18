@@ -205,6 +205,9 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
 
         // Register root album changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoBackToDefaultAlbumNotification object:nil];
+        
+        // Register image deselection
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deselectedImage:) name:kPiwigoUserDeselectedImageNotification object:nil];
     }
 	return self;
 }
@@ -1206,6 +1209,21 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
             [self pushView:editImageVC];
             break;
         }
+    }
+}
+
+-(void)deselectedImage:(NSNotification *)notification
+{
+    // Extract notification user info
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.object;
+
+        // Get image Id and filename
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        
+        // Deselect image
+        [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
+        [self.imagesCollection reloadData];
     }
 }
 

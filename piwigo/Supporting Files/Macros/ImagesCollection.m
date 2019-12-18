@@ -158,7 +158,7 @@ NSInteger const kImageDetailsMarginsSpacing = 16;   // Left and right margins fo
     // Size of view or screen
     CGSize pageSize = [self sizeOfPageForView:view];
     
-    return MIN(fmin(pageSize.width,pageSize.height) - 2.0 * kImageDetailsMarginsSpacing, 360.0);
+    return MIN(fmin(pageSize.width,pageSize.height) - 2.0 * kImageDetailsMarginsSpacing, 340.0);
 }
 
 

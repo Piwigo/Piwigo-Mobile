@@ -13,6 +13,8 @@
 #import "Model.h"
 #import "PiwigoImageData.h"
 
+NSString * const kPiwigoUserDeselectedImageNotification = @"kPiwigoUserDeselectedImageNotification";
+
 @implementation ImageUpload
 
 -(instancetype)initWithImageAsset:(PHAsset*)imageAsset orImageData:(PiwigoImageData*)imageData forCategory:(NSInteger)category privacyLevel:(NSInteger)privacy author:(NSString*)author

@@ -27,7 +27,7 @@
 #import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
-NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdateImageData";
+NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationUpdateImageFileName";
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, SetAlbumImageDelegate, MoveImageDelegate, AsyncImageActivityItemProviderDelegate, UIToolbarDelegate>
 
@@ -128,7 +128,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPinchView) name:kPiwigoNotificationPinchedImage object:nil];
 
         // Register image data updates
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageFileName:) name:kPiwigoNotificationUpdateImageFileName object:nil];
 
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
@@ -306,9 +306,9 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
 }
 
 
-#pragma mark - Image Data Updated
+#pragma mark - Image Data Updates
 
--(void)updateImageData:(NSNotification *)notification
+-(void)updateImageFileName:(NSNotification *)notification
 {
     // Extract notification user info
     if (notification != nil) {
