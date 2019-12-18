@@ -27,7 +27,6 @@
 CGFloat const kEditImageDetailsWidth = 512.0;      // EditImageDetails view width
 
 typedef enum {
-//    EditImageDetailsOrderThumbnail,
 	EditImageDetailsOrderImageName,
 	EditImageDetailsOrderAuthor,
 	EditImageDetailsOrderPrivacy,
@@ -42,6 +41,11 @@ typedef enum {
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
 @property (nonatomic, weak) IBOutlet UICollectionView *editImageThumbnailCollectionView;
 @property (nonatomic, strong) NSMutableArray<ImageUpload *> *imagesToUpdate;
+@property (nonatomic, strong) NSString *oldImageTitle;
+@property (nonatomic, strong) NSString *oldImageAuthor;
+@property (nonatomic, strong) NSString *oldImageComment;
+@property (nonatomic, assign) BOOL shouldUpdatePrivacyLevel;
+@property (nonatomic, assign) BOOL shouldUpdateTags;
 
 @end
 
@@ -107,6 +111,7 @@ typedef enum {
         self.imageDetails.imageTitle = @"";
         break;
     }
+    self.oldImageTitle = self.imageDetails.imageTitle;
 
     // Common author?
     for (ImageUpload *imageData in self.images) {
@@ -117,6 +122,7 @@ typedef enum {
         self.imageDetails.author = @"";
         break;
     }
+    self.oldImageAuthor = self.imageDetails.author;
 
     // Common privacy?
     for (ImageUpload *imageData in self.images) {
@@ -127,6 +133,7 @@ typedef enum {
         self.imageDetails.privacyLevel = NSNotFound;
         break;
     }
+    self.shouldUpdatePrivacyLevel = NO;
 
     // Common tags?
     NSMutableArray *newTags = [[NSMutableArray alloc] initWithArray:self.imageDetails.tags];
@@ -143,6 +150,7 @@ typedef enum {
         if (newTags.count == 0) break;
     }
     self.imageDetails.tags = newTags;
+    self.shouldUpdateTags = NO;
     
     // Common comment?
     for (ImageUpload *imageData in self.images) {
@@ -153,8 +161,8 @@ typedef enum {
         self.imageDetails.comment = @"";
         break;
     }
+    self.oldImageComment = self.imageDetails.comment;
 }
-
 
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -287,15 +295,26 @@ typedef enum {
     for (ImageUpload *imageData in self.images)
     {
         // Update image data
-        if (self.imageDetails.imageTitle.length) imageData.imageTitle = self.imageDetails.imageTitle;
-        if (self.imageDetails.author.length) imageData.author = self.imageDetails.author;
-        if (self.imageDetails.privacyLevel != NSNotFound) imageData.privacyLevel = self.imageDetails.privacyLevel;
-        if (self.imageDetails.tags.count) imageData.tags = self.imageDetails.tags;
-        if (self.imageDetails.comment.length) imageData.comment = self.imageDetails.comment;
+        if ((self.imageDetails.imageTitle) &&
+            ([self.imageDetails.imageTitle compare:self.oldImageTitle] !=  NSOrderedSame)) {
+            imageData.imageTitle = self.imageDetails.imageTitle;
+        }
+        if ((self.imageDetails.author) &&
+            ([self.imageDetails.author compare:self.oldImageAuthor] != NSOrderedSame)) {
+            imageData.author = self.imageDetails.author;
+        }
+        if ((self.imageDetails.privacyLevel != NSNotFound) && self.shouldUpdatePrivacyLevel) {
+            imageData.privacyLevel = self.imageDetails.privacyLevel;
+        }
+        if (self.shouldUpdateTags) imageData.tags = self.imageDetails.tags;
+        if ((self.imageDetails.comment) &&
+            ([self.imageDetails.comment compare:self.oldImageComment] != NSOrderedSame)) {
+            imageData.comment = self.imageDetails.comment;
+        }
         [updatedImages addObject:imageData];
     }
     self.images = updatedImages;
-    self.imagesToUpdate = updatedImages;
+    self.imagesToUpdate = [self.images mutableCopy];
     
     // Start updating Piwigo database
     [self updateImageInfo];
@@ -325,7 +344,7 @@ typedef enum {
                                     // Hide HUD
                                     [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
                                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                                            // Return to image preview
+                                            // Return to image preview or album view
                                             [self dismissViewControllerAnimated:YES completion:nil];
                                         });
                                     }];
@@ -581,17 +600,6 @@ typedef enum {
 
 	switch(indexPath.row)
 	{
-//		case EditImageDetailsOrderThumbnail:
-//        {
-//            EditImageThumbnailCollectionViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"image" forIndexPath:indexPath];
-//            if (!cell) {
-//                cell = [EditImageThumbnailCollectionViewCell new];
-//            }
-//            [cell setupWithImage:self.imageDetails forEdit:self.isEdit];
-//            tableViewCell = cell;
-//            break;
-//        }
-        
         case EditImageDetailsOrderImageName:
 		{
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"title" forIndexPath:indexPath];
@@ -788,6 +796,9 @@ typedef enum {
     // Update table view cell
     EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
 	if (cell) [cell setPrivacyLevel:privacy];
+    
+    // Remember to update image info
+    self.shouldUpdatePrivacyLevel = YES;
 }
 
 
@@ -801,6 +812,9 @@ typedef enum {
     // Update table view cell
     EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
     if (cell) [cell setTagList:self.imageDetails.tags];
+
+    // Remember to update image info
+    self.shouldUpdateTags = YES;
 }
 
 

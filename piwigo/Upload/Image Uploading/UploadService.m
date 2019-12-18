@@ -195,7 +195,10 @@
                 {
                     // Update cache
                     [[[CategoriesData sharedInstance] getCategoryById:imageInfo.categoryToUploadTo] updateImageAfterEdit:imageInfo];
-                    
+
+                    // Notify album/image view of modification
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+
                     if(completion)
                     {
                         completion(task, response);
