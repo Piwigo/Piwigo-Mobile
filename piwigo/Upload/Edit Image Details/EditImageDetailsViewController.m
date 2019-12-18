@@ -41,11 +41,11 @@ typedef enum {
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
 @property (nonatomic, weak) IBOutlet UICollectionView *editImageThumbnailCollectionView;
 @property (nonatomic, strong) NSMutableArray<ImageUpload *> *imagesToUpdate;
-@property (nonatomic, strong) NSString *oldImageTitle;
-@property (nonatomic, strong) NSString *oldImageAuthor;
-@property (nonatomic, strong) NSString *oldImageComment;
+@property (nonatomic, assign) BOOL shouldUpdateTitle;
+@property (nonatomic, assign) BOOL shouldUpdateAuthor;
 @property (nonatomic, assign) BOOL shouldUpdatePrivacyLevel;
 @property (nonatomic, assign) BOOL shouldUpdateTags;
+@property (nonatomic, assign) BOOL shouldUpdateComment;
 
 @end
 
@@ -100,7 +100,13 @@ typedef enum {
     [super viewDidLoad];
     
     // Initialise common image properties from first supplied image
-    self.imageDetails = self.images[0];
+    self.imageDetails = [[ImageUpload alloc] init];
+    self.imageDetails.imageTitle = self.images[0].imageTitle;
+    self.imageDetails.categoryToUploadTo = self.images[0].categoryToUploadTo;
+    self.imageDetails.author = self.images[0].author;
+    self.imageDetails.privacyLevel = self.images[0].privacyLevel;
+    self.imageDetails.tags = [NSArray arrayWithArray:self.images[0].tags];
+    self.imageDetails.comment = self.images[0].comment;
 
     // Common title?
     for (ImageUpload *imageData in self.images) {
@@ -111,7 +117,7 @@ typedef enum {
         self.imageDetails.imageTitle = @"";
         break;
     }
-    self.oldImageTitle = self.imageDetails.imageTitle;
+    self.shouldUpdateTitle = NO;
 
     // Common author?
     for (ImageUpload *imageData in self.images) {
@@ -122,7 +128,7 @@ typedef enum {
         self.imageDetails.author = @"";
         break;
     }
-    self.oldImageAuthor = self.imageDetails.author;
+    self.shouldUpdateAuthor = NO;
 
     // Common privacy?
     for (ImageUpload *imageData in self.images) {
@@ -161,7 +167,7 @@ typedef enum {
         self.imageDetails.comment = @"";
         break;
     }
-    self.oldImageComment = self.imageDetails.comment;
+    self.shouldUpdateComment = NO;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -302,20 +308,17 @@ typedef enum {
     for (ImageUpload *imageData in self.images)
     {
         // Update image data
-        if ((self.imageDetails.imageTitle) &&
-            ([self.imageDetails.imageTitle compare:self.oldImageTitle] !=  NSOrderedSame)) {
+        if ((self.imageDetails.imageTitle) && self.shouldUpdateTitle) {
             imageData.imageTitle = self.imageDetails.imageTitle;
         }
-        if ((self.imageDetails.author) &&
-            ([self.imageDetails.author compare:self.oldImageAuthor] != NSOrderedSame)) {
+        if ((self.imageDetails.author) && self.shouldUpdateAuthor) {
             imageData.author = self.imageDetails.author;
         }
         if ((self.imageDetails.privacyLevel != NSNotFound) && self.shouldUpdatePrivacyLevel) {
             imageData.privacyLevel = self.imageDetails.privacyLevel;
         }
         if (self.shouldUpdateTags) imageData.tags = self.imageDetails.tags;
-        if ((self.imageDetails.comment) &&
-            ([self.imageDetails.comment compare:self.oldImageComment] != NSOrderedSame)) {
+        if ((self.imageDetails.comment) && self.shouldUpdateComment) {
             imageData.comment = self.imageDetails.comment;
         }
         [updatedImages addObject:imageData];
@@ -576,10 +579,6 @@ typedef enum {
     CGFloat height = 44.0;
     switch (indexPath.row)
     {
-//        case EditImageDetailsOrderThumbnail:
-//            height = 160.0;
-//            break;
-            
         case EditImageDetailsOrderPrivacy:
         case EditImageDetailsOrderTags:
             height = 78.0;
@@ -723,7 +722,6 @@ typedef enum {
     BOOL result;
     switch (indexPath.row)
     {
-//        case EditImageDetailsOrderThumbnail:
         case EditImageDetailsOrderImageName:
         case EditImageDetailsOrderAuthor:
         case EditImageDetailsOrderDescription:
@@ -744,6 +742,26 @@ typedef enum {
 {
     [self.editImageDetailsTableView endEditing:YES];
     return YES;
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    switch (textField.tag)
+    {
+        case EditImageDetailsOrderImageName:
+        {
+            // Title
+            self.shouldUpdateTitle = YES;
+            break;
+        }
+            
+        case EditImageDetailsOrderAuthor:
+        {
+            // Author
+            self.shouldUpdateAuthor = YES;
+            break;
+        }
+    }
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
@@ -775,6 +793,7 @@ typedef enum {
 
 -(void)textViewDidBeginEditing:(UITextView *)textView
 {
+    self.shouldUpdateComment = YES;
     if ([textView.text isEqualToString:NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description")]) {
          textView.text = @"";
          textView.textColor = [UIColor piwigoLeftLabelColor];
