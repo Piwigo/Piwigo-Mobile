@@ -11,20 +11,23 @@
 #import "EditImagePrivacyTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
-#import "EditImageThumbnailTableViewCell.h"
+#import "EditImageThumbnailCollectionViewCell.h"
 #import "EditImageTagsTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageUpload.h"
 #import "ImageService.h"
+#import "ImagesCollection.h"
 #import "MBProgressHUD.h"
+#import "PiwigoTagData.h"
 #import "SelectPrivacyViewController.h"
+#import "TagsData.h"
 #import "TagsViewController.h"
 #import "UploadService.h"
 
 CGFloat const kEditImageDetailsWidth = 512.0;      // EditImageDetails view width
 
 typedef enum {
-    EditImageDetailsOrderThumbnail,
+//    EditImageDetailsOrderThumbnail,
 	EditImageDetailsOrderImageName,
 	EditImageDetailsOrderAuthor,
 	EditImageDetailsOrderPrivacy,
@@ -33,9 +36,12 @@ typedef enum {
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface EditImageDetailsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageDetailsViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
+@property (nonatomic, strong) ImageUpload *imageDetails;
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
+@property (nonatomic, weak) IBOutlet UICollectionView *editImageThumbnailCollectionView;
+@property (nonatomic, strong) NSMutableArray<ImageUpload *> *imagesToUpdate;
 
 @end
 
@@ -75,11 +81,79 @@ typedef enum {
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
 
+    // Collection view
+//    self.editImageThumbnailCollectionView.backgroundColor = [UIColor piwigoBackgroundColor];
+    
     // Table view
     self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
     [self.editImageDetailsTableView reloadData];
 }
+
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    // Initialise common image properties from first supplied image
+    self.imageDetails = self.images[0];
+
+    // Common title?
+    for (ImageUpload *imageData in self.images) {
+        // Keep title of first image if identical
+        if ([self.imageDetails.imageTitle isEqualToString:imageData.imageTitle]) continue;
+        
+        // Images titles are different
+        self.imageDetails.imageTitle = @"";
+        break;
+    }
+
+    // Common author?
+    for (ImageUpload *imageData in self.images) {
+        // Keep author of first image if identical
+        if ([self.imageDetails.author isEqualToString:imageData.author]) continue;
+        
+        // Images authors are different
+        self.imageDetails.author = @"";
+        break;
+    }
+
+    // Common privacy?
+    for (ImageUpload *imageData in self.images) {
+        // Keep privacy of first image if identical
+        if (self.imageDetails.privacyLevel == imageData.privacyLevel) continue;
+        
+        // Images privacy levels are different, display no level
+        self.imageDetails.privacyLevel = NSNotFound;
+        break;
+    }
+
+    // Common tags?
+    NSMutableArray *newTags = [[NSMutableArray alloc] initWithArray:self.imageDetails.tags];
+    for (ImageUpload *imageData in self.images) {
+        // Loop over the common tags
+        NSMutableArray *tempTagList = [[NSMutableArray alloc] initWithArray:newTags];
+        for (PiwigoTagData *tag in tempTagList) {
+            // Remove tags not belonging to other images
+            if (![[TagsData sharedInstance] listOfTags:imageData.tags containsTag:tag]) [newTags removeObject:tag];
+            // Done if empty list
+            if (newTags.count == 0) break;
+        }
+        // Done if empty list
+        if (newTags.count == 0) break;
+    }
+    self.imageDetails.tags = newTags;
+    
+    // Common comment?
+    for (ImageUpload *imageData in self.images) {
+        // Keep comment of first image if identical
+        if ([self.imageDetails.comment isEqualToString:imageData.comment]) continue;
+        
+        // Images comments are different, display no comment
+        self.imageDetails.comment = @"";
+        break;
+    }
+}
+
 
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -168,17 +242,33 @@ typedef enum {
     if (notification != nil) {
         NSDictionary *userInfo = notification.object;
 
-        // Right image Id?
+        // Get image Id and filename
         NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        if (imageId != self.imageDetails.imageId) return;
-        
-        // Update image data
         NSString *fileName = [userInfo objectForKey:@"fileName"];
-        if (fileName) self.imageDetails.fileName = fileName;
 
-        // Update table view cell
-        EditImageThumbnailTableViewCell *cell = (EditImageThumbnailTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderThumbnail inSection:0]];
-        if (cell) [cell setupWithImage:self.imageDetails forEdit:self.isEdit];
+        // Update data source
+        ImageUpload *updatedImage;
+        NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
+        for (ImageUpload *imageData in self.images)
+        {
+            if (imageData.imageId == imageId)
+            {
+                if (fileName) imageData.fileName = fileName;
+                updatedImage = imageData;
+            }
+            [updatedImages addObject:imageData];
+        }
+        self.images = updatedImages;
+        
+        // Update image details cell
+        for (EditImageThumbnailCollectionViewCell *cell in self.editImageThumbnailCollectionView.visibleCells)
+        {
+            // Look for right image details cell
+            if (cell.imageId == imageId)
+            {
+                [cell setupWithImage:updatedImage forEdit:self.isEdit];
+            }
+        }
     }
 }
 
@@ -227,60 +317,112 @@ typedef enum {
 
 -(void)doneEdit
 {
+    // Store image data
+    [self storeImageData];
+    
+    // Update all images
+    NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
+    for (ImageUpload *imageData in self.images)
+    {
+        // Update image data
+        if (self.imageDetails.imageTitle.length) imageData.imageTitle = self.imageDetails.imageTitle;
+        if (self.imageDetails.author.length) imageData.author = self.imageDetails.author;
+        if (self.imageDetails.privacyLevel != NSNotFound) imageData.privacyLevel = self.imageDetails.privacyLevel;
+        if (self.imageDetails.tags.count) imageData.tags = self.imageDetails.tags;
+        if (self.imageDetails.comment.length) imageData.comment = self.imageDetails.comment;
+        [updatedImages addObject:imageData];
+    }
+    self.images = updatedImages;
+    self.imagesToUpdate = updatedImages;
+    
+    // Start updating Piwigo database
+    [self updateImageInfo];
+}
+
+-(void)updateImageInfo
+{
     // Display HUD during the update
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showUpdatingImageInfoHUD];
     });
     
-    // Store image data
-    [self storeImageData];
-    
     // Update image info on server and in cache
-	[UploadService updateImageInfo:self.imageDetails
-						onProgress:^(NSProgress *progress) {
-							// Progress
-						}
-                      OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-							
-                            // Hide HUD
-                            [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                                    // Return to image preview
-                                    [self dismissViewControllerAnimated:YES completion:nil];
-                                });
-                            }];
-						}
-                         onFailure:^(NSURLSessionTask *task, NSError *error) {
-							// Failed
-                            [self hideUpdatingImageInfoHUDwithSuccess:NO completion:^{
-                                UIAlertController* alert = [UIAlertController
-                                        alertControllerWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update")
-                                        message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server\nTry again?")
-                                        preferredStyle:UIAlertControllerStyleAlert];
-                                
-                                UIAlertAction* dismissAction = [UIAlertAction
-                                                actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                                                style:UIAlertActionStyleCancel
-                                                handler:^(UIAlertAction * action) {
-                                                }];
-
-                                UIAlertAction* retryAction = [UIAlertAction
-                                                actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                                                style:UIAlertActionStyleDefault
-                                                handler:^(UIAlertAction * action) {
-                                                    [self doneEdit];
-                                                }];
-
-                                [alert addAction:dismissAction];
-                                [alert addAction:retryAction];
-                                if (@available(iOS 13.0, *)) {
-                                    alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-                                } else {
-                                    // Fallback on earlier versions
+    [UploadService updateImageInfo:[self.imagesToUpdate lastObject]
+                        onProgress:^(NSProgress *progress) {
+                            // Progress
+                        }
+                      OnCompletion:^(NSURLSessionTask *task, NSDictionary *response)
+                        {
+                            if (response != nil) {
+                                // Next image?
+                                [self.imagesToUpdate removeLastObject];
+                                if (self.imagesToUpdate.count) {
+                                    [self updateImageInfo];
                                 }
-                                [self presentViewController:alert animated:YES completion:nil];
-                             }];
-						}];
+                                else {
+                                    // Hide HUD
+                                    [self hideUpdatingImageInfoHUDwithSuccess:YES completion:^{
+                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                                            // Return to image preview
+                                            [self dismissViewControllerAnimated:YES completion:nil];
+                                        });
+                                    }];
+                                }
+                            } else {
+                                // Failed
+                                [self hideUpdatingImageInfoHUDwithSuccess:NO completion:^{
+                                    [self showErrorMessage];
+                                }];
+                            }
+                        }
+                         onFailure:^(NSURLSessionTask *task, NSError *error) {
+                            // Failed
+                            [self hideUpdatingImageInfoHUDwithSuccess:NO completion:^{
+                                [self showErrorMessage];
+                            }];
+                        }];
+
+}
+
+-(void)showErrorMessage
+{
+    UIAlertController* alert = [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update")
+            message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server\nTry again?")
+            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                    style:UIAlertActionStyleCancel
+                    handler:^(UIAlertAction * action) {
+                    }];
+
+    UIAlertAction* dismissAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                    style:UIAlertActionStyleCancel
+                    handler:^(UIAlertAction * action) {
+                        // Bypass this image
+                        [self.imagesToUpdate removeLastObject];
+                        // Next image
+                        if (self.imagesToUpdate.count) [self updateImageInfo];
+                    }];
+
+    UIAlertAction* retryAction = [UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                    style:UIAlertActionStyleDefault
+                    handler:^(UIAlertAction * action) {
+                        [self updateImageInfo];
+                    }];
+
+    [alert addAction:cancelAction];
+    if (self.imagesToUpdate.count > 2) [alert addAction:dismissAction];
+    [alert addAction:retryAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 
@@ -331,6 +473,51 @@ typedef enum {
 }
 
 
+#pragma mark - UICollectionView - Rows
+
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    // Returns number of images or albums
+    return self.images.count;
+}
+
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    // Avoid unwanted spaces
+    if (@available(iOS 13.0, *)) {
+        return UIEdgeInsetsMake(0, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
+    } else {
+        return UIEdgeInsetsMake(10, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
+    }
+}
+
+-(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
+{
+    return (CGFloat)kImageDetailsCellSpacing;
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat size = (CGFloat)[ImagesCollection imageDetailsSizeForView:self.view];
+    return CGSizeMake(size, 144);
+}
+
+-(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    EditImageThumbnailCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"image" forIndexPath:indexPath];
+    if (!cell) {
+        cell = [EditImageThumbnailCollectionViewCell new];
+    }
+    [cell setupWithImage:self.images[indexPath.row] forEdit:self.isEdit];
+    return cell;
+}
+
+
 #pragma mark - UITableView - Rows
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -343,9 +530,9 @@ typedef enum {
     CGFloat height = 44.0;
     switch (indexPath.row)
     {
-        case EditImageDetailsOrderThumbnail:
-            height = 160.0;
-            break;
+//        case EditImageDetailsOrderThumbnail:
+//            height = 160.0;
+//            break;
             
         case EditImageDetailsOrderPrivacy:
         case EditImageDetailsOrderTags:
@@ -374,16 +561,16 @@ typedef enum {
 
 	switch(indexPath.row)
 	{
-		case EditImageDetailsOrderThumbnail:
-        {
-            EditImageThumbnailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"image" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImageThumbnailTableViewCell new];
-            }
-            [cell setupWithImage:self.imageDetails forEdit:self.isEdit];
-            tableViewCell = cell;
-            break;
-        }
+//		case EditImageDetailsOrderThumbnail:
+//        {
+//            EditImageThumbnailCollectionViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"image" forIndexPath:indexPath];
+//            if (!cell) {
+//                cell = [EditImageThumbnailCollectionViewCell new];
+//            }
+//            [cell setupWithImage:self.imageDetails forEdit:self.isEdit];
+//            tableViewCell = cell;
+//            break;
+//        }
         
         case EditImageDetailsOrderImageName:
 		{
@@ -501,7 +688,7 @@ typedef enum {
     BOOL result;
     switch (indexPath.row)
     {
-        case EditImageDetailsOrderThumbnail:
+//        case EditImageDetailsOrderThumbnail:
         case EditImageDetailsOrderImageName:
         case EditImageDetailsOrderAuthor:
         case EditImageDetailsOrderDescription:

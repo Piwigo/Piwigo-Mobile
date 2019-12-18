@@ -158,11 +158,6 @@
                                                          forCategory:self.selectedCategory
                                                         privacyLevel:[Model sharedInstance].defaultPrivacyLevel
                                                               author:[Model sharedInstance].defaultAuthor];
-//        ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset
-//                                                         forCategory:self.selectedCategory
-//                                                     forPrivacyLevel:[Model sharedInstance].defaultPrivacyLevel
-//                                                              author:[Model sharedInstance].defaultAuthor
-//                                                         description:@"" andTags:nil];
 		[self.imagesToEdit addObject:image];
 	}
 }
@@ -311,7 +306,7 @@
 	{
 		UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
 		EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-		editImageVC.imageDetails = [self.imagesToEdit objectAtIndex:indexPath.row];
+		editImageVC.images = @[[self.imagesToEdit objectAtIndex:indexPath.row]];
 		editImageVC.delegate = self;
         editImageVC.isEdit = NO;       // Not in edition mode
 		[self.navigationController pushViewController:editImageVC animated:YES];

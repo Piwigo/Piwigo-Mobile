@@ -1144,7 +1144,7 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
                       
                       if (imageData != nil) {
                           // Store image data
-                          [self.selectedImagesToEdit addObject:imageData];
+                          [self.selectedImagesToEdit insertObject:imageData atIndex:0];
                           
                           // Next image
                           [self.selectedImageIdsToEdit removeLastObject];
@@ -1178,29 +1178,34 @@ NSString * const kPiwigoBackToDefaultAlbumNotification = @"kPiwigoBackToDefaultA
             break;
         }
             
-        case 1:     // Only one image => same as editing previewed image
+        default:    // Several images
         {
-            // Prepare image to edit
-            PiwigoImageData *imageData = [self.selectedImagesToEdit firstObject];
-            ImageUpload *imageToEdit = [[ImageUpload alloc] initWithImageAsset:nil
-                                             orImageData:imageData
-                                             forCategory:[[[imageData categoryIds] firstObject] integerValue]
-                                            privacyLevel:imageData.privacyLevel
-                                                  author:imageData.author];
+            // Initialise image list
+            NSMutableArray *imagesToEdit = [[NSMutableArray alloc] init];
+            
+            // Loop over all images
+            for (PiwigoImageData *imageData in self.selectedImagesToEdit)
+            {
+                // Prepare image to edit
+                ImageUpload *imageToEdit = [[ImageUpload alloc] initWithImageAsset:nil
+                                                 orImageData:imageData
+                                                 forCategory:[[[imageData categoryIds] firstObject] integerValue]
+                                                privacyLevel:imageData.privacyLevel
+                                                      author:imageData.author];
+                
+                // Append image
+                [imagesToEdit addObject:imageToEdit];
+            }
 
             // Present EditImageDetails view
             UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
             EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-            editImageVC.imageDetails = imageToEdit;
+            editImageVC.images = imagesToEdit;
             editImageVC.delegate = self;
             editImageVC.isEdit = YES;       // In edition mode
             [self pushView:editImageVC];
-        }
-            
-        default:    // Several images
-            // Deselect images and leave select mode
-            [self cancelSelect];
             break;
+        }
     }
 }
 

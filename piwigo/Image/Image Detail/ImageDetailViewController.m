@@ -636,7 +636,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
     // Present EditImageDetails view
     UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
     EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-    editImageVC.imageDetails = imageToEdit;
+    editImageVC.images = @[imageToEdit];
     editImageVC.delegate = self;
     editImageVC.isEdit = YES;       // In edition mode
     [self pushView:editImageVC];

@@ -237,8 +237,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -309,8 +309,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -410,8 +410,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -463,8 +463,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = indexPath.section;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -1468,8 +1468,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = indexPath.section;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -1611,8 +1611,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -1664,8 +1664,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -1721,8 +1721,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = indexPath.section;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -2211,8 +2211,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = SettingsSectionColor;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -2234,8 +2234,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = SettingsSectionCache;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section--;
@@ -2254,8 +2254,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = SettingsSectionCache;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section--;

@@ -13,6 +13,7 @@ typedef enum {
 
 extern NSInteger const kAlbumCellSpacing;
 extern NSInteger const kAlbumMarginsSpacing;
+
 extern NSInteger const kImageCellSpacing4iPhone;
 extern NSInteger const kImageCellHorSpacing4iPad;
 extern NSInteger const kImageCellHorSpacing4iPadPopup;
@@ -20,6 +21,9 @@ extern NSInteger const kImageCellVertSpacing4iPad;
 extern NSInteger const kImageCellVertSpacing4iPadPopup;
 extern NSInteger const kImageMarginsSpacing;
 extern NSInteger const kThumbnailFileSize;
+
+extern NSInteger const kImageDetailsCellSpacing;
+extern NSInteger const kImageDetailsMarginsSpacing;
 
 @interface ImagesCollection : NSObject
 
@@ -35,6 +39,8 @@ extern NSInteger const kThumbnailFileSize;
 
 +(NSInteger)numberOfImagesPerPageForView:(UIView *)view imagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
 +(NSInteger)numberOfImagesPerPageForView:(UIView *)view imagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait collectionType:(kImageCollectionType)type;
+
++(float)imageDetailsSizeForView:(UIView *)view;
 
 +(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(float)maxWidth;
 +(float)albumSizeForView:(UIView *)view andNberOfAlbumsPerRowInPortrait:(NSInteger)albumsPerRowInPortrait;

@@ -182,6 +182,18 @@
 	return count;
 }
 
+-(BOOL)listOfTags:(NSArray *)listOfTags containsTag:(PiwigoTagData *)refTag
+{
+    BOOL result = NO;
+    for (PiwigoTagData *tag in listOfTags) {
+        if (tag.tagId == refTag.tagId) {
+            result = YES;
+            break;
+        }
+    }
+    return result;
+}
+
 #pragma mark - debugging support -
 
 -(NSString *)description {
