@@ -82,7 +82,7 @@ typedef enum {
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Collection view
-//    self.editImageThumbnailCollectionView.backgroundColor = [UIColor piwigoBackgroundColor];
+    [self.editImageThumbnailCollectionView reloadData];
     
     // Table view
     self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
