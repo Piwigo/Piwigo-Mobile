@@ -305,7 +305,7 @@
 -(IBAction)removeImage
 {
     // Notify this deselection to album viewed
-    NSDictionary *objectInfo = @{@"imageId" : [NSString stringWithFormat:@"%ld", self.imageId]};
+    NSDictionary *objectInfo = @{@"imageId" : [NSString stringWithFormat:@"%ld", (long)self.imageId]};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUserDeselectedImage object:objectInfo];
 }
 
