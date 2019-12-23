@@ -254,7 +254,8 @@ typedef enum {
             [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - size.height), 0.0)];
         }
 
-        // Reload table view
+        // Reload collection and table views
+        [self.editImageThumbnailCollectionView reloadData];
         [self.editImageDetailsTableView reloadData];
     } completion:nil];
 }
