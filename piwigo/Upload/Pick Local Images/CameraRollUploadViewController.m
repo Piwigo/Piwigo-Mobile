@@ -949,6 +949,7 @@
                     PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:section] objectAtIndex:row];
                     if ([self.selectedImages containsObject:imageAsset]) {
                         selectedImageExists = YES;
+                        break;
                     }
                 }
             }
