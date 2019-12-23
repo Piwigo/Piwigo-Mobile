@@ -266,7 +266,7 @@
 "imageOptions_setAlbumImage" = "Définir comme vignette d’album";
 
 // Image details
-"imageDetailsView_title" = "Propriétés de la photo";
+"imageDetailsView_title" = "Propriétés";
 "editImageDetails_title" = "Titre :";
 "editImageDetails_titlePlaceholder" = "Mon Titre";
 "editImageDetails_author" = "Auteur :";

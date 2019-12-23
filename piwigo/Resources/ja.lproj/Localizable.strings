@@ -266,7 +266,7 @@
 "imageOptions_setAlbumImage" = "アルバムの画像に設定します";
 
 // Image details
-"imageDetailsView_title" = "写真の詳細";
+"imageDetailsView_title" = "プロパティ";
 "editImageDetails_title" = "題名：";
 "editImageDetails_titlePlaceholder" = "題名";
 "editImageDetails_author" = "作成者:";

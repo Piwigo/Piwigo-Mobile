@@ -266,7 +266,7 @@
 "imageOptions_setAlbumImage" = "Angiv som Albumbillede";
 
 // Image details
-"imageDetailsView_title" = "Billeddetaljer";
+"imageDetailsView_title" = "Egenskaber";
 "editImageDetails_title" = "Titel:";
 "editImageDetails_titlePlaceholder" = "Titel";
 "editImageDetails_author" = "Forfatter:";

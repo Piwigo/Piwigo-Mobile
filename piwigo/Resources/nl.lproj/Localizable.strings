@@ -266,7 +266,7 @@
 "imageOptions_setAlbumImage" = "Instellen als albumfoto";
 
 // Image details
-"imageDetailsView_title" = "Foto-details";
+"imageDetailsView_title" = "Eigenschappen";
 "editImageDetails_title" = "Titel:";
 "editImageDetails_titlePlaceholder" = "Titel";
 "editImageDetails_author" = "Fotograaf:";

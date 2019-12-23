@@ -266,7 +266,7 @@
 "imageOptions_setAlbumImage" = "Impostare come immagine dell'Album";
 
 // Image details
-"imageDetailsView_title" = "Dettagli immagine";
+"imageDetailsView_title" = "Proprietà";
 "editImageDetails_title" = "Titolo:";
 "editImageDetails_titlePlaceholder" = "Titolo";
 "editImageDetails_author" = "Autore:";

@@ -266,7 +266,7 @@
 "imageOptions_setAlbumImage" = "Tetapkan sebagai Gambar Album";
 
 // Image details
-"imageDetailsView_title" = "Detail Gambar";
+"imageDetailsView_title" = "Properti";
 "editImageDetails_title" = "Judul:";
 "editImageDetails_titlePlaceholder" = "Judul";
 "editImageDetails_author" = "Penulis:";
