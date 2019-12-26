@@ -21,13 +21,12 @@
 //#import "CategoryImageSort.h"
 #import "CategoryPickViewController.h"
 #import "DiscoverImagesViewController.h"
-#import "EditImageDetailsViewController.h"
+#import "EditImageParamsViewController.h"
 #import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
-#import "ImageUpload.h"
 #import "LocalAlbumsViewController.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
@@ -48,7 +47,7 @@
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, EditImageDetailsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectViewDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectViewDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -205,9 +204,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
         // Register root album changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
-        
-        // Register image deselection
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deselectedImage:) name:kPiwigoNotificationUserDeselectedImage object:nil];
     }
 	return self;
 }
@@ -1179,49 +1175,31 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             
         default:    // Several images
         {
-            // Initialise image list
-            NSMutableArray *imagesToEdit = [[NSMutableArray alloc] init];
-            
-            // Loop over all images
-            for (PiwigoImageData *imageData in self.selectedImagesToEdit)
-            {
-                // Prepare image to edit
-                ImageUpload *imageToEdit = [[ImageUpload alloc] initWithImageAsset:nil
-                                                 orImageData:imageData
-                                                 forCategory:[[[imageData categoryIds] firstObject] integerValue]
-                                                privacyLevel:imageData.privacyLevel
-                                                      author:imageData.author];
-                
-                // Append image
-                [imagesToEdit addObject:imageToEdit];
-            }
-
             // Present EditImageDetails view
-            UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
-            EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-            editImageVC.images = imagesToEdit;
+            UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParams" bundle:nil];
+            EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
+            editImageVC.images = [self.selectedImagesToEdit copy];
             editImageVC.delegate = self;
-            editImageVC.isEdit = YES;       // In edition mode
             [self pushView:editImageVC];
             break;
         }
     }
 }
 
--(void)deselectedImage:(NSNotification *)notification
-{
-    // Extract notification user info
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.object;
-
-        // Get image Id and filename
-        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        
-        // Deselect image
-        [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
-        [self.imagesCollection reloadData];
-    }
-}
+//-(void)deselectedImage:(NSNotification *)notification
+//{
+//    // Extract notification user info
+//    if (notification != nil) {
+//        NSDictionary *userInfo = notification.object;
+//
+//        // Get image Id and filename
+//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+//
+//        // Deselect image
+//        [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
+//        [self.imagesCollection reloadData];
+//    }
+//}
 
 
 #pragma mark - Upload images
@@ -2346,12 +2324,25 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 }
 
 
-#pragma mark - EditImageDetailsDelegate Methods
+#pragma mark - EditImageParamsDelegate Methods
 
--(void)didFinishEditingDetails:(ImageUpload *)details
+-(void)didDeselectImageToEdit:(NSInteger)imageId
+{
+    // Deselect image
+    [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
+    [self.imagesCollection reloadData];
+}
+
+-(void)didRenameFileOfImage:(PiwigoImageData *)imageData
 {
     // Update image data
-    [self.albumData updateImage:details];
+    [self.albumData updateImage:imageData];
+}
+
+-(void)didFinishEditingParams:(PiwigoImageData *)params
+{
+    // Update image data
+    [self.albumData updateImage:params];
 
     // Deselect images and leave select mode
     [self cancelSelect];
@@ -2425,7 +2416,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
                 [self.navigationController presentViewController:viewController animated:YES completion:nil];
             }
-            else if ([viewController isKindOfClass:[EditImageDetailsViewController class]]) {
+            else if ([viewController isKindOfClass:[EditImageParamsViewController class]]) {
                 // Push Edit view embedded in navigation controller
                 UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
                 navController.modalPresentationStyle = UIModalPresentationPopover;

@@ -1,5 +1,5 @@
 //
-//  EditImageThumbnailCollectionViewCell.m
+//  EditImageFilenameTableViewCell.m
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 20/08/2019.
@@ -7,20 +7,20 @@
 //
 
 #import "CategoriesData.h"
-#import "EditImageThumbnailCollectionViewCell.h"
+#import "EditImageFilenameCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
 
-@interface EditImageThumbnailCollectionViewCell() <UITextFieldDelegate>
+@interface EditImageFilenameCollectionViewCell() <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIAlertAction *renameFileNameAction;
 @property (nonatomic, strong) NSString *oldFileName;
 
 @end
 
-@implementation EditImageThumbnailCollectionViewCell
+@implementation EditImageFilenameCollectionViewCell
 
 -(void)awakeFromNib {
     
@@ -30,6 +30,7 @@
     self.layer.cornerRadius = 10;
     self.imageThumbnail.layer.cornerRadius = 10;
     self.imageDetails.layer.cornerRadius = 10;
+    self.editButtonView.layer.cornerRadius = 5;
     self.removeButtonView.layer.cornerRadius = 15;
 
     self.imageSize.font = [UIFont piwigoFontSmallLight];
@@ -43,12 +44,15 @@
     
     self.imageFile.font = [UIFont piwigoFontSmallLight];
     self.imageTime.userInteractionEnabled = NO;
+
+    self.editImageButton.tintColor = [UIColor piwigoOrange];
 }
 
--(void)setupWithImage:(ImageUpload *)imageDetails andRemoveOption:(BOOL)hasRemove
+-(void)setupWithImage:(PiwigoImageData *)imageData andRemoveOption:(BOOL)hasRemove
 {
     // Cell background
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.editButtonView.backgroundColor = [UIColor piwigoBackgroundColor];
 
     // Image size, date and time
     self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
@@ -56,12 +60,15 @@
     self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
 
     // Image file name
-    self.imageId = imageDetails.imageId;
+    self.imageId = imageData.imageId;
     self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
-    if (imageDetails.fileName.length > 0) {
-        self.imageFile.text = imageDetails.fileName;
+    if (imageData.fileName.length > 0) {
+        self.imageFile.text = imageData.fileName;
     }
-
+    
+    // Show button for renaming file
+    [self.editButtonView setHidden:NO];
+    
     // Show button for removing image from selection if needed
     if (hasRemove) {
         [self.removeButtonView setHidden:NO];
@@ -69,78 +76,89 @@
         [self.removeButtonView setHidden:YES];
     }
 
-    // Image from Photo Library or Piwigo server…
-    if (imageDetails.imageAsset)
-    {
-        // Image thumbnail from Photo Library
-        if ((imageDetails.imageAsset.pixelWidth > 0) &&
-            (imageDetails.imageAsset.pixelHeight > 0)) {
-            self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", (long)imageDetails.imageAsset.pixelWidth, (long)imageDetails.imageAsset.pixelHeight];
-        }
-        
-        if (imageDetails.imageAsset.creationDate != nil) {
-            self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageDetails.imageAsset.creationDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterNoStyle];
-            self.imageTime.text = [NSDateFormatter localizedStringFromDate:imageDetails.imageAsset.creationDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
-        }
-        
-        // Retrieve image from Photo Libray
-        NSInteger retinaScale = [UIScreen mainScreen].scale;
-        CGSize retinaSquare = CGSizeMake(144*retinaScale, 144*retinaScale);       // See EditImageDetails.storyboard
-        
-        PHImageRequestOptions *cropToSquare = [[PHImageRequestOptions alloc] init];
-        cropToSquare.resizeMode = PHImageRequestOptionsResizeModeExact;
-        
-        CGFloat cropSideLength = MIN(imageDetails.imageAsset.pixelWidth, imageDetails.imageAsset.pixelHeight);
-        CGRect square = CGRectMake(0, 0, cropSideLength, cropSideLength);
-        CGRect cropRect = CGRectApplyAffineTransform(square,
-                                                     CGAffineTransformMakeScale(1.0 / imageDetails.imageAsset.pixelWidth,
-                                                                                1.0 / imageDetails.imageAsset.pixelHeight));
-        cropToSquare.normalizedCropRect = cropRect;
-        
-        [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)imageDetails.imageAsset
-                                                   targetSize:retinaSquare
-                                                  contentMode:PHImageContentModeAspectFit
-                                                      options:cropToSquare
-                                                resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                    self.imageThumbnail.image = result;
-                                                }
-        ];
+    // Image from Piwigo server…
+    if ((imageData.fullResWidth > 0) && (imageData.fullResHeight > 0)) {
+        self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", (long)imageData.fullResWidth, (long)imageData.fullResHeight];
     }
-    else {
-        // Image from Piwigo server
-        if ((imageDetails.pixelWidth > 0) && (imageDetails.pixelHeight > 0)) {
-            self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", (long)imageDetails.pixelWidth, (long)imageDetails.pixelHeight];
-        }
 
-        if (imageDetails.creationDate != nil) {
-            self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageDetails.creationDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterNoStyle];
-            self.imageTime.text = [NSDateFormatter localizedStringFromDate:imageDetails.creationDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
-        }
+    if (imageData.dateCreated != nil) {
+        self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterNoStyle];
+        self.imageTime.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
+    }
 
-        // Retrieve image from Photo Libray
-        if (imageDetails.thumbnailUrl.length <= 0)
-            {
-                // No known thumbnail URL
-                self.imageThumbnail.image = [UIImage imageNamed:@"placeholder"];
-                return;
+    // Retrieve image thumbnail from Photo Libray
+    NSString *thumbnailUrl;
+    switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
+        case kPiwigoImageSizeSquare:
+            if ([Model sharedInstance].hasSquareSizeImages) {
+                thumbnailUrl = imageData.SquarePath;
             }
-            else
-            {
-                // Load album thumbnail
-                __weak typeof(self) weakSelf = self;
-                NSURL *URL = [NSURL URLWithString:imageDetails.thumbnailUrl];
-                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-                [self.imageThumbnail setImageWithURLRequest:request
-                                           placeholderImage:[UIImage imageNamed:@"placeholder"]
-                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                        weakSelf.imageThumbnail.image = image;
-                                                    }
-                                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+            break;
+        case kPiwigoImageSizeXXSmall:
+            if ([Model sharedInstance].hasXXSmallSizeImages) {
+                thumbnailUrl = imageData.XXSmallPath;
+            }
+            break;
+        case kPiwigoImageSizeXSmall:
+            if ([Model sharedInstance].hasXSmallSizeImages) {
+                thumbnailUrl = imageData.XSmallPath;
+            }
+            break;
+        case kPiwigoImageSizeSmall:
+            if ([Model sharedInstance].hasSmallSizeImages) {
+                thumbnailUrl = imageData.SmallPath;
+            }
+            break;
+        case kPiwigoImageSizeMedium:
+            if ([Model sharedInstance].hasMediumSizeImages) {
+                thumbnailUrl = imageData.MediumPath;
+            }
+            break;
+        case kPiwigoImageSizeLarge:
+            if ([Model sharedInstance].hasLargeSizeImages) {
+                thumbnailUrl = imageData.LargePath;
+            }
+            break;
+        case kPiwigoImageSizeXLarge:
+            if ([Model sharedInstance].hasXLargeSizeImages) {
+                thumbnailUrl = imageData.XLargePath;
+            }
+            break;
+        case kPiwigoImageSizeXXLarge:
+            if ([Model sharedInstance].hasXXLargeSizeImages) {
+                thumbnailUrl = imageData.XXLargePath;
+            }
+            break;
+
+        case kPiwigoImageSizeThumb:
+        case kPiwigoImageSizeFullRes:
+        default:
+            thumbnailUrl = imageData.ThumbPath;
+            break;
+    }
+
+    if (thumbnailUrl.length <= 0)
+    {
+        // No known thumbnail URL
+        self.imageThumbnail.image = [UIImage imageNamed:@"placeholder"];
+        return;
+    }
+    else
+    {
+        // Load album thumbnail
+        __weak typeof(self) weakSelf = self;
+        NSURL *URL = [NSURL URLWithString:thumbnailUrl];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+        [self.imageThumbnail setImageWithURLRequest:request
+                                   placeholderImage:[UIImage imageNamed:@"placeholder"]
+                                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                weakSelf.imageThumbnail.image = image;
+                                            }
+                                            failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-                                                        NSLog(@"setupWithImageData — Fail to get thumbnail for image at %@", imageDetails.thumbnailUrl);
+                                                NSLog(@"setupWithImageData — Fail to get thumbnail for image at %@", thumbnailUrl);
 #endif
-                                                    }];
-            }
+                                            }];
     }
 }
 
@@ -155,7 +173,7 @@
 }
 
 
-#pragma mark - Edit Orginal Filename
+#pragma mark - Edit Filename
 
 // Propose to edit original filename
 -(IBAction)editImage
@@ -235,9 +253,11 @@
                                 // Adopt new original filename
                                 self.imageFile.text = fileName;
                                 
-                                // Notify this change to the image viewed
-                                NSDictionary *objectInfo = @{@"imageId" : [NSString stringWithFormat:@"%ld", (long)self.imageId], @"fileName" : fileName};
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUpdateImageFileName object:objectInfo];
+                                // Update parent image view
+                                if ([self.delegate respondsToSelector:@selector(didRenameFileOfImageWithId:andFilename:)])
+                                {
+                                    [self.delegate didRenameFileOfImageWithId:self.imageId andFilename:fileName];
+                                }
                             });
                         }];
                     }
@@ -287,7 +307,7 @@
 }
 
 
-#pragma mark - Remove image from selection
+#pragma mark - Remove Image from Selection
 
 -(IBAction)removeImage
 {
@@ -299,7 +319,7 @@
 }
 
 
-#pragma mark - HUD methods
+#pragma mark - HUD Methods
 
 -(void)showHUDwithLabel:(NSString *)label inView:(UIView *)topView
 {

@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 #import "CategorySortViewController.h"
-#import "ImageUpload.h"
 
 @class PiwigoImageData;
 
@@ -26,7 +25,7 @@
 
 -(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)(void))completion;
 
--(void)updateImage:(ImageUpload *)details;
+-(void)updateImage:(PiwigoImageData *)params;
 
 -(void)removeImage:(PiwigoImageData*)image;
 -(void)removeImageWithId:(NSInteger)imageId;

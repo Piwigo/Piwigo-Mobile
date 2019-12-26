@@ -114,6 +114,9 @@
 	}
 }
 
+
+#pragma mark - Upload Images
+
 -(void)startUpload
 {
     // Add category to list of recent albums
@@ -308,7 +311,6 @@
 		EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
 		editImageVC.images = @[[self.imagesToEdit objectAtIndex:indexPath.row]];
 		editImageVC.delegate = self;
-        editImageVC.isEdit = NO;       // Not in edition mode
 		[self.navigationController pushViewController:editImageVC animated:YES];
 	}
 }

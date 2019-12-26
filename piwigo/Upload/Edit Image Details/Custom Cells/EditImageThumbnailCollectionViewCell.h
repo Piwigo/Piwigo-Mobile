@@ -11,24 +11,28 @@
 
 #import "ImageUpload.h"
 
+@protocol EditImageThumbnailDelegate <NSObject>
+
+-(void)didDeselectImageWithId:(NSInteger)imageId;
+
+@end
+
 @interface EditImageThumbnailCollectionViewCell : UICollectionViewCell
 
-@property (assign, nonatomic) NSInteger imageId;
-@property (weak, nonatomic) IBOutlet UIImageView *imageThumbnail;
-@property (weak, nonatomic) IBOutlet UIView *imageDetails;
-@property (weak, nonatomic) IBOutlet UILabel *imageDate;
-@property (weak, nonatomic) IBOutlet UILabel *imageSize;
-@property (weak, nonatomic) IBOutlet UILabel *imageFile;
-@property (weak, nonatomic) IBOutlet UILabel *imageTime;
+@property (nonatomic, assign) NSInteger imageId;
+@property (nonatomic, weak) IBOutlet UIImageView *imageThumbnail;
+@property (nonatomic, weak) IBOutlet UIView *imageDetails;
+@property (nonatomic, weak) IBOutlet UILabel *imageDate;
+@property (nonatomic, weak) IBOutlet UILabel *imageSize;
+@property (nonatomic, weak) IBOutlet UILabel *imageFile;
+@property (nonatomic, weak) IBOutlet UILabel *imageTime;
 
-@property (weak, nonatomic) IBOutlet UIView *editButtonView;
-@property (weak, nonatomic) IBOutlet UIButton *editImageButton;
+@property (nonatomic, weak) IBOutlet UIView *removeButtonView;
+@property (nonatomic, weak) IBOutlet UIButton *removeImageButton;
 
-@property (weak, nonatomic) IBOutlet UIView *removeButtonView;
-@property (weak, nonatomic) IBOutlet UIButton *removeImageButton;
+@property (nonatomic, weak) id<EditImageThumbnailDelegate> delegate;
 
--(void)setupWithImage:(ImageUpload *)imageDetails forEdit:(BOOL)isEdit andRemove:(BOOL)withRemoveButton;
--(IBAction)editImage;
+-(void)setupWithImage:(ImageUpload *)imageDetails andRemoveOption:(BOOL)hasRemove;
 -(IBAction)removeImage;
 
 @end

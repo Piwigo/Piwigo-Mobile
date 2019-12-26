@@ -220,10 +220,10 @@
 
 #pragma mark - Update images
 
--(void)updateImage:(ImageUpload *)details
+-(void)updateImage:(PiwigoImageData *)params
 {
     // Anything to do?
-    if (details == nil) return;
+    if (params == nil) return;
 
     // Initialisation
     NSInteger index = 0;
@@ -232,17 +232,18 @@
     // Lopp over current images
     for (PiwigoImageData *image in self.images)
     {
-        if (image.imageId == details.imageId)
+        if (image.imageId == params.imageId)
         {
             // Update image data
-            image.imageTitle = details.imageTitle;
-            image.author = details.author;
-            image.privacyLevel = details.privacyLevel;
-            if (details.comment)
-                image.comment = [NSString stringWithString:details.comment];
+            if (params.fileName) image.fileName = params.fileName;
+            image.imageTitle = params.imageTitle;
+            image.author = params.author;
+            image.privacyLevel = params.privacyLevel;
+            if (params.comment)
+                image.comment = [NSString stringWithString:params.comment];
             else
                 image.comment = @"";
-            image.tags = [details.tags copy];
+            image.tags = [params.tags copy];
             
             // Update list and currently viewed image
             [newImages replaceObjectAtIndex:index withObject:image];

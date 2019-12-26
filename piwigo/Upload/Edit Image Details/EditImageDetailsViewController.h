@@ -18,7 +18,6 @@
 
 @interface EditImageDetailsViewController : UIViewController
 
-@property (nonatomic, assign) BOOL isEdit;
 @property (nonatomic, weak) id<EditImageDetailsDelegate> delegate;
 @property (nonatomic, strong) NSArray<ImageUpload *> *images;
 

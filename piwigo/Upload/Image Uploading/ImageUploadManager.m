@@ -1468,9 +1468,9 @@ static NSString * FourCCString(FourCharCode code) {
 -(void)setImage:(ImageUpload *)image withInfo:(NSDictionary*)imageInfo andId:(NSInteger)imageId
 {
         // Set properties of image on Piwigo server
-        [UploadService setImageInfoForImageWithId:imageId
-                              withInformation:imageInfo
-                                       onProgress:^(NSProgress *progress) {
+        [ImageService setImageInfoForImageWithId:imageId
+                                 withInformation:imageInfo
+                                      onProgress:^(NSProgress *progress) {
                                            // progress
                                        } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 

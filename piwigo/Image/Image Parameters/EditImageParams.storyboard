@@ -8,10 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Edit Image Details View Controller-->
+        <!--Edit Image Params View Controller-->
         <scene sceneID="bnU-01-erT">
             <objects>
-                <viewController storyboardIdentifier="EditImageDetails" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3wd-nH-xaU" customClass="EditImageDetailsViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EditImageParams" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3wd-nH-xaU" customClass="EditImageParamsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="v9H-sj-q9x"/>
                         <viewControllerLayoutGuide type="bottom" id="uVf-G5-mw5"/>
@@ -40,7 +40,7 @@
                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </collectionViewFlowLayout>
                                     <cells>
-                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="image" id="tMG-fN-HXd" userLabel="image" customClass="EditImageThumbnailCollectionViewCell">
+                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="image" id="tMG-fN-HXd" userLabel="image" customClass="EditImageFilenameCollectionViewCell">
                                             <rect key="frame" x="0.0" y="10" width="360" height="144"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                             <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" id="ePW-zp-U4U">
@@ -91,6 +91,31 @@
                                                             <constraint firstItem="E0X-OJ-g2X" firstAttribute="centerY" secondItem="4Vo-qn-dNy" secondAttribute="centerY" constant="-10.5" id="uHX-1n-g3n"/>
                                                         </constraints>
                                                     </view>
+                                                    <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V7o-lh-T3V">
+                                                        <rect key="frame" x="306" y="6" width="34" height="30"/>
+                                                        <subviews>
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Sd-M7-eA6">
+                                                                <rect key="frame" x="5.5" y="3.5" width="23" height="23"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" secondItem="7Sd-M7-eA6" secondAttribute="height" multiplier="1:1" id="8R9-7i-8Kp"/>
+                                                                    <constraint firstAttribute="width" constant="23" id="LLn-z7-r0H"/>
+                                                                </constraints>
+                                                                <state key="normal" image="imageEdit">
+                                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="medium" weight="regular"/>
+                                                                </state>
+                                                                <connections>
+                                                                    <action selector="editImage" destination="tMG-fN-HXd" eventType="touchUpInside" id="mpJ-mQ-XLr"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="30" id="2mm-l0-FxV"/>
+                                                            <constraint firstItem="7Sd-M7-eA6" firstAttribute="centerY" secondItem="V7o-lh-T3V" secondAttribute="centerY" id="9MW-E9-HHS"/>
+                                                            <constraint firstAttribute="width" constant="34" id="eUJ-xR-1RH"/>
+                                                            <constraint firstItem="7Sd-M7-eA6" firstAttribute="centerX" secondItem="V7o-lh-T3V" secondAttribute="centerX" id="tQ7-kn-fGD"/>
+                                                        </constraints>
+                                                    </view>
                                                     <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZGg-hu-lyF">
                                                         <rect key="frame" x="310" y="108" width="30" height="30"/>
                                                         <subviews>
@@ -134,10 +159,14 @@
                                                     <constraint firstItem="DBa-VV-yDp" firstAttribute="top" secondItem="ePW-zp-U4U" secondAttribute="top" id="O1r-Oh-3cX"/>
                                                     <constraint firstAttribute="trailing" secondItem="ZGg-hu-lyF" secondAttribute="trailing" constant="20" id="UTN-kj-AOB"/>
                                                     <constraint firstAttribute="bottom" secondItem="4Vo-qn-dNy" secondAttribute="bottom" constant="21" id="WhE-EQ-ESb"/>
+                                                    <constraint firstItem="V7o-lh-T3V" firstAttribute="centerY" secondItem="4Vo-qn-dNy" secondAttribute="top" id="bgb-Wy-I7q"/>
+                                                    <constraint firstAttribute="trailing" secondItem="V7o-lh-T3V" secondAttribute="trailing" constant="20" id="s69-3w-gX9"/>
                                                 </constraints>
                                             </collectionViewCellContentView>
                                             <size key="customSize" width="360" height="144"/>
                                             <connections>
+                                                <outlet property="editButtonView" destination="V7o-lh-T3V" id="IiS-Gq-jGn"/>
+                                                <outlet property="editImageButton" destination="7Sd-M7-eA6" id="m2m-Ss-Zas"/>
                                                 <outlet property="imageDate" destination="kTd-SC-PCx" id="hXs-Ya-18x"/>
                                                 <outlet property="imageDetails" destination="4Vo-qn-dNy" id="KyL-ij-UAb"/>
                                                 <outlet property="imageFile" destination="E0X-OJ-g2X" id="VAr-lv-LAU"/>
@@ -347,7 +376,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="editImageDetailsTableView" destination="T0l-Ou-dhs" id="waf-Hs-Bx5"/>
+                        <outlet property="editImageParamsTableView" destination="T0l-Ou-dhs" id="5xL-3W-kOj"/>
                         <outlet property="editImageThumbnailCollectionView" destination="Tzw-03-K3a" id="U5i-PO-g8P"/>
                     </connections>
                 </viewController>
@@ -357,6 +386,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="imageEdit" width="26" height="26"/>
         <image name="removeItem" width="25" height="25"/>
     </resources>
 </document>

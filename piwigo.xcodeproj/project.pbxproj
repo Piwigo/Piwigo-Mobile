@@ -31,6 +31,9 @@
 		AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
+		AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */; };
+		AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */; };
+		AD770FDA23B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */; };
 		AD77109A22F48FCD00E64797 /* TagSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109922F48FCD00E64797 /* TagSelectViewController.m */; };
 		AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */; };
 		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
@@ -216,6 +219,11 @@
 		AD6ABBDD2223192D00346E5A /* SplitLocalImages.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SplitLocalImages.m; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
+		AD770FD223B4BD89007DAD50 /* EditImageParamsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditImageParamsViewController.h; path = "piwigo/Image/Image Parameters/EditImageParamsViewController.h"; sourceTree = SOURCE_ROOT; };
+		AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageParamsViewController.m; sourceTree = "<group>"; };
+		AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageParams.storyboard; sourceTree = "<group>"; };
+		AD770FD823B4CE6B007DAD50 /* EditImageFilenameCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageFilenameCollectionViewCell.h; sourceTree = "<group>"; };
+		AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageFilenameCollectionViewCell.m; sourceTree = "<group>"; };
 		AD77109622F48F6600E64797 /* TagSelectViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TagSelectViewController.h; sourceTree = "<group>"; };
 		AD77109922F48FCD00E64797 /* TagSelectViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TagSelectViewController.m; sourceTree = "<group>"; };
 		AD77109B22F49A5300E64797 /* TaggedImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TaggedImagesViewController.h; sourceTree = "<group>"; };
@@ -537,6 +545,34 @@
 			path = "Image Move";
 			sourceTree = "<group>";
 		};
+		AD770FD123B4BD3B007DAD50 /* Image Parameters */ = {
+			isa = PBXGroup;
+			children = (
+				AD770FD223B4BD89007DAD50 /* EditImageParamsViewController.h */,
+				AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */,
+				AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */,
+				AD770FD723B4CD67007DAD50 /* Custom Cells */,
+			);
+			path = "Image Parameters";
+			sourceTree = "<group>";
+		};
+		AD770FD723B4CD67007DAD50 /* Custom Cells */ = {
+			isa = PBXGroup;
+			children = (
+				AD770FD823B4CE6B007DAD50 /* EditImageFilenameCollectionViewCell.h */,
+				AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */,
+				D8B04C621A92B1BB00695281 /* EditImagePrivacyTableViewCell.h */,
+				D8B04C631A92B1BB00695281 /* EditImagePrivacyTableViewCell.m */,
+				D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */,
+				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
+				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
+				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
+				D89045BD1A950FF700A306FE /* EditImageTagsTableViewCell.h */,
+				D89045BE1A950FF700A306FE /* EditImageTagsTableViewCell.m */,
+			);
+			path = "Custom Cells";
+			sourceTree = "<group>";
+		};
 		AD77109E22F49A7200E64797 /* Album Discover */ = {
 			isa = PBXGroup;
 			children = (
@@ -688,6 +724,7 @@
 				ADD714562301E25E00A1B7B2 /* Image Tags */,
 				AD0CC81121EA8A050009FFF6 /* Image Share */,
 				AD42DDF4210B38820083FC7D /* Image Move */,
+				AD770FD123B4BD3B007DAD50 /* Image Parameters */,
 			);
 			path = Image;
 			sourceTree = "<group>";
@@ -744,7 +781,7 @@
 			path = "Image Uploading";
 			sourceTree = "<group>";
 		};
-		D8083AA71A82905F00A95605 /* Upload Progress */ = {
+		D8083AA71A82905F00A95605 /* Upload Management */ = {
 			isa = PBXGroup;
 			children = (
 				D8C71A451A8489CF0048BA33 /* ImageUploadViewController.h */,
@@ -752,7 +789,7 @@
 				AD7B4C2420E361C6003E403A /* Cells */,
 				AD7B4C2320E361AE003E403A /* Progress View */,
 			);
-			path = "Upload Progress";
+			path = "Upload Management";
 			sourceTree = "<group>";
 		};
 		D8172E171AB7C06200271DB0 /* Album Move */ = {
@@ -1036,7 +1073,7 @@
 				D8A5014A1A7B3D4200C04C17 /* Pick Piwigo Album */,
 				AD7B4C2520E36328003E403A /* Pick Photos Album */,
 				D8A5014E1A7B432600C04C17 /* Pick Local Images */,
-				D8083AA71A82905F00A95605 /* Upload Progress */,
+				D8083AA71A82905F00A95605 /* Upload Management */,
 				D8F325111A875939007CBDAC /* Edit Image Details */,
 				D8083AA31A81B34C00A95605 /* Image Uploading */,
 			);
@@ -1085,14 +1122,6 @@
 			children = (
 				AD3A6D502383445200767F10 /* EditImageThumbnailCollectionViewCell.h */,
 				AD3A6D512383446900767F10 /* EditImageThumbnailCollectionViewCell.m */,
-				D8B04C621A92B1BB00695281 /* EditImagePrivacyTableViewCell.h */,
-				D8B04C631A92B1BB00695281 /* EditImagePrivacyTableViewCell.m */,
-				D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */,
-				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
-				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
-				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
-				D89045BD1A950FF700A306FE /* EditImageTagsTableViewCell.h */,
-				D89045BE1A950FF700A306FE /* EditImageTagsTableViewCell.m */,
 			);
 			path = "Custom Cells";
 			sourceTree = "<group>";
@@ -1265,6 +1294,7 @@
 				D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
+				AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
 				AD4A8E8C21FDD0CC00749D83 /* LabelImageTableViewCell.xib in Resources */,
 				AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */,
@@ -1415,6 +1445,7 @@
 				ADABACBD2235A7120095C4D0 /* PiwigoLocationData.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
 				AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */,
+				AD770FDA23B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m in Sources */,
 				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,
@@ -1468,6 +1499,7 @@
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
 				D89045BC1A9470A600A306FE /* TagsViewController.m in Sources */,
 				AD41BEC7223D4C1400A5DEE3 /* SplitLocalImages.m in Sources */,
+				AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */,
 				D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */,
 				D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */,
 				ADF1FCE821F367D100096D35 /* AsyncVideoActivityItemProvider.m in Sources */,
