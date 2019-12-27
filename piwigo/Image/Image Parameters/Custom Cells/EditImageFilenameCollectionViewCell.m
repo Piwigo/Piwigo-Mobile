@@ -53,6 +53,7 @@
     // Cell background
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
     self.editButtonView.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.removeButtonView.backgroundColor = [UIColor piwigoCellBackgroundColor];
 
     // Image size, date and time
     self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
