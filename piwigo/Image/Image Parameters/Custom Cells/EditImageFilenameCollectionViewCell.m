@@ -79,7 +79,7 @@
 
     // Image from Piwigo server…
     if ((imageData.fullResWidth > 0) && (imageData.fullResHeight > 0)) {
-        self.imageSize.text = [NSString stringWithFormat:@"%ld x %ld", (long)imageData.fullResWidth, (long)imageData.fullResHeight];
+        self.imageSize.text = [NSString stringWithFormat:@"%ldx%ld pixels, %.2f MB", (long)imageData.fullResWidth, (long)imageData.fullResHeight, (double)imageData.fileSize / 1024.0];
     }
 
     if (imageData.dateCreated != nil) {

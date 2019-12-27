@@ -21,23 +21,6 @@ FOUNDATION_EXPORT NSString * const kUploadImage;
       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-//+(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
-//                               withInformation:(NSDictionary*)imageInformation
-//                                    onProgress:(void (^)(NSProgress *))progress
-//                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
-//                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-//+(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
-//                                  withFileName:(NSString*)fileName
-//                                    onProgress:(void (^)(NSProgress *))progress
-//                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
-//                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-//+(NSURLSessionTask*)updateImageInfo:(PiwigoImageData *)imageData
-//                         onProgress:(void (^)(NSProgress *))progress
-//                       OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
-//                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 +(NSURLSessionTask*)getUploadedImageStatusById:(NSString*)imageId
                                     inCategory:(NSInteger)categoryId
                                     onProgress:(void (^)(NSProgress *))progress
