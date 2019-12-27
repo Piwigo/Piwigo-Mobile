@@ -1266,6 +1266,14 @@ static NSString * FourCCString(FourCharCode code) {
         return;
     }
     
+    // Prepare creation date
+    NSString *creationDate = @"";
+    if (image.creationDate != nil) {
+        NSDateFormatter *dateFormat = [NSDateFormatter new];
+        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        creationDate = [dateFormat stringFromDate:image.creationDate];
+    }
+
     // Append Tags
     NSMutableArray *tagIds = [NSMutableArray new];
     for(PiwigoTagData *tagData in image.tags)
@@ -1276,6 +1284,7 @@ static NSString * FourCCString(FourCharCode code) {
     // Prepare properties for uploaded image/video (filename key is kPiwigoImagesUploadParamFileName)
     __block NSDictionary *imageProperties = @{
                                       kPiwigoImagesUploadParamFileName : image.fileName,
+                                      kPiwigoImagesUploadParamCreationDate : creationDate,
                                       kPiwigoImagesUploadParamTitle : image.imageTitle,
                                       kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
                                       kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(image.privacyLevel)],

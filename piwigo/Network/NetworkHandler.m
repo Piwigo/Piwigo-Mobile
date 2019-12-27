@@ -54,13 +54,14 @@ NSString * const kPiwigoUserFavoritesGetList = @"format=json&method=pwg.users.fa
 // Parameter keys:
 NSString * const kPiwigoImagesUploadParamFileName = @"file";
 NSString * const kPiwigoImagesUploadParamTitle = @"name";
+NSString * const kPiwigoImagesUploadParamAuthor = @"author";
+NSString * const kPiwigoImagesUploadParamCreationDate = @"date_creation";
+NSString * const kPiwigoImagesUploadParamDescription = @"description";
+NSString * const kPiwigoImagesUploadParamCategory = @"category";
+NSString * const kPiwigoImagesUploadParamTags = @"tags";
+NSString * const kPiwigoImagesUploadParamPrivacy = @"privacyLevel";
 NSString * const kPiwigoImagesUploadParamChunk = @"chunk";
 NSString * const kPiwigoImagesUploadParamChunks = @"chunks";
-NSString * const kPiwigoImagesUploadParamCategory = @"category";
-NSString * const kPiwigoImagesUploadParamPrivacy = @"privacyLevel";
-NSString * const kPiwigoImagesUploadParamAuthor = @"author";
-NSString * const kPiwigoImagesUploadParamDescription = @"description";
-NSString * const kPiwigoImagesUploadParamTags = @"tags";
 NSString * const kPiwigoImagesUploadParamMimeType = @"mimeType";
 
 // Piwigo errors:
