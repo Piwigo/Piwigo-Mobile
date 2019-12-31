@@ -23,7 +23,7 @@
 #import "TagsData.h"
 #import "TagsViewController.h"
 
-CGFloat const kEditImageDetailsWidth = 512.0;      // EditImageDetails view width
+CGFloat const kEditImageDetailsViewWidth = 512.0;
 
 typedef enum {
 	EditImageDetailsOrderImageName,
@@ -208,7 +208,7 @@ typedef enum {
         // On iPad, the form is presented in a popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
-            self.preferredContentSize = CGSizeMake(kEditImageDetailsWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.preferredContentSize = CGSizeMake(kEditImageDetailsViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
             [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - size.height), 0.0)];
         } else {
             CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
@@ -428,7 +428,7 @@ typedef enum {
                 cell = [EditImageTextViewTableViewCell new];
             }
             [cell setupWithImageDetail:self.commonParameters.comment];
-            cell.cellTextView.delegate = self;
+            cell.textView.delegate = self;
             tableViewCell = cell;
             break;
         }
