@@ -38,10 +38,14 @@ typedef enum {
 @property (nonatomic, assign) NSInteger pickerMaxNberDays;
 @property (nonatomic, strong) NSArray<NSString *> *ampmSymbols;
 
-@property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolBarTop;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolBarBottom;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *decrementMonthButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *unsetDateButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *incrementMonthButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *decrementYearButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *todayDateButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *incrementYearButton;
 
 @end
 
@@ -52,6 +56,14 @@ typedef enum {
     // Initialization code
     [super awakeFromNib];
     
+    // Buttons
+    self.decrementMonthButton.title = NSLocalizedString(@"editImageDetails_dateMonthDec", @"-1 Month");
+    self.unsetDateButton.title = NSLocalizedString(@"editImageDetails_dateUnset", @"Unset");
+    self.incrementMonthButton.title = NSLocalizedString(@"editImageDetails_dateMonthInc", @"+1 Month");
+    self.decrementYearButton.title = NSLocalizedString(@"editImageDetails_dateYearDec", @"-1 Year");
+    self.todayDateButton.title = NSLocalizedString(@"editImageDetails_dateToday", @"Today");
+    self.incrementYearButton.title = NSLocalizedString(@"editImageDetails_dateYearInc", @"+1 Year");
+
     // Date picker: determine current time format: 12 or 24h
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setLocale:[NSLocale currentLocale]];
@@ -354,10 +366,15 @@ typedef enum {
 
 -(void)setDatePickerButtons
 {
-    self.toolBar.barTintColor = [UIColor piwigoCellBackgroundColor];
+    self.toolBarTop.barTintColor = [UIColor piwigoCellBackgroundColor];
     self.unsetDateButton.tintColor = [UIColor redColor];
     self.incrementMonthButton.tintColor = [UIColor piwigoRightLabelColor];
     self.decrementMonthButton.tintColor = [UIColor piwigoRightLabelColor];
+
+    self.toolBarBottom.barTintColor = [UIColor piwigoCellBackgroundColor];
+    self.todayDateButton.tintColor = [UIColor piwigoRightLabelColor];
+    self.incrementYearButton.tintColor = [UIColor piwigoRightLabelColor];
+    self.decrementYearButton.tintColor = [UIColor piwigoRightLabelColor];
 }
 
 - (IBAction)unsetDate:(id)sender
@@ -366,6 +383,21 @@ typedef enum {
     if ([self.delegate respondsToSelector:@selector(didUnsetImageCreationDate)])
     {
         [self.delegate didUnsetImageCreationDate];
+    }
+}
+
+- (IBAction)setDateAsToday:(id)sender
+{
+    // Select today
+    NSDate *newDate = [NSDate date];
+    
+    // Update picker with new date
+    [self setDatePickerWithDate:newDate animated:YES];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:newDate];
     }
 }
 
@@ -404,5 +436,43 @@ typedef enum {
         [self.delegate didSelectDateWithPicker:newDate];
     }
 }
+
+- (IBAction)incrementYear:(id)sender
+{
+    // Increment month
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *comp = [[NSDateComponents alloc] init];
+    [comp setYear: 1];
+    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
+
+    // Update picker with new date
+    [self setDatePickerWithDate:newDate animated:YES];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:newDate];
+    }
+}
+
+- (IBAction)decrementYear:(id)sender
+{
+    // Decrement month
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *comp = [[NSDateComponents alloc] init];
+    [comp setYear: -1];
+    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
+
+    // Update picker with new date
+    [self setDatePickerWithDate:newDate animated:YES];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:newDate];
+    }
+}
+
+
 
 @end

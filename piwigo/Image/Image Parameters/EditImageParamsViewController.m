@@ -526,7 +526,7 @@ typedef enum {
     switch (row)
     {
         case EditImageParamsOrderDatePicker:
-            height = 259.0;     // 1 point removed, toolbar above picker to hide border
+            height = 303.0;     // 1 point removed, toolbar above picker to hide border
             break;
         
         case EditImageParamsOrderPrivacy:

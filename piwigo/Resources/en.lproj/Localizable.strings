@@ -275,6 +275,12 @@
 "editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Comments";
 "editImageDetails_dateCreation" = "Creation Date";
+"editImageDetails_dateUnset" = "Unset";
+"editImageDetails_dateToday" = "Today";
+"editImageDetails_dateMonthInc" = "+1 Month";
+"editImageDetails_dateMonthDec" = "-1 Month";
+"editImageDetails_dateYearInc" = "+1 Year";
+"editImageDetails_dateYearDec" = "-1 Year";
 "editImageDetailsHUD_updating" = "Updating Photo Info…";
 
 // Image details — Errors
