@@ -10,7 +10,7 @@
 
 @interface EditImageTextViewTableViewCell : UITableViewCell
 
-@property (weak, nonatomic) IBOutlet UITextView *cellTextView;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
 
 -(void)setupWithImageDetail:(NSString *)imageDetail;
 
