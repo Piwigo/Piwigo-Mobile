@@ -272,8 +272,9 @@
 "editImageDetails_author" = "Penulis:";
 "editImageDetails_tags" = "Tag:";
 "editImageDetails_privacyLevel" = "Siapa yang bisa melihat foto ini?";
-"editImageDetails_descriptionPlaceholder" = "Deskripsi";
+"editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Komentar";
+"editImageDetails_dateCreation" = "Creation Date";
 "editImageDetailsHUD_updating" = "Memperbarui Info Gambar…";
 
 // Image details — Errors

@@ -272,8 +272,9 @@
 "editImageDetails_author" = "المؤلف:";
 "editImageDetails_tags" = "العلامات:";
 "editImageDetails_privacyLevel" = "من يمكنه مشاهدة هذه الصورة؟";
-"editImageDetails_descriptionPlaceholder" = "الوصف";
+"editImageDetails_description" = "Description";
 "editImageDetails_comments" = "تعليقات";
+"editImageDetails_dateCreation" = "Creation Date";
 "editImageDetailsHUD_updating" = "جار تحديث معلومات الصورة…";
 
 // Image details — Errors

@@ -272,8 +272,9 @@
 "editImageDetails_author" = "Autor:";
 "editImageDetails_tags" = "Tagi:";
 "editImageDetails_privacyLevel" = "Kto może zobaczyć to zdjęcie?";
-"editImageDetails_descriptionPlaceholder" = "Opis";
+"editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Komentarze";
+"editImageDetails_dateCreation" = "Creation Date";
 "editImageDetailsHUD_updating" = "Aktualizacja informacji o zdjęciu…";
 
 // Image details — Errors

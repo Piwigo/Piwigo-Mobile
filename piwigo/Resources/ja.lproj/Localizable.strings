@@ -272,8 +272,9 @@
 "editImageDetails_author" = "作成者:";
 "editImageDetails_tags" = "タグ:";
 "editImageDetails_privacyLevel" = "この写真を見ることができるのは誰ですか？";
-"editImageDetails_descriptionPlaceholder" = "説明";
+"editImageDetails_description" = "Description";
 "editImageDetails_comments" = "コメント";
+"editImageDetails_dateCreation" = "Creation Date";
 "editImageDetailsHUD_updating" = "写真情報を更新しています...";
 
 // Image details — Errors

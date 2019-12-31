@@ -272,8 +272,9 @@
 "editImageDetails_author" = "Fotograaf:";
 "editImageDetails_tags" = "Labels:";
 "editImageDetails_privacyLevel" = "Wie mag deze foto zien?";
-"editImageDetails_descriptionPlaceholder" = "Omschrijving";
+"editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Opmerkingen";
+"editImageDetails_dateCreation" = "Creation Date";
 "editImageDetailsHUD_updating" = "Bijwerken foto-info…";
 
 // Image details — Errors

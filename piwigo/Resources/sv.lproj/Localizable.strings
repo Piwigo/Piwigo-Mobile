@@ -272,8 +272,9 @@
 "editImageDetails_author" = "Författare:";
 "editImageDetails_tags" = "Etiketter:";
 "editImageDetails_privacyLevel" = "Vem kan se bilden?";
-"editImageDetails_descriptionPlaceholder" = "Beskrivning";
+"editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Kommentarer";
+"editImageDetails_dateCreation" = "Creation Date";
 "editImageDetailsHUD_updating" = "Uppdaterar bildinfo…";
 
 // Image details — Errors
