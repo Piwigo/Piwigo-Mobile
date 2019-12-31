@@ -12,7 +12,6 @@
 
 @interface EditImageTextFieldTableViewCell : UITableViewCell
 
-@property (weak, nonatomic)     IBOutlet UILabel *cellLabel;
 @property (weak, nonatomic)     IBOutlet UITextField *cellTextField;
 
 -(void)setupWithLabel:(NSString *)label placeHolder:(NSString *)placeHolder andImageDetail:(NSString *)imageDetail;
