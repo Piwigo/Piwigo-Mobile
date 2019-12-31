@@ -1303,6 +1303,18 @@ NSString * const kGetImageOrderDescending = @"desc";
     [imageInformation setObject:fileName
                          forKey:kPiwigoImagesUploadParamFileName];
     
+    // Date created
+    NSString *creationDate = @"";
+    if (imageData.dateCreated != nil) {
+        NSDateFormatter *dateFormat = [NSDateFormatter new];
+        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        creationDate = [dateFormat stringFromDate:imageData.dateCreated];
+    } else if (imageData.dateCreated == [NSDate distantPast]) {
+        creationDate = @"";
+    }
+    [imageInformation setObject:creationDate
+                         forKey:kPiwigoImagesUploadParamCreationDate];
+    
     // Title
     NSString *title = @"";
     if ((imageData.imageTitle != nil) && (imageData.imageTitle.length > 0)) {
