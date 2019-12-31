@@ -11,8 +11,8 @@
 
 @interface EditImageTagsTableViewCell()
 
-@property (weak, nonatomic) IBOutlet UILabel *leftLabel;
-@property (weak, nonatomic) IBOutlet UILabel *rightLabel;
+@property (weak, nonatomic) IBOutlet UILabel *tagsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *tagsList;
 
 @property (nonatomic, strong) NSString *tagsString;
 
@@ -28,31 +28,28 @@
     self.backgroundColor = [UIColor piwigoBackgroundColor];
 	
 	self.tagsString = @"";
-	self.leftLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
-    self.leftLabel.font = [UIFont piwigoFontNormal];
-    self.rightLabel.font = [UIFont piwigoFontNormal];
+	self.tagsLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags");
+    self.tagsLabel.font = [UIFont piwigoFontNormal];
+    self.tagsList.font = [UIFont piwigoFontNormal];
 }
 
 -(void)setTagsString:(NSString *)tagsString
 {
 	_tagsString = tagsString;
 
-	if (tagsString.length <= 0)
-	{
-		self.rightLabel.text = NSLocalizedString(@"none", @"none");
+	if (tagsString.length <= 0) {
+		self.tagsList.text = NSLocalizedString(@"none", @"none");
 	}
-	else
-	{
-		self.rightLabel.text = tagsString;
+	else {
+		self.tagsList.text = tagsString;
 	}
 }
 
 -(void)setTagList:(NSArray*)tags
 {
 	self.tagsString = [[TagsData sharedInstance] getTagsStringFromList:tags];
-    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.rightLabel.textColor = [UIColor piwigoLeftLabelColor];
-    self.rightLabel.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.tagsLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.tagsList.textColor = [UIColor piwigoLeftLabelColor];
 }
 
 @end
