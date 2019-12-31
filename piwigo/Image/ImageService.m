@@ -1309,8 +1309,6 @@ NSString * const kGetImageOrderDescending = @"desc";
         NSDateFormatter *dateFormat = [NSDateFormatter new];
         [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         creationDate = [dateFormat stringFromDate:imageData.dateCreated];
-    } else if (imageData.dateCreated == [NSDate distantPast]) {
-        creationDate = @"";
     }
     [imageInformation setObject:creationDate
                          forKey:kPiwigoImagesUploadParamCreationDate];

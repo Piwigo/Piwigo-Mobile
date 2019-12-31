@@ -49,7 +49,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL shouldUpdateTitle;
 @property (nonatomic, assign) BOOL shouldUpdateAuthor;
 @property (nonatomic, assign) BOOL shouldUpdateDateCreated;
-@property (nonatomic, strong) NSDate *referenceDate;
+@property (nonatomic, strong) NSDate *oldCreationDate;
 @property (nonatomic, assign) BOOL shouldUpdatePrivacyLevel;
 @property (nonatomic, assign) BOOL shouldUpdateTags;
 @property (nonatomic, assign) BOOL shouldUpdateComment;
@@ -151,9 +151,9 @@ typedef enum {
 
     // Common creation date is date of first image (can be nil)
     if (self.commonParameters.dateCreated == nil) {
-        self.referenceDate = nil;
+        self.oldCreationDate = nil;
     } else {
-        self.referenceDate = self.commonParameters.dateCreated;
+        self.oldCreationDate = self.commonParameters.dateCreated;
     }
     self.shouldUpdateDateCreated = NO;
     
@@ -276,10 +276,6 @@ typedef enum {
 {
     // Initialise new image list and time shift
     NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
-    NSTimeInterval timeInterval = 0.0;
-    if ((self.commonParameters.dateCreated != nil) && (self.referenceDate != nil)) {
-        timeInterval = [self.commonParameters.dateCreated timeIntervalSinceDate:self.referenceDate];
-    }
 
     // Update all images
     for (NSInteger index = 0; index < self.images.count; index++)
@@ -299,12 +295,9 @@ typedef enum {
 
         // Update image creation date?
         if (self.shouldUpdateDateCreated) {
-            if (timeInterval) {
-                imageData.dateCreated = [imageData.dateCreated dateByAddingTimeInterval:timeInterval];
-            }
-            if (self.commonParameters.dateCreated == nil) {
-                imageData.dateCreated = nil;
-            }
+            imageData.dateCreated = self.commonParameters.dateCreated;
+        } else {
+            imageData.dateCreated = self.oldCreationDate;
         }
         
         // Update image privacy level?
