@@ -26,6 +26,7 @@
 +(UIColor*)piwigoCellBackgroundColor;
 +(UIColor*)piwigoLeftLabelColor;
 +(UIColor*)piwigoRightLabelColor;
++(UIColor*)piwigoPlaceHolderColor;
 +(UIColor*)piwigoThumbColor;
 +(UIColor*)piwigoUnderlineColor;
 

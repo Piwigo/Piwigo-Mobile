@@ -267,13 +267,14 @@
 
 // Image details
 "imageDetailsView_title" = "Properties";
-"editImageDetails_title" = "Title:";
-"editImageDetails_titlePlaceholder" = "Title";
-"editImageDetails_author" = "Author:";
-"editImageDetails_tags" = "Tags:";
+"editImageDetails_title" = "Title";
+"editImageDetails_titlePlaceholder" = "Image Title";
+"editImageDetails_author" = "Author";
+"editImageDetails_tags" = "Tags";
 "editImageDetails_privacyLevel" = "Who can see this photo?";
-"editImageDetails_descriptionPlaceholder" = "Description";
+"editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Comments";
+"editImageDetails_dateCreation" = "Creation Date";
 "editImageDetailsHUD_updating" = "Updating Photo Info…";
 
 // Image details — Errors

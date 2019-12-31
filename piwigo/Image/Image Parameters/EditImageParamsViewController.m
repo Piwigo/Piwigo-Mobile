@@ -7,12 +7,13 @@
 //
 
 #import "AppDelegate.h"
+#import "EditImageDatePickerTableViewCell.h"
 #import "EditImageFilenameCollectionViewCell.h"
 #import "EditImageParamsViewController.h"
 #import "EditImagePrivacyTableViewCell.h"
+#import "EditImageTagsTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
-#import "EditImageTagsTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageUpload.h"
 #import "ImageService.h"
@@ -24,25 +25,31 @@
 #import "TagsViewController.h"
 #import "UploadService.h"
 
-CGFloat const kEditImageParamsWidth = 512.0;      // EditImageDetails view width
+CGFloat const kEditImageParamsViewWidth = 512.0;
 
 typedef enum {
 	EditImageParamsOrderImageName,
 	EditImageParamsOrderAuthor,
+    EditImageParamsOrderDate,
+    EditImageParamsOrderDatePicker,
 	EditImageParamsOrderPrivacy,
 	EditImageParamsOrderTags,
 	EditImageParamsOrderDescription,
 	EditImageParamsOrderCount
 } EditImageParamsOrder;
 
-@interface EditImageParamsViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageFilenameDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageParamsViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageFilenameDelegate, EditImageDatePickerDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, strong) PiwigoImageData *commonParameters;
 @property (nonatomic, weak)   IBOutlet UITableView *editImageParamsTableView;
 @property (nonatomic, weak)   IBOutlet UICollectionView *editImageThumbnailCollectionView;
 @property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *imagesToUpdate;
+
+@property (nonatomic, assign) BOOL hasDatePicker;
 @property (nonatomic, assign) BOOL shouldUpdateTitle;
 @property (nonatomic, assign) BOOL shouldUpdateAuthor;
+@property (nonatomic, assign) BOOL shouldUpdateDateCreated;
+@property (nonatomic, strong) NSDate *referenceDate;
 @property (nonatomic, assign) BOOL shouldUpdatePrivacyLevel;
 @property (nonatomic, assign) BOOL shouldUpdateTags;
 @property (nonatomic, assign) BOOL shouldUpdateComment;
@@ -107,10 +114,15 @@ typedef enum {
 {
     [super viewDidLoad];
     
+    // Register date picker
+    [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageDatePickerTableViewCell" bundle:nil] forCellReuseIdentifier:kDatePickerTableCell_ID];
+    self.hasDatePicker = NO;
+
     // Initialise common image properties from first supplied image
     self.commonParameters = [PiwigoImageData new];
     self.commonParameters.imageTitle = self.images[0].imageTitle;
     self.commonParameters.author = self.images[0].author;
+    self.commonParameters.dateCreated = self.images[0].dateCreated;
     self.commonParameters.privacyLevel = self.images[0].privacyLevel;
     self.commonParameters.tags = [NSArray arrayWithArray:self.images[0].tags];
     self.commonParameters.comment = self.images[0].comment;
@@ -137,6 +149,14 @@ typedef enum {
     }
     self.shouldUpdateAuthor = NO;
 
+    // Common creation date is date of first image (can be nil)
+    if (self.commonParameters.dateCreated == nil) {
+        self.referenceDate = nil;
+    } else {
+        self.referenceDate = self.commonParameters.dateCreated;
+    }
+    self.shouldUpdateDateCreated = NO;
+    
     // Common privacy?
     for (PiwigoImageData *imageData in self.images) {
         // Keep privacy of first image if identical
@@ -213,7 +233,7 @@ typedef enum {
         // On iPad, the form is presented in a popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
-            self.preferredContentSize = CGSizeMake(kEditImageParamsWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.preferredContentSize = CGSizeMake(kEditImageParamsViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
             [self.editImageParamsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - size.height), 0.0)];
         } else {
             CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
@@ -254,24 +274,55 @@ typedef enum {
 
 -(void)doneEdit
 {
-    // Update all images
+    // Initialise new image list and time shift
     NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
-    for (ImageUpload *imageData in self.images)
+    NSTimeInterval timeInterval = 0.0;
+    if ((self.commonParameters.dateCreated != nil) && (self.referenceDate != nil)) {
+        timeInterval = [self.commonParameters.dateCreated timeIntervalSinceDate:self.referenceDate];
+    }
+
+    // Update all images
+    for (NSInteger index = 0; index < self.images.count; index++)
     {
-        // Update image data
-        if ((self.commonParameters.imageTitle) && self.shouldUpdateTitle) {
+        // Next image
+        PiwigoImageData *imageData = [self.images objectAtIndex:index];
+        
+        // Update image title?
+        if (self.commonParameters.imageTitle && self.shouldUpdateTitle) {
             imageData.imageTitle = self.commonParameters.imageTitle;
         }
-        if ((self.commonParameters.author) && self.shouldUpdateAuthor) {
+
+        // Update image author?
+        if (self.commonParameters.author && self.shouldUpdateAuthor) {
             imageData.author = self.commonParameters.author;
         }
+
+        // Update image creation date?
+        if (self.shouldUpdateDateCreated) {
+            if (timeInterval) {
+                imageData.dateCreated = [imageData.dateCreated dateByAddingTimeInterval:timeInterval];
+            }
+            if (self.commonParameters.dateCreated == nil) {
+                imageData.dateCreated = nil;
+            }
+        }
+        
+        // Update image privacy level?
         if ((self.commonParameters.privacyLevel != NSNotFound) && self.shouldUpdatePrivacyLevel) {
             imageData.privacyLevel = self.commonParameters.privacyLevel;
         }
-        if (self.shouldUpdateTags) imageData.tags = self.commonParameters.tags;
+
+        // Update image tags?
+        if (self.shouldUpdateTags) {
+            imageData.tags = self.commonParameters.tags;
+        }
+
+        // Update image description?
         if ((self.commonParameters.comment) && self.shouldUpdateComment) {
             imageData.comment = self.commonParameters.comment;
         }
+        
+        // Append image data
         [updatedImages addObject:imageData];
     }
     self.images = updatedImages;
@@ -470,15 +521,28 @@ typedef enum {
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height = 44.0;
-    switch (indexPath.row)
+    NSInteger row = indexPath.row;
+    if (self.images.count > 1) {
+        // Bypass the creation date
+        if (row > EditImageParamsOrderAuthor) row++;
+    }
+    if (self.hasDatePicker == NO) {
+        // Bypass the date picker
+        if (row > EditImageParamsOrderDate) row++;
+    }
+    switch (row)
     {
+        case EditImageParamsOrderDatePicker:
+            height = 259.0;     // 1 point removed, toolbar above picker to hide border
+            break;
+        
         case EditImageParamsOrderPrivacy:
         case EditImageParamsOrderTags:
-            height = 78.0;
+            height = 73.0;
             break;
             
         case EditImageParamsOrderDescription:
-            height = 506.0;
+            height = 528.0;
             break;
 
         default:
@@ -490,14 +554,23 @@ typedef enum {
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return EditImageParamsOrderCount;
+	return EditImageParamsOrderCount - (self.images.count > 1) - (self.hasDatePicker == NO);
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *tableViewCell = [UITableViewCell new];
 
-	switch(indexPath.row)
+    NSInteger row = indexPath.row;
+    if (self.images.count > 1) {
+        // Bypass the creation date
+        if (row > EditImageParamsOrderAuthor) row++;
+    }
+    if (self.hasDatePicker == NO) {
+        // Bypass the date picker
+        if (row > EditImageParamsOrderDate) row++;
+    }
+    switch (row)
 	{
         case EditImageParamsOrderImageName:
 		{
@@ -505,7 +578,7 @@ typedef enum {
             if (!cell) {
                 cell = [EditImageTextFieldTableViewCell new];
             }
-            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title:")
+            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title")
                      placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
                   andImageDetail:self.commonParameters.imageTitle];
             cell.cellTextField.tag = EditImageParamsOrderImageName;
@@ -520,7 +593,7 @@ typedef enum {
             if(!cell) {
                 cell = [EditImageTextFieldTableViewCell new];
             }
-            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author:")
+            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author")
                      placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
                   andImageDetail:[self.commonParameters.author isEqualToString:@"NSNotFound"] ? @"" : self.commonParameters.author];
             cell.cellTextField.tag = EditImageParamsOrderAuthor;
@@ -529,6 +602,34 @@ typedef enum {
 			break;
 		}
 		
+        case EditImageParamsOrderDate:
+        {
+            EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dateCreation" forIndexPath:indexPath];
+            if(!cell) {
+                cell = [EditImageTextFieldTableViewCell new];
+            }
+            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_dateCreation", @"Creation Date")
+                     placeHolder:@""
+                  andImageDetail:[self getStringFromDate:self.commonParameters.dateCreated]];
+            cell.cellTextField.tag = EditImageParamsOrderDate;
+            cell.cellTextField.delegate = self;
+            tableViewCell = cell;
+            break;
+        }
+        
+        case EditImageParamsOrderDatePicker:
+        {
+            EditImageDatePickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDatePickerTableCell_ID forIndexPath:indexPath];
+            if(!cell) {
+                cell = [EditImageDatePickerTableViewCell new];
+            }
+            [cell setDatePickerWithDate:self.commonParameters.dateCreated animated:NO];
+            [cell setDatePickerButtons];
+            cell.delegate = self;
+            tableViewCell = cell;
+            break;
+        }
+        
         case EditImageParamsOrderPrivacy:
 		{
 			EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
@@ -559,7 +660,7 @@ typedef enum {
                 cell = [EditImageTextViewTableViewCell new];
             }
             [cell setupWithImageDetail:self.commonParameters.comment];
-            cell.cellTextView.delegate = self;
+            cell.textView.delegate = self;
             tableViewCell = cell;
 			break;
 		}
@@ -575,48 +676,71 @@ typedef enum {
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
-	if (indexPath.row == EditImageParamsOrderPrivacy)
-	{
-        // Dismiss the keyboard
-        [self.view endEditing:YES];
-        
-        // Create view controller
-        SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
-		privacySelectVC.delegate = self;
-		[privacySelectVC setPrivacy:(kPiwigoPrivacy)self.commonParameters.privacyLevel];
-		[self.navigationController pushViewController:privacySelectVC animated:YES];
-	}
-	else if (indexPath.row == EditImageParamsOrderTags)
-	{
-        // Dismiss the keyboard
-        [self.view endEditing:YES];
-        
-        // Create view controller
-		TagsViewController *tagsVC = [TagsViewController new];
-		tagsVC.delegate = self;
-		tagsVC.alreadySelectedTags = [self.commonParameters.tags mutableCopy];
-		[self.navigationController pushViewController:tagsVC animated:YES];
+    NSInteger row = indexPath.row;
+    if (self.images.count > 1) {
+        // Bypass the creation date
+        if (row > EditImageParamsOrderAuthor) row++;
     }
-    else if (indexPath.row == EditImageParamsOrderAuthor) {
-        if ([self.commonParameters.author isEqualToString:@"NSNotFound"]) { // only update if not yet set, dont overwrite
-            if (0 < [[[Model sharedInstance] defaultAuthor] length]) {  // must know the default author
-                self.commonParameters.author = [[Model sharedInstance] defaultAuthor];
-                [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
+    if (self.hasDatePicker == NO) {
+        // Bypass the date picker
+        if (row > EditImageParamsOrderDate) row++;
+    }
+    switch (row)
+    {
+        case EditImageParamsOrderPrivacy:
+        {
+            // Deselect row
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+            // Dismiss the keyboard
+            [self.view endEditing:YES];
+            
+            // Create view controller
+            SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
+            privacySelectVC.delegate = self;
+            [privacySelectVC setPrivacy:(kPiwigoPrivacy)self.commonParameters.privacyLevel];
+            [self.navigationController pushViewController:privacySelectVC animated:YES];
+            break;
         }
+            
+        case EditImageParamsOrderTags:
+        {
+            // Deselect row
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+            // Dismiss the keyboard
+            [self.view endEditing:YES];
+            
+            // Create view controller
+            TagsViewController *tagsVC = [TagsViewController new];
+            tagsVC.delegate = self;
+            tagsVC.alreadySelectedTags = [self.commonParameters.tags mutableCopy];
+            [self.navigationController pushViewController:tagsVC animated:YES];
+            break;
+        }
+        
+        default:
+            break;
     }
-	
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
     BOOL result;
-    switch (indexPath.row)
+    NSInteger row = indexPath.row;
+    if (self.images.count > 1) {
+        // Bypass the creation date
+        if (row > EditImageParamsOrderAuthor) row++;
+    }
+    if (self.hasDatePicker == NO) {
+        // Bypass the date picker
+        if (row > EditImageParamsOrderDate) row++;
+    }
+    switch (row)
     {
         case EditImageParamsOrderImageName:
         case EditImageParamsOrderAuthor:
+        case EditImageParamsOrderDate:
         case EditImageParamsOrderDescription:
             result = NO;
             break;
@@ -630,6 +754,53 @@ typedef enum {
 
 
 #pragma mark - UITextFieldDelegate Methods
+
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    if (textField.tag == EditImageParamsOrderDate) {
+        // The common date can be nil or past distant (i.e. unset)
+        if (self.commonParameters.dateCreated == nil) {
+            // Define date as today
+            self.commonParameters.dateCreated = [NSDate date];
+            self.shouldUpdateDateCreated = YES;
+            
+            // Update creation date
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:EditImageParamsOrderDate inSection:0];
+            UITableViewCell *cell = [self.editImageParamsTableView cellForRowAtIndexPath:indexPath];
+            if ([cell isKindOfClass:[EditImageTextFieldTableViewCell class]]) {
+                EditImageTextFieldTableViewCell *dateCell = (EditImageTextFieldTableViewCell *)cell;
+                [dateCell setupWithLabel:NSLocalizedString(@"editImageDetails_dateCreation", @"Creation Date")
+                             placeHolder:@""
+                          andImageDetail:[self getStringFromDate:self.commonParameters.dateCreated]];
+                [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
+            }
+        }
+        
+        // Show date of hide picker
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:EditImageParamsOrderDatePicker inSection:0];
+        if (self.hasDatePicker) {
+            // Found a picker, so remove it
+            self.hasDatePicker = NO;
+            [self.editImageParamsTableView beginUpdates];
+            [self.editImageParamsTableView deleteRowsAtIndexPaths:@[indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            [self.editImageParamsTableView endUpdates];
+        }
+        else {
+            // Didn't find a picker, so we should insert it
+            self.hasDatePicker = YES;
+            [self.editImageParamsTableView beginUpdates];
+            [self.editImageParamsTableView insertRowsAtIndexPaths:@[indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            [self.editImageParamsTableView endUpdates];
+        }
+
+        // Prevent keyboard from opening
+        return NO;
+    }
+    
+    return YES;
+}
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
@@ -734,21 +905,11 @@ typedef enum {
 -(void)textViewDidBeginEditing:(UITextView *)textView
 {
     self.shouldUpdateComment = YES;
-    if ([textView.text isEqualToString:NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description")]) {
-         textView.text = @"";
-         textView.textColor = [UIColor piwigoLeftLabelColor];
-    }
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     NSString *finalString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-    if ([finalString isEqualToString:@""]) {
-        textView.text = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
-        textView.textColor = [UIColor piwigoRightLabelColor];
-    }
-
-    // Store actual description if cell exists
     self.commonParameters.comment = finalString;
     return YES;
 }
@@ -761,12 +922,6 @@ typedef enum {
 
 -(void)textViewDidEndEditing:(UITextView *)textView
 {
-    if ([textView.text isEqualToString:@""]) {
-        textView.text = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
-        textView.textColor = [UIColor piwigoRightLabelColor];
-    }
-
-    // Store actual description if cell exists
     self.commonParameters.comment = textView.text;
 }
 
@@ -786,6 +941,7 @@ typedef enum {
     }
     self.images = newImages;
     [self.editImageThumbnailCollectionView reloadData];
+    [self.editImageParamsTableView reloadData];
 
     // Deselect image in album view
     if ([self.delegate respondsToSelector:@selector(didDeselectImageToEdit:)])
@@ -828,6 +984,40 @@ typedef enum {
 }
 
 
+# pragma mark -  EditImageDatePickerDelegate Methods
+
+-(void)didSelectDateWithPicker:(NSDate *)date
+{
+    // Apply new date
+    self.shouldUpdateDateCreated = YES;
+    self.commonParameters.dateCreated = date;
+    
+    // Update cell
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:EditImageParamsOrderDate inSection:0];
+    [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+-(void)didUnsetImageCreationDate
+{
+    self.commonParameters.dateCreated = nil;
+    self.shouldUpdateDateCreated = YES;
+    
+    // Close date picker
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:EditImageParamsOrderDatePicker inSection:0];
+    if (self.hasDatePicker) {
+        self.hasDatePicker = NO;
+        [self.editImageParamsTableView beginUpdates];
+        [self.editImageParamsTableView deleteRowsAtIndexPaths:@[indexPath]
+                         withRowAnimation:UITableViewRowAnimationFade];
+        [self.editImageParamsTableView endUpdates];
+    }
+
+    // Update creation date cell
+    indexPath = [NSIndexPath indexPathForRow:EditImageParamsOrderDate inSection:0];
+    [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+
 #pragma mark - SelectPrivacyDelegate Methods
 
 -(void)selectedPrivacy:(kPiwigoPrivacy)privacy
@@ -836,7 +1026,8 @@ typedef enum {
     self.commonParameters.privacyLevel = privacy;
 	
     // Update table view cell
-    EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.editImageParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageParamsOrderPrivacy inSection:0]];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(EditImageParamsOrderPrivacy - (self.images.count > 1) - (self.hasDatePicker == NO)) inSection:0];
+    EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.editImageParamsTableView cellForRowAtIndexPath:indexPath];
 	if (cell) [cell setPrivacyLevel:privacy];
     
     // Remember to update image info
@@ -852,7 +1043,8 @@ typedef enum {
 	self.commonParameters.tags = selectedTags;
 
     // Update table view cell
-    EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageParamsOrderTags inSection:0]];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(EditImageParamsOrderTags - (self.images.count > 1) - (self.hasDatePicker == NO)) inSection:0];
+    EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageParamsTableView cellForRowAtIndexPath:indexPath];
     if (cell) [cell setTagList:self.commonParameters.tags];
 
     // Remember to update image info
@@ -860,4 +1052,23 @@ typedef enum {
 }
 
 
+#pragma mark - Utilities
+
+-(NSString *)getStringFromDate:(NSDate *)date
+{
+    NSString *dateStr = @""; NSString *timeStr = @"";
+    if (date != nil) {
+        if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7,8 screen width
+            dateStr = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+            timeStr = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
+        } else if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+            dateStr = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
+            timeStr = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
+        } else {
+            dateStr = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+            timeStr = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
+        }
+    }
+    return [NSString stringWithFormat:@"%@ %@", dateStr, timeStr];
+}
 @end

@@ -34,11 +34,13 @@
 		AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */; };
 		AD770FDA23B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */; };
+		AD770FDD23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FDC23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m */; };
 		AD77109A22F48FCD00E64797 /* TagSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109922F48FCD00E64797 /* TagSelectViewController.m */; };
 		AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */; };
 		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
 		AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
 		AD7B4C1F20E0D6D9003E403A /* CategoryHeaderReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7B4C1C20E0D6D8003E403A /* CategoryHeaderReusableView.m */; };
+		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
 		AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
@@ -224,6 +226,8 @@
 		AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageParams.storyboard; sourceTree = "<group>"; };
 		AD770FD823B4CE6B007DAD50 /* EditImageFilenameCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageFilenameCollectionViewCell.h; sourceTree = "<group>"; };
 		AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageFilenameCollectionViewCell.m; sourceTree = "<group>"; };
+		AD770FDB23B6A631007DAD50 /* EditImageDatePickerTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageDatePickerTableViewCell.h; sourceTree = "<group>"; };
+		AD770FDC23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditImageDatePickerTableViewCell.m; sourceTree = "<group>"; };
 		AD77109622F48F6600E64797 /* TagSelectViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TagSelectViewController.h; sourceTree = "<group>"; };
 		AD77109922F48FCD00E64797 /* TagSelectViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TagSelectViewController.m; sourceTree = "<group>"; };
 		AD77109B22F49A5300E64797 /* TaggedImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TaggedImagesViewController.h; sourceTree = "<group>"; };
@@ -241,6 +245,7 @@
 		AD8452611FEC70740035047B /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD8452621FEC70740035047B /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD8452631FEC70750035047B /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageDatePickerTableViewCell.xib; sourceTree = "<group>"; };
 		AD85324222F98E5800AE752E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		AD8549311FE98CE200155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8549321FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/About.strings; sourceTree = "<group>"; };
@@ -551,26 +556,29 @@
 				AD770FD223B4BD89007DAD50 /* EditImageParamsViewController.h */,
 				AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */,
 				AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */,
-				AD770FD723B4CD67007DAD50 /* Custom Cells */,
+				AD770FD723B4CD67007DAD50 /* Cells */,
 			);
 			path = "Image Parameters";
 			sourceTree = "<group>";
 		};
-		AD770FD723B4CD67007DAD50 /* Custom Cells */ = {
+		AD770FD723B4CD67007DAD50 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				AD770FD823B4CE6B007DAD50 /* EditImageFilenameCollectionViewCell.h */,
 				AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */,
-				D8B04C621A92B1BB00695281 /* EditImagePrivacyTableViewCell.h */,
-				D8B04C631A92B1BB00695281 /* EditImagePrivacyTableViewCell.m */,
-				D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */,
-				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
 				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
 				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
+				AD770FDB23B6A631007DAD50 /* EditImageDatePickerTableViewCell.h */,
+				AD770FDC23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m */,
+				AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */,
+				D8B04C621A92B1BB00695281 /* EditImagePrivacyTableViewCell.h */,
+				D8B04C631A92B1BB00695281 /* EditImagePrivacyTableViewCell.m */,
 				D89045BD1A950FF700A306FE /* EditImageTagsTableViewCell.h */,
 				D89045BE1A950FF700A306FE /* EditImageTagsTableViewCell.m */,
+				D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */,
+				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
 			);
-			path = "Custom Cells";
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		AD77109E22F49A7200E64797 /* Album Discover */ = {
@@ -1282,6 +1290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */,
+				AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */,
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
@@ -1468,6 +1477,7 @@
 				AD3A6D522383446900767F10 /* EditImageThumbnailCollectionViewCell.m in Sources */,
 				D8083AA61A82905B00A95605 /* ImageUploadProgressView.m in Sources */,
 				AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */,
+				AD770FDD23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m in Sources */,
 				D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */,
 				D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */,
 				AD5066B821F7AD20008E1B5F /* ShareMetadataViewController.m in Sources */,
