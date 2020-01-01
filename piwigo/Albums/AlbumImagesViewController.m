@@ -1175,7 +1175,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             
         default:    // Several images
         {
-            // Present EditImageDetails view
+            // Present EditImageParams view
             UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParams" bundle:nil];
             EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
             editImageVC.images = [self.selectedImagesToEdit copy];
@@ -1185,21 +1185,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         }
     }
 }
-
-//-(void)deselectedImage:(NSNotification *)notification
-//{
-//    // Extract notification user info
-//    if (notification != nil) {
-//        NSDictionary *userInfo = notification.object;
-//
-//        // Get image Id and filename
-//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-//
-//        // Deselect image
-//        [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
-//        [self.imagesCollection reloadData];
-//    }
-//}
 
 
 #pragma mark - Upload images
