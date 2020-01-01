@@ -15,6 +15,16 @@
 
 @interface EditImageThumbnailCollectionViewCell() <UITextFieldDelegate>
 
+@property (nonatomic, weak) IBOutlet UIImageView *imageThumbnail;
+@property (nonatomic, weak) IBOutlet UIView *imageDetails;
+@property (nonatomic, weak) IBOutlet UILabel *imageDate;
+@property (nonatomic, weak) IBOutlet UILabel *imageSize;
+@property (nonatomic, weak) IBOutlet UILabel *imageFile;
+@property (nonatomic, weak) IBOutlet UILabel *imageTime;
+
+@property (nonatomic, weak) IBOutlet UIView *removeButtonView;
+@property (nonatomic, weak) IBOutlet UIButton *removeImageButton;
+
 @property (nonatomic, strong) UIAlertAction *renameFileNameAction;
 @property (nonatomic, strong) NSString *oldFileName;
 

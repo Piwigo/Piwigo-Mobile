@@ -328,8 +328,8 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
-                                            <outlet property="label" destination="tP3-bz-PWE" id="zp9-Tp-jgE"/>
-                                            <outlet property="list" destination="6MZ-9m-u1O" id="4vw-Ix-uc7"/>
+                                            <outlet property="label" destination="tP3-bz-PWE" id="yxs-Uf-pIr"/>
+                                            <outlet property="list" destination="6MZ-9m-u1O" id="Vpk-hR-0f8"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tags" rowHeight="73" id="daW-18-zRl" customClass="EditImageTagsTableViewCell">
@@ -363,8 +363,8 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
-                                            <outlet property="tagsLabel" destination="Isv-kh-FD3" id="RCL-Z9-tfl"/>
-                                            <outlet property="tagsList" destination="oKC-S2-125" id="a5l-Dz-zDk"/>
+                                            <outlet property="tagsLabel" destination="Isv-kh-FD3" id="ngr-qD-dBu"/>
+                                            <outlet property="tagsList" destination="oKC-S2-125" id="s8W-s9-1S4"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="description" rowHeight="528" id="Bpu-ru-Cr7" customClass="EditImageTextViewTableViewCell">
@@ -399,8 +399,8 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
-                                            <outlet property="label" destination="djl-s5-5tA" id="Rvw-dy-y67"/>
-                                            <outlet property="textView" destination="zMu-VQ-mu0" id="jnJ-5G-pkk"/>
+                                            <outlet property="label" destination="djl-s5-5tA" id="dgO-s1-gIn"/>
+                                            <outlet property="textView" destination="zMu-VQ-mu0" id="msd-gq-A6p"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

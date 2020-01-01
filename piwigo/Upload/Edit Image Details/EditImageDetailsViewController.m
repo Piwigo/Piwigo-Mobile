@@ -347,7 +347,7 @@ typedef enum {
             break;
             
         case EditImageDetailsOrderDescription:
-            height = 506.0;
+            height = 528.0;
             break;
             
         default:
