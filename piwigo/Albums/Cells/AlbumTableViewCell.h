@@ -28,7 +28,6 @@ FOUNDATION_EXPORT NSString * const kAlbumTableCell_ID;
 @property (weak, nonatomic) IBOutlet UILabel *albumName;
 @property (weak, nonatomic) IBOutlet UILabel *albumComment;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfImages;
-@property (weak, nonatomic) IBOutlet UIView *handleView;
 @property (weak, nonatomic) IBOutlet UIButton *handleButton;
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;

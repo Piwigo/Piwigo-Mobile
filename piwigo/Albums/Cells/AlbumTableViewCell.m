@@ -108,8 +108,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         // Handle
         self.handleButton.layer.cornerRadius = 7;
         self.handleButton.backgroundColor = [UIColor piwigoOrange];
-        self.handleView.backgroundColor = [UIColor piwigoCellBackgroundColor];
-        self.handleView.hidden = NO;
         self.handleButton.hidden = NO;
 
         // Right => Left swipe
