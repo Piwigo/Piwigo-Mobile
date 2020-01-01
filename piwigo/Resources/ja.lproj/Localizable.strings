@@ -272,15 +272,15 @@
 "editImageDetails_author" = "作成者:";
 "editImageDetails_tags" = "タグ:";
 "editImageDetails_privacyLevel" = "この写真を見ることができるのは誰ですか？";
-"editImageDetails_description" = "Description";
+"editImageDetails_description" = "説明";
 "editImageDetails_comments" = "コメント";
-"editImageDetails_dateCreation" = "Creation Date";
-"editImageDetails_dateUnset" = "Unset";
-"editImageDetails_dateToday" = "Today";
-"editImageDetails_dateMonthInc" = "+1 Month";
-"editImageDetails_dateMonthDec" = "-1 Month";
-"editImageDetails_dateYearInc" = "+1 Year";
-"editImageDetails_dateYearDec" = "-1 Year";
+"editImageDetails_dateCreation" = "作成日";
+"editImageDetails_dateUnset" = "解除";
+"editImageDetails_dateToday" = "今日";
+"editImageDetails_dateMonthInc" = "+1 ヶ月";
+"editImageDetails_dateMonthDec" = "-1 ヶ月";
+"editImageDetails_dateYearInc" = "+1年";
+"editImageDetails_dateYearDec" = "-1年";
 "editImageDetailsHUD_updating" = "写真情報を更新しています...";
 
 // Image details — Errors

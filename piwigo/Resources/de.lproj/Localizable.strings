@@ -267,20 +267,20 @@
 
 // Image details
 "imageDetailsView_title" = "Eigenschaften";
-"editImageDetails_title" = "Titel:";
-"editImageDetails_titlePlaceholder" = "Titel";
-"editImageDetails_author" = "Autor:";
-"editImageDetails_tags" = "Schlagwörter:";
+"editImageDetails_title" = "Titel";
+"editImageDetails_titlePlaceholder" = "Bildtitel";
+"editImageDetails_author" = "Autor";
+"editImageDetails_tags" = "Schlagwörter";
 "editImageDetails_privacyLevel" = "Wer darf dieses Foto sehen?";
-"editImageDetails_description" = "Description";
+"editImageDetails_description" = "Beschreibung";
 "editImageDetails_comments" = "Kommentare";
-"editImageDetails_dateCreation" = "Creation Date";
-"editImageDetails_dateUnset" = "Unset";
-"editImageDetails_dateToday" = "Today";
-"editImageDetails_dateMonthInc" = "+1 Month";
-"editImageDetails_dateMonthDec" = "-1 Month";
-"editImageDetails_dateYearInc" = "+1 Year";
-"editImageDetails_dateYearDec" = "-1 Year";
+"editImageDetails_dateCreation" = "Aufnahmedatum";
+"editImageDetails_dateUnset" = "Entfernen";
+"editImageDetails_dateToday" = "Heute";
+"editImageDetails_dateMonthInc" = "+1 Monat";
+"editImageDetails_dateMonthDec" = "-1 Monat";
+"editImageDetails_dateYearInc" = "+1 Jahr";
+"editImageDetails_dateYearDec" = "-1 Jahr";
 "editImageDetailsHUD_updating" = "Fotoinformationen werden aktualisiert…";
 
 // Image details — Errors

@@ -272,15 +272,15 @@
 "editImageDetails_author" = "Forfatter:";
 "editImageDetails_tags" = "Etiketter:";
 "editImageDetails_privacyLevel" = "Hvem kan se dette billede?";
-"editImageDetails_description" = "Description";
+"editImageDetails_description" = "Beskrivelse";
 "editImageDetails_comments" = "Kommentarer";
-"editImageDetails_dateCreation" = "Creation Date";
-"editImageDetails_dateUnset" = "Unset";
-"editImageDetails_dateToday" = "Today";
-"editImageDetails_dateMonthInc" = "+1 Month";
-"editImageDetails_dateMonthDec" = "-1 Month";
-"editImageDetails_dateYearInc" = "+1 Year";
-"editImageDetails_dateYearDec" = "-1 Year";
+"editImageDetails_dateCreation" = "Oprettelsesdato";
+"editImageDetails_dateUnset" = "Ikke opsat";
+"editImageDetails_dateToday" = "I dag";
+"editImageDetails_dateMonthInc" = "+1 Måned";
+"editImageDetails_dateMonthDec" = "-1 Måned";
+"editImageDetails_dateYearInc" = "+1 År";
+"editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updating" = "Opdaterer billedinfo...";
 
 // Image details — Errors

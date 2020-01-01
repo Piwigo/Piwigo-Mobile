@@ -1119,18 +1119,18 @@
 				D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */,
 				D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */,
 				D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */,
-				D8F3251B1A884E34007CBDAC /* Custom Cells */,
+				D8F3251B1A884E34007CBDAC /* Cells */,
 			);
 			path = "Edit Image Details";
 			sourceTree = "<group>";
 		};
-		D8F3251B1A884E34007CBDAC /* Custom Cells */ = {
+		D8F3251B1A884E34007CBDAC /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				AD3A6D502383445200767F10 /* EditImageThumbnailCollectionViewCell.h */,
 				AD3A6D512383446900767F10 /* EditImageThumbnailCollectionViewCell.m */,
 			);
-			path = "Custom Cells";
+			path = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

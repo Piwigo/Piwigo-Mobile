@@ -267,20 +267,20 @@
 
 // Image details
 "imageDetailsView_title" = "Propriétés";
-"editImageDetails_title" = "Titre :";
-"editImageDetails_titlePlaceholder" = "Mon Titre";
-"editImageDetails_author" = "Auteur :";
-"editImageDetails_tags" = "Tags :";
+"editImageDetails_title" = "Titre";
+"editImageDetails_titlePlaceholder" = "Titre de l'image";
+"editImageDetails_author" = "Auteur";
+"editImageDetails_tags" = "Tags";
 "editImageDetails_privacyLevel" = "Qui peut voir cette photo ?";
 "editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Commentaires";
-"editImageDetails_dateCreation" = "Creation Date";
-"editImageDetails_dateUnset" = "Unset";
-"editImageDetails_dateToday" = "Today";
-"editImageDetails_dateMonthInc" = "+1 Month";
-"editImageDetails_dateMonthDec" = "-1 Month";
-"editImageDetails_dateYearInc" = "+1 Year";
-"editImageDetails_dateYearDec" = "-1 Year";
+"editImageDetails_dateCreation" = "Date de création";
+"editImageDetails_dateUnset" = "Supprimer";
+"editImageDetails_dateToday" = "Aujourd'hui";
+"editImageDetails_dateMonthInc" = "+1 Mois";
+"editImageDetails_dateMonthDec" = "-1 Mois";
+"editImageDetails_dateYearInc" = "+1 An";
+"editImageDetails_dateYearDec" = "-1 An";
 "editImageDetailsHUD_updating" = "Mise à jour des propriétés…";
 
 // Image details — Errors

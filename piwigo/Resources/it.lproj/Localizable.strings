@@ -272,15 +272,15 @@
 "editImageDetails_author" = "Autore:";
 "editImageDetails_tags" = "Tags:";
 "editImageDetails_privacyLevel" = "Chi può vedere questa foto?";
-"editImageDetails_description" = "Description";
+"editImageDetails_description" = "Descrizione";
 "editImageDetails_comments" = "Commenti";
-"editImageDetails_dateCreation" = "Creation Date";
-"editImageDetails_dateUnset" = "Unset";
-"editImageDetails_dateToday" = "Today";
-"editImageDetails_dateMonthInc" = "+1 Month";
-"editImageDetails_dateMonthDec" = "-1 Month";
-"editImageDetails_dateYearInc" = "+1 Year";
-"editImageDetails_dateYearDec" = "-1 Year";
+"editImageDetails_dateCreation" = "Data di creazione";
+"editImageDetails_dateUnset" = "Svuotare";
+"editImageDetails_dateToday" = "Oggi";
+"editImageDetails_dateMonthInc" = "+1 Mese";
+"editImageDetails_dateMonthDec" = "-1 Mese";
+"editImageDetails_dateYearInc" = "+1 Anno";
+"editImageDetails_dateYearDec" = "-1 Anno";
 "editImageDetailsHUD_updating" = "Aggiornare le informazioni dell'immagine…";
 
 // Image details — Errors
