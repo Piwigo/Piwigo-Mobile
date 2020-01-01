@@ -1,5 +1,5 @@
 //
-//  EditImageThumbnailCollectionViewCell.m
+//  ImageUploadThumbCollectionViewCell.m
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 20/08/2019.
@@ -7,13 +7,13 @@
 //
 
 #import "CategoriesData.h"
-#import "EditImageThumbnailCollectionViewCell.h"
+#import "ImageUploadThumbCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
 
-@interface EditImageThumbnailCollectionViewCell() <UITextFieldDelegate>
+@interface ImageUploadThumbCollectionViewCell() <UITextFieldDelegate>
 
 @property (nonatomic, weak) IBOutlet UIImageView *imageThumbnail;
 @property (nonatomic, weak) IBOutlet UIView *imageDetails;
@@ -30,7 +30,7 @@
 
 @end
 
-@implementation EditImageThumbnailCollectionViewCell
+@implementation ImageUploadThumbCollectionViewCell
 
 -(void)awakeFromNib {
     
@@ -93,7 +93,7 @@
     
     // Retrieve image from Photo Libray
     NSInteger retinaScale = [UIScreen mainScreen].scale;
-    CGSize retinaSquare = CGSizeMake(144*retinaScale, 144*retinaScale);       // See EditImageDetails.storyboard
+    CGSize retinaSquare = CGSizeMake(144*retinaScale, 144*retinaScale);       // See ImageUploadParams.storyboard
     
     PHImageRequestOptions *cropToSquare = [[PHImageRequestOptions alloc] init];
     cropToSquare.resizeMode = PHImageRequestOptionsResizeModeExact;

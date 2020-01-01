@@ -10,13 +10,13 @@
 #import "ImageUploadViewController.h"
 #import "ImageUploadTableViewCell.h"
 #import "ImageUpload.h"
-#import "EditImageDetailsViewController.h"
 #import "ImageUploadManager.h"
+#import "ImageUploadParamsViewController.h"
 #import "ImageUploadProgressView.h"
 #import "Model.h"
 #import "MGSwipeTableCell.h"
 
-@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, MGSwipeTableCellDelegate, ImageUploadProgressDelegate, EditImageDetailsDelegate>
+@interface ImageUploadViewController () <UITableViewDelegate, UITableViewDataSource, MGSwipeTableCellDelegate, ImageUploadProgressDelegate, UploadParamsDelegate>
 
 @property (nonatomic, strong) UITableView *uploadImagesTableView;
 @property (nonatomic, strong) NSMutableArray *imagesToEdit;
@@ -307,8 +307,8 @@
 	
 	if(indexPath.section == 0)
 	{
-		UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
-		EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
+		UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"ImageUploadParams" bundle:nil];
+		ImageUploadParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"ImageUploadParams"];
 		editImageVC.images = @[[self.imagesToEdit objectAtIndex:indexPath.row]];
 		editImageVC.delegate = self;
 		[self.navigationController pushViewController:editImageVC animated:YES];
@@ -395,7 +395,7 @@
 }
 
 
-#pragma mark - EditImageDetailsDelegate Methods
+#pragma mark - UploadParamsDelegate Methods
 
 -(void)didFinishEditingDetails:(ImageUpload *)details
 {

@@ -1,5 +1,5 @@
 //
-//  EditImageDetailsViewController.m
+//  ImageUploadParamsViewController.m
 //  piwigo
 //
 //  Created by Spencer Baker on 2/8/15.
@@ -7,11 +7,11 @@
 //
 
 #import "AppDelegate.h"
-#import "EditImageDetailsViewController.h"
+#import "ImageUploadParamsViewController.h"
 #import "EditImagePrivacyTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
-#import "EditImageThumbnailCollectionViewCell.h"
+#import "ImageUploadThumbCollectionViewCell.h"
 #import "EditImageTagsTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageUpload.h"
@@ -34,7 +34,7 @@ typedef enum {
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface EditImageDetailsViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageThumbnailDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface ImageUploadParamsViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageThumbnailDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, strong) ImageUpload *commonParameters;
 @property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
@@ -48,7 +48,7 @@ typedef enum {
 
 @end
 
-@implementation EditImageDetailsViewController
+@implementation ImageUploadParamsViewController
 
 -(void)awakeFromNib
 {
@@ -56,9 +56,6 @@ typedef enum {
 	
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Properties");
 	
-    // Register image data updates
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deselectedImage:) name:kPiwigoNotificationDeselectImageToUpload object:nil];
-
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 }
@@ -319,9 +316,9 @@ typedef enum {
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    EditImageThumbnailCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"image" forIndexPath:indexPath];
+    ImageUploadThumbCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"image" forIndexPath:indexPath];
     if (!cell) {
-        cell = [EditImageThumbnailCollectionViewCell new];
+        cell = [ImageUploadThumbCollectionViewCell new];
     }
     [cell setupWithImage:self.images[indexPath.row] andRemoveOption:(self.images.count > 1)];
     cell.delegate = self;

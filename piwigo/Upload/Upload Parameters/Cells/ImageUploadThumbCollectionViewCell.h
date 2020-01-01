@@ -1,5 +1,5 @@
 //
-//  EditImageThumbnailCollectionViewCell.h
+//  ImageUploadThumbCollectionViewCell.h
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 20/08/2019.
@@ -17,7 +17,7 @@
 
 @end
 
-@interface EditImageThumbnailCollectionViewCell : UICollectionViewCell
+@interface ImageUploadThumbCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, assign) NSInteger imageId;
 @property (nonatomic, weak) id<EditImageThumbnailDelegate> delegate;

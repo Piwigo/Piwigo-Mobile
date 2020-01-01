@@ -22,7 +22,7 @@
 		AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD3203662184738F00BAD372 /* PrivacyPolicy.strings */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD39165922A06FDF00414E4B /* SearchImagesViewController.m */; };
-		AD3A6D522383446900767F10 /* EditImageThumbnailCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3A6D512383446900767F10 /* EditImageThumbnailCollectionViewCell.m */; };
+		AD3A6D522383446900767F10 /* ImageUploadThumbCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3A6D512383446900767F10 /* ImageUploadThumbCollectionViewCell.m */; };
 		AD41BEC7223D4C1400A5DEE3 /* SplitLocalImages.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6ABBDD2223192D00346E5A /* SplitLocalImages.m */; };
 		AD41BECB223E9BC700A5DEE3 /* LocationsData.m in Sources */ = {isa = PBXBuildFile; fileRef = AD41BECA223E9BC700A5DEE3 /* LocationsData.m */; };
 		AD4A8E8A21FDC3EA00749D83 /* LabelImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD4A8E8921FDC3EA00749D83 /* LabelImageTableViewCell.m */; };
@@ -125,8 +125,8 @@
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
 		D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */; };
 		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
-		D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */; };
-		D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */; };
+		D8F3250C1A875297007CBDAC /* ImageUploadParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* ImageUploadParamsViewController.m */; };
+		D8F325101A875322007CBDAC /* ImageUploadParams.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8F3250F1A875322007CBDAC /* ImageUploadParams.storyboard */; };
 		D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */; };
 		D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */; };
 		ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */; };
@@ -190,8 +190,8 @@
 		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AD39165922A06FDF00414E4B /* SearchImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchImagesViewController.m; sourceTree = "<group>"; };
 		AD39165B22A06FF200414E4B /* SearchImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchImagesViewController.h; sourceTree = "<group>"; };
-		AD3A6D502383445200767F10 /* EditImageThumbnailCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageThumbnailCollectionViewCell.h; sourceTree = "<group>"; };
-		AD3A6D512383446900767F10 /* EditImageThumbnailCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbnailCollectionViewCell.m; sourceTree = "<group>"; };
+		AD3A6D502383445200767F10 /* ImageUploadThumbCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadThumbCollectionViewCell.h; sourceTree = "<group>"; };
+		AD3A6D512383446900767F10 /* ImageUploadThumbCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadThumbCollectionViewCell.m; sourceTree = "<group>"; };
 		AD3FDDE81F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD3FDDE91F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/About.strings; sourceTree = "<group>"; };
 		AD3FDDEA1F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -434,9 +434,9 @@
 		D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalAlbumsViewController.m; sourceTree = "<group>"; };
 		D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
 		D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
-		D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageDetailsViewController.h; sourceTree = "<group>"; };
-		D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageDetailsViewController.m; sourceTree = "<group>"; };
-		D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageDetails.storyboard; sourceTree = "<group>"; };
+		D8F3250A1A875297007CBDAC /* ImageUploadParamsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadParamsViewController.h; sourceTree = "<group>"; };
+		D8F3250B1A875297007CBDAC /* ImageUploadParamsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadParamsViewController.m; sourceTree = "<group>"; };
+		D8F3250F1A875322007CBDAC /* ImageUploadParams.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ImageUploadParams.storyboard; sourceTree = "<group>"; };
 		D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextFieldTableViewCell.h; sourceTree = "<group>"; };
 		D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextFieldTableViewCell.m; sourceTree = "<group>"; };
 		D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextViewTableViewCell.h; sourceTree = "<group>"; };
@@ -1081,7 +1081,7 @@
 				AD7B4C2520E36328003E403A /* Pick Photos Album */,
 				D8A5014E1A7B432600C04C17 /* Pick Local Images */,
 				D8083AA71A82905F00A95605 /* Upload Management */,
-				D8F325111A875939007CBDAC /* Edit Image Details */,
+				D8F325111A875939007CBDAC /* Upload Parameters */,
 				D8083AA31A81B34C00A95605 /* Image Uploading */,
 			);
 			path = Upload;
@@ -1113,22 +1113,22 @@
 			path = "Data Cache";
 			sourceTree = "<group>";
 		};
-		D8F325111A875939007CBDAC /* Edit Image Details */ = {
+		D8F325111A875939007CBDAC /* Upload Parameters */ = {
 			isa = PBXGroup;
 			children = (
-				D8F3250A1A875297007CBDAC /* EditImageDetailsViewController.h */,
-				D8F3250B1A875297007CBDAC /* EditImageDetailsViewController.m */,
-				D8F3250F1A875322007CBDAC /* EditImageDetails.storyboard */,
+				D8F3250A1A875297007CBDAC /* ImageUploadParamsViewController.h */,
+				D8F3250B1A875297007CBDAC /* ImageUploadParamsViewController.m */,
+				D8F3250F1A875322007CBDAC /* ImageUploadParams.storyboard */,
 				D8F3251B1A884E34007CBDAC /* Cells */,
 			);
-			path = "Edit Image Details";
+			path = "Upload Parameters";
 			sourceTree = "<group>";
 		};
 		D8F3251B1A884E34007CBDAC /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				AD3A6D502383445200767F10 /* EditImageThumbnailCollectionViewCell.h */,
-				AD3A6D512383446900767F10 /* EditImageThumbnailCollectionViewCell.m */,
+				AD3A6D502383445200767F10 /* ImageUploadThumbCollectionViewCell.h */,
+				AD3A6D512383446900767F10 /* ImageUploadThumbCollectionViewCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1298,7 +1298,7 @@
 				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
 				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
 				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
-				D8F325101A875322007CBDAC /* EditImageDetails.storyboard in Resources */,
+				D8F325101A875322007CBDAC /* ImageUploadParams.storyboard in Resources */,
 				D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
@@ -1459,7 +1459,7 @@
 				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,
 				AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */,
 				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
-				D8F3250C1A875297007CBDAC /* EditImageDetailsViewController.m in Sources */,
+				D8F3250C1A875297007CBDAC /* ImageUploadParamsViewController.m in Sources */,
 				AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */,
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,
 				ADB22CAA2247AAA700C9B66C /* CameraRollUploadViewController.m in Sources */,
@@ -1473,7 +1473,7 @@
 				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */,
-				AD3A6D522383446900767F10 /* EditImageThumbnailCollectionViewCell.m in Sources */,
+				AD3A6D522383446900767F10 /* ImageUploadThumbCollectionViewCell.m in Sources */,
 				D8083AA61A82905B00A95605 /* ImageUploadProgressView.m in Sources */,
 				AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */,
 				AD770FDD23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m in Sources */,

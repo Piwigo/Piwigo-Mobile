@@ -13,10 +13,10 @@
         </array>
     </customFonts>
     <scenes>
-        <!--Edit Image Details View Controller-->
+        <!--Image Upload Params View Controller-->
         <scene sceneID="bnU-01-erT">
             <objects>
-                <viewController storyboardIdentifier="EditImageDetails" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3wd-nH-xaU" customClass="EditImageDetailsViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImageUploadParams" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3wd-nH-xaU" customClass="ImageUploadParamsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="v9H-sj-q9x"/>
                         <viewControllerLayoutGuide type="bottom" id="uVf-G5-mw5"/>
@@ -45,7 +45,7 @@
                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </collectionViewFlowLayout>
                                     <cells>
-                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="image" id="tMG-fN-HXd" userLabel="image" customClass="EditImageThumbnailCollectionViewCell">
+                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="image" id="tMG-fN-HXd" userLabel="image" customClass="ImageUploadThumbCollectionViewCell">
                                             <rect key="frame" x="0.0" y="10" width="360" height="144"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                             <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" id="ePW-zp-U4U">
@@ -318,13 +318,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X9C-V4-VM4">
-                                                    <rect key="frame" x="20" y="11" width="374" height="23.5"/>
+                                                    <rect key="frame" x="20" y="11" width="374" height="20"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="vNU-ej-XSx">
-                                                    <rect key="frame" x="20" y="42.5" width="374" height="474.5"/>
+                                                    <rect key="frame" x="20" y="39" width="374" height="478"/>
                                                     <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>

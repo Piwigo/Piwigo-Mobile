@@ -1,5 +1,5 @@
 //
-//  EditImageDetailsViewController.h
+//  ImageUploadParamsViewController.h
 //  piwigo
 //
 //  Created by Spencer Baker on 2/8/15.
@@ -10,15 +10,15 @@
 
 @class ImageUpload;
 
-@protocol EditImageDetailsDelegate <NSObject>
+@protocol UploadParamsDelegate <NSObject>
 
 -(void)didFinishEditingDetails:(ImageUpload*)details;
 
 @end
 
-@interface EditImageDetailsViewController : UIViewController
+@interface ImageUploadParamsViewController : UIViewController
 
-@property (nonatomic, weak) id<EditImageDetailsDelegate> delegate;
+@property (nonatomic, weak) id<UploadParamsDelegate> delegate;
 @property (nonatomic, strong) NSArray<ImageUpload *> *images;
 
 @end
