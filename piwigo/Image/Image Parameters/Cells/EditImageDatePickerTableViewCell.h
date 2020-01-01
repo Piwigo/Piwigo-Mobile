@@ -12,11 +12,11 @@
 FOUNDATION_EXPORT NSString * const kDatePickerTableCell_ID;
 
 FOUNDATION_EXPORT NSTimeInterval const kPiwigoPicker1Day;
-FOUNDATION_EXPORT NSUInteger const kPiwigoPicker12Hours;
-FOUNDATION_EXPORT NSUInteger const kPiwigoPicker24Hours;
-FOUNDATION_EXPORT NSUInteger const kPiwigoPickerMinutesPerHour;
-FOUNDATION_EXPORT NSUInteger const kPiwigoPickerSecondsPerMinute;
-FOUNDATION_EXPORT NSUInteger const kPiwigoPickerNberOfLoops;
+FOUNDATION_EXPORT NSInteger const kPiwigoPicker12Hours;
+FOUNDATION_EXPORT NSInteger const kPiwigoPicker24Hours;
+FOUNDATION_EXPORT NSInteger const kPiwigoPickerMinutesPerHour;
+FOUNDATION_EXPORT NSInteger const kPiwigoPickerSecondsPerMinute;
+FOUNDATION_EXPORT NSInteger const kPiwigoPickerNberOfLoops;
 
 @protocol EditImageDatePickerDelegate <NSObject>
 

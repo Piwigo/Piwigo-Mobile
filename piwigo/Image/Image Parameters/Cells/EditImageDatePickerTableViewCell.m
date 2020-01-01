@@ -12,11 +12,11 @@ NSString * const kDatePickerTableCell_ID = @"kDatePickerTableCell";
 NSString * const kPiwigoPickerMinDate = @"1922-01-01 00:00:00";     // UTC
 NSString * const kPiwigoPickerMaxDate = @"2100-01-01 00:00:00";     // UTC
 NSTimeInterval const kPiwigoPicker1Day = 24 * 60 * 60;
-NSUInteger const kPiwigoPicker12Hours = 12;
-NSUInteger const kPiwigoPicker24Hours = 24;
-NSUInteger const kPiwigoPickerMinutesPerHour = 60;
-NSUInteger const kPiwigoPickerSecondsPerMinute = 60;
-NSUInteger const kPiwigoPickerNberOfLoops = 2 * 5000;       // i.e. ±5000 loops of picker
+NSInteger const kPiwigoPicker12Hours = 12;
+NSInteger const kPiwigoPicker24Hours = 24;
+NSInteger const kPiwigoPickerMinutesPerHour = 60;
+NSInteger const kPiwigoPickerSecondsPerMinute = 60;
+NSInteger const kPiwigoPickerNberOfLoops = 2 * 5000;       // i.e. ±5000 loops of picker
 
 typedef enum {
     ComponentOrderDay,
@@ -95,208 +95,6 @@ typedef enum {
 {
     [super prepareForReuse];
     
-}
-
-
-#pragma mark - UIPickerViewDataSource Methods
-
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return ComponentCount - self.is24hFormat;
-}
-
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
-    NSInteger nberOfRows = 0;
-    switch (component) {
-        case ComponentOrderDay:
-            nberOfRows = self.pickerMaxNberDays;
-            break;
-            
-        case ComponentOrderSepDH:
-            nberOfRows = 1;
-            break;
-            
-        case ComponentOrderHour:
-            nberOfRows = kPiwigoPickerNberOfLoops * (self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours);
-            break;
-            
-        case ComponentOrderSepHM:
-            nberOfRows = 1;
-            break;
-            
-        case ComponentOrderMinute:
-            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour;
-            break;
-            
-        case ComponentOrderSepMS:
-            nberOfRows = 1;
-            break;
-            
-        case ComponentOrderSecond:
-            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute;
-            break;
-            
-        case ComponentOrderAMPM:
-            nberOfRows = 2;
-            break;
-            
-        default:
-            break;
-    }
-    return nberOfRows;
-}
-
-
-#pragma mark - UIPickerViewDelegate Methods
-
--(CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
-{
-    // Same height for all components
-    return 28.0;
-}
-
--(CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
-{
-    // Widths contants
-    const CGFloat day = 106.0f;
-    const CGFloat sepDay = 10.0f;
-    const CGFloat time = 26.0f;
-    const CGFloat sepTime = 8.0f;
-    const CGFloat ampm = 30.0f;
-    const CGFloat separatorWidth = 5.0f;
-
-    // Calculate left and right pane widths (for debugging)
-//    const CGFloat leftMargin = pickerView.superview.layoutMargins.left;
-//    const CGFloat rightMargin = pickerView.superview.layoutMargins.right;
-//    CGFloat leftPaneWidth = leftMargin + separatorWidth + day + separatorWidth + sepDay/2;
-//    CGFloat rightPaneWidth = sepDay/2 + 5 * separatorWidth + 3*time + 2*sepTime + !self.is24hFormat * (separatorWidth + ampm) + separatorWidth + rightMargin;
-//    CGFloat remainingSpace = pickerView.bounds.size.width - leftPaneWidth - rightPaneWidth;
-//    NSLog(@"=> left:%g, right:%g, width:%g (remaining:%g)", leftPaneWidth, rightPaneWidth, pickerView.bounds.size.width, remainingSpace);
-    // iPhone SE, iOS 11 => left:136, right:179, width:318 (remaining:3)
-    // iPhone Xs, iOS 12 => left:131, right:174, width:373 (remaining:68)
-
-    NSInteger width = 0;
-    switch (component) {
-        case ComponentOrderDay:
-            width = day;
-            break;
-            
-        case ComponentOrderSepDH:
-            width = sepDay + self.is24hFormat * separatorWidth;
-            break;
-            
-        case ComponentOrderHour:
-        case ComponentOrderMinute:
-        case ComponentOrderSecond:
-            width = time;
-            break;
-            
-        case ComponentOrderSepHM:
-        case ComponentOrderSepMS:
-            width = sepTime;
-            break;
-            
-        case ComponentOrderAMPM:
-            width = ampm;
-            break;
-            
-        default:
-            break;
-    }
-    return width;
-}
-
--(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
-{
-    UILabel *label = (UILabel *)view;
-    if (label == nil) {
-        label = [UILabel new];
-        label.font = [UIFont piwigoFontNormal];
-        label.textColor = [UIColor piwigoLeftLabelColor];
-    }
-    switch (component) {
-        case ComponentOrderDay:
-        {
-            NSDate *dateOfDay = [NSDate dateWithTimeInterval:row * kPiwigoPicker1Day sinceDate:self.pickerRefDate];
-            label.text = [self.formatter stringFromDate:dateOfDay];
-            label.textAlignment = NSTextAlignmentRight;
-            break;
-        }
-            
-        case ComponentOrderSepDH:
-            label.text = @"-";
-            label.textAlignment = NSTextAlignmentCenter;
-            break;
-            
-        case ComponentOrderHour:
-            label.text = [NSString stringWithFormat:@"%02lu", row % (self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours)];
-            label.textAlignment = NSTextAlignmentCenter;
-            break;
-            
-        case ComponentOrderSepHM:
-            label.text = @":";
-            label.textAlignment = NSTextAlignmentCenter;
-            break;
-            
-        case ComponentOrderMinute:
-            label.text = [NSString stringWithFormat:@"%02lu", row % kPiwigoPickerMinutesPerHour];
-            label.textAlignment = NSTextAlignmentCenter;
-            break;
-            
-        case ComponentOrderSepMS:
-            label.text = @":";
-            label.textAlignment = NSTextAlignmentCenter;
-            break;
-            
-        case ComponentOrderSecond:
-            label.text = [NSString stringWithFormat:@"%02lu", row % kPiwigoPickerSecondsPerMinute];
-            label.textAlignment = NSTextAlignmentCenter;
-            break;
-            
-        case ComponentOrderAMPM:
-            label.text = [self.ampmSymbols objectAtIndex:row];
-            label.textAlignment = NSTextAlignmentLeft;
-            break;
-            
-        default:
-            break;
-    }
-    return label;
-}
-
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
-    NSLog(@"=> Selected row:%ld in component:%ld", (long)row, (long)component);
-
-    // Jump back to the row with the current value that is closest to the middle
-    NSInteger newRow = row;
-    switch (component) {
-        case ComponentOrderHour:
-        {
-            NSInteger hoursPerDay = self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours;
-            newRow = kPiwigoPickerNberOfLoops * hoursPerDay / 2 + row % hoursPerDay;
-            break;
-        }
-
-        case ComponentOrderMinute:
-            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour / 2 + row % kPiwigoPickerMinutesPerHour;
-            break;
-            
-        case ComponentOrderSecond:
-            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute / 2 + row % kPiwigoPickerSecondsPerMinute;
-            break;
-            
-        default:
-            break;
-    }
-    [pickerView selectRow:newRow inComponent:component animated:NO];
-
-    // Change date in parent view
-    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
-    {
-        [self.delegate didSelectDateWithPicker:[self getDateFromPicker]];
-    }
 }
 
 
@@ -473,6 +271,207 @@ typedef enum {
     }
 }
 
+
+#pragma mark - UIPickerViewDataSource Methods
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return ComponentCount - self.is24hFormat;
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    NSInteger nberOfRows = 0;
+    switch (component) {
+        case ComponentOrderDay:
+            nberOfRows = self.pickerMaxNberDays;
+            break;
+            
+        case ComponentOrderSepDH:
+            nberOfRows = 1;
+            break;
+            
+        case ComponentOrderHour:
+            nberOfRows = kPiwigoPickerNberOfLoops * (self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours);
+            break;
+            
+        case ComponentOrderSepHM:
+            nberOfRows = 1;
+            break;
+            
+        case ComponentOrderMinute:
+            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour;
+            break;
+            
+        case ComponentOrderSepMS:
+            nberOfRows = 1;
+            break;
+            
+        case ComponentOrderSecond:
+            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute;
+            break;
+            
+        case ComponentOrderAMPM:
+            nberOfRows = 2;
+            break;
+            
+        default:
+            break;
+    }
+    return nberOfRows;
+}
+
+
+#pragma mark - UIPickerViewDelegate Methods
+
+-(CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
+{
+    // Same height for all components
+    return 28.0;
+}
+
+-(CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
+{
+    // Widths contants
+    const CGFloat day = 106.0f;
+    const CGFloat sepDay = 10.0f;
+    const CGFloat time = 26.0f;
+    const CGFloat sepTime = 8.0f;
+    const CGFloat ampm = 30.0f;
+    const CGFloat separatorWidth = 5.0f;
+
+    // Calculate left and right pane widths (for debugging)
+//    const CGFloat leftMargin = pickerView.superview.layoutMargins.left;
+//    const CGFloat rightMargin = pickerView.superview.layoutMargins.right;
+//    CGFloat leftPaneWidth = leftMargin + separatorWidth + day + separatorWidth + sepDay/2;
+//    CGFloat rightPaneWidth = sepDay/2 + 5 * separatorWidth + 3*time + 2*sepTime + !self.is24hFormat * (separatorWidth + ampm) + separatorWidth + rightMargin;
+//    CGFloat remainingSpace = pickerView.bounds.size.width - leftPaneWidth - rightPaneWidth;
+//    NSLog(@"=> left:%g, right:%g, width:%g (remaining:%g)", leftPaneWidth, rightPaneWidth, pickerView.bounds.size.width, remainingSpace);
+    // iPhone SE, iOS 11 => left:136, right:179, width:318 (remaining:3)
+    // iPhone Xs, iOS 12 => left:131, right:174, width:373 (remaining:68)
+
+    NSInteger width = 0;
+    switch (component) {
+        case ComponentOrderDay:
+            width = day;
+            break;
+            
+        case ComponentOrderSepDH:
+            width = sepDay + self.is24hFormat * separatorWidth;
+            break;
+            
+        case ComponentOrderHour:
+        case ComponentOrderMinute:
+        case ComponentOrderSecond:
+            width = time;
+            break;
+            
+        case ComponentOrderSepHM:
+        case ComponentOrderSepMS:
+            width = sepTime;
+            break;
+            
+        case ComponentOrderAMPM:
+            width = ampm;
+            break;
+            
+        default:
+            break;
+    }
+    return width;
+}
+
+-(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    UILabel *label = (UILabel *)view;
+    if (label == nil) {
+        label = [UILabel new];
+        label.font = [UIFont piwigoFontNormal];
+        label.textColor = [UIColor piwigoLeftLabelColor];
+    }
+    switch (component) {
+        case ComponentOrderDay:
+        {
+            NSDate *dateOfDay = [NSDate dateWithTimeInterval:row * kPiwigoPicker1Day sinceDate:self.pickerRefDate];
+            label.text = [self.formatter stringFromDate:dateOfDay];
+            label.textAlignment = NSTextAlignmentRight;
+            break;
+        }
+            
+        case ComponentOrderSepDH:
+            label.text = @"-";
+            label.textAlignment = NSTextAlignmentCenter;
+            break;
+            
+        case ComponentOrderHour:
+            label.text = [NSString stringWithFormat:@"%02ld", row % (self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours)];
+            label.textAlignment = NSTextAlignmentCenter;
+            break;
+            
+        case ComponentOrderSepHM:
+            label.text = @":";
+            label.textAlignment = NSTextAlignmentCenter;
+            break;
+            
+        case ComponentOrderMinute:
+            label.text = [NSString stringWithFormat:@"%02ld", row % kPiwigoPickerMinutesPerHour];
+            label.textAlignment = NSTextAlignmentCenter;
+            break;
+            
+        case ComponentOrderSepMS:
+            label.text = @":";
+            label.textAlignment = NSTextAlignmentCenter;
+            break;
+            
+        case ComponentOrderSecond:
+            label.text = [NSString stringWithFormat:@"%02ld", row % kPiwigoPickerSecondsPerMinute];
+            label.textAlignment = NSTextAlignmentCenter;
+            break;
+            
+        case ComponentOrderAMPM:
+            label.text = [self.ampmSymbols objectAtIndex:row];
+            label.textAlignment = NSTextAlignmentLeft;
+            break;
+            
+        default:
+            break;
+    }
+    return label;
+}
+
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    NSLog(@"=> Selected row:%ld in component:%ld", (long)row, (long)component);
+
+    // Jump back to the row with the current value that is closest to the middle
+    NSInteger newRow = row;
+    switch (component) {
+        case ComponentOrderHour:
+        {
+            NSInteger hoursPerDay = self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours;
+            newRow = kPiwigoPickerNberOfLoops * hoursPerDay / 2 + row % hoursPerDay;
+            break;
+        }
+
+        case ComponentOrderMinute:
+            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour / 2 + row % kPiwigoPickerMinutesPerHour;
+            break;
+            
+        case ComponentOrderSecond:
+            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute / 2 + row % kPiwigoPickerSecondsPerMinute;
+            break;
+            
+        default:
+            break;
+    }
+    [pickerView selectRow:newRow inComponent:component animated:NO];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:[self getDateFromPicker]];
+    }
+}
 
 
 @end
