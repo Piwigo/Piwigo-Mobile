@@ -230,7 +230,7 @@ typedef enum {
             break;
             
         case ComponentOrderHour:
-            label.text = [NSString stringWithFormat:@"%02ld", row % (self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours)];
+            label.text = [NSString stringWithFormat:@"%02u", row % (self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours)];
             label.textAlignment = NSTextAlignmentCenter;
             break;
             
@@ -240,7 +240,7 @@ typedef enum {
             break;
             
         case ComponentOrderMinute:
-            label.text = [NSString stringWithFormat:@"%02ld", row % kPiwigoPickerMinutesPerHour];
+            label.text = [NSString stringWithFormat:@"%02u", row % kPiwigoPickerMinutesPerHour];
             label.textAlignment = NSTextAlignmentCenter;
             break;
             
@@ -250,7 +250,7 @@ typedef enum {
             break;
             
         case ComponentOrderSecond:
-            label.text = [NSString stringWithFormat:@"%02ld", row % kPiwigoPickerSecondsPerMinute];
+            label.text = [NSString stringWithFormat:@"%02u", row % kPiwigoPickerSecondsPerMinute];
             label.textAlignment = NSTextAlignmentCenter;
             break;
             
@@ -267,7 +267,7 @@ typedef enum {
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    NSLog(@"=> Selected row:%ld in component:%ld", row, component);
+    NSLog(@"=> Selected row:%ld in component:%ld", (long)row, component);
 
     // Jump back to the row with the current value that is closest to the middle
     NSInteger newRow = row;
