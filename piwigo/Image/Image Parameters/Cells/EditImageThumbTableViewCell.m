@@ -12,10 +12,11 @@
 
 NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
 
-@interface EditImageThumbTableViewCell() <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, EditImageThumbnailDelegate>
+@interface EditImageThumbTableViewCell() <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, EditImageThumbnailDelegate>
 
 @property (nonatomic, strong) NSArray<PiwigoImageData *> *images;
 @property (nonatomic, strong) IBOutlet UICollectionView *editImageThumbCollectionView;
+@property (nonatomic, assign) CGPoint startingScrollingOffset;
 
 @end
 
@@ -139,6 +140,32 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
     {
         [self.delegate didRenameFileOfImage:updatedImage];
     }
+}
+
+
+#pragma mark - ScrollView Manager
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    self.startingScrollingOffset = scrollView.contentOffset;
+}
+
+-(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    CGFloat cellWidth = [self collectionView:self.editImageThumbCollectionView layout:self.editImageThumbCollectionView.collectionViewLayout sizeForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]].width + kImageDetailsMarginsSpacing/2.0;
+    double offset = scrollView.contentOffset.x + scrollView.contentInset.left;
+    double proposedPage = offset / fmax(1.0, cellWidth);
+    CGFloat snapPoint = 0.1;
+    CGFloat snapDelta = offset > self.startingScrollingOffset.x ? (1 - snapPoint) : snapPoint;
+
+    double page;
+    if (floor(proposedPage + snapDelta) == floor(proposedPage)) {
+        page = floor(proposedPage);
+    }
+    else {
+        page = floor(proposedPage + 1);
+    }
+
+    *targetContentOffset = CGPointMake(cellWidth * page, (*targetContentOffset).y);
 }
 
 @end
