@@ -25,7 +25,7 @@ FOUNDATION_EXPORT NSString * const kEditImageThumbCollectionCell_ID;
 @property (nonatomic, assign) NSInteger imageId;
 @property (nonatomic, weak) id<EditImageThumbnailDelegate> delegate;
 
--(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove andWidth:(CGFloat)width;
+-(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove;
 -(IBAction)editFileName;
 -(IBAction)removeImage;
 

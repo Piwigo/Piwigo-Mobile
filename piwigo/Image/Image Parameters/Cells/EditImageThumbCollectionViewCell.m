@@ -63,7 +63,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     self.editImageButton.tintColor = [UIColor piwigoOrange];
 }
 
--(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove andWidth:(CGFloat)width
+-(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove
 {
     // Cell background
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -94,7 +94,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 
     // Image from Piwigo server…
     if ((imageData.fullResWidth > 0) && (imageData.fullResHeight > 0)) {
-        if (width > 299) {     // i.e. larger than iPhone 5 screen width
+        if (self.bounds.size.width > 299) {     // i.e. larger than iPhone 5 screen width
             self.imageSize.text = [NSString stringWithFormat:@"%ldx%ld pixels, %.2f MB", (long)imageData.fullResWidth, (long)imageData.fullResHeight, (double)imageData.fileSize / 1024.0];
         } else {
             self.imageSize.text = [NSString stringWithFormat:@"%ldx%ld pixels", (long)imageData.fullResWidth, (long)imageData.fullResHeight];
@@ -103,7 +103,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 
     self.imageDate.text = @"";
     if (imageData.dateCreated != nil) {
-        if (width > 320) {     // i.e. larger than iPhone 5 screen width
+        if (self.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
             self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterNoStyle];
         } else {
             self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];

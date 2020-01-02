@@ -16,7 +16,6 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
 
 @property (nonatomic, strong) NSArray<PiwigoImageData *> *images;
 @property (nonatomic, strong) IBOutlet UICollectionView *editImageThumbCollectionView;
-@property (nonatomic, assign) CGFloat cellWidth;
 
 @end
 
@@ -36,14 +35,13 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
     self.images = imageSelection;
     
     // Collection of images
-    self.cellWidth = [ImagesCollection imageDetailsSizeForView:self];
-    
+    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
     if (self.editImageThumbCollectionView == nil) {
         self.editImageThumbCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
+        [self.editImageThumbCollectionView reloadData];
     } else {
         [self.editImageThumbCollectionView.collectionViewLayout invalidateLayout];
     }
-    [self.editImageThumbCollectionView reloadData];
 }
 
 -(void)prepareForReuse
@@ -68,7 +66,7 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     EditImageThumbCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kEditImageThumbCollectionCell_ID forIndexPath:indexPath];
-    [cell setupWithImage:self.images[indexPath.row] removeOption:(self.images.count > 1) andWidth:self.cellWidth];
+    [cell setupWithImage:self.images[indexPath.row] removeOption:(self.images.count > 1)];
     cell.delegate = self;
     return cell;
 }
@@ -93,7 +91,7 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(self.cellWidth, 144);
+    return CGSizeMake([ImagesCollection imageDetailsSizeForView:self], 144);
 }
 
 
