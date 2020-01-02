@@ -28,7 +28,7 @@ FOUNDATION_EXPORT NSInteger const kPiwigoPickerNberOfLoops;
 @interface EditImageDatePickerTableViewCell : UITableViewCell <UIPickerViewDelegate>
 
 @property (nonatomic, weak) id<EditImageDatePickerDelegate> delegate;
-@property (weak, nonatomic) IBOutlet UIPickerView *datePicker;
+@property (nonatomic, weak) IBOutlet UIPickerView *datePicker;
 
 -(void)setDatePickerWithDate:(NSDate *)date animated:(BOOL)animated;
 -(void)setDatePickerButtons;

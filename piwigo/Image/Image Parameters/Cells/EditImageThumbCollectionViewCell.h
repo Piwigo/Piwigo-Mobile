@@ -11,7 +11,9 @@
 
 #import "PiwigoImageData.h"
 
-@protocol EditImageFilenameDelegate <NSObject>
+FOUNDATION_EXPORT NSString * const kEditImageThumbCollectionCell_ID;
+
+@protocol EditImageThumbnailDelegate <NSObject>
 
 -(void)didDeselectImageWithId:(NSInteger)imageId;
 -(void)didRenameFileOfImageWithId:(NSInteger)imageId andFilename:(NSString *)fileName;
@@ -20,11 +22,11 @@
 
 @interface EditImageThumbCollectionViewCell : UICollectionViewCell
 
-@property (assign, nonatomic) NSInteger imageId;
-@property (nonatomic, weak) id<EditImageFilenameDelegate> delegate;
+@property (nonatomic, assign) NSInteger imageId;
+@property (nonatomic, weak) id<EditImageThumbnailDelegate> delegate;
 
--(void)setupWithImage:(PiwigoImageData *)imageData andRemoveOption:(BOOL)hasRemove;
--(IBAction)editImage;
+-(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove andWidth:(CGFloat)width;
+-(IBAction)editFileName;
 -(IBAction)removeImage;
 
 @end

@@ -14,7 +14,7 @@
 
 @protocol EditImageParamsDelegate <NSObject>
 
--(void)didDeselectImageToEdit:(NSInteger)imageId;
+-(void)didDeselectImageWithId:(NSInteger)imageId;
 -(void)didFinishEditingParams:(PiwigoImageData *)params;
 -(void)didRenameFileOfImage:(PiwigoImageData *)imageData;
 

@@ -8,12 +8,13 @@
 
 #import "AppDelegate.h"
 #import "EditImageDatePickerTableViewCell.h"
-#import "EditImageThumbCollectionViewCell.h"
 #import "EditImageParamsViewController.h"
 #import "EditImagePrivacyTableViewCell.h"
 #import "EditImageTagsTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
+#import "EditImageThumbCollectionViewCell.h"
+#import "EditImageThumbTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageUpload.h"
 #import "ImageService.h"
@@ -28,6 +29,7 @@
 CGFloat const kEditImageParamsViewWidth = 512.0;
 
 typedef enum {
+    EditImageParamsOrderThumbnails,
 	EditImageParamsOrderImageName,
 	EditImageParamsOrderAuthor,
     EditImageParamsOrderDate,
@@ -38,11 +40,10 @@ typedef enum {
 	EditImageParamsOrderCount
 } EditImageParamsOrder;
 
-@interface EditImageParamsViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageFilenameDelegate, EditImageDatePickerDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageParamsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageThumbnailCellDelegate, EditImageDatePickerDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, strong) PiwigoImageData *commonParameters;
 @property (nonatomic, weak)   IBOutlet UITableView *editImageParamsTableView;
-@property (nonatomic, weak)   IBOutlet UICollectionView *editImageThumbnailCollectionView;
 @property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *imagesToUpdate;
 
 @property (nonatomic, assign) BOOL hasDatePicker;
@@ -100,10 +101,6 @@ typedef enum {
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
 
-    // Collection view
-    self.editImageThumbnailCollectionView.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    [self.editImageThumbnailCollectionView reloadData];
-    
     // Table view
     self.editImageParamsTableView.separatorColor = [UIColor piwigoSeparatorColor];
     self.editImageParamsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -114,7 +111,10 @@ typedef enum {
 {
     [super viewDidLoad];
     
-    // Register date picker
+    // Register thumbnails cell
+    [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageThumbTableViewCell" bundle:nil] forCellReuseIdentifier:kEditImageThumbTableCell_ID];
+
+    // Register date picker cell
     [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageDatePickerTableViewCell" bundle:nil] forCellReuseIdentifier:kDatePickerTableCell_ID];
     self.hasDatePicker = NO;
 
@@ -240,9 +240,9 @@ typedef enum {
             [self.editImageParamsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - size.height), 0.0)];
         }
 
-        // Reload collection and table views
-        [self.editImageThumbnailCollectionView reloadData];
+        // Reload table view
         [self.editImageParamsTableView reloadData];
+
     } completion:nil];
 }
 
@@ -458,57 +458,16 @@ typedef enum {
 }
 
 
-#pragma mark - UICollectionView - Rows
-
--(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    return 1;
-}
-
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    // Returns number of images or albums
-    return self.images.count;
-}
-
--(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
-{
-    // Avoid unwanted spaces
-    if (@available(iOS 13.0, *)) {
-        return UIEdgeInsetsMake(0, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
-    } else {
-        return UIEdgeInsetsMake(10, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
-    }
-}
-
--(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
-{
-    return (CGFloat)kImageDetailsCellSpacing;
-}
-
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    CGFloat size = (CGFloat)[ImagesCollection imageDetailsSizeForView:self.view];
-    return CGSizeMake(size, 144);
-}
-
--(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    EditImageThumbCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"image" forIndexPath:indexPath];
-    if (!cell) {
-        cell = [EditImageThumbCollectionViewCell new];
-    }
-    [cell setupWithImage:self.images[indexPath.row] andRemoveOption:(self.images.count > 1)];
-    cell.delegate = self;
-    return cell;
-}
-
-
 #pragma mark - UITableView - Rows
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 0.0;        // To hide the section header
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 0.0;        // To hide the section footer
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -525,6 +484,10 @@ typedef enum {
     }
     switch (row)
     {
+        case EditImageParamsOrderThumbnails:
+            height = 170.0;
+            break;
+            
         case EditImageParamsOrderDatePicker:
             height = 303.0;     // 1 point removed, toolbar above picker to hide border
             break;
@@ -535,7 +498,7 @@ typedef enum {
             break;
             
         case EditImageParamsOrderDescription:
-            height = 528.0;
+            height = 428.0;
             break;
 
         default:
@@ -565,12 +528,18 @@ typedef enum {
     }
     switch (row)
 	{
+        case EditImageParamsOrderThumbnails:
+        {
+            EditImageThumbTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEditImageThumbTableCell_ID forIndexPath:indexPath];
+            [cell setupWithImages:self.images];
+            cell.delegate = self;
+            tableViewCell = cell;
+            break;
+        }
+        
         case EditImageParamsOrderImageName:
 		{
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"title" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImageTextFieldTableViewCell new];
-            }
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title")
                      placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
                   andImageDetail:self.commonParameters.imageTitle];
@@ -583,9 +552,6 @@ typedef enum {
         case EditImageParamsOrderAuthor:
 		{
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"author" forIndexPath:indexPath];
-            if(!cell) {
-                cell = [EditImageTextFieldTableViewCell new];
-            }
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author")
                      placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
                   andImageDetail:[self.commonParameters.author isEqualToString:@"NSNotFound"] ? @"" : self.commonParameters.author];
@@ -598,9 +564,6 @@ typedef enum {
         case EditImageParamsOrderDate:
         {
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dateCreation" forIndexPath:indexPath];
-            if(!cell) {
-                cell = [EditImageTextFieldTableViewCell new];
-            }
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_dateCreation", @"Creation Date")
                      placeHolder:@""
                   andImageDetail:[self getStringFromDate:self.commonParameters.dateCreated]];
@@ -613,9 +576,6 @@ typedef enum {
         case EditImageParamsOrderDatePicker:
         {
             EditImageDatePickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDatePickerTableCell_ID forIndexPath:indexPath];
-            if(!cell) {
-                cell = [EditImageDatePickerTableViewCell new];
-            }
             [cell setDatePickerWithDate:self.commonParameters.dateCreated animated:NO];
             [cell setDatePickerButtons];
             cell.delegate = self;
@@ -626,9 +586,6 @@ typedef enum {
         case EditImageParamsOrderPrivacy:
 		{
 			EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImagePrivacyTableViewCell new];
-            }
 			[cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
 			[cell setPrivacyLevel:self.commonParameters.privacyLevel];
             tableViewCell = cell;
@@ -638,9 +595,6 @@ typedef enum {
         case EditImageParamsOrderTags:
 		{
 			EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImageTagsTableViewCell new];
-            }
 			[cell setTagList:self.commonParameters.tags];
             tableViewCell = cell;
 			break;
@@ -649,9 +603,6 @@ typedef enum {
         case EditImageParamsOrderDescription:
 		{
 			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImageTextViewTableViewCell new];
-            }
             [cell setupWithImageDetail:self.commonParameters.comment];
             cell.textView.delegate = self;
             tableViewCell = cell;
@@ -919,13 +870,13 @@ typedef enum {
 }
 
 
-#pragma mark - EditImageFilenameDelegate Methods
+#pragma mark - EditImageThumbnailCellDelegate Methods
 
 -(void)didDeselectImageWithId:(NSInteger)imageId
 {
     // Update data source
     NSMutableArray *newImages = [[NSMutableArray alloc] initWithArray:self.images];
-    for (ImageUpload *imageData in self.images)
+    for (PiwigoImageData *imageData in self.images)
     {
         if (imageData.imageId == imageId)
         {
@@ -933,42 +884,29 @@ typedef enum {
         }
     }
     self.images = newImages;
-    [self.editImageThumbnailCollectionView reloadData];
     [self.editImageParamsTableView reloadData];
 
     // Deselect image in album view
-    if ([self.delegate respondsToSelector:@selector(didDeselectImageToEdit:)])
+    if ([self.delegate respondsToSelector:@selector(didDeselectImageWithId:)])
     {
-        [self.delegate didDeselectImageToEdit:imageId];
+        [self.delegate didDeselectImageWithId:imageId];
     }
 }
 
--(void)didRenameFileOfImageWithId:(NSInteger)imageId andFilename:(NSString *)fileName
+-(void)didRenameFileOfImage:(PiwigoImageData *)imageData
 {
     // Update data source
     PiwigoImageData *updatedImage;
     NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
-    for (PiwigoImageData *imageData in self.images)
+    for (PiwigoImageData *image in self.images)
     {
-        if (imageData.imageId == imageId)
-        {
-            if (fileName) imageData.fileName = fileName;
+        if (image.imageId == imageData.imageId) {
             updatedImage = imageData;
         }
         [updatedImages addObject:imageData];
     }
     self.images = updatedImages;
     
-    // Update image details cell
-    for (EditImageThumbCollectionViewCell *cell in self.editImageThumbnailCollectionView.visibleCells)
-    {
-        // Look for right image details cell
-        if (cell.imageId == imageId)
-        {
-            [cell setupWithImage:updatedImage andRemoveOption:(self.images.count > 1)];
-        }
-    }
-
     // Update parent image view
     if ([self.delegate respondsToSelector:@selector(didRenameFileOfImage:)])
     {

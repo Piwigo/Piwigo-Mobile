@@ -2311,7 +2311,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - EditImageParamsDelegate Methods
 
--(void)didDeselectImageToEdit:(NSInteger)imageId
+-(void)didDeselectImageWithId:(NSInteger)imageId
 {
     // Deselect image
     [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];

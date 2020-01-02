@@ -13,13 +13,15 @@
 #import "MBProgressHUD.h"
 #import "Model.h"
 
+NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCell";
+
 @interface EditImageThumbCollectionViewCell() <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageThumbnail;
 @property (weak, nonatomic) IBOutlet UIView *imageDetails;
-@property (weak, nonatomic) IBOutlet UILabel *imageDate;
 @property (weak, nonatomic) IBOutlet UILabel *imageSize;
 @property (weak, nonatomic) IBOutlet UILabel *imageFile;
+@property (weak, nonatomic) IBOutlet UILabel *imageDate;
 @property (weak, nonatomic) IBOutlet UILabel *imageTime;
 
 @property (weak, nonatomic) IBOutlet UIView *editButtonView;
@@ -61,7 +63,7 @@
     self.editImageButton.tintColor = [UIColor piwigoOrange];
 }
 
--(void)setupWithImage:(PiwigoImageData *)imageData andRemoveOption:(BOOL)hasRemove
+-(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove andWidth:(CGFloat)width
 {
     // Cell background
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -92,7 +94,7 @@
 
     // Image from Piwigo server…
     if ((imageData.fullResWidth > 0) && (imageData.fullResHeight > 0)) {
-        if(self.contentView.bounds.size.width > 299) {     // i.e. larger than iPhone 5 screen width
+        if (width > 299) {     // i.e. larger than iPhone 5 screen width
             self.imageSize.text = [NSString stringWithFormat:@"%ldx%ld pixels, %.2f MB", (long)imageData.fullResWidth, (long)imageData.fullResHeight, (double)imageData.fileSize / 1024.0];
         } else {
             self.imageSize.text = [NSString stringWithFormat:@"%ldx%ld pixels", (long)imageData.fullResWidth, (long)imageData.fullResHeight];
@@ -101,7 +103,7 @@
 
     self.imageDate.text = @"";
     if (imageData.dateCreated != nil) {
-        if(self.contentView.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+        if (width > 320) {     // i.e. larger than iPhone 5 screen width
             self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterNoStyle];
         } else {
             self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
@@ -199,7 +201,7 @@
 #pragma mark - Edit Filename
 
 // Propose to edit original filename
--(IBAction)editImage
+-(IBAction)editFileName
 {
     // Store old file name
     self.oldFileName = self.imageFile.text;

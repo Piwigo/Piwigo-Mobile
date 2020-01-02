@@ -8,7 +8,7 @@
 
 #import "EditImageDatePickerTableViewCell.h"
 
-NSString * const kDatePickerTableCell_ID = @"kDatePickerTableCell";
+NSString * const kDatePickerTableCell_ID = @"DatePickerTableCell";
 NSString * const kPiwigoPickerMinDate = @"1922-01-01 00:00:00";     // UTC
 NSString * const kPiwigoPickerMaxDate = @"2100-01-01 00:00:00";     // UTC
 NSTimeInterval const kPiwigoPicker1Day = 24 * 60 * 60;

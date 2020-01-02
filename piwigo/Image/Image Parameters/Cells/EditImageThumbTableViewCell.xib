@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="EditImageThumbTableCell" rowHeight="170" id="uw1-qu-wDo" customClass="EditImageThumbTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="340" height="170"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="uw1-qu-wDo" translatesAutoresizingMaskIntoConstraints="NO" id="bUr-lS-6ft">
+                <rect key="frame" x="0.0" y="0.0" width="340" height="170"/>
+                <subviews>
+                    <collectionView autoresizesSubviews="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="redraw" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" directionalLockEnabled="YES" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="eTE-lI-Gnc">
+                        <rect key="frame" x="0.0" y="0.0" width="340" height="170"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Gbm-Cc-Cca">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells/>
+                        <connections>
+                            <outlet property="dataSource" destination="uw1-qu-wDo" id="EkF-uO-kbH"/>
+                            <outlet property="delegate" destination="uw1-qu-wDo" id="C7p-Ko-vz9"/>
+                        </connections>
+                    </collectionView>
+                </subviews>
+            </tableViewCellContentView>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="bUr-lS-6ft" secondAttribute="bottom" id="AgN-aT-2BQ"/>
+                <constraint firstAttribute="trailing" secondItem="bUr-lS-6ft" secondAttribute="trailing" id="BXJ-IS-9Fw"/>
+                <constraint firstItem="bUr-lS-6ft" firstAttribute="top" secondItem="uw1-qu-wDo" secondAttribute="top" id="MGR-yl-JuH"/>
+                <constraint firstItem="bUr-lS-6ft" firstAttribute="leading" secondItem="uw1-qu-wDo" secondAttribute="leading" id="kVH-qA-Vxz"/>
+            </constraints>
+            <connections>
+                <outlet property="editImageThumbCollectionView" destination="eTE-lI-Gnc" id="q6n-tB-PBj"/>
+            </connections>
+            <point key="canvasLocation" x="-240.57971014492756" y="-108.48214285714285"/>
+        </tableViewCell>
+    </objects>
+</document>

@@ -151,14 +151,14 @@ NSInteger const kImageDetailsMarginsSpacing = 16;   // Left and right margins fo
 }
 
 
-#pragma mark - Image Details
+#pragma mark - Thumbnails
 
 +(float)imageDetailsSizeForView:(UIView *)view // andNberOfImageDetailsPerRowInPortrait:(NSInteger)detailsPerRowInPortrait
 {
     // Size of view or screen
-    CGSize pageSize = [self sizeOfPageForView:view];
+    CGSize cellSize = [self sizeOfPageForView:view];
     
-    return MIN(fmin(pageSize.width,pageSize.height) - 2.0 * kImageDetailsMarginsSpacing, 340.0);
+    return MIN(cellSize.width - 2.0 * kImageDetailsMarginsSpacing, 340.0);
 }
 
 

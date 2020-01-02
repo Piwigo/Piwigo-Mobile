@@ -317,9 +317,6 @@ typedef enum {
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ImageUploadThumbCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"image" forIndexPath:indexPath];
-    if (!cell) {
-        cell = [ImageUploadThumbCollectionViewCell new];
-    }
     [cell setupWithImage:self.images[indexPath.row] andRemoveOption:(self.images.count > 1)];
     cell.delegate = self;
     return cell;

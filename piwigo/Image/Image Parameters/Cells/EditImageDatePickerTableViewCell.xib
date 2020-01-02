@@ -9,7 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="kDatePickerTableCell" rowHeight="401" id="r0z-Q2-GYV" customClass="EditImageDatePickerTableViewCell">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerTableCell" rowHeight="303" id="r0z-Q2-GYV" customClass="EditImageDatePickerTableViewCell">
             <rect key="frame" x="0.0" y="0.0" width="373" height="303"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="r0z-Q2-GYV" id="l2g-OY-l5J">
@@ -17,7 +17,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="toolBarTop" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BiK-FK-Wdq" userLabel="Tool Bar(top)">
-                        <rect key="frame" x="0.0" y="216" width="373" height="44"/>
+                        <rect key="frame" x="0.0" y="162" width="373" height="44"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <items>
                             <barButtonItem title="-1 Month" style="plain" id="bOu-Vt-5OJ">
@@ -45,14 +45,14 @@
                         </items>
                     </toolbar>
                     <pickerView contentMode="center" restorationIdentifier="datePicker" translatesAutoresizingMaskIntoConstraints="NO" id="R1T-MH-EHh">
-                        <rect key="frame" x="0.0" y="0.0" width="373" height="216"/>
+                        <rect key="frame" x="0.0" y="0.0" width="373" height="162"/>
                         <connections>
                             <outlet property="dataSource" destination="r0z-Q2-GYV" id="hfd-me-Ohn"/>
                             <outlet property="delegate" destination="r0z-Q2-GYV" id="5SR-T4-QGp"/>
                         </connections>
                     </pickerView>
                     <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="toolBarBottom" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DKH-QZ-J71" userLabel="Toolbar (bottom)">
-                        <rect key="frame" x="0.0" y="260" width="373" height="44"/>
+                        <rect key="frame" x="0.0" y="206" width="373" height="44"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <items>
                             <barButtonItem title="-1 Year" id="QaO-Qm-EdD">

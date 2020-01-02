@@ -1226,7 +1226,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 #pragma mark - EditImageParamsDelegate Methods
 
--(void)didDeselectImageToEdit:(NSInteger)imageId
+-(void)didDeselectImageWithId:(NSInteger)imageId
 {
     // Should never be called when the properties of a single image are edited
 }

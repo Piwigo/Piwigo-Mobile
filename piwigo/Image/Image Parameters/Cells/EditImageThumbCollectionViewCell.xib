@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="EditImageThumbCollectionCell" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="EditImageThumbCollectionCell" id="h3a-4e-R0S" customClass="EditImageThumbCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="340" height="144"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <collectionViewCellContentView key="contentView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="Ynv-hJ-zGw">
+                <rect key="frame" x="0.0" y="0.0" width="340" height="144"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dkQ-wh-KaZ">
+                        <rect key="frame" x="134" y="15" width="206" height="114"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="size" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PnP-Wk-ap6">
+                                <rect key="frame" x="18" y="10" width="180" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="file" textAlignment="natural" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uU3-Mu-0Lu">
+                                <rect key="frame" x="18" y="34.5" width="180" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="date" textAlignment="natural" lineBreakMode="headTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cpx-uG-d2M">
+                                <rect key="frame" x="18" y="59" width="180" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e98-0S-OgA">
+                                <rect key="frame" x="18" y="83.5" width="180" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="e98-0S-OgA" secondAttribute="trailing" constant="8" id="3XN-FG-t6B"/>
+                            <constraint firstAttribute="trailing" secondItem="cpx-uG-d2M" secondAttribute="trailing" constant="8" id="6VH-hv-Bzg"/>
+                            <constraint firstItem="PnP-Wk-ap6" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="Aw9-so-9UC"/>
+                            <constraint firstItem="e98-0S-OgA" firstAttribute="firstBaseline" secondItem="cpx-uG-d2M" secondAttribute="baseline" constant="24" symbolType="layoutAnchor" id="Mk0-d2-z8G"/>
+                            <constraint firstItem="uU3-Mu-0Lu" firstAttribute="firstBaseline" secondItem="PnP-Wk-ap6" secondAttribute="baseline" constant="24" symbolType="layoutAnchor" id="PYS-7I-RFa"/>
+                            <constraint firstItem="uU3-Mu-0Lu" firstAttribute="centerY" secondItem="dkQ-wh-KaZ" secondAttribute="centerY" constant="-12" id="YuS-iD-dz9"/>
+                            <constraint firstItem="cpx-uG-d2M" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="erL-1m-igc"/>
+                            <constraint firstAttribute="trailing" secondItem="PnP-Wk-ap6" secondAttribute="trailing" constant="8" id="ezU-W4-mem"/>
+                            <constraint firstItem="e98-0S-OgA" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="g2a-ZE-mW6"/>
+                            <constraint firstAttribute="trailing" secondItem="uU3-Mu-0Lu" secondAttribute="trailing" constant="8" id="tgV-3y-1fN"/>
+                            <constraint firstItem="cpx-uG-d2M" firstAttribute="firstBaseline" secondItem="uU3-Mu-0Lu" secondAttribute="baseline" constant="24" symbolType="layoutAnchor" id="vZV-Gf-2bH"/>
+                            <constraint firstItem="uU3-Mu-0Lu" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="xel-gO-Ief"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MuK-OP-2Zd">
+                        <rect key="frame" x="295" y="0.0" width="35" height="30"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bNO-go-d7Y" userLabel="Edit Button">
+                                <rect key="frame" x="7" y="3.5" width="23" height="23"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="23" id="7vU-pc-9mt"/>
+                                    <constraint firstAttribute="width" secondItem="bNO-go-d7Y" secondAttribute="height" multiplier="1:1" id="IO2-Ps-8uk"/>
+                                </constraints>
+                                <state key="normal" image="imageEdit">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="medium" weight="regular"/>
+                                </state>
+                                <connections>
+                                    <action selector="editFileName" destination="h3a-4e-R0S" eventType="touchUpInside" id="e0j-nW-DKh"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="bNO-go-d7Y" firstAttribute="centerY" secondItem="MuK-OP-2Zd" secondAttribute="centerY" id="KBa-wK-P68"/>
+                            <constraint firstItem="bNO-go-d7Y" firstAttribute="centerX" secondItem="MuK-OP-2Zd" secondAttribute="centerX" constant="1" id="L98-VC-dAb"/>
+                            <constraint firstAttribute="width" constant="35" id="j2J-gZ-I1J"/>
+                            <constraint firstAttribute="height" constant="30" id="sx8-0D-qYk"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="778-Ev-GOx">
+                        <rect key="frame" x="300" y="114" width="30" height="30"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VHE-nC-4xl">
+                                <rect key="frame" x="3.5" y="3.5" width="23" height="23"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="23" id="GSG-w9-XQF"/>
+                                    <constraint firstAttribute="width" secondItem="VHE-nC-4xl" secondAttribute="height" multiplier="1:1" id="Teu-ZJ-3nh"/>
+                                </constraints>
+                                <state key="normal" image="removeItem">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="medium" weight="regular"/>
+                                </state>
+                                <connections>
+                                    <action selector="removeImage" destination="h3a-4e-R0S" eventType="touchUpInside" id="GqQ-Xi-ykA"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="VHE-nC-4xl" firstAttribute="centerX" secondItem="778-Ev-GOx" secondAttribute="centerX" id="Jwn-fC-icW"/>
+                            <constraint firstAttribute="width" secondItem="778-Ev-GOx" secondAttribute="height" multiplier="1:1" id="Pw8-1R-keD"/>
+                            <constraint firstItem="VHE-nC-4xl" firstAttribute="centerY" secondItem="778-Ev-GOx" secondAttribute="centerY" id="S9w-xf-FSz"/>
+                            <constraint firstAttribute="width" constant="30" id="SZ0-25-W3e"/>
+                        </constraints>
+                    </view>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="XOv-xv-XJn">
+                        <rect key="frame" x="0.0" y="0.0" width="144" height="144"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="XOv-xv-XJn" secondAttribute="height" multiplier="1:1" id="WB4-ew-Zl2"/>
+                            <constraint firstAttribute="width" constant="144" id="sHT-yh-ILa"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="dkQ-wh-KaZ" firstAttribute="leading" secondItem="Ynv-hJ-zGw" secondAttribute="leading" constant="134" id="Fga-i1-McH"/>
+                    <constraint firstItem="XOv-xv-XJn" firstAttribute="top" secondItem="Ynv-hJ-zGw" secondAttribute="top" id="I1S-7r-uhD"/>
+                    <constraint firstItem="dkQ-wh-KaZ" firstAttribute="top" secondItem="Ynv-hJ-zGw" secondAttribute="top" constant="15" id="MmA-cP-Lah"/>
+                    <constraint firstAttribute="trailing" secondItem="dkQ-wh-KaZ" secondAttribute="trailing" id="Zns-pB-NOm"/>
+                    <constraint firstAttribute="trailing" secondItem="778-Ev-GOx" secondAttribute="trailing" constant="10" id="bOR-Dl-nZW"/>
+                    <constraint firstItem="MuK-OP-2Zd" firstAttribute="centerY" secondItem="dkQ-wh-KaZ" secondAttribute="top" id="cQY-u0-2uy"/>
+                    <constraint firstItem="XOv-xv-XJn" firstAttribute="leading" secondItem="Ynv-hJ-zGw" secondAttribute="leading" id="gXh-H9-dqp"/>
+                    <constraint firstItem="778-Ev-GOx" firstAttribute="centerY" secondItem="dkQ-wh-KaZ" secondAttribute="bottom" id="jm1-pW-wSc"/>
+                    <constraint firstAttribute="trailing" secondItem="MuK-OP-2Zd" secondAttribute="trailing" constant="10" id="lym-6W-tLO"/>
+                    <constraint firstAttribute="bottom" secondItem="dkQ-wh-KaZ" secondAttribute="bottom" constant="15" id="upt-qK-FDj"/>
+                </constraints>
+            </collectionViewCellContentView>
+            <size key="customSize" width="300" height="144"/>
+            <connections>
+                <outlet property="editButtonView" destination="MuK-OP-2Zd" id="Xbs-rk-zyU"/>
+                <outlet property="editImageButton" destination="bNO-go-d7Y" id="kqn-8V-38f"/>
+                <outlet property="imageDate" destination="cpx-uG-d2M" id="zjW-QE-hKh"/>
+                <outlet property="imageDetails" destination="dkQ-wh-KaZ" id="RBP-Bb-JN2"/>
+                <outlet property="imageFile" destination="uU3-Mu-0Lu" id="CKg-fB-SHf"/>
+                <outlet property="imageSize" destination="PnP-Wk-ap6" id="TQC-hS-RON"/>
+                <outlet property="imageThumbnail" destination="XOv-xv-XJn" id="w3y-qu-zg2"/>
+                <outlet property="imageTime" destination="e98-0S-OgA" id="WGu-fk-cbf"/>
+                <outlet property="removeButtonView" destination="778-Ev-GOx" id="M1L-XR-HI3"/>
+                <outlet property="removeImageButton" destination="VHE-nC-4xl" id="h6B-as-HwC"/>
+            </connections>
+            <point key="canvasLocation" x="26" y="-37"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="imageEdit" width="26" height="26"/>
+        <image name="removeItem" width="25" height="25"/>
+    </resources>
+</document>
