@@ -16,7 +16,6 @@
 #import "EditImageThumbCollectionViewCell.h"
 #import "EditImageThumbTableViewCell.h"
 #import "ImageDetailViewController.h"
-#import "ImageUpload.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
@@ -24,7 +23,6 @@
 #import "SelectPrivacyViewController.h"
 #import "TagsData.h"
 #import "TagsViewController.h"
-#import "UploadService.h"
 
 CGFloat const kEditImageParamsViewWidth = 512.0;
 
