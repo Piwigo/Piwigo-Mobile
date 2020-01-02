@@ -33,7 +33,7 @@
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */; };
-		AD770FDA23B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */; };
+		AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD923B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m */; };
 		AD770FDD23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FDC23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m */; };
 		AD77109A22F48FCD00E64797 /* TagSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109922F48FCD00E64797 /* TagSelectViewController.m */; };
 		AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */; };
@@ -224,8 +224,8 @@
 		AD770FD223B4BD89007DAD50 /* EditImageParamsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditImageParamsViewController.h; path = "piwigo/Image/Image Parameters/EditImageParamsViewController.h"; sourceTree = SOURCE_ROOT; };
 		AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageParamsViewController.m; sourceTree = "<group>"; };
 		AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageParams.storyboard; sourceTree = "<group>"; };
-		AD770FD823B4CE6B007DAD50 /* EditImageFilenameCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageFilenameCollectionViewCell.h; sourceTree = "<group>"; };
-		AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageFilenameCollectionViewCell.m; sourceTree = "<group>"; };
+		AD770FD823B4CE6B007DAD50 /* EditImageThumbCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageThumbCollectionViewCell.h; sourceTree = "<group>"; };
+		AD770FD923B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbCollectionViewCell.m; sourceTree = "<group>"; };
 		AD770FDB23B6A631007DAD50 /* EditImageDatePickerTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageDatePickerTableViewCell.h; sourceTree = "<group>"; };
 		AD770FDC23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageDatePickerTableViewCell.m; sourceTree = "<group>"; };
 		AD77109622F48F6600E64797 /* TagSelectViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TagSelectViewController.h; sourceTree = "<group>"; };
@@ -563,8 +563,8 @@
 		AD770FD723B4CD67007DAD50 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				AD770FD823B4CE6B007DAD50 /* EditImageFilenameCollectionViewCell.h */,
-				AD770FD923B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m */,
+				AD770FD823B4CE6B007DAD50 /* EditImageThumbCollectionViewCell.h */,
+				AD770FD923B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m */,
 				D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */,
 				D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */,
 				AD770FDB23B6A631007DAD50 /* EditImageDatePickerTableViewCell.h */,
@@ -1453,7 +1453,7 @@
 				ADABACBD2235A7120095C4D0 /* PiwigoLocationData.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
 				AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */,
-				AD770FDA23B4CE79007DAD50 /* EditImageFilenameCollectionViewCell.m in Sources */,
+				AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */,
 				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,

@@ -7,13 +7,13 @@
 //
 
 #import "CategoriesData.h"
-#import "EditImageFilenameCollectionViewCell.h"
+#import "EditImageThumbCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
 
-@interface EditImageFilenameCollectionViewCell() <UITextFieldDelegate>
+@interface EditImageThumbCollectionViewCell() <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageThumbnail;
 @property (weak, nonatomic) IBOutlet UIView *imageDetails;
@@ -33,7 +33,7 @@
 
 @end
 
-@implementation EditImageFilenameCollectionViewCell
+@implementation EditImageThumbCollectionViewCell
 
 -(void)awakeFromNib {
     

@@ -1,5 +1,5 @@
 //
-//  EditImageFilenameCollectionViewCell.h
+//  EditImageThumbCollectionViewCell.h
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 26/12/2019.
@@ -18,7 +18,7 @@
 
 @end
 
-@interface EditImageFilenameCollectionViewCell : UICollectionViewCell
+@interface EditImageThumbCollectionViewCell : UICollectionViewCell
 
 @property (assign, nonatomic) NSInteger imageId;
 @property (nonatomic, weak) id<EditImageFilenameDelegate> delegate;

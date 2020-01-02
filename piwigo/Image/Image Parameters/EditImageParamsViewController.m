@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "EditImageDatePickerTableViewCell.h"
-#import "EditImageFilenameCollectionViewCell.h"
+#import "EditImageThumbCollectionViewCell.h"
 #import "EditImageParamsViewController.h"
 #import "EditImagePrivacyTableViewCell.h"
 #import "EditImageTagsTableViewCell.h"
@@ -494,9 +494,9 @@ typedef enum {
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    EditImageFilenameCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"image" forIndexPath:indexPath];
+    EditImageThumbCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"image" forIndexPath:indexPath];
     if (!cell) {
-        cell = [EditImageFilenameCollectionViewCell new];
+        cell = [EditImageThumbCollectionViewCell new];
     }
     [cell setupWithImage:self.images[indexPath.row] andRemoveOption:(self.images.count > 1)];
     cell.delegate = self;
@@ -960,7 +960,7 @@ typedef enum {
     self.images = updatedImages;
     
     // Update image details cell
-    for (EditImageFilenameCollectionViewCell *cell in self.editImageThumbnailCollectionView.visibleCells)
+    for (EditImageThumbCollectionViewCell *cell in self.editImageThumbnailCollectionView.visibleCells)
     {
         // Look for right image details cell
         if (cell.imageId == imageId)
