@@ -22,7 +22,6 @@ FOUNDATION_EXPORT NSString * const kDatePickerTableCell_ID;
 @interface EditImageDatePickerTableViewCell : UITableViewCell <UIPickerViewDelegate>
 
 @property (nonatomic, weak) id<EditImageDatePickerDelegate> delegate;
-@property (nonatomic, weak) IBOutlet UIPickerView *datePicker;
 
 -(void)setDatePickerWithDate:(NSDate *)date animated:(BOOL)animated;
 -(void)setDatePickerButtons;

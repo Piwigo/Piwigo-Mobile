@@ -618,6 +618,7 @@ typedef enum {
         if (imageData.imageId == imageId)
         {
             [newImages removeObject:imageData];
+            break;
         }
     }
     self.images = newImages;

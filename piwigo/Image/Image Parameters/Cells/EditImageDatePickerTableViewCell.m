@@ -40,6 +40,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger pickerMaxNberDays;
 @property (nonatomic, strong) NSArray<NSString *> *ampmSymbols;
 
+@property (nonatomic, weak) IBOutlet UIPickerView *datePicker;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBarTop;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBarBottom;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *decrementMonthButton;
@@ -108,7 +109,7 @@ typedef enum {
 }
 
 
-#pragma mark - Picker Utilities
+#pragma mark - Picker Methods
 
 -(void)setDatePickerWithDate:(NSDate *)date animated:(BOOL)animated
 {
@@ -148,7 +149,7 @@ typedef enum {
 -(NSDate *)getDateFromPicker
 {
     // Date from first component
-    NSDate *d = [NSDate dateWithTimeInterval:[self.datePicker selectedRowInComponent:ComponentOrderDay] * kPiwigoPicker1Day sinceDate:self.pickerRefDate];
+    NSDate *dateInSeconds = [NSDate dateWithTimeInterval:[self.datePicker selectedRowInComponent:ComponentOrderDay] * kPiwigoPicker1Day sinceDate:self.pickerRefDate];
     
     // Add seconds to reach time
     NSInteger hours;
@@ -158,129 +159,15 @@ typedef enum {
         hours = [self.datePicker selectedRowInComponent:ComponentOrderHour] % kPiwigoPicker12Hours;
         hours += [self.datePicker selectedRowInComponent:ComponentOrderAMPM] * 12;
     }
-    NSDate *dh = [d dateByAddingTimeInterval: hours * 3600];
     NSInteger minutes = [self.datePicker selectedRowInComponent:ComponentOrderMinute] % kPiwigoPickerMinutesPerHour;
-    NSDate *dhm = [dh dateByAddingTimeInterval: minutes * 60];
     NSInteger seconds = [self.datePicker selectedRowInComponent:ComponentOrderSecond] % kPiwigoPickerSecondsPerMinute;
     
     // Date displayed in picker is in local timezone!
-    NSInteger tzShift = [[NSTimeZone localTimeZone] secondsFromGMTForDate:dhm];
-    NSDate *dhms = [dhm dateByAddingTimeInterval:(seconds - tzShift)];
+    NSInteger tzShift = [[NSTimeZone localTimeZone] secondsFromGMTForDate:dateInSeconds];
+    NSDate *dhms = [dateInSeconds dateByAddingTimeInterval: (hours * 60 + minutes) * 60 + seconds - tzShift];
     
     return dhms;
 }
-
-#pragma mark - Buttons
-
--(void)setDatePickerButtons
-{
-    self.toolBarTop.barTintColor = [UIColor piwigoCellBackgroundColor];
-    self.unsetDateButton.tintColor = [UIColor redColor];
-    self.incrementMonthButton.tintColor = [UIColor piwigoRightLabelColor];
-    self.decrementMonthButton.tintColor = [UIColor piwigoRightLabelColor];
-
-    self.toolBarBottom.barTintColor = [UIColor piwigoCellBackgroundColor];
-    self.todayDateButton.tintColor = [UIColor piwigoRightLabelColor];
-    self.incrementYearButton.tintColor = [UIColor piwigoRightLabelColor];
-    self.decrementYearButton.tintColor = [UIColor piwigoRightLabelColor];
-}
-
-- (IBAction)unsetDate:(id)sender
-{
-    // Close date picker
-    if ([self.delegate respondsToSelector:@selector(didUnsetImageCreationDate)])
-    {
-        [self.delegate didUnsetImageCreationDate];
-    }
-}
-
-- (IBAction)setDateAsToday:(id)sender
-{
-    // Select today
-    NSDate *newDate = [NSDate date];
-    
-    // Update picker with new date
-    [self setDatePickerWithDate:newDate animated:YES];
-
-    // Change date in parent view
-    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
-    {
-        [self.delegate didSelectDateWithPicker:newDate];
-    }
-}
-
-- (IBAction)incrementMonth:(id)sender
-{
-    // Increment month
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    NSDateComponents *comp = [[NSDateComponents alloc] init];
-    [comp setMonth: 1];
-    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
-
-    // Update picker with new date
-    [self setDatePickerWithDate:newDate animated:YES];
-
-    // Change date in parent view
-    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
-    {
-        [self.delegate didSelectDateWithPicker:newDate];
-    }
-}
-
-- (IBAction)decrementMonth:(id)sender
-{
-    // Decrement month
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    NSDateComponents *comp = [[NSDateComponents alloc] init];
-    [comp setMonth: -1];
-    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
-
-    // Update picker with new date
-    [self setDatePickerWithDate:newDate animated:YES];
-
-    // Change date in parent view
-    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
-    {
-        [self.delegate didSelectDateWithPicker:newDate];
-    }
-}
-
-- (IBAction)incrementYear:(id)sender
-{
-    // Increment month
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    NSDateComponents *comp = [[NSDateComponents alloc] init];
-    [comp setYear: 1];
-    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
-
-    // Update picker with new date
-    [self setDatePickerWithDate:newDate animated:YES];
-
-    // Change date in parent view
-    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
-    {
-        [self.delegate didSelectDateWithPicker:newDate];
-    }
-}
-
-- (IBAction)decrementYear:(id)sender
-{
-    // Decrement month
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    NSDateComponents *comp = [[NSDateComponents alloc] init];
-    [comp setYear: -1];
-    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
-
-    // Update picker with new date
-    [self setDatePickerWithDate:newDate animated:YES];
-
-    // Change date in parent view
-    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
-    {
-        [self.delegate didSelectDateWithPicker:newDate];
-    }
-}
-
 
 #pragma mark - UIPickerViewDataSource Methods
 
@@ -480,6 +367,118 @@ typedef enum {
     if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
     {
         [self.delegate didSelectDateWithPicker:[self getDateFromPicker]];
+    }
+}
+
+
+#pragma mark - Buttons Methods
+
+-(void)setDatePickerButtons
+{
+    self.toolBarTop.barTintColor = [UIColor piwigoCellBackgroundColor];
+    self.unsetDateButton.tintColor = [UIColor redColor];
+    self.incrementMonthButton.tintColor = [UIColor piwigoRightLabelColor];
+    self.decrementMonthButton.tintColor = [UIColor piwigoRightLabelColor];
+
+    self.toolBarBottom.barTintColor = [UIColor piwigoCellBackgroundColor];
+    self.todayDateButton.tintColor = [UIColor piwigoRightLabelColor];
+    self.incrementYearButton.tintColor = [UIColor piwigoRightLabelColor];
+    self.decrementYearButton.tintColor = [UIColor piwigoRightLabelColor];
+}
+
+- (IBAction)unsetDate:(id)sender
+{
+    // Close date picker
+    if ([self.delegate respondsToSelector:@selector(didUnsetImageCreationDate)])
+    {
+        [self.delegate didUnsetImageCreationDate];
+    }
+}
+
+- (IBAction)setDateAsToday:(id)sender
+{
+    // Select today
+    NSDate *newDate = [NSDate date];
+    
+    // Update picker with new date
+    [self setDatePickerWithDate:newDate animated:YES];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:newDate];
+    }
+}
+
+- (IBAction)incrementMonth:(id)sender
+{
+    // Increment month
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *comp = [[NSDateComponents alloc] init];
+    [comp setMonth: 1];
+    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
+
+    // Update picker with new date
+    [self setDatePickerWithDate:newDate animated:YES];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:newDate];
+    }
+}
+
+- (IBAction)decrementMonth:(id)sender
+{
+    // Decrement month
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *comp = [[NSDateComponents alloc] init];
+    [comp setMonth: -1];
+    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
+
+    // Update picker with new date
+    [self setDatePickerWithDate:newDate animated:YES];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:newDate];
+    }
+}
+
+- (IBAction)incrementYear:(id)sender
+{
+    // Increment month
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *comp = [[NSDateComponents alloc] init];
+    [comp setYear: 1];
+    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
+
+    // Update picker with new date
+    [self setDatePickerWithDate:newDate animated:YES];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:newDate];
+    }
+}
+
+- (IBAction)decrementYear:(id)sender
+{
+    // Decrement month
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *comp = [[NSDateComponents alloc] init];
+    [comp setYear: -1];
+    NSDate* newDate = [gregorian dateByAddingComponents:comp toDate:[self getDateFromPicker] options:0];
+
+    // Update picker with new date
+    [self setDatePickerWithDate:newDate animated:YES];
+
+    // Change date in parent view
+    if ([self.delegate respondsToSelector:@selector(didSelectDateWithPicker:)])
+    {
+        [self.delegate didSelectDateWithPicker:newDate];
     }
 }
 
