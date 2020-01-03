@@ -281,7 +281,8 @@
 "editImageDetails_dateMonthDec" = "-1 ヶ月";
 "editImageDetails_dateYearInc" = "+1年";
 "editImageDetails_dateYearDec" = "-1年";
-"editImageDetailsHUD_updating" = "写真情報を更新しています...";
+"editImageDetailsHUD_updatingSingle" = "写真を更新しています...";
+"editImageDetailsHUD_updatingPlural" = "写真を更新しています...";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新に失敗しました";

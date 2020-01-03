@@ -281,7 +281,8 @@
 "editImageDetails_dateMonthDec" = "-1 Mois";
 "editImageDetails_dateYearInc" = "+1 An";
 "editImageDetails_dateYearDec" = "-1 An";
-"editImageDetailsHUD_updating" = "Mise à jour des propriétés…";
+"editImageDetailsHUD_updatingSingle" = "Mise à jour de la photo…";
+"editImageDetailsHUD_updatingPlural" = "Mise à jour des photos…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Échec de la Modification";

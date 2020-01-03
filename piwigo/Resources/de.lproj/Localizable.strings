@@ -281,7 +281,8 @@
 "editImageDetails_dateMonthDec" = "-1 Monat";
 "editImageDetails_dateYearInc" = "+1 Jahr";
 "editImageDetails_dateYearDec" = "-1 Jahr";
-"editImageDetailsHUD_updating" = "Fotoinformationen werden aktualisiert…";
+"editImageDetailsHUD_updatingSingle" = "Foto wird aktualisiert…";
+"editImageDetailsHUD_updatingPlural" = "Fotos werden aktualisiert…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Fehler bei der Aktualisierung";

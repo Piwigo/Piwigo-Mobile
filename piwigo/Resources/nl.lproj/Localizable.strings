@@ -281,7 +281,8 @@
 "editImageDetails_dateMonthDec" = "-1 Maand";
 "editImageDetails_dateYearInc" = "+1 Jaar";
 "editImageDetails_dateYearDec" = "-1 Jaar";
-"editImageDetailsHUD_updating" = "Bijwerken foto-info…";
+"editImageDetailsHUD_updatingSingle" = "Foto bijwerken…";
+"editImageDetailsHUD_updatingPlural" = "Foto's bijwerken…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Bijwerken is mislukt";

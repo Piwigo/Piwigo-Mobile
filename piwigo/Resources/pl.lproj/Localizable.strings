@@ -267,21 +267,22 @@
 
 // Image details
 "imageDetailsView_title" = "Informacje o obrazku";
-"editImageDetails_title" = "Tytuł:";
-"editImageDetails_titlePlaceholder" = "Tytuł";
-"editImageDetails_author" = "Autor:";
-"editImageDetails_tags" = "Tagi:";
+"editImageDetails_title" = "Tytuł";
+"editImageDetails_titlePlaceholder" = "Tytuł zdjęcia";
+"editImageDetails_author" = "Autor";
+"editImageDetails_tags" = "Znaczniki";
 "editImageDetails_privacyLevel" = "Kto może zobaczyć to zdjęcie?";
 "editImageDetails_description" = "Opis";
 "editImageDetails_comments" = "Komentarze";
 "editImageDetails_dateCreation" = "Data Utworzenia";
-"editImageDetails_dateUnset" = "Dezaktywuj";
+"editImageDetails_dateUnset" = "Odznacz";
 "editImageDetails_dateToday" = "Dzisiaj";
-"editImageDetails_dateMonthInc" = "+1 Miesiąc";
-"editImageDetails_dateMonthDec" = "-1 Miesiąc";
-"editImageDetails_dateYearInc" = "+1 Rok";
-"editImageDetails_dateYearDec" = "-1 Rok";
-"editImageDetailsHUD_updating" = "Aktualizacja informacji o zdjęciu…";
+"editImageDetails_dateMonthInc" = "+1 miesiąc";
+"editImageDetails_dateMonthDec" = "-1 miesiąc";
+"editImageDetails_dateYearInc" = "+1 rok";
+"editImageDetails_dateYearDec" = "-1 rok";
+"editImageDetailsHUD_updatingSingle" = "Aktualizowanie zdjęcia…";
+"editImageDetailsHUD_updatingPlural" = "Aktualizowanie zdjęć…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Aktualizacja nieudana";

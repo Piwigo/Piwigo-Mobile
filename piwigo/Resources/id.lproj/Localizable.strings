@@ -281,7 +281,8 @@
 "editImageDetails_dateMonthDec" = "-1 Month";
 "editImageDetails_dateYearInc" = "+1 Year";
 "editImageDetails_dateYearDec" = "-1 Year";
-"editImageDetailsHUD_updating" = "Memperbarui Info Gambar…";
+"editImageDetailsHUD_updatingSingle" = "Memperbarui foto…";
+"editImageDetailsHUD_updatingPlural" = "Memperbarui foto…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Gagal untuk Memperbarui";

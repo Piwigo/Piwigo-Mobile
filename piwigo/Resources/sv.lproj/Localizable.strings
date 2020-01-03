@@ -281,7 +281,8 @@
 "editImageDetails_dateMonthDec" = "-1 Månad";
 "editImageDetails_dateYearInc" = "+1 År";
 "editImageDetails_dateYearDec" = "-1 År";
-"editImageDetailsHUD_updating" = "Uppdaterar bildinfo…";
+"editImageDetailsHUD_updatingSingle" = "Uppdaterar foto…";
+"editImageDetailsHUD_updatingPlural" = "Uppdaterar foton…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Uppdateringen misslyckades";
