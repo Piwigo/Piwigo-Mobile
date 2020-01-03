@@ -275,7 +275,7 @@
 "editImageDetails_description" = "Beschreibung";
 "editImageDetails_comments" = "Kommentare";
 "editImageDetails_dateCreation" = "Aufnahmedatum";
-"editImageDetails_dateUnset" = "Entfernen";
+"editImageDetails_dateUnset" = "Zurücksetzen";
 "editImageDetails_dateToday" = "Heute";
 "editImageDetails_dateMonthInc" = "+1 Monat";
 "editImageDetails_dateMonthDec" = "-1 Monat";
