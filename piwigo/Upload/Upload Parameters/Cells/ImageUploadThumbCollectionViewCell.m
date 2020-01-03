@@ -6,6 +6,7 @@
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "ImageUploadThumbCollectionViewCell.h"
 #import "ImageDetailViewController.h"
@@ -55,9 +56,12 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
     
     self.imageFile.font = [UIFont piwigoFontSmallLight];
     self.imageTime.userInteractionEnabled = NO;
+
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 }
 
--(void)setupWithImage:(ImageUpload *)imageDetails andRemoveOption:(BOOL)hasRemove
+-(void)applyColorPalette
 {
     // Cell background
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
@@ -65,12 +69,18 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
 
     // Image size, date and time
     self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
+    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
     self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
     self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
+}
 
+-(void)setupWithImage:(ImageUpload *)imageDetails andRemoveOption:(BOOL)hasRemove
+{
+    // Colors
+    [self applyColorPalette];
+    
     // Image file name
     self.imageId = imageDetails.imageId;
-    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
     if (imageDetails.fileName.length > 0) {
         self.imageFile.text = imageDetails.fileName;
     }
