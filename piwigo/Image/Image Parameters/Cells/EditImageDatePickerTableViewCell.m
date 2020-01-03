@@ -9,14 +9,15 @@
 #import "EditImageDatePickerTableViewCell.h"
 
 NSString * const kDatePickerTableCell_ID = @"DatePickerTableCell";
-NSString * const kPiwigoPickerMinDate = @"1922-01-01 00:00:00";     // UTC
-NSString * const kPiwigoPickerMaxDate = @"2100-01-01 00:00:00";     // UTC
-NSTimeInterval const kPiwigoPicker1Day = 24 * 60 * 60;
-NSInteger const kPiwigoPicker12Hours = 12;
-NSInteger const kPiwigoPicker24Hours = 24;
-NSInteger const kPiwigoPickerMinutesPerHour = 60;
-NSInteger const kPiwigoPickerSecondsPerMinute = 60;
-NSInteger const kPiwigoPickerNberOfLoops = 2 * 5000;       // i.e. ±5000 loops of picker
+
+static NSString * const kPiwigoPickerMinDate = @"1922-01-01 00:00:00";     // UTC
+static NSString * const kPiwigoPickerMaxDate = @"2100-01-01 00:00:00";     // UTC
+static NSTimeInterval const kPiwigoPicker1Day = 24 * 60 * 60;
+static NSInteger const kPiwigoPicker12Hours = 12;
+static NSInteger const kPiwigoPicker24Hours = 24;
+static NSInteger const kPiwigoPickerMinutesPerHour = 60;
+static NSInteger const kPiwigoPickerSecondsPerMinute = 60;
+static NSInteger const kPiwigoPickerNberOfLoops = 2 * 5000;       // i.e. ±5000 loops of picker
 
 typedef enum {
     ComponentOrderDay,
@@ -89,6 +90,14 @@ typedef enum {
     self.pickerMaxNberDays = [maxDate timeIntervalSinceDate:self.pickerRefDate] / kPiwigoPicker1Day;
 //    NSLog(@"=> minDate:0 day, maxDate:%g days", self.pickerMaxNberDays);
     // => minDate:0 day, maxDate:101538 days
+    
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+}
+
+-(void)applyColorPalette
+{
+    [self.datePicker reloadAllComponents];
 }
 
 -(void)prepareForReuse
@@ -102,8 +111,8 @@ typedef enum {
 
 -(void)setDatePickerWithDate:(NSDate *)date animated:(BOOL)animated
 {
-    // Date picker
     self.datePicker.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.datePicker.tintColor = [UIColor piwigoLeftLabelColor];
 
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSTimeInterval daysInSec = [date timeIntervalSinceDate:self.pickerRefDate];

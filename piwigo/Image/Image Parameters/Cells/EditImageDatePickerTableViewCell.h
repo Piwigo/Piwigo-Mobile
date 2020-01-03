@@ -7,16 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+
+#import "AppDelegate.h"
 #import "PiwigoImageData.h"
 
 FOUNDATION_EXPORT NSString * const kDatePickerTableCell_ID;
-
-FOUNDATION_EXPORT NSTimeInterval const kPiwigoPicker1Day;
-FOUNDATION_EXPORT NSInteger const kPiwigoPicker12Hours;
-FOUNDATION_EXPORT NSInteger const kPiwigoPicker24Hours;
-FOUNDATION_EXPORT NSInteger const kPiwigoPickerMinutesPerHour;
-FOUNDATION_EXPORT NSInteger const kPiwigoPickerSecondsPerMinute;
-FOUNDATION_EXPORT NSInteger const kPiwigoPickerNberOfLoops;
 
 @protocol EditImageDatePickerDelegate <NSObject>
 
