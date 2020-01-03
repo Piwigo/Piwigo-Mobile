@@ -586,21 +586,11 @@ typedef enum {
 -(void)textViewDidBeginEditing:(UITextView *)textView
 {
     self.shouldUpdateComment = YES;
-    if ([textView.text isEqualToString:NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description")]) {
-        textView.text = @"";
-        textView.textColor = [UIColor piwigoLeftLabelColor];
-    }
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     NSString *finalString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-    if ([finalString isEqualToString:@""]) {
-        textView.text = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
-        textView.textColor = [UIColor piwigoRightLabelColor];
-    }
-    
-    // Store actual description if cell exists
     self.commonParameters.comment = finalString;
     return YES;
 }
@@ -613,12 +603,6 @@ typedef enum {
 
 -(void)textViewDidEndEditing:(UITextView *)textView
 {
-    if ([textView.text isEqualToString:@""]) {
-        textView.text = NSLocalizedString(@"editImageDetails_descriptionPlaceholder", @"Description");
-        textView.textColor = [UIColor piwigoRightLabelColor];
-    }
-    
-    // Store actual description if cell exists
     self.commonParameters.comment = textView.text;
 }
 
