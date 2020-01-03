@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "AppDelegate.h"
 #import "PiwigoImageData.h"
 
 FOUNDATION_EXPORT NSString * const kDatePickerTableCell_ID;

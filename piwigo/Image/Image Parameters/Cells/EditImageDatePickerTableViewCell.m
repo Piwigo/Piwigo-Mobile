@@ -6,6 +6,7 @@
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EditImageDatePickerTableViewCell.h"
 
 NSString * const kDatePickerTableCell_ID = @"DatePickerTableCell";
