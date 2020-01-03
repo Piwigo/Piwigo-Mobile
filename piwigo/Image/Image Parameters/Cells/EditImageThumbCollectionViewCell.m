@@ -1,11 +1,12 @@
 //
-//  EditImageFilenameTableViewCell.m
+//  EditImageThumbCollectionViewCell.m
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 20/08/2019.
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageThumbCollectionViewCell.h"
 #import "ImageDetailViewController.h"
@@ -61,23 +62,32 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     self.imageTime.userInteractionEnabled = NO;
 
     self.editImageButton.tintColor = [UIColor piwigoOrange];
+    
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 }
 
--(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove
+-(void)applyColorPalette
 {
-    // Cell background
+    // Background
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
     self.editButtonView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.removeButtonView.backgroundColor = [UIColor piwigoCellBackgroundColor];
 
     // Image size, date and time
     self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
+    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
     self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
     self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
+}
 
+-(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove
+{
+    // Colors
+    [self applyColorPalette];
+    
     // Image file name
     self.imageId = imageData.imageId;
-    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
     if (imageData.fileName.length > 0) {
         self.imageFile.text = imageData.fileName;
     }

@@ -63,7 +63,7 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
 
 -(void)applyColorPalette
 {
-    // Cell background
+    // Background
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
     self.removeButtonView.backgroundColor = [UIColor piwigoCellBackgroundColor];
 
