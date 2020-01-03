@@ -13,6 +13,8 @@
 #import "MBProgressHUD.h"
 #import "Model.h"
 
+NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollectionCell";
+
 @interface ImageUploadThumbCollectionViewCell() <UITextFieldDelegate>
 
 @property (nonatomic, weak) IBOutlet UIImageView *imageThumbnail;

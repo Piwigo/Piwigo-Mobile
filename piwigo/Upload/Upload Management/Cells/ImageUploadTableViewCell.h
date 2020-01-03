@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+FOUNDATION_EXPORT NSString * const kImageUploadCell_ID;
+
 @class ImageUpload;
 
 @interface ImageUploadTableViewCell : MGSwipeTableCell

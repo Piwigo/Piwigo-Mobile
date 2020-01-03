@@ -14,6 +14,8 @@
 #import "Model.h"
 #import "TagsData.h"
 
+NSString * const kImageUploadCell_ID = @"ImageUploadCell";
+
 @interface ImageUploadTableViewCell()
 
 @property (weak, nonatomic) IBOutlet UIImageView *image;

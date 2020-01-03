@@ -11,7 +11,9 @@
 
 #import "ImageUpload.h"
 
-@protocol EditImageThumbnailDelegate <NSObject>
+FOUNDATION_EXPORT NSString * const kImageUploadThumbCollectionCell_ID;
+
+@protocol ImageUploadThumbnailDelegate <NSObject>
 
 -(void)didDeselectImageWithId:(NSInteger)imageId;
 
@@ -20,7 +22,7 @@
 @interface ImageUploadThumbCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, assign) NSInteger imageId;
-@property (nonatomic, weak) id<EditImageThumbnailDelegate> delegate;
+@property (nonatomic, weak) id<ImageUploadThumbnailDelegate> delegate;
 
 -(void)setupWithImage:(ImageUpload *)imageDetails andRemoveOption:(BOOL)hasRemove;
 -(IBAction)removeImage;

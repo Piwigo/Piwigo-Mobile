@@ -7,15 +7,15 @@
 //
 
 #import "AppDelegate.h"
-#import "ImageUploadParamsViewController.h"
 #import "EditImagePrivacyTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageTextViewTableViewCell.h"
-#import "ImageUploadThumbCollectionViewCell.h"
 #import "EditImageTagsTableViewCell.h"
-#import "ImageDetailViewController.h"
-#import "ImageUpload.h"
+#import "ImageUploadParamsViewController.h"
+#import "ImageUploadThumbCollectionViewCell.h"
+#import "ImageUploadThumbTableViewCell.h"
 #import "ImageService.h"
+#import "ImageUpload.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 #import "PiwigoTagData.h"
@@ -26,7 +26,8 @@
 CGFloat const kEditImageDetailsViewWidth = 512.0;
 
 typedef enum {
-	EditImageDetailsOrderImageName,
+	EditImageParamsOrderThumbnails,
+    EditImageDetailsOrderImageName,
 	EditImageDetailsOrderAuthor,
 	EditImageDetailsOrderPrivacy,
 	EditImageDetailsOrderTags,
@@ -34,11 +35,10 @@ typedef enum {
 	EditImageDetailsOrderCount
 } EditImageDetailsOrder;
 
-@interface ImageUploadParamsViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageThumbnailDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface ImageUploadParamsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, ImageUploadThumbnailCellDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
 
 @property (nonatomic, strong) ImageUpload *commonParameters;
-@property (nonatomic, weak) IBOutlet UITableView *editImageDetailsTableView;
-@property (nonatomic, weak) IBOutlet UICollectionView *editImageThumbnailCollectionView;
+@property (nonatomic, strong) IBOutlet UITableView *imageUploadParamsTableView;
 @property (nonatomic, strong) NSMutableArray<ImageUpload *> *imagesToUpdate;
 @property (nonatomic, assign) BOOL shouldUpdateTitle;
 @property (nonatomic, assign) BOOL shouldUpdateAuthor;
@@ -55,7 +55,21 @@ typedef enum {
 	[super awakeFromNib];
 	
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Properties");
-	
+
+    // Buttons
+    UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
+    [cancel setAccessibilityIdentifier:@"Cancel"];
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
+    [done setAccessibilityIdentifier:@"Done"];
+
+    // Navigation bar
+    self.navigationController.navigationBarHidden = NO;
+    self.navigationItem.leftBarButtonItem = cancel;
+    self.navigationItem.rightBarButtonItem = done;
+
+    // Navigation bar
+    self.navigationController.navigationBarHidden = NO;
+
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 }
@@ -81,20 +95,19 @@ typedef enum {
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
 
-    // Collection view
-    self.editImageThumbnailCollectionView.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    [self.editImageThumbnailCollectionView reloadData];
-    
     // Table view
-    self.editImageDetailsTableView.separatorColor = [UIColor piwigoSeparatorColor];
-    self.editImageDetailsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
-    [self.editImageDetailsTableView reloadData];
+    self.imageUploadParamsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.imageUploadParamsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
+    [self.imageUploadParamsTableView reloadData];
 }
 
 -(void)viewDidLoad
 {
     [super viewDidLoad];
     
+    // Register thumbnails cell
+    [self.imageUploadParamsTableView registerNib:[UINib nibWithNibName:@"ImageUploadThumbTableViewCell" bundle:nil] forCellReuseIdentifier:kImageUploadThumbTableCell_ID];
+
     // Initialise common image properties from first supplied image
     self.commonParameters = [[ImageUpload alloc] initWithImageAsset:self.images[0].imageAsset orImageData:nil forCategory:self.images[0].categoryToUploadTo privacyLevel:self.images[0].privacyLevel author:self.images[0].author];
     self.commonParameters.imageTitle = self.images[0].imageTitle;
@@ -163,28 +176,25 @@ typedef enum {
         self.commonParameters.comment = @"";
         break;
     }
-    self.shouldUpdateComment = NO;
+    self.shouldUpdateComment = NO;    
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 
-    // Navigation bar
-    self.navigationController.navigationBarHidden = NO;
-
     // Adjust content inset
     // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
     CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height;
-    CGFloat tableHeight = self.editImageDetailsTableView.bounds.size.height;
+    CGFloat tableHeight = self.imageUploadParamsTableView.bounds.size.height;
     CGFloat viewHeight = self.view.bounds.size.height;
 
     // On iPad, the form is presented in a popover view
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - viewHeight), 0.0)];
+        [self.imageUploadParamsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - viewHeight), 0.0)];
     } else {
         CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-        [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight), 0.0)];
+        [self.imageUploadParamsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight), 0.0)];
     }
     
     // Set colors, fonts, etc.
@@ -200,21 +210,20 @@ typedef enum {
         // Adjust content inset
         // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
         CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height;
-        CGFloat tableHeight = self.editImageDetailsTableView.bounds.size.height;
+        CGFloat tableHeight = self.imageUploadParamsTableView.bounds.size.height;
 
         // On iPad, the form is presented in a popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
             self.preferredContentSize = CGSizeMake(kEditImageDetailsViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
-            [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - size.height), 0.0)];
+            [self.imageUploadParamsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - size.height), 0.0)];
         } else {
             CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-            [self.editImageDetailsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - size.height), 0.0)];
+            [self.imageUploadParamsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - size.height), 0.0)];
         }
 
-        // Reload collection and table views
-        [self.editImageThumbnailCollectionView reloadData];
-        [self.editImageDetailsTableView reloadData];
+        // Reload table views
+        [self.imageUploadParamsTableView reloadData];
     } completion:nil];
 }
 
@@ -230,6 +239,24 @@ typedef enum {
     
     // Unregister palette changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
+}
+
+
+#pragma mark - Edit image Methods
+
+-(void)cancelEdit
+{
+    // No change
+    self.commonParameters = nil;
+    
+    // Return to image preview
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)doneEdit
+{
+    // Return to image preview
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -280,49 +307,6 @@ typedef enum {
 }
 
 
-#pragma mark - UICollectionView - Rows
-
--(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    return 1;
-}
-
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    // Returns number of images or albums
-    return self.images.count;
-}
-
--(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
-{
-    // Avoid unwanted spaces
-    if (@available(iOS 13.0, *)) {
-        return UIEdgeInsetsMake(0, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
-    } else {
-        return UIEdgeInsetsMake(10, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
-    }
-}
-
--(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
-{
-    return (CGFloat)kImageDetailsCellSpacing;
-}
-
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    CGFloat size = (CGFloat)[ImagesCollection imageDetailsSizeForView:self.view];
-    return CGSizeMake(size, 144);
-}
-
--(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    ImageUploadThumbCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"image" forIndexPath:indexPath];
-    [cell setupWithImage:self.images[indexPath.row] andRemoveOption:(self.images.count > 1)];
-    cell.delegate = self;
-    return cell;
-}
-
-
 #pragma mark - UITableView - Rows
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -330,18 +314,27 @@ typedef enum {
     return 0.0;        // To hide the section header
 }
 
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 0.0;        // To hide the section footer
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height = 44.0;
     switch (indexPath.row)
     {
+        case EditImageParamsOrderThumbnails:
+            height = 170.0;
+            break;
+            
         case EditImageDetailsOrderPrivacy:
         case EditImageDetailsOrderTags:
             height = 78.0;
             break;
             
         case EditImageDetailsOrderDescription:
-            height = 528.0;
+            height = 428.0;
             break;
             
         default:
@@ -362,12 +355,18 @@ typedef enum {
     
     switch(indexPath.row)
     {
+        case EditImageParamsOrderThumbnails:
+        {
+            ImageUploadThumbTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kImageUploadThumbTableCell_ID forIndexPath:indexPath];
+            [cell setupWithImages:self.images];
+            cell.delegate = self;
+            tableViewCell = cell;
+            break;
+        }
+        
         case EditImageDetailsOrderImageName:
         {
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"title" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImageTextFieldTableViewCell new];
-            }
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title:")
                      placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
                   andImageDetail:self.commonParameters.imageTitle];
@@ -380,9 +379,6 @@ typedef enum {
         case EditImageDetailsOrderAuthor:
         {
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"author" forIndexPath:indexPath];
-            if(!cell) {
-                cell = [EditImageTextFieldTableViewCell new];
-            }
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author:")
                      placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
                   andImageDetail:[self.commonParameters.author isEqualToString:@"NSNotFound"] ? @"" : self.commonParameters.author];
@@ -395,9 +391,6 @@ typedef enum {
         case EditImageDetailsOrderPrivacy:
         {
             EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImagePrivacyTableViewCell new];
-            }
             [cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
             [cell setPrivacyLevel:self.commonParameters.privacyLevel];
             tableViewCell = cell;
@@ -407,9 +400,6 @@ typedef enum {
         case EditImageDetailsOrderTags:
         {
             EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImageTagsTableViewCell new];
-            }
             [cell setTagList:self.commonParameters.tags];
             tableViewCell = cell;
             break;
@@ -418,9 +408,6 @@ typedef enum {
         case EditImageDetailsOrderDescription:
         {
             EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description" forIndexPath:indexPath];
-            if (!cell) {
-                cell = [EditImageTextViewTableViewCell new];
-            }
             [cell setupWithImageDetail:self.commonParameters.comment];
             cell.textView.delegate = self;
             tableViewCell = cell;
@@ -563,7 +550,7 @@ typedef enum {
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [self.editImageDetailsTableView endEditing:YES];
+    [self.imageUploadParamsTableView endEditing:YES];
     return YES;
 }
 
@@ -618,7 +605,7 @@ typedef enum {
 
 -(BOOL)textViewShouldEndEditing:(UITextView *)textView
 {
-    [self.editImageDetailsTableView endEditing:YES];
+    [self.imageUploadParamsTableView endEditing:YES];
     return YES;
 }
 
@@ -634,7 +621,7 @@ typedef enum {
 }
 
 
-#pragma mark - EditImageThumbnailDelegate Methods
+#pragma mark - ImageUploadThumbnailCellDelegate Methods
 
 -(void)didDeselectImageWithId:(NSInteger)imageId
 {
@@ -648,7 +635,6 @@ typedef enum {
         }
     }
     self.images = newImages;
-    [self.editImageThumbnailCollectionView reloadData];
 }
 
 
@@ -660,7 +646,7 @@ typedef enum {
     self.commonParameters.privacyLevel = privacy;
     
     // Update table view cell
-    EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
+    EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.imageUploadParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
     if (cell) [cell setPrivacyLevel:privacy];
     
     // Remember to update image info
@@ -676,7 +662,7 @@ typedef enum {
     self.commonParameters.tags = selectedTags;
     
     // Update table view cell
-    EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageDetailsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
+    EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.imageUploadParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
     if (cell) [cell setTagList:self.commonParameters.tags];
     
     // Remember to update image info

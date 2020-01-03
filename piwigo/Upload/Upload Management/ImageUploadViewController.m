@@ -44,7 +44,7 @@
 		self.uploadImagesTableView.dataSource = self;
 
         UINib *cellNib = [UINib nibWithNibName:@"ImageUploadCell" bundle:nil];
-        [self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:@"Cell"];
+        [self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:kImageUploadCell_ID];
 
         [self.view addSubview:self.uploadImagesTableView];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.uploadImagesTableView]];
@@ -276,7 +276,7 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	ImageUploadTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	ImageUploadTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kImageUploadCell_ID forIndexPath:indexPath];
 	
 	if(indexPath.section == 0)
 	{
@@ -305,13 +305,20 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	if(indexPath.section == 0)
+	if (indexPath.section == 0)
 	{
 		UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"ImageUploadParams" bundle:nil];
 		ImageUploadParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"ImageUploadParams"];
 		editImageVC.images = @[[self.imagesToEdit objectAtIndex:indexPath.row]];
 		editImageVC.delegate = self;
-		[self.navigationController pushViewController:editImageVC animated:YES];
+
+        // Present properties editor in new navigation controller
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:editImageVC];
+        navController.modalPresentationStyle = UIModalPresentationPopover;
+        navController.popoverPresentationController.sourceView = self.view;
+        navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        navController.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:navController animated:YES completion:nil];
 	}
 }
 

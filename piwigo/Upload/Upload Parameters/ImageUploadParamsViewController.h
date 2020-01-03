@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class ImageUpload;
-
 @protocol UploadParamsDelegate <NSObject>
 
 -(void)didFinishEditingDetails:(ImageUpload*)details;
