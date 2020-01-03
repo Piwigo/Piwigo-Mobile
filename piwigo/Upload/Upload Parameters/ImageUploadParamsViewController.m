@@ -56,16 +56,18 @@ typedef enum {
 	
     self.title = NSLocalizedString(@"imageDetailsView_title", @"Properties");
 
-    // Buttons
-    UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
-    [cancel setAccessibilityIdentifier:@"Cancel"];
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
-    [done setAccessibilityIdentifier:@"Done"];
-
     // Navigation bar
     self.navigationController.navigationBarHidden = NO;
-    self.navigationItem.leftBarButtonItem = cancel;
-    self.navigationItem.rightBarButtonItem = done;
+
+    // Buttons
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
+        [cancel setAccessibilityIdentifier:@"Cancel"];
+        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEdit)];
+        [done setAccessibilityIdentifier:@"Done"];
+        self.navigationItem.leftBarButtonItem = cancel;
+        self.navigationItem.rightBarButtonItem = done;
+    }
 
     // Navigation bar
     self.navigationController.navigationBarHidden = NO;

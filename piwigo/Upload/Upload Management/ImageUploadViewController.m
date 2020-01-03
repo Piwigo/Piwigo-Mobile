@@ -312,13 +312,17 @@
 		editImageVC.images = @[[self.imagesToEdit objectAtIndex:indexPath.row]];
 		editImageVC.delegate = self;
 
-        // Present properties editor in new navigation controller
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:editImageVC];
-        navController.modalPresentationStyle = UIModalPresentationPopover;
-        navController.popoverPresentationController.sourceView = self.view;
-        navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        navController.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self presentViewController:navController animated:YES completion:nil];
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            [self.navigationController pushViewController:editImageVC animated:YES];
+        } else {
+            // Present properties editor in new navigation controller
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:editImageVC];
+            navController.modalPresentationStyle = UIModalPresentationPopover;
+            navController.popoverPresentationController.sourceView = self.view;
+            navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            navController.modalPresentationStyle = UIModalPresentationFullScreen;
+            [self presentViewController:navController animated:YES completion:nil];
+        }
 	}
 }
 
