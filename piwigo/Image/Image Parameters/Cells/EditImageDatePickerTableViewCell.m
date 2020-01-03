@@ -441,7 +441,7 @@ typedef enum {
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    NSLog(@"=> Selected row:%ld in component:%ld", (long)row, (long)component);
+//    NSLog(@"=> Selected row:%ld in component:%ld", (long)row, (long)component);
 
     // Jump back to the row with the current value that is closest to the middle
     NSInteger newRow = row;
