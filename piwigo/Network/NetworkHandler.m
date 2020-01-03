@@ -605,7 +605,7 @@ NSInteger const loadingViewTag = 899;
     [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
-+(void)showPiwigoError:(NSInteger)code withMessage:(NSString *)msg forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams
++(NSError *)getPiwigoErrorMessageFromCode:(NSInteger)code message:(NSString *)msg path:(NSString *)path andURLparams:(NSDictionary *)urlParams
 {
     NSError *error;
     NSString *url = [self getURLWithPath:path withURLParams:urlParams];
@@ -627,6 +627,12 @@ NSInteger const loadingViewTag = 899;
             error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverUnknownError_message", @"Unexpected error encountered while calling server method with provided parameters."), url]}];
             break;
     }
+    return error;
+}
+
++(void)showPiwigoError:(NSInteger)code withMessage:(NSString *)msg forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams
+{
+    NSError *error = [self getPiwigoErrorMessageFromCode:code message:msg path:path andURLparams:urlParams];
     [self showConnectionError:error];
 }
 

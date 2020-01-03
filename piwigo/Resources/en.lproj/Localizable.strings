@@ -281,7 +281,8 @@
 "editImageDetails_dateMonthDec" = "-1 Month";
 "editImageDetails_dateYearInc" = "+1 Year";
 "editImageDetails_dateYearDec" = "-1 Year";
-"editImageDetailsHUD_updating" = "Updating Photo Info…";
+"editImageDetailsHUD_updatingSingle" = "Updating Photo…";
+"editImageDetailsHUD_updatingPlural" = "Updating Photos…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Failed to Update";

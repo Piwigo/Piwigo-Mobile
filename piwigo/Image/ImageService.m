@@ -1365,14 +1365,10 @@ NSString * const kGetImageOrderDescending = @"desc";
 
                     // Notify album/image view of modification
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
-
-                    if(completion)
-                    {
-                        completion(task, response);
-                    }
-                } else {
-                   // Called method did display Piwigo error
-                   completion(task, nil);
+                }
+                if(completion)
+                {
+                    completion(task, response);
                 }
                                }
                                 onFailure:fail];
@@ -1418,28 +1414,7 @@ NSString * const kGetImageOrderDescending = @"desc";
               progress:progress
                success:^(NSURLSessionTask *task, id responseObject) {
                         if(completion) {
-                            if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                            {
-                                if(completion)
-                                {
-                                    completion(task, responseObject);
-                                }
-                            }
-                            else
-                            {
-                                // Display Piwigo error
-                                NSInteger errorCode = NSNotFound;
-                                if ([responseObject objectForKey:@"err"]) {
-                                    errorCode = [[responseObject objectForKey:@"err"] intValue];
-                                }
-                                NSString *errorMsg = @"";
-                                if ([responseObject objectForKey:@"message"]) {
-                                    errorMsg = [responseObject objectForKey:@"message"];
-                                }
-                                [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImagesGetInfo andURLparams:nil];
-
-                                completion(task, nil);
-                            }
+                            completion(task, responseObject);
                         }
                     }
                    failure:fail
