@@ -404,7 +404,7 @@ typedef enum {
             break;
             
         case ComponentOrderHour:
-            label.text = [NSString stringWithFormat:@"%02ld", row % (self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours)];
+            label.text = [NSString stringWithFormat:@"%02ld", (long)row % (self.is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours)];
             label.textAlignment = NSTextAlignmentCenter;
             break;
             
@@ -414,7 +414,7 @@ typedef enum {
             break;
             
         case ComponentOrderMinute:
-            label.text = [NSString stringWithFormat:@"%02ld", row % kPiwigoPickerMinutesPerHour];
+            label.text = [NSString stringWithFormat:@"%02ld", (long)row % kPiwigoPickerMinutesPerHour];
             label.textAlignment = NSTextAlignmentCenter;
             break;
             
@@ -424,7 +424,7 @@ typedef enum {
             break;
             
         case ComponentOrderSecond:
-            label.text = [NSString stringWithFormat:@"%02ld", row % kPiwigoPickerSecondsPerMinute];
+            label.text = [NSString stringWithFormat:@"%02ld", (long)row % kPiwigoPickerSecondsPerMinute];
             label.textAlignment = NSTextAlignmentCenter;
             break;
             
