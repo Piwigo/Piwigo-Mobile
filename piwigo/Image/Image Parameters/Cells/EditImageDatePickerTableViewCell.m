@@ -13,6 +13,7 @@ NSString * const kDatePickerTableCell_ID = @"DatePickerTableCell";
 
 static NSString * const kPiwigoPickerMinDate = @"1922-01-01 00:00:00";     // UTC
 static NSString * const kPiwigoPickerMaxDate = @"2100-01-01 00:00:00";     // UTC
+static NSInteger const kPiwigoComponentWidthLimit = 375;         // i.e. larger than iPhones 6,7,8 screen width
 static NSTimeInterval const kPiwigoPicker1Day = 24 * 60 * 60;
 static NSInteger const kPiwigoPicker12Hours = 12;
 static NSInteger const kPiwigoPicker24Hours = 24;
@@ -35,7 +36,8 @@ typedef enum {
 @interface EditImageDatePickerTableViewCell() <UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, assign) BOOL is24hFormat;
-@property (nonatomic, strong) NSDateFormatter *formatter;
+@property (nonatomic, strong) NSDateFormatter *formatterShort;
+@property (nonatomic, strong) NSDateFormatter *formatterLong;
 @property (nonatomic, strong) NSDate *pickerRefDate;
 @property (nonatomic, assign) NSInteger pickerMaxNberDays;
 @property (nonatomic, strong) NSArray<NSString *> *ampmSymbols;
@@ -68,27 +70,31 @@ typedef enum {
     self.incrementYearButton.title = NSLocalizedString(@"editImageDetails_dateYearInc", @"+1 Year");
 
     // Date picker: determine current time format: 12 or 24h
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setLocale:[NSLocale currentLocale]];
-    [formatter setDateStyle:NSDateFormatterNoStyle];
-    [formatter setTimeStyle:NSDateFormatterShortStyle];
-    NSString *dateString = [formatter stringFromDate:[NSDate date]];
-    self.ampmSymbols = @[[formatter AMSymbol], [formatter PMSymbol]];
-    NSRange amRange = [dateString rangeOfString:[formatter AMSymbol]];
-    NSRange pmRange = [dateString rangeOfString:[formatter PMSymbol]];
+    NSDateFormatter *formatterShort = [[NSDateFormatter alloc] init];
+    [formatterShort setLocale:[NSLocale currentLocale]];
+    [formatterShort setDateStyle:NSDateFormatterNoStyle];
+    [formatterShort setTimeStyle:NSDateFormatterShortStyle];
+    NSString *dateString = [formatterShort stringFromDate:[NSDate date]];
+    self.ampmSymbols = @[[formatterShort AMSymbol], [formatterShort PMSymbol]];
+    NSRange amRange = [dateString rangeOfString:[formatterShort AMSymbol]];
+    NSRange pmRange = [dateString rangeOfString:[formatterShort PMSymbol]];
     self.is24hFormat = (amRange.location == NSNotFound && pmRange.location == NSNotFound);
     
     // Date picker: adopt format respecting current locale
     NSString *formatString = [NSDateFormatter dateFormatFromTemplate:@"eeedMMM" options:0
     locale:[NSLocale currentLocale]];
-    self.formatter = [[NSDateFormatter alloc] init];
-    [self.formatter setDateFormat:formatString];
-    
+    self.formatterShort = [[NSDateFormatter alloc] init];
+    [self.formatterShort setDateFormat:formatString];
+    formatString = [NSDateFormatter dateFormatFromTemplate:@"eeeedMMM" options:0
+    locale:[NSLocale currentLocale]];
+    self.formatterLong = [[NSDateFormatter alloc] init];
+    [self.formatterLong setDateFormat:formatString];
+
     // Define date picker limits in number of days
-    formatter.dateFormat = @"YYYY-MM-DD hh:mm:ss";
-    formatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-    self.pickerRefDate = [formatter dateFromString:kPiwigoPickerMinDate];
-    NSDate *maxDate = [formatter dateFromString:kPiwigoPickerMaxDate];
+    formatterShort.dateFormat = @"YYYY-MM-DD hh:mm:ss";
+    formatterShort.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    self.pickerRefDate = [formatterShort dateFromString:kPiwigoPickerMinDate];
+    NSDate *maxDate = [formatterShort dateFromString:kPiwigoPickerMaxDate];
     self.pickerMaxNberDays = [maxDate timeIntervalSinceDate:self.pickerRefDate] / kPiwigoPicker1Day;
 //    NSLog(@"=> minDate:0 day, maxDate:%g days", self.pickerMaxNberDays);
     // => minDate:0 day, maxDate:101538 days
@@ -230,7 +236,7 @@ typedef enum {
 -(CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
 {
     // Widths contants
-    const CGFloat day = 106.0f;
+    const CGFloat dayWidth = 106.0f + (self.datePicker.bounds.size.width > kPiwigoComponentWidthLimit) * 60.0f;
     const CGFloat sepDay = 10.0f;
     const CGFloat time = 26.0f;
     const CGFloat sepTime = 8.0f;
@@ -240,7 +246,7 @@ typedef enum {
     // Calculate left and right pane widths (for debugging)
 //    const CGFloat leftMargin = pickerView.superview.layoutMargins.left;
 //    const CGFloat rightMargin = pickerView.superview.layoutMargins.right;
-//    CGFloat leftPaneWidth = leftMargin + separatorWidth + day + separatorWidth + sepDay/2;
+//    CGFloat leftPaneWidth = leftMargin + separatorWidth + dayWidth + separatorWidth + sepDay/2;
 //    CGFloat rightPaneWidth = sepDay/2 + 5 * separatorWidth + 3*time + 2*sepTime + !self.is24hFormat * (separatorWidth + ampm) + separatorWidth + rightMargin;
 //    CGFloat remainingSpace = pickerView.bounds.size.width - leftPaneWidth - rightPaneWidth;
 //    NSLog(@"=> left:%g, right:%g, width:%g (remaining:%g)", leftPaneWidth, rightPaneWidth, pickerView.bounds.size.width, remainingSpace);
@@ -250,7 +256,7 @@ typedef enum {
     NSInteger width = 0;
     switch (component) {
         case ComponentOrderDay:
-            width = day;
+            width = dayWidth;
             break;
             
         case ComponentOrderSepDH:
@@ -290,7 +296,11 @@ typedef enum {
         case ComponentOrderDay:
         {
             NSDate *dateOfDay = [NSDate dateWithTimeInterval:row * kPiwigoPicker1Day sinceDate:self.pickerRefDate];
-            label.text = [self.formatter stringFromDate:dateOfDay];
+            if (self.datePicker.bounds.size.width > kPiwigoComponentWidthLimit) {
+                label.text = [self.formatterLong stringFromDate:dateOfDay];
+            } else {
+                label.text = [self.formatterShort stringFromDate:dateOfDay];
+            }
             label.textAlignment = NSTextAlignmentRight;
             break;
         }
