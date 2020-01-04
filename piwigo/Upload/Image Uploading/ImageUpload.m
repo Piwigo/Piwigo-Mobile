@@ -25,7 +25,13 @@ NSString * const kPiwigoNotificationDeselectImageToUpload = @"kPiwigoNotificatio
         if (imageAsset) {
             // Initialisation from image asset
             self.imageAsset = imageAsset;
-            self.fileName = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
+            NSString *fileName = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
+            if ([Model sharedInstance].prefixFileNameBeforeUpload &&
+                ![fileName hasPrefix:[Model sharedInstance].defaultPrefix]) {
+                self.fileName = [[Model sharedInstance].defaultPrefix stringByAppendingString:fileName];
+            } else {
+                self.fileName = fileName;
+            }
             self.creationDate = [imageAsset creationDate];
             self.pixelWidth = [imageAsset pixelWidth];
             self.pixelHeight = [imageAsset pixelHeight];

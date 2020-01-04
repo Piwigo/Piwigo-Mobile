@@ -602,6 +602,12 @@
 "settings_photoCompress>375px" = "Komprimera bild före uppladdning";
 "settings_photoQuality" = "> Kvalitet";
 "settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
+"settings_prefixFilename>414px" = "Prefix bildfilnamn innan uppladdning";
+"settings_prefixFilename>375px" = "Prefix filnamn innan uppladdning";
+"settings_prefixFilename" = "Prefix bildnamn";
+"settings_defaultPrefix" = "Prefix";
+"settings_defaultPrefix>320px" = "Filnamnsprefix";
+"settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Radera bild efter uppladdning";
 "settings_deleteImage" = "Radera efter uppladdning";
 

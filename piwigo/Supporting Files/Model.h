@@ -131,6 +131,8 @@ typedef enum {
 @property (nonatomic, assign) BOOL compressImageOnUpload;
 @property (nonatomic, assign) NSInteger photoQuality;
 @property (nonatomic, assign) BOOL deleteImageAfterUpload;
+@property (nonatomic, assign) BOOL prefixFileNameBeforeUpload;
+@property (nonatomic, strong) NSString *defaultPrefix;
 
 // Default palette mode
 @property (nonatomic, assign) BOOL isDarkPaletteActive;

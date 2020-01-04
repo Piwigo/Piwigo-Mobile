@@ -602,6 +602,12 @@
 "settings_photoCompress>375px" = "ضغط الصورة قبل التحميل";
 "settings_photoQuality" = "> الجودة";
 "settings_placeholderQuality" = "أدخل جودة الصورة من 50 - 98";
+"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
+"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
+"settings_prefixFilename" = "Prefix Photo Filename";
+"settings_defaultPrefix" = "Prefix";
+"settings_defaultPrefix>320px" = "Filename Prefix";
+"settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "حذف الصورة بعد تحميل";
 "settings_deleteImage" = "الحذف بعد التحميل";
 

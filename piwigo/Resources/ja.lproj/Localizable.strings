@@ -602,6 +602,12 @@
 "settings_photoCompress>375px" = "アップロードする前に写真を圧縮します";
 "settings_photoQuality" = "> 画質";
 "settings_placeholderQuality" = "写真の品質を 50 - 98 の範囲で入力してください";
+"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
+"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
+"settings_prefixFilename" = "Prefix Photo Filename";
+"settings_defaultPrefix" = "Prefix";
+"settings_defaultPrefix>320px" = "Filename Prefix";
+"settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "アップロード後に写真を削除します";
 "settings_deleteImage" = "アップロード後に削除します";
 

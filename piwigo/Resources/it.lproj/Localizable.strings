@@ -602,6 +602,12 @@
 "settings_photoCompress>375px" = "Comprimere l'immagine prima di caricare";
 "settings_photoQuality" = "> Qualità";
 "settings_placeholderQuality" = "Immettere una qualità d'immagine da 50-98";
+"settings_prefixFilename>414px" = "Prefisso file immagine prima di caricare";
+"settings_prefixFilename>375px" = "Prefisso nome file prima di caricarlo";
+"settings_prefixFilename" = "Prefix Photo Filename";
+"settings_defaultPrefix" = "Prefisso";
+"settings_defaultPrefix>320px" = "Prefisso nome file";
+"settings_defaultPrefixPlaceholder" = "Prefisso";
 "settings_deleteImage>375px" = "Elimina l'immagine dopo il caricamento";
 "settings_deleteImage" = "Elimina dopo il caricamento";
 

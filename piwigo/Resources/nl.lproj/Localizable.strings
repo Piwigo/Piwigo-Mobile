@@ -602,6 +602,12 @@
 "settings_photoCompress>375px" = "Comprimeer de foto vóór het uploaden";
 "settings_photoQuality" = "> Kwaliteit";
 "settings_placeholderQuality" = "Voer beeldkwaliteit in tussen 50-98";
+"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
+"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
+"settings_prefixFilename" = "Prefix Photo Filename";
+"settings_defaultPrefix" = "Prefix";
+"settings_defaultPrefix>320px" = "Filename Prefix";
+"settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Verwijder de foto ná het uploaden";
 "settings_deleteImage" = "Verwijder na uploaden";
 

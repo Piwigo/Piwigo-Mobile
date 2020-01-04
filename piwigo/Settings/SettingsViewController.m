@@ -48,7 +48,8 @@ typedef enum {
 } SettingsSection;
 
 typedef enum {
-	kImageUploadSettingAuthor
+	kImageUploadSettingAuthor,
+    kImageUploadSettingPrefix
 } kImageUploadSetting;
 
 NSString * const kHelpUsTitle = @"Help Us!";
@@ -433,8 +434,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 5;
             break;
         case SettingsSectionImageUpload:
-            nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
-                                ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
+            nberOfRows = 7 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
+                             ([Model sharedInstance].compressImageOnUpload ? 1 : 0) +
+                             ([Model sharedInstance].prefixFileNameBeforeUpload ? 1 : 0);
             break;
         case SettingsSectionColor:
             nberOfRows = 2;
@@ -792,6 +794,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             NSInteger row = indexPath.row;
             if (![Model sharedInstance].resizeImageOnUpload && (row > 3)) row++;
             if (![Model sharedInstance].compressImageOnUpload && (row > 5)) row++;
+            if (![Model sharedInstance].prefixFileNameBeforeUpload && (row > 7)) row++;
             switch(row)
 			{
 				case 0:     // Author Name?
@@ -809,7 +812,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Author");
                     }
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
-					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
+                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
 					cell.rightTextField.delegate = self;
 					cell.rightTextField.tag = kImageUploadSettingAuthor;
 					
@@ -964,7 +967,65 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
 					break;
 				}
-                case 7:     // Delete image after upload?
+                case 7:     // Prefix Filename Before Upload switch
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"prefix"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if (self.view.bounds.size.width > 414) {        // i.e. larger than iPhones 6,7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_prefixFilename>414px", @"Prefix Photo Filename Before Upload");
+                    } else if (self.view.bounds.size.width > 375) { // i.e. larger than iPhones 6,7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_prefixFilename>375px", @"Prefix Filename Before Upload");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_prefixFilename", @"Prefix Filename");
+                    }
+                    [cell.cellSwitch setOn:[Model sharedInstance].prefixFileNameBeforeUpload];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        // Number of rows will change accordingly
+                        [Model sharedInstance].prefixFileNameBeforeUpload = switchState;
+                        // Store modified setting
+                        [[Model sharedInstance] saveToDisk];
+                        // Position of the row that should be added/removed
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:(6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) + ([Model sharedInstance].compressImageOnUpload ? 1 : 0))
+                                                                         inSection:SettingsSectionImageUpload];
+                        if(switchState) {
+                            // Insert row in existing table
+                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        } else {
+                           // Remove row in existing table
+                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        }
+                    };
+
+                    tableViewCell = cell;
+                    break;
+                }
+                case 8:     // Filename prefix?
+                {
+                    TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsPrefix"];
+                    if(!cell)
+                    {
+                        cell = [TextFieldTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+                        cell.labelText = NSLocalizedString(@"settings_defaultPrefix>320px", @"Filename Prefix");
+                    } else {
+                        cell.labelText = NSLocalizedString(@"settings_defaultPrefix", @"Prefix");
+                    }
+                    cell.rightTextField.text = [Model sharedInstance].defaultPrefix;
+                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultPrefixPlaceholder", @"Prefix Filename") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
+                    cell.rightTextField.delegate = self;
+                    cell.rightTextField.tag = kImageUploadSettingPrefix;
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 9:     // Delete image after upload?
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"delete"];
                     if(!cell) {
@@ -1447,10 +1508,12 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 case 0:     // Author Name
                 case 2:     // Strip private Metadata
                 case 3:     // Resize Before Upload
-                case 4:     // Image Size slider or Compress Before Upload switch
-                case 5:     // Compress Before Upload switch or Image Quality slider or Delete Image switch
-                case 6:     // Image Quality slider or Delete Image switch
-                case 7:     // Delete image after upload
+                case 4:     // Image Size slider
+                case 5:     // Compress Before Upload switch
+                case 6:     // Image Quality slider
+                case 7:     // Prefix Filename Before Upload switch
+                case 8:     // Filename Prefix
+                case 9:     // Delete image after upload
                 {
                     result = NO;
                     break;
@@ -2057,6 +2120,12 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case kImageUploadSettingAuthor:
         {
             [Model sharedInstance].defaultAuthor = textField.text;
+            [[Model sharedInstance] saveToDisk];
+            break;
+        }
+        case kImageUploadSettingPrefix:
+        {
+            [Model sharedInstance].defaultPrefix = textField.text;
             [[Model sharedInstance] saveToDisk];
             break;
         }

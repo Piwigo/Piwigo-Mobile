@@ -602,6 +602,12 @@
 "settings_photoCompress>375px" = "Kompresuj zdjęcie przed przesłaniem";
 "settings_photoQuality" = "> Jakość";
 "settings_placeholderQuality" = "Wprowadź jakość zdjęcia z zakresu 50-98";
+"settings_prefixFilename>414px" = "Prefiks nazwy pliku obrazu przed przesłaniem";
+"settings_prefixFilename>375px" = "Nazwa pliku przed przesłaniem prefiksu";
+"settings_prefixFilename" = "Nazwa pliku przedrostka";
+"settings_defaultPrefix" = "Prefiks";
+"settings_defaultPrefix>320px" = "Prefiks nazwy pliku";
+"settings_defaultPrefixPlaceholder" = "Prefiks";
 "settings_deleteImage>375px" = "Usuń zdjęcie po przesłaniu";
 "settings_deleteImage" = "Usuń po wysłaniu";
 

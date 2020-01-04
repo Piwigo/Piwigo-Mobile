@@ -602,6 +602,12 @@
 "settings_photoCompress>375px" = "Fotogröße vor dem Hochladen komprimieren";
 "settings_photoQuality" = "> Qualität";
 "settings_placeholderQuality" = "Gib eine Fotoqualität von 50-98 an";
+"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
+"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
+"settings_prefixFilename" = "Prefix Photo Filename";
+"settings_defaultPrefix" = "Prefix";
+"settings_defaultPrefix>320px" = "Filename Prefix";
+"settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Foto nach dem Hochladen löschen";
 "settings_deleteImage" = "Nach dem Hochladen löschen";
 
