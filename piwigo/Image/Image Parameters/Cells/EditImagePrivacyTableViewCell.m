@@ -40,10 +40,10 @@
     self.label.textColor = [UIColor piwigoRightLabelColor];
 }
 
--(void)setPrivacyLevel:(NSInteger)privacy
+-(void)setPrivacyLevel:(NSInteger)privacy inColor:(UIColor *)color
 {
 	self.list.text = [[Model sharedInstance] getNameForPrivacyLevel:privacy];
-    self.list.textColor = [UIColor piwigoLeftLabelColor];
+    self.list.textColor = color;
 }
 
 @end

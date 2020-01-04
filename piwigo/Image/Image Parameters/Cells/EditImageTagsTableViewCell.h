@@ -10,6 +10,6 @@
 
 @interface EditImageTagsTableViewCell : UITableViewCell
 
--(void)setTagList:(NSArray*)tags;
+-(void)setTagList:(NSArray*)tags inColor:(UIColor *)color;
 
 @end

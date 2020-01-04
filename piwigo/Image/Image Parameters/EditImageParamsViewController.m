@@ -665,6 +665,9 @@ typedef enum {
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_dateCreation", @"Creation Date")
                      placeHolder:@""
                   andImageDetail:[self getStringFromDate:self.commonParameters.dateCreated]];
+            if (self.shouldUpdateDateCreated) {
+                cell.cellTextField.textColor = [UIColor piwigoOrange];
+            }
             cell.cellTextField.tag = EditImageParamsOrderDate;
             cell.cellTextField.delegate = self;
             tableViewCell = cell;
@@ -694,7 +697,7 @@ typedef enum {
 		{
 			EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
 			[cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
-			[cell setPrivacyLevel:self.commonParameters.privacyLevel];
+            [cell setPrivacyLevel:self.commonParameters.privacyLevel inColor:self.shouldUpdatePrivacyLevel ? [UIColor piwigoOrange] : [UIColor piwigoLeftLabelColor]];
             tableViewCell = cell;
 			break;
 		}
@@ -702,7 +705,7 @@ typedef enum {
         case EditImageParamsOrderTags:
 		{
 			EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags" forIndexPath:indexPath];
-			[cell setTagList:self.commonParameters.tags];
+            [cell setTagList:self.commonParameters.tags inColor:self.shouldUpdateTags ? [UIColor piwigoOrange] : [UIColor piwigoLeftLabelColor]];
             tableViewCell = cell;
 			break;
 		}
@@ -853,6 +856,7 @@ typedef enum {
         {
             // Title
             self.shouldUpdateTitle = YES;
+            textField.textColor = [UIColor piwigoOrange];
             break;
         }
             
@@ -860,6 +864,7 @@ typedef enum {
         {
             // Author
             self.shouldUpdateAuthor = YES;
+            textField.textColor = [UIColor piwigoOrange];
             break;
         }
     }
@@ -948,6 +953,7 @@ typedef enum {
 -(void)textViewDidBeginEditing:(UITextView *)textView
 {
     self.shouldUpdateComment = YES;
+    textView.textColor = [UIColor piwigoOrange];
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
@@ -1101,7 +1107,7 @@ typedef enum {
     // Update table view cell
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(EditImageParamsOrderPrivacy - (self.hasDatePicker == NO)) inSection:0];
     EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.editImageParamsTableView cellForRowAtIndexPath:indexPath];
-	if (cell) [cell setPrivacyLevel:privacy];
+	if (cell) [cell setPrivacyLevel:privacy inColor:[UIColor piwigoOrange]];
     
     // Remember to update image info
     self.shouldUpdatePrivacyLevel = YES;
@@ -1118,7 +1124,7 @@ typedef enum {
     // Update table view cell
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(EditImageParamsOrderTags - (self.hasDatePicker == NO)) inSection:0];
     EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageParamsTableView cellForRowAtIndexPath:indexPath];
-    if (cell) [cell setTagList:self.commonParameters.tags];
+    if (cell) [cell setTagList:self.commonParameters.tags inColor:[UIColor piwigoOrange]];
 
     // Remember to update image info
     self.shouldUpdateTags = YES;
@@ -1142,6 +1148,6 @@ typedef enum {
             timeStr = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
         }
     }
-    return [NSString stringWithFormat:@"%@ %@", dateStr, timeStr];
+    return [NSString stringWithFormat:@"%@ - %@", dateStr, timeStr];
 }
 @end

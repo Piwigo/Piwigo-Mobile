@@ -45,11 +45,11 @@
 	}
 }
 
--(void)setTagList:(NSArray*)tags
+-(void)setTagList:(NSArray*)tags inColor:(UIColor *)color
 {
 	self.tagsString = [[TagsData sharedInstance] getTagsStringFromList:tags];
     self.tagsLabel.textColor = [UIColor piwigoRightLabelColor];
-    self.tagsList.textColor = [UIColor piwigoLeftLabelColor];
+    self.tagsList.textColor = color;
 }
 
 @end

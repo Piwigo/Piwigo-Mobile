@@ -394,7 +394,7 @@ typedef enum {
         {
             EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
             [cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
-            [cell setPrivacyLevel:self.commonParameters.privacyLevel];
+            [cell setPrivacyLevel:self.commonParameters.privacyLevel inColor:self.shouldUpdatePrivacyLevel ? [UIColor piwigoOrange] : [UIColor piwigoLeftLabelColor]];
             tableViewCell = cell;
             break;
         }
@@ -402,7 +402,7 @@ typedef enum {
         case EditImageDetailsOrderTags:
         {
             EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags" forIndexPath:indexPath];
-            [cell setTagList:self.commonParameters.tags];
+            [cell setTagList:self.commonParameters.tags inColor:self.shouldUpdateTags ? [UIColor piwigoOrange] : [UIColor piwigoLeftLabelColor]];
             tableViewCell = cell;
             break;
         }
@@ -634,7 +634,7 @@ typedef enum {
     
     // Update table view cell
     EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.imageUploadParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
-    if (cell) [cell setPrivacyLevel:privacy];
+    if (cell) [cell setPrivacyLevel:privacy inColor:[UIColor piwigoOrange]];
     
     // Remember to update image info
     self.shouldUpdatePrivacyLevel = YES;
@@ -650,7 +650,7 @@ typedef enum {
     
     // Update table view cell
     EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.imageUploadParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
-    if (cell) [cell setTagList:self.commonParameters.tags];
+    if (cell) [cell setTagList:self.commonParameters.tags inColor:[UIColor piwigoOrange]];
     
     // Remember to update image info
     self.shouldUpdateTags = YES;
