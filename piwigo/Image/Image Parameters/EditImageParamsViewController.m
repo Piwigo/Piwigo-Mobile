@@ -641,6 +641,7 @@ typedef enum {
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title")
                      placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
                   andImageDetail:self.commonParameters.imageTitle];
+            if (self.shouldUpdateTitle) cell.cellTextField.textColor = [UIColor piwigoOrange];
             cell.cellTextField.tag = EditImageParamsOrderImageName;
             cell.cellTextField.delegate = self;
             tableViewCell = cell;
@@ -653,6 +654,7 @@ typedef enum {
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author")
                      placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
                   andImageDetail:[self.commonParameters.author isEqualToString:@"NSNotFound"] ? @"" : self.commonParameters.author];
+            if (self.shouldUpdateAuthor) cell.cellTextField.textColor = [UIColor piwigoOrange];
             cell.cellTextField.tag = EditImageParamsOrderAuthor;
             cell.cellTextField.delegate = self;
             tableViewCell = cell;
@@ -665,9 +667,7 @@ typedef enum {
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_dateCreation", @"Creation Date")
                      placeHolder:@""
                   andImageDetail:[self getStringFromDate:self.commonParameters.dateCreated]];
-            if (self.shouldUpdateDateCreated) {
-                cell.cellTextField.textColor = [UIColor piwigoOrange];
-            }
+            if (self.shouldUpdateDateCreated) cell.cellTextField.textColor = [UIColor piwigoOrange];
             cell.cellTextField.tag = EditImageParamsOrderDate;
             cell.cellTextField.delegate = self;
             tableViewCell = cell;
@@ -714,6 +714,7 @@ typedef enum {
 		{
 			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description" forIndexPath:indexPath];
             [cell setupWithImageDetail:self.commonParameters.comment];
+            if (self.shouldUpdateComment) cell.textView.textColor = [UIColor piwigoOrange];
             cell.textView.delegate = self;
             tableViewCell = cell;
 			break;
