@@ -512,7 +512,7 @@
 "settingsHeader_server" = "Serwer Piwigo";
 "settingsHeader_notSecure" = "Strona internetowa nie jest bezpieczna!";
 "settings_server" = "Adres";
-"settings_username" = "Nazwa Użytkownika";
+"settings_username" = "Nazwa użytkownika";
 "settings_notLoggedIn" = " - Nie jesteś zalogowany - ";
 "settings_logout" = "Wyloguj";
 "settingsFooter_formats" = "Serwer akceptuje następujące typy plików";
@@ -534,13 +534,13 @@
 "thumbnailSizeSquare" = "Kwadrat";
 "thumbnailSizeThumbnail" = "Miniaturka";
 "thumbnailSizeXXSmall" = "Najmniejsze";
-"thumbnailSizeXSmall" = "Bardzo Małe";
+"thumbnailSizeXSmall" = "Bardzo małe";
 "thumbnailSizeSmall" = "Małe";
 "thumbnailSizeMedium" = "Średnie";
 "thumbnailSizeLarge" = "Duże";
-"thumbnailSizeXLarge" = "Bardzo Duże";
+"thumbnailSizeXLarge" = "Bardzo duże";
 "thumbnailSizeXXLarge" = "Ogromne";
-"thumbnailSizexFullRes" = "Pełna Rozdzielczość";
+"thumbnailSizexFullRes" = "Pełna rozdzielczość";
 
 // Settings — Images
 "settingsHeader_images" = "Zdjęcia";
@@ -577,24 +577,24 @@
 "imageSizeSquare" = "Kwadrat";
 "imageSizeThumbnail" = "Miniaturka";
 "imageSizeXXSmall" = "Najmniejsze";
-"imageSizeXSmall" = "Bardzo Małe";
+"imageSizeXSmall" = "Bardzo małe";
 "imageSizeSmall" = "Małe";
 "imageSizeMedium" = "Średnie";
 "imageSizeLarge" = "Duże";
-"imageSizeXLarge" = "Bardzo Duże";
+"imageSizeXLarge" = "Bardzo duże";
 "imageSizeXXLarge" = "Ogromne";
-"imageSizexFullRes" = "Pełna Rozdzielczość";
+"imageSizexFullRes" = "Pełna rozdzielczość";
 
 // Settings — Upload
-"settingsHeader_upload" = "Domyślne Ustawienia Przesyłania";
+"settingsHeader_upload" = "Domyślne ustawienia przesyłania";
 "settings_defaultAuthor" = "Autor";
-"settings_defaultAuthor>320px" = "Imię Autora";
+"settings_defaultAuthor>320px" = "Imię autora";
 "settings_defaultAuthorPlaceholder" = "Imię Autora";
 "settings_defaultPrivacy" = "Prywatność";
 "settings_defaultPrivacy>414px" = "Wybierz kto będzie mógł zobaczyć zdjęcia";
 "settings_stripGPSdata" = "Usuń prywatne metadane";
 "settings_stripGPSdata>375px" = "Usuń prywatne metadane przed wysłaniem";
-"settings_photoResize" = "Zmień Rozmiar Przed Przesłaniem";
+"settings_photoResize" = "Zmień rozmiar przed przesłaniem";
 "settings_photoResize>375px" = "Zmień rozmiar zdjęcia przed przesłaniem";
 "settings_photoSize" = "> Rozmiar   ";
 "settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 5 - 100";
@@ -602,9 +602,9 @@
 "settings_photoCompress>375px" = "Kompresuj zdjęcie przed przesłaniem";
 "settings_photoQuality" = "> Jakość";
 "settings_placeholderQuality" = "Wprowadź jakość zdjęcia z zakresu 50-98";
-"settings_prefixFilename>414px" = "Prefiks nazwy pliku obrazu przed przesłaniem";
-"settings_prefixFilename>375px" = "Nazwa pliku przed przesłaniem prefiksu";
-"settings_prefixFilename" = "Nazwa pliku przedrostka";
+"settings_prefixFilename>414px" = "Prefiks nazwy pliku zdjęcia przed przesłaniem";
+"settings_prefixFilename>375px" = "Prefiks nazwy pliku przed przesłaniem";
+"settings_prefixFilename" = "Prefiks nazwy pliku zdjęcia";
 "settings_defaultPrefix" = "Prefiks";
 "settings_defaultPrefix>320px" = "Prefiks nazwy pliku";
 "settings_defaultPrefixPlaceholder" = "Prefiks";
@@ -635,8 +635,8 @@
 "settings_twitterURL" = "https://twitter.com/piwigo";
 "settings_contactUs" = "Kontakt z nami";
 "settings_feedback" = "Opinie";
-"settings_supportForum" = "Forum Wsparcia";
-"settings_releaseNotes" = "Lista Zmian";
+"settings_supportForum" = "Forum wsparcia";
+"settings_releaseNotes" = "Lista zmian";
 "settings_rateInAppStore" = "Oceń Piwigo Mobile";
 "settings_translateWithCrowdin" = "Przetłumacz Piwigo Mobile";
 "settings_pwgForumURL" = "http://pl.piwigo.org/forum";
