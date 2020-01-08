@@ -1160,6 +1160,40 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                          }];
 }
 
+-(void)couldNotRetrieveImageDataOnRetry:(void (^)(void))completion
+{
+    // Failed — Ask user if he/she wishes to retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self updateBarButtons];
+                [self hideHUD];
+            });
+        }];
+    
+    UIAlertAction* retryAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            if (completion) completion();
+        }];
+    
+    [alert addAction:dismissAction];
+    [alert addAction:retryAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 -(void)editImages
 {
     switch (self.selectedImagesToEdit.count) {
@@ -1259,40 +1293,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                          [self retrieveImageDataBeforeDelete];
                      }];
                  }];
-}
-
--(void)couldNotRetrieveImageDataOnRetry:(void (^)(void))completion
-{
-    // Failed — Ask user if he/she wishes to retry
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-        preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* dismissAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-        style:UIAlertActionStyleCancel
-        handler:^(UIAlertAction * action) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self updateBarButtons];
-                [self hideHUD];
-            });
-        }];
-    
-    UIAlertAction* retryAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-            if (completion) completion();
-        }];
-    
-    [alert addAction:dismissAction];
-    [alert addAction:retryAction];
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)askDeleteConfirmation
@@ -1757,6 +1757,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Determine index of first selected cell
     NSInteger indexOfFirstSelectedImage = INFINITY;
+    PiwigoImageData *firstImageData;
     for (NSNumber *imageId in self.selectedImageIds) {
         NSInteger obj1 = [imageId integerValue];
         NSInteger index = 0;
@@ -1766,6 +1767,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             index++;
         }
         indexOfFirstSelectedImage = MIN(index, indexOfFirstSelectedImage);
+        firstImageData = [self.albumData.images objectAtIndex:indexOfFirstSelectedImage];
     }
 
     // Present alert to user
@@ -1784,7 +1786,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                  actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * action) {
-                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:nil inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:YES];
+                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:firstImageData inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:YES];
                                      moveImageVC.moveImagesDelegate = self;
                                      [self pushView:moveImageVC];
                                  }];
@@ -1793,7 +1795,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                                  actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * action) {
-                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:nil inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:NO];
+                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:firstImageData inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:NO];
                                      moveImageVC.moveImagesDelegate = self;
                                      [self pushView:moveImageVC];
                                  }];
@@ -2345,7 +2347,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     [self.albumData removeImage:image];
-    index = MAX(0, index-1);                                    // index must be > 0
+    index = MAX(0, index-1);                                    // index must be >= 0
     index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
     self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
     [self.imagesCollection reloadData];
