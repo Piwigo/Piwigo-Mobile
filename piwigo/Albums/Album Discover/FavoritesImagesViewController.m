@@ -9,26 +9,59 @@
 #import "AlbumData.h"
 #import "AlbumService.h"
 #import "AppDelegate.h"
+#import "AsyncImageActivityItemProvider.h"
+#import "AsyncVideoActivityItemProvider.h"
 #import "CategoriesData.h"
+#import "EditImageParamsViewController.h"
 #import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
+#import "ImageService.h"
 #import "ImagesCollection.h"
+#import "MBProgressHUD.h"
 #import "Model.h"
+#import "MoveImageViewController.h"
 #import "NberImagesFooterCollectionReusableView.h"
+#import "PhotosFetch.h"
 
-@interface FavoritesImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>
+@interface FavoritesImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, AsyncImageActivityItemProviderDelegate, MoveImagesDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
+@property (nonatomic, strong) UIViewController *hudViewController;
+
+@property (nonatomic, strong) UIBarButtonItem *selectBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
+@property (nonatomic, strong) UIBarButtonItem *spaceBetweenButtons;
+@property (nonatomic, strong) UIBarButtonItem *editBarButton;
+@property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
+@property (nonatomic, strong) UIBarButtonItem *shareBarButton;
+@property (nonatomic, strong) UIBarButtonItem *moveBarButton;
+
+@property (nonatomic, assign) BOOL isSelect;
+@property (nonatomic, assign) NSInteger totalNumberOfImages;
+@property (nonatomic, strong) NSMutableArray *selectedImageIds;
+@property (nonatomic, strong) NSMutableArray *touchedImageIds;
+
+@property (nonatomic, strong) NSMutableArray *selectedImageIdsToEdit;
+@property (nonatomic, strong) NSMutableArray *selectedImagesToEdit;
+@property (nonatomic, strong) NSMutableArray *selectedImageIdsToDelete;
+@property (nonatomic, strong) NSMutableArray *selectedImagesToDelete;
+@property (nonatomic, strong) NSMutableArray *selectedImageIdsToShare;
+@property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
+@property (nonatomic, strong) PiwigoImageData *selectedImage;
 
 @property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
+
+//#ifndef DEBUG_LIFECYCLE
+//#define DEBUG_LIFECYCLE
+//#endif
 
 @implementation FavoritesImagesViewController
 
@@ -44,6 +77,11 @@
         self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         
+        // Initialise selection mode
+        self.isSelect = NO;
+        self.touchedImageIds = [NSMutableArray new];
+        self.selectedImageIds = [NSMutableArray new];
+
         // Collection of images
         self.imagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
         self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
@@ -64,6 +102,25 @@
             // Fallback on earlier versions
         }
 
+        // Bar buttons
+        self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
+        [self.selectBarButton setAccessibilityIdentifier:@"Select"];
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
+        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
+        self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+        self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editSelection)];
+        [self.editBarButton setAccessibilityIdentifier:@"edit"];
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelection)];
+        self.deleteBarButton.tintColor = [UIColor redColor];
+        self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
+        self.shareBarButton.tintColor = [UIColor piwigoOrange];
+        self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
+        self.moveBarButton.tintColor = [UIColor piwigoOrange];
+        self.navigationController.toolbarHidden = YES;
+
+        // Register category data updates
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+        
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
@@ -72,21 +129,6 @@
 
 
 #pragma mark - View Lifecycle
-
--(void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    // Initialise discover cache
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
-
-    // Load, sort images and reload collection
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-        
-        [self.imagesCollection reloadData];
-    }];
-}
 
 -(void)applyColorPalette
 {
@@ -110,6 +152,7 @@
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
     self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    [self.imagesCollection reloadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -118,12 +161,22 @@
     
     // Set colors, fonts, etc.
     [self applyColorPalette];
+        
+    // Set navigation bar buttons
+    [self updateBarButtons];
 
-    // Title is name of the category
-    self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    // Initialise discover cache
+    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
+    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
 
-    // Hide toolbar
-    [self.navigationController setToolbarHidden:YES animated:YES];
+    // Load, sort images and reload collection
+    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+        
+        // Set navigation bar buttons
+        [self updateBarButtons];
+
+        [self.imagesCollection reloadData];
+    }];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -229,6 +282,272 @@
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";
+    }
+}
+
+-(void)updateBarButtons
+{
+    // Selection mode active ?
+    if(!self.isSelect) {    // Image selection mode inactive
+        
+        // Title
+        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+
+        // Hide toolbar
+        [self.navigationController setToolbarHidden:YES animated:YES];
+        
+        // Left side of navigation bar
+        [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
+        [self.navigationItem setHidesBackButton:NO];
+        
+        // Right side of navigation bar
+        if (self.albumData.images.count > 0) {
+            // Button for activating the selection mode
+            [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
+        } else {
+            // No button
+            [self.navigationItem setRightBarButtonItems:@[] animated:YES];
+        }
+    }
+    else {         // Image selection mode active
+        
+        // Update title
+        switch (self.selectedImageIds.count) {
+            case 0:
+                self.title = NSLocalizedString(@"selectImages", @"Select Images");
+                break;
+                
+            case 1:
+                self.title = NSLocalizedString(@"selectImageSelected", @"1 Image Selected");
+                break;
+                
+            default:
+                self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Images Selected"), @(self.selectedImageIds.count)];
+                break;
+        }
+        
+        // Hide back button
+        [self.navigationItem setHidesBackButton:YES];
+
+        // User can delete images/videos if he/she has:
+        // — admin rights
+        if ([Model sharedInstance].hasAdminRights)
+        {
+            // Interface depends on device and orientation
+            if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
+                (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
+                 ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
+        
+                // Redefine bar buttons (definition lost after rotation of device)
+                self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+                self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelection)];
+                self.deleteBarButton.tintColor = [UIColor redColor];
+                self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
+                self.shareBarButton.tintColor = [UIColor piwigoOrange];
+                self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
+                self.moveBarButton.tintColor = [UIColor piwigoOrange];
+
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+                self.cancelBarButton.enabled = YES;
+
+                // Right side of navigation bar
+                [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
+                self.editBarButton.enabled = (self.selectedImageIds.count > 0);
+
+                // Toolbar
+                [self.navigationController setToolbarHidden:NO animated:YES];
+                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+                self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
+            }
+            else    // iPhone in landscape mode, iPad in any orientation
+            {
+                // Hide toolbar
+                [self.navigationController setToolbarHidden:YES animated:YES];
+
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton, self.deleteBarButton] animated:YES];
+                self.cancelBarButton.enabled = YES;
+                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
+
+                // Right side of navigation bar
+                [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
+                self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
+                self.editBarButton.enabled = (self.selectedImageIds.count > 0);
+          }
+        }
+        else    // No rights => No toolbar, only download button
+        {
+            // Hide toolbar
+            [self.navigationController setToolbarHidden:YES animated:YES];
+
+            // Left side of navigation bar
+            [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+            self.cancelBarButton.enabled = YES;
+
+            // Right side of navigation bar
+            [self.navigationItem setRightBarButtonItems:@[self.shareBarButton] animated:YES];
+            self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
+        }
+    }
+}
+
+-(void)disableBarButtons
+{
+    self.cancelBarButton.enabled = NO;
+    self.editBarButton.enabled = NO;
+    self.deleteBarButton.enabled = NO;
+    self.moveBarButton.enabled = NO;
+    self.shareBarButton.enabled = NO;
+}
+
+
+#pragma mark - Category Data
+
+-(void)categoryUpdated
+{
+    // Load, sort images and reload collection
+    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+
+        // Set navigation bar buttons
+        [self updateBarButtons];
+
+        [self.imagesCollection reloadData];
+    }];
+}
+
+
+#pragma mark - Select Images
+
+-(void)select
+{
+    if (!self.isSelect) {
+        
+        // Activate Images Selection mode
+        self.isSelect = YES;
+        
+        // Disable interaction with category cells and scroll to first image cell if needed
+        NSInteger numberOfImageCells = 0;
+        for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
+
+            // Will scroll to position if no visible image cell
+            if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+                numberOfImageCells++;
+            }
+        }
+
+        // Scroll to position of images if needed
+        if (!numberOfImageCells)
+            [self.imagesCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+        
+        // Refresh collection view
+        [self.imagesCollection reloadData];
+    }
+    
+    // Update navigation bar
+    [self updateBarButtons];
+}
+
+-(void)cancelSelect
+{
+    // Disable Images Selection mode
+    self.isSelect = NO;
+    
+    // Update navigation bar
+    [self updateBarButtons];
+    
+    // Deselect image cells
+    for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
+        
+        // Deselect image cell and disable interaction
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+            if(imageCell.isSelected) imageCell.isSelected = NO;
+        }
+    }
+
+    // Clear array of selected images and allow iOS device to sleep
+    self.touchedImageIds = [NSMutableArray new];
+    self.selectedImageIds = [NSMutableArray new];
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+    
+    // Refresh collection view
+    [self.imagesCollection reloadData];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    // Will examine touchs only in select mode
+    if (self.isSelect) {
+       return YES;
+    }
+    return NO;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer;
+{
+    // Will interpret touches only in horizontal direction
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        UIPanGestureRecognizer *gPR = (UIPanGestureRecognizer *)gestureRecognizer;
+        CGPoint translation = [gPR translationInView:self.imagesCollection];
+        if (fabs(translation.x) > fabs(translation.y))
+            return YES;
+    }
+    return NO;
+}
+
+-(void)touchedImages:(UIPanGestureRecognizer *)gestureRecognizer
+{
+    // Just in case…
+    if (gestureRecognizer.view == nil) return;
+    
+    // Select/deselect cells
+    if ((gestureRecognizer.state == UIGestureRecognizerStateBegan) ||
+        (gestureRecognizer.state == UIGestureRecognizerStateChanged)) {
+        
+        // Point and direction
+        CGPoint point = [gestureRecognizer locationInView:self.imagesCollection];
+        
+        // Get cell at touch position
+        NSIndexPath *indexPath = [self.imagesCollection indexPathForItemAtPoint:point];
+        if (indexPath.row == NSNotFound) return;
+        UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:indexPath];
+        if (cell == nil) return;
+        
+        // Only consider image cells
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]])
+        {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+            
+            // Update the selection if not already done
+            NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageCell.imageData.imageId];
+            if (![self.touchedImageIds containsObject:imageIdObject]) {
+                
+                // Store that the user touched this cell during this gesture
+                [self.touchedImageIds addObject:imageIdObject];
+                
+                // Update the selection state
+                if(![self.selectedImageIds containsObject:imageIdObject]) {
+                    [self.selectedImageIds addObject:imageIdObject];
+                    imageCell.isSelected = YES;
+                } else {
+                    imageCell.isSelected = NO;
+                    [self.selectedImageIds removeObject:imageIdObject];
+                }
+                
+                // Reload the cell and update the navigation bar
+                [self.imagesCollection reloadData];
+                [self updateBarButtons];
+            }
+        }
+    }
+    
+    // Is this the end of the gesture?
+    if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) {
+        self.touchedImageIds = [NSMutableArray new];
     }
 }
 
@@ -347,6 +666,16 @@
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
         [cell setupWithImageData:imageData forCategoryId:self.categoryId];
+        cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+        
+        // Add pan gesture recognition
+        UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
+        imageSeriesRocognizer.minimumNumberOfTouches = 1;
+        imageSeriesRocognizer.maximumNumberOfTouches = 1;
+        imageSeriesRocognizer.cancelsTouchesInView = NO;
+        imageSeriesRocognizer.delegate = self;
+        [cell addGestureRecognizer:imageSeriesRocognizer];
+        cell.userInteractionEnabled = YES;
     }
     
     // Calculate the number of thumbnails displayed per page
@@ -369,17 +698,639 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+
     // Avoid rare crashes…
     if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
         // forget this call!
         return;
     }
 
-    // Display full screen image
-    self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
-    self.imageDetailView.hidesBottomBarWhenPushed = YES;
-    self.imageDetailView.imgDetailDelegate = self;
-    [self.navigationController pushViewController:self.imageDetailView animated:YES];
+    // Action depends on mode
+    if(!self.isSelect)
+    {
+        // Selection mode not active => display full screen image
+        self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:kPiwigoTagsCategoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+        self.imageDetailView.hidesBottomBarWhenPushed = YES;
+        self.imageDetailView.imgDetailDelegate = self;
+        [self.navigationController pushViewController:self.imageDetailView animated:YES];
+    }
+    else
+    {
+        // Selection mode active => add/remove image from selection
+        NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)selectedCell.imageData.imageId];
+        if(![self.selectedImageIds containsObject:imageIdObject]) {
+            [self.selectedImageIds addObject:imageIdObject];
+            selectedCell.isSelected = YES;
+        } else {
+            selectedCell.isSelected = NO;
+            [self.selectedImageIds removeObject:imageIdObject];
+        }
+        [collectionView reloadData];
+        
+        // and display nav buttons
+        [self updateBarButtons];
+    }
+}
+
+
+#pragma mark - HUD methods
+
+-(void)showHUDwithTitle:(NSString *)title inMode:(MBProgressHUDMode)mode withDetailLabel:(BOOL)isDownloading
+{
+    // Determine the present view controller if needed (not necessarily self.view)
+    if (!self.hudViewController) {
+        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (self.hudViewController.presentedViewController) {
+            self.hudViewController = self.hudViewController.presentedViewController;
+        }
+    }
+    
+    // Create the login HUD if needed
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+    if (!hud) {
+        // Create the HUD
+        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
+        [hud setTag:loadingViewTag];
+        
+        // Change the background view shape, style and color.
+        hud.square = NO;
+        hud.animationType = MBProgressHUDAnimationFade;
+        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+        hud.contentColor = [UIColor piwigoHudContentColor];
+        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        
+        // Will look best, if we set a minimum size.
+        hud.minSize = CGSizeMake(200.f, 100.f);
+    }
+    
+    // Set title
+    hud.label.text = title;
+    hud.label.font = [UIFont piwigoFontNormal];
+    
+    // Image download or other action?
+    switch (mode) {
+        case MBProgressHUDModeAnnularDeterminate:
+            // Downloading or deleting images
+            hud.mode = MBProgressHUDModeAnnularDeterminate;
+            if (isDownloading) {
+                hud.detailsLabel.text = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalNumberOfImages - self.selectedImageIds.count + 1), (long)self.totalNumberOfImages];
+            } else {
+                hud.detailsLabel.text = @"";
+            }
+            break;
+            
+        default:
+            // Other actions
+            hud.mode = MBProgressHUDModeIndeterminate;
+            hud.detailsLabel.text = @"";
+            break;
+    }
+}
+
+-(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Hide and remove the HUD
+        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+        if (hud) {
+            if (success) {
+                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                hud.customView = imageView;
+                hud.mode = MBProgressHUDModeCustomView;
+                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
+                [hud hideAnimated:YES afterDelay:1.f];
+            } else {
+                [hud hideAnimated:YES];
+            }
+        }
+        if (completion) {
+            completion();
+        }
+    });
+}
+
+-(void)hideHUD
+{
+    // Hide and remove the HUD
+    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+    if (hud) {
+        [hud hideAnimated:YES];
+        self.hudViewController = nil;
+    }
+}
+
+
+#pragma mark - Edit images
+
+-(void)editSelection
+{
+    if (self.selectedImageIds.count <= 0) return;
+
+    // Disable buttons
+    [self disableBarButtons];
+    
+    // Display HUD
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+    });
+    
+    // Retrieve image data
+    self.selectedImagesToEdit = [NSMutableArray new];
+    self.selectedImageIdsToEdit = [NSMutableArray arrayWithArray:[self.selectedImageIds mutableCopy]];
+    [self retrieveImageDataBeforeEdit];
+}
+
+-(void)retrieveImageDataBeforeEdit
+{
+    if (self.selectedImageIdsToEdit.count <= 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideHUDwithSuccess:NO completion:^{
+                [self editImages];
+            }];
+        });
+        return;
+    }
+    
+    // Image data are not complete when retrieved using pwg.categories.getImages
+    [ImageService getImageInfoById:[[self.selectedImageIdsToEdit lastObject] integerValue]
+                andAddImageToCache:NO
+                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      
+                      if (imageData != nil) {
+                          // Store image data
+                          [self.selectedImagesToEdit insertObject:imageData atIndex:0];
+                          
+                          // Next image
+                          [self.selectedImageIdsToEdit removeLastObject];
+                          [self retrieveImageDataBeforeEdit];
+                      }
+                      else {
+                          // Could not retrieve image data
+                          [self couldNotRetrieveImageDataOnRetry:^{
+                              [self retrieveImageDataBeforeEdit];
+                          }];
+                      }
+                  }
+                         onFailure:^(NSURLSessionTask *task, NSError *error) {
+                             // Failed — Ask user if he/she wishes to retry
+                             [self couldNotRetrieveImageDataOnRetry:^{
+                                 [self retrieveImageDataBeforeEdit];
+                             }];
+                         }];
+}
+
+-(void)couldNotRetrieveImageDataOnRetry:(void (^)(void))completion
+{
+    // Failed — Ask user if he/she wishes to retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
+        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
+        preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self updateBarButtons];
+                [self hideHUD];
+            });
+        }];
+    
+    UIAlertAction* retryAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            if (completion) completion();
+        }];
+    
+    [alert addAction:dismissAction];
+    [alert addAction:retryAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)editImages
+{
+    switch (self.selectedImagesToEdit.count) {
+        case 0:     // No image => End (should never happened)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hideHUDwithSuccess:YES completion:^{
+                    [self cancelSelect];
+                }];
+            });
+            break;
+        }
+            
+        default:    // Several images
+        {
+            // Present EditImageParams view
+            UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParams" bundle:nil];
+            EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
+            editImageVC.images = [self.selectedImagesToEdit copy];
+            editImageVC.delegate = self;
+            [self pushView:editImageVC];
+            break;
+        }
+    }
+}
+
+
+#pragma mark - Delete images
+
+-(void)deleteSelection
+{
+    if(self.selectedImageIds.count <= 0) return;
+    
+    // Disable buttons
+    [self disableBarButtons];
+    
+    // Display HUD
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+    });
+    
+    // Retrieve image data
+    self.selectedImagesToDelete = [NSMutableArray new];
+    self.selectedImageIdsToDelete = [NSMutableArray arrayWithArray:[self.selectedImageIds mutableCopy]];
+    [self retrieveImageDataBeforeDelete];
+}
+
+-(void)retrieveImageDataBeforeDelete
+{
+    if (self.selectedImageIdsToDelete.count <= 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideHUDwithSuccess:NO completion:^{
+                [self askDeleteConfirmation];
+            }];
+        });
+        return;
+    }
+    
+    // Image data are not complete when retrieved with pwg.categories.getImages
+    [ImageService getImageInfoById:[[self.selectedImageIdsToDelete lastObject] integerValue]
+                andAddImageToCache:NO
+          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+
+              if (imageData != nil) {
+                  // Collect orphaned and non-orphaned images
+                  [self.selectedImagesToDelete insertObject:imageData atIndex:0];
+              
+                  // Next image
+                  [self.selectedImageIdsToDelete removeLastObject];
+                  [self retrieveImageDataBeforeDelete];
+              }
+              else {
+                  // Could not retrieve image data
+                  [self couldNotRetrieveImageDataOnRetry:^{
+                      [self retrieveImageDataBeforeDelete];
+                  }];
+              }
+          }
+                 onFailure:^(NSURLSessionTask *task, NSError *error) {
+                     // Failed — Ask user if he/she wishes to retry
+                     [self couldNotRetrieveImageDataOnRetry:^{
+                         [self retrieveImageDataBeforeDelete];
+                     }];
+                 }];
+}
+
+-(void)askDeleteConfirmation
+{
+    NSString *messageString;
+    // Alert message
+    if (self.selectedImagesToDelete.count > 1) {
+        messageString = [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_message", @"Are you sure you want to delete the selected %@ images?"), @(self.selectedImagesToDelete.count)];
+    } else {
+        messageString = NSLocalizedString(@"deleteSingleImage_message", @"Are you sure you want to delete this image?");
+    }
+
+    // Do we really want to delete these images?
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:nil
+        message:messageString
+        preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+            [self updateBarButtons];
+        }];
+    
+    UIAlertAction* deleteImagesAction = [UIAlertAction
+        actionWithTitle:self.selectedImagesToDelete.count > 1 ? [NSString stringWithFormat:NSLocalizedString(@"deleteSeveralImages_title", @"Delete %@ Images"), @(self.selectedImagesToDelete.count)] : NSLocalizedString(@"deleteSingleImage_title", @"Delete Image")
+        style:UIAlertActionStyleDestructive
+        handler:^(UIAlertAction * action) {
+            
+            // Display HUD during server update
+            self.totalNumberOfImages = self.selectedImagesToDelete.count;
+            if (self.selectedImagesToDelete.count > 1) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showHUDwithTitle:NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:NO];
+                });
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showHUDwithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+                });
+            }
+
+            // Start deleting images
+            [self deleteImages];
+       }];
+    
+    // Add actions
+    [alert addAction:cancelAction];
+    [alert addAction:deleteImagesAction];
+
+    // Present list of actions
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)deleteImages
+{
+    if (self.selectedImagesToDelete.count <= 0)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideHUDwithSuccess:YES completion:^{
+                [self cancelSelect];
+            }];
+        });
+        return;
+    }
+    
+    // Let's delete all images at once
+    [ImageService deleteImages:self.selectedImagesToDelete
+              ListOnCompletion:^(NSURLSessionTask *task) {
+                  
+                  // Images deleted
+                  for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
+                      [self.albumData removeImageWithId:selectedImage.imageId];
+                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)selectedImage.imageId]];
+                  }
+                  
+                  // Reload collection
+                  [self.imagesCollection reloadData];
+
+                  // Hide HUD
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [self hideHUDwithSuccess:YES completion:^{
+                          [self cancelSelect];
+                      }];
+                  });
+              }
+                    onFailure:^(NSURLSessionTask *task, NSError *error) {
+                        // Error — Try again ?
+                        UIAlertController* alert = [UIAlertController
+                            alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
+                            message:[NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), [error localizedDescription]]
+                            preferredStyle:UIAlertControllerStyleAlert];
+                        
+                        UIAlertAction* dismissAction = [UIAlertAction
+                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                            style:UIAlertActionStyleCancel
+                            handler:^(UIAlertAction * action) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [self hideHUDwithSuccess:NO completion:^{
+                                        [self updateBarButtons];
+                                    }];
+                                });
+                            }];
+                        
+                        UIAlertAction* retryAction = [UIAlertAction
+                            actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
+                            style:UIAlertActionStyleDestructive
+                            handler:^(UIAlertAction * action) {
+                              [self deleteImages];
+                            }];
+                        
+                        // Add actions
+                        [alert addAction:dismissAction];
+                        [alert addAction:retryAction];
+                        
+                        // Present list of actions
+                        if (@available(iOS 13.0, *)) {
+                            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                        [self presentViewController:alert animated:YES completion:nil];
+                    }];
+}
+
+
+#pragma mark - Share images
+
+-(void)shareSelection
+{
+    if (self.selectedImageIds.count <= 0) return;
+
+    // Disable buttons
+    [self disableBarButtons];
+    
+    // Display HUD
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+    });
+    
+    // Retrieve image data
+    self.selectedImagesToShare = [NSMutableArray new];
+    self.selectedImageIdsToShare = [NSMutableArray arrayWithArray:[self.selectedImageIds mutableCopy]];
+    [self retrieveImageDataBeforeShare];
+}
+
+-(void)retrieveImageDataBeforeShare
+{
+    if (self.selectedImageIdsToShare.count <= 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideHUDwithSuccess:NO completion:^{
+                [self checkPhotoLibraryAccessBeforeShare];
+            }];
+        });
+        return;
+    }
+    
+    // Image data are not complete when retrieved using pwg.categories.getImages
+    [ImageService getImageInfoById:[[self.selectedImageIdsToShare lastObject] integerValue]
+                andAddImageToCache:NO
+                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      
+                      if (imageData != nil) {
+                          // Store image data
+                          [self.selectedImagesToShare insertObject:imageData atIndex:0];
+                          
+                          // Next image
+                          [self.selectedImageIdsToShare removeLastObject];
+                          [self retrieveImageDataBeforeShare];
+                      }
+                      else {
+                          // Could not retrieve image data
+                          [self couldNotRetrieveImageDataOnRetry:^{
+                              [self retrieveImageDataBeforeShare];
+                          }];
+                      }
+                  }
+                         onFailure:^(NSURLSessionTask *task, NSError *error) {
+                             // Failed — Ask user if he/she wishes to retry
+                             [self couldNotRetrieveImageDataOnRetry:^{
+                                 [self retrieveImageDataBeforeShare];
+                             }];
+                         }];
+}
+
+-(void)checkPhotoLibraryAccessBeforeShare
+{
+    // Check autorisation to access Photo Library (camera roll)
+    [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
+                onAuthorizedAccess:^{
+                    // User allowed to save image in camera roll
+                    [self presentShareImageViewControllerWithCameraRollAccess:YES];
+                }
+                    onDeniedAccess:^{
+                        // User not allowed to save image in camera roll
+                        if ([NSThread isMainThread]) {
+                            [self presentShareImageViewControllerWithCameraRollAccess:NO];
+                        }
+                        else{
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self presentShareImageViewControllerWithCameraRollAccess:NO];
+                            });
+                        }
+                    }];
+}
+
+-(void)presentShareImageViewControllerWithCameraRollAccess:(BOOL)hasCameraRollAccess
+{
+    // Create new activity provider items to pass to the activity view controller
+    self.totalNumberOfImages = self.selectedImagesToShare.count;
+    NSMutableArray *itemsToShare = [NSMutableArray new];
+    for (PiwigoImageData *imageData in self.selectedImagesToShare) {
+        if (imageData.isVideo) {
+            // Case of a video
+            AsyncVideoActivityItemProvider *videoItemProvider = [[AsyncVideoActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
+            
+            // Use delegation to monitor the progress of the item method
+            videoItemProvider.delegate = self;
+            
+            // Add to list of items to share
+            [itemsToShare addObject:videoItemProvider];
+        }
+        else {
+            // Case of an image
+            AsyncImageActivityItemProvider *imageItemProvider = [[AsyncImageActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
+            
+            // Use delegation to monitor the progress of the item method
+            imageItemProvider.delegate = self;
+            
+            // Add to list of items to share
+            [itemsToShare addObject:imageItemProvider];
+        }
+    }
+
+    // Create an activity view controller with the activity provider item.
+    // AsyncImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
+    
+    // Set HUD view controller for displaying progress
+    self.hudViewController = activityViewController;
+    
+    // Exclude camera roll activity if needed
+    if (!hasCameraRollAccess) {
+        activityViewController.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+    }
+
+    // Delete image/video files and remove observers after dismissing activity view controller
+    [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
+//        NSLog(@"Activity Type selected: %@", activityType);
+        if (completed) {
+//            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
+            [self hideHUDwithSuccess:YES completion:nil];
+            [self cancelSelect];
+            for (PiwigoImageData *imageData in self.selectedImagesToShare) {
+                if (imageData.isVideo) {
+                    // Delete shared video file & remove observers
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
+                }
+                else {
+                    // Delete shared image file & remove observers
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
+                }
+            }
+        } else {
+            if (activityType == NULL) {
+//                NSLog(@"User dismissed the view controller without making a selection.");
+                [self updateBarButtons];
+            }
+            else {
+//                NSLog(@"Activity was not performed.");
+                [self cancelSelect];
+                for (PiwigoImageData *imageData in self.selectedImagesToShare) {
+                    if (imageData.isVideo)
+                    {
+                        // Cancel download task
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadVideo object:nil];
+                        
+                        // Delete shared video file & remove observers
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
+                    }
+                    else {
+                        // Cancel download task
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadImage object:nil];
+                        
+                        // Delete shared image file & remove observers
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
+                    }
+                }
+            }
+        }
+    }];
+    
+    // Present share image activity view controller
+    activityViewController.popoverPresentationController.barButtonItem = self.shareBarButton;
+    [self presentViewController:activityViewController animated:YES completion:nil];
+}
+
+
+#pragma mark - Move/Copy images to Category
+
+-(void)addImagesToCategory
+{
+    // Disable buttons
+    [self disableBarButtons];
+    
+    // Determine index of first selected cell
+    NSInteger indexOfFirstSelectedImage = INFINITY;
+    PiwigoImageData *firstImageData;
+    for (NSNumber *imageId in self.selectedImageIds) {
+        NSInteger obj1 = [imageId integerValue];
+        NSInteger index = 0;
+        for (PiwigoImageData *image in self.albumData.images) {
+            NSInteger obj2 = image.imageId;
+            if (obj1 == obj2) break;
+            index++;
+        }
+        indexOfFirstSelectedImage = MIN(index, indexOfFirstSelectedImage);
+        firstImageData = [self.albumData.images objectAtIndex:indexOfFirstSelectedImage];
+    }
+
+    // Present album list for copying images into
+    MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:firstImageData inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:YES];
+    moveImageVC.moveImagesDelegate = self;
+    [self pushView:moveImageVC];
 }
 
 
@@ -414,6 +1365,163 @@
         }
         [self.imagesCollection reloadData];
     }];
+}
+
+
+#pragma mark - EditImageParamsDelegate Methods
+
+-(void)didDeselectImageWithId:(NSInteger)imageId
+{
+    // Deselect image
+    [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
+    [self.imagesCollection reloadData];
+}
+
+-(void)didRenameFileOfImage:(PiwigoImageData *)imageData
+{
+    // Update image data
+    [self.albumData updateImage:imageData];
+}
+
+-(void)didFinishEditingParams:(PiwigoImageData *)params
+{
+    // Update image data
+    [self.albumData updateImage:params];
+
+    // Deselect images and leave select mode
+    [self cancelSelect];
+}
+
+
+#pragma mark - MoveImagesDelegate methods
+
+-(void)cancelMoveImages
+{
+    // Re-enable buttons
+    [self updateBarButtons];
+}
+
+-(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
+{
+    // NOP — Should never happen
+}
+
+-(void)deselectImages
+{
+    // Deselect images and leave select mode
+    [self cancelSelect];
+}
+
+
+#pragma mark - AsyncImageActivityItemProviderDelegate
+
+-(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
+{
+    // Show HUD to let the user know the image is being downloaded in the background.
+    dispatch_async(dispatch_get_main_queue(),
+           ^(void){
+               [self showHUDwithTitle:title inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:YES];
+           });
+}
+
+-(void)imageActivityItemProvider:(UIActivityItemProvider *)imageActivityItemProvider preprocessingProgressDidUpdate:(float)progress
+{
+    // Update HUD
+    dispatch_async(dispatch_get_main_queue(),
+           ^(void){
+               [MBProgressHUD HUDForView:self.hudViewController.view].progress = progress;
+           });
+}
+
+-(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
+{
+    // Close HUD
+    NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageId];
+    dispatch_async(dispatch_get_main_queue(),
+           ^(void){
+               if ([imageActivityItemProvider isCancelled]) {
+                   [self hideHUDwithSuccess:NO completion:^{
+                       self.hudViewController = nil;
+                   }];
+               } else {
+                   if ([self.selectedImageIds containsObject:imageIdObject]) {
+                       // Remove image from selection
+                       [self.selectedImageIds removeObject:imageIdObject];
+                       // Close HUD if last image
+                       if ([self.selectedImageIds count] == 0) {
+                           [self hideHUDwithSuccess:NO completion:^{
+                               self.hudViewController = nil;
+                           }];
+                       }
+                   }
+               }
+           });
+}
+
+-(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
+{
+    // Display error alert after trying to share image
+    dispatch_async(dispatch_get_main_queue(),
+           ^(void){
+               // Determine present view controller
+               UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+               while (topViewController.presentedViewController) {
+                   topViewController = topViewController.presentedViewController;
+               }
+               
+               // Present alert
+               UIAlertController* alert = [UIAlertController
+                       alertControllerWithTitle:title
+                       message:message
+                       preferredStyle:UIAlertControllerStyleAlert];
+               
+               UIAlertAction* dismissAction = [UIAlertAction
+                       actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                       style:UIAlertActionStyleCancel
+                       handler:^(UIAlertAction * action) { }];
+               
+               [alert addAction:dismissAction];
+               if (@available(iOS 13.0, *)) {
+                   alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+               } else {
+                   // Fallback on earlier versions
+               }
+               [topViewController presentViewController:alert animated:YES completion:nil];
+           });
+}
+
+
+#pragma mark - Utilities
+
+-(void)pushView:(UIViewController *)viewController
+{
+    // Push album list or image properties editor
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+    {
+        viewController.modalPresentationStyle = UIModalPresentationPopover;
+        viewController.popoverPresentationController.sourceView = self.imagesCollection;
+        if ([viewController isKindOfClass:[MoveImageViewController class]]) {
+            viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
+            viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        }
+        else if ([viewController isKindOfClass:[EditImageParamsViewController class]]) {
+            // Push Edit view embedded in navigation controller
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            navController.modalPresentationStyle = UIModalPresentationPopover;
+            navController.popoverPresentationController.sourceView = self.view;
+            navController.popoverPresentationController.barButtonItem = self.editBarButton;
+            navController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            [self.navigationController presentViewController:navController animated:YES completion:nil];
+        }
+    }
+    else {
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+        navController.modalPresentationStyle = UIModalPresentationPopover;
+        navController.popoverPresentationController.sourceView = self.view;
+        navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        [self.navigationController presentViewController:navController animated:YES completion:nil];
+    }
 }
 
 @end
