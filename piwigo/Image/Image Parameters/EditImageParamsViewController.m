@@ -308,9 +308,13 @@ typedef enum {
 
         // Update image creation date?
         if (self.shouldUpdateDateCreated) {
-            imageData.dateCreated = [imageData.dateCreated dateByAddingTimeInterval:timeInterval];
-        } else {
-            imageData.dateCreated = self.oldCreationDate;
+            if (self.commonParameters.dateCreated == nil) {
+                imageData.dateCreated = nil;
+            } else if (self.oldCreationDate == nil) {
+                imageData.dateCreated  = self.commonParameters.dateCreated;
+            } else {
+                imageData.dateCreated = [imageData.dateCreated dateByAddingTimeInterval:timeInterval];
+            }
         }
         
         // Update image privacy level?
