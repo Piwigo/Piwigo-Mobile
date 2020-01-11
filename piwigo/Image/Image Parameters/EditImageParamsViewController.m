@@ -788,6 +788,7 @@ typedef enum {
         case EditImageParamsOrderImageName:
         case EditImageParamsOrderAuthor:
         case EditImageParamsOrderDate:
+        case EditImageParamsOrderDatePicker:
         case EditImageParamsOrderDescription:
             result = NO;
             break;
