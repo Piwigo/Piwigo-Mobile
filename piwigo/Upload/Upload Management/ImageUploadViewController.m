@@ -42,6 +42,7 @@
         self.uploadImagesTableView.backgroundColor = [UIColor clearColor];
 		self.uploadImagesTableView.delegate = self;
 		self.uploadImagesTableView.dataSource = self;
+        [self.uploadImagesTableView setAccessibilityIdentifier:@"ImageUploadTable"];
 
         UINib *cellNib = [UINib nibWithNibName:@"ImageUploadCell" bundle:nil];
         [self.uploadImagesTableView registerNib:cellNib forCellReuseIdentifier:kImageUploadCell_ID];
