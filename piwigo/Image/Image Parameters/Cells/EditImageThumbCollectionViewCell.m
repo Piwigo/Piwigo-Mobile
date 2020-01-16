@@ -18,6 +18,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 
 @interface EditImageThumbCollectionViewCell() <UITextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *imageThumbnailView;
 @property (weak, nonatomic) IBOutlet UIImageView *imageThumbnail;
 @property (weak, nonatomic) IBOutlet UIView *imageDetails;
 @property (weak, nonatomic) IBOutlet UILabel *imageSize;
@@ -43,7 +44,8 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     // Initialization code
     [super awakeFromNib];
         
-    self.layer.cornerRadius = 10;
+    self.contentView.layer.cornerRadius = 10;
+    self.imageThumbnailView.layer.cornerRadius = 14;
     self.imageThumbnail.layer.cornerRadius = 10;
     self.imageDetails.layer.cornerRadius = 10;
     self.editButtonView.layer.cornerRadius = 5;
@@ -70,11 +72,12 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 -(void)applyColorPalette
 {
     // Background
+    self.imageThumbnailView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
     self.editButtonView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.removeButtonView.backgroundColor = [UIColor piwigoCellBackgroundColor];
 
-    // Image size, date and time
+    // Image size, file name, date and time
     self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
     self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
     self.imageDate.textColor = [UIColor piwigoLeftLabelColor];

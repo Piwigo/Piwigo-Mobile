@@ -78,11 +78,7 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
     // Avoid unwanted spaces
-    if (@available(iOS 13.0, *)) {
-        return UIEdgeInsetsMake(0, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
-    } else {
-        return UIEdgeInsetsMake(10, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
-    }
+    return UIEdgeInsetsMake(0, kImageDetailsMarginsSpacing, 0, kImageDetailsMarginsSpacing);
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section;
@@ -92,7 +88,7 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake([ImagesCollection imageDetailsSizeForView:self], 144);
+    return CGSizeMake([ImagesCollection imageDetailsSizeForView:self], 152);
 }
 
 

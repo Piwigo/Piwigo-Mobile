@@ -19,6 +19,7 @@
 		AD274E271FF411D4009CD3AC /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8BDCB631A6F6B8A00D106A8 /* SettingsViewController.m */; };
 		AD2DA2261EE43EB60012A7B3 /* DefaultImageThumbnailSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2DA2251EE43EB60012A7B3 /* DefaultImageThumbnailSizeViewController.m */; };
 		AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */; };
+		AD31779223D104E3005E9694 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD31779123D104E3005E9694 /* EditImageThumbTableViewCell.xib */; };
 		AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD3203662184738F00BAD372 /* PrivacyPolicy.strings */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD39165922A06FDF00414E4B /* SearchImagesViewController.m */; };
@@ -56,10 +57,9 @@
 		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
 		ADBCFE87235B7603001D6EE7 /* FavoritesImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBCFE86235B7603001D6EE7 /* FavoritesImagesViewController.m */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
+		ADC1641623D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC1641523D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib */; };
 		ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */; };
 		ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */; };
-		ADC80E4D23BDD362003A6960 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC80E4C23BDD362003A6960 /* EditImageThumbTableViewCell.xib */; };
-		ADD42AED23BE673E00006413 /* ImageUploadThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADD42AEC23BE673E00006413 /* ImageUploadThumbCollectionViewCell.xib */; };
 		ADDB396F23BF574400AB584B /* EditImageShiftPickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADDB396B23BF4F9C00AB584B /* EditImageShiftPickerTableViewCell.m */; };
 		ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */; };
 		ADE936F82182D54D0003F037 /* PrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */; };
@@ -186,6 +186,7 @@
 		AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppStore.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoAppStore.swift; sourceTree = "<group>"; };
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AD31779123D104E3005E9694 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EditImageThumbTableViewCell.xib; path = "piwigo/Image/Image Parameters/Cells/EditImageThumbTableViewCell.xib"; sourceTree = SOURCE_ROOT; };
 		AD3203672184739200BAD372 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD3203682184739300BAD372 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD3203692184739300BAD372 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
@@ -289,11 +290,10 @@
 		ADC06AE21F40B1ED0081B4FA /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		ADC1641523D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageUploadThumbCollectionViewCell.xib; sourceTree = "<group>"; };
 		ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditImageThumbCollectionViewCell.xib; sourceTree = "<group>"; };
 		ADC80E4923BDD2D0003A6960 /* EditImageThumbTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageThumbTableViewCell.h; sourceTree = "<group>"; };
 		ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbTableViewCell.m; sourceTree = "<group>"; };
-		ADC80E4C23BDD362003A6960 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditImageThumbTableViewCell.xib; sourceTree = "<group>"; };
-		ADD42AEC23BE673E00006413 /* ImageUploadThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageUploadThumbCollectionViewCell.xib; sourceTree = "<group>"; };
 		ADD6AE9F22E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADD6AEA022E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/About.strings; sourceTree = "<group>"; };
 		ADD6AEA122E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -584,7 +584,7 @@
 			children = (
 				ADC80E4923BDD2D0003A6960 /* EditImageThumbTableViewCell.h */,
 				ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */,
-				ADC80E4C23BDD362003A6960 /* EditImageThumbTableViewCell.xib */,
+				AD31779123D104E3005E9694 /* EditImageThumbTableViewCell.xib */,
 				AD770FD823B4CE6B007DAD50 /* EditImageThumbCollectionViewCell.h */,
 				AD770FD923B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m */,
 				ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */,
@@ -1158,7 +1158,7 @@
 				ADE9D69823BE71CA00818003 /* ImageUploadThumbTableViewCell.xib */,
 				AD3A6D502383445200767F10 /* ImageUploadThumbCollectionViewCell.h */,
 				AD3A6D512383446900767F10 /* ImageUploadThumbCollectionViewCell.m */,
-				ADD42AEC23BE673E00006413 /* ImageUploadThumbCollectionViewCell.xib */,
+				ADC1641523D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1323,15 +1323,15 @@
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
+				ADC1641623D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib in Resources */,
 				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
 				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
+				AD31779223D104E3005E9694 /* EditImageThumbTableViewCell.xib in Resources */,
 				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
 				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
 				D8F325101A875322007CBDAC /* ImageUploadParams.storyboard in Resources */,
-				ADD42AED23BE673E00006413 /* ImageUploadThumbCollectionViewCell.xib in Resources */,
 				D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */,
-				ADC80E4D23BDD362003A6960 /* EditImageThumbTableViewCell.xib in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				ADE9D69923BE71CA00818003 /* ImageUploadThumbTableViewCell.xib in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,

@@ -18,6 +18,7 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
 
 @interface ImageUploadThumbCollectionViewCell() <UITextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *imageThumbnailView;
 @property (nonatomic, weak) IBOutlet UIImageView *imageThumbnail;
 @property (nonatomic, weak) IBOutlet UIView *imageDetails;
 @property (nonatomic, weak) IBOutlet UILabel *imageDate;
@@ -28,9 +29,6 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
 @property (nonatomic, weak) IBOutlet UIView *removeButtonView;
 @property (nonatomic, weak) IBOutlet UIButton *removeImageButton;
 
-@property (nonatomic, strong) UIAlertAction *renameFileNameAction;
-@property (nonatomic, strong) NSString *oldFileName;
-
 @end
 
 @implementation ImageUploadThumbCollectionViewCell
@@ -40,7 +38,8 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
     // Initialization code
     [super awakeFromNib];
         
-    self.layer.cornerRadius = 10;
+    self.contentView.layer.cornerRadius = 10;
+    self.imageThumbnailView.layer.cornerRadius = 14;
     self.imageThumbnail.layer.cornerRadius = 10;
     self.imageDetails.layer.cornerRadius = 10;
     self.removeButtonView.layer.cornerRadius = 15;
@@ -64,10 +63,11 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
 -(void)applyColorPalette
 {
     // Background
+    self.imageThumbnailView.backgroundColor = [UIColor piwigoBackgroundColor];
     self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
     self.removeButtonView.backgroundColor = [UIColor piwigoCellBackgroundColor];
 
-    // Image size, date and time
+    // Image size, file name, date and time
     self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
     self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
     self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
@@ -99,7 +99,11 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
     }
     
     if (imageDetails.imageAsset.creationDate != nil) {
-        self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageDetails.imageAsset.creationDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterNoStyle];
+        if (self.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+            self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageDetails.imageAsset.creationDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterNoStyle];
+        } else {
+            self.imageDate.text = [NSDateFormatter localizedStringFromDate:imageDetails.imageAsset.creationDate dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterNoStyle];
+        }
         self.imageTime.text = [NSDateFormatter localizedStringFromDate:imageDetails.imageAsset.creationDate dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
     }
     
@@ -135,138 +139,6 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
     self.imageSize.text = @"";
     self.imageDate.text = @"";
     self.imageTime.text = @"";
-}
-
-
-#pragma mark - Edit Orginal Filename
-
-// Propose to edit original filename
--(IBAction)editImage
-{
-    // Store old file name
-    self.oldFileName = self.imageFile.text;
-    
-    // Determine the present view controller
-    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (topViewController.presentedViewController) {
-        topViewController = topViewController.presentedViewController;
-    }
-    
-    UIAlertController* alert = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"renameImage_title", @"Original File")
-                                message:[NSString stringWithFormat:@"%@ \"%@\":", NSLocalizedString(@"renameImage_message", @"Enter a new file name for this image"), self.imageFile.text]
-        preferredStyle:UIAlertControllerStyleAlert];
-    
-    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = NSLocalizedString(@"renameImage_title", @"Original File");
-        textField.text = self.imageFile.text;
-        textField.clearButtonMode = UITextFieldViewModeAlways;
-        textField.keyboardType = UIKeyboardTypeDefault;
-        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
-        textField.autocorrectionType = UITextAutocorrectionTypeYes;
-        textField.returnKeyType = UIReturnKeyContinue;
-        textField.delegate = self;
-    }];
-
-    UIAlertAction* cancelAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-        style:UIAlertActionStyleCancel
-        handler:^(UIAlertAction * action) {}];
-
-    self.renameFileNameAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"renameCategory_button", @"Rename")
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-            // Rename album if possible
-            if(alert.textFields.firstObject.text.length > 0) {
-                [self renameImageWithName:alert.textFields.firstObject.text andViewController:topViewController];
-            }
-        }];
-    
-    [alert addAction:cancelAction];
-    [alert addAction:self.renameFileNameAction];
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    [topViewController presentViewController:alert animated:YES completion:nil];
-}
-
--(void)renameImageWithName:(NSString *)fileName andViewController:(UIViewController *)topViewController
-{
-    // Display HUD during the update
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithLabel:NSLocalizedString(@"renameImageHUD_label", @"Renaming Original File…") inView:topViewController.view];
-    });
-    
-    // Prepare dictionary of parameters
-    NSMutableDictionary *imageInformation = [NSMutableDictionary new];
-    [imageInformation setObject:fileName forKey:kPiwigoImagesUploadParamFileName];
-
-    // Rename original filename
-    [ImageService setImageFileForImageWithId:self.imageId
-                                 withFileName:fileName
-                                   onProgress:nil
-             OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
-
-                if(response != nil)
-                    {
-                        [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                // Adopt new original filename
-                                self.imageFile.text = fileName;
-                                
-                                // Notify this change to the image viewed
-                                NSDictionary *objectInfo = @{@"imageId" : [NSString stringWithFormat:@"%ld", (long)self.imageId], @"fileName" : fileName};
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUpdateImageFileName object:objectInfo];
-                            });
-                        }];
-                    }
-                    else
-                    {
-                        [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-                            [self showRenameErrorWithMessage:nil andViewController:topViewController];
-                        }];
-                    }
-                } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                        [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-                            [self showRenameErrorWithMessage:[error localizedDescription] andViewController:topViewController];
-                        } ];
-                }];
-}
-    
--(void)showRenameErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
-{
-    NSString *errorMessage = NSLocalizedString(@"renameImageError_message", @"Failed to rename your image filename");
-    if(message)
-    {
-        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
-    }
-    UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
-                message:errorMessage
-                preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
-    
-    // Add actions
-    [alert addAction:defaultAction];
-
-    // Present list of actions
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    alert.popoverPresentationController.sourceView = self.contentView;
-    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
-    alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:nil];
 }
 
 
@@ -326,42 +198,6 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
             completion();
         }
     });
-}
-
-
-#pragma mark - UITextField Delegate Methods
-
--(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
-{
-    // Disable Add/Delete Category action
-    [self.renameFileNameAction setEnabled:NO];
-    return YES;
-}
-
--(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    // Enable Rename button if name and extension not empty
-    NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    NSString *extension = [finalString pathExtension];
-    [self.renameFileNameAction setEnabled:((finalString.length >= 1) && (extension.length >= 3) && ![finalString isEqualToString:self.oldFileName])];
-    return YES;
-}
-
--(BOOL)textFieldShouldClear:(UITextField *)textField
-{
-    // Disable Rename button
-    [self.renameFileNameAction setEnabled:NO];
-    return YES;
-}
-
--(BOOL)textFieldShouldEndEditing:(UITextField *)textField
-{
-    return YES;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    return YES;
 }
 
 @end

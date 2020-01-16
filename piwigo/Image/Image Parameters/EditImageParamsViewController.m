@@ -585,7 +585,7 @@ typedef enum {
     switch (row)
     {
         case EditImageParamsOrderThumbnails:
-            height = 170.0;
+            height = 188.0;
             break;
             
         case EditImageParamsOrderDatePicker:

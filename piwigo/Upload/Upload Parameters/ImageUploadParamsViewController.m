@@ -226,6 +226,7 @@ typedef enum {
 
         // Reload table views
         [self.imageUploadParamsTableView reloadData];
+        
     } completion:nil];
 }
 
@@ -327,7 +328,7 @@ typedef enum {
     switch (indexPath.row)
     {
         case EditImageParamsOrderThumbnails:
-            height = 170.0;
+            height = 188.0;
             break;
             
         case EditImageDetailsOrderPrivacy:
