@@ -217,7 +217,7 @@
 "moveCategory" = "Flytta Album";
 "moveCategory_selectParent" = "Välj ett album att flytta album ”%@” till";
 "moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
 "moveCategory_message" = "Är du säker du vill flytta ”%@” in i album ”%@”?";
 "moveCategoryHUD_moving" = "Flyttar Album…";
 
@@ -225,7 +225,7 @@
 "moveCategoryError_title" = "Flytt misslyckades";
 "moveCategoryError_message" = "Kunde inte flytta ditt album";
 
-// Album set image thumbnail
+// Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Välj det aktuella albumet för denna bild";
 "categorySelection_one" = "Välj en av de album som innehåller den här bilden";
@@ -234,7 +234,7 @@
 "categoryImageSet_message" = "Är du säker du vill använda denna bild miniatyrbild för albumet ”%@”?";
 "categoryImageSetHUD_updating" = "Uppdaterar albumets miniatyrbilder…";
 
-// Album set image thumbnail — Errors
+// Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Fel vid skapande av miniatyrbild";
 "categoryImageSetError_message" = "Kunde inte sätta miniatyrbild för albumet";
 
@@ -266,15 +266,23 @@
 "imageOptions_setAlbumImage" = "Ange som albumbild";
 
 // Image details
-"imageDetailsView_title" = "Bilddetaljer";
+"imageDetailsView_title" = "Egenskaper";
 "editImageDetails_title" = "Titel:";
 "editImageDetails_titlePlaceholder" = "Titel";
 "editImageDetails_author" = "Författare:";
 "editImageDetails_tags" = "Etiketter:";
 "editImageDetails_privacyLevel" = "Vem kan se bilden?";
-"editImageDetails_descriptionPlaceholder" = "Beskrivning";
+"editImageDetails_description" = "Beskrivning";
 "editImageDetails_comments" = "Kommentarer";
-"editImageDetailsHUD_updating" = "Uppdaterar bildinfo…";
+"editImageDetails_dateCreation" = "Skapat den";
+"editImageDetails_dateUnset" = "Obestämt";
+"editImageDetails_dateToday" = "Idag";
+"editImageDetails_dateMonthInc" = "+1 Månad";
+"editImageDetails_dateMonthDec" = "-1 Månad";
+"editImageDetails_dateYearInc" = "+1 År";
+"editImageDetails_dateYearDec" = "-1 År";
+"editImageDetailsHUD_updatingSingle" = "Uppdaterar foto…";
+"editImageDetailsHUD_updatingPlural" = "Uppdaterar foton…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Uppdateringen misslyckades";
@@ -363,11 +371,11 @@
 // Image move
 "moveImage_title" = "Flytta till Album";
 "moveSingleImage_selectAlbum" = "Välj ett album att flytta bild \"%@\" till";
-"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
-"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
+"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
+"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Välj ett album att flytta bilderna till";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
-"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
+"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
 "moveSingleImage_message" = "Är du säker på att du vill flytta bilden ”%@” till albumet ”%@”?";
 "moveSeveralImages_message" = "Är du säker på att du vill flytta bilderna till albumet ”%@”?";
 "moveSingleImageHUD_moving" = "Flyttar bild…";
@@ -380,11 +388,11 @@
 // Image copy
 "copyImage_title" = "Kopiera till Album";
 "copySingleImage_selectAlbum" = "Välj ett album att kopiera bild \"%@\" till";
-"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
-"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
+"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
+"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
 "copySeveralImages_selectAlbum" = "Välj ett album att kopiera bilderna till";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
-"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
+"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
 "copySingleImage_message" = "Är du säker att du vill kopiera bild ”%@” till albumet ”%@”?";
 "copySeveralImages_message" = "Är du säker att du vill kopiera bilderna till albumet ”%@”?";
 "copySingleImageHUD_copying" = "Kopierar bild…";
@@ -594,6 +602,12 @@
 "settings_photoCompress>375px" = "Komprimera bild före uppladdning";
 "settings_photoQuality" = "> Kvalitet";
 "settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
+"settings_prefixFilename>414px" = "Prefix bildfilnamn innan uppladdning";
+"settings_prefixFilename>375px" = "Prefix filnamn innan uppladdning";
+"settings_prefixFilename" = "Prefix bildnamn";
+"settings_defaultPrefix" = "Prefix";
+"settings_defaultPrefix>320px" = "Filnamnsprefix";
+"settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Radera bild efter uppladdning";
 "settings_deleteImage" = "Radera efter uppladdning";
 

@@ -47,15 +47,16 @@ FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesGetList;
 
 // Parameter keys:
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamData;
-FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamFileName;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamTitle;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamFileName;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamAuthor;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamCreationDate;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamDescription;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamCategory;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamTags;
+FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamPrivacy;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamChunk;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamChunks;
-FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamCategory;
-FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamPrivacy;
-FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamAuthor;
-FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamDescription;
-FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamTags;
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamMimeType;
 
 // Piwigo errors
@@ -91,6 +92,7 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(void)showConnectionError:(NSError*)error;
++(NSError *)getPiwigoErrorMessageFromCode:(NSInteger)code message:(NSString *)msg path:(NSString *)path andURLparams:(NSDictionary *)urlParams;
 +(void)showPiwigoError:(NSInteger)code withMessage:(NSString *)message forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams;
 
 @end

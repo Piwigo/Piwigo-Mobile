@@ -8,9 +8,9 @@
 
 #import "CategoriesData.h"
 
-NSString * const kPiwigoGetCategoryDataNotification = @"kPiwigoGetCategoryDataNotification";
-NSString * const kPiwigoCategoryDataUpdatedNotification = @"kPiwigoCategoryDataUpdatedNotification";
-NSString * const kPiwigoChangedCurrentCategoryNotification = @"kPiwigoChangedCurrentCategoryNotification";
+NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
+NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
+NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
 
 @interface CategoriesData()
 
@@ -86,7 +86,7 @@ NSString * const kPiwigoChangedCurrentCategoryNotification = @"kPiwigoChangedCur
     self.allCategories = newCategories;
 
     // Post to the app that category data have changed
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 -(void)deleteCategory:(NSInteger)categoryId
@@ -140,7 +140,7 @@ NSString * const kPiwigoChangedCurrentCategoryNotification = @"kPiwigoChangedCur
         self.allCategories = newCategories;
 
         // Post to the app that category data have changed
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
     }
 }
 
@@ -178,7 +178,7 @@ NSString * const kPiwigoChangedCurrentCategoryNotification = @"kPiwigoChangedCur
 	
     // Post to the app that the category data has been updated (if necessary)
     if (self.allCategories.count > 0)
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 -(void)updateCategories:(NSArray*)categories
@@ -228,7 +228,7 @@ NSString * const kPiwigoChangedCurrentCategoryNotification = @"kPiwigoChangedCur
     
     // Post to the app that the category data has been updated (if necessary)
     if (self.allCategories.count > 0)
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 -(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
@@ -282,7 +282,7 @@ NSString * const kPiwigoChangedCurrentCategoryNotification = @"kPiwigoChangedCur
     self.communityCategoriesForUploadOnly = existingComCategories;
 
     // Post to the app that the category data has been updated
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 

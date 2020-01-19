@@ -6,17 +6,19 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.5_text" = "Version 2.4.5\n\n• Zeigt Deine Lieblingsbilder an (erfordert Piwigo 2.10 oder neuer)\n• Möglichkeit, Bilder manuell sortiert darzustellen\n• Ermöglicht Community Benutzern das Erstellen von Alben (mit entsprechenden Rechten)\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
+"v2.4.6_text" = "Version 2.4.6\n\n• Bearbeiten der Eigenschaften einer Auswahl von Fotos\n• Ändern des Erstellungsdatums eines Fotos oder Videos\n• Präfix für Dateinamen vor dem Hochladen\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
+
+"v2.4.5_text" = "Version 2.4.5\n6. November 2019\n\n• Zeigt Ihre Lieblingsfotos an (benötigt Piwigo 2. 0 oder höher)\n• Option für die Darstellung von Fotos manuell sortiert\n• Ermöglicht Community-Benutzern Alben (mit entsprechenden Rechten)\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 
 "v2.4.4_text" = "Version 2.4.4\n1. Oktober 2019\n\n• Behebt Probleme beim Hochladen von Videos auf einigen Servern\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
 
 "v2.4.3_text" = "Version 2.4.3\n25. September 2019\n\n• iOS 13-Kompatibilität\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
 
-"v2.4.2_text" = "Version 2.4.2\n3. September 2019\n\n• Fügt die Fähigkeit hinzu, Stichwörter (nur Administratoren) zu erstellen\n• Fügt die Fähigkeit ein, die Größe der Miniaturbilder zu ändern\n• Retina Display Verwaltung\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
+"v2.4.2_text" = "Version 2.4.2\n3. September 2019\n\n• Fügt die Fähigkeit hinzu, Stichwörter (nur Administratoren) zu erstellen\n• Fügt die Fähigkeit ein, die Größe der Miniaturfotos zu ändern\n• Retina Display Verwaltung\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
 
-"v2.4.1_text" = "Version 2.4.1\n10. August 2019\n\n• Fügt die Alben \"Schlagwörter\", \"Am häufigsten angesehen\", \"Am besten bewertet\" und \"Neueste Fotos\" hinzu\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
+"v2.4.1_text" = "Version 2.4.1\n10. August 2019\n\n• Fügt die Alben \"Schlagwörter\", \"Am häufigsten angesehen\", \"Am besten bewertet\" und \"Neueste \" hinzu\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 
-"v2.4.0_text" = "Version 2.4\n15. Juli 2019\n\n• Fügt ein Suchwerkzeug hinzu (erfordert iOS 11 oder neuer)\n• Fügt eine Bildsortierung nach Bewertungspunktzahl hinzu\n• Schnellerer Download von Album-Thumbnails (erfordert Piwigo 2.8 oder neuer)\n• Titel von hochgeladenen Bildern sind nicht mehr standardmäßig Dateinamen\n• Behebt die Unmöglichkeit, Tags zu entfernen\n• Korrigiert unter bestimmten Umständen ungenaue Bilddaten";
+"v2.4.0_text" = "Version 2.4\n15. Juli 2019\n\n• Fügt ein Suchwerkzeug hinzu (erfordert iOS 11 oder neuer)\n• Fügt eine ortierung nach Bewertungspunktzahl hinzu\n• Schnellerer Download von Album-Thumbnails (erfordert Piwigo 2.8 oder neuer)\n• Titel von hochgeladenen Fotos sind nicht mehr standardmäßig Dateinamen\n• Behebt die Unmöglichkeit, Tags zu entfernen\n• Korrigiert unter bestimmten Umständen ungenaue Fotodaten";
 
 "v2.3.5_text" = "Version 2.3.5\n6. Juni 2019\n\n• Behebung eines Absturzes, der manchmal beim Bearbeiten der Serveradresse nach dem Abmelden auftritt";
 
@@ -24,11 +26,11 @@
 
 "v2.3.3_text" = "Version 2.3.3\n10. April 2019\n\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 
-"v2.3.2_text" = "Version 2.3.2\n\n• Lokale Bilder, werden vor dem Hochladen in einer Zeitleiste sortiert nach Tag angezeigt\n• Kleinere Fehlerbehebungen und Verbesserung der Benutzeroberfläche";
+"v2.3.2_text" = "Version 2.3.2\n27. März 2019\n\n• Lokale Fotos, werden vor dem Hochladen in einer Zeitleiste sortiert nach Tag angezeigt\n• Kleinere Fehlerbehebungen und Verbesserung der Benutzeroberfläche";
 
 "v2.3.1_text" = "Version 2.3.1\n15. Februar 2019\n\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface\n• Aktualisierte Übersetzungen";
 
-"v2.3.0_text" = "Version 2.3\n2. Februar 2019\n\n• Teile Fotos und Videos\n• Erhöhen Sie die Grenzen der Cachegröße\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface\n• Aktualisierte Übersetzungen";
+"v2.3.0_text" = "Version 2.3\n2. Februar 2019\n\n• Teile  und Videos\n• Erhöhen Sie die Grenzen der Cachegröße\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface\n• Aktualisierte Übersetzungen";
 
 "v2.2.7_text" = "Version 2.2.7\n29. Dezember 2018\n\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface\n• Aktualisierte Übersetzungen";
 
@@ -40,7 +42,7 @@
 
 "v2.2.3_text" = "Version 2.2.3\n27. August 2018\n\n• Neues Albumdesign\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 
-"v2.2.2_text" = "Version 2.2.2\n14. August 2018\n\n• Kopieren und Verschieben von Bildern zwischen Alben\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
+"v2.2.2_text" = "Version 2.2.2\n14. August 2018\n\n• Kopieren und Verschieben von Fotos zwischen Alben\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 
 "v2.2.1_text" = "Version 2.2.1\n25. Juli 2018\n\n• Kleinere Fehlerbeseitigungen und Verbesserungen im Interface";
 
@@ -48,13 +50,13 @@
 
 "v2.1.9_text" = "Version 2.1.9\n14. Mai 2018\n\n• Fehlerbehebungen";
 
-"v2.1.8_text" = "Version 2.1.8\n29. April 2018\n\n• Die Größe von Miniaturbildern kann nun geändert werden\n• HTTPS wird zum Standardprotokoll\n• Japanische Übersetzung\n• Kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche";
+"v2.1.8_text" = "Version 2.1.8\n29. April 2018\n\n• Die Größe von Miniaturfotos kann nun geändert werden\n• HTTPS wird zum Standardprotokoll\n• Japanische Übersetzung\n• Kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche";
 
 "v2.1.7_text" = "Version 2.1.7\n3. Februar 2018\n\n• Behebt Probleme beim Hochladen von Videos auf einigen Servern";
 
 "v2.1.6_text" = "Version 2.1.6\n7. Januar 2018\n\n• Arabische Übersetzung\n• Verbesserte HTTP Basis Zugriffs-Authentifizierungsverwaltung\n• kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche";
 
-"v2.1.5_text" = "Version 2.1.5\n21. Dezember 2017\n\n• Neu Möglichkeit zur Unterbrechung während des Hochladens\n• Neu Option zum Löschen von Bildern nach dem Hochladen\n• Neu Kompatibilität mit Optimize Storage (iCloud)\n• Beibehalten des Bildformates nach Größenveränderung wann immer möglich\n• Dänische und Indonesische Übersetzungen\n• Behoben Metadaten beim Herunterladen teilweise verloren\n• Behoben PNG Format wurde durch JPEG beim Hochladen ersetzt\n• Behoben Probleme bei iOS 11 und iPhone X behoben\n• Korrektur kleinerer Fehler\n• Code Modernisierung";
+"v2.1.5_text" = "Version 2.1.5\n21. Dezember 2017\n\n• Neu Möglichkeit zur Unterbrechung während des Hochladens\n• Neu Option zum Löschen von Fotos nach dem Hochladen\n• Neu Kompatibilität mit Optimize Storage (iCloud)\n• Beibehalten des Fotoformates nach Größenveränderung wann immer möglich\n• Dänische und Indonesische Übersetzungen\n• Behoben Metadaten beim Herunterladen teilweise verloren\n• Behoben PNG Format wurde durch JPEG beim Hochladen ersetzt\n• Behoben Probleme bei iOS 11 und iPhone X behoben\n• Korrektur kleinerer Fehler\n• Code Modernisierung";
 
 "v2.1.4_text" = "Version 2.1.4\n31. Oktober 2017\n\n• Schwedische Übersetzung\n• Fehlerbehebungen";
 
@@ -66,14 +68,14 @@
 
 "v2.1.0_text" = "Version 2.1\n14. August 2017\n\n• Kompatibilität mit der Community Erweiterung\n• Dänische, Französische, Polnische Übersetzungen\n• Fehlerbehebungen";
 
-"v2.0.4_text" = "Version 2.0.4\n28. Juli 2017\n\n• iPad - Fehlerbeseitigung für unscharfe Miniaturen und der fehlenden Bearbeitungsmöglichkeit von Fotos\n• Videos - Fehlerbehebung mein Hoch- und Herunterladen ‎(VideoJS Erweiterung auf dem Piwigo Server erforderlich‎)\n• Einstellungen - Optionen hinzugefügt um Titel zu entfernen und die Auflösung von Miniaturbildern verändern zu können\n• Verbessert - Zuverlässigkeit bei der Serververbindung, Meldung wenn das Hochladen abgeschlossen wurde\n• Kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche";
+"v2.0.4_text" = "Version 2.0.4\n28. Juli 2017\n\n• iPad - Fehlerbeseitigung für unscharfe Miniaturen und der fehlenden Bearbeitungsmöglichkeit von \n• Videos - Fehlerbehebung mein Hoch- und Herunterladen ‎(VideoJS Erweiterung auf dem Piwigo Server erforderlich‎)\n• Einstellungen - Optionen hinzugefügt um Titel zu entfernen und die Auflösung von Miniaturfotos verändern zu können\n• Verbessert - Zuverlässigkeit bei der Serververbindung, Meldung wenn das Hochladen abgeschlossen wurde\n• Kleinere Fehler beseitigt und Verbesserungen der Benutzeroberfläche";
 
-"v2.0.3_text" = "Version 2.0.3\nMai 26, 2017\n\n• Option in den Einstellungen hinzugefügt um GPS-Metadaten zu löschen\n• Cache-Nutzung in den Einstellungen ersichtlich\n• Fehlerbehebung Cache Einstellungen wurden manchmal gelöscht/Reset\n• Fehlerbehebung Bild hochladen Einstellungen wurden manchmal gelöscht/Reset";
+"v2.0.3_text" = "Version 2.0.3\nMai 26, 2017\n\n• Option in den Einstellungen hinzugefügt um GPS-Metadaten zu löschen\n• Cache-Nutzung in den Einstellungen ersichtlich\n• Fehlerbehebung Cache Einstellungen wurden manchmal gelöscht/Reset\n• Fehlerbehebung Foto hochladen Einstellungen wurden manchmal gelöscht/Reset";
 
-"v2.0.2_text" = "Version 2.0.2\n8. Mai 2017\n\n• Sortierkriterien sind jetzt identisch zur Piwigo Web App\n• Fehlerbehebung von Sortierungsfehlern\n• Fehlerbehebung Absturz beim Hinzufügen von Schlagwörtern zu einem Foto vor dem Hochladen\n• Fehlerbehebung für Situationen bei denen das Löschen ausgewählter Bilder nicht funktionierte\n• Fehlerbehebung für Situationen bei denen ein Album nach dem Verschieben nicht angezeigt wurde\n• Fehlerbehebung von Kompatibilitätsproblem mit iOS 10 — veralteter Code";
+"v2.0.2_text" = "Version 2.0.2\n8. Mai 2017\n\n• Sortierkriterien sind jetzt identisch zur Piwigo Web App\n• Fehlerbehebung von Sortierungsfehlern\n• Fehlerbehebung Absturz beim Hinzufügen von Schlagwörtern zu einem Foto vor dem Hochladen\n• Fehlerbehebung für Situationen bei denen das Löschen ausgewählter Fotos nicht funktionierte\n• Fehlerbehebung für Situationen bei denen ein Album nach dem Verschieben nicht angezeigt wurde\n• Fehlerbehebung von Kompatibilitätsproblem mit iOS 10 — veralteter Code\n________________________________________\n\n";
 
-"v2.0.1_text" = "Version 2.0.1\n26. Juni 2015\n\nNeue Einstellungen:\n- Option, um die Größe von Bildern während des Hochladens zu ändern\n + Bildqualität zwischen 50-98% wählbar\n- Möglichkeit um eine Standard Miniaturbildgröße festzulegen\nFehlerbehebungen";
+"v2.0.1_text" = "Version 2.0.1\n26. Juni 2015\n\nNeue Einstellungen:\n- Option, um die Größe von Fotos während des Hochladens zu ändern\n + Fotoqualität zwischen 50-98% auswählbar\n- Möglichkeit um eine Standard Miniaturfotogröße festzulegen\nFehlerbehebungen\n________________________________________\n\n";
 
-"v2.0.0_text" = "Version 2.0\n24. April 2015\n\nNeue native App mit den Funktionen:\n- Alben - Verwaltung\n- Bilder ansehen\n- Hochladen von mehreren Bildern\n- Video hochladen und Wiedergabe (VideoJS Erweiterung muss auf dem Piwigo-Server installiert sein)";
+"v2.0.0_text" = "Version 2.0\n24. April 2015\n\nNeue native App mit den Funktionen:\n- Alben - Verwaltung\n- Fotos ansehen\n- Hochladen von mehreren Fotos\n- Video hochladen und Wiedergabe (VideoJS Erweiterung muss auf dem Piwigo-Server installiert sein)\n________________________________________\n\n";
 
 "v1.0.0_text" = "Version 1.0\n17. Oktober 2011";

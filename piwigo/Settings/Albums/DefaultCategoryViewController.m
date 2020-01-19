@@ -52,7 +52,7 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.categoriesTableView]];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -336,7 +336,7 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         [self.navigationController dismissViewControllerAnimated:YES completion:^{
             // Replace current album view with default album view
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoBackToDefaultAlbumNotification object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationBackToDefaultAlbum object:nil];
         }];
     } else {
         [self.navigationController popToViewController:rootAlbumViewController animated:YES];

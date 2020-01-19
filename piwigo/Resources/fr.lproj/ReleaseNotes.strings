@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.5_text" = "Version 2.4.5\n\n• Affiche vos images favorites (nécessite Piwigo 2.10 ou ultérieur)\n• Option de présentation des images triées manuellement\n• Permet aux utilisateurs Community de créer des albums (avec les droits appropriés)\n• Corrige des bugs mineurs et améliore l'interface";
+"v2.4.6_text" = "Version 2.4.6\n\n• Ajoute la modification des propriétés d'une sélection de photos\n• Modifier la date de création d'une photo ou d'une vidéo\n• Option pour préfixer les noms de fichier avant téléversement\n• Corrige des bugs mineurs et améliore l'interface";
+
+"v2.4.5_text" = "Version 2.4.5\n6 Novembre 2019\n\n• Affiche vos photos favorites (nécessite Piwigo 2.10 ou ultérieur)\n• Option de présentation des photos triées manuellement\n• Permet aux utilisateurs Community de créer des albums (avec les droits appropriés)\n• Corrige des bugs mineurs et améliore l'interface";
 
 "v2.4.4_text" = "Version 2.4.4\n1er Octobre 2019\n\n• Résout les problèmes de téléchargement de vidéos sur certains serveurs\n• Corrige des bugs mineurs et améliore l'interface";
 
@@ -16,7 +18,7 @@
 
 "v2.4.1_text" = "Version 2.4.1\n10 Août 2019\n\n• Ajoute les albums \"Tags\", \"Plus vues\", \"Mieux notées\" et \"Photos récentes\"\n• Corrige des bugs mineurs et améliore l'interface";
 
-"v2.4.0_text" = "Version 2.4\n15 Juillet 2019\n\n• Ajoute un outil de recherche (nécessite iOS 11+)\n• Ajoute le tri des images par note\n• Accélère le téléchargement des vignettes d'albums (nécessite Piwigo 2.8 ou version ultérieure)\n• Les titres des images téléversées ne sont plus des noms de fichiers par défaut\n• Corrige l'impossibilité de supprimer les balises\n• Corrige les données d'image inexactes dans certaines circonstances";
+"v2.4.0_text" = "Version 2.4\n15 Juillet 2019\n\n• Ajoute un outil de recherche (nécessite iOS 11+)\n• Ajoute le tri des photos par note\n• Accélère le téléchargement des vignettes d'albums (nécessite Piwigo 2.8 ou version ultérieure)\n• Les titres des photos téléversées ne sont plus des noms de fichiers par défaut\n• Corrige l'impossibilité de supprimer les balises\n• Corrige les données de photos inexactes dans certaines circonstances";
 
 "v2.3.5_text" = "Version 2.3.5\n6 Juin 2019\n\n• Correction d'un crash qui se produit parfois lors de la modification de l'adresse du serveur après la déconnexion";
 
@@ -24,7 +26,7 @@
 
 "v2.3.3_text" = "Version 2.3.3\n10 Avril 2019\n\n• Corrections de bugs mineurs et amélioration de l'interface";
 
-"v2.3.2_text" = "Version 2.3.2\n27 Mars 2019\n\n• Images locales présentées par jour avant téléversement\n• Corrections de bugs mineurs et amélioration de l'interface";
+"v2.3.2_text" = "Version 2.3.2\n27 Mars 2019\n\n• Photos locales présentées par jour avant téléversement\n• Corrections de bugs mineurs et amélioration de l'interface";
 
 "v2.3.1_text" = "Version 2.3.1\n15 Février 2019\n\n• Corrections de bugs mineurs et amélioration de l'interface\n• Amélioration des traductions";
 
@@ -40,7 +42,7 @@
 
 "v2.2.3_text" = "Version 2.2.3\n27 Août 2018\n\n• Les albums arborent un nouveau design\n• Corrections de bugs mineurs et amélioration de l'interface";
 
-"v2.2.2_text" = "Version 2.2.2\n14 Août 2018\n\n• Copie et déplacement d'images entre albums\n• Corrections de bugs mineurs et amélioration de l'interface";
+"v2.2.2_text" = "Version 2.2.2\n14 Août 2018\n\n• Copie et déplacement des photos entre albums\n• Corrections de bugs mineurs et amélioration de l'interface";
 
 "v2.2.1_text" = "Version 2.2.1\n25 Juillet 2018\n\n• Corrections de bugs mineurs et amélioration de l'interface";
 
@@ -54,7 +56,7 @@
 
 "v2.1.6_text" = "Version 2.1.6\n7 Janvier 2018\n\n• Traduction en Arabe\n• Amélioration de la gestion de l'authentification HTTP\n• Corrections de bugs mineurs et amélioration de l'interface";
 
-"v2.1.5_text" = "Version 2.1.5\n21 Décembre 2017\n\n• Ajoute la possibilité d'annuler des transferts vers Piwigo\n• Ajoute une option pour effacer les images après un transfert\n• Ajoute la compatibilité avec l'option Optimiser le Stockage (iCloud)\n• Préserve si possible le format d'image après redimensionnement\n• Traductions en Danois et en Indonésien\n• Règle la perte partielle des métadonnées pendant un téléchargement\n• Règle le remplacement du format PNG par JPEG au cours d'un transfert\n• Règle quelques problèmes rencontrés avec iOS 11 et l'iPhone X\n• Règle quelques bugs mineurs\n• Modernisation du code";
+"v2.1.5_text" = "Version 2.1.5\n21 Décembre 2017\n\n• Ajoute la possibilité d'annuler des transferts vers Piwigo\n• Ajoute une option pour effacer les photos après un transfert\n• Ajoute la compatibilité avec l'option Optimiser le Stockage (iCloud)\n• Préserve si possible le format de la photo après redimensionnement\n• Traductions en Danois et en Indonésien\n• Règle la perte partielle des métadonnées pendant un téléchargement\n• Règle le remplacement du format PNG par JPEG au cours d'un transfert\n• Règle quelques problèmes rencontrés avec iOS 11 et l'iPhone X\n• Règle quelques bugs mineurs\n• Modernisation du code";
 
 "v2.1.4_text" = "Version 2.1.4\n31 octobre 2017\n\n• Traduction en Suédois\n• Correction de bugs";
 
@@ -72,8 +74,8 @@
 
 "v2.0.2_text" = "Version 2.0.2\n8 Mai 2017\n\n• Critères de tri maintenant identiques à ceux de l'application web\n• Règle des problèmes de tri\n• Règle un problème de crash rencontré à l'ajout de tags avant l'envoi de photos\n• Règle des situations où l'effacement d'une sélection de photos ne fonctionnait pas\n• Règle des situations où un album n'apparaissait pas après son déplacement\n• Règle des problème d'incompatibilité avec iOS 10";
 
-"v2.0.1_text" = "Version 2.0.1\n26 Juin 2015\n\nNouveaux réglages:\n - Option pour redimensionner les images avant envoi au serveur\n  + Qualité d'image entre 50 et 98%\n - Possibilité de fixer une taille par défaut des images affichées";
+"v2.0.1_text" = "Version 2.0.1\n26 Juin 2015\n\nNouveaux réglages:\n - Option pour redimensionner les photos avant envoi au serveur\n  + Qualité d'image entre 50 et 98%\n - Possibilité de fixer une taille par défaut des photos affichées";
 
-"v2.0.0_text" = "Version 2.0\n24 Avril 2015\n\nApplication entièrement réécrite :\n - Naviguez dans votre Piwigo, avec affichage des photos\n - Gérez vos albums (création, édition, déplacement)\n - Sélectionnez vos photos par lot\n - Ajout de vidéos (le plugin VideoJS doit être activé sur votre Piwigo)";
+"v2.0.0_text" = "Version 2.0\n24 Avril 2015\n\nApplication entièrement réécrite :\n - Naviguez dans votre Piwigo, avec affichage des photos\n - Gérez vos albums (création, édition, déplacement)\n - Sélectionnez vos photos par lot\n - Gestion des vidéos (le plugin VideoJS doit être activé sur votre Piwigo)";
 
 "v1.0.0_text" = "Version 1.0\n17 Octobre 2011";

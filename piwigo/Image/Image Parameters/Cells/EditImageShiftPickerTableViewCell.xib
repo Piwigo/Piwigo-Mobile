@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ShiftPickerTableCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftPickerTableCell" rowHeight="258" id="r0z-Q2-GYV" customClass="EditImageShiftPickerTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="696" height="258"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="r0z-Q2-GYV" id="l2g-OY-l5J">
+                <rect key="frame" x="0.0" y="0.0" width="696" height="258"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="raK-2i-FfZ">
+                        <rect key="frame" x="247.5" y="11" width="201" height="32"/>
+                        <segments>
+                            <segment title="" image="gobackward.minus" width="100"/>
+                            <segment title="" image="goforward.plus" width="100"/>
+                        </segments>
+                        <connections>
+                            <action selector="changedMode:" destination="r0z-Q2-GYV" eventType="valueChanged" id="zdK-lT-07I"/>
+                        </connections>
+                    </segmentedControl>
+                    <pickerView contentMode="center" restorationIdentifier="shiftPicker" translatesAutoresizingMaskIntoConstraints="NO" id="R1T-MH-EHh" userLabel="Shift Picker">
+                        <rect key="frame" x="0.0" y="42" width="696" height="216"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="216" id="uZ8-iC-C28"/>
+                        </constraints>
+                        <connections>
+                            <outlet property="dataSource" destination="r0z-Q2-GYV" id="VPL-IV-inz"/>
+                            <outlet property="delegate" destination="r0z-Q2-GYV" id="oSg-4p-KiA"/>
+                        </connections>
+                    </pickerView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="R1T-MH-EHh" firstAttribute="trailing" secondItem="l2g-OY-l5J" secondAttribute="trailing" id="Jav-sU-nMq"/>
+                    <constraint firstItem="raK-2i-FfZ" firstAttribute="top" secondItem="l2g-OY-l5J" secondAttribute="top" constant="11" id="UzW-vr-nSJ"/>
+                    <constraint firstItem="R1T-MH-EHh" firstAttribute="leading" secondItem="l2g-OY-l5J" secondAttribute="leading" id="ZDw-tI-Iwz"/>
+                    <constraint firstItem="R1T-MH-EHh" firstAttribute="top" secondItem="raK-2i-FfZ" secondAttribute="bottom" id="jBi-ff-pux"/>
+                    <constraint firstItem="raK-2i-FfZ" firstAttribute="centerX" secondItem="l2g-OY-l5J" secondAttribute="centerX" id="ucE-du-BXe"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="addRemoveTimeButton" destination="raK-2i-FfZ" id="2Gh-VY-pre"/>
+                <outlet property="shiftPicker" destination="R1T-MH-EHh" id="7yg-ke-lWs"/>
+            </connections>
+            <point key="canvasLocation" x="-102.89855072463769" y="-159.70982142857142"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="gobackward.minus" width="25" height="25"/>
+        <image name="goforward.plus" width="25" height="25"/>
+    </resources>
+</document>

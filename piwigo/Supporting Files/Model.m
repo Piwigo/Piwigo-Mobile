@@ -114,6 +114,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.photoQuality = 95;                 // 95% image quality at compression
         instance.photoResize = 100;                 // Do not resize images
         instance.deleteImageAfterUpload = NO;
+        instance.prefixFileNameBeforeUpload = NO;
+        instance.defaultPrefix = @"";
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -308,6 +310,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
         self.recentCategories = modelData.recentCategories;
         self.maxNberRecentCategories = modelData.maxNberRecentCategories;
+        self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
+        self.defaultPrefix = modelData.defaultPrefix;
 	}
 }
 
@@ -383,6 +387,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     // Added in v2.4.5…
     [saveObject addObject:self.recentCategories];
     [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.maxNberRecentCategories]];
+    // Added in 2.4.6…
+    [saveObject addObject:[NSNumber numberWithBool:self.prefixFileNameBeforeUpload]];
+    [saveObject addObject:self.defaultPrefix];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -656,12 +663,22 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     if(savedData.count > 48) {
         self.recentCategories = [savedData objectAtIndex:48];
     } else {
-        self.recentCategories = @"0";   // i.e. root album
+        self.recentCategories = @"0";               // i.e. root album
     }
     if(savedData.count > 49) {
         self.maxNberRecentCategories = [[savedData objectAtIndex:49] unsignedIntegerValue];
     } else {
-        self.maxNberRecentCategories = 5;      // Default value
+        self.maxNberRecentCategories = 5;           // Default value
+    }
+    if(savedData.count > 50) {
+        self.prefixFileNameBeforeUpload = [[savedData objectAtIndex:50] boolValue];
+    } else {
+        self.prefixFileNameBeforeUpload = NO;       // Default value
+    }
+    if(savedData.count > 51) {
+        self.defaultPrefix = [savedData objectAtIndex:51];
+    } else {
+        self.defaultPrefix = @"";       // No prefix to filenames by default value
     }
 	return self;
 }

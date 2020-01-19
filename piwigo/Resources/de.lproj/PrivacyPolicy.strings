@@ -24,7 +24,7 @@
 
 "what_subTitle1" = "Piwigo Galleriedaten";
 
-"what_subText1a" = "Kontoanmeldeinformationen werden von den Anwendungen gespeichert und an die konfigurierten Websites zur Anmeldung bei einer oder mehreren Piwigo Galerien übertragen. Darüber hinaus werden alle Fotos, Videos und sonstige Dateien, die zum Download/Upload ausgewählt werden und die eingegebenen Inhalte gespeichert, verarbeitet und an die konfigurierten Galerie-Websites übertragen.";
+"what_subText1a" = "Kontoanmeldeinformationen werden von den Anwendungen gespeichert und an die konfigurierten Websites zur Anmeldung bei einer oder mehreren Piwigo Galerien übertragen. Darüber hinaus werden alle , Videos und sonstige Dateien, die zum Download/Upload ausgewählt werden und die eingegebenen Inhalte gespeichert, verarbeitet und an die konfigurierten Galerie-Websites übertragen.";
 
 "what_subTitle2" = "Standortinformationen";
 
@@ -48,7 +48,7 @@
 
 "how_text1" = "Die Anwendungen speichern Daten lokal auf dem Gerät auf dem sie ausgeführt werden. Sie sind dafür verantwortlich die gespeicherten Daten vor unbefugtem Zugriff zu schützen. Wir empfehlen dringend HTTPS zu verwenden um die Daten während der Übertragung vor unberechtigtem Zugriff zu schützen. Die Anwendungen versuchen eine verschlüsselte Verbindung über HTTPS zu verwenden, wenn der Benutzer zum ersten Mal eine Verbindung zu einer Piwigo-Gallerie herstellt. Für die Aktualisierung von Zertifikaten und Bibliotheken für den HTTPS-Zugriff ist der Betreiber des Piwigo Servers verantwortlich. Falls die Anwendungen HTTPS nicht verwenden können schalten sie auf HTTP um und die Daten sind bei der Übertragung nicht verschlüsselt.";
 
-"how_text2" = "Beim Hochladen von Bildern auf eine Piwigo Gallerie können private Daten wie GPS-Koordinaten oder Kommentare enthalten sein. In den Einstellungen bieten die Anwendungen eine Option zum Entfernen dieser Daten aus Bilddateien vor dem Upload. Es liegt in der Verantwortung des Benutzers zu entscheiden, ob diese privaten Daten übertragen werden.";
+"how_text2" = "Beim Hochladen von Fotos auf eine Piwigo Gallerie können private Daten wie GPS-Koordinaten oder Kommentare enthalten sein. In den Einstellungen bieten die Anwendungen eine Option zum Entfernen dieser Daten aus Fotodateien vor dem Upload. Es liegt in der Verantwortung des Benutzers zu entscheiden, ob diese privaten Daten übertragen werden.";
 
 "security_title" = "Sicherheit Ihrer Daten";
 

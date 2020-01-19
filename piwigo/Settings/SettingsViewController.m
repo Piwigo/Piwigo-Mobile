@@ -48,7 +48,8 @@ typedef enum {
 } SettingsSection;
 
 typedef enum {
-	kImageUploadSettingAuthor
+	kImageUploadSettingAuthor,
+    kImageUploadSettingPrefix
 } kImageUploadSetting;
 
 NSString * const kHelpUsTitle = @"Help Us!";
@@ -93,7 +94,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
 	return self;
 }
@@ -237,8 +238,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -309,8 +310,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -410,8 +411,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -433,8 +434,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             nberOfRows = 5;
             break;
         case SettingsSectionImageUpload:
-            nberOfRows = 6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
-                                ([Model sharedInstance].compressImageOnUpload ? 1 : 0);
+            nberOfRows = 7 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) +
+                             ([Model sharedInstance].compressImageOnUpload ? 1 : 0) +
+                             ([Model sharedInstance].prefixFileNameBeforeUpload ? 1 : 0);
             break;
         case SettingsSectionColor:
             nberOfRows = 2;
@@ -463,8 +465,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = indexPath.section;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -789,9 +791,13 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 #pragma mark Default Upload Settings
         case SettingsSectionImageUpload:     // Default Upload Settings
 		{
-			switch(indexPath.row)
+            NSInteger row = indexPath.row;
+            if (![Model sharedInstance].resizeImageOnUpload && (row > 3)) row++;
+            if (![Model sharedInstance].compressImageOnUpload && (row > 5)) row++;
+            if (![Model sharedInstance].prefixFileNameBeforeUpload && (row > 7)) row++;
+            switch(row)
 			{
-				case 0:     // Author Name
+				case 0:     // Author Name?
 				{
 					TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsField"];
 					if(!cell)
@@ -806,14 +812,14 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Author");
                     }
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
-					cell.rightTextField.placeholder = NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name");
+                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
 					cell.rightTextField.delegate = self;
 					cell.rightTextField.tag = kImageUploadSettingAuthor;
 					
 					tableViewCell = cell;
 					break;
 				}
-				case 1:     // Privacy Level
+				case 1:     // Privacy Level?
 				{
 					LabelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy"];
 					if(!cell)
@@ -833,7 +839,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 					tableViewCell = cell;
 					break;
 				}
-                case 2:     // Strip private Metadata
+                case 2:     // Strip private Metadata?
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"gps"];
                     if(!cell) {
@@ -855,7 +861,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-				case 3:     // Resize Before Upload
+				case 3:     // Resize Before Upload?
 				{
 					SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"resize"];
 					if(!cell) {
@@ -889,172 +895,137 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 					tableViewCell = cell;
 					break;
 				}
-                case 4:     // Image Size slider or Compress Before Upload switch
+                case 4:     // Image Size slider
                 {
-                    if ([Model sharedInstance].resizeImageOnUpload) {
-                        SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoSize"];
-                        if(!cell)
-                        {
-                            cell = [SliderTableViewCell new];
-                        }
-                        cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"> Size");
-                        cell.slider.minimumValue = 5;
-                        cell.slider.maximumValue = 100;
-                        cell.sliderCountPrefix = @"";
-                        cell.sliderCountSuffix = @"%";
-                        cell.incrementSliderBy = 5;
-                        cell.sliderValue = [Model sharedInstance].photoResize;
-                        [cell.slider addTarget:self action:@selector(updateImageSize:) forControlEvents:UIControlEventValueChanged];
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoSize"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
+                    }
+                    cell.sliderName.text = NSLocalizedString(@"settings_photoSize", @"> Size");
+                    cell.slider.minimumValue = 5;
+                    cell.slider.maximumValue = 100;
+                    cell.sliderCountPrefix = @"";
+                    cell.sliderCountSuffix = @"%";
+                    cell.incrementSliderBy = 5;
+                    cell.sliderValue = [Model sharedInstance].photoResize;
+                    [cell.slider addTarget:self action:@selector(updateImageSize:) forControlEvents:UIControlEventValueChanged];
 
-                        tableViewCell = cell;
-                    } else {
-                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
-                        if(!cell) {
-                            cell = [SwitchTableViewCell new];
-                        }
-                        
-                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                        if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
-                            cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress>375px", @"Compress Image Before Upload");
-                        } else {
-                            cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress", @"Compress Before Upload");
-                        }
-                        [cell.cellSwitch setOn:[Model sharedInstance].compressImageOnUpload];
-                        cell.cellSwitchBlock = ^(BOOL switchState) {
-                            // Number of rows will change accordingly
-                            [Model sharedInstance].compressImageOnUpload = switchState;
-                            // Store modified setting
-                            [[Model sharedInstance] saveToDisk];
-                            // Position of the row that should be added/removed (depends on resize option)
-                            NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:(5 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0))
-                                                                             inSection:SettingsSectionImageUpload];
-                            if(switchState) {
-                                // Insert row in existing table
-                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            } else {
-                                // Remove row in existing table
-                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            }
-                        };
-                        
-                        tableViewCell = cell;
-                    }
+                    tableViewCell = cell;
                     break;
                 }
-                case 5:     // Compress Before Upload switch or Image Quality slider or Delete Image switch
+                case 5:     // Compress before Upload?
                 {
-                    if ([Model sharedInstance].resizeImageOnUpload) {
-                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
-                        if(!cell) {
-                            cell = [SwitchTableViewCell new];
-                        }
-                        
-                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                        if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
-                            cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress>375px", @"Compress Image Before Upload");
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"compress"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress>375px", @"Compress Image Before Upload");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress", @"Compress Before Upload");
+                    }
+                    [cell.cellSwitch setOn:[Model sharedInstance].compressImageOnUpload];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        // Number of rows will change accordingly
+                        [Model sharedInstance].compressImageOnUpload = switchState;
+                        // Store modified setting
+                        [[Model sharedInstance] saveToDisk];
+                        // Position of the row that should be added/removed
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:(5 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0))
+                                                                         inSection:SettingsSectionImageUpload];
+                        if(switchState) {
+                            // Insert row in existing table
+                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                         } else {
-                            cell.leftLabel.text = NSLocalizedString(@"settings_photoCompress", @"Compress Before Upload");
+                            // Remove row in existing table
+                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                         }
-                        [cell.cellSwitch setOn:[Model sharedInstance].compressImageOnUpload];
-                        cell.cellSwitchBlock = ^(BOOL switchState) {
-                            // Number of rows will change accordingly
-                            [Model sharedInstance].compressImageOnUpload = switchState;
-                            // Store modified setting
-                            [[Model sharedInstance] saveToDisk];
-                            // Position of the row that should be added/removed
-                            NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:(5 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0))
-                                                                             inSection:SettingsSectionImageUpload];
-                            if(switchState) {
-                                // Insert row in existing table
-                                [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            } else {
-                                // Remove row in existing table
-                                [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                            }
-                        };
-                        
-                        tableViewCell = cell;
-                    }
-                    else if ([Model sharedInstance].compressImageOnUpload) {
-                        SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
-                        if(!cell)
-                        {
-                            cell = [SliderTableViewCell new];
-                        }
-                        cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
-                        cell.slider.minimumValue = 50;
-                        cell.slider.maximumValue = 98;
-                        cell.sliderCountPrefix = @"";
-                        cell.sliderCountSuffix = @"%";
-                        cell.incrementSliderBy = 2;
-                        cell.sliderValue = [Model sharedInstance].photoQuality;
-                        [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
-                        
-                        tableViewCell = cell;
-                    }
-                    else {
-                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"delete"];
-                        if(!cell) {
-                            cell = [SwitchTableViewCell new];
-                        }
-                        
-                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                        if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
-                            cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage>375px", @"Delete Image After Upload");
-                        } else {
-                            cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage", @"Delete After Upload");
-                        }
-                        [cell.cellSwitch setOn:[Model sharedInstance].deleteImageAfterUpload];
-                        cell.cellSwitchBlock = ^(BOOL switchState) {
-                            [Model sharedInstance].deleteImageAfterUpload = switchState;
-                            [[Model sharedInstance] saveToDisk];
-                        };
-                        
-                        tableViewCell = cell;
-                    }
+                    };
+
+                    tableViewCell = cell;
                     break;
                 }
-				case 6:     // Image Quality slider or Delete Image switch
+				case 6:     // Image Quality slider
 				{
-                    if ([Model sharedInstance].resizeImageOnUpload && [Model sharedInstance].compressImageOnUpload) {
-                        SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
-                        if(!cell)
-                        {
-                            cell = [SliderTableViewCell new];
-                        }
-                        cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
-                        cell.slider.minimumValue = 50;
-                        cell.slider.maximumValue = 98;
-                        cell.sliderCountPrefix = @"";
-                        cell.sliderCountSuffix = @"%";
-                        cell.incrementSliderBy = 2;
-                        cell.sliderValue = [Model sharedInstance].photoQuality;
-                        [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
-                        
-                        tableViewCell = cell;
-                    } else {
-                        SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"delete"];
-                        if(!cell) {
-                            cell = [SwitchTableViewCell new];
-                        }
-                        
-                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                        if(self.view.bounds.size.width > 414) {     // i.e. larger than iPhones 6,7 screen width
-                            cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage>375px", @"Delete Image After Upload");
-                        } else {
-                            cell.leftLabel.text = NSLocalizedString(@"settings_deleteImage", @"Delete After Upload");
-                        }
-                        [cell.cellSwitch setOn:[Model sharedInstance].deleteImageAfterUpload];
-                        cell.cellSwitchBlock = ^(BOOL switchState) {
-                            [Model sharedInstance].deleteImageAfterUpload = switchState;
-                            [[Model sharedInstance] saveToDisk];
-                        };
-                        
-                        tableViewCell = cell;
+                    SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photoQuality"];
+                    if(!cell)
+                    {
+                        cell = [SliderTableViewCell new];
                     }
+                    cell.sliderName.text = NSLocalizedString(@"settings_photoQuality", @"> Quality");
+                    cell.slider.minimumValue = 50;
+                    cell.slider.maximumValue = 98;
+                    cell.sliderCountPrefix = @"";
+                    cell.sliderCountSuffix = @"%";
+                    cell.incrementSliderBy = 2;
+                    cell.sliderValue = [Model sharedInstance].photoQuality;
+                    [cell.slider addTarget:self action:@selector(updateImageQuality:) forControlEvents:UIControlEventValueChanged];
+                    
+                    tableViewCell = cell;
 					break;
 				}
-                case 7:     // Delete image after upload
+                case 7:     // Prefix Filename Before Upload switch
+                {
+                    SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"prefix"];
+                    if(!cell) {
+                        cell = [SwitchTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if (self.view.bounds.size.width > 414) {        // i.e. larger than iPhones 6,7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_prefixFilename>414px", @"Prefix Photo Filename Before Upload");
+                    } else if (self.view.bounds.size.width > 375) { // i.e. larger than iPhones 6,7 screen width
+                        cell.leftLabel.text = NSLocalizedString(@"settings_prefixFilename>375px", @"Prefix Filename Before Upload");
+                    } else {
+                        cell.leftLabel.text = NSLocalizedString(@"settings_prefixFilename", @"Prefix Filename");
+                    }
+                    [cell.cellSwitch setOn:[Model sharedInstance].prefixFileNameBeforeUpload];
+                    cell.cellSwitchBlock = ^(BOOL switchState) {
+                        // Number of rows will change accordingly
+                        [Model sharedInstance].prefixFileNameBeforeUpload = switchState;
+                        // Store modified setting
+                        [[Model sharedInstance] saveToDisk];
+                        // Position of the row that should be added/removed
+                        NSIndexPath *rowAtIndexPath = [NSIndexPath indexPathForRow:(6 + ([Model sharedInstance].resizeImageOnUpload ? 1 : 0) + ([Model sharedInstance].compressImageOnUpload ? 1 : 0))
+                                                                         inSection:SettingsSectionImageUpload];
+                        if(switchState) {
+                            // Insert row in existing table
+                            [self.settingsTableView insertRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        } else {
+                           // Remove row in existing table
+                            [self.settingsTableView deleteRowsAtIndexPaths:@[rowAtIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                        }
+                    };
+
+                    tableViewCell = cell;
+                    break;
+                }
+                case 8:     // Filename prefix?
+                {
+                    TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uploadSettingsPrefix"];
+                    if(!cell)
+                    {
+                        cell = [TextFieldTableViewCell new];
+                    }
+                    
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    if(self.view.bounds.size.width > 320) {     // i.e. larger than iPhone 5 screen width
+                        cell.labelText = NSLocalizedString(@"settings_defaultPrefix>320px", @"Filename Prefix");
+                    } else {
+                        cell.labelText = NSLocalizedString(@"settings_defaultPrefix", @"Prefix");
+                    }
+                    cell.rightTextField.text = [Model sharedInstance].defaultPrefix;
+                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultPrefixPlaceholder", @"Prefix Filename") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
+                    cell.rightTextField.delegate = self;
+                    cell.rightTextField.tag = kImageUploadSettingPrefix;
+                    
+                    tableViewCell = cell;
+                    break;
+                }
+                case 9:     // Delete image after upload?
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"delete"];
                     if(!cell) {
@@ -1088,7 +1059,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                                       ![Model sharedInstance].hadOpenedSession;
             switch (indexPath.row)
             {
-                case 0:     // Switch automatically ?
+                case 0:     // Switch automatically?
                 {
                     SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switchPalette"];
                     if(!cell) {
@@ -1121,7 +1092,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     tableViewCell = cell;
                     break;
                 }
-                case 1:     // Switch at Brightness ? or Always use Dark Palette ?
+                case 1:     // Switch at Brightness?
                 {
                     if ([Model sharedInstance].switchPaletteAutomatically)
                     {
@@ -1144,7 +1115,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         tableViewCell = cell;
                     }
                     else {
-                        // Always use Dark Palette ?
+                        // Always use Dark Palette
                         SwitchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"darkPalette"];
                         if(!cell) {
                             cell = [SwitchTableViewCell new];
@@ -1445,11 +1416,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     
                     cell.leftText = NSLocalizedString(@"settings_privacy", @"Privacy Policy");
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    //                    if ([Model sharedInstance].isAppLanguageRTL) {
-                    //                        cell.rightText = @"<";
-                    //                    } else {
-                    //                        cell.rightText = @">";
-                    //                    }
+//                    if ([Model sharedInstance].isAppLanguageRTL) {
+//                        cell.rightText = @"<";
+//                    } else {
+//                        cell.rightText = @">";
+//                    }
                     
                     tableViewCell = cell;
                     
@@ -1468,8 +1439,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = indexPath.section;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -1537,10 +1508,12 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 case 0:     // Author Name
                 case 2:     // Strip private Metadata
                 case 3:     // Resize Before Upload
-                case 4:     // Image Size slider or Compress Before Upload switch
-                case 5:     // Compress Before Upload switch or Image Quality slider or Delete Image switch
-                case 6:     // Image Quality slider or Delete Image switch
-                case 7:     // Delete image after upload
+                case 4:     // Image Size slider
+                case 5:     // Compress Before Upload switch
+                case 6:     // Image Quality slider
+                case 7:     // Prefix Filename Before Upload switch
+                case 8:     // Filename Prefix
+                case 9:     // Delete image after upload
                 {
                     result = NO;
                     break;
@@ -1611,8 +1584,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -1664,8 +1637,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // User can upload images/videos if he/she is logged in and has:
     // — admin rights
     // — upload access to some categories with Community
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -1721,8 +1694,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = indexPath.section;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -2150,6 +2123,12 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             [[Model sharedInstance] saveToDisk];
             break;
         }
+        case kImageUploadSettingPrefix:
+        {
+            [Model sharedInstance].defaultPrefix = textField.text;
+            [[Model sharedInstance] saveToDisk];
+            break;
+        }
     }
 }
 
@@ -2211,8 +2190,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = SettingsSectionColor;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section++;
@@ -2234,8 +2213,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = SettingsSectionCache;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section--;
@@ -2254,8 +2233,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // — admin rights
     // — upload access to some categories with Community
     NSInteger section = SettingsSectionCache;
-    if (!([Model sharedInstance].hasAdminRights || [Model sharedInstance].usesCommunityPluginV29) ||
-        ![Model sharedInstance].hadOpenedSession)
+    if (!([Model sharedInstance].hasAdminRights ||
+          ([Model sharedInstance].usesCommunityPluginV29 && [Model sharedInstance].hadOpenedSession)))
     {
         // Bypass the Upload section
         if (section > SettingsSectionImages) section--;

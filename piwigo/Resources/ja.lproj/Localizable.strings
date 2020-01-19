@@ -23,7 +23,7 @@
 "alertCancelButton" = "中止";
 "alertAddButton" = "追加";
 "alertRetryButton" = "再試行";
-"alertNextButton" = "次の画像";
+"alertNextButton" = "次の写真";
 "alertTryButton" = "試す";
 "alertClearButton" = "クリア";
 
@@ -34,7 +34,7 @@
 
 // Upload rights
 "uploadRights_title" = "アップロードする権限が必要です";
-"uploadRights_message" = "画像や動画をアップロードするには、アップロード権限が必要です。";
+"uploadRights_message" = "写真や動画をアップロードするには、アップロード権限が必要です。";
 
 // Errors
 "internetErrorGeneral_title" = "接続エラー";
@@ -135,7 +135,7 @@
 "categorySort_manual" = "手動注文";
 
 "categorySort_videosOnly" = "動画のみ";
-"categorySort_imagesOnly" = "画像のみ";
+"categorySort_imagesOnly" = "写真のみ";
 
 // Album selection
 "categorySelection_title" = "アルバム";
@@ -145,14 +145,14 @@
 "categorySelectionHUD_label" = "アルバムのデータを取得しています...";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "画像をアップロードするサブアルバムがありません";
-"categoryUpload_chooseAlbum" = "画像をアップロードするアルバムを選択します";
+"categoryUpload_noSubAlbum" = "写真をアップロードするサブアルバムがありません";
+"categoryUpload_chooseAlbum" = "写真をアップロードするアルバムを選択します";
 "categoryUpload_LocalAlbums" = "ローカルアルバム";
-"categoryUpload_chooseLocalAlbum" = "画像を取得するアルバムを選択します";
+"categoryUpload_chooseLocalAlbum" = "写真を取得するアルバムを選択します";
 "categoryUpload_iCloudAlbums" = "iCloudのアルバム";
-"categoryUpload_chooseiCloudAlbum" = "画像を取得するICloud アルバムを選択します";
+"categoryUpload_chooseiCloudAlbum" = "写真を取得するiCloud アルバムを選択します";
 "categoyUpload_loadSubCategories" = "読み込む";
-"categoryUpload_images" = "画像をアップロードする";
+"categoryUpload_images" = "写真をアップロードする";
 "categoryUpload_subAlbum" = "サブアルバムを作成します";
 "categoryUpload_defaultAlbum" = "規定のアルバムとして設定します";
 "categoryUpload_defaultSelect" = "規定のアルバムとなるアルバムまたはサブアルバムを選択してください。";
@@ -197,27 +197,27 @@
 
 // Album delete
 "deleteCategory_title" = "アルバムを削除します";
-"deleteCategory_message" = "アルバム「%@」と%@個の画像すべてを本当に削除しますか？";
+"deleteCategory_message" = "アルバム「%@」と%@個の写真すべてを本当に削除しますか？";
 "deleteCategory_empty" = "空のアルバムを削除します";
-"deleteCategory_noImages" = "画像を保存します";
+"deleteCategory_noImages" = "写真を保存します";
 "deleteCategory_orphanedImages" = "孤立画像を削除します";
-"deleteCategory_allImages" = "画像%@を削除します";
+"deleteCategory_allImages" = "写真%@を削除します";
 "deleteCategoryConfirm_title" = "本当によろしいですか？";
-"deleteCategoryConfirm_message" = "このアルバムを削除するには画像の数を入力して下さい。画像の数：%@";
+"deleteCategoryConfirm_message" = "このアルバムを削除するには写真の数を入力して下さい。写真の数：%@";
 "deleteCategoryConfirm_deleteButton" = "削除";
 "deleteCategoryHUD_label" = "アルバムを削除中...";
 
 // Album delete — errors
 "deleteCategoryMatchError_title" = "数が一致しません";
-"deleteCategoryMatchError_message" = "入力した画像の数は、カテゴリ内の画像の数と一致しません。もしこのアルバムを削除するなら、もう一度挑戦して下さい。";
+"deleteCategoryMatchError_message" = "入力した写真の数は、カテゴリ内の写真の数と一致しません。もしこのアルバムを削除するなら、もう一度挑戦して下さい。";
 "deleteCategoryError_title" = "削除に失敗しました";
 "deleteCategoryError_message" = "アルバムの削除に失敗しました";
 
 // Album move
 "moveCategory" = "アルバムを移動します";
 "moveCategory_selectParent" = "アルバム「%@」へ移動するアルバムを選択して下さい";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
+"moveCategory_selectRecent" = "アルバム \"%@\" の移動先に最近のアルバムを選択する";
+"moveCategory_selectRecentOther" = "または、アルバム \"%@\" の移動先に他のアルバムを選択する";
 "moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
 "moveCategoryHUD_moving" = "アルバムを移動中...";
 
@@ -225,63 +225,71 @@
 "moveCategoryError_title" = "移動に失敗しました";
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
-// Album set image thumbnail
+// Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
-"categorySelection_current" = "この画像のためのアルバムを選択します";
-"categorySelection_one" = "この画像を含むアルバムを1つ選択して下さい";
-"categorySelection_other" = "または、この画像のために別のアルバムを選択します";
+"categorySelection_current" = "この写真のためのアルバムを選択します";
+"categorySelection_one" = "この写真を含むアルバムを1つ選択して下さい";
+"categorySelection_other" = "または、この写真のために別のアルバムを選択します";
 "categoryImageSet_title" = "アルバムのサムネイル";
-"categoryImageSet_message" = "この画像をアルバム「%@」に設定してよろしいですか？";
+"categoryImageSet_message" = "この写真をアルバム「%@」に設定してよろしいですか？";
 "categoryImageSetHUD_updating" = "アルバムのサムネイルを更新中...";
 
-// Album set image thumbnail — Errors
-"categoryImageSetError_title" = "画像設定エラー";
-"categoryImageSetError_message" = "アルバム画像の設定に失敗しました";
+// Album set photo thumbnail — Errors
+"categoryImageSetError_title" = "写真設定エラー";
+"categoryImageSetError_message" = "アルバム写真の設定に失敗しました";
 
 
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
-"singleImage" = "画像";
+"singleImage" = "写真";
 "singleVideo" = "動画";
 "singleAudio" = "音声";
-"severalImages" = "画像";
-"noImages" = "画像がありません";
-"pullToRefresh" = "画像の再読み込み";
+"severalImages" = "写真";
+"noImages" = "写真がありません";
+"pullToRefresh" = "写真の再読み込み";
 
 // Errors
 "albumPhotoError_title" = "アルバム写真の取得エラー";
-"albumPhotoError_message" = "アルバム写真の取得に失敗しました (アルバム内の画像が破損している？)";
+"albumPhotoError_message" = "アルバム写真の取得に失敗しました (アルバム内の写真が破損している？)";
 
 // Image sort
 "sortBy" = "並び順";
-"imageSortTitle" = "画像を並べ換える";
-"imageSortingHUD" = "画像を並べ換える";
-"imageSortMessage" = "画像の並び順を選択してください";
+"imageSortTitle" = "写真を並べ換える";
+"imageSortingHUD" = "写真を並べ換える";
+"imageSortMessage" = "写真の並び順を選択してください";
 
 // Image options (actions)
-"imageOptions_title" = "画像オプション";
+"imageOptions_title" = "写真オプション";
 "imageOptions_edit" = "編集";
 "imageOptions_download" = "ダウンロード";
 "imageOptions_setAlbumImage" = "アルバムの画像に設定します";
 
 // Image details
-"imageDetailsView_title" = "画像の詳細";
-"editImageDetails_title" = "題名：";
+"imageDetailsView_title" = "プロパティ";
+"editImageDetails_title" = "題名";
 "editImageDetails_titlePlaceholder" = "題名";
-"editImageDetails_author" = "作成者:";
+"editImageDetails_author" = "作成者";
 "editImageDetails_tags" = "タグ:";
 "editImageDetails_privacyLevel" = "この写真を見ることができるのは誰ですか？";
-"editImageDetails_descriptionPlaceholder" = "説明";
+"editImageDetails_description" = "説明";
 "editImageDetails_comments" = "コメント";
-"editImageDetailsHUD_updating" = "画像情報を更新しています...";
+"editImageDetails_dateCreation" = "作成日";
+"editImageDetails_dateUnset" = "解除";
+"editImageDetails_dateToday" = "今日";
+"editImageDetails_dateMonthInc" = "+1 ヶ月";
+"editImageDetails_dateMonthDec" = "-1 ヶ月";
+"editImageDetails_dateYearInc" = "+1年";
+"editImageDetails_dateYearDec" = "-1年";
+"editImageDetailsHUD_updatingSingle" = "写真を更新しています...";
+"editImageDetailsHUD_updatingPlural" = "写真を更新しています...";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新に失敗しました";
 "editImageDetailsError_message" = "サーバーに変更内容を更新できませんでした。もう一度やり直しますか？";
-"imageDetailsFetchError_title" = "画像詳細の取得に失敗しました";
-"imageDetailsFetchError_retryMessage" = "画像データの取得に失敗しました。もう一度やり直しますか？";
-"imageDetailsFetchError_continueMessage" = "画像データの取得に失敗しました。続行しますか？";
+"imageDetailsFetchError_title" = "写真詳細の取得に失敗しました";
+"imageDetailsFetchError_retryMessage" = "写真データの取得に失敗しました。もう一度やり直しますか？";
+"imageDetailsFetchError_continueMessage" = "写真データの取得に失敗しました。続行しますか？";
 
 // Image privacy levels
 "privacyLevel" = "プライバシーのレベル";
@@ -308,91 +316,91 @@
 "tagsAddError_title" = "作成に失敗";
 
 // Image select
-"selectImages" = "画像を選択します";
-"selectImageSelected" = "1画像が選択されています";
-"selectImagesSelected" = "%@枚の画像が選択されています";
+"selectImages" = "写真を選択します";
+"selectImageSelected" = "1写真が選択されています";
+"selectImagesSelected" = "%@枚の写真が選択されています";
 "selectAll" = "すべて";
 
 // Image rename (filename)
 "renameImage_title" = "元のファイル";
-"renameImage_message" = "この画像の新しいファイル名を入力してください";
+"renameImage_message" = "この写真の新しいファイル名を入力してください";
 "renameImageHUD_label" = "ファイルの名前を変更しています…";
 
 // Image rename — Errors
-"renameImageError_message" = "画像ファイルの名前変更に失敗しました";
+"renameImageError_message" = "写真ファイルの名前変更に失敗しました";
 
 // Image delete
 "deleteImage_delete" = "削除";
 "deleteImageProgress_title" = "%@%% の削除が済みました";
 
-"deleteSingleImage_title" = "画像を削除";
-"deleteSingleImageHUD_deleting" = "画像を削除しています...";
-"deleteSeveralImagesHUD_deleting" = "画像を削除しています...";
+"deleteSingleImage_title" = "写真を削除";
+"deleteSingleImageHUD_deleting" = "写真を削除しています...";
+"deleteSeveralImagesHUD_deleting" = "写真を削除しています...";
 "removeSingleImage_title" = "アルバムから削除する";
-"removeSingleImageHUD_removing" = "画像を削除しています...";
-"deleteSingleImage_message" = "この画像を本当に削除しますか？この操作は元に戻せません。";
-"deleteSeveralImages_title" = "%@枚の画像を削除";
-"deleteSeveralImages_message" = "選択した%@枚の画像を本当に削除しますか？この操作は元に戻せません。";
+"removeSingleImageHUD_removing" = "写真を削除しています...";
+"deleteSingleImage_message" = "この写真を本当に削除しますか？この操作は元に戻せません。";
+"deleteSeveralImages_title" = "%@枚の写真を削除";
+"deleteSeveralImages_message" = "選択した%@枚の写真を本当に削除しますか？この操作は元に戻せません。";
 
 // Image delete — Errors
 "deleteImageFail_title" = "削除に失敗しました";
-"deleteImageFail_message" = "画像が削除できませんでした\n%@";
+"deleteImageFail_message" = "写真が削除できませんでした\n%@";
 
 // Image download
-"downloadSingleImage_title" = "画像をダウンロードします";
-"downloadSingleImage_confirmation" = "選択した画像をダウンロードしますか？";
-"downloadSeveralImages_title" = "%@枚の画像をダウンロードします";
-"downloadSeveralImage_confirmation" = "選択した%@枚の画像をダウンロードしますか？";
+"downloadSingleImage_title" = "写真をダウンロードします";
+"downloadSingleImage_confirmation" = "選択した写真をダウンロードしますか？";
+"downloadSeveralImages_title" = "%@枚の写真をダウンロードします";
+"downloadSeveralImage_confirmation" = "選択した%@枚の写真をダウンロードしますか？";
 
-"downloadingImage" = "画像をダウンロード中";
-"downloadingImages" = "画像をダウンロード中";
+"downloadingImage" = "写真をダウンロード中";
+"downloadingImages" = "写真をダウンロード中";
 "downloadingVideo" = "動画をダウンロード中";
 
 // Image download — Errors
 "downloadImageFail_title" = "ダウンロードに失敗しました";
-"downloadImageFail_message" = "画像のダウンロードに失敗しました！\n%@";
+"downloadImageFail_message" = "写真のダウンロードに失敗しました！\n%@";
 "downloadVideoFail_message" = "動画のダウンロードに失敗しました！\n%@";
 "downloadVideoFail_Photos" = "動画フォーマットが写真アプリで受け入れられませんでした！";
 
-"imageSaveError_title" = "画像の保存に失敗しました";
-"imageSaveError_message" = "画像の保存に失敗しました。エラー：%@";
+"imageSaveError_title" = "写真の保存に失敗しました";
+"imageSaveError_message" = "写真の保存に失敗しました。エラー：%@";
 
 "videoSaveError_title" = "動画の保存に失敗しました";
 "videoSaveError_message" = "動画の保存に失敗しました。エラー：%@";
 
 // Image move
 "moveImage_title" = "アルバムに移動する";
-"moveSingleImage_selectAlbum" = "画像「%@」を移動するアルバムを選択する";
-"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
-"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
-"moveSeveralImages_selectAlbum" = "画像を移動するアルバムを選択する";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
-"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
-"moveSingleImage_message" = "画像「%@」をアルバム「%@」へ移動していいですか？";
-"moveSeveralImages_message" = "画像をアルバム「%@」へ移動していいですか？";
-"moveSingleImageHUD_moving" = "画像を移動しています...";
-"moveSeveralImagesHUD_moving" = "画像を移動しています...";
+"moveSingleImage_selectAlbum" = "写真「%@」を移動するアルバムを選択する";
+"moveSingleImage_selectRecent" = "写真 \"%@\" の移動先に最近のアルバムを選択する";
+"moveSingleImage_selectRecentOther" = "または、写真 \"%@\" の移動先に他のアルバムを選択する";
+"moveSeveralImages_selectAlbum" = "写真を移動するアルバムを選択する";
+"moveSeveralImages_selectRecent" = "それらの写真の移動先に最近のアルバムを選択する";
+"moveSeveralImages_selectRecentOther" = "それらの写真の移動先に他のアルバムを選択する";
+"moveSingleImage_message" = "写真「%@」をアルバム「%@」へ移動していいですか？";
+"moveSeveralImages_message" = "写真をアルバム「%@」へ移動していいですか？";
+"moveSingleImageHUD_moving" = "写真を移動しています...";
+"moveSeveralImagesHUD_moving" = "写真を移動しています...";
 
 // Image move — Errors
 "moveImageError_title" = "移動に失敗しました";
-"moveSingleImageError_message" = "画像の移動に失敗しました。";
+"moveSingleImageError_message" = "写真の移動に失敗しました。";
 
 // Image copy
 "copyImage_title" = "アルバムにコピーする";
-"copySingleImage_selectAlbum" = "画像「%@」をコピーするアルバムを選択する";
-"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
-"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
-"copySeveralImages_selectAlbum" = "画像をコピーするアルバムを選択する";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
-"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
-"copySingleImage_message" = "画像「%@」をアルバム「%@」へコピーしていいですか？";
-"copySeveralImages_message" = "画像をアルバム「%@」へコピーしていいですか？";
-"copySingleImageHUD_copying" = "画像をコピーしています...";
-"copySeveralImagesHUD_copying" = "画像をコピーしています...";
+"copySingleImage_selectAlbum" = "写真「%@」をコピーするアルバムを選択する";
+"copySingleImage_selectRecent" = "写真 \"%@\" のコピー先に最近のアルバムを選択する";
+"copySingleImage_selectRecentOther" = "または、写真 \"%@\" のコピー先に他のアルバムを選択する";
+"copySeveralImages_selectAlbum" = "写真をコピーするアルバムを選択する";
+"copySeveralImages_selectRecent" = "それらの写真のコピー先に最近のアルバムを選択する";
+"copySeveralImages_selectRecentOther" = "または、それらの写真のコピー先に他のアルバムを選択する";
+"copySingleImage_message" = "写真「%@」をアルバム「%@」へコピーしていいですか？";
+"copySeveralImages_message" = "写真をアルバム「%@」へコピーしていいですか？";
+"copySingleImageHUD_copying" = "写真をコピーしています...";
+"copySeveralImagesHUD_copying" = "写真をコピーしています...";
 
 // Image copy — Errors
 "copyImageError_title" = "コピーに失敗しました";
-"copySingleImageError_message" = "画像のコピーに失敗しました";
+"copySingleImageError_message" = "写真のコピーに失敗しました";
 
 // Images upload
 "imageUploadDetails_title" = "題名：";
@@ -401,32 +409,32 @@
 "imageUploadDetails_tags" = "タグ：";
 "imageUploadDetails_description" = "説明：";
 
-"imageUploadDetailsView_title" = "画像";
+"imageUploadDetailsView_title" = "写真";
 "imageUploadDetailsButton_title" = "アップロード";
-"imageUploadDetailsEdit_title" = "アップロードする画像を編集します";
-"imageUploadDetailsUploading_title" = "アップロード中の画像";
+"imageUploadDetailsEdit_title" = "アップロードする写真を編集します";
+"imageUploadDetailsUploading_title" = "アップロード中の写真";
 "imageUploadDetailsCell_uploadComplete" = "完了！終了中...";
 
-"imageUploadRemove" = "アップロードした画像を削除する";
+"imageUploadRemove" = "アップロードした写真を削除する";
 
 "imageUploadTableCell_uploading" = "アップロード中...";
 "imageUploadProgressBar_zero" = "アップロード中 0/0";
 "imageUploadProgressBar_nonZero" = "アップロード中 %@/%@";
 "imageUploadProgressBar_completed" = "完了しました";
 "imageUploadCompleted_title" = "アップロードが完了しました";
-"imageUploadCompleted_message" = "画像／動画が、Piwigoサーバにアップロードされました。";
-"imageUploadCompleted_message>1" = "画像／動画が、Piwigoサーバにアップロードされました。";
+"imageUploadCompleted_message" = "写真／動画が、Piwigoサーバにアップロードされました。";
+"imageUploadCompleted_message>1" = "写真／動画が、Piwigoサーバにアップロードされました。";
 
 // Image upload — Errors
 "uploadError_title" = "アップロードエラー";
-"uploadError_message" = "画像をアップロードできませんでした。エラー: %@";
+"uploadError_message" = "写真をアップロードできませんでした。エラー: %@";
 "uploadCancelled_title" = "アップロードが取り消されました";
 
-"imageUploadError_title" = "画像アップロードエラー";
+"imageUploadError_title" = "写真アップロードエラー";
 "imageUploadError_format" = "申し訳ありませんが、このPiwigoサーバでは拡張子 %@ と .jpg の画像ファイルを受け付けていません。";
-"imageUploadError_source" = "元画像を作成できません";
-"imageUploadError_destination" = "画像の保存先を作成できません";
-"imageUploadError_iCloud" = "画像を取得できませんでした。エラー：%@";
+"imageUploadError_source" = "元写真を作成できません";
+"imageUploadError_destination" = "写真の保存先を作成できません";
+"imageUploadError_iCloud" = "写真を取得できませんでした。エラー：%@";
 
 "audioUploadError_title" = "音声アップロードのエラー";
 "audioUploadError_format" = "申し訳ありませんが、Piwigo Mobileではまだ音声ファイルをサポートしていません。";
@@ -440,49 +448,49 @@
 
 // Image share
 "shareImageMetadata_Title" = "メタデータを共有する";
-"shareImageMetadata_subTitle1" = "プライベートなメタデータを持つ画像を共有するアクション";
-"shareImageMetadata_subTitle2" = "プライベートなメタデータを持たない画像を共有するアクション";
+"shareImageMetadata_subTitle1" = "プライベートなメタデータを持つ写真を共有するアクション";
+"shareImageMetadata_subTitle2" = "プライベートなメタデータを持たない写真を共有するアクション";
 "shareActivityCode_AirDrop" = "AirDropで送信する";
-"shareActivityCode_AirDrop>375px" = "AirDropで画像を送信する";
+"shareActivityCode_AirDrop>375px" = "AirDropで写真を送信する";
 "shareActivityCode_AssignToContact" = "連絡先に割り当てる";
-"shareActivityCode_AssignToContact>375px" = "画像を連絡先に割り当てる";
+"shareActivityCode_AssignToContact>375px" = "写真を連絡先に割り当てる";
 "shareActivityCode_CopyToPasteboard" = "クリップボードにコピーする";
-"shareActivityCode_CopyToPasteboard>375px" = "画像をクリップボードにコピーする";
+"shareActivityCode_CopyToPasteboard>375px" = "写真をクリップボードにコピーする";
 "shareActivityCode_Mail" = "電子メールで投稿する";
-"shareActivityCode_Mail>375px" = "画像を電子メールで投稿する";
+"shareActivityCode_Mail>375px" = "写真を電子メールで投稿する";
 "shareActivityCode_Message" = "メッセージを投稿する";
-"shareActivityCode_Message>375px" = "メッセージアプリでー画像を投稿する";
+"shareActivityCode_Message>375px" = "メッセージアプリでー写真を投稿する";
 "shareActivityCode_Facebook" = "Facebookに投稿する";
-"shareActivityCode_Facebook>375px" = "Facebookに画像を投稿する";
+"shareActivityCode_Facebook>375px" = "Facebookに写真を投稿する";
 "shareActivityCode_Messenger" = "Messengerで投稿する";
-"shareActivityCode_Messenger>375px" = "画像をMessengerアプリで投稿する";
+"shareActivityCode_Messenger>375px" = "写真をMessengerアプリで投稿する";
 "shareActivityCode_Flickr" = "Flickrに投稿する";
-"shareActivityCode_Flickr>375px" = "Flickrに画像を投稿する";
+"shareActivityCode_Flickr>375px" = "Flickrに写真を投稿する";
 "shareActivityCode_Instagram" = "Instagramに投稿する";
-"shareActivityCode_Instagram>375px" = "画像をInstagramに投稿する";
+"shareActivityCode_Instagram>375px" = "写真をInstagramに投稿する";
 "shareActivityCode_Signal" = "Signalで投稿する";
-"shareActivityCode_Signal>375px" = "画像をSignalアプリで投稿する";
+"shareActivityCode_Signal>375px" = "写真をSignalアプリで投稿する";
 "shareActivityCode_Snapchat" = "Snapchatに投稿する";
-"shareActivityCode_Snapchat>375px" = "画像をSnapchatアプリに投稿する";
+"shareActivityCode_Snapchat>375px" = "写真をSnapchatアプリに投稿する";
 "shareActivityCode_TencentWeibo" = "TencentWeiboに投稿する";
-"shareActivityCode_TencentWeibo>375px" = "画像をTencentWeiboに投稿する";
+"shareActivityCode_TencentWeibo>375px" = "写真をTencentWeiboに投稿する";
 "shareActivityCode_Twitter" = "Twitterに投稿する";
-"shareActivityCode_Twitter>375px" = "画像をTwitterに投稿する";
+"shareActivityCode_Twitter>375px" = "写真をTwitterに投稿する";
 "shareActivityCode_Vimeo" = "Vimeoに投稿する";
 "shareActivityCode_Vimeo>375px" = "動画をVimeoに投稿する";
 "shareActivityCode_Weibo" = "Weiboに投稿する";
-"shareActivityCode_Weibo>375px" = "画像をWeiboに投稿する";
+"shareActivityCode_Weibo>375px" = "写真をWeiboに投稿する";
 "shareActivityCode_WhatsApp" = "WhatsAppで投稿する";
-"shareActivityCode_WhatsApp>375px" = "画像をWhatsAppアプリで投稿する";
+"shareActivityCode_WhatsApp>375px" = "写真をWhatsAppアプリで投稿する";
 "shareActivityCode_CameraRoll" = "カメラロールに保存する";
-"shareActivityCode_CameraRoll>375px" = "画像をカメラロールに保存する";
+"shareActivityCode_CameraRoll>375px" = "写真をカメラロールに保存する";
 "shareActivityCode_Other" = "他のアプリと共有する";
-"shareActivityCode_Other>375px" = "画像を他のアプリと共有する";
+"shareActivityCode_Other>375px" = "写真を他のアプリと共有する";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
 // ===========================================================================
-"localAlbums" = "フォトライブラリ";
+"localAlbums" = "写真ライブラリ";
 
 "localImageSort_newest" = "最新";
 "localImageSort_oldest" = "最古";
@@ -516,12 +524,12 @@
 // Settings — Albums
 "defaultImageSort" = "並び順";
 "defaultImageSort>320px" = "既定の並び順";
-"defaultImageSort>414px" = "画像の既定並び順";
+"defaultImageSort>414px" = "写真の既定並び順";
 "defaultAlbumThumbnailFile>414px" = "アルバムのサムネイルファイル";
 "defaultAlbumThumbnailSizeHeader" = "アルバムのサムネイルサイズを選択してください";
-"maxNberOfRecentAlbums" = "Recent";
-"maxNberOfRecentAlbums>320px" = "Recent Albums";
-"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"maxNberOfRecentAlbums" = "最近";
+"maxNberOfRecentAlbums>320px" = "最近のアルバム";
+"maxNberOfRecentAlbums>414px" = "最近のアルバムの数";
 
 "thumbnailSizeSquare" = "正方形";
 "thumbnailSizeThumbnail" = "サムネイル";
@@ -535,11 +543,11 @@
 "thumbnailSizexFullRes" = "フル解像度";
 
 // Settings — Images
-"settingsHeader_images" = "画像";
+"settingsHeader_images" = "写真";
 
 "defaultThumbnailFile" = "ファイル";
 "defaultThumbnailFile>320px" = "サムネイルファイル";
-"defaultThumbnailFile>414px" = "サムネイル画像ファイル";
+"defaultThumbnailFile>414px" = "サムネイル写真ファイル";
 "defaultThumbnailSize" = "サイズ";
 "defaultThumbnailSize>320px" = "サムネイルのサイズ";
 "defaultThumbnailSize>414px" = "サムネイルの既定サイズ";
@@ -547,18 +555,18 @@
 "defaultNberOfThumbnails>320px" = "1行あたりの個数";
 "defaultNberOfThumbnails>414px" = "1行あたりの個数";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "サムネイルの画像サイズを選択してください";
+"defaultThumbnailSizeHeader" = "サムネイルの写真サイズを選択してください";
 "settings_displayTitles" = "サムネイルの題名";
 "settings_displayTitles>320px" = "サムネイルに題名を表示します";
 
 "defaultPreviewFile" = "プレビュー";
 "defaultPreviewFile>320px" = "ファイルのプレビュー";
-"defaultPreviewFile>414px" = "画像ファイルのプレビュー";
-"defaultImageSize" = "画像";
-"defaultImageSize>320px" = "画像サイズ";
-"defaultImageSize>414px" = "規定の画像サイズ";
+"defaultPreviewFile>414px" = "写真ファイルのプレビュー";
+"defaultImageSize" = "写真";
+"defaultImageSize>320px" = "写真サイズ";
+"defaultImageSize>414px" = "規定の写真サイズ";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "画像サイズを選択して下さい";
+"defaultImageSizeHeader" = "写真サイズを選択して下さい";
 "defaultImageSize_recommended" = " (推奨)";
 "defaultSize_disabled" = " （サーバで無効化）";
 "defaultSizeFooter" = "灰色のサイズはPiwigoサーバで非推奨または利用できません。";
@@ -583,18 +591,24 @@
 "settings_defaultAuthor>320px" = "作成者名";
 "settings_defaultAuthorPlaceholder" = "作成者名";
 "settings_defaultPrivacy" = "プライバシー";
-"settings_defaultPrivacy>414px" = "画像を見ることができる人を選択してください";
+"settings_defaultPrivacy>414px" = "写真を見ることができる人を選択してください";
 "settings_stripGPSdata" = "プライベートなメタデータを取り除きます";
 "settings_stripGPSdata>375px" = "アップロードする前にプライベートなメタデータを取り除きます";
 "settings_photoResize" = "アップロードする前にサイズを変更します";
-"settings_photoResize>375px" = "アップロードする前に画像のサイズを変更します";
+"settings_photoResize>375px" = "アップロードする前に写真のサイズを変更します";
 "settings_photoSize" = "> サイズ   ";
 "settings_placeholderSize" = "写真のサイズを 5 - 100 の範囲で入力して下さい";
 "settings_photoCompress" = "アップロードする前に圧縮します";
-"settings_photoCompress>375px" = "アップロードする前に画像を圧縮します";
+"settings_photoCompress>375px" = "アップロードする前に写真を圧縮します";
 "settings_photoQuality" = "> 画質";
-"settings_placeholderQuality" = "画像の品質を 50 - 98 の範囲で入力してください";
-"settings_deleteImage>375px" = "アップロード後に画像を削除します";
+"settings_placeholderQuality" = "写真の品質を 50 - 98 の範囲で入力してください";
+"settings_prefixFilename>414px" = "アップロードする際にプレフィクスを写真のファイル名に付ける";
+"settings_prefixFilename>375px" = "アップロードする際にファイル名にプレフィクスを付ける";
+"settings_prefixFilename" = "写真のファイル名にプレフィクスを付ける";
+"settings_defaultPrefix" = "プレフィクス";
+"settings_defaultPrefix>320px" = "ファイル名のプレフィクス";
+"settings_defaultPrefixPlaceholder" = "プレフィクス";
+"settings_deleteImage>375px" = "アップロード後に写真を削除します";
 "settings_deleteImage" = "アップロード後に削除します";
 
 // Settings — Cache
@@ -605,8 +619,8 @@
 "settings_cacheMemory" = "メモリ";
 "settings_cacheMegabytes" = "MB";
 "settings_cacheClear" = "キャッシュをクリア";
-"settings_cacheClearAll" = "画像キャッシュをクリア";
-"settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと画像を再度読み込むために時間がかかるようになります。";
+"settings_cacheClearAll" = "写真キャッシュをクリア";
+"settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと写真を再度読み込むために時間がかかるようになります。";
 
 // Settings — Colors
 "settingsHeader_colors" = "色";

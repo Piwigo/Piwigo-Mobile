@@ -6,4 +6,4 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"NSPhotoLibraryUsageDescription" = "tak, że będzie w stanie pobrać zdjęcia do aplikacji Zdjęcia i przesłać zdjęcia do Twojej galerii Piwigo.";
+"NSPhotoLibraryUsageDescription" = "dzięki temu będzie w stanie przechowywać zdjęcia w aplikacji Zdjęcia i przesłać je do Twojej galerii Piwigo.";

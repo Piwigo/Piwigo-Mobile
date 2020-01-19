@@ -69,6 +69,16 @@
         NSRange spacerRange = NSMakeRange(0, [spacerAttributedString length]);
         [spacerAttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall] range:spacerRange];
 
+        // Release 2.4.6 — Bundle string
+        NSString *v246String = NSLocalizedStringFromTableInBundle(@"v2.4.6_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.4.6 Release Notes text");
+        NSMutableAttributedString *v246AttributedString = [[NSMutableAttributedString alloc] initWithString:v246String];
+        NSRange v246Range = NSMakeRange(0, [v246String length]);
+        [v246AttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontSmall] range:v246Range];
+        v246Range = NSMakeRange(0, [v246String rangeOfString:@"\n"].location);
+        [v246AttributedString addAttribute:NSFontAttributeName value:[UIFont piwigoFontBold] range:v246Range];
+        [notesAttributedString appendAttributedString:v246AttributedString];
+        [notesAttributedString appendAttributedString:spacerAttributedString];
+        
         // Release 2.4.5 — Bundle string
         NSString *v245String = NSLocalizedStringFromTableInBundle(@"v2.4.5_text", @"ReleaseNotes", [NSBundle mainBundle], @"v2.4.5 Release Notes text");
         NSMutableAttributedString *v245AttributedString = [[NSMutableAttributedString alloc] initWithString:v245String];
@@ -448,7 +458,7 @@
         [self.doneBarButton setAccessibilityIdentifier:@"Done"];
         
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }

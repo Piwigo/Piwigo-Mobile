@@ -126,6 +126,15 @@
         return [UIColor colorWithRed:128/255.0 green:128/255.0 blue:128/255.0 alpha:1.0];
 }
 
+// Color of placeholders
++(UIColor*)piwigoPlaceHolderColor
+{
+    if ([Model sharedInstance].isDarkPaletteActive)
+        return [UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1.0];
+    else
+        return [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1.0];
+}
+
 // Color of Switch Thumbs
 +(UIColor*)piwigoThumbColor
 {

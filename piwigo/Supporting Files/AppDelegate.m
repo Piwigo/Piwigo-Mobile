@@ -23,10 +23,10 @@
 //#define DEBUG_NOCACHE
 //#endif
 
-NSString * const kPiwigoPaletteChangedNotification = @"kPiwigoPaletteChangedNotification";
-NSString * const kPiwigoNetworkErrorEncounteredNotification = @"kPiwigoNetworkErrorEncounteredNotification";
-NSString * const kPiwigoAddRecentAlbumNotification = @"kPiwigoAddRecentAlbumNotification";
-NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlbumNotification";
+NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
+NSString * const kPiwigoNotificationNetworkErrorEncountered = @"kPiwigoNotificationNetworkErrorEncountered";
+NSString * const kPiwigoNotificationAddRecentAlbum = @"kPiwigoNotificationAddRecentAlbum";
+NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRemoveRecentAlbum";
 
 @interface AppDelegate ()
 
@@ -53,13 +53,13 @@ NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlb
 
     // Observe the PiwigoNetworkErrorEncounteredNotification
     // When that notification is posted, the app checks the login.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoNetworkErrorEncounteredNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoNotificationNetworkErrorEncountered object:nil];
     
     // Observe the PiwigoAddRecentAlbumNotification
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addRecentAlbumWithAlbumId:) name:kPiwigoAddRecentAlbumNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addRecentAlbumWithAlbumId:) name:kPiwigoNotificationAddRecentAlbum object:nil];
 
     // Observe the PiwigoRemoveRecentAlbumNotification
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeRecentAlbumWithAlbumId:) name:kPiwigoRemoveRecentAlbumNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeRecentAlbumWithAlbumId:) name:kPiwigoNotificationRemoveRecentAlbum object:nil];
 
     // Set network reachability status change block
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
@@ -369,7 +369,7 @@ NSString * const kPiwigoRemoveRecentAlbumNotification = @"kPiwigoRemoveRecentAlb
     }
 
     // Notify palette change to views
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoPaletteChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationPaletteChanged object:nil];
 //    NSLog(@"•••> app changed to %@ mode", [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
 }
 

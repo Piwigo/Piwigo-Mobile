@@ -1266,6 +1266,14 @@ static NSString * FourCCString(FourCharCode code) {
         return;
     }
     
+    // Prepare creation date
+    NSString *creationDate = @"";
+    if (image.creationDate != nil) {
+        NSDateFormatter *dateFormat = [NSDateFormatter new];
+        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        creationDate = [dateFormat stringFromDate:image.creationDate];
+    }
+
     // Append Tags
     NSMutableArray *tagIds = [NSMutableArray new];
     for(PiwigoTagData *tagData in image.tags)
@@ -1276,6 +1284,7 @@ static NSString * FourCCString(FourCharCode code) {
     // Prepare properties for uploaded image/video (filename key is kPiwigoImagesUploadParamFileName)
     __block NSDictionary *imageProperties = @{
                                       kPiwigoImagesUploadParamFileName : image.fileName,
+                                      kPiwigoImagesUploadParamCreationDate : creationDate,
                                       kPiwigoImagesUploadParamTitle : image.imageTitle,
                                       kPiwigoImagesUploadParamCategory : [NSString stringWithFormat:@"%@", @(image.categoryToUploadTo)],
                                       kPiwigoImagesUploadParamPrivacy : [NSString stringWithFormat:@"%@", @(image.privacyLevel)],
@@ -1468,21 +1477,45 @@ static NSString * FourCCString(FourCharCode code) {
 -(void)setImage:(ImageUpload *)image withInfo:(NSDictionary*)imageInfo andId:(NSInteger)imageId
 {
         // Set properties of image on Piwigo server
-        [UploadService setImageInfoForImageWithId:imageId
-                              withInformation:imageInfo
-                                       onProgress:^(NSProgress *progress) {
+        [ImageService setImageInfoForImageWithId:imageId
+                                 withInformation:imageInfo
+                                      onProgress:^(NSProgress *progress) {
                                            // progress
                                        } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 
-                                           // Increment number of images in category
-                                           [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
-                                       
-                                           // Read image/video information and update cache
-                                           [self addImageDataToCategoryCache:imageId];
-                                       
+                                           if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+                                           {
+                                               // Increment number of images in category
+                                               [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
+                                           
+                                               // Read image/video information and update cache
+                                               [self addImageDataToCategoryCache:imageId];
+                                           }
+                                           else {
+                                               // Display Piwigo error
+                                               NSInteger errorCode = NSNotFound;
+                                               if ([response objectForKey:@"err"]) {
+                                                   errorCode = [[response objectForKey:@"err"] intValue];
+                                               }
+                                               NSString *errorMsg = @"";
+                                               if ([response objectForKey:@"message"]) {
+                                                   errorMsg = [response objectForKey:@"message"];
+                                               }
+                                               NSError *error = [NetworkHandler getPiwigoErrorMessageFromCode:errorCode message:errorMsg path:kPiwigoImageSetInfo andURLparams:nil];
+                                               
+                                               // Inform user and propose to cancel or continue
+                                               [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                                                             andMessage:[error localizedDescription]
+                                                            forRetrying:NO
+                                                              withImage:image];
+                                           }
                                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                           // fail
-                                       }];
+                                           // Inform user and propose to cancel or continue
+                                            [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                                                          andMessage:[error localizedDescription]
+                                                         forRetrying:NO
+                                                           withImage:image];
+}];
 }
 
 -(void)addImageDataToCategoryCache:(NSInteger)imageId
@@ -1495,7 +1528,7 @@ static NSString * FourCCString(FourCharCode code) {
                           // Post to the app that the category data have been updated
 //                          NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO"};
 //                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil userInfo:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil userInfo:nil];
                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
                           //
                       }];

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.5_text" = "Versione 2.4.5\n\n• Visualizza le tue immagini preferite (richiede Piwigo 2.10 o successivo)\n• Opzione per la presentazione manuale delle immagini\n• Consente agli utenti Community di creare album (con diritti appropriati)\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
+"v2.4.6_text" = "Version 2.4.6\n\n• Edit properties of a selection of photos\n• Change creation date of a photo or video\n• Option for prefixing file names before upload\n• Minor bug fixes and improvements of the interface";
+
+"v2.4.5_text" = "Versione 2.4.5\n6 novembre 2019\n\n• Visualizza le tue immagini preferite (richiede Piwigo 2.10 o successivo)\n• Opzione per la presentazione manuale delle immagini\n• Consente agli utenti Community di creare album (con diritti appropriati)\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 
 "v2.4.4_text" = "Versione 2.4.4\n1 ottobre 2019\n\n• Risolti problemi di caricamento dei video su alcuni server\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 

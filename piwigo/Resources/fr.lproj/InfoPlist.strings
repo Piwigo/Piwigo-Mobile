@@ -6,4 +6,4 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"NSPhotoLibraryUsageDescription" = "afin qu'il puisse télécharger des images dans Photos et envoyer des images vers votre Piwigo.";
+"NSPhotoLibraryUsageDescription" = "afin qu'il puisse télécharger des photos dans l'app Photos et téléverser des photos sur votre Piwigo.";

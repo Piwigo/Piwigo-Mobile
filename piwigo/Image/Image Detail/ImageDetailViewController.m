@@ -13,12 +13,11 @@
 #import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
-#import "EditImageDetailsViewController.h"
+#import "EditImageParamsViewController.h"
 #import "ImageDetailViewController.h"
 #import "ImagePreviewViewController.h"
 #import "ImageService.h"
 #import "ImageScrollView.h"
-#import "ImageUpload.h"
 #import "ImagesCollection.h"
 #import "Model.h"
 #import "MoveImageViewController.h"
@@ -27,9 +26,9 @@
 #import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
-NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdateImageData";
+NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationUpdateImageFileName";
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageDetailsDelegate, SetAlbumImageDelegate, MoveImageDelegate, AsyncImageActivityItemProviderDelegate, UIToolbarDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SetAlbumImageDelegate, MoveImageDelegate, AsyncImageActivityItemProviderDelegate, UIToolbarDelegate>
 
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoImageData *imageData;
@@ -128,10 +127,10 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPinchView) name:kPiwigoNotificationPinchedImage object:nil];
 
         // Register image data updates
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageData:) name:kPiwigoNotificationUpdateImageData object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageFileName:) name:kPiwigoNotificationUpdateImageFileName object:nil];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoPaletteChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 	}
 	return self;
 }
@@ -306,9 +305,9 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
 }
 
 
-#pragma mark - Image Data Updated
+#pragma mark - Image Data Updates
 
--(void)updateImageData:(NSNotification *)notification
+-(void)updateImageFileName:(NSNotification *)notification
 {
     // Extract notification user info
     if (notification != nil) {
@@ -626,19 +625,11 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
     // Disable buttons during action
     [self setEnableStateOfButtons:NO];
 
-    // Prepare image to edit
-    ImageUpload *imageToEdit = [[ImageUpload alloc] initWithImageAsset:nil
-                                     orImageData:self.imageData
-                                     forCategory:[[[self.imageData categoryIds] firstObject] integerValue]
-                                    privacyLevel:self.imageData.privacyLevel
-                                          author:self.imageData.author];
-
     // Present EditImageDetails view
-    UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageDetails" bundle:nil];
-    EditImageDetailsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageDetails"];
-    editImageVC.imageDetails = imageToEdit;
+    UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParams" bundle:nil];
+    EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
+    editImageVC.images = @[self.imageData];
     editImageVC.delegate = self;
-    editImageVC.isEdit = YES;       // In edition mode
     [self pushView:editImageVC];
 }
 
@@ -1059,7 +1050,7 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
             viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
         }
-        else if ([viewController isKindOfClass:[EditImageDetailsViewController class]])
+        else if ([viewController isKindOfClass:[EditImageParamsViewController class]])
         {
             // Push Edit view embedded in navigation controller
             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
@@ -1232,26 +1223,41 @@ NSString * const kPiwigoNotificationUpdateImageData = @"kPiwigoNotificationUpdat
 //    NSLog(@"==> setProgress:%.2f", progress);
 }
 
-#pragma mark - EditImageDetailsDelegate Methods
 
--(void)didFinishEditingDetails:(ImageUpload *)details
+#pragma mark - EditImageParamsDelegate Methods
+
+-(void)didDeselectImageWithId:(NSInteger)imageId
+{
+    // Should never be called when the properties of a single image are edited
+}
+
+-(void)didRenameFileOfImage:(PiwigoImageData *)imageData
 {
     // Update image data
-    if (details != nil) {
+    if (imageData.fileName) self.imageData.fileName = imageData.fileName;
+    
+    // Update title view
+    [self setTitleViewFromImageData];
+}
+
+-(void)didFinishEditingParams:(PiwigoImageData *)params
+{
+    // Update image data
+    if (params != nil) {
         // Update list of images
         NSInteger index = 0;
         for(PiwigoImageData *image in self.images)
         {
-            if(image.imageId == details.imageId) {
+            if(image.imageId == params.imageId) {
                 // Update image data
-                image.imageTitle = details.imageTitle;
-                image.author = details.author;
-                image.privacyLevel = details.privacyLevel;
-                if (details.comment)
-                    image.comment = [NSString stringWithString:details.comment];
+                image.imageTitle = params.imageTitle;
+                image.author = params.author;
+                image.privacyLevel = params.privacyLevel;
+                if (params.comment)
+                    image.comment = [NSString stringWithString:params.comment];
                 else
                     image.comment = @"";
-                image.tags = [details.tags copy];
+                image.tags = [params.tags copy];
                 
                 // Update list and currently viewed image
                 [self.images replaceObjectAtIndex:index withObject:image];

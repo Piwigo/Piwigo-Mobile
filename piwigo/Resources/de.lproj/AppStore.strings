@@ -6,14 +6,14 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"description" = "Piwigo für iPhone/iPad/iPod ergänzt die Cloud Foto Galerie Software Piwigo (V2.8 oder höher):\n\n• Durchsuche Deine Alben, \n• erstelle, lösche, verschiebe und benenne Alben um,\n• bearbeiten, herunterladen und löschen von Fotos und Videos,\n• kopiere und verschiebe Fotos und Videos zwischen Alben,\n• lege ein Foto als Albumbild fest,\n• Lade Fotos hoch:\n - veränderbare Größe und Qualität,\n - mit Beschreibung, Autor, Schlagwörtern, EXIF-Metadaten,\n - mit oder ohne GPS-Metadaten.\n• Videos hochladen,\n• Teile Fotos und Videos.\n\nPiwigo ermöglicht, eigene Fotogalerien im Web zu erstellen. Es beinhaltet viele leistungsstarke Funktionen wie Alben, Verschlagwortung, Geolocation, vielfache individuelle Anpassungsmöglichkeiten, hochladen von Bildern durch Besucher, Sicherheitsstufen, Kalender oder Statistiken.\n\nPiwigo ist kostenlos und Opensource.";
+"description" = "Piwigo für iPhone/iPad/iPod ergänzt die Cloud Foto Galerie Software Piwigo (V2.8 oder höher):\n\n• Durchsuche Deine Alben, \n• erstelle, lösche, verschiebe und benenne Alben um,\n• bearbeiten, herunterladen und löschen von  und Videos,\n• kopiere und verschiebe  und Videos zwischen Alben,\n• lege ein Foto als Albumbild fest,\n• Lade  hoch:\n - veränderbare Größe und Qualität,\n - mit Beschreibung, Autor, Schlagwörtern, EXIF-Metadaten,\n - mit oder ohne GPS-Metadaten.\n• Videos hochladen,\n• Teile  und Videos.\n\nPiwigo ermöglicht, eigene Fotogalerien im Web zu erstellen. Es beinhaltet viele leistungsstarke Funktionen wie Alben, Verschlagwortung, Geolocation, vielfache individuelle Anpassungsmöglichkeiten, hochladen von Fotos durch Besucher, Sicherheitsstufen, Kalender oder Statistiken.\n\nPiwigo ist kostenlos und Opensource.";
 
-"compatibility" = "Piwigo ist kompatibel zu folgenden extensions:\n- Community: Fotos hinzufügen als nicht-Admin\n- piwigo-videojs: Unterstützung für Videos";
+"compatibility" = "Piwigo ist kompatibel zu folgenden extensions:\n- Community:  hinzufügen als nicht-Admin\n- piwigo-videojs: Unterstützung für Videos";
 
 "feedback" = "Feedback oder Fragen?\nPiwigo bietet kostenlosen Support über %@, wir würden uns freuen von Dir zu hören.";
 
-"promotional_text" = "Deine kostenlose Piwigo Cloud Foto-Bibliothek!";
+"promotional_text" = "Ihre kostenlose Piwigo Cloud Foto-Bibliothek!";
 
-"subtitle" = "Ihre Fotos in Ihrer Cloud";
+"subtitle" = "Ihre  in Ihrer Cloud";
 
-"keywords" = "Piwigo, Cloud, Album, Foto, Video, Bild, Upload, Download";
+"keywords" = "Piwigo, Cloud, Album, Foto, Video, Foto, Upload, Download";

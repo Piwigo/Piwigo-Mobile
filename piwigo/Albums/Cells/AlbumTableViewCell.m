@@ -108,11 +108,10 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         // Handle
         self.handleButton.layer.cornerRadius = 7;
         self.handleButton.backgroundColor = [UIColor piwigoOrange];
-        self.handleView.backgroundColor = [UIColor piwigoCellBackgroundColor];
-        self.handleView.hidden = NO;
         self.handleButton.hidden = NO;
 
         // Right => Left swipe
+        self.swipeBackgroundColor = [UIColor piwigoOrange];
         self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
         self.rightButtons = @[[MGSwipeButton buttonWithTitle:@""
                                                         icon:[UIImage imageNamed:@"swipeTrash.png"]
@@ -304,7 +303,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                                     self.albumData.comment = albumComment;
                                     
                                     // Notify album/image view of modification
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
                                 });
                             }];
                         }
@@ -376,7 +375,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
               {
                   [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoCategoryDataUpdatedNotification object:nil];
+                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
                       });
                   }];
               }

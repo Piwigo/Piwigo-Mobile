@@ -9,15 +9,19 @@
 #import "ImagesCollection.h"
 #import "Model.h"
 
-NSInteger const kAlbumCellSpacing = 8;          // Spacing between albums (horizontally and vertically)
-NSInteger const kAlbumMarginsSpacing = 4;       // Left and right margins for albums
-NSInteger const kImageCellSpacing4iPhone = 1;   // Spacing between images (horizontally and vertically)
+NSInteger const kAlbumCellSpacing = 8;              // Spacing between albums (horizontally and vertically)
+NSInteger const kAlbumMarginsSpacing = 4;           // Left and right margins for albums
+
+NSInteger const kImageCellSpacing4iPhone = 1;       // Spacing between images (horizontally and vertically)
 NSInteger const kImageCellHorSpacing4iPad = 8;
 NSInteger const kImageCellHorSpacing4iPadPopup = 1;
 NSInteger const kImageCellVertSpacing4iPad = 8;
 NSInteger const kImageCellVertSpacing4iPadPopup = 1;
-NSInteger const kImageMarginsSpacing = 4;       // Left and right margins for images
-NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file size
+NSInteger const kImageMarginsSpacing = 4;           // Left and right margins for images
+NSInteger const kThumbnailFileSize = 144;           // Default Piwigo thumbnail file size
+
+NSInteger const kImageDetailsCellSpacing = 8;       // Spacing between image details cells
+NSInteger const kImageDetailsMarginsSpacing = 16;   // Left and right margins for image details cells
 
 @implementation ImagesCollection
 
@@ -144,6 +148,17 @@ NSInteger const kThumbnailFileSize = 144;       // Default Piwigo thumbnail file
     
     // Number of images par page
     return (NSInteger)ceil(pageSize.height / (size + imageCellHorizontalSpacing)) * imagesPerRowInPortrait;
+}
+
+
+#pragma mark - Thumbnails
+
++(float)imageDetailsSizeForView:(UIView *)view // andNberOfImageDetailsPerRowInPortrait:(NSInteger)detailsPerRowInPortrait
+{
+    // Size of view or screen
+    CGSize cellSize = [self sizeOfPageForView:view];
+    
+    return MIN(cellSize.width - 2.0 * kImageDetailsMarginsSpacing, 340.0);
 }
 
 

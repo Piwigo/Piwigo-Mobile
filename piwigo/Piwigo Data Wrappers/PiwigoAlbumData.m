@@ -320,10 +320,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     self.imageList = newImageList;
 }
 
--(void)updateImageAfterEdit:(ImageUpload *)uploadedImage
+-(void)updateImageAfterEdit:(PiwigoImageData *)updatedImage
 {
     // Check that there is something to do
-    if (uploadedImage == nil) return;
+    if (updatedImage == nil) return;
     
     // Create new image list
     NSMutableArray *newImageList = [self.imageList mutableCopy];
@@ -335,16 +335,16 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         PiwigoImageData *existingImage = self.imageList[index];
         
         // Update this image
-        if(uploadedImage.imageId == existingImage.imageId)
+        if(updatedImage.imageId == existingImage.imageId)
         {
             // New data replaces old once
             PiwigoImageData *updatedImage = existingImage;
-            updatedImage.fileName = uploadedImage.fileName;
-            updatedImage.imageTitle = uploadedImage.imageTitle;
-            updatedImage.author = uploadedImage.author;
-            updatedImage.privacyLevel = uploadedImage.privacyLevel;
-            updatedImage.comment = [NSString stringWithString:uploadedImage.comment];
-            updatedImage.tags = [uploadedImage.tags copy];
+            updatedImage.fileName = updatedImage.fileName;
+            updatedImage.imageTitle = updatedImage.imageTitle;
+            updatedImage.author = updatedImage.author;
+            updatedImage.privacyLevel = updatedImage.privacyLevel;
+            updatedImage.comment = [NSString stringWithString:updatedImage.comment];
+            updatedImage.tags = [updatedImage.tags copy];
             [newImageList replaceObjectAtIndex:index withObject:updatedImage];
             break;
         }
@@ -412,7 +412,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     // If first added image, update category cache to get thumbnail image URL from server
     if (self.numberOfImages == 1) {
         NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoGetCategoryDataNotification object:nil userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
     }
 }
 
@@ -428,7 +428,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     // If no image left, update category cache to remove thumbnail image
     if (self.numberOfImages == 0) {
         NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoGetCategoryDataNotification object:nil userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
     }
 }
 

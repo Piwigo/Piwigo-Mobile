@@ -2,37 +2,43 @@
 # piwigoGetPiwigo #
 ###################
 # To launch fastlane:
-#	bundle exec fastlane snapshot --skip_open_summary
+#	bundle exec fastlane snapshot --number_of_retries 0 --skip_open_summary
 #
 # A list of devices you want to take the screenshots from
 devices([
-  "iPhone Xs",										# 5.8-inch
-  "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
+#  "iPhone SE (iOS 13)",								# 4-inch
+#  "iPhone 8",										# 4.7-inch
+#  "iPhone 8 Plus",									# 5.5-inch
+#  "iPhone 11 Pro",									# 5.8-inch
+#  "iPhone 11 Pro Max",								# 6.5-inch
+#  "iPad Pro (9.7-inch)",							# 9.7-inch
+  "iPad Pro (10.5-inch)",							# 10.5-inch
+#  "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
+#  "iPad Pro (11-inch)",							# 11-inch
+#  "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
 ])
 
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
-#   "ar",
-#   "da",
-#   "de",
-   "en",
+#   "en",
+   "da",
+   "nl",
    "fr",
-#   "id",
-#   "it",
-#   "ja",
-#   "nl",
-#   "pl",
-#   "sv"
+   "de",
+   "id",
+   "it",
+   "ja",
+   "sv"
 ])
 
 # The name of the scheme which contains the UI Tests
-scheme("piwigoGetPiwigo")
+scheme("piwigoAppStore")
 
 # Where should the resulting screenshots be stored?
-output_directory("./Assets/Screenshots/GetPiwigo")
+output_directory("Assets/Screenshots/AppStore")
 
 # remove the '#' to clear all previously generated screenshots before creating new ones
-# clear_previous_screenshots(true)
+#clear_previous_screenshots(true)
 
 # reinstall the app before producing screenshots
 # reinstall_app

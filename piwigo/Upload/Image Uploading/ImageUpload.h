@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeselectImageToUpload;
+
 @class PiwigoImageData;
 @class PHAsset;
 

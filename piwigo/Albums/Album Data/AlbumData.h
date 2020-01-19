@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import "CategorySortViewController.h"
 
 @class PiwigoImageData;
@@ -18,11 +19,15 @@
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId andQuery:(NSString *)query;
 
+-(void)reloadAlbumOnCompletion:(void (^)(void))completion;
 -(void)loadMoreImagesOnCompletion:(void (^)(void))completion;
--(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)(void))completion;
 -(void)loadAllImagesOnCompletion:(void (^)(void))completion;
+
+-(void)updateImageSort:(kPiwigoSortCategory)imageSort OnCompletion:(void (^)(void))completion;
+
+-(void)updateImage:(PiwigoImageData *)params;
+
 -(void)removeImage:(PiwigoImageData*)image;
 -(void)removeImageWithId:(NSInteger)imageId;
--(void)reloadAlbumOnCompletion:(void (^)(void))completion;
 
 @end

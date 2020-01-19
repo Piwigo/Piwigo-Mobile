@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerTableCell" rowHeight="304" id="r0z-Q2-GYV" customClass="EditImageDatePickerTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="373" height="304"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="r0z-Q2-GYV" id="l2g-OY-l5J">
+                <rect key="frame" x="0.0" y="0.0" width="373" height="304"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="toolBarTop" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BiK-FK-Wdq" userLabel="Tool Bar(top)">
+                        <rect key="frame" x="0.0" y="162" width="373" height="44"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <items>
+                            <barButtonItem title="-1 Month" style="plain" id="bOu-Vt-5OJ">
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="decrementMonth:" destination="r0z-Q2-GYV" id="Ywr-qV-U2P"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem style="plain" systemItem="flexibleSpace" id="XAy-GE-tBI">
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </barButtonItem>
+                            <barButtonItem title="Unset" style="plain" id="IEs-eJ-gYe">
+                                <color key="tintColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="unsetDate:" destination="r0z-Q2-GYV" id="aVh-KE-8Vv"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem style="plain" systemItem="flexibleSpace" id="NUs-1M-Rqe"/>
+                            <barButtonItem title="+1 Month" id="tik-ZG-Cit">
+                                <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <connections>
+                                    <action selector="incrementMonth:" destination="r0z-Q2-GYV" id="2Wh-Og-L5E"/>
+                                </connections>
+                            </barButtonItem>
+                        </items>
+                    </toolbar>
+                    <pickerView contentMode="center" restorationIdentifier="datePicker" translatesAutoresizingMaskIntoConstraints="NO" id="R1T-MH-EHh">
+                        <rect key="frame" x="0.0" y="0.0" width="373" height="162"/>
+                        <connections>
+                            <outlet property="dataSource" destination="r0z-Q2-GYV" id="hfd-me-Ohn"/>
+                            <outlet property="delegate" destination="r0z-Q2-GYV" id="5SR-T4-QGp"/>
+                        </connections>
+                    </pickerView>
+                    <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="toolBarBottom" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DKH-QZ-J71" userLabel="Toolbar (bottom)">
+                        <rect key="frame" x="0.0" y="206" width="373" height="44"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <items>
+                            <barButtonItem title="-1 Year" id="QaO-Qm-EdD">
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="decrementYear:" destination="r0z-Q2-GYV" id="aJV-91-JUu"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem style="plain" systemItem="flexibleSpace" id="GtI-lD-Zob"/>
+                            <barButtonItem title="Today" id="EYK-2K-wKk">
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="setDateAsToday:" destination="r0z-Q2-GYV" id="2xl-iL-ba1"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem style="plain" systemItem="flexibleSpace" id="EZV-AQ-pHV"/>
+                            <barButtonItem title="+1 Year" id="JoW-Jm-GYy">
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="incrementYear:" destination="r0z-Q2-GYV" id="2br-1N-OnJ"/>
+                                </connections>
+                            </barButtonItem>
+                        </items>
+                        <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </toolbar>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="BiK-FK-Wdq" firstAttribute="trailing" secondItem="l2g-OY-l5J" secondAttribute="trailing" id="0l1-4J-ghw"/>
+                    <constraint firstItem="DKH-QZ-J71" firstAttribute="trailing" secondItem="l2g-OY-l5J" secondAttribute="trailing" id="Ab2-vR-L2r"/>
+                    <constraint firstItem="BiK-FK-Wdq" firstAttribute="top" secondItem="R1T-MH-EHh" secondAttribute="bottom" id="BsE-UU-5bv"/>
+                    <constraint firstItem="DKH-QZ-J71" firstAttribute="top" secondItem="BiK-FK-Wdq" secondAttribute="bottom" id="Hm8-Ca-aDg"/>
+                    <constraint firstItem="R1T-MH-EHh" firstAttribute="trailing" secondItem="l2g-OY-l5J" secondAttribute="trailing" id="Jav-sU-nMq"/>
+                    <constraint firstItem="BiK-FK-Wdq" firstAttribute="leading" secondItem="l2g-OY-l5J" secondAttribute="leading" id="Vsd-xA-VWB"/>
+                    <constraint firstItem="R1T-MH-EHh" firstAttribute="leading" secondItem="l2g-OY-l5J" secondAttribute="leading" id="ZDw-tI-Iwz"/>
+                    <constraint firstItem="DKH-QZ-J71" firstAttribute="leading" secondItem="l2g-OY-l5J" secondAttribute="leading" id="bgr-bN-fM0"/>
+                    <constraint firstItem="R1T-MH-EHh" firstAttribute="top" secondItem="l2g-OY-l5J" secondAttribute="top" id="jBi-ff-pux"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="datePicker" destination="R1T-MH-EHh" id="NcT-n7-8Az"/>
+                <outlet property="decrementMonthButton" destination="bOu-Vt-5OJ" id="wyd-mw-hwS"/>
+                <outlet property="decrementYearButton" destination="QaO-Qm-EdD" id="R3m-js-ooJ"/>
+                <outlet property="incrementMonthButton" destination="tik-ZG-Cit" id="2rh-cB-GTJ"/>
+                <outlet property="incrementYearButton" destination="JoW-Jm-GYy" id="GS5-id-Xhe"/>
+                <outlet property="todayDateButton" destination="EYK-2K-wKk" id="gJt-NN-q5A"/>
+                <outlet property="toolBarBottom" destination="DKH-QZ-J71" id="xmy-B6-2Qo"/>
+                <outlet property="toolBarTop" destination="BiK-FK-Wdq" id="L3X-66-Vuv"/>
+                <outlet property="unsetDateButton" destination="IEs-eJ-gYe" id="4NN-mY-SHE"/>
+            </connections>
+            <point key="canvasLocation" x="59" y="-79"/>
+        </tableViewCell>
+    </objects>
+</document>

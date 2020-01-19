@@ -217,7 +217,7 @@
 "moveCategory" = "Flyt Album";
 "moveCategory_selectParent" = "Vælg et album at flytte albummet \"%@\" ind i";
 "moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "or select another album to move album \"%@\" into";
+"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
 "moveCategory_message" = "Er du sikker på du vil flytte \"%@\" til albummet \"%@\"?";
 "moveCategoryHUD_moving" = "Flytter album…";
 
@@ -225,7 +225,7 @@
 "moveCategoryError_title" = "Kunne ikke flytte album";
 "moveCategoryError_message" = "Kunne ikke flytte dit album";
 
-// Album set image thumbnail
+// Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Vælg aktuelle album for dette billede";
 "categorySelection_one" = "Vælg en af de album, som indeholder dette billede";
@@ -234,7 +234,7 @@
 "categoryImageSet_message" = "Er du sikker på, at du vil bruge dette billede som miniaturebillede for albummet \"%@\"?";
 "categoryImageSetHUD_updating" = "Opdaterer Album miniature…";
 
-// Album set image thumbnail — Errors
+// Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Billede Set fejl";
 "categoryImageSetError_message" = "Kunne ikke opdatere miniaturebillede for albumet";
 
@@ -266,15 +266,23 @@
 "imageOptions_setAlbumImage" = "Angiv som Albumbillede";
 
 // Image details
-"imageDetailsView_title" = "Billeddetaljer";
+"imageDetailsView_title" = "Egenskaber";
 "editImageDetails_title" = "Titel:";
 "editImageDetails_titlePlaceholder" = "Titel";
 "editImageDetails_author" = "Forfatter:";
 "editImageDetails_tags" = "Etiketter:";
 "editImageDetails_privacyLevel" = "Hvem kan se dette billede?";
-"editImageDetails_descriptionPlaceholder" = "Beskrivelse";
+"editImageDetails_description" = "Beskrivelse";
 "editImageDetails_comments" = "Kommentarer";
-"editImageDetailsHUD_updating" = "Opdaterer billedinfo...";
+"editImageDetails_dateCreation" = "Oprettelsesdato";
+"editImageDetails_dateUnset" = "Ikke opsat";
+"editImageDetails_dateToday" = "I dag";
+"editImageDetails_dateMonthInc" = "+1 Måned";
+"editImageDetails_dateMonthDec" = "-1 Måned";
+"editImageDetails_dateYearInc" = "+1 År";
+"editImageDetails_dateYearDec" = "-1 År";
+"editImageDetailsHUD_updatingSingle" = "Opdaterer foto…";
+"editImageDetailsHUD_updatingPlural" = "Opdaterer fotos…";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Kunne ikke opdatere";
@@ -363,11 +371,11 @@
 // Image move
 "moveImage_title" = "Flyt til album";
 "moveSingleImage_selectAlbum" = "Vælg et album at flytte billede \"%@\" til";
-"moveSingleImage_selectRecent" = "Select a recent album to move image \"%@\" to";
-"moveSingleImage_selectRecentOther" = "or select another album to move image \"%@\" to";
+"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
+"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
 "moveSeveralImages_selectAlbum" = "Vælg et album at flytte billederne til";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the images to";
-"moveSeveralImages_selectRecentOther" = "or select another album to move the images to";
+"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
+"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
 "moveSingleImage_message" = "Er du sikker på du vil flytte billede \"%@\" til albummet \"%@\"?";
 "moveSeveralImages_message" = "Er du sikker på du vil flytte billederne til album \"%@\"?";
 "moveSingleImageHUD_moving" = "Flytter billeder…";
@@ -380,11 +388,11 @@
 // Image copy
 "copyImage_title" = "Kopier til album";
 "copySingleImage_selectAlbum" = "Vælg et album at kopiere billede \"%@\" til";
-"copySingleImage_selectRecent" = "Select a recent album to copy image \"%@\" to";
-"copySingleImage_selectRecentOther" = "or select another album to copy image \"%@\" to";
+"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
+"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
 "copySeveralImages_selectAlbum" = "Vælg et album at kopiere billederne til";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the images to";
-"copySeveralImages_selectRecentOther" = "or select another album to copy the images to";
+"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
+"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
 "copySingleImage_message" = "Er du sikker på du vil flytte billede \"%@\" til album \"%@\"?";
 "copySeveralImages_message" = "Er du sikker på du vil flytte billederne til album \"%@\"?";
 "copySingleImageHUD_copying" = "Kopierer billeder…";
@@ -594,6 +602,12 @@
 "settings_photoCompress>375px" = "Komprimer billede før Upload";
 "settings_photoQuality" = "> Kvalitet";
 "settings_placeholderQuality" = "Angiv en billedkvalitet fra 50 - 98";
+"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
+"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
+"settings_prefixFilename" = "Prefix Photo Filename";
+"settings_defaultPrefix" = "Prefix";
+"settings_defaultPrefix>320px" = "Filename Prefix";
+"settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Slet billede efter upload";
 "settings_deleteImage" = "Slet efter upload";
 

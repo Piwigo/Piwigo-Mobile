@@ -19,6 +19,7 @@
 -(void)getTagsForAdmin:(BOOL)isAdmin onCompletion:(void (^)(NSArray *tags))completion;
 -(NSString*)getTagsStringFromList:(NSArray*)tagList;
 -(NSInteger)getIndexOfTag:(PiwigoTagData*)tag;
+-(BOOL)listOfTags:(NSArray *)listOfTags containsTag:(PiwigoTagData *)refTag;
 
 -(void)addTagToList:(NSArray*)newTags;
 -(void)clearCache;
