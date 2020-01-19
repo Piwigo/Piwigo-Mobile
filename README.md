@@ -2,9 +2,9 @@
 
 [![Version](https://img.shields.io/github/release/Piwigo/Piwigo-Mobile.svg)](https://itunes.apple.com/app/piwigo/id472225196?mt=8)
 [![ReleaseDate](https://img.shields.io/github/release-date/Piwigo/Piwigo-Mobile.svg?color=screen)](https://itunes.apple.com/app/piwigo/id472225196?mt=8)
-[![OpenedIssues](https://img.shields.io/github/issues-raw/Piwigo/Piwigo-Mobile.svg?style=flat)](https://github.com/Piwigo/Piwigo-Mobile/issues)
-[![ClosedIssues](https://img.shields.io/github/issues-closed-raw/Piwigo/Piwigo-Mobile.svg?color=success)](https://github.com/Piwigo/Piwigo-Mobile/issues?utf8=✓&q=is%3Aissue+is%3Aclosed)
 ![Language](https://img.shields.io/github/languages/top/Piwigo/Piwigo-Mobile.svg)
+[![ClosedIssues](https://img.shields.io/github/issues-closed-raw/Piwigo/Piwigo-Mobile.svg?color=success)](https://github.com/Piwigo/Piwigo-Mobile/issues?utf8=✓&q=is%3Aissue+is%3Aclosed)
+[![OpenedIssues](https://img.shields.io/github/issues-raw/Piwigo/Piwigo-Mobile.svg?style=flat)](https://github.com/Piwigo/Piwigo-Mobile/issues)
 
 [![Git](https://img.shields.io/badge/GitHub-Piwigo-blue.svg?style=flat)](https://github.com/Piwigo)
 [![Twitter](https://img.shields.io/badge/twitter-@piwigo-blue.svg?style=flat)](http://twitter.com/piwigo)
