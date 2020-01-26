@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.6_text" = "Version 2.4.6\n\n• Bearbeiten der Eigenschaften einer Auswahl von Fotos\n• Ändern des Erstellungsdatums eines Fotos oder Videos\n• Präfix für Dateinamen vor dem Hochladen\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
+"v2.4.7_text" = "Version 2.4.7\n\n• Übersetzungen Chinesisch vereinfacht, Russisch und Spanisch";
+
+"v2.4.6_text" = "Version 2.4.6\n18. Januar 2020\n\n• Bearbeiten der Eigenschaften einer Auswahl von Fotos\n• Ändern des Erstellungsdatums eines Fotos oder Videos\n• Präfix für Dateinamen vor dem Hochladen\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 
 "v2.4.5_text" = "Version 2.4.5\n6. November 2019\n\n• Zeigt Ihre Lieblingsfotos an (benötigt Piwigo 2. 0 oder höher)\n• Option für die Darstellung von Fotos manuell sortiert\n• Ermöglicht Community-Benutzern Alben (mit entsprechenden Rechten)\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 

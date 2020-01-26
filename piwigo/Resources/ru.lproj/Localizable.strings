@@ -1,0 +1,646 @@
+/*
+ Localizable.strings
+ piwigo
+ 
+ Created by Spencer Baker on 1/17/15.
+ Copyright (c) 2015 bakercrew. All rights reserved.
+ */
+// ===========================================================================
+// ==> GENERIC
+// ===========================================================================
+// Tab bar
+
+"tabBar_albums" = "Альбомы";
+"tabBar_upload" = "Загрузить";
+"tabBar_preferences" = "Настройки";
+
+// Alert buttons
+"alertOkButton" = "OK";
+"alertDismissButton" = "Скрыть";
+"alertYesButton" = "Да";
+"alertNoButton" = "Нет";
+"alertTryAgainButton" = "Еще раз";
+"alertCancelButton" = "Отмена";
+"alertAddButton" = "Добавить";
+"alertRetryButton" = "Повторить";
+"alertNextButton" = "Следующее фото";
+"alertTryButton" = "Попробовать";
+"alertClearButton" = "Очистить";
+
+// HUD views
+"loadingHUD_label" = "Загрузка…";
+"completeHUD_label" = "Готово";
+"errorHUD_label" = "Ошибка";
+
+// Upload rights
+"uploadRights_title" = "Необходимы права на загрузку";
+"uploadRights_message" = "У вас должны быть права на загрузку изображений или видео.";
+
+// Errors
+"internetErrorGeneral_title" = "Ошибка подключения";
+"internetErrorGeneral_broken" = "Извините, соединение было прервано. Попробуйте войти снова.";
+"internetCancellingConnection_button" = "Отмена соединения…";
+"internetCancelledConnection_button" = "Отменить соединение";
+"internetCancelledConnection_title" = "Соединение отменено";
+
+// ===========================================================================
+// ==> LOGIN / LOGOUT
+// ===========================================================================
+// Login
+"login" = "Войти";
+"login_serverPlaceholder" = "example.com";
+"login_userPlaceholder" = "Пользователь (необязательно)";
+"login_passwordPlaceholder" = "Пароль (необязательно)";
+"login_loggingIn" = "Выполняется вход...";
+"login_connecting" = "Соединение";
+"login_newSession" = "Открытие сессии";
+"login_communityParameters" = "Параметры сообщества";
+"login_serverParameters" = "Параметры Piwigo";
+"login_connectionChanged" = "Соединение изменено!";
+"loginHTTP_title" = "Учетные данные HTTP";
+"loginHTTP_message" = "Сервер Piwigo требует базовой HTTP-аутентификации:";
+"loginHTTPuser_placeholder" = "Пользователь";
+"loginHTTPpwd_placeholder" = "Пароль";
+
+// Login — Errors
+"serverURLerror_title" = "Некорректный URL";
+"serverURLerror_message" = "Пожалуйста, исправьте адрес веб-сервера Piwigo.";
+"serverMethodsError_title" = "Неизвестный метод";
+"serverMethodsError_message" = "Не удалось получить методы сервера. Проблема с сервером Piwigo?";
+"serverInvalidMethodError_message" = "Не удалось вызвать метод сервера.";
+"serverMissingParamError_message" = "Не удалось выполнить метод сервера с недостающим параметром.";
+"serverInvalidParamError_message" = "Не удалось вызвать метод сервера с указанными параметрами.";
+"serverUnknownError_message" = "При вызове метода сервера с указанными параметрами возникла непредвиденная ошибка.";
+
+"loginError_title" = "Ошибка входа";
+"loginError_message" = "Имя пользователя и пароль не совпадают на данном веб-адресе";
+"loginEmptyServer_title" = "Введите адрес";
+"loginEmptyServer_message" = "Пожалуйста, выберите протокол и введите адрес сервера Piwigo для продолжения.";
+
+"serverConnectionError_title" = "Ошибка подключения";
+"serverConnectionError_message" = "Не удалось установить защищенное HTTPS-соединение. Проверьте адрес или попробуйте в незашифрованном режиме (HTTP)?";
+
+"serverVersionNotCompatible_title" = "Сервер несовместим";
+"serverVersionNotCompatible_message" = "Версия вашего сервера Piwigo %@. Piwigo Mobile поддерживает только версию не менее 2.8. Пожалуйста, обновите ваш сервер, чтобы использовать Piwigo Mobile. Вы все еще хотите продолжить?";
+
+"sessionStatusError_title" = "Ошибка аутентификации";
+"sessionStatusError_message" = "Ошибка аутентификации на сервере. Попробуйте войти снова.";
+
+"serverCommunityError_title" = "Ошибка плагина Community";
+"serverCommunityError_message" = "Не удалось получить параметры плагина Community. Попробуйте войти снова.";
+
+// Logout
+"logoutConfirmation_title" = "Выйти";
+"logoutConfirmation_message" = "Вы точно хотите выйти?";
+
+// Logout — Errors
+"logoutFail_title" = "Ошибка выхода";
+"logoutFail_message" = "Не удалось выйти. Попробовать еще раз?";
+
+
+// ===========================================================================
+// ==> ALBUMS
+// ===========================================================================
+// Albums view
+"categoryMainEmtpy" = "В вашем Piwigo пока нет альбомов.\nВы можете потянуть вниз для обновления или повторного входа.";
+"categoryTableView_photoCount" = "фото";
+"categoryTableView_photosCount" = "фото";
+"categoryTableView_subCategoryCount" = "подальбом";
+"categoryTableView_subCategoriesCount" = "подальбомы";
+"categoryImageList_selectButton" = "Выбрать";
+"categoryImageList_deselectButton" = "Отменить выбор";
+"categoryImageList_noDataError" = "Ошибка: нет данных";
+
+// Albums "Discover"
+"categoryDiscover_title" = "Обзор";
+"categoryDiscoverVisits_title" = "Наиболее просматриваемые";
+"categoryDiscoverVisits_legend" = "просмотры";
+"categoryDiscoverBest_title" = "С наивысшим рейтингом";
+"categoryDiscoverRecent_title" = "Последние фото";
+"categoryDiscoverFavorites_title" = "Ваши избранные";
+
+// Albums sort
+"categorySort_nameAscending" = "Название фотографии, A → Z";
+"categorySort_nameDescending" = "Название фотографии, A → Z";
+"categorySort_fileNameAscending" = "Имя файла, A → Z";
+"categorySort_fileNameDescending" = "Имя файла, Я → А";
+"categorySort_dateCreatedDescending" = "Дата создания, новая → старая";
+"categorySort_dateCreatedAscending" = "Дата создания, старые → новые";
+"categorySort_datePostedDescending" = "Дата создания, новая → старая";
+"categorySort_datePostedAscending" = "Дата создания, старые → новые";
+"categorySort_ratingScoreDescending" = "Рейтинг, высокий → низкий";
+"categorySort_ratingScoreAscending" = "Рейтинг, низкий → высокий";
+"categorySort_visitsDescending" = "Посещения, высокие → низкие";
+"categorySort_visitsAscending" = "Посещения, низкий → высокий";
+"categorySort_manual" = "Ручная сортировка";
+
+"categorySort_videosOnly" = "Только Видео";
+"categorySort_imagesOnly" = "Только Фото";
+
+// Album selection
+"categorySelection_title" = "Альбом";
+"categorySelection_titleSub" = "Подальбомы";
+"categorySelection_root" = "Корневой альбом";
+"categorySelection_action" = "Выберите действие для этого альбома";
+"categorySelectionHUD_label" = "Получение данных об альбомах…";
+
+// Album upload
+"categoryUpload_noSubAlbum" = "Нет вложенных альбомов для загрузки фото в";
+"categoryUpload_chooseAlbum" = "Выберите альбом для загрузки фото";
+"categoryUpload_LocalAlbums" = "Альбомы на устройстве";
+"categoryUpload_chooseLocalAlbum" = "Выберите альбом из которого необходимо получить фотографии";
+"categoryUpload_iCloudAlbums" = "Альбомы iCloud";
+"categoryUpload_chooseiCloudAlbum" = "Выберите альбом iCloud, из которого получить фото";
+"categoyUpload_loadSubCategories" = "загрузить";
+"categoryUpload_images" = "Загрузить фото";
+"categoryUpload_subAlbum" = "Создать подальбом";
+"categoryUpload_defaultAlbum" = "Установить как альбом по умолчанию";
+"categoryUpload_defaultSelect" = "Пожалуйста, выберите альбом или вложенный альбом, который станет Вашим альбомом по умолчанию";
+
+// Default album
+"setDefaultCategory_title" = "Альбом по умолчанию";
+"setDefaultCategory_message" = "Вы уверены, что хотите установить альбом \"%@\" как альбом по умолчанию?";
+
+// Album create
+"createNewAlbum_title" = "Новый альбом";
+"createNewAlbum_message" = "Введите название для этого альбома:";
+"createNewAlbum_placeholder" = "Название альбома";
+"createNewAlbumDescription_placeholder" = "Описание";
+"createNewAlbumDescription_noDescription" = "нет описания";
+"createNewAlbumHUD_label" = "Создание альбома…";
+
+// Album create — Errors
+"createAlbumError_title" = "Ошибка создания альбома";
+"createAlbumError_message" = "Не удалось создать новый альбом";
+
+// Album options (swipe actions)
+"categoryCellOption_rename" = "Переименовать";
+"categoryCellOption_move" = "Переместить";
+"categoryCellOption_delete" = "Удалить";
+
+// Album rename
+"renameCategory_title" = "Переименовать альбом";
+"renameCategory_message" = "Введите новое название для этого альбома";
+"renameCategory_button" = "Переименовать";
+"renameCategoryHUD_label" = "Переименование альбома…";
+
+// Album rename — Errors
+"renameCategoyError_title" = "Ошибка переименования";
+"renameCategoyError_message" = "Не удалось переименовать альбом";
+
+// Album refresh representative
+"refreshCategoryHUD_label" = "Обновление заглавного изображения альбома…";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "Ошибка обновления";
+"refreshCategoyError_message" = "Не удалось обновить представителя альбома";
+
+// Album delete
+"deleteCategory_title" = "УДАЛИТЬ АЛЬБОМ";
+"deleteCategory_message" = "ВЫ УВЕРЕНЫ, ЧТО ХОТИТЕ УДАЛИТЬ АЛЬБОМ \"%@\" И ВСЕ %@ ФОТО?";
+"deleteCategory_empty" = "Удалить пустой альбом";
+"deleteCategory_noImages" = "Оставить фотографии";
+"deleteCategory_orphanedImages" = "Удалить сирот";
+"deleteCategory_allImages" = "Удалить %@ фотографий";
+"deleteCategoryConfirm_title" = "Вы уверены?";
+"deleteCategoryConfirm_message" = "Пожалуйста, введите количество фотографий для удаления этого альбома. Количество фотографий: %@";
+"deleteCategoryConfirm_deleteButton" = "УДАЛИТЬ";
+"deleteCategoryHUD_label" = "Удаление альбома…";
+
+// Album delete — errors
+"deleteCategoryMatchError_title" = "Число не совпадает";
+"deleteCategoryMatchError_message" = "Количество внесенных фотографий не совпадает с количеством фотографий в категории. Пожалуйста, попробуйте еще раз, если вы хотите удалить этот альбом";
+"deleteCategoryError_title" = "Не удалось удалить";
+"deleteCategoryError_message" = "Не удалось удалить альбом";
+
+// Album move
+"moveCategory" = "Переместить альбом";
+"moveCategory_selectParent" = "Выберите альбом, в который переместить альбом \"%@\"";
+"moveCategory_selectRecent" = "Выбрать последний альбом для перемещения альбома \"%@\"";
+"moveCategory_selectRecentOther" = "Или выбрать другой альбом для перемещения альбома \"%@\"";
+"moveCategory_message" = "Вы уверены, что хотите перенести \"%@\" в альбом \"%@\"?";
+"moveCategoryHUD_moving" = "Перемещение альбома…";
+
+// Album move — Errors
+"moveCategoryError_title" = "Ошибка перемещения";
+"moveCategoryError_message" = "Не удалось переместить ваш альбом";
+
+// Album set photo thumbnail
+//"categorySelection_select" = "Select Album";
+"categorySelection_current" = "Выберите текущий альбом для этого фото";
+"categorySelection_one" = "Выберите один из альбомов, содержащий эту фотографию";
+"categorySelection_other" = "Или выберите другой альбом для этого фото";
+"categoryImageSet_title" = "Миниатюра альбома";
+"categoryImageSet_message" = "Вы уверены, что хотите применить эту фотографию к альбому \"%@\"?";
+"categoryImageSetHUD_updating" = "Обновление миниатюры альбома…";
+
+// Album set photo thumbnail — Errors
+"categoryImageSetError_title" = "Ошибка установки фотографий";
+"categoryImageSetError_message" = "Не удалось установить фото альбома";
+
+
+// ===========================================================================
+// ==> IMAGES
+// ===========================================================================
+"singleImage" = "Фото";
+"singleVideo" = "Видео";
+"singleAudio" = "Аудио";
+"severalImages" = "Фото";
+"noImages" = "Нет фото";
+"pullToRefresh" = "Перезагрузить фотографии";
+
+// Errors
+"albumPhotoError_title" = "Ошибка установки фотографий альбома";
+"albumPhotoError_message" = "Не удалось получить фотографии для альбома (поврежденное изоюражение в Вашем альбоме?)";
+
+// Image sort
+"sortBy" = "Сортировка";
+"imageSortTitle" = "Сортировать фото";
+"imageSortingHUD" = "Сортировка фотографий";
+"imageSortMessage" = "Пожалуйста, выберите способ сортировки фотографий";
+
+// Image options (actions)
+"imageOptions_title" = "Параметры фотографии";
+"imageOptions_edit" = "Редактировать";
+"imageOptions_download" = "Скачать";
+"imageOptions_setAlbumImage" = "Установить как значок альбома";
+
+// Image details
+"imageDetailsView_title" = "Свойства";
+"editImageDetails_title" = "Название";
+"editImageDetails_titlePlaceholder" = "Название изображения";
+"editImageDetails_author" = "Автор";
+"editImageDetails_tags" = "Теги";
+"editImageDetails_privacyLevel" = "Кто может видеть эту фотографию?";
+"editImageDetails_description" = "Описание";
+"editImageDetails_comments" = "Комментарии";
+"editImageDetails_dateCreation" = "Дата создания";
+"editImageDetails_dateUnset" = "Сбросить";
+"editImageDetails_dateToday" = "Сегодня";
+"editImageDetails_dateMonthInc" = "+1 месяц";
+"editImageDetails_dateMonthDec" = "-1 месяц";
+"editImageDetails_dateYearInc" = "+1 год";
+"editImageDetails_dateYearDec" = "-1 Год";
+"editImageDetailsHUD_updatingSingle" = "Обновление фото…";
+"editImageDetailsHUD_updatingPlural" = "Обновление фото…";
+
+// Image details — Errors
+"editImageDetailsError_title" = "Не удалось обновить";
+"editImageDetailsError_message" = "Не удалось обновить ваши изменения на сервере. Попробовать снова?";
+"imageDetailsFetchError_title" = "Не удалось получить детали фото";
+"imageDetailsFetchError_retryMessage" = "Загрузка фото-данных не удалась. Попробовать еще раз?";
+"imageDetailsFetchError_continueMessage" = "Загрузка фото-данных не удалась. Продолжить?";
+
+// Image privacy levels
+"privacyLevel" = "Уровень приватности";
+"privacyLevel_admin" = "Администраторы";
+"privacyLevel_adminFamily" = "Администраторы, Семья";
+"privacyLevel_adminsFamilyFriends" = "Администраторы, Семья, Друзья";
+"privacyLevel_adminsFamilyFriendsContacts" = "Администраторы, Семья, Друзья, Контакты";
+"privacyLevel_everybody" = "Все";
+
+// Image tags
+"none" = "нет";
+"tags" = "Теги";
+"tag" = "Тег";
+"tagsTitle_selectOne" = "Выберите тег";
+"tagsHeader_selected" = "Выбрано";
+"tagsHeader_all" = "Все";
+"tagsAdd_title" = "Добавить тег";
+"tagsAdd_message" = "Введите название для этого нового тега";
+"tagsAdd_placeholder" = "Новый тег";
+"tagsAddHUD_label" = "Создание тега…";
+
+// Image tags errors
+"tagsAddError_message" = "Не удалось создать новый тег";
+"tagsAddError_title" = "Не удалось создать";
+
+// Image select
+"selectImages" = "Выберите фото";
+"selectImageSelected" = "Выбрано 1 фото";
+"selectImagesSelected" = "Выбрано фотографий: %@";
+"selectAll" = "Все";
+
+// Image rename (filename)
+"renameImage_title" = "Исходный файл";
+"renameImage_message" = "Введите новое имя файла для этого фото";
+"renameImageHUD_label" = "Переименование файла…";
+
+// Image rename — Errors
+"renameImageError_message" = "Не удалось переименовать файл фото";
+
+// Image delete
+"deleteImage_delete" = "Удалить";
+"deleteImageProgress_title" = "Удалено %@%%";
+
+"deleteSingleImage_title" = "Удалить фото";
+"deleteSingleImageHUD_deleting" = "Удаление фото…";
+"deleteSeveralImagesHUD_deleting" = "Удаление фотографий…";
+"removeSingleImage_title" = "Удалить из альбома";
+"removeSingleImageHUD_removing" = "Удаление фото…";
+"deleteSingleImage_message" = "Вы уверены, что ходите удалить это фотографию? Это действие нельзя будет отменить!";
+"deleteSeveralImages_title" = "Удаление %@ фотографий";
+"deleteSeveralImages_message" = "Вы уверены, что ходите удалить %@ фотографий? Это действие нельзя будет отменить!";
+
+// Image delete — Errors
+"deleteImageFail_title" = "Удаление не удалось";
+"deleteImageFail_message" = "Фото не может быть удалено\n%@";
+
+// Image download
+"downloadSingleImage_title" = "Скачать фото";
+"downloadSingleImage_confirmation" = "Вы уверены, что хотите скачать выбранные фото?";
+"downloadSeveralImages_title" = "Скачивание %@ фотографий";
+"downloadSeveralImage_confirmation" = "Вы уверены, что хотите скачать %@ выбранных фотографий?";
+
+"downloadingImage" = "Скачивание фото";
+"downloadingImages" = "Скачивание фотографий";
+"downloadingVideo" = "Скачивание видео";
+
+// Image download — Errors
+"downloadImageFail_title" = "Скачивание не удалось";
+"downloadImageFail_message" = "Не удалось скачать изображение!\n%@";
+"downloadVideoFail_message" = "Не удалось скачать видео!\n%@";
+"downloadVideoFail_Photos" = "Видеоформат не поддерживается!";
+
+"imageSaveError_title" = "Не удалось сохранить фото";
+"imageSaveError_message" = "Не удалось сохранить фото. Ошибка: %@";
+
+"videoSaveError_title" = "Не удалось сохранить видео";
+"videoSaveError_message" = "Не удалось сохранить видео. Ошибка: %@";
+
+// Image move
+"moveImage_title" = "Переместить в альбом";
+"moveSingleImage_selectAlbum" = "Выбрать альбом для перемещения фото \"%@\"";
+"moveSingleImage_selectRecent" = "Выбрать последний альбом для перемещения фото \"%@\"";
+"moveSingleImage_selectRecentOther" = "Или выбрать другой альбом для перемещения фото \"%@\"";
+"moveSeveralImages_selectAlbum" = "Выберите альбом для перемещения фотографий";
+"moveSeveralImages_selectRecent" = "Выбрать последний альбом для перемещения изображений";
+"moveSeveralImages_selectRecentOther" = "Или выбрать другой альбом для перемещения изображений";
+"moveSingleImage_message" = "Вы уверены, что хотите переместить фотографию \"%@\" в альбом \"%@\"?";
+"moveSeveralImages_message" = "Вы уверены, что хотите переместить фотографии в альбом \"%@\"?";
+"moveSingleImageHUD_moving" = "Перемещение фото…";
+"moveSeveralImagesHUD_moving" = "Перемещение фотографий…";
+
+// Image move — Errors
+"moveImageError_title" = "Перемещение не удалось";
+"moveSingleImageError_message" = "Не удалось переместить Ваше фото";
+
+// Image copy
+"copyImage_title" = "Копирование в альбом";
+"copySingleImage_selectAlbum" = "Выбрать альбом для копирования фотографии \"%@\"";
+"copySingleImage_selectRecent" = "Выберите недавний альбом для копирования фотографии \"%@\" в";
+"copySingleImage_selectRecentOther" = "Или выбрать другой альбом для копирования фотографии \"%@\"";
+"copySeveralImages_selectAlbum" = "Выбрать альбом для копирования фотографий";
+"copySeveralImages_selectRecent" = "Выбрать последний альбом для копирования фотографий";
+"copySeveralImages_selectRecentOther" = "Или выберите другой альбом для копирования фотографий";
+"copySingleImage_message" = "Вы уверены, что хотите скопировать фотографии \"%@\" в альбом \"%@\"?";
+"copySeveralImages_message" = "Вы уверены, что хотите скопировать фотографий в альбом \"%@\"?";
+"copySingleImageHUD_copying" = "Копирование фото…";
+"copySeveralImagesHUD_copying" = "Копирование фотографий…";
+
+// Image copy — Errors
+"copyImageError_title" = "Копирование не удалось";
+"copySingleImageError_message" = "Не удалось скопировать Ваше фотографию";
+
+// Images upload
+"imageUploadDetails_title" = "Заголовок:";
+"imageUploadDetails_author" = "Автор:";
+"imageUploadDetails_privacy" = "Право просмотра:";
+"imageUploadDetails_tags" = "Тэги:";
+"imageUploadDetails_description" = "Описание:";
+
+"imageUploadDetailsView_title" = "Фото";
+"imageUploadDetailsButton_title" = "Загрузка";
+"imageUploadDetailsEdit_title" = "Редактирование фотографий для загрузки";
+"imageUploadDetailsUploading_title" = "Изображения, которые были загружены";
+"imageUploadDetailsCell_uploadComplete" = "Завершено! Финишируем...";
+
+"imageUploadRemove" = "Перенос загруженных изображений";
+
+"imageUploadTableCell_uploading" = "Загрузка...";
+"imageUploadProgressBar_zero" = "Загрузка 0/0";
+"imageUploadProgressBar_nonZero" = "Загрузка %@/%@";
+"imageUploadProgressBar_completed" = "Выполнено";
+"imageUploadCompleted_title" = "Загрузка завершена";
+"imageUploadCompleted_message" = "фото загружено на Ваш сервер Piwigo.";
+"imageUploadCompleted_message>1" = "фотографии загружены на Ваш сервер Piwigo.";
+
+// Image upload — Errors
+"uploadError_title" = "Ошибка загрузки";
+"uploadError_message" = "Не удалось закачать Ваше фото. Ошибка: %@";
+"uploadCancelled_title" = "Загрузка отменена";
+
+"imageUploadError_title" = "Ошибка загрузки фото";
+"imageUploadError_format" = "Увы, но файлы с расширениями .%@ и .jpg не поддерживаются сервером Piwigo.";
+"imageUploadError_source" = "невозможно создать источник фотографий";
+"imageUploadError_destination" = "невозможно создать место назначения изображения";
+"imageUploadError_iCloud" = "Не удалось восстановление фото. Ошибка: %@";
+
+"audioUploadError_title" = "Ошибка загрузки аудио";
+"audioUploadError_format" = "Увы, но аудифайлы пока не поддерживаются в Piwigo Mobile.";
+
+"videoUploadError_title" = "Ошибка загрузки видео";
+"videoUploadError_format" = "Увы, но видеофайлы с расширением .%@ не поддерживаются сервером Piwigo.";
+"videoUploadError_iCloud" = "Не удалось восстановить видео. Ошибка: %@";
+"videoUploadError_export" = "Увы, но видео не может быть извлечено для для загрузки. Ошибка: %@";
+"videoUploadError_unknown" = "К сожалению, загрузка видео не удалась из-за неизвестной ошибки во время преобразования MP4. Ошибка: %@";
+"videoUploadCancelled_message" = "Загрузка видео была отменена.";
+
+// Image share
+"shareImageMetadata_Title" = "Поделиться метаданными";
+"shareImageMetadata_subTitle1" = "Обмен изображениями с приватными метаданными";
+"shareImageMetadata_subTitle2" = "Обмен изображениями без приватных метаданных";
+"shareActivityCode_AirDrop" = "Передача с AirDrop";
+"shareActivityCode_AirDrop>375px" = "Передача изображений через AirDrop";
+"shareActivityCode_AssignToContact" = "Установить контакт";
+"shareActivityCode_AssignToContact>375px" = "Установить фото для контакта";
+"shareActivityCode_CopyToPasteboard" = "Копировать в буфер";
+"shareActivityCode_CopyToPasteboard>375px" = "Копировать фотографии в буфер";
+"shareActivityCode_Mail" = "Отправить по Email";
+"shareActivityCode_Mail>375px" = "Отправить фотографии по электронной почте";
+"shareActivityCode_Message" = "Публиковать с Message";
+"shareActivityCode_Message>375px" = "Публикация фотографии с приложением Message";
+"shareActivityCode_Facebook" = "Публикация на Facebook";
+"shareActivityCode_Facebook>375px" = "Публикация фотографии с приложением Facebook";
+"shareActivityCode_Messenger" = "Публикация на Messenger";
+"shareActivityCode_Messenger>375px" = "Публикация фотографии с приложением Messenger";
+"shareActivityCode_Flickr" = "Отправить на Flickr";
+"shareActivityCode_Flickr>375px" = "Публикация фотографии на Flickr";
+"shareActivityCode_Instagram" = "Публикация в Инстаграм";
+"shareActivityCode_Instagram>375px" = "Разместить фотографии в Инстаграм";
+"shareActivityCode_Signal" = "Публикация с Signal";
+"shareActivityCode_Signal>375px" = "Публикация фотографии с приложением Signal";
+"shareActivityCode_Snapchat" = "Публикация в Snapchat";
+"shareActivityCode_Snapchat>375px" = "Публикация фотографии с приложением Snapchat";
+"shareActivityCode_TencentWeibo" = "Публикация в TencentWeibo";
+"shareActivityCode_TencentWeibo>375px" = "Публикация фотографии с приложением TencentWeibo";
+"shareActivityCode_Twitter" = "Публикация в Twitter";
+"shareActivityCode_Twitter>375px" = "Публикация фотографии в Twitter";
+"shareActivityCode_Vimeo" = "Публикация в Vimeo";
+"shareActivityCode_Vimeo>375px" = "Публикация видео в Vimeo";
+"shareActivityCode_Weibo" = "Публикация в Weibo";
+"shareActivityCode_Weibo>375px" = "Публикация фотографии в Weibo";
+"shareActivityCode_WhatsApp" = "Публикация в WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "Публикация фотографии с приложением WhatsApp";
+"shareActivityCode_CameraRoll" = "Сохранить в Camera Roll";
+"shareActivityCode_CameraRoll>375px" = "Сохранить фотографии в Camera Roll";
+"shareActivityCode_Other" = "Поделиться с другими приложениями";
+"shareActivityCode_Other>375px" = "Поделиться фотографиями с другими приложениями";
+
+// ===========================================================================
+// ==> LOCAL ALBUMS / PHOTOS LIBRARY
+// ===========================================================================
+"localAlbums" = "Библиотека фотографий";
+
+"localImageSort_newest" = "Новейшие";
+"localImageSort_oldest" = "Старейшие";
+"localImageSort_notUploaded" = "Не загружено";
+"localImageSort_undefined" = "Не определено";
+
+// Local albums — Access not Authorized
+"localAlbums_photosNotAuthorized_title" = "Нет доступа";
+"localAlbums_photosNiltitle" = "Проблема с чтением фотографий";
+"localAlbums_photosNnil_msg" = "Проблема в чтении Вашей локальной библиотеки изображений.";
+
+// Local albums — Tell user to change settings, how
+"localAlbums_photosNotAuthorized_msg" = "Невозможно открыть локальную библиотеку изображений. Пожалуйста, установите в \"Настройках\" право доступа для Piwigo.";
+
+// ===========================================================================
+// ==> SETTINGS
+// ===========================================================================
+// Settings — Piwigo Server
+"settingsHeader_server" = "Сервер Piwigo";
+"settingsHeader_notSecure" = "Вебсайт не защищен!";
+"settings_server" = "Http адрес";
+"settings_username" = "Пользователь";
+"settings_notLoggedIn" = " - Вход не произведен - ";
+"settings_logout" = "Выход";
+"settingsFooter_formats" = "Сервер принимает следующие типы файлов";
+
+// Settings — Unused
+"settingsHeader_general" = "Общие настройки";
+"settingsHeader_thumbnails" = "Миниатюры";
+
+// Settings — Albums
+"defaultImageSort" = "Сортировка";
+"defaultImageSort>320px" = "Сортировка по умолчанию";
+"defaultImageSort>414px" = "Сортировка изображений по умолчанию";
+"defaultAlbumThumbnailFile>414px" = "Файл миниатюры альбома";
+"defaultAlbumThumbnailSizeHeader" = "Пожалуйста, выберите размер миниатюры альбома";
+"maxNberOfRecentAlbums" = "Недавние";
+"maxNberOfRecentAlbums>320px" = "Последние альбомы";
+"maxNberOfRecentAlbums>414px" = "Количество последних альбомов";
+
+"thumbnailSizeSquare" = "Квадрат";
+"thumbnailSizeThumbnail" = "Миниатюра";
+"thumbnailSizeXXSmall" = "Крошечный";
+"thumbnailSizeXSmall" = "Очень маленький";
+"thumbnailSizeSmall" = "Маленький";
+"thumbnailSizeMedium" = "Средний";
+"thumbnailSizeLarge" = "Большой";
+"thumbnailSizeXLarge" = "Очень большой";
+"thumbnailSizeXXLarge" = "Огромный";
+"thumbnailSizexFullRes" = "Полное разрешение";
+
+// Settings — Images
+"settingsHeader_images" = "Фото";
+
+"defaultThumbnailFile" = "Файл";
+"defaultThumbnailFile>320px" = "Файл миниатюры";
+"defaultThumbnailFile>414px" = "Миниатюры файлов изображений";
+"defaultThumbnailSize" = "Размер";
+"defaultThumbnailSize>320px" = "Размер миниатюр";
+"defaultThumbnailSize>414px" = "Размер миниатюр по умолчанию";
+"defaultNberOfThumbnails" = "Количество";
+"defaultNberOfThumbnails>320px" = "Количество/строк";
+"defaultNberOfThumbnails>414px" = "Количество в строке";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "Пожалуйста, выберите размер миниатюры фото";
+"settings_displayTitles" = "Заголовки миниатюр";
+"settings_displayTitles>320px" = "Отображать названия миниатюр";
+
+"defaultPreviewFile" = "Предпросмотр";
+"defaultPreviewFile>320px" = "Предпросмотр файла";
+"defaultPreviewFile>414px" = "Предпросмотр файла фото";
+"defaultImageSize" = "Изображения";
+"defaultImageSize>320px" = "Размер фотографий";
+"defaultImageSize>414px" = "Размер фотографий по умолчанию";
+//"defaultImageSizeTitle" = "Default Size";
+"defaultImageSizeHeader" = "Пожалуйста, выберите размер фото по умолчанию";
+"defaultImageSize_recommended" = " (рекомендуется)";
+"defaultSize_disabled" = " (заблокировано на сервере)";
+"defaultSizeFooter" = "Размеры, показанные серым цветом, использовать не рекомендуется или они не доступны на сервере Piwigo.";
+
+"settings_shareGPSdata" = "Делиться частными метаданными";
+"settings_shareGPSdata>375px" = "Делиться с частными метаданными";
+
+"imageSizeSquare" = "Квадрат";
+"imageSizeThumbnail" = "Миниатюра";
+"imageSizeXXSmall" = "Крошечный";
+"imageSizeXSmall" = "Очень маленький";
+"imageSizeSmall" = "Маленький";
+"imageSizeMedium" = "Средний";
+"imageSizeLarge" = "Большой";
+"imageSizeXLarge" = "Очень большой";
+"imageSizeXXLarge" = "Огромный";
+"imageSizexFullRes" = "Полное разрешение";
+
+// Settings — Upload
+"settingsHeader_upload" = "Настройки загрузки по умолчанию";
+"settings_defaultAuthor" = "Автор";
+"settings_defaultAuthor>320px" = "Имя автора";
+"settings_defaultAuthorPlaceholder" = "Имя автора";
+"settings_defaultPrivacy" = "Приватность";
+"settings_defaultPrivacy>414px" = "Пожалуйста, выберите, кто может смотреть фотографий";
+"settings_stripGPSdata" = "Обрезать приватные метаданные";
+"settings_stripGPSdata>375px" = "Удаление личных метаданных перед загрузкой";
+"settings_photoResize" = "Изменить размер перед загрузкой";
+"settings_photoResize>375px" = "Изменить размер фото перед загрузкой";
+"settings_photoSize" = "> Размер   ";
+"settings_placeholderSize" = "Введите размер фотографии от 5 до 100";
+"settings_photoCompress" = "Сжать перед загрузкой";
+"settings_photoCompress>375px" = "Сжать изображение перед загрузкой";
+"settings_photoQuality" = "> Качество";
+"settings_placeholderQuality" = "Введите качество фотографии от 50 до 98";
+"settings_prefixFilename>414px" = "Префикс фото имя файла перед загрузкой";
+"settings_prefixFilename>375px" = "Префикс имени файла перед загрузкой";
+"settings_prefixFilename" = "Префикс имени файла Фото";
+"settings_defaultPrefix" = "Префикс";
+"settings_defaultPrefix>320px" = "Префикс имени файла";
+"settings_defaultPrefixPlaceholder" = "Префикс";
+"settings_deleteImage>375px" = "Удалить фотографию после загрузки";
+"settings_deleteImage" = "Удалить после загрузки";
+
+// Settings — Cache
+"settingsHeader_cache" = "Настройки кэша (Использовано/Всего)";
+"settings_loadAllCategories" = "Скачать все альбомы при запуске";
+"settings_loadAllCategories>320px" = "Скачать все альбомы при запуске (снимите флажок, если возникнут проблемы)";
+"settings_cacheDisk" = "Диск";
+"settings_cacheMemory" = "Память";
+"settings_cacheMegabytes" = "МБ";
+"settings_cacheClear" = "Очистить кэш-память";
+"settings_cacheClearAll" = "Очистить кэш фотографий";
+"settings_cacheClearMsg" = "Вы уверены, что хотите очистить кэш изображений? Это остановит загрузку альбомов и изображений на некоторое время.";
+
+// Settings — Colors
+"settingsHeader_colors" = "Цвета";
+"settings_darkPalette" = "Всегда темная палитра";
+"settings_switchPalette" = "Автопереключение";
+"settings_brightness" = "Яркость";
+
+// Settings — Information
+"settings_appName" = "Piwigo Mobile";
+"settingsHeader_about" = "Информация";
+"settings_twitter" = "@piwigo";
+"settings_twitterURL" = "https://twitter.com/piwigo";
+"settings_contactUs" = "Контактная информация";
+"settings_feedback" = "Обратная связь";
+"settings_supportForum" = "Форум поддержки";
+"settings_releaseNotes" = "Заметки к выпуску";
+"settings_rateInAppStore" = "Оцените мобильный Piwigo";
+"settings_translateWithCrowdin" = "Перевести мобильный Piwigo";
+"settings_pwgForumURL" = "http://ru.piwigo.org/forum";
+"settings_acknowledgements" = "Благодарности";
+"settings_privacy" = "Политика конфиденциальности";
+"settings_users" = "Пользователи";
+"settings_groups" = "Группы";
