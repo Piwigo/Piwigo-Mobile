@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.7_text" = "Wersja 2.4.7\n\n• Chińskie tłumaczenia uproszczone, rosyjskie i hiszpańskie";
+"v2.4.7_text" = "Wersja 2.4.7\n\n• Chińskie tłumaczenia uproszczone, rosyjskie i hiszpańskie\n• Naprawiono problem z odtwarzaniem wideo na niektórych serwerach";
 
 "v2.4.6_text" = "Wersja 2.4.6\n18 stycznia 2020\n\n• Możliwość edycji właściwości wybranych zdjęć\n• Możliwość zmiany daty utworzenia zdjęcia lub filmu\n• Opcja prefiksowania nazw plików przed przesłaniem\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
