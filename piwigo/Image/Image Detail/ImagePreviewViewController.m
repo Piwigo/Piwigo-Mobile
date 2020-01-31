@@ -16,7 +16,7 @@
 #import "NetworkHandler.h"
 #import "SAMKeychain.h"
 
-@interface ImagePreviewViewController ()
+@interface ImagePreviewViewController () <AVAssetResourceLoaderDelegate>
 
 @end
 
@@ -139,8 +139,43 @@
     // Set URL
     NSURL *videoURL = [NSURL URLWithString:imageData.fullResPath];
 
-    // Intialise video controller
-    AVPlayer *videoPlayer = [AVPlayer playerWithURL:videoURL];
+    // AVURLAsset + Loader
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
+    AVAssetResourceLoader *loader = asset.resourceLoader;
+    [loader setDelegate:self queue:dispatch_queue_create("Piwigo loader", nil)];
+    
+    // Load the asset's "playable" key
+    [asset loadValuesAsynchronouslyForKeys:@[@"playable"] completionHandler:^{
+        dispatch_async( dispatch_get_main_queue(),
+           ^{
+               /* IMPORTANT: Must dispatch to main queue in order to operate on the AVPlayer and AVPlayerItem. */
+               NSError *error = nil;
+               AVKeyValueStatus keyStatus = [asset statusOfValueForKey:@"playable" error:&error];
+               switch (keyStatus) {
+                   case AVKeyValueStatusLoaded:
+                       // Sucessfully loaded, continue processing
+                       [self playVideoAsset:asset];
+                       break;
+                   case AVKeyValueStatusFailed:
+                       /* Display the error. */
+                       [self assetFailedToPrepareForPlayback:error];
+                       break;
+                   case AVKeyValueStatusCancelled:
+                       // Loading cancelled
+                       break;
+                   default:
+                       // Handle all other cases
+                       break;
+               }
+           });
+    }];
+}
+
+-(void)playVideoAsset:(AVAsset *)asset
+{
+    // AVPlayer
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
+    AVPlayer *videoPlayer = [AVPlayer playerWithPlayerItem:playerItem];    // Intialise video controller
     AVPlayerViewController *playerController = [[AVPlayerViewController alloc] init];
     playerController.player = videoPlayer;
     playerController.videoGravity = AVLayerVideoGravityResizeAspect;
@@ -162,6 +197,63 @@
         currentViewController = currentViewController.presentedViewController;
     }
     [currentViewController presentViewController:playerController animated:YES completion:nil];
+}
+
+
+-(void)assetFailedToPrepareForPlayback:(NSError *)error
+{
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:[error localizedDescription]
+                         message:[error localizedFailureReason]
+                  preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* dismissAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) {
+        }];
+    
+    [alert addAction:dismissAction];
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    [topViewController presentViewController:alert animated:YES completion:nil];
+}
+
+
+#pragma mark - AVAssetResourceLoader delegate
+
+- (BOOL)resourceLoader:(AVAssetResourceLoader *)resourceLoader
+shouldWaitForResponseToAuthenticationChallenge:(NSURLAuthenticationChallenge *)authenticationChallenge
+{
+    NSURLProtectionSpace *protectionSpace = authenticationChallenge.protectionSpace;
+    if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])
+    {
+        // Self-signed certificate…
+        [authenticationChallenge.sender useCredential:[NSURLCredential credentialForTrust:authenticationChallenge.protectionSpace.serverTrust] forAuthenticationChallenge:authenticationChallenge];
+        [authenticationChallenge.sender continueWithoutCredentialForAuthenticationChallenge:authenticationChallenge];
+    }
+    else if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPBasic])
+    {
+        // HTTP basic authentification credentials
+        NSString *user = [Model sharedInstance].HttpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        [authenticationChallenge.sender useCredential:[NSURLCredential credentialWithUser:user password:password
+                                                       persistence:NSURLCredentialPersistenceSynchronizable] forAuthenticationChallenge:authenticationChallenge];
+        [authenticationChallenge.sender continueWithoutCredentialForAuthenticationChallenge:authenticationChallenge];
+    }
+    else { // Other type: username password, client trust...
+        NSLog(@"Other type: username password, client trust...");
+    }
+    return YES;
 }
 
 @end
