@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 13/08/2017.
+  Copyright © 2017 Piwigo.org. All rights reserved.
+*/
+
+"NSPhotoLibraryUsageDescription" = "只有授予此权限，你才能将照片下载到本地图库或上传本地照片到你的Piwigo相册。";

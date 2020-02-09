@@ -47,6 +47,7 @@ Your Piwigo server generates a poster of each uploaded video with [FFmpeg](http:
 
 ## Translations [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile)
 Piwigo Mobile is available from the [App Store](https://itunes.apple.com/app/piwigo/id472225196?mt=8) in the following languages:
+- [Chinese (simplified)](https://crowdin.com/project/piwigo-mobile/zh-CN#), [Russian](https://crowdin.com/project/piwigo-mobile/ru#) and [Spanish (Spain)](https://crowdin.com/project/piwigo-mobile/es-ES#) since [v2.4.7](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.4.7),
 - [Italian](https://crowdin.com/project/piwigo-mobile/it#) since [v2.2.6](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.2.6),
 - [Japanese](https://crowdin.com/project/piwigo-mobile/ja#) since [v2.1.8](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1.8),
 - [Arabic](https://crowdin.com/project/piwigo-mobile/ar#) since [v2.1.6](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1.6),
