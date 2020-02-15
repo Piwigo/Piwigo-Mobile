@@ -15,7 +15,6 @@
 #import "ButtonTableViewCell.h"
 #import "CategoriesData.h"
 #import "CategorySortViewController.h"
-#import "ClearCache.h"
 #import "DefaultAlbumThumbnailSizeViewController.h"
 #import "DefaultCategoryViewController.h"
 #import "DefaultImageSizeViewController.h"

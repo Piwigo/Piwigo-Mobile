@@ -14,7 +14,6 @@
 #import "SAMKeychain.h"
 #import "Model.h"
 #import "SessionService.h"
-#import "ClearCache.h"
 #import "AppDelegate.h"
 #import "MBProgressHUD.h"
 #import "CategoriesData.h"
