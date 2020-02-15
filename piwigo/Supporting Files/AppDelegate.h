@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPaletteChanged;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationNetworkErrorEncountered;
@@ -17,8 +18,16 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 
 @property (strong, nonatomic) UIWindow *window;
 
+#ifdef __IPHONE_10_0
+@property (strong, readonly) NSPersistentContainer *persistentContainer;
+#endif
+@property (strong, readonly) NSManagedObjectModel *managedObjectModel;
+@property (strong, readonly) NSManagedObjectContext *managedObjectContext;
+@property (strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
 -(void)loadLoginView;
 -(void)loadNavigation;
 -(void)screenBrightnessChanged;
+-(void)saveContext;
 
 @end
