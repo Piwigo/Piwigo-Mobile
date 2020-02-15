@@ -10,6 +10,9 @@
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
 
+@class Tag;
+@class TagSelectorViewController;
+
 @interface AlbumImagesViewController : UIViewController
 
 @property (nonatomic, assign) NSInteger categoryId;

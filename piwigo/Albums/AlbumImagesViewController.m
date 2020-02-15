@@ -38,7 +38,6 @@
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
 #import "SettingsViewController.h"
-#import "TagSelectViewController.h"
 
 //#ifndef DEBUG_LIFECYCLE
 //#define DEBUG_LIFECYCLE
@@ -47,7 +46,7 @@
 CGFloat const kRadius = 25.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectViewDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -2398,7 +2397,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
                 [self.navigationController presentViewController:viewController animated:YES completion:nil];
             }
-            else if ([viewController isKindOfClass:[TagSelectViewController class]]) {
+            else if ([viewController isKindOfClass:[TagSelectorViewController class]]) {
                 viewController.popoverPresentationController.barButtonItem = self.discoverBarButton;
                 viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
                 [self.navigationController presentViewController:viewController animated:YES completion:nil];
@@ -2629,9 +2628,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)discoverImagesByTag
 {
     // Push tag select view
-    TagSelectViewController *discoverController = [[TagSelectViewController alloc] init];
-    discoverController.tagSelectDelegate = self;
-    [self pushView:discoverController];
+    UIStoryboard *tagSelectorSB = [UIStoryboard storyboardWithName:@"TagSelectorViewController" bundle:nil];
+    TagSelectorViewController *tagSelectorVC = [tagSelectorSB instantiateViewControllerWithIdentifier:@"TagSelectorViewController"];
+    tagSelectorVC.tagSelectedDelegate = self;
+    [self pushView:tagSelectorVC];
 }
 
 -(void)discoverFavoritesImages
