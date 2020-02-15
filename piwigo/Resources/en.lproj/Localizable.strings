@@ -44,6 +44,13 @@
 "internetCancelledConnection_title" = "Connection Cancelled";
 
 // ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
+"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+
+// ===========================================================================
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
