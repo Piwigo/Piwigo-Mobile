@@ -27,12 +27,12 @@ class TagSelectorViewController: UITableViewController {
      and serves it to this table view.
      */
     private lazy var dataProvider: TagsProvider = {
-        
-        let provider = TagsProvider(completionClosure: {})
+        let provider : TagsProvider = TagsProvider()
         provider.fetchedResultsControllerDelegate = self
         return provider
     }()
         
+    
     // MARK: View
     @IBOutlet var tagsTableView: UITableView!
     var letterIndex: [String] = []
@@ -314,21 +314,19 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         let oldIndexPath = indexPath ?? IndexPath.init(row: 0, section: 0)
-        guard let newIndexPath = newIndexPath else { return }
-        guard let tag: Tag = anObject as? Tag else { return }
-        guard let cell: TagSelectorCell = tableView(tagsTableView, cellForRowAt: oldIndexPath) as? TagSelectorCell else { return }
-
         switch type {
         case .insert:
-            print("tagsTableView.insertRows: \(newIndexPath.row)")
+            guard let newIndexPath = newIndexPath else { return }
             tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .delete:
             tagsTableView.deleteRows(at: [oldIndexPath], with: .automatic)
         case .move:
+            guard let newIndexPath = newIndexPath else { return }
             tagsTableView.deleteRows(at: [oldIndexPath], with: .automatic)
             tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
-            print("cell.configure(with: \(tag.tagName)")
+            guard let tag: Tag = anObject as? Tag else { return }
+            guard let cell: TagSelectorCell = tableView(tagsTableView, cellForRowAt: oldIndexPath) as? TagSelectorCell else { return }
             cell.configure(with: tag)
         @unknown default:
             fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")
@@ -339,5 +337,3 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
         tagsTableView.endUpdates()
     }
 }
-
-// k7ji}wx[bCcsihd@fg23

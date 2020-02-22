@@ -19,24 +19,15 @@ class TagsProvider {
     let kPiwigoTagsAdd = "format=json&method=pwg.tags.add"
     
     
-    // MARK: - Core Data methods
+    // MARK: - Core Data object context
     
-    /**
-     The persistent container to set up the Core Data stack.
-     */
-    var managedObjectContext: NSManagedObjectContext
+    lazy var managedObjectContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        return context
+    }()
 
-    init(completionClosure: @escaping () -> ())
-    {
-        if #available(iOS 10.0, *) {
-            managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        } else {
-            // iOS 9.x and below
-            managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
-        }
-    }
-
-    // MARK: Fetch Tags
+    
+    // MARK: - Fetch Tags
     /**
      Fetches the tag feed from the remote Piwigo server, and imports it into Core Data.
     */
@@ -88,33 +79,7 @@ class TagsProvider {
         guard !tagJSON.tagPropertiesArray.isEmpty else { return }
         
         // Create a private queue context.
-        let taskContext: NSManagedObjectContext
-        if #available(iOS 10.0, *) {
-            taskContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.newBackgroundContext()
-        } else {
-            // iOS 9.0 and below - however you were previously handling it
-            guard let modelURL = Bundle.main.url(forResource: "DataModel", withExtension:"momd") else {
-                fatalError("Error loading model from bundle")
-            }
-            guard let mom = NSManagedObjectModel(contentsOf: modelURL) else {
-                fatalError("Error initializing mom from: \(modelURL)")
-            }
-            let psc = NSPersistentStoreCoordinator(managedObjectModel: mom)
-            taskContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-            taskContext.parent = managedObjectContext;
-            let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            let docURL = urls[urls.endIndex-1]
-            let storeURL = docURL.appendingPathComponent("DataModel.sqlite")
-            do {
-                try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
-            } catch {
-                fatalError("Error migrating store: \(error)")
-            }
-        }
-        taskContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        // Set unused undoManager to nil for macOS (it is nil by default on iOS)
-        // to reduce resource requirements.
-        taskContext.undoManager = nil
+        let taskContext = DataController.getPrivateContext()
                 
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
@@ -158,29 +123,80 @@ class TagsProvider {
         // so it won’t block the main thread.
         taskContext.performAndWait {
             
-            // Create a new record for each tag in the batch.
+            // Retrieve existing tags
+            // Create a fetch request for the Tag entity sorted by Id
+            let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagId", ascending: true)]
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                managedObjectContext: taskContext,
+                                                  sectionNameKeyPath: nil, cacheName: nil)
+            
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            let cachedTags = controller.fetchedObjects ?? []
+
+            // Initialise list of tags to delete
+            let indexesOfTagsToUpdate: NSMutableIndexSet = NSMutableIndexSet.init()
+
+            // Loop over new tags
             for tagData in tagsBatch {
+            
+                // Index of this new tag in cache
+                let index = indexOfTag(withId: tagData.id!, inArray: cachedTags)
                 
-                // Create a Tag managed object on the private queue context.
-                guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag", into: taskContext) as? Tag else {
-                    print(TagError.creationError.localizedDescription)
-                    return
+                // Is this tag already cached?
+                if (index == Int.max) {
+                    // Create a Tag managed object on the private queue context.
+                    guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag", into: taskContext) as? Tag else {
+                        print(TagError.creationError.localizedDescription)
+                        return
+                    }
+                    
+                    // Populate the Tag's properties using the raw data.
+                    do {
+                        try tag.update(with: tagData)
+                    }
+                    catch TagError.missingData {
+                        // Delete invalid Tag from the private queue context.
+                        print(TagError.missingData.localizedDescription)
+                        taskContext.delete(tag)
+                    }
+                    catch {
+                        print(error.localizedDescription)
+                    }
                 }
-                
-                // Populate the Tag's properties using the raw data.
-                do {
-                    try tag.update(with: tagData)
-                }
-                catch TagError.missingData {
-                    // Delete invalid Tag from the private queue context.
-                    print(TagError.missingData.localizedDescription)
-                    taskContext.delete(tag)
-                }
-                catch {
-                    print(error.localizedDescription)
+                else {
+                    // Update the tag's properties using the raw data
+                    indexesOfTagsToUpdate.add(index)
+                    do {
+                        try cachedTags[index].update(with: tagData)
+                    }
+                    catch TagError.missingData {
+                        // Could not perform the update
+                        print(TagError.missingData.localizedDescription)
+                    }
+                    catch {
+                        print(error.localizedDescription)
+                    }
+
                 }
             }
             
+            // Delete cached tags which were not returned by the Piwigo server
+            for index in 0..<cachedTags.count {
+                
+                // Delete tags which were not updated
+                if !indexesOfTagsToUpdate.contains(index) {
+                    taskContext.delete(cachedTags[index])
+                }
+            }
+                        
             // Save all insertions and deletions from the context to the store.
             if taskContext.hasChanges {
                 do {
@@ -199,10 +215,27 @@ class TagsProvider {
         return success
     }
     
-    
-    // MARK: Clear Tags
     /**
-     Clear cached Core Data tag entries
+     Returns the index of a tag cached in persistent storage
+    */
+    private func indexOfTag(withId tagId: Int, inArray tagList: [Tag]?) -> Int {
+        
+        let index = (tagList as NSArray?)?.indexOfObject(passingTest: { obj, idx, stop in
+                let tag = obj as? Tag
+                if tag?.tagId == tagId {
+                    return true
+                } else {
+                    return false
+                }
+            })
+
+        return index ?? Int.max
+    }
+
+    
+    // MARK: - Clear Tags
+    /**
+     Clear cached Core Data tag entry
     */
     func clearTags() {
         
@@ -220,7 +253,7 @@ class TagsProvider {
             fatalError("Unresolved error \(error)")
         }
     }
-
+    
 
     // MARK: - NSFetchedResultsController
     

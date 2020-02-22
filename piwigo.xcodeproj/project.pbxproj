@@ -36,6 +36,7 @@
 		AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
+		AD7437D023FBB151008738CF /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
 		AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */; };
 		AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD923B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m */; };
@@ -318,6 +319,7 @@
 		ADAF3B8123DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
 		ADB22CA82247AA9900C9B66C /* CameraRollUploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraRollUploadViewController.h; sourceTree = "<group>"; };
 		ADB22CA92247AAA700C9B66C /* CameraRollUploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraRollUploadViewController.m; sourceTree = "<group>"; };
+		ADB433F523FB3CCB00A873A9 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		ADB607E61FC9D75700AF28DB /* VideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoView.h; sourceTree = "<group>"; };
 		ADB607E71FC9D79000AF28DB /* VideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoView.m; sourceTree = "<group>"; };
 		ADBCFE85235B75F2001D6EE7 /* FavoritesImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoritesImagesViewController.h; sourceTree = "<group>"; };
@@ -1182,6 +1184,7 @@
 			isa = PBXGroup;
 			children = (
 				AD074F6523F8498A00D6016A /* ClearCache.swift */,
+				ADB433F523FB3CCB00A873A9 /* DataController.swift */,
 				ADA18F6923F01DBF006B110A /* DataModel.xcdatamodeld */,
 				ADABACB92235A68E0095C4D0 /* Categories Data */,
 				AD41BEC8223E9BB200A5DEE3 /* Locations Data */,
@@ -1562,6 +1565,7 @@
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				D89045B21A94662300A306FE /* TagsData.m in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
+				AD7437D023FBB151008738CF /* DataController.swift in Sources */,
 				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
 				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,

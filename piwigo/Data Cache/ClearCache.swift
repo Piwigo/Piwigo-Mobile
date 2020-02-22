@@ -18,7 +18,8 @@ class ClearCache: NSObject {
          The TagsProvider that fetches tag data, saves it to Core Data,
          and serves it to this table view.
          */
-        let dataProvider : TagsProvider = TagsProvider(completionClosure: {})
+//        let dataProvider : TagsProvider = TagsProvider(completionClosure: {})
+        let dataProvider : TagsProvider = TagsProvider()
         dataProvider.clearTags()
 
         // Data

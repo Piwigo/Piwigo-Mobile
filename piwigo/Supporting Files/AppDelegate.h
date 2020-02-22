@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
+
+//#import "DataController.h"
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPaletteChanged;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationNetworkErrorEncountered;
@@ -17,17 +18,21 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+//@property (strong, nonatomic) DataController *dataController;
 
-#ifdef __IPHONE_10_0
-@property (strong, readonly) NSPersistentContainer *persistentContainer;
-#endif
-@property (strong, readonly) NSManagedObjectModel *managedObjectModel;
-@property (strong, readonly) NSManagedObjectContext *managedObjectContext;
-@property (strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+//#ifdef __IPHONE_10_0
+//@property (nonatomic, strong) NSPersistentContainer *persistentContainer;
+//#endif
+//@property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;
+//@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+//@property (nonatomic, strong) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 -(void)loadLoginView;
 -(void)loadNavigation;
 -(void)screenBrightnessChanged;
--(void)saveContext;
+
+//-(NSManagedObjectContext *)managedObjectContext;
+//-(void)saveContext;
 
 @end
