@@ -54,7 +54,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.albumName.text = self.albumData.name;
     self.albumName.font = [UIFont piwigoFontButton];
     self.albumName.textColor = [UIColor piwigoOrange];
-    self.albumName.font = [self.albumName.font fontWithSize:[UIFont fontSizeForLabel:self.albumName andNberOfLines:2]];
+    self.albumName.font = [self.albumName.font fontWithSize:[UIFont fontSizeForLabel:self.albumName nberLines:2]];
 
     // Album comment
     if (self.albumData.comment.length == 0) {
@@ -70,7 +70,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         self.albumComment.textColor = [UIColor piwigoTextColor];
     }
     self.albumComment.font = [UIFont piwigoFontSmall];
-    self.albumComment.font = [self.albumComment.font fontWithSize:[UIFont fontSizeForLabel:self.albumComment andNberOfLines:3]];
+    self.albumComment.font = [self.albumComment.font fontWithSize:[UIFont fontSizeForLabel:self.albumComment nberLines:3]];
 
     // Number of images and sub-albums
     self.numberOfImages.font = [UIFont piwigoFontTiny];
@@ -100,7 +100,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]],
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
-    self.numberOfImages.font = [self.numberOfImages.font fontWithSize:[UIFont fontSizeForLabel:self.numberOfImages andNberOfLines:1]];
+    self.numberOfImages.font = [self.numberOfImages.font fontWithSize:[UIFont fontSizeForLabel:self.numberOfImages nberLines:1]];
 
     // Add renaming, moving and deleting capabilities when user has admin rights
     if([Model sharedInstance].hasAdminRights)

@@ -151,7 +151,7 @@ extension TagSelectorViewController {
         // Title
         let titleString = "\(NSLocalizedString("tags", comment: "Tags"))\n"
         let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold() as Any
+            NSAttributedString.Key.font: UIFont.piwigoFontBold()!
         ]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
@@ -160,7 +160,7 @@ extension TagSelectorViewController {
         // Text
         let textString = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
         let textAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall() as Any
+            NSAttributedString.Key.font: UIFont.piwigoFontSmall()!
         ]
         let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
         return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
@@ -173,13 +173,13 @@ extension TagSelectorViewController {
         // Title
         let titleString = "\(NSLocalizedString("tags", comment: "Tags"))\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold() as Any, range: NSRange(location: 0, length: titleString.count))
+        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: NSRange(location: 0, length: titleString.count))
         headerAttributedString.append(titleAttributedString)
 
         // Text
         let textString = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
         let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall() as Any, range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: NSRange(location: 0, length: textString.count))
         headerAttributedString.append(textAttributedString)
 
         // Header label

@@ -16,4 +16,3 @@
 #import "TagsData.h"
 
 #import "UIColor+AppSpecificColors.h"
-#import "UIFont+AppFonts.h"

@@ -23,7 +23,6 @@
 #import "LabelTableViewCell.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
-#import "PrivacyPolicyViewController.h"
 #import "ReleaseNotesViewController.h"
 #import "SelectPrivacyViewController.h"
 #import "SessionService.h"

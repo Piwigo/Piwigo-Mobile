@@ -72,7 +72,6 @@
 		ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
 		ADE03F3423D4CF1D00F21ED9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3323D4CF1D00F21ED9 /* Tag.swift */; };
 		ADE03F3623D4E3BD00F21ED9 /* TagError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3523D4E3BD00F21ED9 /* TagError.swift */; };
-		ADE936F82182D54D0003F037 /* PrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */; };
 		ADE9D69723BE71A200818003 /* ImageUploadThumbTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE9D69623BE71A200818003 /* ImageUploadThumbTableViewCell.m */; };
 		ADE9D69923BE71CA00818003 /* ImageUploadThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADE9D69823BE71CA00818003 /* ImageUploadThumbTableViewCell.xib */; };
 		ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */; };
@@ -81,6 +80,8 @@
 		ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E762066D04600D1CE26 /* OpenSansBold.TTF */; };
 		ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */; };
 		ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */; };
+		ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */; };
+		ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */; };
 		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
 		D8083A631A7FF30800A95605 /* TextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A621A7FF30800A95605 /* TextFieldTableViewCell.m */; };
 		D8083A671A7FF8F600A95605 /* ButtonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */; };
@@ -108,7 +109,6 @@
 		D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */; };
 		D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D86044101A99922F0067E5D1 /* ImageScrollView.m */; };
 		D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */; };
-		D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */; };
 		D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */; };
 		D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */; };
 		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
@@ -342,8 +342,6 @@
 		ADE03F3223D4CF1D00F21ED9 /* piwigo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "piwigo-Bridging-Header.h"; sourceTree = "<group>"; };
 		ADE03F3323D4CF1D00F21ED9 /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		ADE03F3523D4E3BD00F21ED9 /* TagError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagError.swift; sourceTree = "<group>"; };
-		ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrivacyPolicyViewController.m; sourceTree = "<group>"; };
-		ADE936F92182D5650003F037 /* PrivacyPolicyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivacyPolicyViewController.h; sourceTree = "<group>"; };
 		ADE9D69523BE716800818003 /* ImageUploadThumbTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageUploadThumbTableViewCell.h; path = "piwigo/Upload/Upload Parameters/Cells/ImageUploadThumbTableViewCell.h"; sourceTree = SOURCE_ROOT; };
 		ADE9D69623BE71A200818003 /* ImageUploadThumbTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageUploadThumbTableViewCell.m; path = "piwigo/Upload/Upload Parameters/Cells/ImageUploadThumbTableViewCell.m"; sourceTree = SOURCE_ROOT; };
 		ADE9D69823BE71CA00818003 /* ImageUploadThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageUploadThumbTableViewCell.xib; sourceTree = "<group>"; };
@@ -360,6 +358,8 @@
 		ADF88E762066D04600D1CE26 /* OpenSansBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansBold.TTF; sourceTree = "<group>"; };
 		ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansExtraBold.TTF; sourceTree = "<group>"; };
 		ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansLight.TTF; sourceTree = "<group>"; };
+		ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
+		ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+AppFonts.swift"; sourceTree = "<group>"; };
 		ADFD9B3B22F981F3008FE480 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC2EF1B4D6E942B22B2385A1 /* Pods-piwigoGetPiwigo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoGetPiwigo.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoGetPiwigo/Pods-piwigoGetPiwigo.release.xcconfig"; sourceTree = "<group>"; };
@@ -421,8 +421,6 @@
 		D86044101A99922F0067E5D1 /* ImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageScrollView.m; sourceTree = "<group>"; };
 		D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoButton.h; sourceTree = "<group>"; };
 		D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoButton.m; sourceTree = "<group>"; };
-		D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+AppFonts.h"; sourceTree = "<group>"; };
-		D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+AppFonts.m"; sourceTree = "<group>"; };
 		D863EEC61A6A45E800C0A6E9 /* LacunaRegular.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = LacunaRegular.TTF; sourceTree = "<group>"; };
 		D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTextField.h; sourceTree = "<group>"; };
 		D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoTextField.m; sourceTree = "<group>"; };
@@ -782,8 +780,7 @@
 				AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */,
 				D8B9BC841A96C50700C1B0E5 /* AboutViewController.h */,
 				D8B9BC851A96C50700C1B0E5 /* AboutViewController.m */,
-				ADE936F92182D5650003F037 /* PrivacyPolicyViewController.h */,
-				ADE936F72182D54D0003F037 /* PrivacyPolicyViewController.m */,
+				ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */,
 			);
 			path = Information;
 			sourceTree = "<group>";
@@ -1012,8 +1009,7 @@
 				D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */,
 				D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */,
 				D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */,
-				D863EEC01A6A44BB00C0A6E9 /* UIFont+AppFonts.h */,
-				D863EEC11A6A44BB00C0A6E9 /* UIFont+AppFonts.m */,
+				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
 			);
 			path = Macros;
 			sourceTree = "<group>";
@@ -1566,7 +1562,6 @@
 				D89045B21A94662300A306FE /* TagsData.m in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
 				AD7437D023FBB151008738CF /* DataController.swift in Sources */,
-				D863EEC21A6A44BB00C0A6E9 /* UIFont+AppFonts.m in Sources */,
 				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */,
@@ -1585,6 +1580,8 @@
 				D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D81C99441B02DB250081C976 /* DefaultImageSizeViewController.m in Sources */,
+				ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */,
+				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
 				D82B8CC11A67820A000E47CA /* main.m in Sources */,
 				D8083A671A7FF8F600A95605 /* ButtonTableViewCell.m in Sources */,
@@ -1626,7 +1623,6 @@
 				D8B04C611A92A1A900695281 /* SelectPrivacyViewController.m in Sources */,
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
 				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
-				ADE936F82182D54D0003F037 /* PrivacyPolicyViewController.m in Sources */,
 				D8172E201AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m in Sources */,
 				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
