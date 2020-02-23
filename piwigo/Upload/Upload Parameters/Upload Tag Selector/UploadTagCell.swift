@@ -29,7 +29,7 @@ class UploadTagCell: UITableViewCell {
         
         // General settings
         backgroundColor = UIColor.piwigoCellBackground()
-        tintColor = UIColor.piwigoOrange()
+        tintColor = UIColor.piwigoColorOrange()
         textLabel?.font = UIFont.piwigoFontNormal()
 
         // Activity name

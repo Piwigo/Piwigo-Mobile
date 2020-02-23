@@ -72,11 +72,11 @@
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -84,12 +84,12 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.uploadImagesTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.uploadImagesTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.uploadImagesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.uploadImagesTableView reloadData];
     
@@ -211,7 +211,7 @@
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontBold];
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -292,8 +292,8 @@
 	}
     
     cell.delegate = self;
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    cell.tintColor = [UIColor piwigoOrange];
+    cell.backgroundColor = [UIColor piwigoColorCellBackground];
+    cell.tintColor = [UIColor piwigoColorOrange];
     
     cell.isAccessibilityElement = YES;
 	return cell;

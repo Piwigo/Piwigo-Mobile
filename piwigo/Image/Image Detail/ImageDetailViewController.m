@@ -88,16 +88,16 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         self.deleteBarButton.tintColor = [UIColor redColor];
         [self.deleteBarButton setAccessibilityIdentifier:@"delete"];
         self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareImage)];
-        self.shareBarButton.tintColor = [UIColor piwigoOrange];
+        self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.shareBarButton setAccessibilityIdentifier:@"share"];
         self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
-        self.setThumbnailBarButton.tintColor = [UIColor piwigoOrange];
+        self.setThumbnailBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
         self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToCategory)];
-        self.moveBarButton.tintColor = [UIColor piwigoOrange];
+        self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.moveBarButton setAccessibilityIdentifier:@"move"];
 //        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToFavorites)];
-//        self.favoriteBarButton.tintColor = [UIColor piwigoOrange];
+//        self.favoriteBarButton.tintColor = [UIColor piwigoColorOrange];
 //        [self.favoriteBarButton setAccessibilityIdentifier:@"favorite"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
 
@@ -143,7 +143,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Navigation bar
     [self setTitleViewFromImageData];
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -151,17 +151,17 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
     
     // Toolbar
-    self.navigationController.toolbar.barTintColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.toolbar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 
     // Progress bar
-    self.progressBar.progressTintColor = [UIColor piwigoOrange];
-    self.progressBar.trackTintColor = [UIColor piwigoLeftLabelColor];
+    self.progressBar.progressTintColor = [UIColor piwigoColorOrange];
+    self.progressBar.trackTintColor = [UIColor piwigoColorLeftLabel];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -429,7 +429,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
                 if (self.navigationController.navigationBarHidden)
                     viewController.view.backgroundColor = [UIColor blackColor];
                 else
-                    viewController.view.backgroundColor = [UIColor piwigoBackgroundColor];
+                    viewController.view.backgroundColor = [UIColor piwigoColorBackground];
             }
         }
     }
@@ -1095,8 +1095,8 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         hud.mode = showProgress ? MBProgressHUDModeAnnularDeterminate : MBProgressHUDModeIndeterminate;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoHudContentColor];
-        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        hud.contentColor = [UIColor piwigoColorHudContent];
+        hud.bezelView.color = [UIColor piwigoColorHudBezelView];
 
         // Will look best, if we set a minimum size.
         hud.minSize = CGSizeMake(200.f, 100.f);
@@ -1142,7 +1142,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Create label programmatically
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textColor = [UIColor piwigoWhiteCream];
+    titleLabel.textColor = [UIColor piwigoColorWhiteCream];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.numberOfLines = 1;
     titleLabel.font = [UIFont piwigoFontSmallSemiBold];
@@ -1178,7 +1178,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     {
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, titleLabel.frame.size.height, 0, 0)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
-        subTitleLabel.textColor = [UIColor piwigoWhiteCream];
+        subTitleLabel.textColor = [UIColor piwigoColorWhiteCream];
         subTitleLabel.textAlignment = NSTextAlignmentCenter;
         subTitleLabel.numberOfLines = 1;
         subTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;

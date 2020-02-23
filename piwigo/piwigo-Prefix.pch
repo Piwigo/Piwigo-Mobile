@@ -20,7 +20,6 @@
 
 #ifdef __OBJC__
 	#import "NSLayoutConstraint+CommonConstraints.h"
-	#import "UIColor+AppSpecificColors.h"
 	#import <AFNetworking.h>
 	#import <UIImageView+AFNetworking.h>
 	#import "MGSwipeTableCell.h"

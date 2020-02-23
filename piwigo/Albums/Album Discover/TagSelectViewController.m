@@ -33,7 +33,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         self.tagsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.tagsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.tagsTableView.backgroundColor = [UIColor clearColor];
-        self.tagsTableView.sectionIndexColor = [UIColor piwigoOrange];
+        self.tagsTableView.sectionIndexColor = [UIColor piwigoColorOrange];
         self.tagsTableView.alwaysBounceVertical = YES;
         self.tagsTableView.showsVerticalScrollIndicator = YES;
         self.tagsTableView.delegate = self;
@@ -56,11 +56,11 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -68,12 +68,12 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.tagsTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.tagsTableView reloadData];
 }
@@ -208,7 +208,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -256,9 +256,9 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
         cell = [UITableViewCell new];
     }
     
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    cell.tintColor = [UIColor piwigoOrange];
-    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+    cell.backgroundColor = [UIColor piwigoColorCellBackground];
+    cell.tintColor = [UIColor piwigoColorOrange];
+    cell.textLabel.textColor = [UIColor piwigoColorLeftLabel];
 
     PiwigoTagData *currentTag;
     currentTag = [TagsData sharedInstance].tagList[indexPath.row];
@@ -324,7 +324,7 @@ CGFloat const kTagSelectViewWidth = 368.0;      // TagSelect view width
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     footerLabel.font = [UIFont piwigoFontLight];
-    footerLabel.textColor = [UIColor piwigoHeaderColor];
+    footerLabel.textColor = [UIColor piwigoColorHeader];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 1;
     

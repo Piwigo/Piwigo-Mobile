@@ -231,7 +231,7 @@ typedef enum {
     if (label == nil) {
         label = [UILabel new];
         label.font = [UIFont piwigoFontNormal];
-        label.textColor = [UIColor piwigoLeftLabelColor];
+        label.textColor = [UIColor piwigoColorLeftLabel];
     }
     switch (component) {
         case ComponentOrderYear:

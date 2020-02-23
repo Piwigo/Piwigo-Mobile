@@ -21,19 +21,19 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+		self.backgroundColor = [UIColor piwigoColorCellBackground];
 		
 		self.leftLabel = [UILabel new];
 		self.leftLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.leftLabel.font = [UIFont piwigoFontNormal];
-		self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
+		self.leftLabel.textColor = [UIColor piwigoColorLeftLabel];
 		self.leftLabel.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.leftLabel];
 		
 		self.rightLabel = [UILabel new];
 		self.rightLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightLabel.font = [UIFont piwigoFontNormal];
-		self.rightLabel.textColor = [UIColor piwigoRightLabelColor];
+		self.rightLabel.textColor = [UIColor piwigoColorRightLabel];
 		self.rightLabel.adjustsFontSizeToFitWidth = YES;
 		self.rightLabel.minimumScaleFactor = 0.5;
 		[self.contentView addSubview:self.rightLabel];

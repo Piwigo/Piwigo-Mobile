@@ -27,7 +27,7 @@
 		
 		self.privacyTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         self.privacyTableView.backgroundColor = [UIColor clearColor];
-        self.privacyTableView.separatorColor = [UIColor piwigoSeparatorColor];
+        self.privacyTableView.separatorColor = [UIColor piwigoColorSeparator];
 		self.privacyTableView.translatesAutoresizingMaskIntoConstraints = NO;
 		self.privacyTableView.delegate = self;
 		self.privacyTableView.dataSource = self;
@@ -45,11 +45,11 @@
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -57,12 +57,12 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.privacyTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.privacyTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.privacyTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.privacyTableView reloadData];
 }
@@ -151,7 +151,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -209,10 +209,10 @@
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
 	
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    cell.tintColor = [UIColor piwigoOrange];
+    cell.backgroundColor = [UIColor piwigoColorCellBackground];
+    cell.tintColor = [UIColor piwigoColorOrange];
     cell.textLabel.font = [UIFont piwigoFontNormal];
-    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+    cell.textLabel.textColor = [UIColor piwigoColorLeftLabel];
     cell.textLabel.adjustsFontSizeToFitWidth = NO;
 	cell.textLabel.text = [[Model sharedInstance] getNameForPrivacyLevel:privacyLevel];
 	cell.tag = privacyLevel;

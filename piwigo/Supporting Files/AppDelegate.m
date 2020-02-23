@@ -488,10 +488,10 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     [[Model sharedInstance] saveToDisk];
     
     // Activity indicator
-    [UIActivityIndicatorView appearance].color = [UIColor piwigoOrange];
+    [UIActivityIndicatorView appearance].color = [UIColor piwigoColorOrange];
 
     // Tab bars
-    [UITabBar appearance].barTintColor = [UIColor piwigoBackgroundColor];
+    [UITabBar appearance].barTintColor = [UIColor piwigoColorBackground];
 
     // Styles
     if ([Model sharedInstance].isDarkPaletteActive)

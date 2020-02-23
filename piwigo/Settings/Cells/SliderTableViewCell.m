@@ -21,12 +21,12 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+		self.backgroundColor = [UIColor piwigoColorCellBackground];
 		
 		self.sliderName = [UILabel new];
 		self.sliderName.translatesAutoresizingMaskIntoConstraints = NO;
 		self.sliderName.font = [UIFont piwigoFontNormal];
-		self.sliderName.textColor = [UIColor piwigoLeftLabelColor];
+		self.sliderName.textColor = [UIColor piwigoColorLeftLabel];
 		self.sliderName.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.sliderName];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderName]];
@@ -35,8 +35,8 @@
 		self.slider.translatesAutoresizingMaskIntoConstraints = NO;
 		self.slider.minimumValue = 10;
 		self.slider.maximumValue = 200;
-        self.slider.tintColor = [UIColor piwigoOrange];
-        self.slider.thumbTintColor = [UIColor piwigoThumbColor];
+        self.slider.tintColor = [UIColor piwigoColorOrange];
+        self.slider.thumbTintColor = [UIColor piwigoColorThumb];
 		[self.slider addTarget:self action:@selector(sliderChanged) forControlEvents:UIControlEventValueChanged];
 		[self.contentView addSubview:self.slider];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.slider]];
@@ -45,7 +45,7 @@
 		self.sliderCount.translatesAutoresizingMaskIntoConstraints = NO;
 		self.sliderCount.textAlignment = NSTextAlignmentRight;
 		self.sliderCount.font = [UIFont piwigoFontNormal];
-		self.sliderCount.textColor = [UIColor piwigoRightLabelColor];
+		self.sliderCount.textColor = [UIColor piwigoColorRightLabel];
 		self.sliderCount.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.sliderCount];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.sliderCount]];

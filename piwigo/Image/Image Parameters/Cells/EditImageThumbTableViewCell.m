@@ -36,7 +36,7 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
     self.images = imageSelection;
     
     // Collection of images
-    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.backgroundColor = [UIColor piwigoColorCellBackground];
     if (self.editImageThumbCollectionView == nil) {
         self.editImageThumbCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
         [self.editImageThumbCollectionView reloadData];

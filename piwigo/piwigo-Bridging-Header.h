@@ -14,5 +14,3 @@
 #import "NetworkHandler.h"
 #import "TaggedImagesViewController.h"
 #import "TagsData.h"
-
-#import "UIColor+AppSpecificColors.h"

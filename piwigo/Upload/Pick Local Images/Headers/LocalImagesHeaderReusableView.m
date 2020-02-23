@@ -90,21 +90,21 @@
     self.dateLabel.numberOfLines = 1;
     self.dateLabel.adjustsFontSizeToFitWidth = NO;
     self.dateLabel.font = [UIFont piwigoFontSmall];
-    self.dateLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.dateLabel.textColor = [UIColor piwigoColorRightLabel];
 
     // Data label used when place name unknown
     self.dateLabelNoPlace.translatesAutoresizingMaskIntoConstraints = NO;
     self.dateLabelNoPlace.numberOfLines = 1;
     self.dateLabelNoPlace.adjustsFontSizeToFitWidth = NO;
     self.dateLabelNoPlace.font = [UIFont piwigoFontSemiBold];
-    self.dateLabelNoPlace.textColor = [UIColor piwigoLeftLabelColor];
+    self.dateLabelNoPlace.textColor = [UIColor piwigoColorLeftLabel];
 
     // Place name of location
     self.placeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.placeLabel.numberOfLines = 1;
     self.placeLabel.adjustsFontSizeToFitWidth = NO;
     self.placeLabel.font = [UIFont piwigoFontSemiBold];
-    self.placeLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.placeLabel.textColor = [UIColor piwigoColorLeftLabel];
 
     // Use label according to name availabilities
     NSString *placeLabelName = [placeNames objectForKey:@"placeLabel"];
@@ -124,9 +124,9 @@
     }
     
     // Select/deselect button
-    self.tintColor = [UIColor piwigoOrange];
+    self.tintColor = [UIColor piwigoColorOrange];
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoOrange],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorOrange],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     NSString *title = selected ? NSLocalizedString(@"categoryImageList_deselectButton", @"Deselect") : NSLocalizedString(@"categoryImageList_selectButton", @"Select");

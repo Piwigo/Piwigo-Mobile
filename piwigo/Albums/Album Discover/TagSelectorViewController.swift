@@ -73,11 +73,11 @@ class TagSelectorViewController: UITableViewController {
     
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoBackground()
+        view.backgroundColor = UIColor.piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoWhiteCream(),
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
@@ -85,12 +85,12 @@ class TagSelectorViewController: UITableViewController {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoBackground()
+        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
-        tagsTableView.separatorColor = UIColor.piwigoSeparator()
+        tagsTableView.separatorColor = UIColor.piwigoColorSeparator()
         tagsTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
         tagsTableView.reloadData()
     }
@@ -186,7 +186,7 @@ extension TagSelectorViewController {
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoHeader()
+        headerLabel.textColor = UIColor.piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -256,7 +256,7 @@ extension TagSelectorViewController {
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
         footerLabel.font = UIFont.piwigoFontLight()
-        footerLabel.textColor = UIColor.piwigoHeader()
+        footerLabel.textColor = UIColor.piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 1
 

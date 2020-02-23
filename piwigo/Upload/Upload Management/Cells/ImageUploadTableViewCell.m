@@ -52,8 +52,8 @@ NSString * const kImageUploadCell_ID = @"ImageUploadCell";
 	
 	self.uploadingProgressBar = [UIProgressView new];
 	self.uploadingProgressBar.translatesAutoresizingMaskIntoConstraints = NO;
-    self.uploadingProgressBar.progressTintColor = [UIColor piwigoOrange];
-    self.uploadingProgressBar.trackTintColor = [UIColor piwigoLeftLabelColor];
+    self.uploadingProgressBar.progressTintColor = [UIColor piwigoColorOrange];
+    self.uploadingProgressBar.trackTintColor = [UIColor piwigoColorLeftLabel];
 	[self.uploadingOverlay addSubview:self.uploadingProgressBar];
     [self.uploadingOverlay addConstraint:[NSLayoutConstraint constraintViewFromTop:self.uploadingProgressBar amount:97.0]];
 	[self.uploadingOverlay addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[bar]-20-|"
@@ -121,27 +121,27 @@ NSString * const kImageUploadCell_ID = @"ImageUploadCell";
 	
     // Image properties
 	self.imageTitle.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_title", @"Title:"), imageInfo.imageTitle];
-    self.imageTitle.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageTitleUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
+    self.imageTitle.textColor = [UIColor piwigoColorLeftLabel];
+    self.imageTitleUnderline.backgroundColor = [UIColor piwigoColorUnderline];
     
     if ([imageInfo.author isEqualToString:@"NSNotFound"]) {
         self.author.text = NSLocalizedString(@"imageUploadDetails_author", @"Author:");
     } else {
         self.author.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_author", @"Author:"), imageInfo.author];
     }
-    self.author.textColor = [UIColor piwigoLeftLabelColor];
-    self.authorUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
+    self.author.textColor = [UIColor piwigoColorLeftLabel];
+    self.authorUnderline.backgroundColor = [UIColor piwigoColorUnderline];
 
 	self.privacyLevel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_privacy", @"Privacy:"), [[Model sharedInstance] getNameForPrivacyLevel:imageInfo.privacyLevel]];
-    self.privacyLevel.textColor = [UIColor piwigoLeftLabelColor];
-    self.privacyUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
+    self.privacyLevel.textColor = [UIColor piwigoColorLeftLabel];
+    self.privacyUnderline.backgroundColor = [UIColor piwigoColorUnderline];
 
 	self.tags.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_tags", @"Tags:"), [[TagsData sharedInstance] getTagsStringFromList:imageInfo.tags]];
-    self.tags.textColor = [UIColor piwigoLeftLabelColor];
-    self.tagsUnderline.backgroundColor = [UIColor piwigoUnderlineColor];
+    self.tags.textColor = [UIColor piwigoColorLeftLabel];
+    self.tagsUnderline.backgroundColor = [UIColor piwigoColorUnderline];
 
 	self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imageUploadDetails_description", @"Description:"), imageInfo.comment];
-    self.descriptionLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.descriptionLabel.textColor = [UIColor piwigoColorLeftLabel];
 }
 
 -(void)setIsInQueueForUpload:(BOOL)isInQueueForUpload

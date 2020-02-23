@@ -80,7 +80,7 @@
             adminLabel.translatesAutoresizingMaskIntoConstraints = NO;
             adminLabel.font = [UIFont piwigoFontNormal];
             adminLabel.font = [adminLabel.font fontWithSize:20];
-            adminLabel.textColor = [UIColor piwigoWhiteCream];
+            adminLabel.textColor = [UIColor piwigoColorWhiteCream];
             adminLabel.text = NSLocalizedString(@"uploadRights_title", @"Upload Rights Needed");
             adminLabel.minimumScaleFactor = 0.5;
             adminLabel.adjustsFontSizeToFitWidth = YES;
@@ -95,7 +95,7 @@
             UILabel *description = [UILabel new];
             description.translatesAutoresizingMaskIntoConstraints = NO;
             description.font = [UIFont piwigoFontNormal];
-            description.textColor = [UIColor piwigoWhiteCream];
+            description.textColor = [UIColor piwigoColorWhiteCream];
             description.numberOfLines = 4;
             description.textAlignment = NSTextAlignmentCenter;
             description.text = NSLocalizedString(@"uploadRights_message", @"You must have upload rights to be able to upload images or videos.");
@@ -136,11 +136,11 @@
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -148,12 +148,12 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.categoriesTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self buildCategoryArrayUsingCache:YES UntilCompletion:^(BOOL result) {
         [self.categoriesTableView reloadData];
@@ -315,7 +315,7 @@
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontNormal];
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -814,8 +814,8 @@
         hud.animationType = MBProgressHUDAnimationFade;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoHudContentColor];
-        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        hud.contentColor = [UIColor piwigoColorHudContent];
+        hud.bezelView.color = [UIColor piwigoColorHudBezelView];
         
         // Will look best, if we set a minimum size.
         hud.minSize = CGSizeMake(200.f, 100.f);

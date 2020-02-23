@@ -29,7 +29,7 @@
 	self = [super initWithFrame:frame];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+		self.backgroundColor = [UIColor piwigoColorCellBackground];
 		self.cellSelected = NO;
 		
 		// Image
@@ -55,7 +55,7 @@
 		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
 		UIImage *checkMark = [UIImage imageNamed:@"checkMark"];
 		self.selectedImage.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-		self.selectedImage.tintColor = [UIColor piwigoOrange];
+		self.selectedImage.tintColor = [UIColor piwigoColorOrange];
 		self.selectedImage.hidden = YES;
 		[self.contentView addSubview:self.selectedImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(25, 25)]];
@@ -66,7 +66,7 @@
         self.playImage = [UIImageView new];
         UIImage *play = [UIImage imageNamed:@"video"];
         self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.playImage.tintColor = [UIColor piwigoOrange];
+        self.playImage.tintColor = [UIColor piwigoColorOrange];
         self.playImage.hidden = YES;
         self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
@@ -86,8 +86,8 @@
         // Uploading stuff: progress bar
 		self.uploadingProgress = [UIProgressView new];
 		self.uploadingProgress.translatesAutoresizingMaskIntoConstraints = NO;
-        self.uploadingProgress.progressTintColor = [UIColor piwigoOrange];
-        self.uploadingProgress.trackTintColor = [UIColor piwigoLeftLabelColor];
+        self.uploadingProgress.progressTintColor = [UIColor piwigoColorOrange];
+        self.uploadingProgress.trackTintColor = [UIColor piwigoColorLeftLabel];
 		[self.uploadingView addSubview:self.uploadingProgress];
 		[self.uploadingView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.uploadingProgress]];
         [self.uploadingView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.uploadingProgress amount:10]];
@@ -100,7 +100,7 @@
 		UILabel *uploadingLabel = [UILabel new];
 		uploadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		uploadingLabel.font = [UIFont piwigoFontSmall];
-		uploadingLabel.textColor = [UIColor piwigoOrange];
+		uploadingLabel.textColor = [UIColor piwigoColorOrange];
 		uploadingLabel.text = NSLocalizedString(@"imageUploadTableCell_uploading", @"Uploading...");
         uploadingLabel.adjustsFontSizeToFitWidth = YES;
         uploadingLabel.minimumScaleFactor = 0.4;

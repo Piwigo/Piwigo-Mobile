@@ -140,11 +140,11 @@
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -152,9 +152,9 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Collection view
     self.localImagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
@@ -470,8 +470,8 @@
         hud.animationType = MBProgressHUDAnimationFade;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoHudContentColor];
-        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        hud.contentColor = [UIColor piwigoColorHudContent];
+        hud.bezelView.color = [UIColor piwigoColorHudBezelView];
         
         // Will look best, if we set a minimum size.
         hud.minSize = CGSizeMake(200.f, 100.f);
@@ -718,7 +718,7 @@
     {
         // Display "No Images" if needed
         NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
-        footer.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+        footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
 
         if ([[self.imagesInSections objectAtIndex:indexPath.section] count] == 0) {
             // Display "No images"
@@ -740,7 +740,7 @@
     if (([elementKind isEqualToString:UICollectionElementKindSectionHeader]) ||
         ([elementKind isEqualToString:UICollectionElementKindSectionFooter])) {
         view.layer.zPosition = 0;       // Below scroll indicator
-        view.backgroundColor = [[UIColor piwigoBackgroundColor] colorWithAlphaComponent:0.75];
+        view.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];
     }
 }
 

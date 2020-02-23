@@ -294,11 +294,11 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     @objc
     func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoBackground()
+        view.backgroundColor = UIColor.piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoWhiteCream(),
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
@@ -306,13 +306,13 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoBackground()
+        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Text color depdending on background color
-        textView?.textColor = UIColor.piwigoText()
-        textView?.backgroundColor = UIColor.piwigoBackground()
+        textView?.textColor = UIColor.piwigoColorText()
+        textView?.backgroundColor = UIColor.piwigoColorBackground()
     }
 
     override func viewWillAppear(_ animated: Bool) {

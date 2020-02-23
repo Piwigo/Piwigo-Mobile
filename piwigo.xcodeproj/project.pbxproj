@@ -14,6 +14,7 @@
 		AD0CC81421EA8AA20009FFF6 /* AsyncImageActivityItemProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0CC81321EA8AA20009FFF6 /* AsyncImageActivityItemProvider.m */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD1092EB23D4E4D0006627B0 /* TagsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */; };
+		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
 		AD1EBB68213404D50012FA44 /* piwigoGetPiwigo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */; };
 		AD1EBB70213404DB0012FA44 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB6F213404DB0012FA44 /* SnapshotHelper.swift */; };
 		AD1F90B220724A82004BA1AA /* NberImagesFooterCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1F90B120724A82004BA1AA /* NberImagesFooterCollectionReusableView.m */; };
@@ -98,7 +99,6 @@
 		D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC31A67820A000E47CA /* AppDelegate.m */; };
 		D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE51A678ED2000E47CA /* NetworkHandler.m */; };
 		D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */; };
-		D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */; };
 		D82B8D2B1A68832C000E47CA /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2A1A68832C000E47CA /* Model.m */; };
 		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
 		D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */; };
@@ -187,6 +187,7 @@
 		AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoGetPiwigo.swift; sourceTree = "<group>"; };
 		AD1EBB69213404D50012FA44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD1EBB6F213404DB0012FA44 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
+		AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+AppColors.swift"; sourceTree = "<group>"; };
 		AD1F90B020724A63004BA1AA /* NberImagesFooterCollectionReusableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NberImagesFooterCollectionReusableView.h; sourceTree = "<group>"; };
 		AD1F90B120724A82004BA1AA /* NberImagesFooterCollectionReusableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NberImagesFooterCollectionReusableView.m; sourceTree = "<group>"; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
@@ -398,8 +399,6 @@
 		D82B8CE51A678ED2000E47CA /* NetworkHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkHandler.m; sourceTree = "<group>"; };
 		D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSLayoutConstraint+CommonConstraints.h"; sourceTree = "<group>"; };
 		D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLayoutConstraint+CommonConstraints.m"; sourceTree = "<group>"; };
-		D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AppSpecificColors.h"; sourceTree = "<group>"; };
-		D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AppSpecificColors.m"; sourceTree = "<group>"; };
 		D82B8CEE1A6790BF000E47CA /* piwigo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "piwigo-Prefix.pch"; sourceTree = "<group>"; };
 		D82B8D291A68832C000E47CA /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		D82B8D2A1A68832C000E47CA /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
@@ -1007,8 +1006,7 @@
 				D847B83C1A7C06A500231886 /* OutlinedText.m */,
 				D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */,
 				D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */,
-				D82B8CE91A67909C000E47CA /* UIColor+AppSpecificColors.h */,
-				D82B8CEA1A67909C000E47CA /* UIColor+AppSpecificColors.m */,
+				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
 				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
 			);
 			path = Macros;
@@ -1529,6 +1527,7 @@
 				AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */,
 				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
 				D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */,
+				AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */,
 				D82B8CEB1A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m in Sources */,
 				AD074F6623F8498B00D6016A /* ClearCache.swift in Sources */,
 				AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */,
@@ -1550,7 +1549,6 @@
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,
 				AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */,
-				D82B8CEC1A67909C000E47CA /* UIColor+AppSpecificColors.m in Sources */,
 				D8F3250C1A875297007CBDAC /* ImageUploadParamsViewController.m in Sources */,
 				AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */,
 				D8083A9F1A81B03100A95605 /* ImageUploadManager.m in Sources */,

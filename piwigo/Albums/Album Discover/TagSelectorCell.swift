@@ -16,10 +16,10 @@ class TagSelectorCell: UITableViewCell {
     func configure(with tag: Tag) {
         
         // General settings
-        backgroundColor = UIColor.piwigoCellBackground()
-        tintColor = UIColor.piwigoOrange()
+        backgroundColor = UIColor.piwigoColorCellBackground()
+        tintColor = UIColor.piwigoColorOrange()
         tagLabel.font = UIFont.piwigoFontNormal()
-        tagLabel.textColor = UIColor.piwigoLeftLabel()
+        tagLabel.textColor = UIColor.piwigoColorLeftLabel()
 
         // => pwg.tags.getList returns in addition: counter, url
         let nber = tag.numberOfImagesUnderTag

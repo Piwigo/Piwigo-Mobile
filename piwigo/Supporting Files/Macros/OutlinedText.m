@@ -24,7 +24,7 @@
 	CGContextSetLineJoin(c, kCGLineJoinRound);
 	
 	CGContextSetTextDrawingMode(c, kCGTextStroke);
-	self.textColor = [UIColor piwigoGray];
+	self.textColor = [UIColor piwigoColorGray];
 	[super drawTextInRect:rect];
 	
 	CGContextSetTextDrawingMode(c, kCGTextFill);

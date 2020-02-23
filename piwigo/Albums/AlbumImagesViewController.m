@@ -151,9 +151,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelection)];
         self.deleteBarButton.tintColor = [UIColor redColor];
         self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
-        self.shareBarButton.tintColor = [UIColor piwigoOrange];
+        self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
         self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
-        self.moveBarButton.tintColor = [UIColor piwigoOrange];
+        self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         self.navigationController.toolbarHidden = YES;
 
         // Upload button above collection view
@@ -164,11 +164,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.uploadButton.layer.cornerRadius = kRadius;
         self.uploadButton.layer.masksToBounds = NO;
         [self.uploadButton.layer setOpacity:0.9];
-        [self.uploadButton.layer setShadowColor:[UIColor piwigoGray].CGColor];
+        [self.uploadButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
         [self.uploadButton.layer setShadowOpacity:1.0];
         [self.uploadButton.layer setShadowRadius:5.0];
         [self.uploadButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
-        self.uploadButton.backgroundColor = [UIColor piwigoOrange];
+        self.uploadButton.backgroundColor = [UIColor piwigoColorOrange];
         self.uploadButton.tintColor = [UIColor whiteColor];
         self.uploadButton.showsTouchWhenHighlighted = YES;
         [self.uploadButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
@@ -183,7 +183,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.homeAlbumButton.layer.cornerRadius = kRadius;
         self.homeAlbumButton.layer.masksToBounds = NO;
         [self.homeAlbumButton.layer setOpacity:0.9];
-        [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoGray].CGColor];
+        [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
         [self.homeAlbumButton.layer setShadowOpacity:1.0];
         [self.homeAlbumButton.layer setShadowRadius:5.0];
         [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
@@ -232,7 +232,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             searchController.hidesNavigationBarDuringPresentation = YES;
             searchController.searchResultsUpdater = self;
             
-            searchController.searchBar.tintColor = [UIColor piwigoOrange];
+            searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
             searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
             searchController.searchBar.translucent = NO;
             searchController.searchBar.showsCancelButton = NO;
@@ -249,24 +249,24 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Refresh controller
-    self.refreshControl.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.refreshControl.tintColor = [UIColor piwigoOrange];
+    self.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+    self.refreshControl.tintColor = [UIColor piwigoColorOrange];
     NSDictionary *attributesRefresh = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoOrange],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorOrange],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
     
     // Buttons
-    self.homeAlbumButton.backgroundColor = [UIColor piwigoRightLabelColor];
-    self.homeAlbumButton.tintColor = [UIColor piwigoBackgroundColor];
+    self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
+    self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 
     // Navigation bar appearence
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -274,7 +274,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         if (self.categoryId == [Model sharedInstance].defaultCategory) {
             // Title
             NSDictionary *attributesLarge = @{
-                                              NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                              NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                               NSFontAttributeName: [UIFont piwigoFontLargeTitle],
                                               };
             self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
@@ -283,7 +283,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             // Search bar
             self.navigationItem.searchController.searchBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
             if (@available(iOS 13.0, *)) {
-                self.navigationItem.searchController.searchBar.searchTextField.textColor = [UIColor piwigoLeftLabelColor];
+                self.navigationItem.searchController.searchBar.searchTextField.textColor = [UIColor piwigoColorLeftLabel];
                 self.navigationItem.searchController.searchBar.searchTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceLight;
             }
         }
@@ -292,17 +292,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         }
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
 
     // Toolbar
-    self.navigationController.toolbar.barTintColor =[UIColor piwigoBackgroundColor];
+    self.navigationController.toolbar.barTintColor =[UIColor piwigoColorBackground];
     self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Collection view
-    self.imagesCollection.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
     self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.imagesCollection reloadData];
 }
@@ -665,9 +665,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelection)];
                 self.deleteBarButton.tintColor = [UIColor redColor];
                 self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
-                self.shareBarButton.tintColor = [UIColor piwigoOrange];
+                self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
                 self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
-                self.moveBarButton.tintColor = [UIColor piwigoOrange];
+                self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
 
                 // Left side of navigation bar
                 [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
@@ -711,9 +711,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     // Redefine bar buttons (definition lost after rotation of device)
                     self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
                     self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
-                    self.shareBarButton.tintColor = [UIColor piwigoOrange];
+                    self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
                     self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
-                    self.moveBarButton.tintColor = [UIColor piwigoOrange];
+                    self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
                     
                     // Left side of navigation bar
                     [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
@@ -1830,7 +1830,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 if ([albumData.comment length] > 0) {
                     header.commentLabel.text = albumData.comment;
                 }
-                header.commentLabel.textColor = [UIColor piwigoHeaderColor];
+                header.commentLabel.textColor = [UIColor piwigoColorHeader];
                 return header;
             }
             break;
@@ -1841,7 +1841,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             if(kind == UICollectionElementKindSectionFooter)
             {
                 NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
-                footer.noImagesLabel.textColor = [UIColor piwigoHeaderColor];
+                footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
 
                 if (self.loadingImages) {
                     // Currently trying to load images…
@@ -1885,7 +1885,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (([elementKind isEqualToString:UICollectionElementKindSectionHeader]) ||
         ([elementKind isEqualToString:UICollectionElementKindSectionFooter])) {
         view.layer.zPosition = 0;       // Below scroll indicator
-        view.backgroundColor = [[UIColor piwigoBackgroundColor] colorWithAlphaComponent:0.75];
+        view.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];
     }
 }
 
@@ -2211,8 +2211,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         hud.animationType = MBProgressHUDAnimationFade;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoHudContentColor];
-        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        hud.contentColor = [UIColor piwigoColorHudContent];
+        hud.bezelView.color = [UIColor piwigoColorHudBezelView];
         
         // Will look best, if we set a minimum size.
         hud.minSize = CGSizeMake(200.f, 100.f);

@@ -111,29 +111,29 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
         NSDictionary *attributesLarge = @{
-                                          NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                          NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                           NSFontAttributeName: [UIFont piwigoFontLargeTitle],
                                           };
         self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
         self.navigationController.navigationBar.prefersLargeTitles = YES;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.settingsTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.settingsTableView reloadData];
 }
@@ -367,7 +367,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -808,7 +808,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Author");
                     }
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
-                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
+                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoColorPlaceHolder]}];
 					cell.rightTextField.delegate = self;
 					cell.rightTextField.tag = kImageUploadSettingAuthor;
 					
@@ -1014,7 +1014,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.labelText = NSLocalizedString(@"settings_defaultPrefix", @"Prefix");
                     }
                     cell.rightTextField.text = [Model sharedInstance].defaultPrefix;
-                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultPrefixPlaceholder", @"Prefix Filename") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
+                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultPrefixPlaceholder", @"Prefix Filename") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoColorPlaceHolder]}];
                     cell.rightTextField.delegate = self;
                     cell.rightTextField.tag = kImageUploadSettingPrefix;
                     
@@ -1296,7 +1296,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     cell.leftText = NSLocalizedString(@"settings_contactUs", @"Contact Us");
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     if (![MFMailComposeViewController canSendMail]) {
-                        cell.leftLabel.textColor = [UIColor piwigoRightLabelColor];
+                        cell.leftLabel.textColor = [UIColor piwigoColorRightLabel];
                     }
 //                    if ([Model sharedInstance].isAppLanguageRTL) {
 //                        cell.rightText = @"<";
@@ -1624,7 +1624,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     footerLabel.font = [UIFont piwigoFontSmall];
-    footerLabel.textColor = [UIColor piwigoHeaderColor];
+    footerLabel.textColor = [UIColor piwigoColorHeader];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
     footerLabel.adjustsFontSizeToFitWidth = NO;

@@ -63,7 +63,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     self.imageFile.font = [UIFont piwigoFontSmallLight];
     self.imageTime.userInteractionEnabled = NO;
 
-    self.editImageButton.tintColor = [UIColor piwigoOrange];
+    self.editImageButton.tintColor = [UIColor piwigoColorOrange];
     
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
@@ -72,16 +72,16 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 -(void)applyColorPalette
 {
     // Background
-    self.imageThumbnailView.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.editButtonView.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.removeButtonView.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.imageThumbnailView.backgroundColor = [UIColor piwigoColorBackground];
+    self.imageDetails.backgroundColor = [UIColor piwigoColorBackground];
+    self.editButtonView.backgroundColor = [UIColor piwigoColorBackground];
+    self.removeButtonView.backgroundColor = [UIColor piwigoColorCellBackground];
 
     // Image size, file name, date and time
-    self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
+    self.imageSize.textColor = [UIColor piwigoColorLeftLabel];
+    self.imageFile.textColor = [UIColor piwigoColorLeftLabel];
+    self.imageDate.textColor = [UIColor piwigoColorLeftLabel];
+    self.imageTime.textColor = [UIColor piwigoColorLeftLabel];
 }
 
 -(void)setupWithImage:(PiwigoImageData *)imageData removeOption:(BOOL)hasRemove
@@ -372,8 +372,8 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    hud.contentColor = [UIColor piwigoHudContentColor];
-    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+    hud.contentColor = [UIColor piwigoColorHudContent];
+    hud.bezelView.color = [UIColor piwigoColorHudBezelView];
 
     // Define the text
     hud.label.text = label;
