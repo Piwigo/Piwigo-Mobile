@@ -23,12 +23,14 @@ class TagSelectorCell: UITableViewCell {
 
         // => pwg.tags.getList returns in addition: counter, url
         let nber = tag.numberOfImagesUnderTag
-        if (nber == 0) || (nber == Int.max) {
+        if (nber == 0) || (nber == Int64.max) {
             // Unknown number of images
             tagLabel.text = tag.tagName
-        } else {
+        } else if nber > 1 {
             // Known number of images
-            tagLabel.text = String(format: "%@ (%ld %@)", tag.tagName, nber, nber > 1 ? NSLocalizedString("categoryTableView_photosCount", comment: "photos") : NSLocalizedString("categoryTableView_photoCount", comment: "photo"))
+            tagLabel.text = String(format: "%@ (%lld %@)", tag.tagName, nber,  NSLocalizedString("categoryTableView_photosCount", comment: "photos"))
+        } else {
+            tagLabel.text = String(format: "%@ (%lld %@)", tag.tagName, nber, NSLocalizedString("categoryTableView_photoCount", comment: "photo"))
         }
     }
     

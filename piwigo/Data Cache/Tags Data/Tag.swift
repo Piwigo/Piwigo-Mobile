@@ -19,12 +19,12 @@ class Tag: NSManagedObject {
 
     // A unique identifier for removing duplicates. Constrain
     // the PiwigoTagData entity on this attribute in the data model editor.
-    @NSManaged var tagId: NSInteger
+    @NSManaged var tagId: Int64
     
     // The other attributes of a tag.
     @NSManaged var tagName: String
     @NSManaged var lastModified: Date
-    @NSManaged var numberOfImagesUnderTag : NSInteger
+    @NSManaged var numberOfImagesUnderTag : Int64
 
     // Singleton
     @objc static let sharedInstance: Tag = Tag()
@@ -51,7 +51,7 @@ class Tag: NSManagedObject {
         if let newCount = tagProperties.counter {
             numberOfImagesUnderTag = newCount
         } else {
-            numberOfImagesUnderTag = Int.max
+            numberOfImagesUnderTag = Int64.max
         }
     }
 }
@@ -132,8 +132,8 @@ struct TagJSON: Decodable {
                 
                 // Inject data into TagProperties after converting id
                 for tagProperty4Admin in tagPropertiesArray4Admin {
-                    let id:Int? = Int(tagProperty4Admin.id ?? "")!
-                    let tagProperty = TagProperties(id: id, name: tagProperty4Admin.name, lastmodified: tagProperty4Admin.lastmodified, url_name: tagProperty4Admin.url_name, counter: Int.max, url: "")
+                    let id:Int64? = Int64(tagProperty4Admin.id ?? "")!
+                    let tagProperty = TagProperties(id: id, name: tagProperty4Admin.name, lastmodified: tagProperty4Admin.lastmodified, url_name: tagProperty4Admin.url_name, counter: Int64.max, url: "")
                     tagPropertiesArray.append(tagProperty)
                 }
             }
@@ -156,11 +156,11 @@ struct TagJSON: Decodable {
 */
 struct TagProperties: Codable
 {
-    let id: Int?                    // 1
+    let id: Int64?                  // 1
     let name: String?               // "Birthday"
     let lastmodified: String?       // "2018-08-23 15:30:43"
     let url_name: String?           // "birthday"
-    let counter: Int?               // 8
+    let counter: Int64?             // 8
     let url: String?                // "https:…"
 }
 

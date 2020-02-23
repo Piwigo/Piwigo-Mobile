@@ -151,7 +151,7 @@ class TagsProvider {
                 let index = indexOfTag(withId: tagData.id!, inArray: cachedTags)
                 
                 // Is this tag already cached?
-                if (index == Int.max) {
+                if (index == Int64.max) {
                     // Create a Tag managed object on the private queue context.
                     guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag", into: taskContext) as? Tag else {
                         print(TagError.creationError.localizedDescription)
@@ -218,7 +218,7 @@ class TagsProvider {
     /**
      Returns the index of a tag cached in persistent storage
     */
-    private func indexOfTag(withId tagId: Int, inArray tagList: [Tag]?) -> Int {
+    private func indexOfTag(withId tagId: Int64, inArray tagList: [Tag]?) -> Int {
         
         let index = (tagList as NSArray?)?.indexOfObject(passingTest: { obj, idx, stop in
                 let tag = obj as? Tag
