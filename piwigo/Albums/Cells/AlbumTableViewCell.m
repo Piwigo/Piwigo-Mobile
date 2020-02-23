@@ -15,7 +15,6 @@
 #import "Model.h"
 #import "MoveCategoryViewController.h"
 #import "NetworkHandler.h"
-#import "OutlinedText.h"
 #import "PiwigoAlbumData.h"
 #import "SAMKeychain.h"
 

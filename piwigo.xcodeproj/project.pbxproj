@@ -105,7 +105,6 @@
 		D83212331A91B937009372D8 /* LabelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D83212321A91B937009372D8 /* LabelTableViewCell.m */; };
 		D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8361A7BFF1900231886 /* LEColorPicker.m */; };
 		D847B83A1A7BFF1900231886 /* UIColor+YUVSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */; };
-		D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */ = {isa = PBXBuildFile; fileRef = D847B83C1A7C06A500231886 /* OutlinedText.m */; };
 		D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */; };
 		D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D86044101A99922F0067E5D1 /* ImageScrollView.m */; };
 		D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */; };
@@ -412,8 +411,6 @@
 		D847B8361A7BFF1900231886 /* LEColorPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEColorPicker.m; sourceTree = "<group>"; };
 		D847B8371A7BFF1900231886 /* UIColor+YUVSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YUVSpace.h"; sourceTree = "<group>"; };
 		D847B8381A7BFF1900231886 /* UIColor+YUVSpace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+YUVSpace.m"; sourceTree = "<group>"; };
-		D847B83B1A7C06A500231886 /* OutlinedText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlinedText.h; sourceTree = "<group>"; };
-		D847B83C1A7C06A500231886 /* OutlinedText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlinedText.m; sourceTree = "<group>"; };
 		D860440C1A99894C0067E5D1 /* ImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePreviewViewController.h; sourceTree = "<group>"; };
 		D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePreviewViewController.m; sourceTree = "<group>"; };
 		D860440F1A99922F0067E5D1 /* ImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageScrollView.h; sourceTree = "<group>"; };
@@ -1002,8 +999,6 @@
 			children = (
 				AD870CD81F54AE230015BFA1 /* ImagesCollection.h */,
 				AD870CD61F54AE110015BFA1 /* ImagesCollection.m */,
-				D847B83B1A7C06A500231886 /* OutlinedText.h */,
-				D847B83C1A7C06A500231886 /* OutlinedText.m */,
 				D82B8CE71A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.h */,
 				D82B8CE81A67909C000E47CA /* NSLayoutConstraint+CommonConstraints.m */,
 				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
@@ -1560,7 +1555,6 @@
 				D89045B21A94662300A306FE /* TagsData.m in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
 				AD7437D023FBB151008738CF /* DataController.swift in Sources */,
-				D847B83D1A7C06A500231886 /* OutlinedText.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				D8D3F7271A794CC900AEA7F1 /* UploadService.m in Sources */,
 				AD3A6D522383446900767F10 /* ImageUploadThumbCollectionViewCell.m in Sources */,
