@@ -57,10 +57,11 @@ class TagSelectorViewController: UITableViewController {
                     self.tableView.reloadData()
                     return
                 }
-                let alert = UIAlertController(title: "Fetch tags error!",
+                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"),
                                               message: error.localizedDescription,
                                               preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
+                                              style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
         }
