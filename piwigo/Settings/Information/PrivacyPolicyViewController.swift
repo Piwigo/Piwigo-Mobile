@@ -10,18 +10,79 @@ import UIKit
 
 class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     
-    private var textView: UITextView?
+    @IBOutlet var textView: UITextView!
     private var doneBarButton: UIBarButtonItem?
 
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        
+
+    // MARK: - View Lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
         title = NSLocalizedString("settings_privacy", comment: "Policy Privacy")
 
-        textView = UITextView()
-        textView?.restorationIdentifier = "thanks+licenses"
-        textView?.translatesAutoresizingMaskIntoConstraints = false
+        // Button for returning to albums/images
+        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
+        doneBarButton?.accessibilityIdentifier = "Done"
+    }
+    
+    @objc
+    func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = UIColor.piwigoColorBackground()
 
+        // Navigation bar
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+        ]
+        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
+        if #available(iOS 11.0, *) {
+            navigationController?.navigationBar.prefersLargeTitles = false
+        }
+        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+
+        // Text color depdending on background color
+        textView.textColor = UIColor.piwigoColorText()
+        textView.backgroundColor = UIColor.piwigoColorBackground()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
+        // Set navigation buttons
+        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
+        
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+
+        // Set textView
+        textView.attributedText = privacyPolicy()
+        textView.scrollsToTop = true
+        textView.scrollRangeToVisible(NSMakeRange(0, 0))
+        if #available(iOS 11.0, *) {
+            textView?.contentInsetAdjustmentBehavior = .never
+        } else {
+            // Fallback on earlier versions
+            automaticallyAdjustsScrollViewInsets = false
+        }
+    }
+
+    @objc func quitSettings() {
+        dismiss(animated: true)
+    }
+    
+    
+    // MARK: - Pricay Policy
+
+    func privacyPolicy() -> NSAttributedString {
         // Privacy policy attributed string
         let privacyAttributedString = NSMutableAttributedString(string: "")
         let spacerAttributedString = NSMutableAttributedString(string: "\n\n", attributes: [
@@ -265,90 +326,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
             }
             Android_Range = (privacyAttributedString.string as NSString).range(of: "Piwigo-Android", options: .literal, range: NSRange(location: nextCharPos, length: privacyAttributedString.string.count - nextCharPos))
         }
-
-        textView?.attributedText = privacyAttributedString
-        textView?.isEditable = false
-        textView?.allowsEditingTextAttributes = false
-        textView?.isSelectable = true
-        textView?.scrollsToTop = true
-        if #available(iOS 11.0, *) {
-            textView?.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            automaticallyAdjustsScrollViewInsets = false
-        }
-        if let textView = textView {
-            view.addSubview(textView)
-        }
-
-        addConstraints()
-
-        // Button for returning to albums/images
-        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
-        doneBarButton?.accessibilityIdentifier = "Done"
-    }
-
-    
-// MARK: - View Lifecycle
-    
-    @objc
-    func applyColorPalette() {
-        // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
-
-        // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
-
-        // Text color depdending on background color
-        textView?.textColor = UIColor.piwigoColorText()
-        textView?.backgroundColor = UIColor.piwigoColorBackground()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
-
-        // Set navigation buttons
-        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
         
-        // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
-    }
-
-    @objc func quitSettings() {
-        dismiss(animated: true)
-    }
-
-    func addConstraints() {
-        
-        let views: [String : UITextView] = [
-            "textView": textView!
-        ]
-
-        if #available(iOS 11, *) {
-            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[textView]-|", options: [], metrics: nil, views: views))
-            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[textView]-|", options: [], metrics: nil, views: views))
-        } else {
-            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-64-[textView]-|", options: [], metrics: nil, views: views))
-            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[textView]-15-|", options: [], metrics: nil, views: views))
-        }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        return privacyAttributedString
     }
 }
