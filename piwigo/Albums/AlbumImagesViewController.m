@@ -761,7 +761,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [self.homeAlbumButton.layer setOpacity:0.9];
             
             // Move Home Album button if Add button shown
-            if (!self.addButton.isHidden)
+            if ((self.categoryId != 0) &&
+                (self.categoryId != [Model sharedInstance].defaultCategory))
             {
                 // Button is moved to the left of the Add button
                 CGFloat xPos = self.addButton.frame.origin.x;
