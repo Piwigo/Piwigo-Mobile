@@ -119,7 +119,6 @@
 		D89045B21A94662300A306FE /* TagsData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B11A94662300A306FE /* TagsData.m */; };
 		D89045B91A946A5B00A306FE /* TagsService.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B81A946A5B00A306FE /* TagsService.m */; };
 		D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045BE1A950FF700A306FE /* EditImageTagsTableViewCell.m */; };
-		D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */; };
 		D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */; };
 		D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */; };
 		D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */; };
@@ -440,8 +439,6 @@
 		D89045B81A946A5B00A306FE /* TagsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsService.m; sourceTree = "<group>"; };
 		D89045BD1A950FF700A306FE /* EditImageTagsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTagsTableViewCell.h; sourceTree = "<group>"; };
 		D89045BE1A950FF700A306FE /* EditImageTagsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTagsTableViewCell.m; sourceTree = "<group>"; };
-		D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryPickViewController.h; sourceTree = "<group>"; };
-		D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryPickViewController.m; sourceTree = "<group>"; };
 		D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumData.h; sourceTree = "<group>"; };
 		D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumData.m; sourceTree = "<group>"; };
 		D8A94EB01AAE3C5600E4B287 /* CategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCollectionViewCell.h; sourceTree = "<group>"; };
@@ -1101,15 +1098,6 @@
 			path = "Tags Data";
 			sourceTree = "<group>";
 		};
-		D8A5014A1A7B3D4200C04C17 /* Pick Piwigo Album */ = {
-			isa = PBXGroup;
-			children = (
-				D8A5014B1A7B3D5A00C04C17 /* CategoryPickViewController.h */,
-				D8A5014C1A7B3D5A00C04C17 /* CategoryPickViewController.m */,
-			);
-			path = "Pick Piwigo Album";
-			sourceTree = "<group>";
-		};
 		D8A5014E1A7B432600C04C17 /* Pick Local Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -1145,7 +1133,6 @@
 				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
 				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
-				D8A5014A1A7B3D4200C04C17 /* Pick Piwigo Album */,
 				AD7B4C2520E36328003E403A /* Pick Photos Album */,
 				D8A5014E1A7B432600C04C17 /* Pick Local Images */,
 				D8083AA71A82905F00A95605 /* Upload Management */,
@@ -1540,7 +1527,6 @@
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
 				AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */,
 				AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */,
-				D8A5014D1A7B3D5A00C04C17 /* CategoryPickViewController.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,
 				AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */,
@@ -2054,6 +2040,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 256;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/$(PROJECT_NAME)/$(PROJECT_NAME)-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -2089,6 +2076,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 256;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/$(PROJECT_NAME)/$(PROJECT_NAME)-Prefix.pch";
 				HEADER_SEARCH_PATHS = (

@@ -22,7 +22,7 @@
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSArray *localGroups;
 @property (nonatomic, strong) NSArray *iCloudGroups;
-@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
@@ -51,8 +51,8 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
         
         // Button for returning to albums/images
-        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitUpload)];
-        [self.doneBarButton setAccessibilityIdentifier:@"Cancel"];
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitUpload)];
+        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
@@ -109,8 +109,8 @@
 {
     [super viewDidLoad];
     
-    // Navigation bar
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
+    // Title
+    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
 }
 
 -(void)applyColorPalette
@@ -142,14 +142,12 @@
 {
     [super viewWillAppear:animated];
     
-    // Title
-    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
-
     // Set colors, fonts, etc.
     [self applyColorPalette];
     
-    // Navigation bar button
-    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+    // Navigation bar button and identifier
+    [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
 }
 
 -(void)viewWillDisappear:(BOOL)animated

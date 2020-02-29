@@ -106,6 +106,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // Get Server Infos if possible
     if ([Model sharedInstance].hasAdminRights)
         [self getInfos];
+    
+    // Title
+    self.title = NSLocalizedString(@"tabBar_preferences", @"Preferences");
 }
 
 -(void)applyColorPalette

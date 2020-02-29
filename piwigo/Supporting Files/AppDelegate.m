@@ -584,7 +584,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     // Update list
     [Model sharedInstance].recentCategories = [recentCategories componentsJoinedByString:@","];
     [[Model sharedInstance] saveToDisk];
-    NSLog(@"•••> Recent albums: %@", [Model sharedInstance].recentCategories);
+//    NSLog(@"•••> Recent albums: %@", [Model sharedInstance].recentCategories);
 }
 
 @end
