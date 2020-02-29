@@ -52,17 +52,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
-
-        // Set navigation buttons
-        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
         
-        // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
-
         // Set textView
         textView.attributedText = privacyPolicy()
         textView.scrollsToTop = true
@@ -73,6 +63,16 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
             // Fallback on earlier versions
             automaticallyAdjustsScrollViewInsets = false
         }
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
+        // Set navigation buttons
+        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
+        
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
 
     @objc func quitSettings() {
