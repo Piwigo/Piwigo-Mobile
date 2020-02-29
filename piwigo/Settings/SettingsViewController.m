@@ -1892,8 +1892,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 7:     // Open Privacy Policy page
                 {
-                    PrivacyPolicyViewController *aboutVC = [PrivacyPolicyViewController new];
-                    [self.navigationController pushViewController:aboutVC animated:YES];
+                    UIStoryboard *privacyPolicySB = [UIStoryboard storyboardWithName:@"PrivacyPolicyViewController" bundle:nil];
+                    PrivacyPolicyViewController *privacyPolicyVC = [privacyPolicySB instantiateViewControllerWithIdentifier:@"PrivacyPolicyViewController"];
+                    [self.navigationController pushViewController:privacyPolicyVC animated:YES];
                     break;
                 }
             }
