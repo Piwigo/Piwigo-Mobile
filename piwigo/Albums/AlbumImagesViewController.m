@@ -1177,14 +1177,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
      ];
 
     // Hide CreateAlbum and UploadImages buttons
-    [self hideOptionalButtonsCompletion:^{
-        // Reset appearance and action of Add button
-        [self.addButton addTarget:self action:@selector(didTapAddButton)
-               forControlEvents:UIControlEventTouchUpInside];
-        [UIView animateWithDuration:0.2 animations:^{
-            self.addButton.backgroundColor = [UIColor piwigoColorOrange];
-        }];
-    }];
+    [self didCancelTapAddButton];
 }
 
 
