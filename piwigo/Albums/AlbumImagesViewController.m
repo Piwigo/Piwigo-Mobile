@@ -1276,7 +1276,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                         [self hideHUDwithSuccess:YES completion:nil];
                         
                         // Reset buttons
-                        [self updateButtonsInPreviewMode];
+                        [self didCancelTapAddButton];
                     }
                     else
                     {
