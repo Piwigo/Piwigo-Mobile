@@ -649,6 +649,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     else    // No upload rights => No Upload button
     {
         // Show Home button if not in root or default album
+        [self.addButton setHidden:YES];
         [self showHomeAlbumButtonIfNeeded];
     }
     
@@ -760,14 +761,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             // Progressive appearance
             [self.homeAlbumButton.layer setOpacity:0.9];
             
-            // Move Home Album button if Add button shown
-            if ((self.categoryId != 0) &&
-                (self.categoryId != [Model sharedInstance].defaultCategory))
+            // Position of Home Album button depends on user's rights
+            if (([Model sharedInstance].hasAdminRights ||
+                 [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
             {
-                // Button is moved to the left of the Add button
                 CGFloat xPos = self.addButton.frame.origin.x;
                 CGFloat yPos = self.addButton.frame.origin.y;
                 self.homeAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
+            }
+            else {
+                self.homeAlbumButton.frame = self.addButton.frame;
             }
         }];
     }
