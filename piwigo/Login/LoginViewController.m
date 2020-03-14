@@ -310,10 +310,55 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         }
         
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        // statusCode always = 0 with messgae "Canelled" !!!
-//        NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-//        NSLog(@"===>> Error %ld: %@", statusCode, [error localizedDescription]);
 
+        // Return immadiately an error in some cases
+        switch ([error code]) {
+            case NSURLErrorBadServerResponse:
+            case NSURLErrorBadURL:
+            case NSURLErrorCallIsActive:
+            case NSURLErrorCannotConnectToHost:
+            case NSURLErrorCannotDecodeContentData:
+            case NSURLErrorCannotDecodeRawData:
+            case NSURLErrorCannotFindHost:
+            case NSURLErrorCannotParseResponse:
+            case NSURLErrorClientCertificateRequired:
+            case NSURLErrorDataLengthExceedsMaximum:
+            case NSURLErrorDataNotAllowed:
+            case NSURLErrorDNSLookupFailed:
+            case NSURLErrorHTTPTooManyRedirects:
+            case NSURLErrorInternationalRoamingOff:
+            case NSURLErrorNetworkConnectionLost:
+            case NSURLErrorNotConnectedToInternet:
+            case NSURLErrorRedirectToNonExistentLocation:
+            case NSURLErrorRequestBodyStreamExhausted:
+            case NSURLErrorSecureConnectionFailed:
+            case NSURLErrorTimedOut:
+            case NSURLErrorUnknown:
+            case NSURLErrorUnsupportedURL:
+            case NSURLErrorUserCancelledAuthentication:
+            case NSURLErrorZeroByteResource:
+                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                return;
+                
+            case NSURLErrorClientCertificateRejected:
+            case NSURLErrorServerCertificateHasBadDate:
+            case NSURLErrorServerCertificateHasUnknownRoot:
+            case NSURLErrorServerCertificateNotYetValid:
+            case NSURLErrorServerCertificateUntrusted:
+                // The SSL certificate is not trusted
+                [self requestCertificateApprovalAfterError:error];
+                return;
+
+            case NSURLErrorUserAuthenticationRequired:
+                // Without prior knowledge, the app already tried Piwigo credentials
+                // but unsuccessfully, so must now request HTTP credentials
+                [self requestHttpCredentialsAfterError:error];
+                return;
+
+            default:
+                break;
+        }
+        
         // If Piwigo used a non-trusted certificate, ask permission
         if ([Model sharedInstance].didRequestCertificateApproval) {
             // The SSL certificate is not trusted
