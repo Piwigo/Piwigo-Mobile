@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 CS 3450. All rights reserved.
 //
 
+#import <AFNetworking/AFImageDownloader.h>
+
 #import "NetworkHandler.h"
 #import "Model.h"
 #import "KeychainAccess.h"
@@ -108,7 +110,7 @@ NSInteger const loadingViewTag = 899;
     // Perform server trust authentication (certificate validation)
     [[Model sharedInstance].sessionManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
-        NSLog(@"===>> didReceiveAuthenticationChallenge/ %@", challenge.protectionSpace);
+//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
             // Evaluate the trust the standard way.
@@ -222,7 +224,7 @@ NSInteger const loadingViewTag = 899;
     // For servers performing HTTP Basic/Digest Authentication
     [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
-        NSLog(@"===>> didReceiveAuthenticationChallenge/ %@", challenge.protectionSpace);
+//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
@@ -261,21 +263,31 @@ NSInteger const loadingViewTag = 899;
         
         return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
     }];
-//#if defined(DEBUG_SESSION)
-//    NSLog(@"=> JSON data session manager created");
-//#endif
 }
 
 +(void)createImagesSessionManager
 {
+    // Force AFNetworking to NOT use any RAM whatsoever for image downloading
+    // (neither backed by NSURLCache nor imageCache). We will solely rely on NSURLCache backed by disk
+    // (i.e. won't use AFAutoPurgingImageCache and NSURLCache.memoryCapacity=0 disk=xxx)
+    [Model sharedInstance].imageCache = [[NSURLCache alloc]
+                             initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024 * 1024
+                                       diskCapacity:[Model sharedInstance].diskCache * 1024 * 1024
+                                           diskPath:@"com.alamofire.imagedownloader"];
     // Configuration
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSessionConfiguration *config = [AFImageDownloader defaultURLSessionConfiguration];
     config.allowsCellularAccess = YES;
     config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
+    config.URLCache = [Model sharedInstance].imageCache;
 
     // Create session manager
     [Model sharedInstance].imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    
+    // Create image downloader
+    [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:nil];
+    [Model sharedInstance].imageDownloader.imageCache = nil;
+    [UIImageView setSharedImageDownloader:[Model sharedInstance].imageDownloader];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
@@ -291,7 +303,7 @@ NSInteger const loadingViewTag = 899;
     // Perform server trust authentication (certificate validation)
     [[Model sharedInstance].imagesSessionManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
-        NSLog(@"===>> didReceiveAuthenticationChallenge/ %@", challenge.protectionSpace);
+//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
             // Evaluate the trust the standard way.
@@ -354,7 +366,7 @@ NSInteger const loadingViewTag = 899;
     // For servers performing HTTP Basic/Digest Authentication
     [[Model sharedInstance].imagesSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
-        NSLog(@"===>> didReceiveAuthenticationChallenge/ %@", challenge.protectionSpace);
+//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
@@ -393,9 +405,6 @@ NSInteger const loadingViewTag = 899;
         
         return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
     }];
-//#if defined(DEBUG_SESSION)
-//    NSLog(@"=> Images session manager created");
-//#endif
 }
 
 +(void)createUploadSessionManager
@@ -425,7 +434,7 @@ NSInteger const loadingViewTag = 899;
     // Perform server trust authentication (certificate validation)
     [[Model sharedInstance].imageUploadManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
-        NSLog(@"===>> didReceiveAuthenticationChallenge/ %@", challenge.protectionSpace);
+//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
             // Evaluate the trust the standard way.
@@ -488,7 +497,7 @@ NSInteger const loadingViewTag = 899;
     // For servers performing HTTP Basic/Digest Authentication
     [[Model sharedInstance].imageUploadManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
-        NSLog(@"===>> didReceiveAuthenticationChallenge/ %@", challenge.protectionSpace);
+//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
@@ -527,9 +536,6 @@ NSInteger const loadingViewTag = 899;
         
         return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
     }];
-//#if defined(DEBUG_SESSION)
-//    NSLog(@"=> Image upload session manager created");
-//#endif
 }
 
 +(NSString*)encodedImageURL:(NSString*)originalURL

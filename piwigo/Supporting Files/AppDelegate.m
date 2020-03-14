@@ -158,24 +158,6 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     
     // Override point for customization after application launch.
     
-    // Cache settings
-#if defined(DEBUG_NOCACHE)
-    // set it to 0 to clear cache
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-                                                         diskCapacity:0
-                                                             diskPath:nil];
-    [NSURLCache setSharedURLCache:URLCache];
-#else
-    if ([NSURLCache sharedURLCache] == nil)
-    {
-        NSURLCache *URLCache = [[NSURLCache alloc]
-                                initWithMemoryCapacity:0
-                                diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                                diskPath:nil];
-        [NSURLCache setSharedURLCache:URLCache];
-    }
-#endif
-    
     // Login ?
     NSString *user, *password;
     NSString *server = [Model sharedInstance].serverName;

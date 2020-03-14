@@ -12,10 +12,13 @@
 #import "AFAutoPurgingImageCache.h"
 #import "CategorySortViewController.h"
 
-FOUNDATION_EXPORT NSInteger const kPiwigoMinMemoryCache;
-FOUNDATION_EXPORT NSInteger const kPiwigoMinDiskCache;
-FOUNDATION_EXPORT NSInteger const kPiwigoMaxMemoryCache;
-FOUNDATION_EXPORT NSInteger const kPiwigoMaxDiskCache;
+FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheInc;
+FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheMin;
+FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheMax;
+
+FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheInc;
+FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheMin;
+FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheMax;
 
 FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
 FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
@@ -68,7 +71,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *certificateInformation;
 @property (nonatomic, assign) BOOL userCancelledCommunication;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
-@property (nonatomic, strong) AFAutoPurgingImageCache *imageCache;
+@property (nonatomic, strong) NSURLCache *imageCache;
 @property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
 @property (nonatomic, strong) AFImageDownloader *imageDownloader;
 @property (nonatomic, strong) AFHTTPSessionManager *imageUploadManager;

@@ -267,20 +267,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [NetworkHandler createJSONdataSessionManager];      // 30s timeout, 4 connections max
     [NetworkHandler createImagesSessionManager];        // 60s timeout, 4 connections max
     
-    // Create permanent image downloader
-    if ([Model sharedInstance].imageCache == nil) {
-        [Model sharedInstance].imageCache = [[AFAutoPurgingImageCache alloc]
-                    initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024*1024
-                   preferredMemoryCapacity:([Model sharedInstance].memoryCache * 0.8) * 1024*1024];
-    }
-    if ([Model sharedInstance].imageDownloader == nil) {
-        [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc]
-                        initWithSessionManager:[Model sharedInstance].imagesSessionManager
-                        downloadPrioritization:AFImageDownloadPrioritizationFIFO
-                        maximumActiveDownloads:4 imageCache:[Model sharedInstance].imageCache];
-        [UIImageView setSharedImageDownloader:[Model sharedInstance].imageDownloader];
-    }
-    
     // Collect list of methods supplied by Piwigo server
     // => Determine if Community extension 2.9a or later is installed and active
 #if defined(DEBUG_SESSION)

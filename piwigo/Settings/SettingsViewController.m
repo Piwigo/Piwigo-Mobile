@@ -7,6 +7,7 @@
 //
 #import <MessageUI/MessageUI.h>
 #import <sys/utsname.h>
+#import <AFNetworking/AFImageDownloader.h>
 
 #import "AboutViewController.h"
 #import "AFAutoPurgingImageCache.h"
@@ -1181,7 +1182,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 1:     // Disk
                 {
-                    NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
+                    NSInteger currentDiskSize = [[Model sharedInstance].imageCache currentDiskUsage];
                     float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
                     if(!cell)
@@ -1189,8 +1190,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
-                    cell.slider.minimumValue = kPiwigoMinDiskCache;
-                    cell.slider.maximumValue = kPiwigoMaxDiskCache;
+                    cell.slider.minimumValue = kPiwigoDiskCacheMin;
+                    cell.slider.maximumValue = kPiwigoDiskCacheMax;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
@@ -1199,7 +1200,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
                     }
                     cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = kPiwigoMinDiskCache;
+                    cell.incrementSliderBy = kPiwigoDiskCacheInc;
                     cell.sliderValue = [Model sharedInstance].diskCache;
                     [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
@@ -1208,7 +1209,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 2:     // Memory
                 {
-                    NSInteger currentMemSize = (int)[[Model sharedInstance].imageCache memoryUsage];
+                    NSInteger currentMemSize = (int)[[Model sharedInstance].imageCache currentMemoryUsage];
                     float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
                     if(!cell)
@@ -1216,8 +1217,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
-                    cell.slider.minimumValue = kPiwigoMinMemoryCache;
-                    cell.slider.maximumValue = kPiwigoMaxMemoryCache;
+                    cell.slider.minimumValue = kPiwigoMemoryCacheMin;
+                    cell.slider.maximumValue = kPiwigoMemoryCacheMax;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
@@ -1226,7 +1227,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
                     }
                     cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = kPiwigoMinMemoryCache;
+                    cell.incrementSliderBy = kPiwigoMemoryCacheInc;
                     cell.sliderValue = [Model sharedInstance].memoryCache;
                     [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
@@ -1794,7 +1795,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                           actionWithTitle:NSLocalizedString(@"alertClearButton", @"Clear")
                           style:UIAlertActionStyleDestructive
                           handler:^(UIAlertAction * action) {
-                              [[NSURLCache sharedURLCache] removeAllCachedResponses];
+                              [[Model sharedInstance].imageCache removeAllCachedResponses];
                               [self.settingsTableView reloadData];
                           }];
 
@@ -1927,7 +1928,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                            {
                                // Session closed
                                [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
-                               [[Model sharedInstance].imageCache removeAllImages];
+                               [[Model sharedInstance].imageCache removeAllCachedResponses];
                                [Model sharedInstance].imageDownloader = nil;
                                [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
                                [Model sharedInstance].hadOpenedSession = NO;
@@ -2222,7 +2223,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
-    [NSURLCache sharedURLCache].diskCapacity = [Model sharedInstance].diskCache * 1024*1024;
+    [Model sharedInstance].imageCache.diskCapacity = [Model sharedInstance].diskCache * 1024*1024;
 }
 
 - (IBAction)updateMemoryCacheSize:(id)sender
@@ -2242,7 +2243,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
-    [NSURLCache sharedURLCache].memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
+    [Model sharedInstance].imageCache.memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
 }
 
 #pragma mark - Get Server Infos

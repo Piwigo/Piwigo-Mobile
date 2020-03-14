@@ -20,7 +20,7 @@
 	[[CategoriesData sharedInstance] clearCache];
     
     // URL requests
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [[Model sharedInstance].imageCache removeAllCachedResponses];
     
     // Place names
     [[LocationsData sharedInstance] clearCache];
