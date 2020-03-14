@@ -62,7 +62,10 @@ typedef enum {
 @property (nonatomic, assign) BOOL usesCommunityPluginV29;
 @property (nonatomic, assign) BOOL hasUploadedImages;
 @property (nonatomic, assign) BOOL hadOpenedSession;
-@property (nonatomic, assign) BOOL performedHTTPauthentication;
+@property (nonatomic, assign) BOOL didRequestCertificateApproval;
+@property (nonatomic, assign) BOOL didRequestHTTPauthentication;
+@property (nonatomic, assign) BOOL didApproveCertificate;
+@property (nonatomic, strong) NSString *certificateInformation;
 @property (nonatomic, assign) BOOL userCancelledCommunication;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 @property (nonatomic, strong) AFAutoPurgingImageCache *imageCache;

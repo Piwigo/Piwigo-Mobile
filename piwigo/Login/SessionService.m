@@ -87,7 +87,7 @@
                       else
                       {
                           // May be this server only uses HTTP authentication
-                          if ([Model sharedInstance].performedHTTPauthentication) {
+                          if ([Model sharedInstance].didRequestHTTPauthentication) {
                               [Model sharedInstance].username = user;
                               [Model sharedInstance].hadOpenedSession = YES;
                               [[Model sharedInstance] saveToDisk];

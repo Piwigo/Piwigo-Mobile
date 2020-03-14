@@ -217,8 +217,9 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [Model sharedInstance].hasAdminRights = NO;
     [Model sharedInstance].usesCommunityPluginV29 = NO;
     
-    // To remember app recieved anthentication challenge
-    [Model sharedInstance].performedHTTPauthentication = NO;
+    // To remember app received anthentication challenge
+    [Model sharedInstance].didRequestCertificateApproval = NO;
+    [Model sharedInstance].didRequestHTTPauthentication = NO;
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin: starting with…");
     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
@@ -309,24 +310,77 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         }
         
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // statusCode always = 0 with messgae "Canelled" !!!
+//        NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+//        NSLog(@"===>> Error %ld: %@", statusCode, [error localizedDescription]);
+
+        // If Piwigo used a non-trusted certificate, ask permission
+        if ([Model sharedInstance].didRequestCertificateApproval) {
+            // The SSL certificate is not trusted
+            [self requestCertificateApprovalAfterError:error];
+            return;
+        }
+        
         // If Piwigo server requires HTTP basic authentication, ask credentials
-        if ([Model sharedInstance].performedHTTPauthentication){
+        if ([Model sharedInstance].didRequestHTTPauthentication){
             // Without prior knowledge, the app already tried Piwigo credentials
             // but unsuccessfully, so must now request HTTP credentials
             [self requestHttpCredentialsAfterError:error];
-        } else {
-            // HTTPS login request failed ?
-            if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"] &&
-                ![Model sharedInstance].userCancelledCommunication)
-            {
-                // Suggest HTTP connection if HTTPS attempt failed
-                [self tryNonSecuredAccessAfterError:error];
-            } else {
-                // Display error message
-                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
-            }
+            return;
         }
+
+        // HTTPS login request failed ?
+        if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"] &&
+            ![Model sharedInstance].userCancelledCommunication)
+        {
+            // Suggest HTTP connection if HTTPS attempt failed
+            [self requestNonSecuredAccessAfterError:error];
+            return;
+        }
+        
+        // Display error message
+        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
     }];
+}
+
+-(void)requestCertificateApprovalAfterError:(NSError *)error
+{
+    NSString *message = [NSString stringWithFormat:@"%@\r\r%@", NSLocalizedString(@"loginCertFailed_message", @"Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"), [Model sharedInstance].certificateInformation];
+    self.httpAlertController = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"loginCertFailed_title", @"Connection Not Private")
+        message:message
+        preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* cancelAction = [UIAlertAction
+           actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+           style:UIAlertActionStyleCancel
+           handler:^(UIAlertAction * action) {
+                // Should forget certificate
+                [Model sharedInstance].didApproveCertificate = NO;
+                // Report error
+                [self loggingInConnectionError:error];
+           }];
+    
+    UIAlertAction* acceptAction = [UIAlertAction
+          actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
+          style:UIAlertActionStyleDefault
+          handler:^(UIAlertAction * action) {
+                // Will accept certificate
+                [Model sharedInstance].didApproveCertificate = YES;
+                // Try logging in with new HTTP credentials
+                [self launchLogin];
+          }];
+    
+    [self.httpAlertController addAction:cancelAction];
+    [self.httpAlertController addAction:acceptAction];
+    if (@available(iOS 13.0, *)) {
+        self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:self.httpAlertController animated:YES completion:nil];
+    });
 }
 
 -(void)requestHttpCredentialsAfterError:(NSError *)error
@@ -366,23 +420,23 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     }];
 
     UIAlertAction* cancelAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                                   style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {
-                                       // Stop logging in action, display error message
-                                       [self loggingInConnectionError:error];
-                                   }];
+           actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+           style:UIAlertActionStyleCancel
+           handler:^(UIAlertAction * action) {
+               // Stop logging in action, display error message
+               [self loggingInConnectionError:error];
+           }];
     
     self.httpLoginAction = [UIAlertAction
-                              actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
-                              style:UIAlertActionStyleDefault
-                              handler:^(UIAlertAction * action) {
-                                  // Store credentials
-                                  [Model sharedInstance].HttpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
-                                  [SAMKeychain setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:[self.httpAlertController.textFields objectAtIndex:0].text];
-                                  // Try logging in with new HTTP credentials
-                                  [self launchLogin];
-                              }];
+          actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
+          style:UIAlertActionStyleDefault
+          handler:^(UIAlertAction * action) {
+              // Store credentials
+              [Model sharedInstance].HttpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
+              [SAMKeychain setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:[self.httpAlertController.textFields objectAtIndex:0].text];
+              // Try logging in with new HTTP credentials
+              [self launchLogin];
+          }];
     
     [self.httpAlertController addAction:cancelAction];
     [self.httpAlertController addAction:self.httpLoginAction];
@@ -392,6 +446,41 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         // Fallback on earlier versions
     }
     [self presentViewController:self.httpAlertController animated:YES completion:nil];
+}
+
+-(void)requestNonSecuredAccessAfterError:(NSError *)error
+{
+    self.httpAlertController = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"loginHTTPSfailed_title", @"Secure Connection Failed")
+        message:NSLocalizedString(@"loginHTTPSfailed_message", @"Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
+        preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* cancelAction = [UIAlertAction
+           actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+           style:UIAlertActionStyleCancel
+           handler:^(UIAlertAction * action) {
+                // Stop logging in action, display error message
+                [self loggingInConnectionError:error];
+           }];
+    
+    UIAlertAction* acceptAction = [UIAlertAction
+          actionWithTitle:NSLocalizedString(@"alertYesButton", "Yes")
+          style:UIAlertActionStyleDefault
+          handler:^(UIAlertAction * action) {
+                // Try logging in with HTTP scheme
+                [self tryNonSecuredAccessAfterError:error];
+          }];
+    
+    [self.httpAlertController addAction:cancelAction];
+    [self.httpAlertController addAction:acceptAction];
+    if (@available(iOS 13.0, *)) {
+        self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:self.httpAlertController animated:YES completion:nil];
+    });
 }
 
 -(void)tryNonSecuredAccessAfterError:(NSError *)error
@@ -435,7 +524,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
         // If Piwigo server requires HTTP basic authentication, ask credentials
-        if ([Model sharedInstance].performedHTTPauthentication){
+        if ([Model sharedInstance].didRequestHTTPauthentication){
             // Without prior knowledge, the app already tried Piwigo credentials
             // But unsuccessfully, so must now request HTTP credentials
             [self requestHttpCredentialsAfterError:error];

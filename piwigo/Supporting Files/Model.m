@@ -54,7 +54,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
         instance.usesCommunityPluginV29 = NO;           // Checked at each new session
-        instance.performedHTTPauthentication = NO;      // Checked at each new session
+        instance.didRequestCertificateApproval = NO;
+        instance.didRequestHTTPauthentication = NO;
+        instance.didApproveCertificate = NO;
+        instance.certificateInformation = @"";
         instance.userCancelledCommunication = NO;
 
         // Album/category settings
