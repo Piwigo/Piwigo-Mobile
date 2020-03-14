@@ -75,7 +75,7 @@
         if (@available(iOS 10, *))
             return [UIColor colorWithWhite:0.f alpha:1.0];
         else
-            return [UIColor colorWithRed:28/255.0 green:28/255.0 blue:30/255.0 alpha:1.0];
+            return [UIColor colorWithRed:128/255.0 green:128/255.0 blue:128/255.0 alpha:1.0];
 }
 
 // Color of TableView Headers
