@@ -61,10 +61,10 @@
 "loginHTTP_message" = "El servidor Piwigo requiere una autenticación de acceso básico:";
 "loginHTTPuser_placeholder" = "Nombre de usuario";
 "loginHTTPpwd_placeholder" = "Contraseña";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "La conexión no es privada";
+"loginCertFailed_message" = "Piwigo te advierte cuando un sitio web tiene un certificado que no es válido. ¿Todavía quieres aceptar este certificado?";
+"loginHTTPSfailed_title" = "Ha fallado la conexión segura";
+"loginHTTPSfailed_message" = "Piwigo no puede establecer una conexión segura. ¿Quieres intentar establecer una conexión no segura?";
 
 // Login — Errors
 "serverURLerror_title" = "URL incorrecto";

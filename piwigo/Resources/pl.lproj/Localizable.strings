@@ -61,10 +61,10 @@
 "loginHTTP_message" = "Podstawowa autoryzacja dostępu jest wymagana przez serwer Piwigo‎:";
 "loginHTTPuser_placeholder" = "Nazwa Użytkownika";
 "loginHTTPpwd_placeholder" = "Hasło";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "Połączenie nie jest prywatne";
+"loginCertFailed_message" = "Piwigo ostrzega Cię, że certyfikat witryny jest nieważny. Czy nadal chcesz zaakceptować ten certyfikat?";
+"loginHTTPSfailed_title" = "Bezpieczne połączenie nie powiodło się";
+"loginHTTPSfailed_message" = "Piwigo nie może nawiązać bezpiecznego połączenia. Czy chcesz spróbować nawiązać niezabezpieczone połączenie?";
 
 // Login — Errors
 "serverURLerror_title" = "Niepoprawny adres URL";
