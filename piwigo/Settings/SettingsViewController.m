@@ -1924,53 +1924,31 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     style:UIAlertActionStyleDestructive
                     handler:^(UIAlertAction * action) {
                        [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
-                           if(sucessfulLogout)
-                           {
-                               // Session closed
-                               [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
-                               [[Model sharedInstance].imageCache removeAllCachedResponses];
-                               [Model sharedInstance].imageDownloader = nil;
-                               [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
-                               [Model sharedInstance].hadOpenedSession = NO;
-                               
-                               // Back to default values
-                               [Model sharedInstance].defaultCategory = 0;
-                               [Model sharedInstance].usesCommunityPluginV29 = NO;
-                               [Model sharedInstance].hasAdminRights = NO;
-                               [Model sharedInstance].recentCategories = @"0";
-                               [[Model sharedInstance] saveToDisk];
-                               
-                               // Erase cache
-                               [ClearCache clearAllCache];
-                               AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                               [appDelegate loadLoginView];
+                           if(sucessfulLogout) {
+                               [self performLogout];
                            }
-                           else
-                           {
+                           else {
                                // Piwigo error has been displayed by called method
+                               [self performLogout];
                            }
                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                           // Failed, retry ?
+                           // Failed! This may be due to the replacement of a self-signed certificate.
+                           // So we inform the user that there may be something wrong with the server,
+                           // or simply a connection drop.
                            UIAlertController* alert = [UIAlertController
                                    alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
-                                   message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
+                                   message:NSLocalizedString(@"internetCancelledConnection_title", @"Connection Cancelled")
                                    preferredStyle:UIAlertControllerStyleAlert];
-                           
+
                            UIAlertAction* dismissAction = [UIAlertAction
-                                       actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                       style:UIAlertActionStyleCancel
-                                       handler:^(UIAlertAction * action) {}];
+                                   actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {
+                                        [self performLogout];
+                           }];
                        
-                           UIAlertAction* retryAction = [UIAlertAction
-                                       actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                       style:UIAlertActionStyleDestructive
-                                       handler:^(UIAlertAction * action) {
-                                           [self logout];
-                                       }];
-                           
-                           // Add actions
+                           // Add action
                            [alert addAction:dismissAction];
-                           [alert addAction:retryAction];
                            [self presentViewController:alert animated:YES completion:nil];
                        }];
                     }];
@@ -2000,6 +1978,28 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 		[appDelegate loadLoginView];
 	}
+}
+
+- (void)performLogout
+{
+    // Session closed
+    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
+    [[Model sharedInstance].imageCache removeAllCachedResponses];
+    [Model sharedInstance].imageDownloader = nil;
+    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
+    [Model sharedInstance].hadOpenedSession = NO;
+    
+    // Back to default values
+    [Model sharedInstance].defaultCategory = 0;
+    [Model sharedInstance].usesCommunityPluginV29 = NO;
+    [Model sharedInstance].hasAdminRights = NO;
+    [Model sharedInstance].recentCategories = @"0";
+    [[Model sharedInstance] saveToDisk];
+    
+    // Erase cache
+    [ClearCache clearAllCache];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate loadLoginView];
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller

@@ -171,7 +171,7 @@ NSInteger const loadingViewTag = 899;
 
             // No certificate or different non-trusted certificate found in Keychain for that host
 #if defined(DEBUG_SESSION)
-            NSLog(@"===>> no-trusted certificate of server not found in Keychain ;-)");
+            NSLog(@"===>> non-trusted certificate of server not found in Keychain ;-)");
 #endif
             // Does the user trust this server?
             if ([Model sharedInstance].didApproveCertificate) {
@@ -214,9 +214,11 @@ NSInteger const loadingViewTag = 899;
 #endif
                 }
 
-                // Accepts connection
-                // didApproveCertificate flag will remain true until the closure of the session
-                // to allow a logout in the case where the certificate would changed during the session.
+                // Will reject a connection if the certificate is changed during a session
+                // but it will still be possible to logout.
+                [Model sharedInstance].didApproveCertificate = NO;
+                
+                // Accept connection
                 *credential = [NSURLCredential credentialForTrust:trust];
                 return NSURLSessionAuthChallengeUseCredential;
             }

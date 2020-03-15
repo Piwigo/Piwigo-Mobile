@@ -99,8 +99,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "Logout Failed";
-"logoutFail_message" = "Failed to logout. Try again?";
-
 
 // ===========================================================================
 // ==> ALBUMS
