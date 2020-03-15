@@ -13,11 +13,11 @@
 #import "ImagesCollection.h"
 
 
-NSInteger const kPiwigoMemoryCacheInc = 32;     // Slider increment
+NSInteger const kPiwigoMemoryCacheInc = 8;      // Slider increment
 NSInteger const kPiwigoMemoryCacheMin = 0;      // Minimum size
 NSInteger const kPiwigoMemoryCacheMax = 256;    // Maximum size
 
-NSInteger const kPiwigoDiskCacheInc   = 128;    // Slider increment
+NSInteger const kPiwigoDiskCacheInc   = 64;     // Slider increment
 NSInteger const kPiwigoDiskCacheMin   = 128;    // Minimum size
 NSInteger const kPiwigoDiskCacheMax   = 2048;   // Maximum size
 
@@ -133,8 +133,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
-		instance.diskCache = kPiwigoDiskCacheMin * 4;
-		instance.memoryCache = kPiwigoMemoryCacheMin;
+		instance.diskCache = kPiwigoDiskCacheMin * 4;       // i.e. 512 MB
+		instance.memoryCache = kPiwigoMemoryCacheInc * 2;   // i.e. 16 MB
 		
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
@@ -414,10 +414,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
 
-    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoDiskCacheMin * 4);  // i.e. > 512 MB
-    self.diskCache = MIN(self.diskCache, kPiwigoDiskCacheMax);                                  // i.e. < 2 GB
-	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMemoryCacheMin);  // i.e. > 32 MB
-    self.memoryCache = MIN(self.memoryCache, kPiwigoMemoryCacheMax);                            // i.e. < 256 MB
+    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoDiskCacheMin * 4);      // i.e. > 512 MB
+    self.diskCache = MIN(self.diskCache, kPiwigoDiskCacheMax);                                      // i.e. < 2 GB
+	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMemoryCacheInc * 2);  // i.e. > 16 MB
+    self.memoryCache = MIN(self.memoryCache, kPiwigoMemoryCacheMax);                                // i.e. < 256 MB
 
     self.photoQuality = [[savedData objectAtIndex:5] integerValue];
 	self.photoResize = [[savedData objectAtIndex:6] integerValue];
