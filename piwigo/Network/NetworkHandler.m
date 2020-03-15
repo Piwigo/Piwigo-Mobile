@@ -110,7 +110,9 @@ NSInteger const loadingViewTag = 899;
     // Perform server trust authentication (certificate validation)
     [[Model sharedInstance].sessionManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
-//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#endif
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
             // Evaluate the trust the standard way.
@@ -118,8 +120,9 @@ NSInteger const loadingViewTag = 899;
             NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
             NSURL *serverURL = [NSURL URLWithString:strURL];
             BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
+#if defined(DEBUG_SESSION)
             NSLog(@"===>> trusted: %@ (%@:%@)", trusted ? @"Yes" : @"No", serverURL.host, serverURL.port);
-
+#endif
             // If the standard policy says that it's trusted, allow it right now.
             if (trusted) {
                 *credential = [NSURLCredential credentialForTrust:trust];
@@ -156,7 +159,9 @@ NSInteger const loadingViewTag = 899;
                 );
                 if ([certData isEqualToData:storedData]) {
                     // Certificates are identical
+#if defined(DEBUG_SESSION)
                     NSLog(@"===>> certificate found in Keychain ;-)");
+#endif
                     // Release certificate after use and trust server
                     if (storedCertificate) { CFRelease(storedCertificate); }
                     *credential = [NSURLCredential credentialForTrust:trust];
@@ -165,13 +170,17 @@ NSInteger const loadingViewTag = 899;
             }
 
             // No certificate or different non-trusted certificate found in Keychain for that host
+#if defined(DEBUG_SESSION)
             NSLog(@"===>> no-trusted certificate of server not found in Keychain ;-)");
+#endif
             // Does the user trust this server?
             if ([Model sharedInstance].didApproveCertificate) {
                 // The user trusts this server.
                 if (storedCertificate) {
                     // Delete certificate in Keychain (updating the certificate data is not sufficient)
+#if defined(DEBUG_SESSION)
                     NSLog(@"===>> delete certificate from Keychain…");
+#endif
                     NSDictionary *delQuery = @{ (id)kSecClass:      (id)kSecClassCertificate,
                                                 (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
                     };
@@ -182,12 +191,16 @@ NSInteger const loadingViewTag = 899;
                     if (status != errSecSuccess) {
                         // Handle the error
                         // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
+#if defined(DEBUG_SESSION)
                         NSLog(@"===>> could not delete certificate from Keychain, error %d", status);
+#endif
                     }
                 }
 
                 // Store server certificate in Keychain with same label "Piwigo:<host>"
+#if defined(DEBUG_SESSION)
                 NSLog(@"===>> store new non-trusted certificate in Keychain…");
+#endif
                 NSDictionary* addquery = @{ (id)kSecValueRef:   (__bridge id)certificate,
                                             (id)kSecClass:      (id)kSecClassCertificate,
                                             (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
@@ -196,7 +209,9 @@ NSInteger const loadingViewTag = 899;
                 if (status != errSecSuccess) {
                     // Handle the error
                     // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
+#if defined(DEBUG_SESSION)
                     NSLog(@"===>> could not store non-trusted certificate in Keychain, error %d", status);
+#endif
                 }
 
                 // Accepts connection
@@ -234,7 +249,9 @@ NSInteger const loadingViewTag = 899;
             [certString appendString:@")"];
             [Model sharedInstance].certificateInformation = [certString copy];
             [Model sharedInstance].didRequestCertificateApproval = YES;
+#if defined(DEBUG_SESSION)
             NSLog(@"===>> Certificate: %@", certString);
+#endif
         }
         
         return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
@@ -244,7 +261,9 @@ NSInteger const loadingViewTag = 899;
     // For servers performing HTTP Basic/Digest Authentication
     [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
-//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#endif
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
@@ -323,7 +342,9 @@ NSInteger const loadingViewTag = 899;
     // Perform server trust authentication (certificate validation)
     [[Model sharedInstance].imagesSessionManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
-//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#endif
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
             // Evaluate the trust the standard way.
@@ -331,8 +352,9 @@ NSInteger const loadingViewTag = 899;
             NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
             NSURL *serverURL = [NSURL URLWithString:strURL];
             BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
+#if defined(DEBUG_SESSION)
             NSLog(@"===>> trusted: %@ (%@:%@)", trusted ? @"Yes" : @"No", serverURL.host, serverURL.port);
-
+#endif
             // If the standard policy says that it's trusted, allow it right now.
             if (trusted) {
                 *credential = [NSURLCredential credentialForTrust:trust];
@@ -368,7 +390,9 @@ NSInteger const loadingViewTag = 899;
                 );
                 if ([certData isEqualToData:storedData]) {
                     // Certificates are identical
+#if defined(DEBUG_SESSION)
                     NSLog(@"===>> certificate found in Keychain ;-)");
+#endif
                     // Release certificate after use and trust server
                     if (storedCertificate) { CFRelease(storedCertificate); }
                     *credential = [NSURLCredential credentialForTrust:trust];
@@ -387,7 +411,9 @@ NSInteger const loadingViewTag = 899;
     // For servers performing HTTP Basic/Digest Authentication
     [[Model sharedInstance].imagesSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
-//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#endif
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
@@ -455,7 +481,9 @@ NSInteger const loadingViewTag = 899;
     // Perform server trust authentication (certificate validation)
     [[Model sharedInstance].imageUploadManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
-//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#endif
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
             // Evaluate the trust the standard way.
@@ -463,8 +491,9 @@ NSInteger const loadingViewTag = 899;
             NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
             NSURL *serverURL = [NSURL URLWithString:strURL];
             BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
+#if defined(DEBUG_SESSION)
             NSLog(@"===>> trusted: %@ (%@:%@)", trusted ? @"Yes" : @"No", serverURL.host, serverURL.port);
-
+#endif
             // If the standard policy says that it's trusted, allow it right now.
             if (trusted) {
                 *credential = [NSURLCredential credentialForTrust:trust];
@@ -500,7 +529,9 @@ NSInteger const loadingViewTag = 899;
                 );
                 if ([certData isEqualToData:storedData]) {
                     // Certificates are identical
+#if defined(DEBUG_SESSION)
                     NSLog(@"===>> certificate found in Keychain ;-)");
+#endif
                     // Release certificate after use and trust server
                     if (storedCertificate) { CFRelease(storedCertificate); }
                     *credential = [NSURLCredential credentialForTrust:trust];
@@ -519,7 +550,9 @@ NSInteger const loadingViewTag = 899;
     // For servers performing HTTP Basic/Digest Authentication
     [[Model sharedInstance].imageUploadManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
-//        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#endif
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
@@ -673,12 +706,13 @@ NSInteger const loadingViewTag = 899;
     NSString *encodedImageURL = [NSString stringWithFormat:@"%@%@%@%@",
                             [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
-    // For debugging purposes
+#if defined(DEBUG_SESSION)
     if (![encodedImageURL isEqualToString:originalURL]) {
         NSLog(@"=> originalURL:%@", originalURL);
         NSLog(@"    encodedURL:%@", encodedImageURL);
         NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
     }
+#endif
     return encodedImageURL;
 }
 
@@ -750,12 +784,13 @@ NSInteger const loadingViewTag = 899;
     NSString *url = [NSString stringWithFormat:@"%@%@/ws.php?%@%@",
                      [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
     
-    // For debugging purposes
-//    if (![url isEqualToString:originalURL]) {
-//        NSLog(@"=> %@ (%@)", originalURL, params);
-//        NSLog(@"   %@", url);
-//        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
-//    }
+#if defined(DEBUG_SESSION)
+    if (![url isEqualToString:originalURL]) {
+        NSLog(@"=> %@ (%@)", originalURL, params);
+        NSLog(@"   %@", url);
+        NSLog(@"   path=%@, parameterString=%@, query:%@, fragment:%@", serverURL.path, serverURL.parameterString, serverURL.query, serverURL.fragment);
+    }
+#endif
     return url;
 }
 
