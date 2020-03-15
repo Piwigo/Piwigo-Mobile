@@ -136,12 +136,14 @@ NSInteger const loadingViewTag = 899;
             SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
 
             // Get certificate in Keychain if it exists
+            // Certificates are stored in the Keychain with label "Piwigo:<host>"
             SecCertificateRef storedCertificate = NULL;
-            NSDictionary *getquery = @{ (id)kSecClass:     (id)kSecClassCertificate,
-                                        (id)kSecAttrLabel: serverURL.host,
-                                        (id)kSecReturnRef: @YES,
+            NSDictionary *getQuery = @{ (id)kSecClass:      (id)kSecClassCertificate,
+                                        (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
+                                        (id)kSecMatchLimit: (id)kSecMatchLimitOne,
+                                        (id)kSecReturnRef:  (id)kCFBooleanTrue,
             };
-            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getquery,
+            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getQuery,
                                                   (CFTypeRef *)&storedCertificate);
             if (status == errSecSuccess) {
                 // A certificate exists for that host.
@@ -162,26 +164,44 @@ NSInteger const loadingViewTag = 899;
                 }
             }
 
-            // Release potential stored certificate after use
-            if (storedCertificate) { CFRelease(storedCertificate); }
-
-            // No certificate found in Keychain for that host
+            // No certificate or different non-trusted certificate found in Keychain for that host
+            NSLog(@"===>> no-trusted certificate of server not found in Keychain ;-)");
             // Does the user trust this server?
             if ([Model sharedInstance].didApproveCertificate) {
                 // The user trusts this server.
-                // Store server certificate in Keychain
+                if (storedCertificate) {
+                    // Delete certificate in Keychain (updating the certificate data is not sufficient)
+                    NSLog(@"===>> delete certificate from Keychain…");
+                    NSDictionary *delQuery = @{ (id)kSecClass:      (id)kSecClassCertificate,
+                                                (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
+                    };
+                    OSStatus status = SecItemDelete((CFDictionaryRef)delQuery);
+//                    NSDictionary *changes = @{(__bridge NSString *)kSecValueData : (__bridge_transfer NSData *)SecCertificateCopyData(storedCertificate)};
+//                    OSStatus status = SecItemUpdate((CFDictionaryRef)delQuery, (CFDictionaryRef)changes);
+                    CFRelease(storedCertificate);
+                    if (status != errSecSuccess) {
+                        // Handle the error
+                        // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
+                        NSLog(@"===>> could not delete certificate from Keychain, error %d", status);
+                    }
+                }
+
+                // Store server certificate in Keychain with same label "Piwigo:<host>"
+                NSLog(@"===>> store new non-trusted certificate in Keychain…");
                 NSDictionary* addquery = @{ (id)kSecValueRef:   (__bridge id)certificate,
                                             (id)kSecClass:      (id)kSecClassCertificate,
-                                            (id)kSecAttrLabel:  serverURL.host,
+                                            (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
                 };
                 OSStatus status = SecItemAdd((__bridge CFDictionaryRef)addquery, NULL);
                 if (status != errSecSuccess) {
                     // Handle the error
-                    NSLog(@"===>> could not store certificate in Keychain");
+                    // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
+                    NSLog(@"===>> could not store non-trusted certificate in Keychain, error %d", status);
                 }
-                
+
                 // Accepts connection
-                [Model sharedInstance].didApproveCertificate = NO;
+                // didApproveCertificate flag will remain true until the closure of the session
+                // to allow a logout in the case where the certificate would changed during the session.
                 *credential = [NSURLCredential credentialForTrust:trust];
                 return NSURLSessionAuthChallengeUseCredential;
             }
@@ -329,12 +349,13 @@ NSInteger const loadingViewTag = 899;
             SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
 
             // Get certificate in Keychain (should exist)
+            // Certificates are stored in the Keychain with label "Piwigo:<host>"
             SecCertificateRef storedCertificate = NULL;
-            NSDictionary *getquery = @{ (id)kSecClass:     (id)kSecClassCertificate,
-                                        (id)kSecAttrLabel: serverURL.host,
+            NSDictionary *getQuery = @{ (id)kSecClass:     (id)kSecClassCertificate,
+                                        (id)kSecAttrLabel: [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
                                         (id)kSecReturnRef: @YES,
             };
-            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getquery,
+            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getQuery,
                                                   (CFTypeRef *)&storedCertificate);
             if (status == errSecSuccess) {
                 // A certificate exists for that host.
@@ -460,12 +481,13 @@ NSInteger const loadingViewTag = 899;
             SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
 
             // Get certificate in Keychain (should exist)
+            // Certificates are stored in the Keychain with label "Piwigo:<host>"
             SecCertificateRef storedCertificate = NULL;
-            NSDictionary *getquery = @{ (id)kSecClass:     (id)kSecClassCertificate,
-                                        (id)kSecAttrLabel: serverURL.host,
+            NSDictionary *getQuery = @{ (id)kSecClass:     (id)kSecClassCertificate,
+                                        (id)kSecAttrLabel: [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
                                         (id)kSecReturnRef: @YES,
             };
-            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getquery,
+            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getQuery,
                                                   (CFTypeRef *)&storedCertificate);
             if (status == errSecSuccess) {
                 // A certificate exists for that host.

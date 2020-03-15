@@ -973,6 +973,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
     // Hide and remove login HUD
     MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+    [self.hudViewController resignFirstResponder];
     if (hud) {
         [hud hideAnimated:YES];
         self.hudViewController = nil;
