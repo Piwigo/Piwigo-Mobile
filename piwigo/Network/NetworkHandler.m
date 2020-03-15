@@ -308,6 +308,7 @@ NSInteger const loadingViewTag = 899;
 
 +(void)createImagesSessionManager
 {
+    // See https://github.com/AFNetworking/AFNetworking/pull/4010
     // Force AFNetworking to NOT use any RAM whatsoever for image downloading
     // (neither backed by NSURLCache nor imageCache). We will solely rely on NSURLCache backed by disk
     // (i.e. won't use AFAutoPurgingImageCache and NSURLCache.memoryCapacity=0 disk=xxx)
