@@ -1088,7 +1088,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 }
                 
                 // Reload the cell and update the navigation bar
-                [self.imagesCollection reloadData];
+                [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
                 [self updateBarButtons];
             }
         }
@@ -2178,7 +2178,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     selectedCell.isSelected = NO;
                     [self.selectedImageIds removeObject:imageIdObject];
                 }
-                [collectionView reloadData];
+                [collectionView reloadItemsAtIndexPaths:@[indexPath]];
                 
                 // and display nav buttons
                 [self updateBarButtons];
