@@ -14,6 +14,10 @@
 #import "Model.h"
 #import "PhotosFetch.h"
 
+//#ifndef DEBUG_SHARE
+//#define DEBUG_SHARE
+//#endif
+
 NSString * const kPiwigoNotificationDidShareVideo = @"kPiwigoNotificationDidShareVideo";
 NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationCancelDownloadVideo";
 
