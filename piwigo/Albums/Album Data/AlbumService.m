@@ -44,19 +44,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   else
                   {
                       // Display Piwigo error
-                      NSInteger errorCode = NSNotFound;
-                      if ([responseObject objectForKey:@"err"]) {
-                          errorCode = [[responseObject objectForKey:@"err"] intValue];
-                      }
-                      NSString *errorMsg = @"";
-                      if ([responseObject objectForKey:@"message"]) {
-                          errorMsg = [responseObject objectForKey:@"message"];
-                      }
-                      [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoGetInfos andURLparams:nil];
-
-                      if(completion)
-                      {
-                          completion(task, nil);
+                      NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                            path:kPiwigoGetInfos andURLparams:nil];
+                      if(completion) {
+                          [NetworkHandler showPiwigoError:error withCompletion:^{
+                              completion(task, nil);
+                          }];
+                      } else {
+                          [NetworkHandler showPiwigoError:error withCompletion:nil];
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
@@ -203,19 +198,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   else
                   {
                       // Display Piwigo error
-                      NSInteger errorCode = NSNotFound;
-                      if ([responseObject objectForKey:@"err"]) {
-                          errorCode = [[responseObject objectForKey:@"err"] intValue];
-                      }
-                      NSString *errorMsg = @"";
-                      if ([responseObject objectForKey:@"message"]) {
-                          errorMsg = [responseObject objectForKey:@"message"];
-                      }
-                      [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesGetList andURLparams:nil];
-
-                      if(completion)
-                      {
-                          completion(task, nil);
+                      NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                            path:kPiwigoCategoriesGetList andURLparams:nil];
+                      if(completion) {
+                          [NetworkHandler showPiwigoError:error withCompletion:^{
+                              completion(task, nil);
+                          }];
+                      } else {
+                          [NetworkHandler showPiwigoError:error withCompletion:nil];
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
@@ -335,25 +325,26 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
-                  if (completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+                  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                  {
+                      if (completion) {
                           NSArray *albums = [[responseObject objectForKey:@"result"] objectForKey:@"categories"];
                           completion(task, albums);
-                      }
-                      else
-                      {
-                          // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kCommunityCategoriesGetList andURLparams:nil];
-
+                      } else {
                           completion(task, nil);
+                      }
+                  }
+                  else
+                  {
+                      // Display Piwigo error
+                      NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                            path:kCommunityCategoriesGetList andURLparams:nil];
+                      if(completion) {
+                          [NetworkHandler showPiwigoError:error withCompletion:^{
+                              completion(task, nil);
+                          }];
+                      } else {
+                          [NetworkHandler showPiwigoError:error withCompletion:nil];
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
@@ -392,51 +383,54 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
            parameters:parameters
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
-                  if(completion)
-                  {
-                      BOOL result = [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"];
-                      if (result) {
-                          // Add new album to cache
-                          NSInteger newCatId = [[[responseObject objectForKey:@"result"] objectForKey:@"id"] integerValue];
-                          [[CategoriesData sharedInstance] addCategory:newCatId withParameters:parameters];
+        
+          if ([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+              // Add new album to cache
+              NSInteger newCatId = [[[responseObject objectForKey:@"result"] objectForKey:@"id"] integerValue];
+              [[CategoriesData sharedInstance] addCategory:newCatId withParameters:parameters];
 
-                          // Add new category to list of recent albums
-                          NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)newCatId]};
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationAddRecentAlbum object:nil userInfo:userInfo];
-                      }
-                      else {
-                          // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesAdd andURLparams:nil];
-                      }
-                      completion(task, result);
-                  }
-            } failure:^(NSURLSessionTask *task, NSError *error) {
+              // Add new category to list of recent albums
+              NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)newCatId]};
+              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationAddRecentAlbum object:nil userInfo:userInfo];
+              
+              // Task completed successfully
+              if(completion)
+              {
+                  completion(task, YES);
+              }
+          }
+          else {
+              // Display Piwigo error
+              NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                    path:kPiwigoCategoriesAdd andURLparams:nil];
+              if(completion) {
+                  [NetworkHandler showPiwigoError:error withCompletion:^{
+                      completion(task, NO);
+                  }];
+              } else {
+                  [NetworkHandler showPiwigoError:error withCompletion:nil];
+              }
+          }
+
+    } failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG_ALBUM)
-                NSLog(@"createCategoryWithName — Fail: %@", [error description]);
+            NSLog(@"createCategoryWithName — Fail: %@", [error description]);
 #endif
-                // Check session (closed or IPv4/IPv6 switch)?
-                NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                if ((statusCode == 401) ||        // Unauthorized
-                    (statusCode == 403) ||        // Forbidden
-                    (statusCode == 404))          // Not Found
-                {
-                    NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                    });
-                }
-                if(fail) {
-                    fail(task, error);
-                }
-            }];
+            // Check session (closed or IPv4/IPv6 switch)?
+            NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+            if ((statusCode == 401) ||        // Unauthorized
+                (statusCode == 403) ||        // Forbidden
+                (statusCode == 404))          // Not Found
+            {
+                NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
+                });
+            }
+            if(fail) {
+                fail(task, error);
+            }
+        }];
 }
 
 +(NSURLSessionTask*)renameCategory:(NSInteger)categoryId

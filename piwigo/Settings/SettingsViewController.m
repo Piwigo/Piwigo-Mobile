@@ -1923,14 +1923,28 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     actionWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
                     style:UIAlertActionStyleDestructive
                     handler:^(UIAlertAction * action) {
-                       [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
-                           if(sucessfulLogout) {
-                               [self performLogout];
+                       [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL success) {
+
+                           if (success) {
+                               [self closeSessionAndClearCache];
+                           } else {
+                               UIAlertController* alert = [UIAlertController
+                                       alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
+                                       message:NSLocalizedString(@"internetCancelledConnection_title", @"Connection Cancelled")
+                                       preferredStyle:UIAlertControllerStyleAlert];
+
+                               UIAlertAction* dismissAction = [UIAlertAction
+                                       actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                       style:UIAlertActionStyleCancel
+                                       handler:^(UIAlertAction * action) {
+                                            [self closeSessionAndClearCache];
+                               }];
+                           
+                               // Add action
+                               [alert addAction:dismissAction];
+                               [self presentViewController:alert animated:YES completion:nil];
                            }
-                           else {
-                               // Piwigo error has been displayed by called method
-                               [self performLogout];
-                           }
+
                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
                            // Failed! This may be due to the replacement of a self-signed certificate.
                            // So we inform the user that there may be something wrong with the server,
@@ -1944,7 +1958,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                                    style:UIAlertActionStyleCancel
                                    handler:^(UIAlertAction * action) {
-                                        [self performLogout];
+                                        [self closeSessionAndClearCache];
                            }];
                        
                            // Add action
@@ -1980,7 +1994,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 	}
 }
 
-- (void)performLogout
+- (void)closeSessionAndClearCache
 {
     // Session closed
     [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];

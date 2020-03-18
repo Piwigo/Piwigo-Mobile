@@ -59,29 +59,27 @@ NSString * const kGetImageOrderDescending = @"desc";
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
-				  if(completion) {
-					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                      {
-						  NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:albumId];
-						  completion(task, albumImages);
-					  }
-                      else
-                      {
-                          // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesGetImages andURLparams:nil];
-
-                          completion(task, nil);
-					  }
-				  }
-			  } failure:^(NSURLSessionTask *task, NSError *error) {
+          if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+          {
+              NSArray *albumImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:albumId];
+              if(completion) {
+                  completion(task, albumImages);
+              }
+          }
+          else
+          {
+              // Display Piwigo error
+              NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                    path:kPiwigoCategoriesGetImages andURLparams:nil];
+              if(completion) {
+                  [NetworkHandler showPiwigoError:error withCompletion:^{
+                      completion(task, nil);
+                  }];
+              } else {
+                  [NetworkHandler showPiwigoError:error withCompletion:nil];
+              }
+          }
+    } failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                   NSLog(@"=> getImagesForAlbumId — Fail: %@", [error description]);
 #endif
@@ -153,42 +151,42 @@ NSString * const kGetImageOrderDescending = @"desc";
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
+          if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+              // Store number of images in cache
+              NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+              [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages = nberImages;
+              [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages = nberImages;
+              
+              // Parse images
+              NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoSearchCategoryId];
+              if(completion) {
+                  completion(task, searchedImages);
+              }
+          }
+          else
+          {
+              // NOP if query was empty
+              if (!query || (query.length == 0)) {
+                  [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages = 0;
+                  [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages = 0;
                   if(completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-                          // Store number of images in cache
-                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
-                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages = nberImages;
-                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages = nberImages;
-                          
-                          // Parse images
-                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoSearchCategoryId];
-                          completion(task, searchedImages);
-                      }
-                      else
-                      {
-                          // NOP if query was empty
-                          if (!query || (query.length == 0)) {
-                              [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages = 0;
-                              [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages = 0;
-                              completion(task, @[]);
-                          }
-                          else {
-                              // Display Piwigo error
-                              NSInteger errorCode = NSNotFound;
-                              if ([responseObject objectForKey:@"err"]) {
-                                  errorCode = [[responseObject objectForKey:@"err"] intValue];
-                              }
-                              NSString *errorMsg = @"";
-                              if ([responseObject objectForKey:@"message"]) {
-                                  errorMsg = [responseObject objectForKey:@"message"];
-                              }
-                              [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImageSearch andURLparams:nil];
-                              
-                              completion(task, nil);
-                          }
-                      }
+                      completion(task, @[]);
                   }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
+              }
+              else {
+                  // Display Piwigo error
+                  NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                        path:kPiwigoImageSearch andURLparams:nil];
+                  if(completion) {
+                      [NetworkHandler showPiwigoError:error withCompletion:^{
+                          completion(task, nil);
+                      }];
+                  } else {
+                      [NetworkHandler showPiwigoError:error withCompletion:nil];
+                  }
+              }
+          }
+        } failure:^(NSURLSessionTask *task, NSError *error) {
                   // No error returned if task was cancelled
                   if (task.state == NSURLSessionTaskStateCanceling) {
                       completion(task, @[]);
@@ -276,34 +274,32 @@ NSString * const kGetImageOrderDescending = @"desc";
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
-                  if(completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-                          // Store number of images in cache
-                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
-                          [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages = nberImages;
-                          [[CategoriesData sharedInstance] getCategoryById:categoryId].totalNumberOfImages = nberImages;
-                          
-                          // Parse images
-                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:categoryId];
-                          completion(task, searchedImages);
-                      }
-                      else
-                      {
-                          // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesGetImages andURLparams:nil];
-                          
-                          completion(task, nil);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
+          if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+              // Store number of images in cache
+              NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+              [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages = nberImages;
+              [[CategoriesData sharedInstance] getCategoryById:categoryId].totalNumberOfImages = nberImages;
+              
+              // Parse images
+              NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:categoryId];
+              if(completion) {
+                  completion(task, searchedImages);
+              }
+          }
+          else
+          {
+              // Display Piwigo error
+              NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                    path:kPiwigoCategoriesGetImages andURLparams:nil];
+              if(completion) {
+                  [NetworkHandler showPiwigoError:error withCompletion:^{
+                      completion(task, nil);
+                  }];
+              } else {
+                  [NetworkHandler showPiwigoError:error withCompletion:nil];
+              }
+          }
+        } failure:^(NSURLSessionTask *task, NSError *error) {
                   // No error returned if task was cancelled
                   if (task.state == NSURLSessionTaskStateCanceling) {
                       completion(task, @[]);
@@ -383,34 +379,32 @@ NSString * const kGetImageOrderDescending = @"desc";
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
-                  if(completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-                          // Store number of images in cache
-                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
-                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages = nberImages;
-                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].totalNumberOfImages = nberImages;
-                          
-                          // Parse images
-                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoTagsCategoryId];
-                          completion(task, searchedImages);
-                      }
-                      else
-                      {
-                          // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoTagsGetImages andURLparams:nil];
-                          
-                          completion(task, nil);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
+        if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+            // Store number of images in cache
+            NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
+            [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages = nberImages;
+            [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].totalNumberOfImages = nberImages;
+            
+            // Parse images
+            NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoTagsCategoryId];
+            if(completion) {
+                completion(task, searchedImages);
+            }
+        }
+        else
+        {
+            // Display Piwigo error
+            NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                        path:kPiwigoTagsGetImages andURLparams:nil];
+            if(completion) {
+                [NetworkHandler showPiwigoError:error withCompletion:^{
+                    completion(task, nil);
+                }];
+            } else {
+                [NetworkHandler showPiwigoError:error withCompletion:nil];
+            }
+        }
+    } failure:^(NSURLSessionTask *task, NSError *error) {
                   // No error returned if task was cancelled
                   if (task.state == NSURLSessionTaskStateCanceling) {
                       completion(task, @[]);
@@ -486,34 +480,32 @@ NSString * const kGetImageOrderDescending = @"desc";
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
-                  if(completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-                          // Store number of images in cache
-                          NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
-                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages = nberImages;
-                          [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages = nberImages;
-                          
-                          // Parse images
-                          NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoFavoritesCategoryId];
-                          completion(task, searchedImages);
-                      }
-                      else
-                      {
-                          // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoUserFavoritesGetList andURLparams:nil];
-                          
-                          completion(task, nil);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
+          if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+              // Store number of images in cache
+              NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+              [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages = nberImages;
+              [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages = nberImages;
+              
+              // Parse images
+              NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoFavoritesCategoryId];
+              if(completion) {
+                  completion(task, searchedImages);
+              }
+          }
+          else
+          {
+              // Display Piwigo error
+              NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                    path:kPiwigoUserFavoritesGetList andURLparams:nil];
+              if(completion) {
+                  [NetworkHandler showPiwigoError:error withCompletion:^{
+                      completion(task, nil);
+                  }];
+              } else {
+                  [NetworkHandler showPiwigoError:error withCompletion:nil];
+              }
+          }
+      } failure:^(NSURLSessionTask *task, NSError *error) {
                   // No error returned if task was cancelled
                   if (task.state == NSURLSessionTaskStateCanceling) {
                       completion(task, @[]);
@@ -738,38 +730,35 @@ NSString * const kGetImageOrderDescending = @"desc";
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
-				  if(completion) {
-					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-					  {
-						  PiwigoImageData *imageData = [ImageService parseBasicImageInfoJSON:[responseObject objectForKey:@"result"]];
-						  for(NSNumber *categoryId in imageData.categoryIds)
-						  {
-                              if (addImage) {
-                                  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] addImages:@[imageData]];
-                              } else {
-							  	  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] updateImages:@[imageData]];
-						  }
-						  }
-						  completion(task, imageData);
-					  }
-                      else
-                      {
-                          // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImagesGetInfo andURLparams:nil];
-
-                          completion(task, nil);
-					  }
-				  }
-			  }
-              failure:^(NSURLSessionTask *task, NSError *error) {
+          if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+          {
+              PiwigoImageData *imageData = [ImageService parseBasicImageInfoJSON:[responseObject objectForKey:@"result"]];
+              for(NSNumber *categoryId in imageData.categoryIds)
+              {
+                  if (addImage) {
+                      [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] addImages:@[imageData]];
+                  } else {
+                      [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] updateImages:@[imageData]];
+                  }
+              }
+              if(completion) {
+                  completion(task, imageData);
+              }
+          }
+          else
+          {
+              // Display Piwigo error
+              NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                    path:kPiwigoImagesGetInfo andURLparams:nil];
+              if(completion) {
+                  [NetworkHandler showPiwigoError:error withCompletion:^{
+                      completion(task, nil);
+                  }];
+              } else {
+                  [NetworkHandler showPiwigoError:error withCompletion:nil];
+              }
+          }
+    } failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                   NSLog(@"=> getImageInfoById: %@ failed with error %ld:%@", @(imageId), (long)[error code], [error localizedDescription]);
 #endif
@@ -1315,7 +1304,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 +(NSURLSessionTask*)setImageProperties:(PiwigoImageData *)imageData
                             onProgress:(void (^)(NSProgress *))progress
-                          OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                          OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Prepare dictionary of parameters
@@ -1403,7 +1392,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 +(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
                                withInformation:(NSDictionary*)imageInfo
                                     onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Author
@@ -1465,7 +1454,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 +(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
                                   withFileName:(NSString*)fileName
                                     onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
@@ -1485,17 +1474,15 @@ NSString * const kGetImageOrderDescending = @"desc";
                             else
                             {
                                 // Display Piwigo error
-                                NSInteger errorCode = NSNotFound;
-                                if ([responseObject objectForKey:@"err"]) {
-                                    errorCode = [[responseObject objectForKey:@"err"] intValue];
+                                NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                                      path:kPiwigoImageSetInfo andURLparams:nil];
+                                if(completion) {
+                                    [NetworkHandler showPiwigoError:error withCompletion:^{
+                                        completion(task, nil);
+                                    }];
+                                } else {
+                                    [NetworkHandler showPiwigoError:error withCompletion:nil];
                                 }
-                                NSString *errorMsg = @"";
-                                if ([responseObject objectForKey:@"message"]) {
-                                    errorMsg = [responseObject objectForKey:@"message"];
-                                }
-                                [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImagesGetInfo andURLparams:nil];
-
-                                completion(task, nil);
                             }
                         }
             } failure:^(NSURLSessionTask *task, NSError *error) {

@@ -86,6 +86,9 @@ NSInteger const loadingViewTag = 899;
 
 @implementation NetworkHandler
 
+
+#pragma mark - Session Managers
+
 +(void)createJSONdataSessionManager
 {
     // Configuration
@@ -596,6 +599,9 @@ NSInteger const loadingViewTag = 899;
     }];
 }
 
+
+#pragma mark - Tasks Methods
+
 +(NSString*)encodedImageURL:(NSString*)originalURL
 {
     // Return nil if originalURL is nil and a placeholder will be used
@@ -900,17 +906,55 @@ NSInteger const loadingViewTag = 899;
     return task;
 }
 
-+(void)showConnectionError:(NSError*)error
+
+#pragma mark - Piwigo Errors
+
++(NSError *)getPiwigoErrorFromResponse:(id)responseObject path:(NSString *)path andURLparams:(NSDictionary *)urlParams
+{
+    NSInteger errorCode = NSNotFound;
+    if ([responseObject objectForKey:@"err"]) {
+        errorCode = [[responseObject objectForKey:@"err"] intValue];
+    }
+    NSString *errorMsg = @"";
+    if ([responseObject objectForKey:@"message"]) {
+        errorMsg = [responseObject objectForKey:@"message"];
+    }
+    NSString *url = [self getURLWithPath:path withURLParams:urlParams];
+
+    NSError *error;
+    switch (errorCode) {
+        case kInvalidMethod:
+            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", errorMsg.length ? errorMsg : NSLocalizedString(@"serverInvalidMethodError_message", @"Failed to call server method."), url]}];
+            break;
+            
+        case kMissingParameter:
+            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", errorMsg.length ? errorMsg : NSLocalizedString(@"serverMissingParamError_message", @"Failed to execute server method with missing parameter."), url]}];
+            break;
+            
+        case kInvalidParameter:
+            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", errorMsg.length ? errorMsg : NSLocalizedString(@"serverInvalidParamError_message", @"Failed to call server method with provided parameters."), url]}];
+            break;
+            
+        default:
+            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", errorMsg.length ? errorMsg : NSLocalizedString(@"serverUnknownError_message", @"Unexpected error encountered while calling server method with provided parameters."), url]}];
+            break;
+    }
+    return error;
+}
+
++(void)showPiwigoError:(NSError*)error withCompletion:(void (^)(void))completion;
 {
     UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                                message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
-                                preferredStyle:UIAlertControllerStyleAlert];
+        alertControllerWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+        message:[NSString stringWithFormat:@"%@", [error localizedDescription]]
+        preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* defaultAction = [UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                    style:UIAlertActionStyleDefault
-                                    handler:^(UIAlertAction * action) {}];
+        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+            if (completion) { completion(); }
+    }];
     
     [alert addAction:defaultAction];
     if (@available(iOS 13.0, *)) {
@@ -924,37 +968,6 @@ NSInteger const loadingViewTag = 899;
         topViewController = topViewController.presentedViewController;
     }
     [topViewController presentViewController:alert animated:YES completion:nil];
-}
-
-+(NSError *)getPiwigoErrorMessageFromCode:(NSInteger)code message:(NSString *)msg path:(NSString *)path andURLparams:(NSDictionary *)urlParams
-{
-    NSError *error;
-    NSString *url = [self getURLWithPath:path withURLParams:urlParams];
-
-    switch (code) {
-        case kInvalidMethod:
-            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverInvalidMethodError_message", @"Failed to call server method."), url]}];
-            break;
-            
-        case kMissingParameter:
-            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverMissingParamError_message", @"Failed to execute server method with missing parameter."), url]}];
-            break;
-            
-        case kInvalidParameter:
-            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverInvalidParamError_message", @"Failed to call server method with provided parameters."), url]}];
-            break;
-            
-        default:
-            error = [NSError errorWithDomain:url code:code userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", msg.length ? msg : NSLocalizedString(@"serverUnknownError_message", @"Unexpected error encountered while calling server method with provided parameters."), url]}];
-            break;
-    }
-    return error;
-}
-
-+(void)showPiwigoError:(NSInteger)code withMessage:(NSString *)msg forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams
-{
-    NSError *error = [self getPiwigoErrorMessageFromCode:code message:msg path:path andURLparams:urlParams];
-    [self showConnectionError:error];
 }
 
 @end

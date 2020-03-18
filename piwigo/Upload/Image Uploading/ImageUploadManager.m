@@ -1483,38 +1483,28 @@ static NSString * FourCCString(FourCharCode code) {
                                            // progress
                                        } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 
-                                           if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
-                                           {
-                                               // Increment number of images in category
-                                               [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
-                                           
-                                               // Read image/video information and update cache
-                                               [self addImageDataToCategoryCache:imageId];
-                                           }
-                                           else {
-                                               // Display Piwigo error
-                                               NSInteger errorCode = NSNotFound;
-                                               if ([response objectForKey:@"err"]) {
-                                                   errorCode = [[response objectForKey:@"err"] intValue];
-                                               }
-                                               NSString *errorMsg = @"";
-                                               if ([response objectForKey:@"message"]) {
-                                                   errorMsg = [response objectForKey:@"message"];
-                                               }
-                                               NSError *error = [NetworkHandler getPiwigoErrorMessageFromCode:errorCode message:errorMsg path:kPiwigoImageSetInfo andURLparams:nil];
-                                               
-                                               // Inform user and propose to cancel or continue
-                                               [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
-                                                             andMessage:[error localizedDescription]
-                                                            forRetrying:NO
-                                                              withImage:image];
-                                           }
-                                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                           // Inform user and propose to cancel or continue
-                                            [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
-                                                          andMessage:[error localizedDescription]
-                                                         forRetrying:NO
-                                                           withImage:image];
+                           if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+                           {
+                               // Increment number of images in category
+                               [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
+                           
+                               // Read image/video information and update cache
+                               [self addImageDataToCategoryCache:imageId];
+                           }
+                           else {
+                               // Display Piwigo error in HUD
+                               NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
+                               [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                                             andMessage:[error localizedDescription]
+                                            forRetrying:NO
+                                              withImage:image];
+                           }
+                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                           // Inform user and propose to cancel or continue
+                            [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                                          andMessage:[error localizedDescription]
+                                         forRetrying:NO
+                                           withImage:image];
 }];
 }
 

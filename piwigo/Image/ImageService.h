@@ -83,19 +83,19 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
 
 +(NSURLSessionTask*)setImageProperties:(PiwigoImageData *)imageData
                             onProgress:(void (^)(NSProgress *))progress
-                          OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                          OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
                                withInformation:(NSDictionary*)imageInformation
                                     onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
                                   withFileName:(NSString*)fileName
                                     onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)setCategoriesForImage:(PiwigoImageData *)imageId
