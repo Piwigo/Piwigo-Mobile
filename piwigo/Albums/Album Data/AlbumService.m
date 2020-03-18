@@ -327,11 +327,9 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   
                   if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                   {
+                      NSArray *albums = [[responseObject objectForKey:@"result"] objectForKey:@"categories"];
                       if (completion) {
-                          NSArray *albums = [[responseObject objectForKey:@"result"] objectForKey:@"categories"];
                           completion(task, albums);
-                      } else {
-                          completion(task, nil);
                       }
                   }
                   else
