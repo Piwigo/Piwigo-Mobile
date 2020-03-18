@@ -61,10 +61,10 @@
 "loginHTTP_message" = "Piwigo服务器需要基本访问验证：";
 "loginHTTPuser_placeholder" = "用户名";
 "loginHTTPpwd_placeholder" = "密码";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "网络连接可能不安全";
+"loginCertFailed_message" = "你所连接的站点未能提供有效证书，是否仍然接受此证书？";
+"loginHTTPSfailed_title" = "未能建立安全连接";
+"loginHTTPSfailed_message" = "无法建立安全连接，是否降级到不安全的连接？";
 
 // Login — Errors
 "serverURLerror_title" = "不正确的 URL";

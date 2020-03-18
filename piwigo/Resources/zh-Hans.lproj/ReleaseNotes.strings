@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.8_text" = "Version 2.4.8\n\n• Piwigo warns you when:\n - a website has a certificate that is not valid,\r - before establishing an insecure connection\n• Improved cache management\n• Minor bug fixes and improvements of the interface";
+"v2.4.8_text" = "版本 2.4.8\n• 新增以下警告条件：\n - 网站证书不可信\n - 建立的连接不安全\n• 增强缓存管理机制\n• 错误修复和界面改进";
 
-"v2.4.7_text" = "版本2.4.7\n\n• 新增简体中文，俄文和西班牙文翻译\n• 解决了某些服务器上的视频播放问题";
+"v2.4.7_text" = "版本2.4.7\n\n• 新增简体中文，俄文和西班牙文翻译\n• 修复了某些服务器上的视频播放问题";
 
 "v2.4.6_text" = "版本2.4.6\n2020年1月18日\n\n• 修改了选中照片的属性\n• 更改了照片或视频的创建日期\n• 新增在上传前预设文件名的选项\n• 错误修复和界面改进";
 
