@@ -8,7 +8,7 @@
 
 "v2.4.8_text" = "Version 2.4.8\n\n• Piwigo warns you when:\n - a website has a certificate that is not valid,\r - before establishing an insecure connection\n• Improved cache management\n• Minor bug fixes and improvements of the interface";
 
-"v2.4.7_text" = "Wersja 2.4.7\n\n• Dodano tłumaczenia: chiński (uproszczony), rosyjski i hiszpański\n• Naprawiono problem z odtwarzaniem filmów na niektórych serwerach";
+"v2.4.7_text" = "Wersja 2.4.7\n30 stycznia 2020\n\n• Dodano tłumaczenia: chiński (uproszczony), rosyjski i hiszpański\n• Naprawiono problem z odtwarzaniem filmów na niektórych serwerach";
 
 "v2.4.6_text" = "Wersja 2.4.6\n18 stycznia 2020\n\n• Możliwość edycji właściwości wybranych zdjęć\n• Możliwość zmiany daty utworzenia zdjęcia lub filmu\n• Opcja dodania prefiksu nazw plików przed przesłaniem\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
