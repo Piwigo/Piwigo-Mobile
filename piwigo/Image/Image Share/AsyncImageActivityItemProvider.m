@@ -14,9 +14,9 @@
 #import "Model.h"
 #import "PhotosFetch.h"
 
-//#ifndef DEBUG_SHARE
-//#define DEBUG_SHARE
-//#endif
+#ifndef DEBUG_SHARE
+#define DEBUG_SHARE
+#endif
 
 NSString * const kPiwigoNotificationDidShareImage = @"kPiwigoNotificationDidShareImage";
 NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationCancelDownloadImage";
@@ -109,10 +109,20 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
         }
     }
     
-    // Download image synchronously
+    // Determine the URL request and filename of the image file
+    NSURLRequest *urlRequest = [ImageService urlRequestForImage:self.imageData withMnimumSize:minSize];
+    
+    // Do we have the image in cache?
     self.imageFilePath = nil;
-    [self downloadSynchronouslyImageOfMinimumSize:minSize];
-
+    NSData *cachedImageData = [[[Model sharedInstance].imageCache cachedResponseForRequest:urlRequest] data];
+    if ((cachedImageData == nil) || (cachedImageData.bytes == 0)) {
+        // Download image synchronously
+        [self downloadSynchronouslyImageWithUrlRequest:urlRequest];
+    } else {
+        // Image already in cache
+        self.imageFilePath = [ImageService getFileUrlOfImage:self.imageData withURLrequest:urlRequest];
+    }
+    
     // Cancel item task if download failed
     if (self.alertTitle) {
         // Cancel task
@@ -126,11 +136,23 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
     }
     
     // Retrieve image from downloaded file
-    UIImage *image = [[UIImage alloc] initWithContentsOfFile:[self.imageFilePath path]];
-    NSMutableData *imageDataFile = [NSMutableData dataWithContentsOfURL:self.imageFilePath];
+    if ((cachedImageData == nil) || (cachedImageData.bytes == 0)) {
+        // Prepare image data
+        UIImage *image = [[UIImage alloc] initWithContentsOfFile:[self.imageFilePath path]];
+        NSMutableData *imageDataFile = [NSMutableData dataWithContentsOfURL:self.imageFilePath];
+
+        // Prepare file before sharing
+        [self modifyImage:image withData:imageDataFile];
+    }
+    else {
+        // Prepare image data
+        UIImage *image = [[UIImage alloc] initWithData:cachedImageData];
+        NSMutableData *imageDataFile = [cachedImageData mutableCopy];
+
+        // Prepare file before sharing
+        [self modifyImage:image withData:imageDataFile];
+    }
     
-    // Prepare file before sharing
-    [self modifyImage:image withData:imageDataFile];
 
     // Cancel item task if image preparation failed
     if (self.alertTitle) {
@@ -158,11 +180,11 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
     return self.imageFilePath;
 }
 
--(void)downloadSynchronouslyImageOfMinimumSize:(NSInteger)minSize
+-(void)downloadSynchronouslyImageWithUrlRequest:(NSURLRequest*)urlRequest
 {
     dispatch_semaphore_t sema = dispatch_semaphore_create(0);
     self.task = [ImageService downloadImage:self.imageData
-                              ofMinimumSize:minSize
+                 withUrlRequest:urlRequest
                      onProgress:^(NSProgress *progress) {
                          // Notify the delegate on the main thread to show how it makes progress.
                          dispatch_async(dispatch_get_main_queue(), ^{
@@ -178,6 +200,11 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
                       dispatch_semaphore_signal(sema);
                   }
                   else {
+                      // Cache image
+                      NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:[NSData dataWithContentsOfURL:filePath]];
+                      [[Model sharedInstance].imageCache storeCachedResponse:cachedResponse
+                                                                  forRequest:urlRequest];
+
                       // Retrieve image file path
                       self.imageFilePath = filePath;
                       dispatch_semaphore_signal(sema);
@@ -381,16 +408,17 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
         [self.delegate imageActivityItemProvider:self preprocessingProgressDidUpdate:0.95];
     });
     
-    // Share image w/ or w/o private metadata
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:self.imageData.fileName];
+    // Write image w/ or w/o private metadata
+    NSString *filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:self.imageData.fileName];
     NSError *writeError = nil;
     [newImageDataFile writeToFile:filePath options:NSDataWritingAtomic error:&writeError];
     if (writeError) {
         NSLog(@"Error writing file: %@", writeError);
     }
 
-    // Share image w/ or w/o private metadata
+    // Shared files w/ or w/o private metadata are saved in the /tmp directory and will be deleted:
+    // - by the app if the user kills it
+    // - by the system after a certain amount of time
     self.imageFilePath = [NSURL fileURLWithPath:filePath];
     newImageData = nil;
 }
@@ -403,19 +431,19 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
 
 -(void)didFinishSharingImage
 {
-    // Delete temporary image file if exists
-    [[NSFileManager defaultManager] removeItemAtURL:self.imageFilePath error:nil];
-
     // Remove image share observers
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDidShareImage object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCancelDownloadImage object:nil];
 
     // Inform user in case of error after dismissing activity view controller
     if (self.alertTitle) {
-        [self.delegate showErrorWithTitle:self.alertTitle andMessage:self.alertMessage];
+        if([self.delegate respondsToSelector:@selector(showErrorWithTitle:andMessage:)])
+        {
+            [self.delegate showErrorWithTitle:self.alertTitle andMessage:self.alertMessage];
+        }
     }
     
-    // Release momory
+    // Release memory
     self.alertTitle = nil;
     self.alertMessage = nil;
     self.imageFilePath = nil;

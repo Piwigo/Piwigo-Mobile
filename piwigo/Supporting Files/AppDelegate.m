@@ -274,6 +274,12 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     
     // Disable network reachability monitoring
     [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
+    
+    // Empty /tmp directory
+    NSArray* tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL];
+    for (NSString *file in tmpDirectory) {
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file] error:NULL];
+    }
 }
 
 

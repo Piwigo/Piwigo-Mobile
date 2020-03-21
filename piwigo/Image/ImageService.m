@@ -1088,10 +1088,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 #pragma mark - Download images
 
-+(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
-                            ofMinimumSize:(NSInteger)minSize
-                       onProgress:(void (^)(NSProgress *))progress
-                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
++(NSURLRequest*)urlRequestForImage:(PiwigoImageData*)image withMnimumSize:(CGFloat)minSize
 {
     // NOP if image unknown
     if(!image) return nil;
@@ -1099,7 +1096,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Download image of optimum size (depends on availability)
     // Note: image.width and .height are always > 1
     NSString *URLRequest = @"";
-    CGFloat scaleFactor = INFINITY;
+    CGFloat scaleFactor = CGFLOAT_MAX;
     if ([image.ThumbPath length] > 0) {
         // Path should always be provided (thumbnail size)
         URLRequest = image.ThumbPath;
@@ -1140,9 +1137,16 @@ NSString * const kGetImageOrderDescending = @"desc";
 
     // NOP if image cannot be downloaded
     if (URLRequest.length == 0) return nil;
+
+    return [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
+}
+
++(NSURL *)getFileUrlOfImage:(PiwigoImageData*)image withURLrequest:(NSURLRequest *)urlRequest
+{
+    // Get filename from URL request
+    NSString *fileName = [[urlRequest URL] lastPathComponent];
     
-    // Set appropriate filename
-    NSString *fileName = [[NSURL URLWithString:URLRequest] lastPathComponent];
+    // Check filename
     if ([fileName containsString:@".php"]) {
         // The URL does not contain a unique file name but a PHP request
         // Might happen with full resolution images, try with medium resolution file
@@ -1158,18 +1162,27 @@ NSString * const kGetImageOrderDescending = @"desc";
             }
         }
     }
+    
+    // Shared files are saved in the /tmp directory and will be deleted:
+    // - by the app if the user kills it
+    // - by the system after a certain amount of time
+    NSURL *tempDirectoryUrl = [NSURL fileURLWithPath:NSTemporaryDirectory()];
+    return [tempDirectoryUrl URLByAppendingPathComponent:fileName];
+}
 
++(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)imageData
+           withUrlRequest:(NSURLRequest*)urlRequest
+               onProgress:(void (^)(NSProgress *))progress
+        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
+{
     // Download and save image
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
-    NSURLSessionDownloadTask *task =
-        [[Model sharedInstance].imagesSessionManager downloadTaskWithRequest:request
-                                progress:progress
-                             destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-                                 NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-//                                 NSLog(@"=> downloaded %@", [documentsDirectoryURL URLByAppendingPathComponent:fileName]);
-                                 return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
-                             }
-                       completionHandler:completionHandler
+    NSURLSessionDownloadTask *task = [[Model sharedInstance].imagesSessionManager
+                downloadTaskWithRequest:urlRequest
+                               progress:progress
+                            destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+                                return [self getFileUrlOfImage:imageData withURLrequest:urlRequest];
+                            }
+                      completionHandler:completionHandler
          ];
     [task resume];
 
@@ -1177,26 +1190,22 @@ NSString * const kGetImageOrderDescending = @"desc";
 }
 
 +(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
+                   withUrlRequest:(NSURLRequest*)urlRequest
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
     if(!video) return nil;
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:video.fullResPath]];
-    
-    // Replace .mp4 or .m4v with .mov for compatibility with Photos.app
-    NSString *fileName = video.fileName;
-//    if (([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"MP4"]) ||
-//        ([[[video.fileName pathExtension] uppercaseString] isEqualToString:@"M4V"])) {
-//        fileName = [[video.fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
-//    }
     
     // Download and save video
     NSURLSessionDownloadTask *task = [[Model sharedInstance].imagesSessionManager
-                    downloadTaskWithRequest:request
+                    downloadTaskWithRequest:urlRequest
                                    progress:progress
                                 destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-                                     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-                                     return [documentsDirectoryURL URLByAppendingPathComponent:fileName];
+                                     // Shared files are saved in the /tmp directory and will be deleted:
+                                     // - by the app if the user kills it
+                                     // - by the system after a certain amount of time
+                                     NSURL *tempDirectoryUrl = [NSURL fileURLWithPath:NSTemporaryDirectory()];
+                                     return [tempDirectoryUrl URLByAppendingPathComponent:video.fileName];
                                 }
                           completionHandler:completionHandler
              ];
