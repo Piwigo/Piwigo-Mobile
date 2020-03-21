@@ -381,26 +381,50 @@
     };
 
     @autoreleasepool {
-        [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
-                     resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+        if (@available(iOS 13.0, *)) {
+            [[PHImageManager defaultManager] requestImageDataAndOrientationForAsset:image.imageAsset
+                    options:options
+              resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, CGImagePropertyOrientation orientation, NSDictionary * _Nullable info) {
 #if defined(DEBUG_UPLOAD)
-                         NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.fileName, info);
-                         NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
+                     NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.fileName, info);
+                     NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
 #endif
-                         if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
-                             NSError *error = [info valueForKey:PHImageErrorKey];
-                             // Inform user and propose to cancel or continue
-                             [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
-                                           andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
-                                          forRetrying:YES
-                                            withImage:image];
-                             return;
-                         }
-
-                         // Expected resource available
-                         [self modifyImage:image withData:imageData andObject:imageObject];
+                     if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
+                         NSError *error = [info valueForKey:PHImageErrorKey];
+                         // Inform user and propose to cancel or continue
+                         [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                                       andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
+                                      forRetrying:YES
+                                        withImage:image];
+                         return;
                      }
-         ];
+
+                     // Expected resource available
+                     [self modifyImage:image withData:imageData andObject:imageObject];
+            }];
+        }
+        else {
+            [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset
+                      options:options
+                resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+#if defined(DEBUG_UPLOAD)
+                     NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.fileName, info);
+                     NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
+#endif
+                     if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
+                         NSError *error = [info valueForKey:PHImageErrorKey];
+                         // Inform user and propose to cancel or continue
+                         [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                                       andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
+                                      forRetrying:YES
+                                        withImage:image];
+                         return;
+                     }
+
+                     // Expected resource available
+                     [self modifyImage:image withData:imageData andObject:imageObject];
+                }];
+        }
     }
 }
 
