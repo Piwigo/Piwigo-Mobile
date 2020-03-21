@@ -16,13 +16,13 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>FooterText</key>
-			<string>about_text</string>
+			<string>licenceAFN_text</string>
 		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>FooterText</key>
-			<string>licenceAFN_text</string>
+			<string>licenceIQkeyboard_text</string>
 		</dict>
 		<dict>
 			<key>Type</key>
