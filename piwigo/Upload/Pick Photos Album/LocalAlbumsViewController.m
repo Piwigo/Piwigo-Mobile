@@ -312,7 +312,7 @@
     }
     NSString *name = [groupAsset localizedTitle];
     NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ? NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ? NSLocalizedString(@"severalImages", @"Photos") : NSLocalizedString(@"singleImage", @"Photo")];
     cell.textLabel.textColor = [UIColor piwigoColorLeftLabel];
     cell.backgroundColor = [UIColor piwigoColorCellBackground];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

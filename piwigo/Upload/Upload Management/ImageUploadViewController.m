@@ -35,7 +35,7 @@
 	{
 		self.imagesToEdit = [NSMutableArray new];
 		
-		self.title = NSLocalizedString(@"imageUploadDetailsView_title", @"Images");
+		self.title = NSLocalizedString(@"imageUploadDetailsView_title", @"Photos");
 		
 		self.uploadImagesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		self.uploadImagesTableView.translatesAutoresizingMaskIntoConstraints = NO;
