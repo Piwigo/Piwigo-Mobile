@@ -1603,7 +1603,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionAbout:
         {
             if ([self.nberImages length] > 0) {
-                footer = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
+                footer = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Photos"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
             }
             break;
         }
@@ -1656,7 +1656,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionAbout:
         {
             if ([self.nberImages length] > 0) {
-                footerLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
+                footerLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Photos"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
             }
             break;
         }
