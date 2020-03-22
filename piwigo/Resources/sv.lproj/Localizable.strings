@@ -233,7 +233,7 @@
 //"categorySelection_select" = "Select Album";
 "categorySelection_current" = "Välj det aktuella albumet för denna bild";
 "categorySelection_one" = "Välj en av de album som innehåller den här bilden";
-"categorySelection_other" = "eller välj ett annat album för denna bild";
+"categorySelection_other" = "Eller välj ett annat album för detta foto";
 "categoryImageSet_title" = "Album miniatyr";
 "categoryImageSet_message" = "Är du säker du vill använda denna bild miniatyrbild för albumet ”%@”?";
 "categoryImageSetHUD_updating" = "Uppdaterar albumets miniatyrbilder…";
