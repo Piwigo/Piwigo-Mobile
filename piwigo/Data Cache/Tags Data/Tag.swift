@@ -18,7 +18,7 @@ import CoreData
 class Tag: NSManagedObject {
 
     // A unique identifier for removing duplicates. Constrain
-    // the PiwigoTagData entity on this attribute in the data model editor.
+    // the Piwigo Tag entity on this attribute in the data model editor.
     @NSManaged var tagId: Int64
     
     // The other attributes of a tag.
