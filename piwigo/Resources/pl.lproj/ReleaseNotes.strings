@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.8_text" = "Version 2.4.8\n\n• Piwigo warns you when:\n - a website has a certificate that is not valid,\r - before establishing an insecure connection\n• Improved cache management\n• Minor bug fixes and improvements of the interface";
+"v2.4.8_text" = "Wersja 2.4.8\n\n• Piwigo ostrzega, kiedy:\n - strona internetowa posiada certyfikat, który jest nieprawidłowy,\n - przed ustanowieniem niezabezpieczonego połączenia\n• Ulepszone zarządzanie pamięcią podręczną\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
 "v2.4.7_text" = "Wersja 2.4.7\n30 stycznia 2020\n\n• Dodano tłumaczenia: chiński (uproszczony), rosyjski i hiszpański\n• Naprawiono problem z odtwarzaniem filmów na niektórych serwerach";
 

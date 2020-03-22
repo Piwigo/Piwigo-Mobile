@@ -6,11 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.8_text" = "Version 2.4.8\n\n• Piwigo warns you when:\n - a website has a certificate that is not valid,\r - before establishing an insecure connection\n• Improved cache management\n• Minor bug fixes and improvements of the interface";
+"v2.4.8_text" = "Versie 2.4.8\n\n• Piwigo waarschuwt je wanneer:\n - een website heeft een certificaat dat niet geldig is,\n - voor het opzetten van een onveilige verbinding\n• Verbeterd cachebeheer\n• Kleine foutjes gerepareerd en verbeteringen van de interface";
 
-"v2.4.7_text" = "Version 2.4.7\nJanuary 30, 2020\n\n• Chinese Simplified, Russian and Spanish translations\n• Fixes a video playback issue on some servers";
+"v2.4.7_text" = "Versie 2.4.7\n30 januari 2020\n\n• Chinese vereenvoudigd, Russisch en Spaans vertalingen\n• Corrigeert een video afspeelprobleem op sommige servers";
 
-"v2.4.6_text" = "Version 2.4.6\nJanuary 18, 2020\n\n• Edit properties of a selection of photos\n• Change creation date of a photo or video\n• Option for prefixing file names before upload\n• Minor bug fixes and improvements of the interface";
+"v2.4.6_text" = "Versie 2.4.6\n18 januari 2020\n\n• Bewerk eigenschappen van een selectie foto's\n• Verander aanmaakdatum van foto of video\n• Optie voor voorvoegsel bestandsnaam voor upload\n• Kleine foutjes verbeterd en verbetering van de interface";
 
 "v2.4.5_text" = "Versie 2.4.5\n6 November 2019\n\n• Toont uw favoriete afbeeldingen (vereist Piwigo 2.10 of hoger)\n• Optie voor het handmatig presenteren van afbeeldingen\n• Hiermee kunnen Community gebruikers albums maken (met de juiste rechten)\n• Kleine foutjes hersteld en verbetering van de interface";
 

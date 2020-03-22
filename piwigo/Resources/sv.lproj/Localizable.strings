@@ -61,10 +61,10 @@
 "loginHTTP_message" = "Grundläggande autentisering krävs av Piwigo-servern‎:";
 "loginHTTPuser_placeholder" = "Användarnamn";
 "loginHTTPpwd_placeholder" = "Lösenord";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "Anslutning inte privat";
+"loginCertFailed_message" = "Piwigo varnar dig när en webbplats har ett certifikat som inte är giltigt. Vill du fortfarande acceptera detta certifikat?";
+"loginHTTPSfailed_title" = "Säker anslutning misslyckades";
+"loginHTTPSfailed_message" = "Piwigo kan inte upprätta en säker anslutning. Vill du försöka upprätta en osäker anslutning?";
 
 // Login — Errors
 "serverURLerror_title" = "Felaktig URL";
@@ -220,8 +220,8 @@
 // Album move
 "moveCategory" = "Flytta Album";
 "moveCategory_selectParent" = "Välj ett album att flytta album ”%@” till";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
+"moveCategory_selectRecent" = "Välj ett nytt album att flytta album \"%@\" till";
+"moveCategory_selectRecentOther" = "Eller välj ett annat album för att flytta album \"%@\" till";
 "moveCategory_message" = "Är du säker du vill flytta ”%@” in i album ”%@”?";
 "moveCategoryHUD_moving" = "Flyttar Album…";
 
@@ -375,11 +375,11 @@
 // Image move
 "moveImage_title" = "Flytta till Album";
 "moveSingleImage_selectAlbum" = "Välj ett album att flytta bild \"%@\" till";
-"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
-"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
+"moveSingleImage_selectRecent" = "Välj ett nytt album att flytta foto \"%@\" till";
+"moveSingleImage_selectRecentOther" = "Eller välj ett annat album för att flytta foto \"%@\" till";
 "moveSeveralImages_selectAlbum" = "Välj ett album att flytta bilderna till";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
-"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
+"moveSeveralImages_selectRecent" = "Välj ett nytt album för att flytta bilderna till";
+"moveSeveralImages_selectRecentOther" = "Eller välj ett annat album för att flytta bilderna till";
 "moveSingleImage_message" = "Är du säker på att du vill flytta bilden ”%@” till albumet ”%@”?";
 "moveSeveralImages_message" = "Är du säker på att du vill flytta bilderna till albumet ”%@”?";
 "moveSingleImageHUD_moving" = "Flyttar bild…";
@@ -392,11 +392,11 @@
 // Image copy
 "copyImage_title" = "Kopiera till Album";
 "copySingleImage_selectAlbum" = "Välj ett album att kopiera bild \"%@\" till";
-"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
-"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
+"copySingleImage_selectRecent" = "Välj ett nytt album att kopiera foto \"%@\" till";
+"copySingleImage_selectRecentOther" = "Eller välj ett annat album att kopiera foto \"%@\" till";
 "copySeveralImages_selectAlbum" = "Välj ett album att kopiera bilderna till";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
-"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
+"copySeveralImages_selectRecent" = "Välj ett nytt album för att kopiera bilderna till";
+"copySeveralImages_selectRecentOther" = "Eller välj ett annat album att kopiera bilderna till";
 "copySingleImage_message" = "Är du säker att du vill kopiera bild ”%@” till albumet ”%@”?";
 "copySeveralImages_message" = "Är du säker att du vill kopiera bilderna till albumet ”%@”?";
 "copySingleImageHUD_copying" = "Kopierar bild…";
@@ -531,9 +531,9 @@
 "defaultImageSort>414px" = "Standardsortering av bilder";
 "defaultAlbumThumbnailFile>414px" = "Miniatyrfil för album";
 "defaultAlbumThumbnailSizeHeader" = "Välj en miniatyrbildsstorlek";
-"maxNberOfRecentAlbums" = "Recent";
-"maxNberOfRecentAlbums>320px" = "Recent Albums";
-"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"maxNberOfRecentAlbums" = "Senaste";
+"maxNberOfRecentAlbums>320px" = "Senaste album";
+"maxNberOfRecentAlbums>414px" = "Antal senaste album";
 
 "thumbnailSizeSquare" = "Kvadrat";
 "thumbnailSizeThumbnail" = "Miniatyrbild";

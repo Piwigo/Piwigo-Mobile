@@ -6,11 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.8_text" = "Version 2.4.8\n\n• Piwigo warns you when:\n - a website has a certificate that is not valid,\r - before establishing an insecure connection\n• Improved cache management\n• Minor bug fixes and improvements of the interface";
+"v2.4.8_text" = "Version 2.4.8\n\n• Piwigo advarer dig, når:\n  - et websted har et certifikat, der ikke er gyldigt,\n  - inden du opretter en usikker forbindelse\n• Forbedret cachehåndtering\n• Mindre fejlrettelser og forbedringer af grænsefladen";
 
-"v2.4.7_text" = "Version 2.4.7\nJanuary 30, 2020\n\n• Chinese Simplified, Russian and Spanish translations\n• Fixes a video playback issue on some servers";
+"v2.4.7_text" = "Version 2.4.7\n30 januar 2020\n\n• Kinesisk forenklet, russisk og spansk oversættelse\n• Løser et videoafspilningsproblem på nogle servere";
 
-"v2.4.6_text" = "Version 2.4.6\nJanuary 18, 2020\n\n• Edit properties of a selection of photos\n• Change creation date of a photo or video\n• Option for prefixing file names before upload\n• Minor bug fixes and improvements of the interface";
+"v2.4.6_text" = "Version 2.4.6\n18 januar 2020\n\n• Rediger egenskaber for et udvalg af fotos\n• Skift oprettelsesdato for et foto eller en video\n• Mulighed for præfiksering af filnavne inden upload\n• Mindre fejlrettelser og forbedringer af grænsefladen";
 
 "v2.4.5_text" = "Version 2.4.5\n6 november 2019\n\n• Viser dine yndlingsbilleder (kræver Piwigo 2.10 eller nyere)\n• Mulighed for præsentation af billeder sorteret manuelt\n• Tillader Community-brugere at oprette albums (med passende rettigheder)\n• Mindre fejl rettet og forbedringer af brugerflade";
 

@@ -136,7 +136,7 @@
 "categorySort_ratingScoreAscending" = "Bedømmelse, lav → høj";
 "categorySort_visitsDescending" = "Besøg, høj → lav";
 "categorySort_visitsAscending" = "Besøg, lav → høj";
-"categorySort_manual" = "Manuel ordre";
+"categorySort_manual" = "Manuel sortering";
 
 "categorySort_videosOnly" = "Kun Videoer";
 "categorySort_imagesOnly" = "Kun Billeder";
@@ -150,7 +150,7 @@
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Der er ikke noget underalbum at uploade billeder til";
-"categoryUpload_chooseAlbum" = "Vælg et album for dette billede";
+"categoryUpload_chooseAlbum" = "Vælg et underalbum til upload af billeder";
 "categoryUpload_LocalAlbums" = "Lokale album";
 "categoryUpload_chooseLocalAlbum" = "Vælg et album at hente biller fra";
 "categoryUpload_iCloudAlbums" = "iCloud album";

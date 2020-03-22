@@ -63,7 +63,7 @@
 "loginHTTPpwd_placeholder" = "Mot de Passe";
 "loginCertFailed_title" = "Connexion Non Privée";
 "loginCertFailed_message" = "Piwigo vous avertit lorsqu'un site web a un certificat non valide. Voulez-vous toujours accepter ce certificat ?";
-"loginHTTPSfailed_title" = "Échec de la connexion sécurisée";
+"loginHTTPSfailed_title" = "Échec de la Connexion Sécurisée";
 "loginHTTPSfailed_message" = "Piwigo ne peut pas établir une connexion sécurisée. Voulez-vous essayer d'établir une connexion non sécurisée ?";
 
 // Login — Errors
