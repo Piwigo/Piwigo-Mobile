@@ -320,15 +320,15 @@
         // Update title
         switch (self.selectedImageIds.count) {
             case 0:
-                self.title = NSLocalizedString(@"selectImages", @"Select Images");
+                self.title = NSLocalizedString(@"selectImages", @"Select Photos");
                 break;
                 
             case 1:
-                self.title = NSLocalizedString(@"selectImageSelected", @"1 Image Selected");
+                self.title = NSLocalizedString(@"selectImageSelected", @"1 Photo Selected");
                 break;
                 
             default:
-                self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Images Selected"), @(self.selectedImageIds.count)];
+                self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Photos Selected"), @(self.selectedImageIds.count)];
                 break;
         }
         

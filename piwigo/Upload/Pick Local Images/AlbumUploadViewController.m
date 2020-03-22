@@ -237,7 +237,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                 self.navigationItem.rightBarButtonItems = @[self.sortBarButton, self.uploadBarButton];
                 [self.uploadBarButton setEnabled:NO];
             }
-            self.title = NSLocalizedString(@"selectImages", @"Select Images");
+            self.title = NSLocalizedString(@"selectImages", @"Select Photos");
             break;
             
         case 1:
@@ -251,7 +251,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                 self.navigationItem.rightBarButtonItems = @[self.sortBarButton, self.uploadBarButton];
             }
             [self.uploadBarButton setEnabled:YES];
-            self.title = NSLocalizedString(@"selectImageSelected", @"1 Image Selected");
+            self.title = NSLocalizedString(@"selectImageSelected", @"1 Photo Selected");
             break;
             
         default:
@@ -265,7 +265,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                 self.navigationItem.rightBarButtonItems = @[self.sortBarButton, self.uploadBarButton];
             }
             [self.uploadBarButton setEnabled:YES];
-            self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Images Selected"), @(self.selectedImages.count)];
+            self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Photos Selected"), @(self.selectedImages.count)];
             break;
     }
 }
